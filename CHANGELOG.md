@@ -30,6 +30,12 @@ A change to what the site does or shows adds its line here, and the README's
   signs or lamps: none are mapped. The map view is unchanged. A software renderer
   or a phone gets the same sky and light without the effects. About says what is drawn by rule (#50).
 
+### Documents
+
+- The street-look skill, for giving the walker views their street look in another school's world
+  model, or tuning or checking it here: what each layer draws and from what, the contract that
+  keeps the map unchanged, and the checks (#57).
+
 ## 2026-10-17
 
 ### Added
