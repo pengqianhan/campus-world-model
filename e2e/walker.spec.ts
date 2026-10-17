@@ -1,12 +1,13 @@
 // The walker: a made-up figure a visitor or an agent walks round the campus, and its views.
 import { expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, shot } from "./helpers.ts";
+import { expectRealRender, open, openStrip, shot } from "./helpers.ts";
 
 type Reply = Record<string, unknown> & { error?: string };
 
 declare global {
   interface Window {
     __walker?: { run(command: string, args?: Record<string, unknown>): Promise<Reply>; ready(): boolean };
+    __addresses?: string[];
   }
 }
 
@@ -69,13 +70,19 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
   // Escape goes back to the map.
   await page.keyboard.press("Escape");
   await expect(page.locator('#walker-panel button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
+  // An agent taking the last walker away leaves no name on the map.
+  expect((await walker(page, "remove")).removed).toBe("Walker");
+  await expect(page.locator("#walker-panel")).toHaveCount(0);
+  await expect(page.locator('[data-label^="walker:"]')).toHaveCount(0);
 });
 
 test("walkers meet and hear each other; every walker looks the same; the keyboard walks the visitor's walker", async ({ page }) => {
   await open(page, `?${QUERY}`);
   await ready(page);
-  // Taking a walk from the campus status strip.
+  // Taking a walk from the campus panel, which starts shut. On a wide screen the walk starts on the map.
+  await openStrip(page);
   await page.locator("#walk-start").click();
+  await expect(page.locator('#walker-panel button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#walker-panel")).toBeVisible();
 
   const kea = (await walker(page, "spawn", { name: "Kea", near: "201" })) as { spawned: Record<string, unknown> };
@@ -103,6 +110,15 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   const to = ((await walker(page, "list")) as { walkers: { name: string; at: [number, number] }[] }).walkers.find((w) => w.name === "Walker")!.at;
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(0.3);
 
+  // On a wide screen everything in the panel shows, and its button folds the rest away.
+  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "true");
+  await page.locator("#walker-more").click();
+  await expect(page.locator("#walker-wander")).toBeHidden();
+  await expect(page.locator("#walker-panel button[data-view]")).toHaveCount(3);
+  await page.locator("#walker-more").click();
+  // There is no stick: the keys walk it.
+  await expect(page.locator("#walker-stick")).toHaveCount(0);
+
   // Let it wander: it strolls off on its own, and Stop wandering stops it.
   await page.locator("#walker-wander").click();
   await expect(page.locator("#walker-wander")).toHaveAttribute("aria-pressed", "true");
@@ -116,10 +132,13 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   await page.locator("#walker-wander").click();
   await expect(page.locator("#walker-wander")).toHaveAttribute("aria-pressed", "false");
 
-  // Stopping the walk takes every walker away.
+  // Stopping the walk takes every walker away, and their names and words with them.
   await page.locator("#walker-close").click();
   await expect(page.locator("#walker-panel")).toHaveCount(0);
-  await expect(page.locator("#status-strip")).toBeVisible();
+  // The campus panel comes back as its button, shut.
+  await expect(page.locator("#status-toggle")).toBeVisible();
+  await expect(page.locator("#status-strip")).toBeHidden();
+  await expect(page.locator('[data-label^="walker:"], [data-label^="say:"]')).toHaveCount(0);
   expect(new URL(page.url()).searchParams.get("walk")).toBeNull();
 });
 
@@ -163,4 +182,47 @@ test("a walk to a room goes into its building, up to its floor and into the room
   expect(out.indoor).toBeUndefined();
   expect(out.nearby[0]).toMatchObject({ id: "109" });
   expect(out.nearby[0]!.distance).toBeLessThan(3);
+});
+
+test("a walk the address asks for starts when the data comes in before the scene, as in a tab opened in the background", async ({ page }) => {
+  // A tab opened behind others draws no frames and runs its timers late, so the data comes in
+  // before the scene, which is made after the first frame. Here the page's clock stands still, as
+  // it does there, until the tab comes to the front; the data still loads.
+  await page.clock.install();
+  await page.clock.pauseAt(Date.now() + 1000);
+  // Every address the page writes, to see that none of them lets go of the walk.
+  await page.addInitScript(() => {
+    const replace = history.replaceState.bind(history);
+    window.__addresses = [];
+    history.replaceState = (state, unused, url) => {
+      window.__addresses!.push(String(url));
+      replace(state, unused, url);
+    };
+  });
+  const keptWalk = async () => {
+    for (const url of [...(await page.evaluate(() => window.__addresses!)), page.url()]) {
+      const q = new URL(url, page.url()).searchParams;
+      expect([q.get("walk"), q.get("view")], url).toEqual(["1", "follow"]);
+    }
+  };
+  await page.goto(`./?walk=1&view=follow&${QUERY}`);
+  await expect(page.locator(".splash")).toHaveCount(0);
+  // The data is in, and not a frame has been drawn.
+  expect(await page.evaluate(() => window.__scene?.frames ?? 0)).toBe(0);
+  await keptWalk();
+
+  // The tab comes to the front: one walker, seen from behind, and the address keeps it. The clock
+  // runs on a set time rather than resuming: resumed, it would run every frame it fell behind on,
+  // and a frame drawn in software takes longer than a frame's time, so it would never catch up.
+  await page.clock.runFor(500);
+  await expect(page.locator("#walker-panel")).toBeVisible();
+  await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
+  const list = (await walker(page, "list")) as { walkers: { name: string }[]; view: string; viewing: string };
+  expect(list.walkers.map((w) => w.name)).toEqual(["Walker"]);
+  expect(list).toMatchObject({ view: "follow", viewing: "Walker" });
+  await keptWalk();
+  await page.waitForFunction(() => window.__scene!.loading === 0);
+  await page.clock.runFor(500);
+  await expectRealRender(page);
+  await shot(page, "20-walker-background-tab");
 });

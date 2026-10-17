@@ -661,8 +661,27 @@ export function bindWalkerScene(s: CampusScene | undefined): void {
       });
     }
   });
+  // A walk the address asked for before the scene was up starts now, though not straight away: the
+  // host gives the scene its campus after this, and may be in the middle of a render.
+  queueMicrotask(startUrlWalk);
 }
 let syncStop: (() => void) | undefined;
+
+/** The walk the address asks for, until the scene and the data are both in to start it. */
+const urlWalk = signal<{ walk: string; view?: "follow" | "eyes" } | undefined>(undefined);
+
+/** Starts the walk the address asks for, once, when the scene and the data are both in. */
+function startUrlWalk(): void {
+  const asked = urlWalk.peek();
+  if (!asked || !scene || !data.value) return;
+  try {
+    startWalking({ near: asked.walk && asked.walk !== "1" ? asked.walk : undefined });
+    if (asked.view) setView({ view: asked.view, name: MY_WALKER });
+  } catch (e) {
+    console.error("walker", e);
+  }
+  urlWalk.value = undefined;
+}
 
 /**
  * Starts walking when the address asks: `walk=1` (or `walk=<building or place>` to start there),
@@ -671,18 +690,20 @@ let syncStop: (() => void) | undefined;
 export function startWalkerFromUrl(): void {
   const q = new URLSearchParams(location.search);
   const walkParam = q.get("walk");
-  if (walkParam !== null && scene && data.value) {
-    try {
-      startWalking({ near: walkParam && walkParam !== "1" ? walkParam : undefined });
-      const v = q.get("view");
-      if (v === "follow" || v === "eyes") setView({ view: v, name: MY_WALKER });
-    } catch (e) {
-      console.error("walker", e);
-    }
-  }
+  const v = q.get("view");
+  // The data and the scene come in either order: the scene is made after the first frame, and a
+  // tab opened in the background draws none until it comes to the front. Whichever comes second
+  // starts the walk (see bindWalkerScene).
+  if (walkParam !== null) urlWalk.value = { walk: walkParam, view: v === "follow" || v === "eyes" ? v : undefined };
+  startUrlWalk();
   effect(() => {
     const extras: Record<string, string> = {};
-    if (walkerOn.value) {
+    const asked = urlWalk.value;
+    if (asked) {
+      // Until it has started, with its view, the address goes on asking for it.
+      extras.walk = asked.walk;
+      if (asked.view) extras.view = asked.view;
+    } else if (walkerOn.value) {
       extras.walk = "1";
       if (walkerView.value !== "map") extras.view = walkerView.value;
     }
@@ -691,16 +712,24 @@ export function startWalkerFromUrl(): void {
   });
 }
 
+/**
+ * Steers the visitor's walker by hand, for as long as it is held: metres a second forward (negative
+ * back) and degrees a second of turn (positive to the right). The keys and the thumb stick use it.
+ */
+export function steerByHand(forward: number, turnRate: number): void {
+  const s = scene;
+  if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
+  s.walkers.steer(MY_WALKER, forward, turnRate);
+}
+
 /** The keyboard steers the visitor's walker: W A S D or the arrow keys, Shift to hurry. */
 export function startWalkerKeys(): () => void {
   const held = new Set<string>();
   const apply = () => {
-    const s = scene;
-    if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
     const fast = held.has("shift") ? 2.5 : 1;
     const forward = (held.has("w") || held.has("arrowup") ? 1 : 0) - (held.has("s") || held.has("arrowdown") ? 1 : 0);
     const turnDir = (held.has("d") || held.has("arrowright") ? 1 : 0) - (held.has("a") || held.has("arrowleft") ? 1 : 0);
-    s.walkers.steer(MY_WALKER, forward * WALK_SPEED * fast * (forward < 0 ? 0.6 : 1), turnDir * 100);
+    steerByHand(forward * WALK_SPEED * fast * (forward < 0 ? 0.6 : 1), turnDir * 100);
   };
   const keys = new Set(["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", "shift"]);
   const typing = (e: KeyboardEvent) => {

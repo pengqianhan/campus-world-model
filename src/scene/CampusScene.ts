@@ -51,6 +51,7 @@ import { LabelLayer, type LabelSpec } from "./labels.ts";
 import { EYE_HEIGHT } from "./figure.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
+import { towardsAhead } from "../shared/walkerLook.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -393,7 +394,8 @@ export class CampusScene {
   private eyes = { yaw: 0, pitch: -4 };
   private drag?: { x: number; y: number; moved: boolean };
   private lastFrame = 0;
-  private walkerLabelsVersion = -1;
+  /** The walkers' labelsVersion the labels were last built for; a new world starts at 0, with none. */
+  private walkerLabelsVersion = 0;
   /** A click in a walker view: on a University building, or on the ground at a point. */
   onWalkPick?: (pick: { building?: string; at?: [number, number] }) => void;
 
@@ -502,6 +504,7 @@ export class CampusScene {
     const el = this.renderer.domElement;
     el.addEventListener("pointerdown", this.onPointerDown);
     el.addEventListener("pointerup", this.onPointerUp);
+    el.addEventListener("pointercancel", this.onPointerCancel);
     el.addEventListener("pointermove", this.onPointerMove);
     el.addEventListener("pointerleave", this.onPointerLeave);
     el.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -1902,6 +1905,13 @@ export class CampusScene {
       return;
     }
     const [x, y] = pose.at;
+    // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
+    // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
+    if (dt < 1 && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
+      const k = Math.exp(-dt * 2.5);
+      if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
+      else this.follow.yaw = towardsAhead(this.follow.yaw, k);
+    }
     if (this.view === "eyes") {
       const yaw = ((pose.heading + this.eyes.yaw) * Math.PI) / 180;
       const pitch = (this.eyes.pitch * Math.PI) / 180;
@@ -1966,6 +1976,11 @@ export class CampusScene {
     if (this.view === "eyes") this.eyes = { yaw: ((yaw % 360) + 360) % 360, pitch: Math.max(-60, Math.min(50, pitch)) };
     else if (this.view === "follow") this.follow = { ...this.follow, yaw: ((yaw % 360) + 360) % 360, elevation: Math.max(-5, Math.min(70, 16 + pitch)) };
     this.placeWalkerCamera(1);
+  }
+
+  /** Where the walker view looks, degrees from straight ahead, as setWalkerLook takes it: for tests. */
+  walkerLook(): { yaw: number; pitch: number } {
+    return this.view === "eyes" ? { ...this.eyes } : { yaw: this.follow.yaw, pitch: this.follow.elevation - 16 };
   }
 
   private onWheel = (e: WheelEvent): void => {
@@ -2076,6 +2091,13 @@ export class CampusScene {
     if (pick) this.onPick?.(pick);
   };
 
+  /** A touch the browser took over (a scroll, a system gesture) ends a drag, and selects nothing. */
+  private onPointerCancel = (): void => {
+    this.drag = undefined;
+    this.pointerDown = undefined;
+    if (this.view !== "map") this.renderer.domElement.style.cursor = "grab";
+  };
+
   private labelAt(clientX: number, clientY: number): LabelSpec | undefined {
     const rect = this.renderer.domElement.getBoundingClientRect();
     return this.labels.hit(clientX - rect.left, clientY - rect.top);
@@ -2171,15 +2193,14 @@ export class CampusScene {
         return k < 1;
       });
     }
-    if (this.walkers.size) {
-      if (this.walkers.step(dt, now)) {
-        this.needsRender = true;
-        this.needsLabels = true;
-      }
-      if (this.walkers.labelsVersion !== this.walkerLabelsVersion) {
-        this.walkerLabelsVersion = this.walkers.labelsVersion;
-        this.rebuildLabels();
-      }
+    if (this.walkers.size && this.walkers.step(dt, now)) {
+      this.needsRender = true;
+      this.needsLabels = true;
+    }
+    // Also when the last walker has just gone: its name and words come off the map with it.
+    if (this.walkers.labelsVersion !== this.walkerLabelsVersion) {
+      this.walkerLabelsVersion = this.walkers.labelsVersion;
+      this.rebuildLabels();
     }
     if (this.view === "map") this.controls.update();
     else this.placeWalkerCamera(dt);

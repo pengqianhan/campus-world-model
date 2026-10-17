@@ -54,8 +54,34 @@ A change to what the site does or shows adds its line here, and the README's
   shows through. Claude Code and other agents steer it with `npm run walker`, an MCP server or the
   `campus-walker` skill, all on the user's own computer (#40).
 
+### Changed
+
+- **The map has the screen.** The panel in the bottom-left corner (the term, the campuses, Take a
+  walk and Other worlds) starts shut, as a small button with the campus's name, and opens when it
+  is clicked or tapped; choosing a campus, opening a building, taking a walk or Escape shuts it
+  again. On a phone or tablet a walk is steered as in a game: a stick in the bottom-left corner
+  walks and turns the walker under the left thumb, the other thumb drags the view round, and as it
+  walks the view comes back round behind it. The walk starts from behind the walker there; its
+  panel is a slim bar under the top bar, with walking to a place and wandering behind a "⋯" button,
+  and the ways into and out of a building are buttons in the bottom-right corner, above the
+  building's card. Before, on a phone, the panel and its arrows covered half the screen and the
+  floor list. A phone held sideways gets the same, and the top bar, the stick and the buttons keep
+  clear of a notch (#47).
+- **The walk folds away on a phone too.** On a touch screen the walker's bar (where it is, Map,
+  Behind and Eyes) starts folded into a small "Walker" button under the top bar, and opens when
+  tapped; its ⌃ folds it again. Each walk starts folded, and the panel opens by itself to say what
+  went wrong when a way in or out fails (#49).
+
 ### Fixed
 
+- **A link to a walk could open without the walker.** Opened in a tab in the background, or
+  wherever the page was slow to draw its first frame, a link with `walk=1` showed the map with no
+  walker, and the address lost `walk=1` and `view=`. The walk now starts once the map and its data
+  are both in, in whichever order they come, and until then the address goes on asking for it (#48).
+- **A walker's name stayed on the map after the walk.** Closing the walk, or an agent taking the
+  last walker away, left the walker's name, and anything it was saying, where it had stood, over the
+  building names round it, until something else redrew the labels. They now go with the last
+  walker (#46).
 - **About said the site has no analytics.** At campusworldmodel.com, Cloudflare, which serves the
   site, has counted page views and visits with its Web Analytics since the domain was set up. About
   now says so, and what it does not record (#45).
