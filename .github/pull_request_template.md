@@ -2,6 +2,9 @@
 
 ## What changed and why
 
+<!-- One thing per pull request. Say in plain words what the change does and which parts it touches
+     (files, screens, data). Start with the result and its evidence. English: ASD-STE100 as a guide. -->
+
 ## How it was made
 
 <!-- What wrote the change, in the words the tool uses (docs/standards.md). CI checks that all three are given.
@@ -21,6 +24,7 @@
 - Siblings:
 - Data (`coverage` in meta.json, before → after; or "needs a rebuild by the maintainer"):
 - Real use (screenshots opened):
+- Speed (if the change can make the page slower: before → after, commands, device; else "no effect"):
 - typecheck / unit tests / e2e:
 
 ## Not run
