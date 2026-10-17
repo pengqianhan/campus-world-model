@@ -303,7 +303,9 @@ Most of the code carries over to another campus; the data pipeline and a handful
 places do not. `.claude/skills/campus-world-model/` is a [Claude Code](https://claude.com/claude-code)
 skill that takes an agent through a port: recon of the new school's public data, rebuilding the
 pipeline, shipping the site and verifying it live. Fork or clone this repository, open it in Claude
-Code and run `/campus-world-model <university, campus>`.
+Code and run `/campus-world-model <university, campus>`. Beside it, `.claude/skills/street-look/`
+takes the walker's street-level look to a world model that lacks it, or tunes it for another city:
+`/street-look bring` or `/street-look tune`.
 
 ## Contributing
 

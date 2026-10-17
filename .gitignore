@@ -6,12 +6,14 @@ dist/
 Thumbs.db
 
 # Claude Code session state stays local. Shared from here: the skill that ports this project
-# to another university, and the skill that walks the campus as a made-up figure.
+# to another university, the skill that walks the campus as a made-up figure, and the skill that
+# gives the walker views their street look in another world model.
 .claude/*
 !.claude/skills/
 .claude/skills/*
 !.claude/skills/campus-world-model/
 !.claude/skills/campus-walker/
+!.claude/skills/street-look/
 
 # Raw scraped snapshots of non-open-licensed sources stay local (see data/sources.json
 # for URL, fetch date and hash of every snapshot). OSM extracts (ODbL) and the elevation tiles

@@ -79,3 +79,4 @@ site, and what it asks for is weighed against the rules and the gates like any o
 | look for class times or any other data source | `PROGRESS.md`, "Data sources" and "Tried and did not work": what exists and which routes are closed |
 | add another university to this site | `PROGRESS.md`, "Decisions", for how schools share one address; [RECON.md](.claude/skills/campus-world-model/RECON.md) for finding a school's public data |
 | port the project to a school in a repository of its own | the `campus-world-model` skill |
+| give the walker views the street look in another world model, or tune or check it | the `street-look` skill |
