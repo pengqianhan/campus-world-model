@@ -1890,14 +1890,17 @@ export class CampusScene {
     this.applyFocus();
     this.fitShadow();
     this.rebuildLabels();
-    this.placeWalkerCamera(1);
+    this.placeWalkerCamera(1, true);
     this.needsShadow = true;
     this.needsRender = true;
     this.needsLabels = true;
   }
 
-  /** The walker view's camera, following its walker; `dt` seconds since the last frame. */
-  private placeWalkerCamera(dt: number): void {
+  /**
+   * The walker view's camera, following its walker: `dt` seconds since the last frame, or `snap`
+   * to put it in place at once, as after a change of view.
+   */
+  private placeWalkerCamera(dt: number, snap = false): void {
     if (this.view === "map") return;
     const pose = this.viewWalker ? this.walkers.pose(this.viewWalker) : undefined;
     if (!pose) {
@@ -1907,7 +1910,8 @@ export class CampusScene {
     const [x, y] = pose.at;
     // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
     // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
-    if (dt < 1 && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
+    // By the clock, so that it comes round on a renderer that takes a second or more a frame too.
+    if (!snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
       const k = Math.exp(-dt * 2.5);
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
       else this.follow.yaw = towardsAhead(this.follow.yaw, k);
@@ -1975,7 +1979,7 @@ export class CampusScene {
   setWalkerLook(yaw: number, pitch = 0): void {
     if (this.view === "eyes") this.eyes = { yaw: ((yaw % 360) + 360) % 360, pitch: Math.max(-60, Math.min(50, pitch)) };
     else if (this.view === "follow") this.follow = { ...this.follow, yaw: ((yaw % 360) + 360) % 360, elevation: Math.max(-5, Math.min(70, 16 + pitch)) };
-    this.placeWalkerCamera(1);
+    this.placeWalkerCamera(1, true);
   }
 
   /** Where the walker view looks, degrees from straight ahead, as setWalkerLook takes it: for tests. */
