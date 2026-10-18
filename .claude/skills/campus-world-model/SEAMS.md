@@ -121,7 +121,9 @@ Choose colours of your own, distinct from the school's brand, and keep roof, wal
 tones apart (`uniRoof*`, `uni*`, `ground`): seen from above, a roof the colour of the ground is a
 building that has gone. What the scene draws by rule carries over unchanged: the storey height, the
 window bay and ground storey, the rim round a roof, the shape of a tree. `about.limits.*` says which
-of these are drawn by rule; keep that true.
+of these are drawn by rule; keep that true. The walker views' street look carries over as well;
+what in it is Auckland's, and how to feed it the new school's data, is the `street-look` skill's
+[LAYERS.md](../street-look/LAYERS.md), "Auckland in it" under each layer.
 
 **Other worlds.** `WORLDS` in `src/app/links.ts` is the row of other schools' maps on the campus
 view. Following one plays a flight that names the city being left (`travel.leaving`, `travel.stay`)
