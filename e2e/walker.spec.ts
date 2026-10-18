@@ -226,3 +226,27 @@ test("a walk the address asks for starts when the data comes in before the scene
   await expectRealRender(page);
   await shot(page, "20-walker-background-tab");
 });
+
+test("walked on by hand, the view comes round behind the walker, however long a frame takes", async ({ page }) => {
+  // On CI's software renderer a frame of a walker view takes a second or two, and the view must
+  // still come round by the clock. Here the page's clock stands still, and one frame is let
+  // through a second and a half after the last.
+  await page.clock.install();
+  await page.clock.pauseAt(Date.now() + 1000);
+  await page.goto(`./?walk=1&view=follow&${QUERY}`);
+  await expect(page.locator(".splash")).toHaveCount(0);
+  // Frame by frame until the walker stands in its view, seen from behind.
+  await expect
+    .poll(async () => {
+      await page.clock.fastForward(100);
+      return ((await walker(page, "list")) as { view?: string }).view;
+    })
+    .toBe("follow");
+  await page.evaluate(() => window.__scene!.setWalkerLook(90));
+  await page.locator("canvas").first().focus();
+  await page.keyboard.down("w");
+  await page.clock.fastForward(1500);
+  const yaw = await page.evaluate(() => window.__scene!.walkerLook().yaw);
+  await page.keyboard.up("w");
+  expect(Math.abs(((yaw + 180) % 360) - 180), "degrees the view is still turned from behind the walker").toBeLessThan(10);
+});

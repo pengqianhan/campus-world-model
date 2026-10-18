@@ -44,7 +44,8 @@ It is built to answer two questions a student actually has:
   map's own data: a sky lit from the real sun, stars and a moon, haze and exposure; every building
   with storeys, windows, glass that reflects the sky and walls of plaster, brick, concrete, stone,
   glass or weatherboard, lit room by room after dark; asphalt with lane lines, kerbs, footpaths,
-  lawn and water, wet in rain; trees with bark and leaves. The map view is unchanged.
+  lawn and water, wet in rain; trees with bark and leaves. The map view is unchanged. On a slow
+  screen the view now comes back round behind a walker walked by hand, as on a fast one.
 - **2026-10-17:** a walker: a small made-up person who walks and runs, to take round the campus
   and into its buildings, seen from behind or through its eyes, which Claude Code and other agents
   can steer, and which talks with other walkers; one look for every walker, with nothing meant to

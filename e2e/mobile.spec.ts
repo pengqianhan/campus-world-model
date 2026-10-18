@@ -176,6 +176,9 @@ async function walkerAt(page: Page): Promise<[number, number]> {
 const offAhead = (yaw: number) => ((((yaw + 180) % 360) + 360) % 360) - 180;
 
 test("phone: a walk is steered with two thumbs, as in a game: a stick walks and turns the walker while the other thumb drags the view round", async ({ page }) => {
+  // Some twenty touches and taps in a walker view, which CI draws in software at a frame a second
+  // or less: about three minutes there, the whole of the usual time, so it gets three times that.
+  test.slow();
   await open(page, "?light=day&time=preview&date=2026-03-20&t=15:00");
   await openStrip(page);
   await page.locator("#walk-start").click();
@@ -213,39 +216,43 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   expect(stick.y + stick.height).toBeLessThan(844 - 20);
 
   // Two thumbs at once: the left pushes the stick forward while the right drags the view round.
+  // Each step waits for what it does, not for a time: on CI's software renderer a frame of the
+  // walker view takes a second or two, and the page handles a touch seconds after it was sent.
   const touch = await fingers(page);
   const from = await walkerAt(page);
+  const walked = async () => {
+    const at = await walkerAt(page);
+    return Math.hypot(at[0] - from[0], at[1] - from[1]);
+  };
+  const look = async () => offAhead((await page.evaluate(() => window.__scene!.walkerLook())).yaw);
   const sx = stick.x + stick.width / 2;
   const sy = stick.y + stick.height / 2;
   await touch.down(1, sx, sy);
   await touch.move(1, sx, sy - stick.height / 2, 4);
-  await page.waitForTimeout(400);
   await touch.down(2, 300, 450);
   await touch.move(2, 180, 450, 6);
-  await page.waitForTimeout(200);
-  const turned = offAhead((await page.evaluate(() => window.__scene!.walkerLook())).yaw);
-  expect(Math.abs(turned), "the right thumb turned the view").toBeGreaterThan(15);
-  const mid = await walkerAt(page);
-  expect(Math.hypot(mid[0] - from[0], mid[1] - from[1]), "the left thumb walked it meanwhile").toBeGreaterThan(1);
+  let turned = 0;
+  await expect.poll(async () => Math.abs((turned = await look())), { message: "the right thumb turns the view" }).toBeGreaterThan(15);
+  await expect.poll(walked, { message: "the left thumb walks it meanwhile" }).toBeGreaterThan(1);
   await touch.lift();
   // Walked on again, the view comes back round behind the walker, as in a game.
   await touch.down(1, sx, sy);
   await touch.move(1, sx, sy - stick.height / 2, 4);
-  await page.waitForTimeout(1500);
-  const settled = offAhead((await page.evaluate(() => window.__scene!.walkerLook())).yaw);
+  await expect.poll(async () => Math.abs(await look()), { message: "the view comes round" }).toBeLessThan(Math.abs(turned) * 0.7);
   await touch.lift();
-  expect(Math.abs(settled)).toBeLessThan(Math.abs(turned) * 0.7);
   await expectRealRender(page);
   await shot(page, "20-walker-phone");
 
-  // Pushed to the side, the stick turns the walker on the spot.
+  // Pushed to the side, the stick turns the walker on the spot. Half way, so that it turns slowly:
+  // reads of its heading seconds apart cannot miss half a turn and read it the other way round.
   const heading = async () => ((await page.evaluate(() => window.__walker!.run("list"))) as { walkers: { heading: number }[] }).walkers[0]!.heading;
   const before = await heading();
+  let turn = 0;
   await touch.down(1, sx, sy);
-  await touch.move(1, sx + stick.width / 2, sy, 3);
-  await page.waitForTimeout(700);
+  await touch.move(1, sx + stick.width / 4, sy, 3);
+  await expect.poll(async () => Math.abs((turn = offAhead((await heading()) - before))), { message: "the stick turns the walker" }).toBeGreaterThan(20);
   await touch.lift();
-  expect(offAhead((await heading()) - before)).toBeGreaterThan(20);
+  expect(turn, "to the right, the way the stick was pushed").toBeGreaterThan(0);
 
   // The rest waits behind its button: a walk to a place, wandering, and how to steer.
   await fold.tap();
