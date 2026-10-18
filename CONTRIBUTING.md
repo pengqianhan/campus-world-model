@@ -31,7 +31,11 @@ Some kinds of change wait for the maintainer's decision however well they are ch
 source, anything about deployment or secrets, a new dependency, and the rules themselves. Say so at
 the top of the pull request if yours is one of them.
 
-Working with a coding agent is fine. `AGENTS.md` is written for it, and the same checks apply.
+Working with a coding agent is fine. `AGENTS.md` is written for it, and the same checks apply. You
+do not have to understand each line the agent writes, but you know what the change does. A change
+that can make the page slower says which device measured it, because smooth on a GPU does not mean
+smooth without one. Write the description, and your replies to a review, in your own words: the
+result first, then the evidence. English text uses ASD-STE100 as a guide.
 Every pull request says how it was made: the model, the harness with its version and the thinking
 effort, or `none` for a change written by hand. The form asks for them and CI checks they are there.
 

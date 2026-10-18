@@ -44,7 +44,32 @@ The report is answered when the reporter's own link shows the right thing on the
    and it leaves that to them rather than guess. What cannot be known is written `not known`, with
    the reason. CI checks that the three are given (`scripts/check-pr-form.ts`), and `main` takes no
    pull request without that check passing. It cannot check that they are true.
-8. **Not run.** A check that was not run is listed as not run, with the reason.
+8. **Scope.** A pull request does one thing. Its description tells in plain words what the change
+   does and which parts it touches: the files, the screens and the data. The author does not have
+   to understand each line. Code from an agent is welcome, and "How it was made" tells the reviewer
+   where the code came from. The author knows what each part of the change does for the site.
+9. **Speed.** A change that can make the page slower gives numbers from before and after the
+   change, the commands that make the numbers again, and the device that made them. Examples of
+   such changes: more geometry, shadows, a post-processing pass, a larger texture, more work in
+   each frame. The device is the processor, the graphics (the GPU by name, or "none: software
+   rendering"), the browser and the screen size. In a walker view, also give the tier that the
+   street look chose (`full` or `basic`). A page that runs smoothly on a GPU can become too slow to
+   use on a computer without one: see the flight blur in `PROGRESS.md`, "Tried and did not work".
+   So numbers from a GPU come with numbers from software rendering too (`E2E_GL=swiftshader`, as
+   CI runs). Also give the counts that do not change with the device: draw calls and triangles from
+   `renderer.info`. How to measure a walker view: "Frame time" in
+   `.claude/skills/street-look/CHECKS.md`.
+10. **Not run.** A check that was not run is listed as not run, with the reason.
 
 The numbered tests in `e2e/` are the product's acceptance criteria. Each keeps its number and what
 it proves; behaviour that is new gets a test of its own.
+
+## Writing
+
+An issue, a pull request and a reply to a review start with the result and its evidence: what was
+tried, what happened, the numbers, the link or the screenshot. Write in your own words and keep it
+short. Text that only thanks or praises tells the reader nothing; leave it out.
+
+English text uses [ASD-STE100](https://www.asd-ste100.org/) (Simplified Technical English) as a
+guide: short sentences, one instruction in each sentence, the active voice, and one meaning for
+each word. This applies to documents in the repository, comments in code, issues and pull requests.
