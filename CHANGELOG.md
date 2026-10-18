@@ -30,6 +30,13 @@ A change to what the site does or shows adds its line here, and the README's
   signs or lamps: none are mapped. The map view is unchanged. A software renderer
   or a phone gets the same sky and light without the effects. About says what is drawn by rule (#50).
 
+### Fixed
+
+- **On a slow screen the view stayed where a finger had turned it.** Walked on with the stick or
+  the keys, the view comes back round behind the walker, as in a game. Where a frame of the walker
+  view took a second or more to draw, as with a software renderer, it did not come round at all. It
+  now comes round by the clock, however long a frame takes (#61).
+
 ### Documents
 
 - The street-look skill, for giving the walker views their street look in another school's world
