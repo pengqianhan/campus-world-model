@@ -52,11 +52,13 @@ The report is answered when the reporter's own link shows the right thing on the
    change, the commands that make the numbers again, and the device that made them. Examples of
    such changes: more geometry, shadows, a post-processing pass, a larger texture, more work in
    each frame. The device is the processor, the graphics (the GPU by name, or "none: software
-   rendering"), the browser and the screen size. A page that runs smoothly on a GPU can become too
-   slow to use on a computer without one: see the flight blur in `PROGRESS.md`, "Tried and did not
-   work". So numbers from a GPU come with numbers from software rendering too
-   (`E2E_GL=swiftshader`, as CI runs). Also give the counts that do not change with the device:
-   draw calls and triangles from `renderer.info`.
+   rendering"), the browser and the screen size. In a walker view, also give the tier that the
+   street look chose (`full` or `basic`). A page that runs smoothly on a GPU can become too slow to
+   use on a computer without one: see the flight blur in `PROGRESS.md`, "Tried and did not work".
+   So numbers from a GPU come with numbers from software rendering too (`E2E_GL=swiftshader`, as
+   CI runs). Also give the counts that do not change with the device: draw calls and triangles from
+   `renderer.info`. How to measure a walker view: "Frame time" in
+   `.claude/skills/street-look/CHECKS.md`.
 10. **Not run.** A check that was not run is listed as not run, with the reason.
 
 The numbered tests in `e2e/` are the product's acceptance criteria. Each keeps its number and what
