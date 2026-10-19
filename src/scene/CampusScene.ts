@@ -1951,10 +1951,12 @@ export class CampusScene {
     this.persp.updateMatrixWorld();
     // The shadows follow the walker round the map.
     if (Math.hypot(this.shadowCentre.x - x, this.shadowCentre.z + y) > 70) this.fitShadow();
-    // Draw only when the view moved: a walker standing still in a still view costs nothing.
+    // Draw only when the view moved: a walker standing still in a still view costs nothing. Not
+    // also after a long frame: where a frame takes a second (a software renderer), each frame drawn
+    // for that reason made the next one long too, and a still view was drawn again for ever.
     const e = this.persp.matrixWorld.elements;
     const moved = !this.lastView || e.some((v, i) => Math.abs(v - this.lastView![i]!) > 1e-5);
-    if (moved || dt >= 1) {
+    if (moved) {
       this.lastView = e.slice();
       this.needsRender = true;
       this.needsLabels = true;
