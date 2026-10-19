@@ -14,6 +14,15 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-19
+
+### Fixed
+
+- **On a slow screen a still walker view was drawn again and again.** Where a frame of the walker
+  view took a second or more to draw, as with a software renderer, the view was drawn about once a
+  second while nothing in it moved, and the computer was kept busy for nothing. It is now drawn
+  once, as on a fast screen (#62).
+
 ## 2026-10-18
 
 ### Added

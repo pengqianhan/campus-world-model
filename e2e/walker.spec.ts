@@ -250,3 +250,31 @@ test("walked on by hand, the view comes round behind the walker, however long a 
   await page.keyboard.up("w");
   expect(Math.abs(((yaw + 180) % 360) - 180), "degrees the view is still turned from behind the walker").toBeLessThan(10);
 });
+
+test("a walker view that stands still is drawn once, however long a frame takes", async ({ page }) => {
+  // On CI's software renderer a frame of a walker view takes a second or more. A still view must
+  // not be drawn again because the last frame was long: that kept a still view drawing for ever
+  // (#53). Here the page's clock stands still, and frames are let through a second and a half apart.
+  await page.clock.install();
+  await page.clock.pauseAt(Date.now() + 1000);
+  await page.goto(`./?walk=1&view=eyes&${QUERY}`);
+  await expect(page.locator(".splash")).toHaveCount(0);
+  await expect
+    .poll(async () => {
+      await page.clock.fastForward(100);
+      const { view } = (await walker(page, "list")) as { view?: string };
+      return view === "eyes" && (await page.evaluate(() => window.__scene!.streetState().sky));
+    })
+    .toBe(true);
+  // Until a long frame draws nothing more: the walker, its view and the sky have come in.
+  await expect
+    .poll(async () => {
+      const before = await page.evaluate(() => window.__scene!.frames);
+      await page.clock.fastForward(1500);
+      return (await page.evaluate(() => window.__scene!.frames)) - before;
+    })
+    .toBe(0);
+  const before = await page.evaluate(() => window.__scene!.frames);
+  for (let i = 0; i < 4; i++) await page.clock.fastForward(1500);
+  expect(await page.evaluate(() => window.__scene!.frames), "frames drawn of a still view").toBe(before);
+});
