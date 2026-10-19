@@ -40,6 +40,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-19:** on a slow screen a walker view that stands still is drawn once, not again and
+  again.
 - **2026-10-18:** the walker's views at street level look near the real thing, by rule from the
   map's own data: a sky lit from the real sun, stars and a moon, haze and exposure; every building
   with storeys, windows, glass that reflects the sky and walls of plaster, brick, concrete, stone,
@@ -56,11 +58,6 @@ It is built to answer two questions a student actually has:
   steered with two thumbs, as in a game: a stick to walk and turn, and a drag to look round; the
   walker's bar folds into a small button too. A link to a walk now starts it in a tab opened in the
   background as well.
-- **2026-10-15:** every campus on the map (194 buildings), standing on the ground's real heights;
-  the real sun, the current cloud and rain, and trees that turn with the seasons; signs on stairs,
-  lifts and toilets; buildings open on the floor at street level, with the floors under the ground
-  seen through it; About's note on the far campuses put right; the Southern Underpass under
-  Symonds Street, no longer on it, from outside or opened; outer walls on 40 floors that had none.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
