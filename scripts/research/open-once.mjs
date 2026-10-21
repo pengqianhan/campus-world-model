@@ -6,7 +6,7 @@ import { politePage } from "./polite.mjs";
 
 const url = process.argv[2];
 const browser = await chromium.launch();
-const { page, log } = await politePage(browser, { url, types: ["document"] });
+const { page, log, closed } = await politePage(browser, { url, types: ["document"] });
 try {
   const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
   const body = await res.text();
@@ -16,4 +16,6 @@ try {
   console.log("navigation failed:", String(e).split("\n")[0]);
 }
 console.log("requests:", log.filter((r) => r.sent).length, "sent,", log.filter((r) => !r.sent).length, "blocked");
+for (const r of log) console.log(" ", r.sent ? `sent ${r.status ?? r.error ?? ""}` : `blocked (${r.reason})`, r.url);
+for (const [host, why] of closed) console.log("closed:", host, why);
 await browser.close();
