@@ -97,7 +97,9 @@ A landmark is measured in one frame and shown in another.
     it is `east`); x is minus this axis. With `frame.axis_from: "walls"`, for a building of wings
     at different angles whose principal axis falls between them, the axis is instead the bearing of
     most of its wall length, seen from above in its points (of the two square to each other, the
-    one nearest the principal axis);
+    one nearest the principal axis). With `frame.axis_across: true`, for a long building whose
+    street front is one of its ends, the axis is turned 90° first, so that z runs along its length
+    toward that street;
   - toStreet = the axis turned 90° toward `street_side`; this is +z.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the

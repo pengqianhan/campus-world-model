@@ -76,6 +76,8 @@ def walls_axis(xy, near):
 
 if F.get("axis_from") == "walls":
     ax = walls_axis(B[:, :2], ax)
+if F.get("axis_across"):  # the street at one end of a long building: the axis square to its length
+    ax = np.array([-ax[1], ax[0]])
 if ax[1] < 0: ax = -ax
 nrm = np.array([-ax[1], ax[0]])
 # turn both, so that z stays x turned 90 deg (x to the right as seen from the street) on either side
