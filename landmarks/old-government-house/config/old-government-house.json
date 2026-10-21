@@ -12,7 +12,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 50,
- "ground": 38.0,
+ "ground": 37.5,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3604", "3605"],
@@ -26,7 +26,7 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m (the main roof's ridges); axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing south-east, as street_side is east); toStreet = the axis turned 90 deg toward street_side: north-east, to the lawn and the garden front of the main two-storey block, where most of the Google panoramas are. The lower service wings are on the south-west side (-z). Only building points inside the outline or within near_outline m of it count: another building stands in the crop box.",
-  "min_above": 3, "tower_above": 9, "spine_below": 12, "spine_radius": 35, "near_outline": 3,
+  "min_above": 3.5, "tower_above": 9.5, "spine_below": 12.5, "spine_radius": 35, "near_outline": 3,
   "street_side": "east",
   "expected": {"centre": [127.660, 269.745], "axis": [0.731273, -0.682085], "tolerance_m": 0.05}
  },
