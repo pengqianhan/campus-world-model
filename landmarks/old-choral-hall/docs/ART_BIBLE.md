@@ -42,7 +42,7 @@ sources: works in progress").
 - `brick`: red brick with pale joints (the kit's, a shader: 76 mm courses, half-brick bond).
 - `render`: cream painted render for columns, pilasters, bands, architraves, cornices and parapets.
 - `paint`: the white-grey window frames and glazing bars; `glassPale` for the panes.
-- `roofPale`: the low roofs, light grey; `void` for dark openings and doorways.
+- `roofGrey`: the roofs, mid-grey metal as in the 2023 aerial (luma about 110-150); `void` for dark openings and doorways.
 
 ## Never
 - Nothing traced or sampled from the photographs (no projected textures, no image files).

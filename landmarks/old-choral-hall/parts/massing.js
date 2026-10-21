@@ -1,7 +1,7 @@
 // Everything but the south-west range, plainly, at the sizes of the LINZ 2024 LiDAR: the two gabled ranges
 // behind the Grafton Road front (ridges along z), the north-east wing (two cross gables and two low links), the
 // gabled block behind it, the two gabled blocks behind the middle range with their link, and the low blocks
-// behind on the north-west. Plain walls in `render` and roofs in `roofPale`: no photograph shows these faces
+// behind on the north-west. Plain walls in `render` and roofs in `roofGrey`: no photograph shows these faces
 // as they are since the works. The one exception is the block behind the range's north-west end, whose
 // brick face the panorama e8T_ of 2022-09 shows (`brick`).
 //
@@ -15,7 +15,7 @@
 // roof at x 2 to 3.
 import * as THREE from "three";
 
-const WALL = "render", ROOF = "roofPale", BASE = -2.0;   // walls go 2 m below the datum: the site's DEM is lower than the LiDAR ground under the north-east wing
+const WALL = "render", ROOF = "roofGrey", BASE = -2.0;   // walls go 2 m below the datum: the site's DEM is lower than the LiDAR ground under the north-east wing
 
 /** Planes y = a + b x + c z of a gable with its ridge along z at x = r, R high, falling s1 to the -x side and s2 to the +x side. */
 const ridgeZ = (r, R, s1, s2) => [{ a: R - s1 * r, b: s1, c: 0 }, { a: R + s2 * r, b: -s2, c: 0 }];

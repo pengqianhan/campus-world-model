@@ -2,7 +2,7 @@
 // Builder once each (one merge entry a material), drawn in a wall's own face frame: u along the wall to the
 // right as seen from outside, y up, d out of the wall toward the viewer (d = 0 on the brick face). faceMatrix()
 // takes that frame into the range's frame (x', z'; parts/common.js) or the view frame. Materials: brick,
-// render (cream), paint (frames, bars), glassPale (panes), roofPale, void.
+// render (cream), paint (frames, bars), glassPale (panes), roofGrey, void.
 import * as THREE from "three";
 import { boxesGeometry, quadsGeometry } from "../../kit/gothic.js";
 

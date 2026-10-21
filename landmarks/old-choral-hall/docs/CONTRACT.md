@@ -70,7 +70,7 @@ ornament where no photograph shows a face.
 - `../kit/` and `../pipeline/` are shared by every landmark: do not edit them; ask the lead. The
   `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for this
   building: `brick` (red brick with pale joints), `render` (cream painted render), `paint` (white
-  frames and bars), `glassPale` (panes), `roofPale` (light grey roofs), `void` (dark openings). A name
+  frames and bars), `glassPale` (panes), `roofGrey` (mid-grey roofs), `void` (dark openings). A name
   the kit does not have makes the part fail.
 - Parts are added to `model.js` by the lead; tell the lead the name and file of a new part.
 

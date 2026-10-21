@@ -256,6 +256,7 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
     render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
+    roofGrey: roofPale(0x7a8088, space),                // mid-grey metal roofs (the 2023 aerial: about 110-150 luma)
   };
   return m;
 }

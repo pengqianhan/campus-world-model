@@ -19,6 +19,11 @@ every landmark: [`../README.md`](../README.md).
 | `model.js` | assembles the parts: `southwest`, `massing` |
 | `parts/` | one file per part (`southwest.js`: the south-west range and its pavilions; `massing.js`: the rest, plainly) and `common.js` (the sizes measured in the LiDAR) |
 | `docs/` | the rules the agents worked to: `CONTRACT.md`, `ART_BIBLE.md` |
+| `landscape.js` | the ground round it, for the viewer only: the LiDAR's ground on a 2.5 m grid |
+
+Renders of the model (no photograph): [`docs/landmarks/old-choral-hall-symonds.jpg`](../../docs/landmarks/old-choral-hall-symonds.jpg)
+(the south-west range from Symonds Street), [`-corner.jpg`](../../docs/landmarks/old-choral-hall-corner.jpg)
+(the corner pavilion) and [`-above.jpg`](../../docs/landmarks/old-choral-hall-above.jpg).
 
 ## The frame
 
@@ -108,33 +113,50 @@ them); ctyQ, OpqZ, xKYw and C1kG kept theirs (too little sky round the silhouett
 
 ## Round 1 (October 2026)
 
-Two agents and the lead; a usage limit stopped both agents at 10:24, part way through their rounds.
+Two agents and the lead. A usage limit stopped both agents at 10:24 NZDT, part way through their
+rounds; the lead finished the round.
 
-- **The south-west range** (`parts/southwest.js`, `southwest_range.js`, `southwest_kit.js`): ten bays
-  of red brick with cream dressings between two cream pavilions, as the panoramas of 2022-09 show it:
-  eared architraves on the ground floor, the first floor on a sill band with a cream band at its
-  upper panes, multi-pane windows, a dentilled cornice under the parapet; the pavilions with giant
-  columns in antis between rusticated pilasters and segmental pediments; the corner pavilion's face
-  on Grafton Road. Floor heights fitted to the photographs (plinth top 2.78 m, ground-floor glass
-  4.63-7.57, first-floor sill band 8.86-9.33, glass 9.66-12.55, cornice from 12.77), the plan and the
-  parapet (14.3 m) to the LiDAR.
-- **The rest** (`parts/massing.js`): every other block fitted to the LiDAR's roof planes (rms
-  0.02-0.05 m), plainly: no windows, no ornament. The scaffold decks of May 2024 are left out (the
-  11.2 m deck in the street front's recess, lifts along the back), and the walls go down to y -2.0,
-  where the site's 8 m DEM falls 1.43 m below the door's under the north-east wing.
-- **The look**: brick and cream render as shaders in the kit, measured against nAxE in shade (brick
-  luma 61, cream 133-135); the sun of the 2022-09 panoramas (config `light`).
+- **The south-west range** (`parts/southwest.js`, `southwest_range.js`, `southwest_kit.js`; the
+  southwest agent): ten bays of red brick with cream dressings between two cream pavilions, as the
+  panoramas of 2022-09 show it: eared architraves on the ground floor, the first floor on a sill band
+  with a cream band at its upper panes, multi-pane windows, a dentilled cornice under the parapet; the
+  pavilions with giant columns in antis between rusticated pilasters and segmental pediments; the
+  corner pavilion's face on Grafton Road. Floor heights fitted to the photographs (plinth top 2.78 m,
+  ground-floor glass 4.63-7.57, first-floor sill band 8.86-9.33, glass 9.66-12.55, cornice from
+  12.77), the plan and the parapet (14.3 m) to the LiDAR. After the cut the lead opened what the
+  range's mass hid (the north-west pavilion's double doors, the pavilions' three-light windows, the
+  corner pavilion's windows on Grafton Road) and added the windows e8T_ shows on the range's
+  north-west end.
+- **The rest** (`parts/massing.js`; the rest agent): every other block fitted to the LiDAR's roof
+  planes (rms 0.02-0.05 m), plainly: no windows, no ornament. The scaffold decks of May 2024 are left
+  out (the 11.2 m deck in the street front's recess, lifts along the back).
+- **The look** (the lead): brick and cream render as shaders in the kit, measured against the
+  2022-09 views in shade; the sun of those panoramas (config `light`); and, for the viewer only, the
+  LiDAR's ground (`landscape.js`), so that the plinth meets the footpaths, which rise about 3 m from
+  Grafton Road to the back of the range.
 
-From above against the LiDAR: footprint IoU 0.917; heights p10/p50/p90 -1.90/-0.04/0.06 m and 85%
-of cells within 0.5 m; without the plane trees' crowns over the south-west side (class-6 points above
-17.3 m west of x -14) -0.24/-0.04/0.06 m and 89%. Highest point 16.81 m against the LiDAR's 17.24 m
-(p99.9 without the trees). Ridges and eaves sampled against the LiDAR (model / LiDAR, m): middle
-range 16.18 / 16.09, right range 16.64 / 16.56, north-east front gable 16.55 / 16.46, the block behind
-16.83 / 16.76 and its eave 14.23 / 14.17, the south-west range's ridge 15.10 / 15.10-15.24 and its
-parapet 14.30 / 14.0-14.35. 93.4% of block 104 under the model, and no other block of the campus map
-by more than 2.3% (136 Chiller), so `building.also` is empty.
+From above against the LiDAR (`topview`): footprint IoU 0.917; heights p10/p50/p90
+-1.90/-0.04/0.06 m and 85% of cells within 0.5 m; without the plane trees' crowns over the south-west
+side (class-6 points above 17.3 m west of x -14) -0.24/-0.04/0.06 m and 89%. Highest point 16.81 m
+against the LiDAR's 17.24 m (p99.9 without the trees; 24.87 m with them). Ridges and eaves sampled
+against the LiDAR (model / LiDAR, m): middle range 16.18 / 16.09, right range 16.64 / 16.56,
+north-east front gable 16.55 / 16.46, the block behind 16.83 / 16.76 and its eave 14.23 / 14.17, the
+south-west range's ridge 15.10 / 15.10-15.24 and its parapet 14.30 / 14.0-14.35. 93.4% of block 104
+under the model, and no other block of the campus map by more than 2.3% (136 Chiller), so
+`building.also` is empty.
 
-Against the photographs (33 views, cameras refined): silhouette IoU 0.831 on average; luma median
-of the building region 163 drawn against 153 (mean over the views). 19,057 triangles in 6 draw calls
-(`render`, `paint`, `brick`, `void`, `glassPale`, `roofPale`).
+Against the photographs (33 views, cameras refined): silhouette IoU 0.831 on average. The luma median
+of the building region: in the 2022-09 views, the only ones that show the building's own surfaces,
+126 in the photographs and 133 drawn (mean over 9 views; brick 61-63 against 63-65, cream 130-146
+against 140-141); over all 33 views 153 and 138, because 21 of them show white wraps where the model
+has plain cream render. The front views on Grafton Road (2024-08) are of the wraps: their IoU runs
+from 0.38 (iz57's wide view, from the north-east end: the north-east wing drawn from the LiDAR of May
+2024 runs further back than the wrap the photograph shows in August) to 1.0. 19,567 triangles in 6 draw calls (`render`, `paint`, `brick`, `void`,
+`glassPale`, `roofPale`), the south-west range built in about 25 ms.
 
+**On the map's ground.** The site stands a landmark on its own 8 m DEM at the door
+(`placement.json`); there the DEM is 36.83 m, 0.95 m under the LiDAR's 37.78 m. Relative to the door,
+the DEM stands 0.3-0.6 m higher than the LiDAR along the south-west range (the plinth's foot will look
+a little buried there) and falls 1.43 m under the north-east wing, where the LiDAR falls 0.88 m: the
+walls go down to y -2.0 there (-0.6 under the range, -1.2 under the corner pavilion), and no foot of
+the model stands above the DEM.

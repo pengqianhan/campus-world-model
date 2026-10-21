@@ -22,7 +22,7 @@ export function southwest(b) {
   ]);
   const g = new THREE.ExtrudeGeometry(s, { depth: CORNER - BACK - 0.3, bevelEnabled: false });
   g.translate(0, 0, BACK + 0.15);
-  b.add(g, "roofPale");
+  b.add(g, "roofGrey");
   b.matrix = null;
   // the corner pavilion's mass behind its Grafton Road face (view frame), from the range back to x -10.3,
   // stopping behind the face's recessed bay (0.6 m in, 0.3 m thick) so that its windows show
