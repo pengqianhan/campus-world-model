@@ -56,9 +56,13 @@ describe("a landmark's forms", () => {
     // A stand-in for the worker: it answers each request a moment later, in order.
     let stone = false;
     const asked: string[] = [];
+    let workers = 0;
     class StandIn {
       onmessage?: (e: { data: unknown }) => void;
       onerror: unknown = null;
+      constructor() {
+        workers++;
+      }
       postMessage(r: LandmarkRequest) {
         asked.push(r.part);
         const mesh = { material: stone ? "ashlar" : "boards", castShadow: true, receiveShadow: true, attributes: [{ name: "position", array: new Float32Array(9), itemSize: 3 }], groups: [{ start: 0, count: 3, materialIndex: 0 }], sphere: [0, 0, 0, 1] };
@@ -81,6 +85,7 @@ describe("a landmark's forms", () => {
         for (const mapFirst of [true, false]) {
           stone = s;
           asked.length = 0;
+          workers = 0;
           const l = new Landmark(entry, host);
           if (mapFirst) {
             l.want("light", covers);
@@ -92,6 +97,8 @@ describe("a landmark's forms", () => {
           expect(l.has("full"), how).toBe(true);
           // The stone's textures only for a model with stone.
           expect(asked, how).toEqual(s ? ["geometry", "textures"] : ["geometry"]);
+          // Asked for at once, the geometry and then the textures go to one worker.
+          if (!mapFirst) expect(workers, how).toBe(1);
           l.dispose();
         }
       }
@@ -102,7 +109,7 @@ describe("a landmark's forms", () => {
 });
 
 describe("each landmark on the site's ground", () => {
-  it("stands at its door with the foot of its walls nowhere more than 0.25 m above the drawn ground", async () => {
+  it("stands at its door with each material's lowest points nowhere more than 0.25 m above the drawn ground", async () => {
     // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the
     // models are measured to; ordinary blocks get a footing for it (terrain.ts), a landmark its walls.
     const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);
@@ -118,7 +125,7 @@ describe("each landmark on the site's ground", () => {
       model.updateMatrixWorld(true);
       const meshes: Mesh[] = [];
       model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
-      // Each mesh that comes down to the porch's level or below, at its own lowest points. The kit's
+      // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points. The kit's
       // Builder joins a model's parts into one mesh a material, so this is a material's foot, not
       // a part's: give every part the same foot (Old Government House's take FOOT from common.js).
       let worst = -Infinity;
@@ -137,6 +144,7 @@ describe("each landmark on the site's ground", () => {
           if (gap > worst) [worst, at] = [gap, `${m.parent?.name ?? ""}/${m.name}`];
         }
       }
+      expect(at, `${entry.name}: no mesh reaches the ground at its door`).not.toBe("");
       expect(worst, `${entry.name} ${at}`).toBeLessThan(0.25);
       l.dispose();
     }

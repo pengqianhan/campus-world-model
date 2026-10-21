@@ -215,8 +215,13 @@ export class Landmark {
     } else {
       this.asked.add("textures");
       this.textures = {};
-      // The geometry may have come long before (the map wanted the light form first): make it now.
-      this.makeFullWhenReady()?.catch((e) => console.error(`landmark ${this.name}`, e));
+      // The geometry may have come long before (the map wanted the light form first): make it now,
+      // counted as loading, as a request to the worker is.
+      const making = this.makeFullWhenReady();
+      if (making) {
+        this.host.loading(1);
+        making.catch((e) => console.error(`landmark ${this.name}`, e)).finally(() => this.host.loading(-1));
+      }
     }
   }
 

@@ -122,8 +122,9 @@ a model stood on the map takes its height from the map's own ground at `door.map
 The two can be a metre or more apart: a model's walls go down below y = 0 as far as the map's ground
 falls under it (Old Government House's to 1.6 m below its porch), so that their foot is nowhere
 more than 0.25 m above it. `tests/landmarks.test.ts` checks that for every landmark on the site, at
-the model's lowest points: give every part's walls the same foot, as Old Government House's parts
-take `FOOT` from `common.js`.
+the lowest points of each material's mesh that reaches y = 0 (the kit joins a model's parts by
+material, so a part with a higher foot can hide behind another): give every part's walls the same
+foot, as Old Government House's parts take `FOOT` from `common.js`.
 The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site

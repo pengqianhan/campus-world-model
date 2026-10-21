@@ -12,6 +12,11 @@ import { Acc, face, fbox, sash, brackets, pairedBrackets, balustrade, quoins, co
 import { MEASURED as M, FOOT } from "./common.js";
 
 const BASE = FOOT;                         // walls start below the ground (common.js, FOOT)
+
+/** Under a column of quoins, from the walls' foot up to the first stone: plain, the first stone's footprint (front_kit quoins). */
+function quoinFoot(a, cx, cz, sx, sz, { long = 0.75, short = 0.45, proud = 0.05 } = {}) {
+  a.box("trim", cx - sx * short, cx + sx * proud, BASE, 0, cz - sz * long, cz + sz * proud);
+}
 // the front range: wall faces (0.4 m in from the cornice's edge at the ends, 0.3 at the back, 0.45 at the
 // front), the cornice's top, the roof behind the balustrade
 const F = M.front;
@@ -65,8 +70,8 @@ function frontRange(a) {
   // quoins at the four corners of the garden front's ends, over a plain board down to the walls' foot
   quoins(a, x0, z1, -1, 1, 0, top - 0.3);
   quoins(a, x1, z1, 1, 1, 0, top - 0.3);
-  cornerBoard(a, x0, z1, -1, 1, BASE, 0, 0.45);
-  cornerBoard(a, x1, z1, 1, 1, BASE, 0, 0.45);
+  quoinFoot(a, x0, z1, -1, 1);
+  quoinFoot(a, x1, z1, 1, 1);
   // the balustrade on the wall line: along the garden front either side of the middle bay, and round the ends
   const gf = face("z", z1, 1), se = face("x", x0, -1), nw = face("x", x1, 1);
   const d = FRONT.rail, ends = { post: 2.4 };
@@ -92,8 +97,8 @@ function middleBay(a) {
   a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z1, zf + 0.06);
   quoins(a, x0, zf, -1, 1, 0, top - 0.3, { long: 0.6, short: 0.38 });
   quoins(a, x1, zf, 1, 1, 0, top - 0.3, { long: 0.6, short: 0.38 });
-  cornerBoard(a, x0, zf, -1, 1, BASE, 0, 0.38);
-  cornerBoard(a, x1, zf, 1, 1, BASE, 0, 0.38);
+  quoinFoot(a, x0, zf, -1, 1, { long: 0.6, short: 0.38 });
+  quoinFoot(a, x1, zf, 1, 1, { long: 0.6, short: 0.38 });
   // the pediment: a gabled roof from the main roof forward to the cornice's edge, its tympanum on the wall line
   // its ridge stops at z 6.5 (the LiDAR: the main roof at 11.1 at z 6), the back hipped steeply into the main roof
   gableZ(a, axis, half, 5.2, zf + 0.45, cornice, ridge, { setback: 0.45, ridgeFrom: 6.5 });
