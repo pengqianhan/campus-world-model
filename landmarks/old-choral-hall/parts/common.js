@@ -1,6 +1,6 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/old-choral-hall_pts.npy, flown 18 May 2024) by the
-// lead (2026-10-22), in the view frame of config/old-choral-hall.json: x to the right as seen from Symonds
-// Street on the south-east, y up from 37.7 m NZVD2016 (the ground in the middle of the street front), z
+// lead (2026-10-22), in the view frame of config/old-choral-hall.json: x to the right as seen from Grafton
+// Road on the south-east, y up from 37.7 m NZVD2016 (the ground in the middle of the street front), z
 // toward the street. Owned by the lead: read, do not edit; report a size that is wrong, with numbers.
 //
 // The LiDAR was flown during building works: over the north-east blocks its tops are partly the temporary
@@ -8,7 +8,7 @@
 // side the plane trees' crowns (17.5 to 25 m) are classed as building. Read heights there with care.
 import * as THREE from "three";
 
-// The ground, as metres above the datum: the Symonds Street footpath falls along the front, and the
+// The ground, as metres above the datum: the Grafton Road footpath falls along the front, and the
 // footpath along the south-west range rises toward its back end.
 export const GROUND = {
   front: [[-18, 0.8], [-10, 0.45], [0, 0.05], [10, -0.3], [20, -0.65], [26, -0.85]],   // [x, y] at z ~ 25
@@ -17,7 +17,7 @@ export const GROUND = {
 
 // The south-west range (the heritage front of the 2022-09 panoramas: red brick, cream dressings, a
 // pavilion at each end) is turned 22.25 deg from the frame. Its own frame (x', z'): x' across (negative
-// outward, to the south-west street), z' along it toward Symonds Street. swMatrix() takes a point drawn
+// outward, to Symonds Street), z' along it toward Grafton Road. swMatrix() takes a point drawn
 // in that frame to the view frame: x = x' cos a + z' sin a, z = -x' sin a + z' cos a.
 export const SW = {
   angle: 22.25,
@@ -25,7 +25,7 @@ export const SW = {
   edge: -24.6,
   // its inner side: the valley against the middle ranges' roofs
   inner: -13.0,
-  // its ends along z': the back pavilion (north-west) and the corner pavilion on Symonds Street
+  // its ends along z': the back pavilion (north-west) and the corner pavilion on Grafton Road
   back: -24.0,
   front: 14.6,
   // top of the parapet over the cornice (along the whole outer edge, 14.0 to 14.35)
@@ -43,7 +43,7 @@ export function swPoint(xp, y, zp) {
   return [xp * Math.cos(a) + zp * Math.sin(a), y, -xp * Math.sin(a) + zp * Math.cos(a)];
 }
 
-// The Symonds Street front: the corner pavilion's face and the north-east block's face stand on z ~ 22.4;
+// The Grafton Road front: the corner pavilion's face and the north-east block's face stand on z ~ 22.4;
 // between them (x -10 to 2) the front is recessed to z ~ 13.2, with a low block 11 m up to z ~ 16.3.
 export const FRONT = { z: 22.4, recess: { x: [-10, 2], z: 13.2 }, porch: { x: [-10, 2], z: [13.2, 16.3], top: 11.0 } };
 

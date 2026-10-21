@@ -1,7 +1,7 @@
 # Landmark: Old Choral Hall, drawn from code
 
-Old Choral Hall (building 104 of the University of Auckland's campus map), on Symonds Street, drawn
-in three.js from code alone and sized by the LINZ 2024 LiDAR, by a lead agent and a team of agents
+Old Choral Hall (building 104 of the University of Auckland's campus map), at the corner of Symonds Street
+and Grafton Road, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, by a lead agent and a team of agents
 (October 2026). Every source shows the building during building works (see "The sources: works in
 progress"), except the panoramas of 2022-09 of its south-west range. So that range, with its two end
 pavilions, is drawn in detail as those panoramas show it, and the rest of the building plainly, at
@@ -22,12 +22,15 @@ every landmark: [`../README.md`](../README.md).
 
 ## The frame
 
-- View frame: x to the right as seen from Symonds Street on the south-east, y up from the ground in
+- View frame: x to the right as seen from Grafton Road on the south-east, y up from the ground in
   the middle of the street front (37.7 m NZVD2016, provisional: the street falls from 38.8 m at the
   south-west end to 36.8 m at the north-east), z toward the street.
 - In the LiDAR frame (local NZTM metres) the centre is at (107.520, 86.738) and the axis points at
   bearing 225.3° (grid), so the street front faces 135.3°. The axis is the bearing of most of the
   walls seen from above (`frame.axis_from: "walls"`): the building is wings at two angles.
+- The streets: Grafton Road along the front (+z) and Symonds Street along the south-west range, as
+  the name blades at the corner read in panorama C1kG (the first config said Symonds Street for the
+  front).
 
 ## The sources: works in progress
 
@@ -43,18 +46,18 @@ Each of the three sources was taken while the building was being rebuilt:
   stacked materials behind the building on the north-west, bare earth in its courtyards, and a
   band of pale boards about 1 m wide round each of the three north-east blocks, at the foot of
   their hipped roofs (scaffolds, not yet wrapped).
-- **Street View.** The newest panoramas on Symonds Street, in front of the building, are of 2024-08:
+- **Street View.** The newest panoramas on Grafton Road, in front of the building, are of 2024-08:
   the north-east block wrapped whole in white sheeting on scaffolding, the middle in scaffolding and
   the corner pavilion in scaffolding. Behind, on the north-west, a panorama of 2025-05 still shows a
   wrapped block and a scaffold on the roof (see "References").
 
 So most of the building cannot be checked against what stands there now. Before the works, the
-panoramas of 2022-09 on the south-west street show the south-west range whole: two storeys of red brick
+panoramas of 2022-09 on Symonds Street, along it, show the south-west range whole: two storeys of red brick
 with cream dressings between two cream pavilions with giant columns. The LiDAR measured that range
 unwrapped, and its plan and parapet agree with those panoramas. That range is drawn in detail; the
 rest is drawn plainly, as the rules say for what no photograph shows.
 
-**What would let the rest be drawn**: Google panoramas on Symonds Street taken after the works (newer
+**What would let the rest be drawn**: Google panoramas on Grafton Road taken after the works (newer
 than 2024-08), for the street front and its look; and, for the roofs, LiDAR flown after the works
 (another LiDAR set is a new data source, for the maintainer). With newer panoramas alone the walls
 could be drawn and checked, but the roofs of the wrapped blocks would stay unmeasured.
@@ -89,7 +92,7 @@ inside a cafe, not of the building. Views `*_wide.jpg` (hfov 95°), `*_upper.jpg
 
 | Panoramas | Date | Where (view frame) | What they show |
 | --- | --- | --- | --- |
-| `OpqZ…`, `ctyQ…`, `m1hD…`, `zPP5…`, `LwAj…`, `iz57…` | 2024-08 | Symonds Street, z ≈ 31, x from −13 to 39: 9 m in front of the street front | the works: the north-east block (x ≈ 2.5 to 24.5) wrapped whole in white sheeting on scaffolding, up to a temporary gabled roof; the middle (x ≈ −10 to 2.5) a scaffold with a builder's banner; the south-west corner block (cream render, pilasters, brick panels, a cornice) in scaffolding, its ground floor wrapped; a hoarding along the footpath |
-| `Uype…`, `nAxE…`, `e8T_…` | 2022-09 | the south-west street, from off the corner (x -30, z 20) to the north-west (x -43, z -12.5) | before the works: the south-west range whole, red brick and cream dressings, with its two end pavilions, through the plane trees; in the morning sun from the north-east, the face in shade |
+| `OpqZ…`, `ctyQ…`, `m1hD…`, `zPP5…`, `LwAj…`, `iz57…` | 2024-08 | Grafton Road, z ≈ 31, x from −13 to 39: 9 m in front of the street front | the works: the north-east block (x ≈ 2.5 to 24.5) wrapped whole in white sheeting on scaffolding, up to a temporary gabled roof; the middle (x ≈ −10 to 2.5) a scaffold with a builder's banner; the south-west corner block (cream render, pilasters, brick panels, a cornice) in scaffolding, its ground floor wrapped; a hoarding along the footpath |
+| `Uype…`, `nAxE…`, `e8T_…` | 2022-09 | Symonds Street, from off the corner (x -30, z 20) to the north-west (x -43, z -12.5) | before the works: the south-west range whole, red brick and cream dressings, with its two end pavilions, through the plane trees; in the morning sun from the north-east, the face in shade |
 | `C1kG…` | 2024-10 | across the corner (x -32, z 40) | the corner pavilion and the south-west range restored, out of their scaffolds; the middle still in scaffolding and the north-east block wrapped |
 | `xKYw…` | 2025-05 | behind, on the north-west (x -21, z -37) | still the works: a block wrapped in white sheeting, a scaffold on the roof behind it |

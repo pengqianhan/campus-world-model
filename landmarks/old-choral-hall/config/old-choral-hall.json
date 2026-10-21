@@ -198,7 +198,7 @@
  "door": {
   "x": 1.5,
   "z": 22.6,
-  "note": "view frame: on the Symonds Street footpath at the mouth of the forecourt between the corner pavilion and the north-east block, where the LiDAR ground is 37.78 m (median within 1 m), the model's y = 0 at 37.7; the doors themselves are behind the works' hoarding in every panorama of the street front; place.py puts it on the map"
+  "note": "view frame: on the Grafton Road footpath at the mouth of the forecourt between the corner pavilion and the north-east block, where the LiDAR ground is 37.78 m (median within 1 m), the model's y = 0 at 37.7; the doors themselves are behind the works' hoarding in every panorama of the street front; place.py puts it on the map"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -222,7 +222,7 @@
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
-  "method": "LiDAR building points (class 6) within near_outline m of building 104 outline: centre = mean x/y of points higher than tower_above m; axis = the bearing of most of the walls seen from above (axis_from walls: the building is wings at two angles, so the principal axis falls between them), the one of the two square to each other nearest the principal axis; toStreet = the axis turned 90 deg toward street_side: south-east, to Symonds Street.",
+  "method": "LiDAR building points (class 6) within near_outline m of building 104 outline: centre = mean x/y of points higher than tower_above m; axis = the bearing of most of the walls seen from above (axis_from walls: the building is wings at two angles, so the principal axis falls between them), the one of the two square to each other nearest the principal axis; toStreet = the axis turned 90 deg toward street_side: south-east, to Grafton Road (the street names are those on the blades at the corner in panorama C1kG: Symonds Street along the south-west range, Grafton Road along the front).",
   "min_above": 12.7,
   "tower_above": 14.7,
   "spine_below": 22.7,
@@ -245,7 +245,7 @@
  "streetview": {
   "max_panos": 11,
   "radius_m": 120,
-  "pano_ids_note": "eleven of the twelve nearest of Google's own panoramas (copyright Google) within radius_m: six on Symonds Street in front (2024-08, the works: scaffolds and white wraps), three off the south-west range (2022-09, before the works), one across the corner (2024-10) and one behind on the north-west (2025-05, the works); the twelfth, BCtN4La4k0spbkhYMtiWyA (undated, 13,312 px wide), is a panorama inside a cafe, not of the building, and is left out (its 99 tiles were bought before it was looked at); user-contributed panoramas are left out",
+  "pano_ids_note": "eleven of the twelve nearest of Google's own panoramas (copyright Google) within radius_m: six on Grafton Road in front (2024-08, the works: scaffolds and white wraps), three on Symonds Street off the south-west range (2022-09, before the works), one across the corner (2024-10) and one behind on the north-west (2025-05, the works); the twelfth, BCtN4La4k0spbkhYMtiWyA (undated, 13,312 px wide), is a panorama inside a cafe, not of the building, and is left out (its 99 tiles were bought before it was looked at); user-contributed panoramas are left out",
   "pano_ids": [
    "ctyQO7gAPEeHY5D3HM2OyA",
    "m1hD1kBpLDbBK5XzLczKVA",
@@ -295,7 +295,7 @@
   "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the 2022-09 panoramas of the south-west range, seen in nAxE at bearing about 41.5 deg and 48 deg up (late morning), so the range's south-west face is in open shade under a bright hazy sky; the other numbers start from Old Government House's"
  },
  "refine": {
-  "position_m": 3,
+  "position_m": 5,
   "height_m": 1,
   "yaw_deg": 2,
   "pitch_deg": 2,
@@ -306,5 +306,6 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Symonds Street footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the south-west footpath rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)"
+ "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Grafton Road footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the Symonds Street footpath along the south-west range rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)",
+ "refine_note": "position_m 5 (the Clock Tower's 3): the three panoramas of 2022-09 record their camera about 3.5 m nearer the south-west range than it stood (a fit to the parapet and the plinth's foot in the photographs puts them about 13.5 m from its face, their metadata 10 m), so the search needs the room"
 }

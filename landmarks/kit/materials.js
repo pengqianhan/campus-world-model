@@ -212,10 +212,10 @@ function brick(space) {
     float jx = 1.0 - smoothstep(0.0, 0.043 + ws, min(fract(s), 1.0 - fract(s)) * 2.0);
     float joint = max(jy, jx) * (1.0 - smoothstep(0.35, 0.7, max(wt, ws * 0.37)));
     float b = wh(vec3(row, col, 7.0));
-    vec3 c = mix(vec3(0.42, 0.13, 0.07), vec3(0.55, 0.20, 0.11), b) * (0.94 + 0.12 * wfbm(P * 0.6));
-    vec3 mortar = vec3(0.62, 0.58, 0.52);
+    vec3 c = mix(vec3(0.26, 0.094, 0.052), vec3(0.34, 0.144, 0.082), b) * (0.94 + 0.12 * wfbm(P * 0.6));
+    vec3 mortar = vec3(0.50, 0.46, 0.40);
     float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));
-    diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.85), wall);
+    diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.6), wall);
   }`, {}, undefined, space);
 }
 

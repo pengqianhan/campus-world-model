@@ -3,14 +3,14 @@
 Target: the south-west range of Old Choral Hall, with a pavilion at each end, drawn in code so that it
 reads as the same building as in the Street View panoramas of 2022-09, before the building works, with
 its sizes from the LiDAR. Look at the photographs yourself, at full size: `nAxE…_*.jpg` (the range and
-its north-west pavilion), `Uype…_*.jpg` (the range and the corner pavilion on Symonds Street),
-`e8T_…_*.jpg`, and `BCtN…`/`C1kG…` for the corner. This page says what matters most, and only what they
+its north-west pavilion), `Uype…_*.jpg` (the range and the corner pavilion at Grafton Road),
+`e8T_…_*.jpg`, and `C1kG…` (2024-10: the corner pavilion restored, out of its scaffold) for the corner. This page says what matters most, and only what they
 show. The rest of the building is drawn plainly: no photograph shows it as it stands (README.md, "The
 sources: works in progress").
 
 ## The south-west range (what nAxE and Uype show)
 - **Two storeys of red brick with cream dressings**, Edwardian classical. A long range of about a dozen
-  bays between two end pavilions, on a footpath that rises about 2 m from Symonds Street to the back.
+  bays between two end pavilions, on a footpath that rises about 2 m from Grafton Road to the back.
 - **Ground floor**: tall windows in eared cream architraves with cream sills, each window of several
   panes (white-grey frames, glazing bars in a grid). A cream plinth band at the foot of the wall, with
   small vents.
