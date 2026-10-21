@@ -96,8 +96,12 @@ export function spire(b) {
 
 export function bay(b) {
   const { x, z, top, door } = M.bay;
-  b.box(x[0], x[1], FOOT, top, z[0], z[1], "paint");
-  b.box(x[0] - 0.05, x[1], top - 0.15, top + 0.02, z[0] - 0.05, z[1] + 0.05, "iron");
+  b.box(x[0], x[1], FOOT, top - 0.02, z[0], z[1], "paint");
+  // a flat roof, its edge a dark line (as the chapel's and the hall's)
+  b.box(x[0], x[1], top - 0.04, top, z[0], z[1], "roofPale");
+  const e = 0.05;
+  b.add(boxesGeometry([[x[0] - e, x[1], top - 0.15, top + 0.02, z[1], z[1] + e], [x[0] - e, x[1], top - 0.15, top + 0.02, z[0] - e, z[0]],
+    [x[0] - e, x[0], top - 0.15, top + 0.02, z[0], z[1]]]), "iron");
   // a dark timber door at its foot on the street side
   b.box(door[0], door[1], 0, door[2], z[1], z[1] + 0.03, "timber");
 }
