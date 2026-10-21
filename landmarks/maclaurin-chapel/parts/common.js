@@ -19,13 +19,18 @@ export const MEASURED = {
     eave: 8.95,       // the roof's edge height, level all round (8.9-9.0 at corners and mid-sides)
     apex: 10.55,      // a low hexagonal pyramid, about 15 deg: 0.26 m up a metre in toward the apex
   },
+  // The great window wrapping the street corner (the photographs; sizes from them against the LiDAR's
+  // walls): 3.0 m along each street face from the corner, six columns a face, from 0.5 m to 8.35 m at
+  // the corner, each column 0.12 m lower outward; deep white frames 0.12 m wide, transoms 0.8-1.5 m apart.
+  window: { width: 3.0, columns: 6, sill: 0.5, top: 8.35, step: 0.12, frame: 0.12, depth: 0.28, pane: [0.8, 1.5] },
   // A slender spire on the apex: 16 points within 0.5 m of the axis from 11.5 to 21.15 m. The
   // photographs show a square needle tapering to a point, and a small cross on its tip: two points at
   // 19.8-19.9 m (the tip), five at 21.0-21.15 m spread over 0.9 m (the cross).
   spire: { tip: 19.85, top: 21.1, base: 0.5, cross: 0.7 },
   // A bay against the chapel's far side (-x), 7.1-7.7 m high where the LiDAR sees it (x > -8.4); beyond,
-  // a tree's crown hides it, and its end is the floor outline's (x -9.9).
-  bay: { x: [-9.9, -5.9], z: [-3.5, 3.1], top: 7.5 },
+  // a tree's crown hides it, and its end is the floor outline's (x -9.9). A dark timber door at its foot
+  // on the street side, near its far end (the photographs).
+  bay: { x: [-9.9, -5.9], z: [-3.5, 3.1], top: 7.5, door: [-9.4, -8.4, 2.2] },
   // The hall behind the chapel (+x), its long axis along x. Its two end rooms and the walk-ways along its
   // middle have one flat roof at 3.37 m (3.25 m over the far end); the middle room's walls rise to a very
   // low gable (eaves 4.55 m on both sides, ridge 5.0 m along z = 0.4). The flat roof reaches z -7.3 and

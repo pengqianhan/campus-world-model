@@ -69,7 +69,12 @@ from them into the model.
   defaults and leaves the other landmarks' viewer pictures (`?quality=low`, `?mask=1`) identical,
   pixel for pixel.
 - The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name; a name the
-  kit does not have makes the part fail: ask the lead.
+  kit does not have makes the part fail: ask the lead. Names for this building, all the kit's own:
+  `paint` (the white rendered walls, the window's frames, the hall's fascias and posts), `glass`,
+  `roofPale` (the roofs: the aerial shows them light green, which the kit has no material for yet:
+  a green metal roof is for a later round, as an option of the kit), `iron` (the dark line at the
+  roofs' edges, the cross), `shade` (the spire's grey), `timber` (the doors and the entrance's
+  fascia) and `dressed` (the entrance steps).
 
 ## Budget (tier 1: the site runs in a browser, phones too)
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (merged by material). Build time of a part
