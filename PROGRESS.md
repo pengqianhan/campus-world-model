@@ -271,11 +271,18 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
 - Landmarks, since 2026-10-21 (pull requests #63 and #64): buildings drawn in three.js from code,
   in `landmarks/` (`landmarks/README.md`). The site draws the Clock Tower in place of the blocks of
   105 and 105S since pull request #66 (`src/app/landmarks.ts`). Three sources (the user, 2026-10-21):
-  - Sizes: LINZ, Auckland LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*`, from
-    OpenTopography's public bucket. CC BY 4.0, no sign-in; LINZ data, as the terrain is. The tiles
-    stay local. The sizes measured from them are committed (the config's `frame.expected`,
-    `parts/common.js`).
-  - Check figure: LINZ, Auckland Central 0.06 m urban aerial photos (2023), CC BY 4.0, no sign-in.
+  - Sizes: the Auckland Part 1 LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*`, from
+    OpenTopography's public bucket (its "Auckland Part 1, New Zealand 2024", `NZ24_Auckland`,
+    doi:10.5069/G9HH6H8T). No sign-in. Captured by Woolpert for Regional Software Holdings
+    Limited; sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under
+    CC BY 4.0. The tiles stay local. The sizes measured from them are committed (the config's
+    `frame.expected`, `parts/common.js`), and the site credits them in About.
+  - Check figure: Auckland Central 0.06 m urban aerial photos (2023), no sign-in; sourced from LINZ
+    and licensed by Auckland Council for re-use under CC BY 4.0. Not published.
+  - Both licensors are as LINZ's page on attributing elevation and aerial imagery data names them.
+    That page answered 403 to the research browser; the user sent a screenshot of it and asked for
+    it to be read in their own Chrome on 2026-10-21, which showed it and the dataset's
+    OpenTopography page.
   - References: Street View, through Google's Map Tiles API with the user's key. Renders are
     compared with it. It is never published, traced or sampled, and it stays local. Anyone can see
     the same views in Google Maps without signing in. Google Maps Platform Terms 3.2.3(c):
@@ -511,10 +518,3 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    times will be republished on a public site. With a key, follow the README section "Adding the
    class timetable" (`UOA_API_KEY`), and take up pull request #24, the course catalogue, at the same
    time (see "Other sources").
-2. **Check how LINZ asks the Auckland LiDAR (2024) to be credited.** The site draws the Clock Tower
-   to sizes measured from it, and About, the README and `NOTICE` credit "Land Information New
-   Zealand, CC BY 4.0". LINZ's page on attributing elevation data
-   (https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)
-   answered 403 to the research browser on 2026-10-21 and was left alone. A web search's summary of
-   it named Regional Software Holdings Limited as the licensor of the Auckland 2024 LiDAR DEMs; that
-   is not checked. Open the page in a browser and correct the credit if it asks for more.

@@ -22,12 +22,12 @@
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706"],
   "mirrors": [],
-  "licence": "LINZ Auckland LiDAR 2024, CC BY 4.0 (via OpenTopography)"
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
  },
  "aerial": {
   "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
   "tiles": ["1802", "1803", "1902", "1903"],
-  "licence": "LINZ Auckland Central 0.06 m Urban Aerial Photos (2023), CC BY 4.0"
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
   "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m; axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing north-ish); toStreet = the axis turned 90 deg, pointing west-ish (negative east).",

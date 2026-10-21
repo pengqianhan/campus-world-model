@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "preact/hooks";
 import { formatDate, intlLocale, lang, languages, setLang, t } from "../app/i18n.ts";
 import { LANDMARKS, landmarkBuildings } from "../app/landmarks.ts";
-import { INSPIRED_BY, REPO } from "../app/links.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../app/links.ts";
 import { data, panel } from "../app/state.ts";
 import { aucklandWallTime } from "../shared/time.ts";
 import { IconButton, Section, buildingTitle } from "./common.tsx";
@@ -78,8 +78,16 @@ export function AboutPanel() {
           </Section>
 
           <Section title={t("about.landmarksTitle")}>
-            <p id="landmarks">
-              {t("about.landmarks", { buildings: detailed })}{" "}
+            <p id="landmarks">{t("about.landmarks", { buildings: detailed })}</p>
+            <p id="landmark-links">
+              <a href={LANDMARK_LIDAR} target="_blank" rel="noopener noreferrer">
+                {t("about.landmarksLidar")}
+              </a>
+              {" · "}
+              <a href={LINZ_ELEVATION_CREDIT} target="_blank" rel="noopener noreferrer">
+                {t("about.landmarksCredit")}
+              </a>
+              {" · "}
               <a href={`${REPO}/tree/main/landmarks`} target="_blank" rel="noopener noreferrer">
                 {t("about.landmarksLink")}
               </a>

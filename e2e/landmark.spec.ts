@@ -37,6 +37,14 @@ test("near it, the map draws the Clock Tower from code in its own colours, in pl
   // Any other building says that its height is estimated.
   await open(page, `?building=303&${T}`);
   await expect(page.locator("#height-note")).toContainText("estimated from the number of floors");
+
+  // About names the buildings drawn in detail, and credits the LiDAR as LINZ asks: its licensor, the
+  // licence, and a link to LINZ's page on attributing elevation data.
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.locator("#landmarks")).toContainText("105 The Clock Tower");
+  await expect(page.locator("#landmarks")).toContainText("licensed by Regional Software Holdings Limited");
+  await expect(page.locator("#landmarks")).toContainText("Creative Commons Attribution 4.0");
+  await expect(page.locator("#landmark-links a").nth(1)).toHaveAttribute("href", /linz\.govt\.nz\/.*attributing-elevation/);
 });
 
 test("from a walker's height the Clock Tower is drawn in its own stone on a graphics card, and in the map's colours in software", async ({ page }) => {

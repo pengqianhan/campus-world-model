@@ -223,8 +223,14 @@ the reference and of the render; plus the mean over views.
 
 ## Licences
 
-- LiDAR: LINZ, Auckland LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*`, via OpenTopography — CC BY 4.0.
-- Aerial: LINZ, Auckland 0.06 m Urban Aerial Photos (2023) — CC BY 4.0.
+- LiDAR: Auckland Part 1 LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*` (OpenTopography's
+  "Auckland Part 1, New Zealand 2024", `NZ24_Auckland`, https://doi.org/10.5069/G9HH6H8T): sourced
+  from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0.
+- Aerial: Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by
+  Auckland Council for re-use under CC BY 4.0.
+- Each licensor is as LINZ's page on attributing elevation and aerial imagery data names it
+  (checked 2026-10-21). A page that publishes what a landmark measures gives the credit, or LINZ's
+  short one ("Sourced from LINZ. CC BY 4.0") with a link to that page.
 - Street View imagery and metadata: © Google. Used as references only, to compare against —
   never published, never traced or sampled into the model's geometry or textures.
 - Code: MIT, as the rest of the repository. The way of working follows
