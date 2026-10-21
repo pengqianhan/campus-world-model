@@ -1,10 +1,11 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { allowed, type Deps, redact, runBatch, runLedger, takeLock } from "../scripts/lib/landmark-fetch.ts";
-import { type FetchOptions, HttpError } from "../scripts/lib/snapshot.ts";
+import { type FetchOptions, HttpError, RAW_DIR, snapshot } from "../scripts/lib/snapshot.ts";
 
 const KEY = "AIzaTestKeyNotReal";
 const SESSION = "testSessionToken123";
@@ -240,6 +241,30 @@ describe("the landmark pipeline's fetches", () => {
     fs.writeFileSync(lock, "");
     expect(() => takeLock()).toThrow(/another landmark fetch is running.*delete ~\/\.campus-world-model\/landmark-fetch\.lock$/);
   });
+
+  it("pace requests at least 1.1 s apart, as logged, with no redirect followed", async () => {
+    const server = http.createServer((req, res) => {
+      if (req.url === "/moved") res.writeHead(302, { Location: "/a" }).end();
+      else res.end("ok");
+    });
+    await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+    const port = (server.address() as { port: number }).port;
+    const dir = `.test-pacing-${process.pid}`;
+    const at: number[] = [];
+    try {
+      for (let i = 0; i < 4; i++) {
+        await snapshot({ source: "test", file: `${dir}/${i}`, url: `http://127.0.0.1:${port}/${i}`, record: false, onSend: (t) => at.push(t.getTime()) });
+      }
+      for (let i = 1; i < at.length; i++) expect(at[i]! - at[i - 1]!).toBeGreaterThanOrEqual(1100);
+      await expect(
+        snapshot({ source: "test", file: `${dir}/moved`, url: `http://127.0.0.1:${port}/moved`, record: false, redirect: "error" }),
+      ).rejects.toThrow();
+      expect(fs.existsSync(path.join(RAW_DIR, dir, "moved"))).toBe(false);
+    } finally {
+      server.close();
+      fs.rmSync(path.join(RAW_DIR, dir), { recursive: true, force: true });
+    }
+  }, 15_000);
 
   it("send nothing for a file already cached", async () => {
     const url = "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_3603.laz";
