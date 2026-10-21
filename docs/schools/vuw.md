@@ -13,8 +13,8 @@ Pacific/Auckland.
 
 | Layer | Verdict | What decided it |
 | --- | --- | --- |
-| 1. Footprints and surroundings | usable | OpenStreetMap (ODbL). The Auckland premises are already in the committed `central` snapshot (one building named "Victoria University of Wellington"). Wellington has no area in the repository yet: Kelburn, Pipitea and Te Aro need new areas, fetched by `scripts/fetch-osm.ts` as the repository's other areas are (see "Needs the maintainer", 4) |
-| 2. Indoor: buildings, floors, rooms | usable for a room list; floor and room outlines not published | No indoor-mapping vendor: the campus maps are Google Maps embeds with named points. "Locate a room" lists 48 building codes and their campus; the ITS room report lists 266 teaching rooms with capacity and equipment class. Floor plans are PDF pictures only |
+| 1. Footprints and surroundings | usable | OpenStreetMap (ODbL). The Auckland premises are already in the committed `central` snapshot (one building named "Victoria University of Wellington"). Wellington has no area in the repository yet: Kelburn, Pipitea and Te Aro need new areas, fetched by `scripts/fetch-osm.ts` as the repository's other areas are (see "Needs the maintainer", 5) |
+| 2. Indoor: buildings, floors, rooms | usable for a room list; floor and room outlines not published | No indoor-mapping vendor: the campus maps are Google Maps embeds with named points. "Locate a room" lists 48 building codes and their campus; the ITS room report lists 266 rooms with capacity and equipment class, 193 of them in teaching classes. Floor plans are PDF pictures only |
 | 3. Timetable | needs the maintainer | Open: the "Academic Timetable" spreadsheets (2026, 2027) give every lecture, tutorial, lab and studio with days, times, weeks and room code, with no sign-in. But they sit under `/tools`, which `www.wgtn.ac.nz/robots.txt` disallows for all agents, so they were not fetched. Without them, lecture days and times are public only to the campus (no room). myTimetable (Scientia Publish) has guest timetables switched off |
 | 4. Academic calendar | needs the maintainer | The dates are in the key-dates app and the 2026 Calendar PDF, both served from `/__data/`. `robots.txt` has `Disallow: /__data/.*`, which reads two ways (see "Needs the maintainer", 2). Only the teaching weeks are on an allowed page |
 | 5. Subjects and courses | usable | The "Printable Course Catalogue" on `service-web.wgtn.ac.nz` (no `robots.txt`): four requests give all 2026 courses, 3,513 course codes in 174 subject codes, with title, points, trimester, CRN, lecture days and times, and campus |
@@ -38,7 +38,7 @@ level the room is on" ("Locate a room").
 | Pipitea Campus | Government Buildings, 55 Lambton Quay; Rutherford House, 23 Lambton Quay | 2: GB, RH | 7 | 260 + 512 | none: a new area | Wellington City (2025): all 7 points inside |
 | Te Aro Campus | 139 Vivian Street; Te Auaha, 65 Dixon Street; NEC House, 40 Taranaki Street; Wigan | 4: VS, TA, NEC, WG | 4 | 548 + 233 | none: a new area | Wellington City (2025): all 4 points inside |
 | Auckland premises | Level 4, 50 Kitchener Street, Auckland CBD (its campus page) | 1: KS | 6 | 0 + 52 ("Auckland (Kitchener St)") | inside the `central` area: way 370301075 | not checked |
-| Miramar Creative Centre | 133 Park Road, Miramar ("Locate a room") | 1: PR133 | not read (the page redirects to `/mcc`) | 0 + 54 | none | not checked |
+| Miramar Creative Centre | 133 Park Road, Miramar ("Locate a room") | 1: PR133 | none (its page redirects to `/mcc`, which has no map) | 0 + 54 | none | not checked |
 | Lower Hutt | Gracefield Innovation Quarter, 69 Gracefield Road (GIQ; wings B, E, F, H and I of Paihau—Robinson Research Institute); 76 Sydney Street, Petone | 7: GIQ, RBG, REG, RFG, RHG, RIG, SS76 | none | none | none | Hutt City (2025) exists; not checked against these sites |
 | Island Bay | Te Toka Tū Moana—Wellington University Coastal Ecology Laboratory, 396 The Esplanade | 1: CEL | none | none | none | not checked |
 | Newtown | Ngā Puna Waiora—Wellington Hospital, 39 Riddiford Street | 1: WH | none | 16 + 69 ("Wellington Regional Hospital") | none | not checked |
@@ -58,10 +58,13 @@ childcare centre were not located in this recon.
 - **With the usable layers only:** Kelburn, Pipitea and Te Aro in 3D from OpenStreetMap
   footprints on LINZ ground (and the Auckland premises, which the `central` area already holds).
   Buildings can take their names from VUW's own map points (24 on Kelburn) where a point falls in
-  a footprint, and their codes from "Locate a room". The 266 teaching rooms of the ITS report can
-  be listed by code and capacity: the code gives the building, and its first digit the level by
-  VUW's rule, so a room is located to a building and an inferred floor, labelled as from the code,
-  with no outline. Course search knows 3,513 course codes with titles and, for each offering, the
+  a footprint, and their codes from "Locate a room". The 193 rooms in the ITS report's teaching
+  classes can be listed by code and capacity: the code gives the building, and its first digit the
+  level by VUW's rule, so a room is located to a building and an inferred floor, labelled as from
+  the code, with no outline. Where the code holds a street number or a prefix that "Locate a room"
+  does not list (layer 2), the floor stays unknown. The report's 12 meeting rooms and 61 rooms of
+  the undefined class X are not teaching spaces as far as the source says, so they stay unnamed
+  ("Places, not people"). Course search knows 3,513 course codes with titles and, for each offering, the
   trimester and the lecture days and times. Those times are known only to the campus, so they
   cannot be placed in a building or room: search can show them as "Kelburn campus, room not
   published", and the map shows no classes.
@@ -80,7 +83,7 @@ childcare centre were not located in this recon.
 | Committed OSM snapshot | `data/raw/osm/context.json` (Overpass base 2026-07-24) | read locally, no request | Way 370301075: `building=yes`, `amenity=university`, `name` "Victoria University of Wellington", `name:mi` "Te Whare Wānanga o te Upoko o Te Ika a Māui", `wheelchair=yes`; no levels, no height; about 20 m across. Its centre is about 55 m from the "Auckland premise" point on VUW's Auckland page |
 | The repository's areas | `scripts/lib/areas.ts` | read locally | `central` and six Auckland areas; none in Wellington |
 | Overpass | not requested | none | AUT's recon of the same day found `overpass-api.de/robots.txt` disallows `/api/` and that Overpass refuses a headless browser (406). The pipeline's `scripts/fetch-osm.ts` is the route. The tags of VUW's Wellington buildings (`name`, `ref`, `building:levels`, `height`) were not read |
-| Wellington City Council 3D buildings | `https://catalogue.data.govt.nz/dataset/p-mt-victoria-north` (one tile of a series) | 200 `text/html`, about 35 KB | "Wellington 3D buildings captured 5 May 2017. Part of a series of 3D Building data sets covering from Kaiwharawhara in the northwest to Rongotai in the southeast." Licence: "No License Provided". Source: an Esri REST service on `data-wcc.opendata.arcgis.com`. Not used |
+| Wellington City Council 3D buildings | `https://catalogue.data.govt.nz/dataset/p-mt-victoria-north` (one tile of a series) | 200 `text/html`, about 35 KB | "Wellington 3D buildings captured 5 May 2017. Part of a series of 3D Building data sets covering from Kaiwharawhara in the northwest to Rongotai in the southeast." Licence: "No License Provided". Source: an ArcGIS Hub page on `data-wcc.opendata.arcgis.com`; the data itself is an Esri REST scene service on `tiles.arcgis.com`. Not used |
 
 Licence for OpenStreetMap: ODbL, credit in About.
 
@@ -96,8 +99,8 @@ none. The map frame itself was not read (next table).
 | Campus map, own requests | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn` (also `/pipitea`, `/te-aro`, `/auckland`) | 200 `text/html` each | A frame `https://www.wgtn.ac.nz/nestable-content/maps/map?lat=…&long=…&zoom=17&folder=<id>&poi-list=yes`, and in the page itself a "Points of interest" list: each point has `data-lat`, `data-long` and a name ("Old Kirk building", "Hunter Building", "Maclaurin lecture theatres", "Library", bus stops). 24 points on Kelburn, 7 on Pipitea, 4 on Te Aro, 6 on Auckland. Points only: no outlines, no floors |
 | The map frame | `…/nestable-content/maps/map?…` (four campuses) | 200, loaded by the browser by itself as part of each page (a lapse: `robots.txt` disallows `/nestable-content/`; see "Request log") | Not saved and not read. Its Google Maps scripts (`maps.googleapis.com`) were blocked |
 | A Google My Maps frame | `https://www.google.com/maps/d/embed?mid=…` in the Kelburn page | not requested | It sits inside an HTML comment, so the page does not show it |
-| Room directory: "Locate a room" | `https://www.wgtn.ac.nz/about/campuses-facilities/room-location` | 200 `text/html`, about 108 KB | 48 rows: building code, building name, campus or location (counts in "Campuses"). The room-code rule. No rooms listed |
-| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. The codes start with the building codes of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Some carry a letter level, not a digit (`GBG04`, `RHMZ03`). No floor field, no outline |
+| Room directory: "Locate a room" | `https://www.wgtn.ac.nz/about/campuses-facilities/room-location` | 200 `text/html`, about 118 KB | 48 rows: building code, building name, campus or location (counts in "Campuses"). The room-code rule. No rooms listed |
+| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. 193 rooms are in the seven teaching classes; MR and X are not. Most codes start with a building code of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Exceptions: 21 codes put a street number first (`KP24101`, `FT83201`, `WR06102` and others; VUW's own example "KP10 107" is "a room on the ground floor"), 11 use a prefix that "Locate a room" does not list (`HERCCS` 4, `WIG` and `VSWIG` 6, `HUVICRM` 1), and some carry a letter level (`GBG04`, `RHMZ03`). No floor field, no outline |
 | Venue hire: lecture theatres | `https://www.wgtn.ac.nz/about/campuses-facilities/venue-hire/lecture-theatres` | 200 `text/html`, 119,570 bytes | Capacity ranges only ("134 to 340 people", "42 to 85 people") |
 | Open data | web search for a VUW GIS or open-data portal | none found | Wellington City Council's 3D buildings (layer 1) are exteriors, not indoor |
 | Floor-plan PDF, Kelburn | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn/kelburn-campus-map.pdf` | 200 `application/pdf`, 2,515,969 bytes, 2 pages, made 2025-12-08 | "Kelburn Campus Map" 2026: a campus drawing, accessible routes, and a directory of buildings, faculties, schools and services with building codes and grid references. Legend symbols include "Early childhood centre" and "Student hall of residence". No floor plans |
@@ -121,7 +124,7 @@ Without outlines the building view shows floors inferred from room codes, each l
 | Student portal: Pūaha | `https://puaha.wgtn.ac.nz/SignIn` (linked as "Log into Pūaha") | not requested: a sign-in page | VUW's pages say the personal timetable and the exam timetable are there |
 | Tutorial sign-up: myAllocator | named on "Timetables and tutorials" | not requested | For enrolled students choosing class times |
 | Official API | `https://www.wgtn.ac.nz/_service/courses/2.1/offerings/943?year=2026` (the 2018 route below; `robots.txt` has `Allow: /_service/courses/`) | 404 `text/html` (IIS "File or directory not found") | Gone. Web search found no developer API |
-| Earlier student projects | GitHub `morganfrenchstagg/vuw-timetable` (2018), read on GitHub only | — | It read `https://www.victoria.ac.nz/_service/courses/2.1/offerings/<CRN>?year=<year>`, JSON with `timetable.items[].days[].times[].location.buildingName` and `.room`. That route now answers 404 (row above). GitHub searches for "wgtn timetable", "victoria university wellington timetable", "vuw course planner" and code search found nothing else |
+| Earlier student projects | a 2018 student project on GitHub, `vuw-timetable`, read on GitHub only | — | It read `https://www.victoria.ac.nz/_service/courses/2.1/offerings/<CRN>?year=<year>`, JSON with `timetable.items[].days[].times[].location.buildingName` and `.room`. That route now answers 404 (row above). GitHub searches for "wgtn timetable", "victoria university wellington timetable", "vuw course planner" and code search found nothing else |
 
 Requests a full fetch would take, if `/tools` is cleared: two, one spreadsheet a year. Without the
 spreadsheets, the lecture days, times and campus of every course come with layer 5 in four
@@ -129,7 +132,8 @@ requests, and the course pages add nothing that the lists do not have.
 
 Precision: a room code locates a meeting to a room code. The building comes from the code list,
 and the level from the first digit, which VUW says is "typically" the level: inferred and
-labelled so. Rooms have no outlines.
+labelled so. Where a code puts a street number first, or uses a prefix that "Locate a room" does
+not list (layer 2), the floor stays unknown. Rooms have no outlines.
 
 ## Layer 4: academic calendar
 
@@ -148,8 +152,8 @@ into `data/academic-calendar.json`, as for Auckland.
 
 | Route | URL | Answer (2026-10-22) | What it holds |
 | --- | --- | --- | --- |
-| Printable list, undergraduate 2026 | `https://service-web.wgtn.ac.nz/dotnet2/catprint.aspx?d=all&t=u2026` (linked from the course finder as `http://`, which redirects to `https://`) | 302, then 200 `text/html`, about 3.0 MB | "Printable Course Catalogue": 1,642 course codes in 113 subject codes. Each course: code, title, a description, points, prerequisites (P), corequisites (C), restrictions (X), "Not offered in 2026", and for each offering a line such as "1/3 • CRN 23001 • (L1) Mon, Fri 3-4pm [Kelburn]": trimester, CRN, lecture days and times, campus. 2,870 offering lines |
-| Printable list, postgraduate 2026 | `…?d=all&t=p2026` | 200 `text/html`, about 2.3 MB | 1,883 codes in 154 subject codes; 2,559 offering lines |
+| Printable list, undergraduate 2026 | `https://service-web.wgtn.ac.nz/dotnet2/catprint.aspx?d=all&t=u2026` (linked from the course finder as `http://`, which redirects to `https://`) | 302, then 200 `text/html`, about 3.0 MB | "Printable Course Catalogue": 1,642 course codes in 113 subject codes. Each course: code, title, a description, points, prerequisites (P), corequisites (C), restrictions (X), "Not offered in 2026", and for each offering a line such as "1/3 • CRN 23001 • (L1) Mon, Fri 3-4pm [Kelburn]": trimester, CRN, lecture days and times, campus. 2,866 offering lines |
+| Printable list, postgraduate 2026 | `…?d=all&t=p2026` | 200 `text/html`, about 2.3 MB | 1,883 codes in 154 subject codes; 2,549 offering lines |
 | Printable list, pre-degree 2026 | `…?d=all&t=o2026` | 200 `text/html`, about 39 KB | 25 codes in 4 subject codes |
 | Printable list, distance 2026 | `…?d=all&t=d2026` | 200 `text/html`, about 119 KB | 65 codes in 22 subject codes |
 | Printable list, undergraduate 2027 | `…?d=all&t=u2027` (not linked; the same pattern) | 200 `text/html`, about 3.0 MB | 1,645 codes in 113 subject codes. Course enrolment for 2027 is open, by the future-students dates page |
@@ -172,7 +176,7 @@ descriptions name a teacher, which is one more reason to drop them.
 | LINZ elevation catalogue | `https://nz-elevation.s3.ap-southeast-2.amazonaws.com/catalog.json` | 200 `application/json`, 66,450 bytes | Wellington region DEMs include `wellington-city_2025`, `wellington-city_2019-2020`, `wellington_2013-2014`, `hutt-city_2025`, `hutt-city_2021` |
 | Wellington City LiDAR 1m DEM (2025) | `…/wellington/wellington-city_2025/dem_1m/2193/collection.json` and `capture-area.geojson` | 200 `application/json` (4,281 bytes), 200 `application/geo+json` (2,843 bytes) | Licence `CC-BY-4.0`. Providers: Toitū Te Whenua Land Information New Zealand (host, processor), Aerial Surveys (producer), Wellington City Council (licensor). Capture 2025-01-22 to 2025-02-07 (UTC). 12 items. All 35 points of the Kelburn, Pipitea and Te Aro pages lie inside its capture area |
 | Hutt City LiDAR 1m DEM (2025) | `…/wellington/hutt-city_2025/dem_1m/2193/collection.json` and `capture-area.geojson` | 200 (4,256 bytes), 200 (4,305 bytes) | Same licence and producer; licensor Hutt City Council. The Lower Hutt sites were not checked against it: VUW gives no coordinates for them |
-| LINZ attribution page | not requested | — | AUT's recon of the same day got 403 from it (`www.linz.govt.nz`); see "Needs the maintainer", 5 |
+| LINZ attribution page | not requested | — | AUT's recon of the same day got 403 from it (`www.linz.govt.nz`); see "Needs the maintainer", 6 |
 
 Not checked: two known heights on each campus and pits where land meets sea (RECON.md, layer 6).
 The Pipitea tile reaches the harbour (it mixes in SRTM and GMTED), so the pit check matters there.
@@ -213,14 +217,20 @@ paths that start `/__data/.`. This recon took the wider reading.
 3. **The copyright condition.** VUW allows non-commercial reproduction "accurately and without
    modifications", with acknowledgement. The site simplifies what it takes, as it does for
    Auckland, so it stands on being non-commercial, crediting VUW and offering to remove anything
-   on request. One message to VUW can cover items 1 to 3.
-4. **Overpass for Wellington.** Run `scripts/fetch-osm.ts` for new areas over Kelburn, Pipitea and
+   on request. One message to VUW can cover items 1 to 4.
+4. **The timetables behind a sign-in.** myTimetable (`timetable.victoria.ac.nz`, Scientia Publish)
+   shows only "Log in", and its public settings say `"AnyGuestTimetablesEnabled": false` with
+   `"ObjectTimetablesFeature": "Full"`: room and course timetables exist there, for signed-in
+   users only. Pūaha, the student portal, is a sign-in page and was not requested. Both are
+   recorded once and left alone. The way in without a login is VUW turning on guest timetables in
+   Publish, which the same message can ask for.
+5. **Overpass for Wellington.** Run `scripts/fetch-osm.ts` for new areas over Kelburn, Pipitea and
    Te Aro (and Miramar, Gracefield, Island Bay and Newtown if wanted), as for Auckland. Not
    requested here, for the reasons in AUT's recon.
-5. **The LINZ attribution page** (`www.linz.govt.nz`) answered 403 to a headless browser in AUT's
+6. **The LINZ attribution page** (`www.linz.govt.nz`) answered 403 to a headless browser in AUT's
    recon. Read it in your own browser to confirm the credit wording for "Wellington City LiDAR 1m
    DEM (2025)", whose licensor is Wellington City Council.
-6. **A tool gap: frames count as documents.** `politePage(…, { types: ["document"] })` lets a
+7. **A tool gap: frames count as documents.** `politePage(…, { types: ["document"] })` lets a
    page's frames through, because a frame's request is a document too. Reading the campus pages
    that way loaded four map frames from `/nestable-content/`, a path `robots.txt` disallows, each
    1.1 s after its page (see "Request log"). Reading a page by an in-page `fetch()` instead avoids
