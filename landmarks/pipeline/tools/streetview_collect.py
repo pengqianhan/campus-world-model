@@ -5,10 +5,9 @@
 #   python -I ../pipeline/tools/streetview_collect.py [--config config/<name>.json] [--offline] [--allow-fetch]
 #
 # Every call goes through scripts/lib/snapshot.ts (data/fetch_bridge.py), cache first: metadata and tiles
-# are kept in data/raw/landmarks/streetview/ and never fetched again. Tiles cached here before that, in
-# refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg, are still read. A missing tile is NOT fetched
-# (tiles are billed) unless --allow-fetch is given; then the ledger ($GMAPS_BUDGET check N) must allow
-# them first. Without it the run counts the missing tiles and leaves them black. Online, the run makes
+# are kept in data/raw/landmarks/streetview/ and never fetched again (landmarks/README.md, "Fetching").
+# A missing tile is NOT fetched (tiles are billed) unless --allow-fetch is given; then the ledger
+# ($GMAPS_BUDGET check N) must allow them first. Without it the run counts the missing tiles and leaves them black. Online, the run makes
 # only the free calls (createSession, panoIds, metadata) for what is not cached, and saves the metadata
 # to refs/streetview/metadata.json; --offline rebuilds every view from that file and the cached tiles
 # without any network call. A view whose tiles are not all cached keeps its existing image (a fresh
@@ -109,10 +108,6 @@ def stitch(zoom, tiles, paths):
         if fn: pano[r * 512:(r + 1) * 512, c * 512:(c + 1) * 512] = np.asarray(Image.open(fn).convert("RGB"))
     return pano
 
-def old_cache(m, zoom, c, r):
-    """Where tiles were cached before the fetches went through snapshot.ts: read, never written."""
-    return os.path.join(OUT, "tiles", m["panoId"], f"{zoom}_{c}_{r}.jpg")
-
 plans = []
 for m in metas[:MAX]:
     b, _, _ = bearing_to_tower(m["lat"], m["lng"])
@@ -120,8 +115,7 @@ for m in metas[:MAX]:
     zoom = 5 if m["dist"] < 70 else 4
     plans.append((m, b, g, cam_y, zoom, band_tiles(m, zoom, b, 60, -30, 80)))
 # All the tiles in one batch: the ledger is asked once, for all that are missing.
-ask = [{"pano": m["panoId"], "zoom": zoom, "x": c, "y": r} for m, _, _, _, zoom, tiles in plans for c, r in tiles
-       if not os.path.exists(old_cache(m, zoom, c, r))]
+ask = [{"pano": m["panoId"], "zoom": zoom, "x": c, "y": r} for m, _, _, _, zoom, tiles in plans for c, r in tiles]
 got = fetch_bridge.run([{"op": "tiles", "tiles": ask}], allow_fetch=a.allow_fetch and not a.offline)[0] if ask else {"paths": [], "sent": 0}
 cached = {(t["pano"], t["zoom"], t["x"], t["y"]): p for t, p in zip(ask, got["paths"])}
 calls["tiles"] = got["sent"]
@@ -146,7 +140,7 @@ used = 0
 missing = set()
 for m, b, g, cam_y, zoom, tiles in plans:
     dist = m["dist"]
-    paths = [old_cache(m, zoom, c, r) if os.path.exists(old_cache(m, zoom, c, r)) else cached.get((m["panoId"], zoom, c, r)) for c, r in tiles]
+    paths = [cached.get((m["panoId"], zoom, c, r)) for c, r in tiles]
     pano = stitch(zoom, tiles, paths); used += len(tiles)
     gaps = {(m["panoId"], zoom, c, r) for (c, r), p in zip(tiles, paths) if not p}; missing |= gaps
     incomplete = bool(gaps)  # some tiles are not cached: never overwrite a good image with a holed one

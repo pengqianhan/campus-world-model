@@ -49,10 +49,12 @@ stage_data() {
 stage_place() { echo "== place"; py "$T/data/place.py" --config "$CONFIG"; }
 stage_refs() {
   echo "== refs"
-  if [[ -f refs/streetview/metadata.json && -z "${REFS_ONLINE:-}" ]]; then
+  # Offline means no fetch at all, so ALLOW_FETCH goes online (metadata still comes from the snapshots).
+  if [[ -f refs/streetview/metadata.json && -z "${REFS_ONLINE:-}" && "${ALLOW_FETCH:-}" != 1 ]]; then
     py "$T/streetview_collect.py" --config "$CONFIG" --offline
   else
-    py "$T/streetview_collect.py" --config "$CONFIG" ${ALLOW_FETCH:+--allow-fetch}
+    # Only ALLOW_FETCH=1 buys tiles: not 0, not any other value.
+    py "$T/streetview_collect.py" --config "$CONFIG" $([[ "${ALLOW_FETCH:-}" == 1 ]] && echo --allow-fetch)
   fi
   py "$T/sky_mask.py"
 }

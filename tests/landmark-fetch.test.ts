@@ -1,9 +1,10 @@
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { allowed, type Deps, redact, runBatch, runLedger } from "../scripts/lib/landmark-fetch.ts";
-import type { FetchOptions } from "../scripts/lib/snapshot.ts";
+import { type FetchOptions, HttpError } from "../scripts/lib/snapshot.ts";
 
 const KEY = "AIzaTestKeyNotReal";
 const SESSION = "testSessionToken123";
@@ -12,19 +13,21 @@ afterEach(() => {
   process.env = { ...env };
 });
 
-/** A batch's outside world with nothing cached, nothing sent, and a ledger that allows all. */
+/** A batch's outside world with nothing cached yet, and a ledger that allows all. */
 function fake(over: Partial<Deps> = {}) {
   const sent: FetchOptions[] = [];
   const ledger: string[] = [];
+  const cached = new Set<string>();
   const d: Deps = {
     allowFetch: false,
-    has: () => false,
+    has: (file) => cached.has(file),
     read: () => {
-      throw new Error("nothing is cached");
+      throw new Error("not read in these tests");
     },
     get: async (o) => {
       allowed(o.url);
       sent.push(o);
+      cached.add(o.file);
       const expiry = String(Math.round(Date.now() / 1000) + 86_400);
       return Buffer.from(o.url.endsWith("createSession") ? JSON.stringify({ session: SESSION, expiry }) : "{}");
     },
@@ -102,21 +105,79 @@ describe("the landmark pipeline's fetches", () => {
     expect(sent).toEqual([]);
   });
 
-  it("add to the ledger every tile request sent, also when one fails", async () => {
-    process.env.GOOGLE_MAPS_KEY = KEY;
-    let n = 0;
-    const { d, sent, ledger } = fake({ allowFetch: true });
+  /** Tile requests let through, and how many tiles the ledger had counted at each. */
+  function counting(d: Deps, ledger: string[], fail: (n: number) => Error | undefined) {
+    const at: { n: number; counted: number }[] = [];
     const get = d.get;
     d.get = async (o) => {
-      if (o.url.includes("/tiles/") && ++n === 2) throw new Error(`${o.logUrl} -> HTTP 500`);
+      if (!o.url.includes("/tiles/")) return get(o);
+      const counted = ledger.filter((l) => l.startsWith("add ")).reduce((a, l) => a + Number(l.slice(4)), 0);
+      at.push({ n: at.length + 1, counted });
+      const e = fail(at.length);
+      if (e) throw e;
       return get(o);
     };
-    await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/HTTP 500/);
-    expect(ledger).toEqual(["check 2", "add 2"]);
-    expect(sent.map((o) => o.url.split("?")[0])).toEqual([
-      "https://tile.googleapis.com/v1/createSession",
-      "https://tile.googleapis.com/v1/streetview/tiles/5/3/4",
-    ]);
+    return at;
+  }
+
+  it("count every tile in the ledger before it is sent, so a killed batch never counts too few", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const many = Array.from({ length: 60 }, (_, i) => ({ pano: tiles[0]!.pano, zoom: 5, x: i % 32, y: Math.floor(i / 32) }));
+    const { d, ledger } = fake({ allowFetch: true });
+    const at = counting(d, ledger, () => undefined);
+    const [r] = await runBatch([{ op: "tiles", tiles: many }], d);
+    for (const a of at) expect(a.counted).toBeGreaterThanOrEqual(a.n);
+    expect(ledger).toEqual(["check 60", "check 25", "add 25", "check 25", "add 25", "check 10", "add 10"]);
+    expect(r).toMatchObject({ sent: 60, counted: 60, missing: 0 });
+  });
+
+  it("try a tile that fails with a 5xx three times, count each try, then leave it out and go on", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const { d, ledger } = fake({ allowFetch: true });
+    const at = counting(d, ledger, (n) => (n >= 2 ? new HttpError("tile -> HTTP 503", 503) : undefined));
+    const [r] = await runBatch([{ op: "tiles", tiles }], d);
+    expect(at.length).toBe(4);
+    for (const a of at) expect(a.counted).toBeGreaterThanOrEqual(a.n);
+    expect(r).toMatchObject({ sent: 4, counted: 4, missing: 1 });
+    expect((r as { paths: unknown[] }).paths[1]).toBeNull();
+  });
+
+  it("stop at a refusal (4xx), with every tile sent already counted", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const { d, ledger } = fake({ allowFetch: true });
+    const at = counting(d, ledger, (n) => (n === 2 ? new HttpError("tile -> HTTP 403", 403) : undefined));
+    await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/HTTP 403/);
+    expect(at.length).toBe(2);
+    expect(ledger).toEqual(["check 2", "check 2", "add 2"]);
+  });
+
+  it("leave out a panorama whose metadata Google no longer has, and stop at any other failure", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const { d } = fake();
+    const get = d.get;
+    d.get = async (o) => (o.url.includes("/metadata") ? Promise.reject(new HttpError("metadata -> HTTP 404", 404)) : get(o));
+    const [r] = await runBatch([{ op: "metadata", panos: [tiles[0]!.pano] }], d);
+    expect(r).toEqual({ metadata: [{ panoId: tiles[0]!.pano }], sent: 1 });
+    const { d: d2 } = fake();
+    const get2 = d2.get;
+    d2.get = async (o) => (o.url.includes("/metadata") ? Promise.reject(new HttpError("metadata -> HTTP 403", 403)) : get2(o));
+    await expect(runBatch([{ op: "metadata", panos: [tiles[0]!.pano] }], d2)).rejects.toThrow(/HTTP 403/);
+  });
+
+  it("run as the pipeline runs it: plain node, a batch on stdin, the results alone on stdout", () => {
+    // Node strips the types and runs the file: syntax it cannot strip fails here, not in vitest.
+    const r = spawnSync(process.execPath, ["scripts/landmarks/fetch.ts"], { input: JSON.stringify({ ops: [] }), encoding: "utf8" });
+    expect(r.stderr).toBe("");
+    expect(r.status).toBe(0);
+    expect(JSON.parse(r.stdout)).toEqual({ results: [] });
+  });
+
+  it("send nothing for a file already cached", async () => {
+    const url = "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_3603.laz";
+    const { d, sent } = fake({ has: () => true });
+    const [r] = await runBatch([{ op: "file", url }], d);
+    expect(r).toMatchObject({ sent: 0 });
+    expect(sent).toEqual([]);
   });
 
   it("keep the key out of every URL, and the session out of every logged URL and error", async () => {

@@ -177,12 +177,12 @@ stay on the machine that fetched them.
 ### References (Street View)
 
 Cache-first: metadata and tiles are kept in `data/raw/landmarks/streetview/` (see "Fetching") and
-are never fetched again; tiles cached before in `refs/streetview/tiles/<panoId>/` are still read. A
-tile that is not cached is **not** bought unless `--allow-fetch` is given and the ledger allows it;
+are never fetched again. A tile that is not cached is **not** bought unless `--allow-fetch` is given
+and the ledger allows it;
 the run counts it, and a view that would need it keeps its existing image. By default `run.sh refs`
 works offline from `refs/streetview/metadata.json` (no network call at all); `REFS_ONLINE=1` makes
 it again from the snapshots, with the free calls (createSession, panoIds, metadata) for what is not
-cached; a fresh clone has no `metadata.json` and goes online. The panoramas are the ones listed in the config's
+cached; a fresh clone has no `metadata.json` and goes online, and so does a run with `ALLOW_FETCH=1`. The panoramas are the ones listed in the config's
 `streetview.pano_ids` (without that list, those within `radius_m` of the building). Each panorama
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
 hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it.
@@ -226,23 +226,33 @@ in `scripts/lib/landmark-fetch.ts`.
   landmark measured from another LiDAR or aerial set adds its bucket there: that is a new data
   source, for the maintainer to decide.
 - **Cached once.** All of it is kept in `data/raw/landmarks/` (gitignored), shared by all landmarks,
-  and never fetched again: `lidar/`, `aerial/`, and `streetview/` (`session.json`,
-  `metadata/<panoId>.json`, `panoIds/`, `tiles/<panoId>/<zoom>_<col>_<row>.jpg`). The data stage
-  links the LiDAR tiles into the landmark's `data/lidar/`.
+  and never fetched again: `lidar/`, `aerial/`, and `streetview/` (`metadata/<panoId>.json`,
+  `panoIds/`, `tiles/<panoId>/<zoom>_<col>_<row>.jpg`). A file is written whole or not at all. The
+  one exception is the session (`streetview/session.json`): it is used again until ten minutes
+  before it expires (two weeks), then asked for anew. The data stage links the LiDAR tiles into the
+  landmark's `data/lidar/`. Tiles that the pipeline cached before 2026-10-22, in a landmark's
+  `refs/streetview/tiles/<panoId>/`, are no longer read: move each panorama's folder to
+  `data/raw/landmarks/streetview/tiles/<panoId>/`, and the next `refs` records them instead of
+  buying them again.
 - **Paced and logged.** One request every 1.1 s, also from one batch to the next, and one batch at a
   time (a lock file in `data/raw/landmarks/`), with the project's User-Agent. The time and URL of
   each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
-  LiDAR or aerial file, one for each panorama's metadata, and one for each panorama's tiles: their
-  count, total size and one sha256 over the sorted list of `<file> <sha256>` lines (12 records for
-  the Clock Tower's 1,526 tiles).
+  LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
+  for each panorama's tiles: their count, total size, one sha256 over the sorted list of
+  `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
+  A batch records each panorama's tiles when it is done with them, and at its start records any
+  that a batch killed part way left unrecorded. No redirect is followed.
 - **The key** is read at the moment of a request, from `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`, and sent
   in the `X-Goog-Api-Key` header, never in a URL. The session token is written as `<session>` in
   every logged URL, and both are taken out of every error message.
 - **Tiles are bought through a ledger only.** With `ALLOW_FETCH=1` the batch counts the tiles that
   are not cached (N) and runs `$PY -I $GMAPS_BUDGET check N` first: if it exits other than 0,
-  nothing is bought. After the downloads, also when one fails, it runs `add X`, X being the tile
-  requests sent. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the
-  repository that keeps a monthly and a daily count under a cap.
+  nothing is bought. Then it adds the tiles to the ledger before it sends them, 25 at a time
+  (`check 25`, `add 25`), so a batch stopped part way, even killed, has counted a few too many,
+  never too few. A tile that fails with a 5xx, a timeout or a dropped connection is tried three
+  times, each try counted, and then left black; a refusal (4xx) stops the batch. Without
+  `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
+  monthly and a daily count under a cap.
 
 ## What is billed
 
