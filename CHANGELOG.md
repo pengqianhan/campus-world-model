@@ -16,6 +16,13 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-10-22
 
+### Changed
+
+- **The Clock Tower on older Firefox.** Firefox 93 to 113 now show the blocks of buildings 105 and
+  105S in place of the Clock Tower drawn in detail: the code that draws it now runs as a module
+  worker, which Firefox has since version 114; the page itself already needs Chrome 94, Safari 16.4
+  and Firefox 93 (#68).
+
 ### Fixed
 
 - **A childcare centre's floor was drawn.** The ground floor of building 841, Nicholls Lane ECE
