@@ -688,17 +688,22 @@ export class CampusScene {
    * where the browser allows it (KHR_parallel_shader_compile). Made in the frame, the full form's
    * stopped the page for half a second (measured 2026-10-21). In a walker view of the full tier the
    * scene is drawn into the renderer's half-float picture rather than the screen, so the shaders
-   * are made for a picture: with no tone mapping, in the working colour space.
+   * are made for a picture: with no tone mapping, in the working colour space. A walker view's look
+   * comes in a chunk of its own: shaders made before it is in place were made again in the first
+   * frame that drew the form (0.56 to 0.77 s, a form made soon after a walker view opened from the
+   * map, measured 2026-10-22), so they are made once it is.
    */
   private prepareLandmark(form: Object3D): Promise<unknown> {
-    const was = this.renderer.getRenderTarget();
-    if (this.street.active && this.landmarkFull) this.renderer.setRenderTarget((this.picture ??= new WebGLRenderTarget(1, 1, { type: HalfFloatType })));
-    const made = this.renderer.compileAsync(form, this.activeCamera, this.scene);
-    this.renderer.setRenderTarget(was);
     // Counted until the frame after it is ready (frame): it is waited for with the page's timers,
     // which a tab in the background, or a test's clock, holds back.
     this.preparing++;
-    return made;
+    return (this.street.loaded ?? Promise.resolve()).then(() => {
+      const was = this.renderer.getRenderTarget();
+      if (this.street.active && this.landmarkFull) this.renderer.setRenderTarget((this.picture ??= new WebGLRenderTarget(1, 1, { type: HalfFloatType })));
+      const made = this.renderer.compileAsync(form, this.activeCamera, this.scene);
+      this.renderer.setRenderTarget(was);
+      return made;
+    });
   }
   /** A picture like the one the full tier draws a walker view into, for making shaders for it. */
   private picture?: WebGLRenderTarget;

@@ -111,6 +111,14 @@ export class StreetLook {
   }
 
   /**
+   * In a walker view, resolves once the look (sky, environment, effects) has come and is in place:
+   * shaders made before then are not the ones its frames draw with. Undefined on the map.
+   */
+  get loaded(): Promise<void> | undefined {
+    return this.on ? this.loading : undefined;
+  }
+
+  /**
    * Whether the buildings' walls go into the depth buffer alone before they are shaded: a graphics
    * card then shades each pixel of a wall once (tier "full"); a software renderer, which has no
    * early depth test to gain from it, only draws them twice.
