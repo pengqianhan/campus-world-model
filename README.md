@@ -40,6 +40,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-22:** the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
+  childcare centre's is.
 - **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
   click still opens its floors.
