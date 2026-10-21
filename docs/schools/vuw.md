@@ -62,12 +62,12 @@ childcare centre were not located in this recon.
   ITS report names as teaching or learning spaces (FFTS, STR, CETS, LT, FLS) can be listed by code
   and capacity: the code gives the building, and its first digit the level by VUW's rule, so a
   room is located to a building and an inferred floor, labelled as from the code, with no outline.
-  Where the code holds a street number, a four-digit room number or a prefix that "Locate a room"
-  does not list (layer 2), the floor stays unknown. The other 80 rooms stay unnamed ("Places, not
-  people"): 12 meeting rooms, 61 rooms of the undefined class X, and the MAV (5) and AVL (2) rooms,
-  which are teaching spaces only by inference from the report's title. Course search knows 3,513
-  course codes with titles and, for each offering, the
-  trimester and the lecture days and times. Those times are known only to the campus, so they
+  Where the code holds a street number, a four-digit room number, a one-digit lecture-theatre
+  number or a prefix that "Locate a room" does not list (layer 2), the floor stays unknown. The
+  other 80 rooms stay unnamed ("Places, not people"): 12 meeting rooms, 61 rooms of the undefined
+  class X, and the MAV (5) and AVL (2) rooms, which are teaching spaces only by inference from the
+  report's closing note. Course search knows 3,513 course codes with titles and, for each
+  offering, the trimester and the lecture days and times. Those times are known only to the campus, so they
   cannot be placed in a building or room: search can show them as "Kelburn campus, room not
   published", and the map shows no classes.
 - **If the maintainer clears `/tools` (or VUW agrees):** every class meeting from the Academic
@@ -100,11 +100,11 @@ The named points in the campus pages themselves stand in for it.
 
 | Route | URL | Answer (2026-10-22) | What it holds |
 | --- | --- | --- | --- |
-| Campus map, own requests | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn` (also `/pipitea`, `/te-aro`, `/auckland`) | 200 `text/html` each | A frame `https://www.wgtn.ac.nz/nestable-content/maps/map?lat=…&long=…&zoom=17&folder=<id>&poi-list=yes`, and in the page itself a "Points of interest" list: each point has `data-lat`, `data-long` and a name ("Old Kirk building", "Hunter Building", "Maclaurin lecture theatres", "Library", bus stops). 24 points on Kelburn, 7 on Pipitea, 4 on Te Aro, 6 on Auckland. Points only: no outlines, no floors |
+| Campus pages and their points | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn` (also `/pipitea`, `/te-aro`, `/auckland`) | 200 `text/html` each | A frame `https://www.wgtn.ac.nz/nestable-content/maps/map?lat=…&long=…&zoom=17&folder=<id>&poi-list=yes`, and in the page itself a "Points of interest" list: each point has `data-lat`, `data-long` and a name ("Old Kirk building", "Hunter Building", "Maclaurin lecture theatres", "Library", bus stops). 24 points on Kelburn, 7 on Pipitea, 4 on Te Aro, 6 on Auckland. Points only: no outlines, no floors |
 | The map frame | `…/nestable-content/maps/map?…` (four campuses) | 200, loaded by the browser by itself as part of each page (a lapse: `robots.txt` disallows `/nestable-content/`; see "Request log") | Not saved and not read. Its Google Maps scripts (`maps.googleapis.com`) were blocked |
 | A Google My Maps frame | `https://www.google.com/maps/d/embed?mid=…` in the Kelburn page | not requested | It sits inside an HTML comment, so the page does not show it |
 | Room directory: "Locate a room" | `https://www.wgtn.ac.nz/about/campuses-facilities/room-location` | 200 `text/html`, about 118 KB | 48 rows: building code, building name, campus or location (counts in "Campuses"). The room-code rule. No rooms listed |
-| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. The report names five classes as teaching or learning spaces (FFTS, STR, CETS, LT, FLS): 186 rooms. MAV and AVL (7 rooms) are teaching spaces only by inference from the report's title ("All teaching rooms have a minimum of an OHP…"); MR and X are not. Most codes start with a building code of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Exceptions: 21 codes put a street number first (`KP24101`, `FT83201`, `WR06102` and others; VUW's own example "KP10 107" is "a room on the ground floor"), 3 have a four-digit room number (`RH1113`, `RH1219`, `RH1220`; Rutherford House also has `RH819`, so their first digit is not their level), 11 use a prefix that "Locate a room" does not list (`HERCCS` 4, `WIG` and `VSWIG` 6, `HUVICRM` 1), and some carry a letter level (`GBG04`, `RHMZ03`). No floor field, no outline |
+| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. The report names five classes as teaching or learning spaces (FFTS, STR, CETS, LT, FLS): 186 rooms. MAV and AVL (7 rooms) are teaching spaces only by inference from the report's closing note ("All teaching rooms have a minimum of an OHP…"); MR and X are not. Most codes start with a building code of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Exceptions: 27 codes put a street number first, FT, KP or WR and five digits (`KP24101`, `FT83201`, `WR06102`, `FT77205` and others; 19 of them among the 186; VUW's own example "KP10 107" is "a room on the ground floor"); 3 have a four-digit room number (`RH1113`, `RH1219`, `RH1220`; Rutherford House also has `RH819`, so their first digit is not their level); 10 lecture theatres have a one-digit number, which is the theatre's number, not its level (`GBLT1` to `GBLT4`, `RHLT1` to `RHLT3`, `VSLT1`, `VSLT2`, `TTRLT1`; all among the 186; Te Aro's "Level 1 Campus Floor Plan" shows LT1 and LT2 on level 1); 13 use a prefix that "Locate a room" does not list (`HERCCS` 4, `WIG` and `VSWIG` 6, `PRPR` 2, `HUVICRM` 1); and some carry a letter level (`GBG04`, `RHMZ03`). No floor field, no outline |
 | Venue hire: lecture theatres | `https://www.wgtn.ac.nz/about/campuses-facilities/venue-hire/lecture-theatres` | 200 `text/html`, 119,570 bytes | Capacity ranges only ("134 to 340 people", "42 to 85 people") |
 | Open data | web search for a VUW GIS or open-data portal | none found | Wellington City Council's 3D buildings (layer 1) are exteriors, not indoor |
 | Floor-plan PDF, Kelburn | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn/kelburn-campus-map.pdf` | 200 `application/pdf`, 2,515,969 bytes, 2 pages, made 2025-12-08 | "Kelburn Campus Map" 2026: a campus drawing, accessible routes, and a directory of buildings, faculties, schools and services with building codes and grid references. Legend symbols include "Early childhood centre" and "Student hall of residence". No floor plans |
@@ -137,8 +137,9 @@ requests, and the course pages add nothing that the lists do not have.
 Precision: a room code locates a meeting to a room code. The building comes from the code list,
 and the level from the first digit, which VUW says is "typically" the level: inferred and
 labelled so. Where a code puts a street number first, has a four-digit room number (`RH1220`
-beside `RH819`), or uses a prefix that "Locate a room" does not list (layer 2), the floor stays
-unknown. Rooms have no outlines.
+beside `RH819`), is a lecture theatre with a one-digit number (`GBLT1`; Te Aro's level 1 plan
+shows LT1 and LT2), or uses a prefix that "Locate a room" does not list (layer 2), the floor
+stays unknown. Rooms have no outlines.
 
 ## Layer 4: academic calendar
 
