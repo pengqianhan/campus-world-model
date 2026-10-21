@@ -16,6 +16,17 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-10-22
 
+### Added
+
+- **Measured massings.** Near the camera, seven plain buildings of the City Campus are drawn from
+  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 431 Fine Arts
+  Studio Block 431, 434 Waikohanga House, 435 58 Symonds Street and 436 University Hall Apartments.
+  A program measures their layers and roofs (flat, or sloping planes); their walls, storeys and
+  windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
+  Of University Hall Apartments, where people live, only the outside is drawn. The building card
+  and About name them. The other 41 small buildings in the LiDAR keep their blocks, each with its
+  reason (`landmarks/measured/exclusions.json`) (#NN).
+
 ### Changed
 
 - **The Clock Tower on older Firefox.** Firefox 93 to 113 now show the blocks of buildings 105 and

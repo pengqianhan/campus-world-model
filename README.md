@@ -40,8 +40,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-22:** the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
-  childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
+- **2026-10-22:** seven plain buildings of the City Campus (113, 114, 409, 431, 434, 435 and 436)
+  are drawn near the camera as measured massings: their heights and roofs from the LiDAR, their
+  walls and windows by rule. The floor of Nicholls Lane ECE, an early childhood centre, is left
+  blank, as every childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
 - **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
   click still opens its floors.
@@ -229,6 +231,11 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=clocktower&view=orbit`.
 
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
+- **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
+  program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
+  measured heights, walls, storeys and windows by the street look's rules. Seven are on the site
+  (`landmarks/measured/`); the other tier-3 buildings keep their blocks, each with its reason in
+  `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
   collect the Street View references, correct their cameras, render and score, and place the model
@@ -385,7 +392,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), measured for its model in `landmarks/clocktower/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js`; the tiles stay on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), measured for its model in `landmarks/clocktower/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the Clock Tower's model was compared with while it was drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -404,7 +411,9 @@ If you represent the University and would like something changed or removed, ple
 - **Building heights are estimated and windows are drawn by rule.** The ground's heights come from
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
-  105S) is the exception near it: its model is drawn to sizes measured from LiDAR.
+  105S) is the exception near it: its model is drawn to sizes measured from LiDAR. So are the
+  measured massings near them (About lists them): their heights and roofs are measured, their walls
+  and windows drawn by rule.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
   campus map's type and nothing more; where the map's type says nothing ("Non Usable Area",
   "Nonasgn Rentable" and the like) the site says "Other area". Floors where people live and

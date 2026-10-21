@@ -1880,6 +1880,8 @@ export class CampusScene {
       this.camera.updateProjectionMatrix();
       this.needsRender = true;
       this.needsLabels = true;
+      // A zoom alone moves no control, so nothing else says that the landmarks may now be near or far.
+      this.needsLandmarks = true;
     };
     this.tweens = this.tweens.filter((t) => t.step !== this.cameraStep);
     if (!animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

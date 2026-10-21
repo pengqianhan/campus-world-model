@@ -1,8 +1,10 @@
 # Measured massing: a design for the small buildings
 
-This is a design for the maintainer to decide. It has no code. Code follows only after the
-decisions at the end are taken. It touches recorded decisions, so it is a gate (`AGENTS.md`, "How a
-change lands").
+This is the design of the measured massings. The maintainer took its recommendations on
+2026-10-22 (see "Decisions the maintainer must take"), and it is built as `landmarks/README.md`,
+"Measured massings", says. It touches recorded decisions, so it was a gate (`AGENTS.md`, "How a
+change lands"). Where the built generator measures in another way than the steps below, the README
+says so, and its numbers decide.
 
 A **measured massing** is a building drawn by a program, not by agents: blocks and roofs at the
 heights that the LINZ 2024 LiDAR measures, and walls by rule. It is for the many plain University
