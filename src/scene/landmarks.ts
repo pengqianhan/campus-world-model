@@ -4,7 +4,7 @@
 // made (CampusScene.prepareLandmark):
 // - "light": the landmark's shape in the map's colours, with no texture. The map draws it, and so
 //   do the walker views of the basic tier (street/tier.ts): phones and software rendering.
-// - "full": the same shape in the landmark's own stone, glass and slate (landmarks/kit/), in the
+// - "full": the same shape in the landmark's own materials (landmarks/kit/), in the
 //   walker views of the full tier.
 // The blocks stay in the scene. They are what a click finds and what opens on their floors (CampusScene).
 import { BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Sphere, Vector3, type Material, type Object3D } from "three";
@@ -58,8 +58,18 @@ export interface LightMaterials {
   openings: MeshLambertMaterial;
 }
 
-/** The part of the light form each of the kit's materials falls in; every other material is wall. */
-const LIGHT_ROLE: Record<string, keyof LightMaterials> = { roof: "roof", glass: "glass", iron: "openings", void: "openings" };
+/**
+ * The part of the light form each of the kit's materials falls in; every other material is wall,
+ * as the painted timber's boards, trim and paint are.
+ */
+const LIGHT_ROLE: Record<string, keyof LightMaterials> = {
+  roof: "roof",
+  roofPale: "roof",
+  glass: "glass",
+  glassPale: "glass",
+  iron: "openings",
+  void: "openings",
+};
 
 /**
  * The full form's textures. At "low" the rock-faced ashlar repeats every 4 m over 1,024 pixels, half

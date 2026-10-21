@@ -1,5 +1,6 @@
 {
  "name": "old-government-house",
+ "site": true,
  "building": {
   "id": "102",
   "also": [],

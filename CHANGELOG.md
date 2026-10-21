@@ -16,6 +16,18 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-10-22
 
+### Added
+
+- **Old Government House drawn in detail.** Near Old Government House (building 102) the map now
+  draws it from code, to sizes measured from the LiDAR survey: its painted weatherboards and ochre
+  trim, the low hipped roofs on bracketed eaves, the chimneys, the bay, the balconies and the porch.
+  On the map it has the map's colours. From a walker's height it is drawn in painted timber, glass
+  and its pale roofs on a computer with a graphics card, and in the map's colours on phones and on
+  computers without one. Trees hide it from all but two Street View panoramas, so its shape was
+  checked against the LiDAR from above. Its block still answers a click and opens on its floors, and
+  the two floors where people live stay blank. About now says the landmarks are drawn in their own
+  materials (#PR).
+
 ### Changed
 
 - **The Clock Tower on older Firefox.** Firefox 93 to 113 now show the blocks of buildings 105 and
