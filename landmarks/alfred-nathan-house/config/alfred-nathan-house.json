@@ -1,0 +1,61 @@
+{
+ "name": "alfred-nathan-house",
+ "building": {
+  "id": "103",
+  "also": [],
+  "title": "Alfred Nathan House, University of Auckland",
+  "note": "outline: building 103's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[-0.8, 159.8], [-1.5, 160.0], [-1.1, 161.3], [-6.5, 163.2], [-6.2, 164.0], [-6.6, 164.1], [-7.2, 165.6], [-6.7, 167.1], [-7.4, 169.2], [-6.9, 171.4], [-6.2, 172.4], [-4.4, 173.6], [-3.9, 175.0], [-2.6, 175.8], [-2.1, 175.6], [-1.8, 176.4], [0.7, 175.6], [1.7, 176.0], [3.2, 175.5], [3.6, 174.5], [33.6, 164.0], [33.3, 163.1], [34.3, 162.7], [34.6, 163.6], [42.4, 160.9], [41.1, 160.2], [37.2, 149.2], [37.8, 147.9], [30.1, 150.6], [30.4, 151.5], [29.4, 151.8], [29.0, 151.0], [5.2, 159.3], [4.7, 157.8]]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 43.5,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3604"],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802"],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 103's outline (the General Library, 109, stands a few metres to the south-south-west, and trees round it): centre = mean x/y of points higher than tower_above m: the main block's flat roof (the lower block at its west end, on Princes Street, and the plant room are left out or count little); axis = the bearing of most of the walls seen from above (axis_from walls), along the main block's long side; toStreet = the axis turned 90 deg toward street_side.",
+  "min_above": 2.6,
+  "tower_above": 14.0,
+  "spine_below": 19.0,
+  "spine_radius": 35,
+  "near_outline": 2.0,
+  "street_side": "west",
+  "axis_from": "walls"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 8, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "upper", "aim_y": 14, "hfov": 40, "width": 1200, "height": 900},
+   {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "provisional: the LiDAR ground along the long sides, 43.4-43.6 m; Princes Street at the west end is 45.1 and the lower ground east of the building 42.3. Set at the door once the photographs show where it is."
+}
