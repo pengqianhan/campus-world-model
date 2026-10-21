@@ -1,8 +1,8 @@
 # Landmark: Old Choral Hall, drawn from code
 
-Old Choral Hall (building 104 of the University of Auckland's campus map), at the corner of Symonds Street
-and Grafton Road, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, by a lead agent and a team of agents
-(October 2026). Every source shows the building during building works (see "The sources: works in
+Old Choral Hall (building 104 of the University of Auckland's campus map), at the corner of Symonds
+Street and Grafton Road, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, by a lead
+agent and a team of agents (October 2026). Every source shows the building during building works (see "The sources: works in
 progress"), except the panoramas of 2022-09 of its south-west range. So that range, with its two end
 pavilions, is drawn in detail as those panoramas show it, and the rest of the building plainly, at
 the LiDAR's sizes, with no windows or ornament. The kit, the pipeline and the viewer are shared by
@@ -27,9 +27,11 @@ Renders of the model (no photograph): [`docs/landmarks/old-choral-hall-symonds.j
 
 ## The frame
 
-- View frame: x to the right as seen from Grafton Road on the south-east, y up from the ground in
-  the middle of the street front (37.7 m NZVD2016, provisional: the street falls from 38.8 m at the
-  south-west end to 36.8 m at the north-east), z toward the street.
+- View frame: x to the right as seen from Grafton Road on the south-east, y up from 37.7 m NZVD2016,
+  z toward the street. The door (config `door`, x 1.5, z 22.6) is on the Grafton Road footpath at the
+  mouth of the forecourt, where the LiDAR's ground is 37.78 m; the footpath falls from 38.5 m at the
+  corner pavilion to 36.85 m at the north-east corner, and the Symonds Street footpath rises from
+  38.7 m at the corner to 40.6 m at the north-west pavilion.
 - In the LiDAR frame (local NZTM metres) the centre is at (107.520, 86.738) and the axis points at
   bearing 225.3° (grid), so the street front faces 135.3°. The axis is the bearing of most of the
   walls seen from above (`frame.axis_from: "walls"`): the building is wings at two angles.
@@ -57,9 +59,11 @@ Each of the three sources was taken while the building was being rebuilt:
   wrapped block and a scaffold on the roof (see "References").
 
 So most of the building cannot be checked against what stands there now. Before the works, the
-panoramas of 2022-09 on Symonds Street, along it, show the south-west range whole: two storeys of red brick
-with cream dressings between two cream pavilions with giant columns. The LiDAR measured that range
-unwrapped, and its plan and parapet agree with those panoramas. That range is drawn in detail; the
+panoramas of 2022-09 on Symonds Street show the south-west range whole: two storeys of red brick with
+cream dressings between two cream pavilions with giant columns; and in 2024-10 (C1kG) the corner
+pavilion and the range stand restored, out of their scaffolds, as they were. The LiDAR measured that
+range's roof and parapet (a scaffold deck stood 1.7 m out from the parapet in May 2024, classed as
+vegetation), and its plan and parapet agree with those panoramas. That range is drawn in detail; the
 rest is drawn plainly, as the rules say for what no photograph shows.
 
 **What would let the rest be drawn**: Google panoramas on Grafton Road taken after the works (newer
