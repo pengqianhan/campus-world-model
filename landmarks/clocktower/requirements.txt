@@ -1,0 +1,9 @@
+# Python 3.10+ for the data, references, masks and metrics stages (run with `python -I`).
+numpy
+scipy
+pillow
+matplotlib
+pyproj
+laspy[lazrs]
+rasterio
+requests

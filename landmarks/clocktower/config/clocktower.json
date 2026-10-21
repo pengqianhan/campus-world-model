@@ -1,0 +1,53 @@
+{
+ "name": "clocktower",
+ "building": {
+  "id": "105",
+  "title": "University of Auckland Clock Tower",
+  "note": "outline: building 105's outline from the main project's campus.json (local metres east/north of origin). It is several metres off the LiDAR and is used only to choose the crop box and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[41.5, 275.3], [50.8, 271.9], [51.6, 274.1], [56.8, 272.2], [46.7, 245.5], [50.9, 243.9], [49.1, 239.4], [52.8, 237.9], [49.2, 228.5], [43.3, 230.7], [42.4, 228.4], [43.0, 227.1], [41.5, 226.4], [40.6, 224.1], [41.3, 222.7], [40.0, 222.1], [39.2, 220.0], [45.2, 217.8], [41.5, 208.1], [9.5, 220.2], [13.1, 229.7], [18.7, 227.6], [19.7, 230.1], [18.4, 230.6], [17.8, 228.9], [16.0, 229.6], [16.6, 231.3], [18.4, 230.7], [18.8, 231.8], [20.2, 231.4], [21.4, 234.5], [20.1, 235.1], [20.4, 236.1], [21.8, 235.8], [22.8, 238.3], [17.0, 240.2], [20.6, 249.9], [30.7, 246.2]]
+ },
+ "origin": {
+  "lat": -36.8523, "lon": 174.7691,
+  "note": "the campus origin; local metres = NZTM (EPSG:2193) minus the NZTM of this point, computed as in campus.json (lon/lat offset by 111320 m per degree)"
+ },
+ "crop_margin": 25,
+ "ground": 45.8,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706"],
+  "mirrors": [],
+  "licence": "LINZ Auckland LiDAR 2024, CC BY 4.0 (via OpenTopography)"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802", "1803", "1902", "1903"],
+  "licence": "LINZ Auckland Central 0.06 m Urban Aerial Photos (2023), CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m; axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing north-ish); toStreet = the axis turned 90 deg, pointing west-ish (negative east).",
+  "min_above": 3, "tower_above": 30, "spine_below": 16, "spine_radius": 45,
+  "street_side": "west",
+  "expected": {"centre": [35.196, 228.507], "axis": [0.32563, 0.94550], "tolerance_m": 0.05}
+ },
+ "streetview": {
+  "max_panos": 12,
+  "pano_ids_note": "the panoramas the Clock Tower was modelled against (2024-07 Princes St, 2025-05). With pano_ids set the run asks Google for these only; drop it to search radius_m round the building instead.",
+  "pano_ids": ["d0Oz7kRxTCo97j5oKxXA0Q", "aOMMiRPRCQ37NotyOfD8Ng", "5w8kaFoBkWuw-AG_aMQiDg", "cjspQ80RX9ETC35IlSTDAg", "hyoe8Wjqy3DT8Cy7yS2LCA", "h5vOQ_wj73icqw0k58Pk4Q", "Wqs3GJCdPVOShne97bZ34A", "Z4k1vk5M5EBwPPEpkSBPBQ", "-qoaDrDmyudQuqbj-i64tQ", "rA70HqrT1rLs_9BPOa1eHw", "ppNz4rb-CzNW55rRsWgVKQ", "EX9bpguQ8sqJNRHzW1bGYg"],
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 12, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "tower", "aim_y": 29, "hfov": 30, "width": 900, "height": 1350},
+   {"name": "door", "aim_y": 2.5, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "refine": {
+  "position_m": 3, "height_m": 1, "yaw_deg": 2, "pitch_deg": 2,
+  "min_height_m": 8,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}
