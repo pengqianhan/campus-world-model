@@ -13,7 +13,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 70,
- "ground": 43.6,
+ "ground": 43.5,
+ "door": {
+  "x": 7.2, "z": 10.0,
+  "note": "view frame: the foot of the steps up to the glazed entrance between the chapel and the hall, on the street side (dsLbToS1nQd0 wide view); the LiDAR ground on the path there is 43.49-43.53 m, so ground is 43.5 and the model's y is 0 there; place.py puts it on the map"
+ },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3604"],
@@ -27,10 +31,10 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) within near_outline m of building 107's outline (2.5: the hall's flat roof reaches 1.5-1.7 m beyond the outline, which follows its walls, over a walk along each long side): centre = mean x/y of points higher than tower_above m and within tower_radius m (in plan) of the highest of them: the top of the chapel's low pyramid roof and the slender spire on it (a tree's crown over the south-west corner of the hall, 9 to 19 m up, is classed as building, so without tower_radius it pulls the centre 13.6 m away); axis = the bearing of most of the walls seen from above (axis_from walls: the hall is nearly square and the chapel is many-sided, so their principal axis, 11.0 deg, is 8.8 deg off the hall's walls), the one of the two square to each other nearest the principal axis, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
-  "min_above": 2.5,
-  "tower_above": 9.6,
+  "min_above": 2.6,
+  "tower_above": 9.7,
   "tower_radius": 4,
-  "spine_below": 6,
+  "spine_below": 6.1,
   "spine_radius": 35,
   "near_outline": 2.5,
   "street_side": "west",
@@ -65,5 +69,5 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "provisional: the LiDAR ground along the Princes Street (west-north-west) side of the building; set at the door once the references show it"
+ "ground_note": "the LiDAR ground on the path at the foot of the entrance steps (43.49-43.53 m); the street side runs from 43.5 there to 43.8 at either end of the building, and the back falls to 42.9; frame thresholds are above this ground (0.1 m higher than with the first, provisional 43.6, so the frame is the same)"
 }
