@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   panoramas, which see the upper storey of its south-east end, so its shape was checked against the
   LiDAR from above. Its block still answers a click and opens on its floors, and
   the two floors where people live stay blank. About now says the landmarks are drawn in their own
-  materials (#PR).
+  materials (#75).
 
 ### Changed
 
