@@ -287,8 +287,32 @@ export class MeshBuilder {
     }
   }
 
-  /** One flat-shaded triangle from points given as [east, height, north], wound to face out and up. */
-  private face(a: readonly number[], b: readonly number[], c: readonly number[], color?: RGB): void {
+  /**
+   * A flat polygon from points given as [east, height, north] in order round it, as the measured
+   * massings draw their roofs (landmarks/measured/model.js). A sloping one is a roof, in the second
+   * material group and wound to face up; an upright one (the end of a gable, a wall up to a sloping
+   * roof) stays with the walls as plain wall, and faces out when its points go round it as a wall of
+   * a counter-clockwise ring does in `extrude`.
+   */
+  facet(points: readonly (readonly number[])[], color?: RGB): void {
+    if (points.length < 3) return;
+    const flat = points.map((p) => new Vector2(p[0]!, p[2]!));
+    if (Math.abs(ShapeUtils.area(flat)) < 1e-6) {
+      for (let i = 1; i + 1 < points.length; i++) this.face(points[0]!, points[i]!, points[i + 1]!, color, true);
+      return;
+    }
+    for (const [i, j, k] of ShapeUtils.triangulateShape(flat, []) as [number, number, number][]) {
+      const ccw = (flat[j]!.x - flat[i]!.x) * (flat[k]!.y - flat[i]!.y) - (flat[k]!.x - flat[i]!.x) * (flat[j]!.y - flat[i]!.y) > 0;
+      this.face(points[i]!, points[ccw ? j : k]!, points[ccw ? k : j]!, color, true);
+    }
+  }
+
+  /**
+   * One flat-shaded triangle from points given as [east, height, north], wound to face out and up.
+   * With `second`, a sloping triangle goes into the second material group, as a roof, and an upright
+   * one stays with the walls as plain wall.
+   */
+  private face(a: readonly number[], b: readonly number[], c: readonly number[], color?: RGB, second = false): void {
     // Scene axes: x is east, y is up, z is south.
     const ux = b[0]! - a[0]!;
     const uy = b[1]! - a[1]!;
@@ -301,12 +325,13 @@ export class MeshBuilder {
     const nz = ux * vy - uy * vx;
     const len = Math.hypot(nx, ny, nz);
     if (len < 1e-6) return;
+    const roof = !second || Math.abs(ny / len) > 0.01;
     const i = this.vertexCount;
     for (const p of [a, b, c]) {
       this.vertex(p[0]!, p[1]!, -p[2]!, nx / len, ny / len, nz / len, color);
-      this.markAt(PART.pitched, p[0]!, p[1]!, -p[2]!);
+      this.markAt(roof ? PART.pitched : PART.plain, p[0]!, p[1]!, -p[2]!);
     }
-    this.indices.push(i, i + 1, i + 2);
+    (second && roof ? this.roofIndices : this.indices).push(i, i + 1, i + 2);
   }
 
   /**
