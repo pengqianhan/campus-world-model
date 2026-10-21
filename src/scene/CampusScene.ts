@@ -219,8 +219,9 @@ const WINDOW_PANE = "#93a3ab";
 const LANDMARK_PIXELS = 1.5;
 /**
  * The same for a measured massing (landmarks/MASSING.md): nearer, where its storeys start to show
- * (a 3.2 m bay is 13 pixels wide). It has no details to show further out, the map's views of the
- * whole campus and its east (500 m across) stay as they were, and fewer are drawn at once.
+ * (a 3.2 m bay is 13 pixels wide). It has no details to show further out, fewer are drawn at once,
+ * and on a screen 1440 by 900 the map's views of the whole campus and of its east (500 m across)
+ * stay as they were. On a screen 1,440 pixels tall or more the 500 m view is near enough.
  */
 const MEASURED_PIXELS = 4;
 /** Metres from a walker view's camera within which a landmark is drawn in place of its block. */

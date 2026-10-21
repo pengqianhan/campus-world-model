@@ -216,10 +216,14 @@ export class Landmark {
     if (form === "full" && !this.measured && !this.asked.has("textures")) this.fetch({ name: this.name, part: "textures", quality: QUALITY });
   }
 
-  /** A measured massing takes its block's materials again, after the block's have changed (a walker view begun or ended). */
+  /**
+   * A measured massing takes its block's materials again, after the block's have changed (a walker
+   * view begun or ended, the facades loaded). Every form made so far, ready to draw or still having
+   * its shaders made, so that none keeps the materials of the view before.
+   */
   redress(): void {
     if (!this.measured) return;
-    for (const form of Object.values(this.forms)) {
+    for (const form of this.group.children) {
       for (const mesh of form.children as Mesh[]) {
         const m = this.host.dress?.(this.buildings[0]!, mesh.userData.role as "walls" | "roof");
         if (m) mesh.material = m;

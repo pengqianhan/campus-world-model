@@ -49,7 +49,8 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     if (plain) mb.extrude(rings, textured, l.wall, tints.roof, tints.wall, capped, { roofGroup: true });
 
     const outer = l.local[0];
-    const higher = layers.slice(k + 1).map((h) => h.local[0]);
+    // The layers whose roof is as high as this one or higher: where one meets this edge, no rim.
+    const higher = layers.filter((h, j) => j !== k && (h.eave ?? h.wall) >= (l.eave ?? l.wall) - 0.3).map((h) => h.local[0]);
     if (flatRoof) {
       // A flat roof that overhangs its walls is a slab round them; the rim stands on its edge.
       const edge = l.overhang ? outset(outer, l.overhang) : outer;
