@@ -7,7 +7,7 @@ argument-hint: "[new <building> | round <landmark> | check <landmark>]"
 # A landmark drawn from code
 
 A **landmark** is one real building drawn in detail, which the site draws in place of the building's
-block once it is listed there. Every mesh and texture is generated in code. The LiDAR gives its sizes. Street View photographs are the
+block once its config puts it on the site. Every mesh and texture is generated in code. The LiDAR gives its sizes. Street View photographs are the
 references the model is compared with: they are never traced, sampled or published. The Clock Tower
 (`landmarks/clocktower/`, October 2026) is the first one and the reference for this skill.
 
@@ -20,8 +20,11 @@ the agents were given are in [briefs/](briefs/).
 - **On the site once it says so.** A landmark lives in `landmarks/<name>/`. The site draws it in
   place of its buildings' blocks once its config says `"site": true` and `place` has written that
   into its `placement.json`; the site finds it there, with no list in `src/` to edit
-  (`landmarks/README.md`, "On the site"). Every merge is a release, so set it when the person wants
-  it shown, in a pull request of its own.
+  (`landmarks/README.md`, "On the site"). That pull request also adds a `CHANGELOG.md` line and a
+  README "What's new" entry, checks About's words for the landmarks ("stone, glass and slate", in
+  `src/i18n/locales/`), and gives each new roof, pane or opening material its part in `LIGHT_ROLE`
+  (`src/scene/landmarks.ts`), or the map draws it in the wall colour. Every merge is a release, so
+  set it when the person wants it shown, in a pull request of its own.
 - **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
   `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
   "Decisions": all network fetching). Build on what is local, or build that first.

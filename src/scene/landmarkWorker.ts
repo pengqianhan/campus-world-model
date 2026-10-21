@@ -3,11 +3,15 @@
 // slowed four times, as on a phone (PROGRESS.md, measured 2026-10-21). landmarks.ts draws them.
 // The worker is an ES module (vite.config.ts, worker.format): each landmark's model.js is a chunk of
 // its own, fetched the first time that landmark is asked for, so coming near one building loads its
-// model and the shared kit and no other model.
+// model and no other model. Every file of the shared kit (landmarks/kit/) is part of the worker
+// itself, so that the build never splits the kit into a chunk of its own, which would be one more
+// request before a model could load.
 import type { BufferAttribute, BufferGeometry, Group, Material, Mesh } from "three";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";
 import type { Cover, LandmarkReply, LandmarkRequest, MeshData, TextureData } from "./landmarks.ts";
+
+import.meta.glob("../../landmarks/kit/*.js", { eager: true });
 
 type Build = (materials: Record<string, Material>) => Group;
 /** Each landmark's model.js, loaded when first asked for, by the name of its folder (src/app/landmarks.ts). */
