@@ -20,10 +20,14 @@ export default defineConfig({
   },
   // The landmark worker (src/scene/landmarkWorker.ts) is an ES module, as the page already starts
   // it ({ type: "module" }), so that it can load each landmark's model as a chunk of its own, named
-  // after the landmark's folder: assets/landmark-clocktower-<hash>.js.
+  // after the landmark's folder: assets/landmark-clocktower-<hash>.js. The files of the shared kit
+  // (landmarks/kit/) count as having side effects, so that the worker's import of every one of them
+  // keeps the kit inside the worker, and never in a chunk of its own, even where a kit file only
+  // exports functions. Every other module is tree-shaken as before.
   worker: {
     format: "es",
     rolldownOptions: {
+      treeshake: { moduleSideEffects: (id) => /landmarks[\\/]kit[\\/]/.test(id) || undefined },
       output: {
         chunkFileNames: (chunk) => {
           const landmark = /landmarks[\\/]([^\\/]+)[\\/]model\.js$/.exec(chunk.facadeModuleId ?? "")?.[1];

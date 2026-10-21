@@ -4,8 +4,10 @@
 // The worker is an ES module (vite.config.ts, worker.format): each landmark's model.js is a chunk of
 // its own, fetched the first time that landmark is asked for, so coming near one building loads its
 // model and no other model. Every file of the shared kit (landmarks/kit/) is part of the worker
-// itself, so that the build never splits the kit into a chunk of its own, which would be one more
-// request before a model could load.
+// itself: the glob below imports each one, and vite.config.ts counts the kit's files as having side
+// effects, so that the bundler keeps them here even where a file only exports functions. So the
+// build never splits the kit into a chunk of its own, which would be one more request before a
+// model could load.
 import type { BufferAttribute, BufferGeometry, Group, Material, Mesh } from "three";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";

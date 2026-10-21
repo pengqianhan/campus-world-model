@@ -135,7 +135,9 @@ It finds them itself (`import.meta.glob` in `src/app/landmarks.ts`): no list in 
   (`worker.format` in `vite.config.ts`) that loads `<name>/model.js` by the landmark's name the
   first time it is asked for, so each model is a chunk of its own
   (`assets/landmark-<name>-<hash>.js`): coming near one landmark downloads the worker, which holds
-  three.js and every file of `kit/`, and then that landmark's model, and no other landmark's model.
+  three.js and every file of `kit/` (`vite.config.ts` counts the kit's files as having side
+  effects, so the build keeps each one in the worker), and then that landmark's model, and no other
+  landmark's model.
   Every `<name>/model.js` is built and published as a chunk, on the site or not, and every
   `placement.json` goes into the page's code; "off the site" means only that the site does not draw
   it. The page then makes the
@@ -163,10 +165,13 @@ needs:
 - for each material of the model that the kit's `roof`, `glass`, `iron` or `void` does not cover
   but that is a roof, a pane or an opening, its part in `LIGHT_ROLE` in `src/scene/landmarks.ts`.
   Every other material is drawn as wall in the light form, so on the map a roof in a material
-  such as `roofPale` takes the wall colour until it is listed there.
+  such as `roofPale` takes the wall colour until it is listed there;
+- in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
+  estimated) and, in the sources table, the LiDAR's and Street View's "Used for".
 
-To take one off the site, set `site` to `false` and run `place` again. Then look at it on the map
-and from a walker's height, and give the speed numbers (`docs/standards.md`, check 9).
+To take one off the site, set `site` to `false` and run `place` again, and change the same
+`CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at it on
+the map and from a walker's height, and give the speed numbers (`docs/standards.md`, check 9).
 
 ## Stages
 

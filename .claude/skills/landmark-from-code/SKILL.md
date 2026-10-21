@@ -23,14 +23,17 @@ the agents were given are in [briefs/](briefs/).
   (`landmarks/README.md`, "On the site"). That pull request also adds a `CHANGELOG.md` line and a
   README "What's new" entry, checks About's words for the landmarks ("stone, glass and slate", in
   `src/i18n/locales/`), and gives each new roof, pane or opening material its part in `LIGHT_ROLE`
-  (`src/scene/landmarks.ts`), or the map draws it in the wall colour. Every merge is a release, so
+  (`src/scene/landmarks.ts`), or the map draws it in the wall colour. It also names the building in
+  the README's "Known limitations" and in the sources table's "Used for" for the LiDAR and Street
+  View. Taking one off the site changes the same lines. Every merge is a release, so
   set it when the person wants it shown, in a pull request of its own.
 - **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
   `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
   "Decisions": all network fetching). Build on what is local, or build that first.
 - **Shared kit and pipeline.** `landmarks/kit/` (what every model is built with) and
-  `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark adds
-  only its own folder. A change to them adds options with defaults and leaves the other landmarks'
+  `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark's
+  model, config and placement are its own folder (what else going on the site needs: the first
+  point above). A change to them adds options with defaults and leaves the other landmarks'
   pictures identical: compare the viewer's `?quality=low` and `?mask=1` screenshots before and after.
 - **References only.** Street View imagery and metadata are Google's: they stay in the landmark's
   gitignored `refs/` and `out/`, and no picture of them goes into a commit, an issue or a pull
