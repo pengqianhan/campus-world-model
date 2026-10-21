@@ -29,9 +29,9 @@ the agents were given are in [briefs/](briefs/).
   `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark adds
   only its own folder. A change to them adds options with defaults and leaves the other landmarks'
   pictures identical: compare the viewer's `?quality=low` and `?mask=1` screenshots before and after.
-- **References only.** Street View imagery and metadata are Google's: they stay in the landmark's
-  gitignored `refs/` and `out/`, and no picture of them goes into a commit, an issue or a pull
-  request. People and cars in them are not part of the model.
+- **References only.** Street View imagery and metadata are Google's: they stay in the gitignored
+  `data/raw/landmarks/streetview/` and the landmark's `refs/` and `out/`, and no picture of them
+  goes into a commit, an issue or a pull request. People and cars in them are not part of the model.
 - **Billed tiles.** Street View tiles cost money past the free monthly quota. The pipeline buys none
   unless `ALLOW_FETCH=1` is given and the ledger in `GMAPS_BUDGET` allows them; the key lives in
   `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`.

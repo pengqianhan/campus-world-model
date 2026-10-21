@@ -235,13 +235,15 @@ in `scripts/lib/landmark-fetch.ts`.
   `data/raw/landmarks/streetview/tiles/<panoId>/`, and the next `refs` records them instead of
   buying them again.
 - **Paced and logged.** One request every 1.1 s, also from one batch to the next, and one batch at a
-  time (a lock file in `data/raw/landmarks/`), with the project's User-Agent. The time and URL of
+  time for the user, from any checkout (a lock in `~/.campus-world-model/`, beside the ledger it
+  guards), with the project's User-Agent. The time and URL of
   each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
   LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
   for each panorama's tiles: their count, total size, one sha256 over the sorted list of
   `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
   A batch records each panorama's tiles when it is done with them, and at its start records any
-  that a batch killed part way left unrecorded. No redirect is followed.
+  that a batch killed part way left unrecorded. No redirect is followed: a redirect stops the
+  batch.
 - **The key** is read at the moment of a request, from `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`, and sent
   in the `X-Goog-Api-Key` header, never in a URL. The session token is written as `<session>` in
   every logged URL, and both are taken out of every error message.
@@ -249,9 +251,10 @@ in `scripts/lib/landmark-fetch.ts`.
   are not cached (N) and runs `$PY -I $GMAPS_BUDGET check N` first: if it exits other than 0,
   nothing is bought. Then it adds the tiles to the ledger before it sends them, 25 at a time
   (`check 25`, `add 25`), so a batch stopped part way, even killed, has counted a few too many,
-  never too few. A tile that fails with a 5xx, a timeout or a dropped connection is tried three
-  times, each try counted, and then left black; a refusal (4xx) stops the batch. Without
-  `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
+  never too few: do not add them to the ledger by hand. A tile that fails with a server error
+  (5xx) is tried three times, each try counted. Anything else stops the batch: a refusal (4xx), a
+  redirect, a timeout, a dropped connection, a failed write, or a tile that fails all three tries.
+  A rerun goes on from the cache. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
   monthly and a daily count under a cap.
 
 ## What is billed

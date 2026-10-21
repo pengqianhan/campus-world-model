@@ -9,8 +9,11 @@
 //    ($GMAPS_BUDGET check N) allows the N tiles that are not cached. Tiles are then added to the
 //    ledger before they are sent, up to TILE_CHUNK at a time ($GMAPS_BUDGET add k): a batch stopped
 //    part way, even killed, has counted too many, never too few.
-// No redirect is followed. The key goes in a request header, never in a URL. The session token is
-// written as <session> in every logged URL, and both are taken out of every error message.
+// Only a server error (5xx) on a tile is tried again; anything else stops the batch (closed is a
+// verdict), and so does a tile that fails every try. No redirect is followed. The key goes in a
+// request header, never in a URL. The session token is written as <session> in every logged URL,
+// and both are taken out of every error message. One batch runs at a time for the user, from any
+// checkout: the lock is in the home folder, beside the ledger it guards.
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
@@ -42,7 +45,7 @@ const SESSION_FILE = `${SV}/session.json`;
 const FILE_TIMEOUT_MS = 30 * 60_000;
 /** Tiles added to the ledger at a time, before they are sent. */
 export const TILE_CHUNK = 25;
-/** Tries for a tile that fails with a 5xx, a timeout or a dropped connection, as the old tool did. */
+/** Tries for a tile that fails with a server error (5xx), as the old tool did. */
 const TILE_TRIES = 3;
 
 /** The source and data/raw file of a URL the pipeline may fetch. Throws for any other URL. */
@@ -77,11 +80,16 @@ function secret(value: string, as: string): string {
   return value;
 }
 
+/** The user's home folder, from the environment as it is now (os.homedir() reads the process's own). */
+function home(): string {
+  return (process.platform === "win32" ? process.env.USERPROFILE : process.env.HOME) || os.homedir();
+}
+
 /** Read at the moment of a request: $GOOGLE_MAPS_KEY, or ~/.gmaps_key (the bare key, or NAME=key). */
 function apiKey(): string {
   let key = process.env.GOOGLE_MAPS_KEY ?? "";
   if (!key) {
-    const file = path.join(os.homedir(), ".gmaps_key");
+    const file = path.join(home(), ".gmaps_key");
     if (!fs.existsSync(file)) throw new Error("no Google Maps key: set GOOGLE_MAPS_KEY or put it in ~/.gmaps_key");
     const line = fs.readFileSync(file, "utf8").trim();
     key = line.slice(line.indexOf("=") + 1).trim().replace(/^['"]|['"]$/g, "");
@@ -160,11 +168,12 @@ export function recordTiles(pano: string): void {
   }
   const file = `${SV}/tiles/${pano}`;
   const sha256 = all.digest("hex");
-  if (manifest().some((s) => s.file === file && s.sha256 === sha256 && s.count === names.length)) return;
+  const fetchedAt = new Date(newest).toISOString();
+  if (manifest().some((s) => s.file === file && s.sha256 === sha256 && s.count === names.length && s.fetchedAt === fetchedAt)) return;
   recordSnapshot({
     file,
     url: `${MAP_TILES}streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=${pano}`,
-    fetchedAt: new Date(newest).toISOString(),
+    fetchedAt,
     bytes,
     sha256,
     source: "streetview",
@@ -263,7 +272,10 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
           if (sent < counted) return;
           const k = Math.min(TILE_CHUNK, Math.max(1, left));
           if (!d.ledger("check", k)) throw new Error(`the ledger does not allow ${k} more tiles: stopped after ${sent}`);
-          if (!d.ledger("add", k)) throw new Error(`the ledger did not record ${k} tiles: stopped after ${sent}`);
+          if (!d.ledger("add", k)) {
+            counted += k; // it may have recorded them before it failed: never assume too few
+            throw new Error(`the ledger failed on add ${k} (it may have counted them): stopped after ${sent}`);
+          }
           counted += k;
         };
         let last: string | undefined;
@@ -272,18 +284,21 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
             if (last && last !== t.pano) d.recordTiles(last);
             last = t.pano;
             const url = `${MAP_TILES}streetview/tiles/${t.zoom}/${t.x}/${t.y}?session=${await getSession()}&panoId=${t.pano}`;
+            // The key is read before anything is counted: without it nothing goes out.
+            const h = headers();
             for (let tries = 1; ; tries++) {
               count(missing.length - i);
               sent++;
               try {
-                await d.get({ source: "streetview", file: t.file, url, logUrl: redact(url), headers: headers(), record: false });
+                await d.get({ source: "streetview", file: t.file, url, logUrl: redact(url), headers: h, record: false });
                 break;
               } catch (e) {
-                // A refusal (4xx) stops the batch: closed is a verdict, and a 404 can mean the API is
-                // off. A 5xx, a timeout or a dropped connection is tried again, then left black.
-                if (e instanceof HttpError && e.status < 500) throw e;
-                console.error(`WARNING: ${redact(e instanceof Error ? e.message : String(e))} (try ${tries} of ${TILE_TRIES})`);
-                if (tries === TILE_TRIES) break;
+                // Only a server error is tried again. A refusal (4xx; a 404 can mean the API is off),
+                // a redirect, a timeout, a dropped connection or a failed write stops the batch:
+                // closed is a verdict. So does a tile that fails every try: an outage costs a few
+                // requests, not three for every tile left.
+                if (!(e instanceof HttpError && e.status >= 500) || tries === TILE_TRIES) throw e;
+                console.error(`WARNING: ${redact(e.message)} (try ${tries} of ${TILE_TRIES})`);
               }
             }
           }
@@ -310,41 +325,63 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
 /** A lock older than this is taken to be left by a batch that died, even if its pid is in use again. */
 const LOCK_STALE_MS = 12 * 3600_000;
 
-/** One batch at a time: a second one would break the pacing and the manifest. */
+/**
+ * One batch at a time, from any checkout of the user's: a second would break the pacing, and two
+ * batches could both pass the ledger's check. The lock is created whole (written aside, then linked
+ * in place) and removed only by its owner. A lock left by a batch that died (its pid gone, or older
+ * than LOCK_STALE_MS) is moved aside and checked to be that lock before it is dropped; if another
+ * batch took it over meanwhile, its lock is put back.
+ */
 export function takeLock(): () => void {
-  const lock = path.join(RAW_DIR, "landmarks", ".fetch.lock");
+  const dir = path.join(home(), ".campus-world-model");
+  const lock = path.join(dir, "landmark-fetch.lock");
   const mine = `${process.pid} ${Date.now()}`;
-  fs.mkdirSync(path.dirname(lock), { recursive: true });
-  for (let i = 0; i < 3; i++) {
-    try {
-      fs.writeFileSync(lock, mine, { flag: "wx" });
-      return () => {
-        // Only our own: a lock another batch took over is left alone.
-        if (fs.existsSync(lock) && fs.readFileSync(lock, "utf8") === mine) fs.rmSync(lock, { force: true });
-      };
-    } catch {
-      let held = "";
+  const tmp = `${lock}.${process.pid}.new`;
+  const aside = `${lock}.${process.pid}.stale`;
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(tmp, mine);
+  try {
+    for (let i = 0; i < 3; i++) {
+      try {
+        fs.linkSync(tmp, lock);
+        return () => {
+          if (fs.existsSync(lock) && fs.readFileSync(lock, "utf8") === mine) fs.rmSync(lock, { force: true });
+        };
+      } catch {}
+      let held: string;
+      let mtime: number;
       try {
         held = fs.readFileSync(lock, "utf8");
+        mtime = fs.statSync(lock).mtimeMs;
       } catch {
         continue; // gone in between: try again
       }
       const [pid, since] = held.split(" ").map(Number);
-      let alive = false;
-      try {
-        process.kill(pid!, 0);
-        alive = true;
-      } catch {}
-      if (alive && Date.now() - (since ?? 0) < LOCK_STALE_MS) {
-        throw new Error(`another landmark fetch is running (pid ${pid}); if not, delete data/raw/landmarks/.fetch.lock`);
+      const valid = Number.isInteger(pid) && pid! > 0 && Number.isFinite(since);
+      let alive = !valid; // a lock that cannot be read is held while it is young
+      if (valid) {
+        try {
+          process.kill(pid!, 0);
+          alive = true;
+        } catch {}
       }
-      // Left by a batch that died. Moved aside, not deleted: of two batches that both find it, one
-      // moves it and the other fails to, so neither removes a lock the other has just taken.
+      if (alive && Date.now() - (valid ? since! : mtime) < LOCK_STALE_MS) {
+        throw new Error(`another landmark fetch is running (pid ${pid}); if not, delete ${lock}`);
+      }
       try {
-        fs.renameSync(lock, `${lock}.${process.pid}.stale`);
-        fs.rmSync(`${lock}.${process.pid}.stale`, { force: true });
-      } catch {}
+        fs.renameSync(lock, aside);
+      } catch {
+        continue;
+      }
+      if (fs.readFileSync(aside, "utf8") !== held) {
+        try {
+          fs.linkSync(aside, lock); // another batch's fresh lock: put it back
+        } catch {}
+      }
+      fs.rmSync(aside, { force: true });
     }
+    throw new Error(`could not take the landmark fetch lock ${lock}`);
+  } finally {
+    fs.rmSync(tmp, { force: true });
   }
-  throw new Error("could not take the landmark fetch lock");
 }

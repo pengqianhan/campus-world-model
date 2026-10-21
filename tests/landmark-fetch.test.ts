@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { allowed, type Deps, redact, runBatch, runLedger } from "../scripts/lib/landmark-fetch.ts";
+import { allowed, type Deps, redact, runBatch, runLedger, takeLock } from "../scripts/lib/landmark-fetch.ts";
 import { type FetchOptions, HttpError } from "../scripts/lib/snapshot.ts";
 
 const KEY = "AIzaTestKeyNotReal";
@@ -131,15 +131,41 @@ describe("the landmark pipeline's fetches", () => {
     expect(r).toMatchObject({ sent: 60, counted: 60, missing: 0 });
   });
 
-  it("try a tile that fails with a 5xx three times, count each try, then leave it out and go on", async () => {
+  it("try a tile that fails with a 5xx three times, count each try, and stop when all three fail", async () => {
     process.env.GOOGLE_MAPS_KEY = KEY;
+    const three = [...tiles, { ...tiles[0]!, x: 5 }];
     const { d, ledger } = fake({ allowFetch: true });
     const at = counting(d, ledger, (n) => (n >= 2 ? new HttpError("tile -> HTTP 503", 503) : undefined));
-    const [r] = await runBatch([{ op: "tiles", tiles }], d);
+    await expect(runBatch([{ op: "tiles", tiles: three }], d)).rejects.toThrow(/HTTP 503/);
+    // The first tile, then three tries of the second; the third tile is never asked for.
     expect(at.length).toBe(4);
     for (const a of at) expect(a.counted).toBeGreaterThanOrEqual(a.n);
-    expect(r).toMatchObject({ sent: 4, counted: 4, missing: 1 });
-    expect((r as { paths: unknown[] }).paths[1]).toBeNull();
+  });
+
+  it("go on after a 5xx that a second try gets past", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const { d, ledger } = fake({ allowFetch: true });
+    counting(d, ledger, (n) => (n === 2 ? new HttpError("tile -> HTTP 503", 503) : undefined));
+    const [r] = await runBatch([{ op: "tiles", tiles }], d);
+    expect(r).toMatchObject({ sent: 3, counted: 3, missing: 0 });
+  });
+
+  it("stop at a dropped connection or a timeout, without trying again", async () => {
+    process.env.GOOGLE_MAPS_KEY = KEY;
+    const { d, ledger } = fake({ allowFetch: true });
+    const at = counting(d, ledger, (n) => (n === 1 ? new Error("tile -> TypeError: fetch failed (ECONNRESET)") : undefined));
+    await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/ECONNRESET/);
+    expect(at.length).toBe(1);
+  });
+
+  it("count nothing when there is no key to send", async () => {
+    delete process.env.GOOGLE_MAPS_KEY;
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), "home-"));
+    process.env.HOME = process.env.USERPROFILE = home;
+    const { d, sent, ledger } = fake({ allowFetch: true });
+    await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/no Google Maps key/);
+    expect(sent).toEqual([]);
+    expect(ledger).toEqual(["check 2"]);
   });
 
   it("stop at a refusal (4xx), with every tile sent already counted", async () => {
@@ -166,10 +192,34 @@ describe("the landmark pipeline's fetches", () => {
 
   it("run as the pipeline runs it: plain node, a batch on stdin, the results alone on stdout", () => {
     // Node strips the types and runs the file: syntax it cannot strip fails here, not in vitest.
-    const r = spawnSync(process.execPath, ["scripts/landmarks/fetch.ts"], { input: JSON.stringify({ ops: [] }), encoding: "utf8" });
+    // A home folder of its own, so that the test never holds the user's lock.
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), "home-"));
+    const r = spawnSync(process.execPath, ["scripts/landmarks/fetch.ts"], {
+      input: JSON.stringify({ ops: [] }),
+      encoding: "utf8",
+      env: { ...process.env, HOME: home, USERPROFILE: home },
+    });
     expect(r.stderr).toBe("");
     expect(r.status).toBe(0);
     expect(JSON.parse(r.stdout)).toEqual({ results: [] });
+  });
+
+  it("run one batch at a time, and take over a lock whose batch is gone", () => {
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), "home-"));
+    process.env.HOME = process.env.USERPROFILE = home;
+    const lock = path.join(home, ".campus-world-model", "landmark-fetch.lock");
+    const release = takeLock();
+    expect(fs.readFileSync(lock, "utf8").split(" ")[0]).toBe(String(process.pid));
+    expect(() => takeLock()).toThrow(/another landmark fetch is running/);
+    release();
+    expect(fs.existsSync(lock)).toBe(false);
+    // A batch that died: a pid no process has.
+    fs.writeFileSync(lock, `999999999 ${Date.now()}`);
+    takeLock()();
+    expect(fs.existsSync(lock)).toBe(false);
+    // A lock that cannot be read, but is young: held.
+    fs.writeFileSync(lock, "");
+    expect(() => takeLock()).toThrow(/another landmark fetch is running/);
   });
 
   it("send nothing for a file already cached", async () => {

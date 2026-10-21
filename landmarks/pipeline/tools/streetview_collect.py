@@ -114,7 +114,8 @@ for m in metas[:MAX]:
     g = ground_at(m["lat"], m["lng"]); cam_y = (g if g is not None else G) + SV["camera_height_m"] - G
     zoom = 5 if m["dist"] < 70 else 4
     plans.append((m, b, g, cam_y, zoom, band_tiles(m, zoom, b, 60, -30, 80)))
-# All the tiles in one batch: the ledger is asked once, for all that are missing.
+# All the tiles in one batch: the ledger is asked first for all that are missing, then told of them
+# before they are sent (scripts/lib/landmark-fetch.ts).
 ask = [{"pano": m["panoId"], "zoom": zoom, "x": c, "y": r} for m, _, _, _, zoom, tiles in plans for c, r in tiles]
 got = fetch_bridge.run([{"op": "tiles", "tiles": ask}], allow_fetch=a.allow_fetch and not a.offline)[0] if ask else {"paths": [], "sent": 0}
 cached = {(t["pano"], t["zoom"], t["x"], t["y"]): p for t, p in zip(ask, got["paths"])}
@@ -156,7 +157,7 @@ for m, b, g, cam_y, zoom, tiles in plans:
         views.append({"file": fn, "pano": m["panoId"], "date": m["date"], "position": [x, cam_y, z], "target": [0, aim_y, 0], "vfov": vfov, "width": w, "height": h, "bearing": b, "pitch": pitch, "ground_lidar": g})
     print(f"  {pid}: {len(tiles)} tiles at zoom {zoom} ({len(gaps)} missing), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
 json.dump(views, open(os.path.join(OUT, "views.json"), "w"), indent=1)
-print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed); "
+print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed, already in the ledger); "
       f"free calls sent: {calls['panoIds']} panoIds, {calls['metadata']} metadata (and createSession when the cached session is near its end)")
 if missing:
     print(f"WARNING: {len(missing)} tiles not in the cache and not fetched (views that need them keep their existing image, or are left with black holes if new); rerun with --allow-fetch to buy them (~${len(missing) * 0.002:.2f} past the free tier)")
