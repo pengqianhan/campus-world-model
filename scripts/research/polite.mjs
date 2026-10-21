@@ -3,7 +3,8 @@
 // this file. Launch it with politeLaunch() and open its page with politePage(). The browser can
 // send requests only to the hosts being studied, at most one request every PACE_MS. A request to
 // a host waits for the answer to the request before it on that host, for at most ANSWER_WAIT_MS.
-// Service workers are blocked. Every request that this file sees is logged, sent or blocked. The
+// Service workers are blocked. A request for /favicon.ico is blocked: the full Chromium build asks
+// each host for it by itself. Every request that this file sees is logged, sent or blocked. The
 // limits below say what it does not see.
 //
 // The gate is the DevTools Fetch domain on the browser's own session, not page.route(). Playwright
@@ -23,16 +24,20 @@
 // politeLaunch() starts the full Chromium build (channel "chromium") on a new profile whose
 // "Preload pages" setting is off (net.network_prediction_options = 2). Speculation rules then
 // prefetch and prerender nothing. Playwright's default headless shell does not read that setting.
-// It also passes POLITE_ARGS. politePage() removes RTCPeerConnection from every page and frame.
+// It also passes POLITE_ARGS. politePage() removes WebRTC (RTCPeerConnection) and WebTransport
+// from every page and frame: neither goes through the Fetch domain.
 //
 // Limits: what still goes out without this file.
 // - In a browser that politeLaunch() did not start, speculation rules prefetch and prerender
 //   outside the Fetch domain, to any host, at once and with no log.
 // - A WebSocket does not go through the Fetch domain. It is not stopped and not logged.
+// - A worker still has WebTransport: in Chromium 156 a dedicated worker can make one, and its QUIC
+//   packets go out over UDP outside the Fetch domain, to any host, with no log.
 // - After a dropped keep-alive connection, Chromium sends the same request again below the Fetch
 //   domain, at once. The log has one row; the server gets the request twice.
-// - A request that leaves no answer and no failure (a navigation away aborts a slow request only
-//   after the navigation goes) holds its host, and the queue, for up to ANSWER_WAIT_MS.
+// - A request that is sent and then gets no answer holds its host, and the queue, for up to
+//   ANSWER_WAIT_MS. The page aborting it does not free the host. A navigation away from a page
+//   with a slow request in flight waits too: the old page aborts it only after the navigation goes.
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
 import os from "node:os";
@@ -49,8 +54,8 @@ export const POLITE_ARGS = ["--force-webrtc-ip-handling-policy=disable_non_proxi
 /** Errors from the network that are not a verdict on the host: the page itself let go of the request. */
 const NOT_A_VERDICT = new Set(["Aborted", "BlockedByClient", "BlockedByResponse"]);
 
-/** Run in every page and frame before its own scripts: no WebRTC. Workers have none. */
-const NO_WEBRTC = `for (const name of ["RTCPeerConnection", "webkitRTCPeerConnection"]) delete globalThis[name];`;
+/** Run in every page and frame before its own scripts: no WebRTC, no WebTransport. Workers keep WebTransport (see the limits). */
+const NO_WEBRTC_WEBTRANSPORT = `for (const name of ["RTCPeerConnection", "webkitRTCPeerConnection", "WebTransport"]) delete globalThis[name];`;
 
 /** The browsers that politeLaunch() started. */
 const launched = new WeakSet();
@@ -62,16 +67,25 @@ const launched = new WeakSet();
  */
 export async function politeLaunch({ args = [], ...options } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "polite-profile-"));
-  fs.mkdirSync(path.join(dir, "Default"));
-  fs.writeFileSync(path.join(dir, "Default", "Preferences"), JSON.stringify({ net: { network_prediction_options: 2 } }));
-  const context = await chromium.launchPersistentContext(dir, { channel: "chromium", ...options, args: [...POLITE_ARGS, ...args] });
+  const remove = () => {
+    try {
+      fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5 });
+    } catch {}
+  };
+  let context;
+  try {
+    fs.mkdirSync(path.join(dir, "Default"));
+    fs.writeFileSync(path.join(dir, "Default", "Preferences"), JSON.stringify({ net: { network_prediction_options: 2 } }));
+    context = await chromium.launchPersistentContext(dir, { channel: "chromium", ...options, args: [...POLITE_ARGS, ...args] });
+  } catch (err) {
+    remove();
+    throw err;
+  }
   const browser = context.browser();
   launched.add(browser);
   const close = async () => {
     await context.close();
-    try {
-      fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5 });
-    } catch {}
+    remove();
   };
   return { browser, close };
 }
@@ -125,11 +139,6 @@ async function open(browser, state, { url, allow, types, viewport }) {
   const close = (host, reason) => {
     if (!closed.has(host)) closed.set(host, reason);
   };
-  /** The next request to `host` can go: the one before it got its answer, failed, or waited too long. */
-  const free = (host, match) => {
-    const wait = state.waiting.get(host);
-    if (wait && match(wait)) wait.free();
-  };
 
   // The requests take turns. Each one waits for the answer to the last request to its host, and
   // leaves at least PACE_MS after the request before it.
@@ -137,6 +146,7 @@ async function open(browser, state, { url, allow, types, viewport }) {
     const row = { type: typeOf(e), method: e.request.method, url: e.request.url };
     const from = sentRows.get(e.redirectedRequestId);
     if (from) row.from = from.url;
+    if (URL.parse(row.url)?.pathname === "/favicon.ico") return block(e, row, "favicon");
     const host = hostOf(e.request.url);
     if (!hosts.has(host)) return block(e, row, "host not allowed");
     if (wanted && !wanted.has(row.type)) return block(e, row, "type not allowed");
@@ -153,7 +163,7 @@ async function open(browser, state, { url, allow, types, viewport }) {
       const at = Date.now();
       const sent = { at: new Date(at).toISOString(), ...row, sent: true };
       sentRows.set(e.requestId, sent);
-      const wait = { requestId: e.requestId, url: row.url };
+      const wait = { requestId: e.requestId };
       wait.answered = new Promise((resolve) => {
         wait.free = resolve;
         setTimeout(resolve, ANSWER_WAIT_MS).unref?.();
@@ -174,7 +184,9 @@ async function open(browser, state, { url, allow, types, viewport }) {
 
   const onResponse = (e) => {
     const host = hostOf(e.request.url);
-    free(host, (wait) => wait.requestId === e.requestId);
+    // The next request to the host can go.
+    const wait = state.waiting.get(host);
+    if (wait?.requestId === e.requestId) wait.free();
     const row = sentRows.get(e.requestId);
     if (e.responseErrorReason) {
       if (row) row.error = e.responseErrorReason;
@@ -227,9 +239,7 @@ async function open(browser, state, { url, allow, types, viewport }) {
       state.busy = false;
       cdp.detach().catch(() => {});
     });
-    // A request that the page aborts after it was sent gets no answer: its failure frees its host.
-    context.on("requestfailed", (req) => free(hostOf(req.url()), (wait) => wait.url === req.url()));
-    await context.addInitScript({ content: NO_WEBRTC });
+    await context.addInitScript({ content: NO_WEBRTC_WEBTRANSPORT });
     const page = await context.newPage();
     return { page, context, log, closed };
   } catch (err) {

@@ -26,7 +26,7 @@ export interface PoliteRow {
   status?: number;
   /** The network error, for a request sent that got no answer. */
   error?: string;
-  /** Why it was blocked: "host not allowed", "type not allowed", "closed: 403", "gone" and so on. */
+  /** Why it was blocked: "host not allowed", "type not allowed", "closed: 403", "favicon", "gone" and so on. */
   reason?: string;
 }
 

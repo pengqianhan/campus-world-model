@@ -2,11 +2,14 @@
 // verdict" for every request it sees, the hops of a redirect too. These tests do not use the site.
 // The browser tests each launch a browser of their own (politeLaunch(), but for the one that pins
 // a limit of a plain browser) and start one to three servers of their own on 127.0.0.1; the
-// WebRTC test also opens a UDP and a TCP socket there. They ask no other host.
+// WebRTC and WebTransport test also opens a UDP and a TCP socket there. They ask no other host.
 // They are here and not in tests/ because the CI job that runs vitest has no browser installed.
 import dgram from "node:dgram";
+import fs from "node:fs";
 import http from "node:http";
 import net, { type AddressInfo } from "node:net";
+import os from "node:os";
+import path from "node:path";
 import { chromium, expect, test, type Browser, type Page } from "@playwright/test";
 import { ANSWER_WAIT_MS, PACE_MS, isSignIn, politeLaunch, politePage, type PoliteRow } from "../scripts/research/polite.mjs";
 
@@ -28,9 +31,7 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
   let answers: Record<string, Answer> = {};
   const server = http.createServer((req, res) => {
     const path = req.url ?? "/";
-    // The full Chromium build asks each host for /favicon.ico. That request goes through the gate
-    // like any other (paced and logged), but the tests leave it out of their lists of pages.
-    if (path !== "/favicon.ico") hits.push({ host: req.headers.host ?? "", path, at: Date.now() });
+    hits.push({ host: req.headers.host ?? "", path, at: Date.now() });
     const answer = answers[path.split("?")[0]!];
     if (answer) return answer(res, req);
     res.writeHead(404, { "content-type": "text/plain" });
@@ -82,7 +83,7 @@ const status =
 /** The gaps in milliseconds between one time and the next. */
 const gaps = (times: number[]) => times.slice(1).map((t, i) => t - times[i]!);
 const sentTimes = (log: PoliteRow[]) => log.filter((r) => r.sent).map((r) => Date.parse(r.at));
-/** The log without the browser's own /favicon.ico requests (see serve()). */
+/** The log without the rows of the browser's own /favicon.ico requests, which the gate blocks (see the favicon test). */
 const pages = (log: PoliteRow[]) => log.filter((r) => !r.url.endsWith("/favicon.ico"));
 const expectPaced = (log: PoliteRow[]) => {
   for (const gap of gaps(sentTimes(log))) expect(gap).toBeGreaterThanOrEqual(PACE_MS);
@@ -400,7 +401,7 @@ test.describe("research browser", () => {
     }
   });
 
-  test("a request that the page aborts after it was sent frees its host at once, not after ANSWER_WAIT_MS", async () => {
+  test("a request that the page aborts after it was sent holds its host for ANSWER_WAIT_MS, a known limit", async () => {
     const site = await serve(() => ({
       "/start": html(`<script>
         const stop = new AbortController();
@@ -415,10 +416,28 @@ test.describe("research browser", () => {
       const { page, log } = await politePage(browser, { url: site.base });
       await page.goto(`${site.base}/start`);
       await expect.poll(() => value(page, "NEXT"), { timeout: ANSWER_WAIT_MS + 5000 }).toBe(200);
-      expect(log.find((r) => r.url === `${site.base}/slow`)).toMatchObject({ sent: true });
+      const slow = log.find((r) => r.url === `${site.base}/slow`);
+      expect(slow).toMatchObject({ sent: true });
+      expect(slow!.status).toBeUndefined();
       const at = (path: string) => site.hits.find((h) => h.path === path)!.at;
-      // Without the release, /next would wait the full ANSWER_WAIT_MS after /slow.
-      expect(at("/next") - at("/slow")).toBeLessThan(ANSWER_WAIT_MS - 2 * PACE_MS);
+      // The aborted /slow brings the gate no answer, so /next waits until ANSWER_WAIT_MS after
+      // /slow, though the page let go of /slow after 2 * PACE_MS; then it goes.
+      const gap = at("/next") - at("/slow");
+      expect(gap).toBeGreaterThanOrEqual(ANSWER_WAIT_MS - PACE_MS / 2);
+      expect(gap).toBeLessThan(ANSWER_WAIT_MS + 2 * PACE_MS);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  test("the browser's own request for /favicon.ico is blocked before it goes, and logged", async () => {
+    const site = await serve(() => ({ "/start": html("start") }));
+    try {
+      const { page, log } = await politePage(browser, { url: site.base });
+      await page.goto(`${site.base}/start`);
+      await expect.poll(() => log.find((r) => r.url === `${site.base}/favicon.ico`)).toMatchObject({ sent: false, reason: "favicon" });
+      expect(log.filter((r) => r.sent).map((r) => r.url)).toEqual([`${site.base}/start`]);
+      expect(site.paths()).toEqual(["/start"]);
     } finally {
       await site.stop();
     }
@@ -432,7 +451,7 @@ test.describe("research browser", () => {
     });
   }
 
-  test("WebRTC is gone from every page and frame, so it reaches no STUN or TURN server, over UDP or TCP", async () => {
+  test("WebRTC and WebTransport are gone from every page and frame, so they reach no STUN, TURN or QUIC server, over UDP or TCP", async () => {
     const udp = dgram.createSocket("udp4");
     let packets = 0;
     udp.on("message", () => packets++);
@@ -447,31 +466,44 @@ test.describe("research browser", () => {
       { urls: `stun:127.0.0.1:${(udp.address() as AddressInfo).port}` },
       { urls: `turn:127.0.0.1:${(tcp.address() as AddressInfo).port}?transport=tcp`, username: "u", credential: "c" },
     ];
+    const made = (code: string) => `(() => { try { ${code}; return "made"; } catch { return "none"; } })()`;
     const connect = (where: string, relay: boolean) =>
-      `try { const pc = new ${where}RTCPeerConnection({ iceServers: ${JSON.stringify(servers)}${relay ? `, iceTransportPolicy: "relay"` : ""} });` +
-      ` pc.createDataChannel("x"); pc.createOffer().then((o) => pc.setLocalDescription(o)); out.push("made"); } catch { out.push("none"); }`;
+      made(
+        `const pc = new ${where}RTCPeerConnection({ iceServers: ${JSON.stringify(servers)}${relay ? `, iceTransportPolicy: "relay"` : ""} });` +
+          ` pc.createDataChannel("x"); pc.createOffer().then((o) => pc.setLocalDescription(o))`,
+      );
+    // WebTransport sends QUIC over UDP: the UDP socket would count its packets.
+    const quic = made(`const t = new WebTransport("https://127.0.0.1:${(udp.address() as AddressInfo).port}/"); t.ready.catch(() => {}); t.closed.catch(() => {})`);
     const site = await serve(() => ({
       "/start": html(`<script>
-        window.out = [];
-        ${connect("", false)}
-        ${connect("", true)}
+        window.out = {};
+        out.direct = ${connect("", false)};
+        out.relay = ${connect("", true)};
+        out.quic = ${quic};
         const blank = document.body.appendChild(document.createElement("iframe"));
-        ${connect("blank.contentWindow.", true)}
-        out.push(typeof blank.contentWindow.webkitRTCPeerConnection);
+        out.blankRelay = ${connect("blank.contentWindow.", true)};
+        out.blank = [typeof blank.contentWindow.webkitRTCPeerConnection, typeof blank.contentWindow.WebTransport];
         const srcdoc = document.createElement("iframe");
         srcdoc.srcdoc = "<p>frame</p>";
-        srcdoc.onload = () => out.push(typeof srcdoc.contentWindow.RTCPeerConnection);
+        srcdoc.onload = () => { out.srcdoc = [typeof srcdoc.contentWindow.RTCPeerConnection, typeof srcdoc.contentWindow.WebTransport]; };
         document.body.appendChild(srcdoc);
-        const worker = new Worker(URL.createObjectURL(new Blob(["postMessage(typeof RTCPeerConnection)"])));
-        worker.onmessage = (e) => out.push(e.data);
+        const worker = new Worker(URL.createObjectURL(new Blob(["postMessage([typeof RTCPeerConnection, typeof WebTransport])"])));
+        worker.onmessage = (e) => { out.worker = e.data; };
       </script>`),
     }));
     try {
       const { page } = await politePage(browser, { url: site.base });
       await page.goto(`${site.base}/start`);
-      await expect.poll(() => value(page, "out")).toHaveLength(6);
-      expect(await value(page, "out")).toEqual(["none", "none", "none", "undefined", expect.any(String), expect.any(String)]);
-      expect((await value(page, "out") as string[]).slice(4).sort()).toEqual(["undefined", "undefined"]);
+      await expect.poll(() => value(page, "out")).toEqual({
+        direct: "none",
+        relay: "none",
+        quic: "none",
+        blankRelay: "none",
+        blank: ["undefined", "undefined"],
+        srcdoc: ["undefined", "undefined"],
+        // A limit, pinned: a worker has no WebRTC, but it still has WebTransport (see polite.mjs).
+        worker: ["undefined", "function"],
+      });
       await page.waitForTimeout(3000);
       expect({ packets, connections }).toEqual({ packets: 0, connections: 0 });
     } finally {
@@ -493,6 +525,21 @@ test("research browser: in a plain browser, speculation rules still prefetch out
     expect(seen.shut).toContain("/closed-host");
   } finally {
     await browser.close();
+  }
+});
+
+test("research browser: a launch that fails leaves no profile behind", async () => {
+  // os.tmpdir() reads these at each call; the tests of one worker run one at a time.
+  const names = ["TMPDIR", "TMP", "TEMP"] as const;
+  const saved = names.map((n) => process.env[n]);
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "polite-spec-"));
+  for (const n of names) process.env[n] = tmp;
+  try {
+    await expect(politeLaunch({ executablePath: path.join(tmp, "no-browser") })).rejects.toThrow();
+    expect(fs.readdirSync(tmp).filter((name) => name.startsWith("polite-profile-"))).toEqual([]);
+  } finally {
+    names.forEach((n, i) => (saved[i] === undefined ? delete process.env[n] : (process.env[n] = saved[i])));
+    fs.rmSync(tmp, { recursive: true, force: true });
   }
 });
 
