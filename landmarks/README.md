@@ -167,11 +167,13 @@ needs:
   Every other material is drawn as wall in the light form, so on the map a roof in a material
   such as `roofPale` takes the wall colour until it is listed there;
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
-  estimated) and, in the sources table, the LiDAR's and Street View's "Used for".
+  estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
+- a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
+  check 9).
 
 To take one off the site, set `site` to `false` and run `place` again, and change the same
-`CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at it on
-the map and from a walker's height, and give the speed numbers (`docs/standards.md`, check 9).
+`CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map
+and the walker's views where it stood, and give the speed numbers (check 9).
 
 ## Stages
 
