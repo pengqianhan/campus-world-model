@@ -66,12 +66,25 @@ vec3 skyColor(vec3 d) {
   return c * gain;
 }`;
 
+// The ground in the light (not in the visible sky), when a landmark asks for it: a sunlit lawn or path,
+// darker on the side away from the sun, where the building's own shadow and the trees fall. Without it
+// the ground below the horizon is the plain dark `groundColor`, and the shader is as it always was.
+const groundGLSL = /* glsl */ `
+uniform vec3 groundLit; uniform float groundShade;
+vec3 groundLight(vec3 d) {
+  vec2 h = d.xz, s = sunDir.xz;
+  float lit = length(h) > 1e-4 && length(s) > 1e-4 ? dot(normalize(h), normalize(s)) : 0.0;
+  return groundLit * mix(groundShade, 1.0, smoothstep(-0.3, 0.7, lit));
+}`;
+
 /**
  * The visible sky dome, and an environment for image-based light built from the same sky. `haze`
  * (0..1) pales the visible blue overhead toward the horizon's white, as a photograph exposed for the
- * walls washes out its sky; the light from the sky keeps its blue. 0: the sky as it is.
+ * walls washes out its sky; the light from the sky keeps its blue. 0: the sky as it is. `ground`
+ * ([r, g, b], linear) gives the light a sunlit ground below the horizon, `groundShade` (0..1) of it on
+ * the side away from the sun; without `ground` the ground is dark, as for the Clock Tower's street.
  */
-export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.5, haze = 0, quality = "high" }) {
+export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.5, haze = 0, quality = "high", ground = null, groundShade = 0.5 }) {
   const uniforms = () => ({
     zenith: { value: new THREE.Color(0.18, 0.40, 0.86) },
     horizon: { value: new THREE.Color(0.84, 0.84, 0.86) },
@@ -83,10 +96,10 @@ export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.
     groundColor: { value: new THREE.Color(0.075, 0.075, 0.07) },
     treeColor: { value: new THREE.Color(0.06, 0.08, 0.045) },
   });
-  const mat = (u) => new THREE.ShaderMaterial({
+  const mat = (u, glsl = skyGLSL) => new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false, uniforms: u,
     vertexShader: "varying vec3 vDir; void main(){ vDir = normalize(position); vec4 p = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position = p.xyww; }",
-    fragmentShader: skyGLSL + "\nvarying vec3 vDir; void main(){ gl_FragColor = vec4(skyColor(normalize(vDir)), 1.0);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}",
+    fragmentShader: glsl + "\nvarying vec3 vDir; void main(){ gl_FragColor = vec4(skyColor(normalize(vDir)), 1.0);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}",
   });
   const skyU = uniforms();
   if (haze > 0) skyU.zenith.value.lerp(skyU.horizon.value, haze);
@@ -96,8 +109,15 @@ export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.
   scene.add(sky);
 
   const envU = uniforms(); envU.envMode.value = 1; envU.envSat.value = envSat; envU.gain.value = 1;
+  let envGLSL = skyGLSL;
+  if (ground) {
+    envU.groundLit = { value: new THREE.Color(...ground) };
+    envU.groundShade = { value: groundShade };
+    envGLSL = skyGLSL.replace("float h1(float n)", groundGLSL + "\nfloat h1(float n)")
+      .replace("if (el < 0.0) c = groundColor;", "if (el < 0.0) c = groundLight(d);");
+  }
   const envScene = new THREE.Scene();
-  envScene.add(new THREE.Mesh(new THREE.SphereGeometry(50, 64, 32), mat(envU)));
+  envScene.add(new THREE.Mesh(new THREE.SphereGeometry(50, 64, 32), mat(envU, envGLSL)));
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = pmrem.fromScene(envScene, 0.0, 0.1, 100, { size: quality === "low" ? 128 : 256 }).texture;
   scene.environment = env;

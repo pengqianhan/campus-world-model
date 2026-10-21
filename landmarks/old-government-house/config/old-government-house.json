@@ -47,8 +47,8 @@
    {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
   ]
  },
- "light": {"sunaz": 335, "sunel": 33, "sun": 6.5, "env": 2.5, "envsat": 1.0, "haze": 0.6, "exposure": 1.04,
-  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the two panoramas (2025-05), seen in hRE5's wide view at bearing about 337 deg and 32.5 deg up, about 13:30 NZST; 335/33 fits the shading of the garden front"},
+ "light": {"sunaz": 335, "sunel": 33, "sun": 10, "env": 2.5, "envsat": 1.0, "haze": 0.6, "exposure": 1.04, "ground": [0.16, 0.15, 0.10], "groundshade": 0.4,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the two panoramas (2025-05), seen in hRE5's wide view at bearing about 337 deg and 32.5 deg up, about 13:30 NZST; 335/33 fits the shading of the garden front; a sunlit lawn below the horizon (ground, groundshade) lights the walls from below as in the photographs, measured surface by surface in the look agent's round 2"},
  "refine": {
   "position_m": 3, "height_m": 1, "yaw_deg": 2, "pitch_deg": 2,
   "min_height_m": 4,

@@ -173,6 +173,24 @@ function roofPale(color, space) {
 }
 
 /**
+ * Old sash glazing (Old Government House): the photographs show its panes grey-blue and light, full of
+ * the bright hazy sky, not dark. So twice the sky is reflected that `glass` reflects, a little blurred
+ * by the old glass's waviness, over rooms behind lighter than `glass`'s (measured: a window of hRE5's
+ * upper view, glass and bars, about 117 luma). No bars: the sash kit draws them.
+ */
+function glassPale(space) {
+  const m = new THREE.MeshPhysicalMaterial({ color: 0x1a1f22, roughness: 0.12, metalness: 0, ior: 1.52, envMapIntensity: 6.0, specularIntensity: 1 });
+  m.userData.metres = 2;
+  return hook(m, "glassPale-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float side = abs(N.x) > abs(N.z) ? P.z : P.x;
+    float rooms = wn(vec3(side * 0.9, P.y * 1.3, 3.0));
+    diffuseColor.rgb = mix(vec3(0.14, 0.15, 0.16), vec3(0.26, 0.24, 0.21), smoothstep(0.35, 0.85, rooms));
+  }`, {}, undefined, space);
+}
+
+/**
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
  * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
  */
@@ -204,7 +222,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     boards: boards(0xece4d3, space),                    // weatherboard walls, pale cream-yellow
     trim: painted(0xe6c790, 0.6, space),                // surrounds, pilasters, bands and brackets, yellow-ochre
     paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
-    roofPale: roofPale(0xcac7c0, space),                // light grey roof
+    roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
+    glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
   };
   return m;
 }

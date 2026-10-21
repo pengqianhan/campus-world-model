@@ -53,7 +53,9 @@ if (params.get("pos")) {
 // ---- light: the low winter sun behind the building, the blue sky in front --------------------------
 const sunPlace = sunPosition(num("hour", 9.25));
 const sunDir = frameDir(viewFrame(config.frame), num("sunaz", sunPlace.bearing), num("sunel", sunPlace.elevation));
-const { sky } = makeSky(renderer, scene, { sunDir, envIntensity: num("env", 2.25), envSat: num("envsat", 0.5), haze: num("haze", 0), quality });
+// `ground` ([r, g, b] linear, or ?ground=r,g,b): a sunlit ground in the light, `groundshade` of it away from the sun
+const ground = params.get("ground")?.split(",").map(Number) ?? (Array.isArray(light.ground) ? light.ground : null);
+const { sky } = makeSky(renderer, scene, { sunDir, envIntensity: num("env", 2.25), envSat: num("envsat", 0.5), haze: num("haze", 0), quality, ground, groundShade: num("groundshade", 0.5) });
 scene.fog = new THREE.FogExp2(0xb4c4d8, num("fog", 0.0018));
 
 const sun = new THREE.DirectionalLight(0xfff0dc, num("sun", 8.0));
@@ -80,6 +82,10 @@ scene.add(sun, sun.target);
 const materials = makeMaterials(quality);
 const building = build(materials, params.get("only")?.split(","));
 building.name = "building";
+// ?swap=glass:glassPale,...: draw a material's mesh with another of the kit's (to try a material before
+// the parts use its name); ?ids=1 still reports the name the parts gave
+for (const [from, to] of (params.get("swap") ?? "").split(",").filter(Boolean).map((s) => s.split(":")))
+  building.traverse((o) => { if (o.isMesh && o.name === from && materials[to]) o.material = materials[to]; });
 scene.add(building);
 // The street round the building, when the landmark has one (landscape.js beside its model.js).
 const hasLand = params.get("landscape") !== "0" && (await fetch(`${DIR}landscape.js`, { method: "HEAD" })).ok;

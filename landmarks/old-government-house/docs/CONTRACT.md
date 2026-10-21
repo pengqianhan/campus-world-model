@@ -58,7 +58,8 @@ sampled from them into the model.
 - The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for this
   building: `boards` (the painted weatherboard walls), `trim` (yellow-ochre surrounds, pilasters,
   bands, brackets), `paint` (white: glazing bars, balusters, chimney caps), `roofPale` (the light grey
-  roofs), `glass`, and `void` for dark openings. They are shaders without textures (`../kit/materials.js`).
+  roofs), `glassPale` (the sash panes: lighter than the Clock Tower's `glass`, as in the photographs),
+  and `void` for dark openings. They are shaders without textures (`../kit/materials.js`).
   A name the kit does not have makes the part fail: ask the lead.
 - Parts are added to `model.js` by the lead; tell the lead the name and file of a new part.
 
