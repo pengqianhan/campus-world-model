@@ -90,7 +90,10 @@ A landmark is measured in one frame and shown in another.
     its edge count, for a building with others in its crop box;
   - facade axis = principal axis of building points `min_above` to `spine_below` m high within
     `spine_radius` m of the centre (pointing north-ish when `street_side` is `west`, south-ish when
-    it is `east`); x is minus this axis;
+    it is `east`); x is minus this axis. With `frame.axis_from: "walls"`, for a building of wings
+    at different angles whose principal axis falls between them, the axis is instead the bearing of
+    most of its wall length, seen from above in its points (of the two square to each other, the
+    one nearest the principal axis);
   - toStreet = the axis turned 90° toward `street_side`; this is +z.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the
@@ -189,7 +192,9 @@ it again from the snapshots, with the free calls (createSession, panoIds, metada
 cached; a fresh clone has no `metadata.json` and goes online, and so does a run with `ALLOW_FETCH=1`. The panoramas are the ones listed in the config's
 `streetview.pano_ids` (without that list, those within `radius_m` of the building). Each panorama
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
-hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it.
+hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it. A
+panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels wide at zoom 5, some
+13,312, and those have fewer columns of tiles at every zoom.
 
 ### Camera refinement
 

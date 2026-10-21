@@ -1,0 +1,281 @@
+{
+ "name": "old-choral-hall",
+ "building": {
+  "id": "104",
+  "also": [],
+  "title": "Old Choral Hall, University of Auckland",
+  "note": "outline: building 104's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    90.9,
+    112.8
+   ],
+   [
+    91.2,
+    113.1
+   ],
+   [
+    90.6,
+    113.7
+   ],
+   [
+    101.8,
+    125.2
+   ],
+   [
+    111.4,
+    116.0
+   ],
+   [
+    100.2,
+    104.4
+   ],
+   [
+    100.6,
+    104.5
+   ],
+   [
+    102.5,
+    102.6
+   ],
+   [
+    103.1,
+    103.2
+   ],
+   [
+    102.8,
+    103.5
+   ],
+   [
+    105.0,
+    105.7
+   ],
+   [
+    107.2,
+    103.6
+   ],
+   [
+    105.0,
+    101.4
+   ],
+   [
+    104.7,
+    101.7
+   ],
+   [
+    104.2,
+    101.1
+   ],
+   [
+    106.1,
+    99.2
+   ],
+   [
+    105.8,
+    99.0
+   ],
+   [
+    106.2,
+    98.7
+   ],
+   [
+    116.2,
+    109.0
+   ],
+   [
+    122.5,
+    102.8
+   ],
+   [
+    116.7,
+    96.8
+   ],
+   [
+    122.2,
+    91.5
+   ],
+   [
+    129.3,
+    98.8
+   ],
+   [
+    138.8,
+    89.6
+   ],
+   [
+    125.6,
+    76.1
+   ],
+   [
+    119.6,
+    81.8
+   ],
+   [
+    117.8,
+    79.9
+   ],
+   [
+    116.4,
+    81.3
+   ],
+   [
+    107.5,
+    72.2
+   ],
+   [
+    108.9,
+    70.9
+   ],
+   [
+    106.7,
+    68.6
+   ],
+   [
+    112.7,
+    62.8
+   ],
+   [
+    108.2,
+    58.2
+   ],
+   [
+    73.8,
+    71.4
+   ],
+   [
+    80.2,
+    87.5
+   ],
+   [
+    72.1,
+    95.0
+   ],
+   [
+    77.6,
+    100.3
+   ],
+   [
+    77.0,
+    100.9
+   ],
+   [
+    82.8,
+    106.9
+   ],
+   [
+    83.4,
+    106.3
+   ],
+   [
+    87.0,
+    110.0
+   ],
+   [
+    87.8,
+    109.2
+   ],
+   [
+    89.3,
+    111.0
+   ],
+   [
+    88.9,
+    111.4
+   ],
+   [
+    90.5,
+    113.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 50,
+ "ground": 37.7,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605",
+   "3704",
+   "3705"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803",
+   "1902",
+   "1903"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 104 outline: centre = mean x/y of points higher than tower_above m; axis = the bearing of most of the walls seen from above (axis_from walls: the building is wings at two angles, so the principal axis falls between them), the one of the two square to each other nearest the principal axis; toStreet = the axis turned 90 deg toward street_side: south-east, to Symonds Street.",
+  "min_above": 12.7,
+  "tower_above": 14.7,
+  "spine_below": 22.7,
+  "spine_radius": 40,
+  "near_outline": 3,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    107.52,
+    86.738
+   ],
+   "axis": [
+    -0.71068706,
+    -0.70350829
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 8,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 14,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 3,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 6,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "provisional: the LiDAR ground along the middle of the street front (it falls from 38.8 m at the south-west end to 36.8 m at the north-east); set at the door once the references show it"
+}

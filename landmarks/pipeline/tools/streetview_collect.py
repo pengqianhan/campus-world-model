@@ -95,20 +95,29 @@ json.dump([{k: m[k] for k in ("panoId", "lat", "lng", "date", "heading", "tilt",
 for m in metas[:MAX]: print(f"  {m['panoId'][:12]}  {m['date']}  {m['dist']:5.1f} m  at x {m['view_xz'][0]:6.1f} z {m['view_xz'][1]:6.1f}")
 
 # 2. tiles facing the building, stitched (cache first); 3. perspective views aimed at it
+def pano_size(m, zoom):
+    """The panorama's width and height in pixels at a zoom: its imageWidth at the highest zoom (the first
+    whose 512-pixel tiles cover it), halved at each zoom below. Most are 16384 x 8192 at zoom 5, so 512 x 2^zoom
+    wide; some are narrower (13312), and asking them for a tile past their last column is refused (HTTP 400)."""
+    full = int(m.get("imageWidth") or 16384)
+    top = max(0, math.ceil(math.log2(full / 512)))
+    W = full >> (top - zoom) if zoom <= top else full << (zoom - top)
+    return W, W // 2
+
 def band_tiles(m, zoom, yaw_c, half_yaw, pitch_lo, pitch_hi):
-    W = 512 * (1 << zoom); H = W // 2
-    cols, rows = W // 512, H // 512
+    W, H = pano_size(m, zoom)
+    cols, rows = math.ceil(W / 512), math.ceil(H / 512)
     def col_of(yaw): return int(((yaw - m["heading"] + 180) % 360) / 360 * W) // 512
-    c0 = col_of(yaw_c - half_yaw); n_cols = int(math.ceil(2 * half_yaw / 360 * cols)) + 2
+    c0 = col_of(yaw_c - half_yaw); n_cols = min(cols, int(math.ceil(2 * half_yaw / 360 * cols)) + 2)
     r0 = max(0, int((90 - pitch_hi) / 180 * H) // 512); r1 = min(rows - 1, int((90 - pitch_lo) / 180 * H) // 512)
     return [((c0 + i) % cols, r) for i in range(n_cols) for r in range(r0, r1 + 1)]
 
-def stitch(zoom, tiles, paths):
-    W = 512 * (1 << zoom); H = W // 2
-    pano = np.zeros((H, W, 3), np.uint8)
+def stitch(m, zoom, tiles, paths):
+    W, H = pano_size(m, zoom)
+    pano = np.zeros((math.ceil(H / 512) * 512, math.ceil(W / 512) * 512, 3), np.uint8)
     for (c, r), fn in zip(tiles, paths):
         if fn: pano[r * 512:(r + 1) * 512, c * 512:(c + 1) * 512] = np.asarray(Image.open(fn).convert("RGB"))
-    return pano
+    return pano[:H, :W]  # the edge tiles of a narrower panorama run past its last pixel
 
 plans = []
 for m in metas[:MAX]:
@@ -144,7 +153,7 @@ missing = set()
 for m, b, g, cam_y, zoom, tiles in plans:
     dist = m["dist"]
     paths = [cached.get((m["panoId"], zoom, c, r)) for c, r in tiles]
-    pano = stitch(zoom, tiles, paths); used += len(tiles)
+    pano = stitch(m, zoom, tiles, paths); used += len(tiles)
     gaps = {(m["panoId"], zoom, c, r) for (c, r), p in zip(tiles, paths) if not p}; missing |= gaps
     incomplete = bool(gaps)  # some tiles are not cached: never overwrite a good image with a holed one
     x, z = m["view_xz"]
