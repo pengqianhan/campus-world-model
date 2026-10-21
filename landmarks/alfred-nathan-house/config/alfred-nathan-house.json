@@ -13,7 +13,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 70,
- "ground": 43.5,
+ "ground": 45.75,
+ "door": {
+  "x": 0.0, "z": 31.0,
+  "note": "view frame: the foot of the house's front steps, on its centre line, before the verandah's bowed front (parts/house.js); the LiDAR ground on the path there is 45.72-45.78 m, so ground is 45.75 and the model's y is 0 there; place.py puts it on the map"
+ },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3604"],
@@ -26,10 +30,10 @@
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
-  "method": "LiDAR building points (class 6) within near_outline m of building 103's outline (the General Library, 109, stands 5-8 m to the south-south-west): centre = mean x/y of points higher than tower_above m: the four-storey block's low roof, 15.5-18.8 m up (the two-storey house at its west end, 11-12.5 m, is left out; a tree's crown over the house's north corner, classed as building, is not, and pulls the centre about 1 m west); axis = the bearing of most of the walls seen from above (axis_from walls), turned 90 deg (axis_across: the building is 50 m long and only its west end, the house's front, faces a street), pointing north-north-east; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
-  "min_above": 2.6,
-  "tower_above": 14.0,
-  "spine_below": 19.0,
+  "method": "LiDAR building points (class 6) within near_outline m of building 103's outline (the General Library, 109, stands 5-8 m to the south-south-west): centre = mean x/y of points higher than tower_above m: the four-storey block's low roof, 13.3-16.5 m up (the two-storey house at its west end, 8.7-11.5 m, is left out; a tree's crown over the house's north corner, classed as building, is not, and pulls the centre about 1 m west); axis = the bearing of most of the walls seen from above (axis_from walls), turned 90 deg (axis_across: the building is 50 m long and only its west end, the house's front, faces a street), pointing north-north-east; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
+  "min_above": 0.35,
+  "tower_above": 11.75,
+  "spine_below": 16.75,
   "spine_radius": 35,
   "near_outline": 2.0,
   "street_side": "west",
@@ -42,7 +46,9 @@
   }
  },
  "streetview": {
-  "max_panos": 12,
+  "max_panos": 5,
+  "pano_ids_note": "the five Google panoramas that show the building whole or nearly (2026-10-22): three on Princes Street (2024-07, 48-49 m from the centre, 18-20 m from the house's front) see the house's front with the four-storey block behind it, one of them through a tree; two on the campus path east of it (2025-05, 33 and 48 m) see the block's east end, the second also its south-south-west side. Of the 53 panoramas within 120 m, the 13 Google ones within 70 m were looked at in a low-resolution probe (zoom 3, 88 tiles, bought through the ledger): of the other eight, one 27 m east stands 5 m from the east wall (its upper floors leave the picture), two on Princes Street see the house only past a bus or through trees, and five see the General Library or trees in front of it. User-contributed panoramas are not used.",
+  "pano_ids": ["vZGerxft16XkEqwkq4yjrQ", "RHEqLFnj3di8OWt6FfHkzg", "rA70HqrT1rLs_9BPOa1eHw", "fF8qpg3HX5EKEJL3GdXL_w", "51j5uFdrPwCxjQgoWwhFAw"],
   "radius_m": 120,
   "camera_height_m": 2.5,
   "views": [
@@ -63,5 +69,5 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "provisional: the LiDAR ground along the long sides, 43.4-43.6 m; Princes Street at the west end is 45.1 and the lower ground east of the building 42.3. Set at the door once the photographs show where it is."
+ "ground_note": "the LiDAR ground on the front path at the foot of the house's steps, 45.72-45.78 m (z 30-33 on the centre line); Princes Street is 45.6-45.8. The site falls away behind: 43.5 m along the long sides at the house's back (z 12), 42.4 at the block's east end and 41.2 at its north-north-east corner. The frame thresholds are above this ground (2.25 m lower than with the first, provisional 43.5, so the frame is the same)."
 }
