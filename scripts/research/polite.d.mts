@@ -2,12 +2,20 @@
 import type { Browser, BrowserContext, Page } from "@playwright/test";
 
 export declare const PACE_MS: number;
+/** How long a request to a host waits for the answer to the request before it. */
+export declare const ANSWER_WAIT_MS: number;
+/** Launch arguments for a research browser: no WebRTC UDP except through a proxy. */
+export declare const POLITE_ARGS: string[];
 
 /** One request, sent or blocked. */
 export interface PoliteRow {
   /** When it was let through, or when it was blocked. */
   at: string;
-  /** The resource type in Playwright's words: "document", "script", "xhr" and so on. A fetch() is "xhr". */
+  /**
+   * The resource type as the DevTools Fetch domain gives it, in lower case. Most are Playwright's
+   * words ("document", "script", "image"), but a fetch() and an EventSource are "xhr", and the
+   * script of a worker is "other".
+   */
   type: string;
   method: string;
   url: string;
@@ -18,8 +26,10 @@ export interface PoliteRow {
   status?: number;
   /** The network error, for a request sent that got no answer. */
   error?: string;
-  /** Why it was blocked: "host not allowed", "type not allowed", "closed: 403" and so on. */
+  /** Why it was blocked: "host not allowed", "type not allowed", "closed: 403", "gone" and so on. */
   reason?: string;
+  /** What this file changed in the answer, for a page: "speculation rules removed" and so on. */
+  note?: string;
 }
 
 export declare function politePage(
