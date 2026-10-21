@@ -127,6 +127,21 @@ describe("measured massings", () => {
         }
         // The facade data the walker views draw walls with goes with every vertex.
         expect(m.geometry.getAttribute("facade")?.count, file).toBe(p.count);
+        // Every wall faces out: a band drawn upside down would face in.
+        if (m.name === "walls") {
+          m.geometry.computeBoundingBox();
+          const n = m.geometry.getAttribute("normal");
+          const idx = m.geometry.index!;
+          for (let t = 0; t < idx.count; t += 3) {
+            const [a, b, c] = [idx.getX(t), idx.getX(t + 1), idx.getX(t + 2)];
+            const ux = p.getX(b) - p.getX(a), uy = p.getY(b) - p.getY(a), uz = p.getZ(b) - p.getZ(a);
+            const vx = p.getX(c) - p.getX(a), vy = p.getY(c) - p.getY(a), vz = p.getZ(c) - p.getZ(a);
+            const cx = uy * vz - uz * vy, cy = uz * vx - ux * vz, cz = ux * vy - uy * vx;
+            if (Math.hypot(cx, cy, cz) < 1e-6) continue;
+            // The winding agrees with the normal the face is shaded with.
+            expect(cx * n.getX(a) + cy * n.getY(a) + cz * n.getZ(a), `${file}: a wall wound against its normal`).toBeGreaterThan(0);
+          }
+        }
       }
       const ridge = Math.max(...data.layers.map((l) => l.ridge));
       // A flat roof's rim stands up to 0.9 m above it.

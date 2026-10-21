@@ -33,7 +33,9 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
 
   layers.forEach((l, k) => {
     const rings = l.local.map(flat);
-    const textured = Math.min(l.wall, l.storey * l.storeys);
+    // Windows up to the top of the last storey, but not below the foot of the walls (a layer that
+    // stands on a taller one can start above its own storeys).
+    const textured = Math.max(l.y0, Math.min(l.wall, l.storey * l.storeys));
     if (style.facade) {
       const [ax, ay] = style.facade.anchor;
       mb.facade = { ...style.facade, storey: l.storey, ground: l.storey, top: textured, base: 0, anchor: [ax - cx, ay - cy] };
@@ -43,7 +45,7 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     const plain = l.wall > textured + 0.01;
     // Windows in each whole storey, a plain band above the top one; the ground storey a tone darker.
     const plinth = l.y0 < 0 ? { top: l.storey, color: tints.plinth } : undefined;
-    mb.extrude(rings, l.y0, textured, tints.roof, tints.wall, capped && !plain, { storey: l.storey, bay, roofGroup: true, plinth });
+    if (textured > l.y0 + 0.01) mb.extrude(rings, l.y0, textured, tints.roof, tints.wall, capped && !plain, { storey: l.storey, bay, roofGroup: true, plinth });
     if (plain) mb.extrude(rings, textured, l.wall, tints.roof, tints.wall, capped, { roofGroup: true });
 
     const outer = l.local[0];
@@ -165,19 +167,18 @@ function unit(x, y) {
 /**
  * A parapet along a flat roof's edge, as the blocks have one (src/shared/massing.ts roofRims), except
  * where a higher layer stands behind the edge or in front of it: there its wall rises from the edge.
+ * Outer rings go counter-clockwise and holes clockwise (massing.py), so the roof is on the left.
  */
 function rim(mb, ring, higher, y0, y1, color) {
-  const ccw = area(ring) > 0;
   const n = ring.length;
   for (let i = 0; i < n; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % n];
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
     if (len < 1e-3) continue;
-    // Left of the direction of travel is into the roof for a counter-clockwise ring.
-    const s = ccw ? 1 : -1;
-    const nx = (-(b[1] - a[1]) / len) * s;
-    const ny = ((b[0] - a[0]) / len) * s;
+    // Left of the direction of travel is into the roof.
+    const nx = -(b[1] - a[1]) / len;
+    const ny = (b[0] - a[0]) / len;
     const steps = Math.max(1, Math.round(len / RIM_STEP));
     let from = -1;
     for (let k = 0; k <= steps; k++) {
@@ -194,16 +195,6 @@ function rim(mb, ring, higher, y0, y1, color) {
       }
     }
   }
-}
-
-function area(ring) {
-  let a = 0;
-  for (let i = 0; i < ring.length; i++) {
-    const p = ring[i];
-    const q = ring[(i + 1) % ring.length];
-    a += p[0] * q[1] - q[0] * p[1];
-  }
-  return a / 2;
 }
 
 function inside(ring, x, y) {
