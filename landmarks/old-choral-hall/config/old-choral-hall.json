@@ -195,6 +195,11 @@
  },
  "crop_margin": 50,
  "ground": 37.7,
+ "door": {
+  "x": 1.5,
+  "z": 22.6,
+  "note": "view frame: on the Symonds Street footpath at the mouth of the forecourt between the corner pavilion and the north-east block, where the LiDAR ground is 37.78 m (median within 1 m), the model's y = 0 at 37.7; the doors themselves are behind the works' hoarding in every panorama of the street front; place.py puts it on the map"
+ },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -238,8 +243,22 @@
   }
  },
  "streetview": {
-  "max_panos": 12,
+  "max_panos": 11,
   "radius_m": 120,
+  "pano_ids_note": "eleven of the twelve nearest of Google's own panoramas (copyright Google) within radius_m: six on Symonds Street in front (2024-08, the works: scaffolds and white wraps), three off the south-west range (2022-09, before the works), one across the corner (2024-10) and one behind on the north-west (2025-05, the works); the twelfth, BCtN4La4k0spbkhYMtiWyA (undated, 13,312 px wide), is a panorama inside a cafe, not of the building, and is left out (its 99 tiles were bought before it was looked at); user-contributed panoramas are left out",
+  "pano_ids": [
+   "ctyQO7gAPEeHY5D3HM2OyA",
+   "m1hD1kBpLDbBK5XzLczKVA",
+   "OpqZm-xWIu_tQanfDKsOyA",
+   "zPP5CHsE7hCCE6Y1Va5mgA",
+   "UypevncKztjOD9D3T0wPNQ",
+   "nAxETKEXO-y5qtDjPo-hCw",
+   "LwAjZMSjAX1nMDY8gD-9dA",
+   "xKYw4GYJuvaMThjKjm-nNg",
+   "e8T_hlK83IjCflhcYhK1Zw",
+   "iz57x0vLC6VL8mOPPeJG2w",
+   "C1kGoeaHdjefyiOmT4sTBw"
+  ],
   "camera_height_m": 2.5,
   "views": [
    {
@@ -265,6 +284,16 @@
    }
   ]
  },
+ "light": {
+  "sunaz": 41.5,
+  "sunel": 48,
+  "sun": 10,
+  "env": 2.5,
+  "envsat": 1.0,
+  "haze": 0.6,
+  "exposure": 1.04,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the 2022-09 panoramas of the south-west range, seen in nAxE at bearing about 41.5 deg and 48 deg up (late morning), so the range's south-west face is in open shade under a bright hazy sky; the other numbers start from Old Government House's"
+ },
  "refine": {
   "position_m": 3,
   "height_m": 1,
@@ -277,5 +306,5 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "provisional: the LiDAR ground along the middle of the street front (it falls from 38.8 m at the south-west end to 36.8 m at the north-east); set at the door once the references show it"
+ "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Symonds Street footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the south-west footpath rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)"
 }

@@ -14,7 +14,8 @@ every landmark: [`../README.md`](../README.md).
 
 | File | What it is |
 | --- | --- |
-| `config/old-choral-hall.json` | the building (104), the LiDAR and aerial tiles, the frame, the twelve Street View panoramas (`streetview.pano_ids`) |
+| `config/old-choral-hall.json` | the building (104), the LiDAR and aerial tiles, the frame, the ground and the door, the eleven Street View panoramas (`streetview.pano_ids`), the viewer's light |
+| `placement.json` | where it stands on the campus map (written by the `place` stage); not on the site |
 | `model.js` | assembles the parts: `southwest`, `massing` |
 | `parts/` | one file per part (`southwest.js`: the south-west range and its pavilions; `massing.js`: the rest, plainly) and `common.js` (the sizes measured in the LiDAR) |
 | `docs/` | the rules the agents worked to: `CONTRACT.md`, `ART_BIBLE.md` |
@@ -80,13 +81,15 @@ the LiDAR's 24.87 m (the trees), 96.9% of building 104's block under the model.
 ## References
 
 Within 120 m there are 54 panoramas: 51 of Google's own and 3 user-contributed (left out). The
-twelve nearest of Google's are pinned in `streetview.pano_ids` and were bought on 2026-10-22
-(1,672 tiles at zoom 5, inside the free monthly quota; with the 43 of an earlier low-resolution
-look, 1,715 of the tier's 2,000). Views `*_wide.jpg` (hfov 95°), `*_upper.jpg` (40°) and
+twelve nearest of Google's were bought on 2026-10-22 (a dry run counted N = 1,672 tiles at zoom 5;
+inside the free monthly quota; with the 43 of an earlier low-resolution look, 1,715 of the tier's
+2,000). Eleven are pinned in `streetview.pano_ids`: the twelfth, `BCtN…` (undated), is a panorama
+inside a cafe, not of the building. Views `*_wide.jpg` (hfov 95°), `*_upper.jpg` (40°) and
 `*_door.jpg` (45°), aimed at the centre.
 
 | Panoramas | Date | Where (view frame) | What they show |
 | --- | --- | --- | --- |
 | `OpqZ…`, `ctyQ…`, `m1hD…`, `zPP5…`, `LwAj…`, `iz57…` | 2024-08 | Symonds Street, z ≈ 31, x from −13 to 39: 9 m in front of the street front | the works: the north-east block (x ≈ 2.5 to 24.5) wrapped whole in white sheeting on scaffolding, up to a temporary gabled roof; the middle (x ≈ −10 to 2.5) a scaffold with a builder's banner; the south-west corner block (cream render, pilasters, brick panels, a cornice) in scaffolding, its ground floor wrapped; a hoarding along the footpath |
 | `Uype…`, `nAxE…`, `e8T_…` | 2022-09 | the south-west street, from off the corner (x -30, z 20) to the north-west (x -43, z -12.5) | before the works: the south-west range whole, red brick and cream dressings, with its two end pavilions, through the plane trees; in the morning sun from the north-east, the face in shade |
+| `C1kG…` | 2024-10 | across the corner (x -32, z 40) | the corner pavilion and the south-west range restored, out of their scaffolds; the middle still in scaffolding and the north-east block wrapped |
 | `xKYw…` | 2025-05 | behind, on the north-west (x -21, z -37) | still the works: a block wrapped in white sheeting, a scaffold on the roof behind it |
