@@ -1,9 +1,10 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs. It lives beside the campus map: nothing here is
-built, tested or deployed with the site, and the map does not read it yet. How to make one: the
-`landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
+LiDAR and checked against Street View photographs. The site draws the landmarks that
+`src/app/landmarks.ts` lists in place of their buildings' blocks (see "On the site"). The pipeline
+and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
+the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
 
 | Folder | What it holds | Shared? |
 | --- | --- | --- |
@@ -15,10 +16,10 @@ built, tested or deployed with the site, and the map does not read it yet. How t
   rendering and scoring the model against them, and placing it on the map (`pipeline/run.sh`).
   **What is not**: the model itself (`<name>/parts/`), which agents write and rewrite by looking at
   those comparisons.
-- **The kit is shared.** A change to `kit/` changes every landmark. Add options and exports with
-  defaults; keep what an existing call produces. Check each landmark after a kit change: the viewer
-  with `?quality=low` and `?mask=1` draws the same picture every time, so its screenshots before and
-  after the change must be identical.
+- **The kit is shared.** A change to `kit/` changes every landmark, in the viewer and on the site.
+  Add options and exports with defaults; keep what an existing call produces. Check each landmark
+  after a kit change: the viewer with `?quality=low` and `?mask=1` draws the same picture every time,
+  so its screenshots before and after the change must be identical.
 
 ## A landmark's files
 
@@ -104,6 +105,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | key | what it is |
 | --- | --- |
 | `building` | the campus map's building id |
+| `also` | the other buildings of the campus map whose blocks the model covers (config `building.also`): the Clock Tower's south range is 105S |
 | `centre` | the model's x = z = 0, in map metres east and north |
 | `bearing` | the compass bearings (true) of the model's +x and +z |
 | `rotationY` | radians about the scene's y axis (x east, y up, z south) that turn the model onto the map |
@@ -112,7 +114,36 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
-The stage needs no LiDAR: it reads `frame.expected` and `door` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door` and `building` from the config.
+
+## On the site
+
+The site draws each landmark that `LANDMARKS` in `src/app/landmarks.ts` lists, in place of the
+blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a University building).
+
+- **Only near it.** Nothing is fetched or made until the camera comes near: on the map, where a
+  metre of ground takes 1.5 pixels or more; in a walker view, within 600 m (`LANDMARK_PIXELS` and
+  `LANDMARK_REACH` in `src/scene/CampusScene.ts`). Further away the blocks are drawn as before, and
+  the map does not change by a pixel.
+- **Two forms of one geometry** (`src/scene/landmarks.ts`). The light form has the map's colours and
+  no texture. The map draws it, and so do the walker views of the basic tier (phones and software
+  rendering). The full form has the kit's materials. The walker views of the full tier draw it.
+- **Off the main thread.** A worker (`src/scene/landmarkWorker.ts`) builds the geometry with
+  `geometryMaterials()` and the textures with `makeTextures("low")`. The page then makes the
+  materials with `makeMaterials("low", textures, { space: "object" })`, which lays the weathering
+  in the model's own frame, as the viewer shows it, and makes their shaders before the form's first
+  frame (`compileAsync`). A form is drawn once its shaders are made; until then the light form, or
+  the blocks, stand in.
+- **The blocks stay.** A click finds them, and they open on their floors. While a form is drawn
+  they are on a layer that no camera draws. The worker sorts the model's triangles by the building
+  whose outline holds them, so each building's part takes its own colours and its own hover.
+- **The landscape stays in the viewer.** The walker views keep their own streets and trees round
+  the building.
+
+To put another landmark on the site, run `place`, add the landmark to `LANDMARKS` and its `build` to
+`MODELS` in `src/scene/landmarkWorker.ts`, and list in `building.also` every other building of the
+campus map whose block the model covers. Then look at it on the map and from a walker's height, and
+give the speed numbers (`docs/standards.md`, check 9).
 
 ## Stages
 
@@ -123,7 +154,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else downloaded) |
 | | `tools/data/measure.py` | LiDAR tiles, config | `data/<name>_pts.npy` (x, y, z, class in local m), `_ring.json` (E0, N0, crop box, outline), `_frame.json`, `_plan_frame.png`, `_front_elevation.png` |
 | | `tools/data/heightmap.py` | points, LINZ aerial (public COG, read once) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
-| place | `tools/data/place.py` | config `frame.expected`, `door` | `placement.json` |
+| place | `tools/data/place.py` | config `frame.expected`, `door`, `building` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
@@ -216,3 +247,4 @@ the reference and of the render; plus the mean over views.
    round of agents as in the skill's `METHOD.md`.
 5. Set `door` in the config to the foot of the entrance, where the ground is `ground`, and run
    `landmarks/pipeline/run.sh <name> place`.
+6. To show it on the site, see "On the site".

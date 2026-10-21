@@ -18,6 +18,7 @@ import {
   shown,
   timeMode,
 } from "../app/state.ts";
+import { landmarkOf } from "../app/landmarks.ts";
 import { groundLevel } from "../shared/massing.ts";
 import { sessionsOnDate } from "../shared/schedule.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -235,6 +236,11 @@ export function BuildingView() {
             <small>
               {campusName(d, b.campus)} · {tn("building.floors", b.floors.length)} · {tn("building.rooms", rooms.length)}
             </small>
+            {!b.offMap && (
+              <small id="height-note" class={landmarkOf(b.id) ? "landmark" : undefined}>
+                {landmarkOf(b.id) ? t("building.landmark") : t("building.heightNote")}
+              </small>
+            )}
           </div>
           {rooms.length > 0 ? (
             <label class="room-select">

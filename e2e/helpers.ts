@@ -8,6 +8,8 @@ interface SceneHandle {
   frames: number;
   animating: boolean;
   loading: number;
+  /** Landmark forms whose shaders are still being made, with the page's timers. */
+  preparing: number;
   planShapes: number;
   planPoint(): { x: number; y: number } | undefined;
   spaceAt(x: number, y: number): { text: string; kind: string } | undefined;
@@ -38,6 +40,11 @@ interface SceneHandle {
     /** How many of the map's trees the walker views draw again, and how many cards of leaves are drawn round the camera. */
     trees: { street: number; cards: number };
   };
+  /**
+   * Each landmark (landmarks/): the buildings it draws in place of their blocks, the form drawn now
+   * ("none" while the blocks are drawn), the forms made so far, and each building's wall colour in the light form.
+   */
+  landmarkState(): { name: string; buildings: string[]; form: "light" | "full" | "none"; made: ("light" | "full")[]; walls: Record<string, number> }[];
   floorWalls(): { planWallFaces: number; rooms: number; walledRooms: number; outerWalls: boolean; windowsBelow: boolean };
   openFloorBox(): { left: number; top: number; right: number; bottom: number } | undefined;
   probe(): { width: number; height: number; distinctColours: number; samples: number };
@@ -64,7 +71,7 @@ export async function open(page: Page, query = ""): Promise<void> {
 export async function settle(page: Page): Promise<void> {
   await page.waitForFunction(() => !!window.__scene && window.__scene.frames > 2, undefined, { timeout: 30_000 });
   await expect(page.locator(".splash")).toHaveCount(0);
-  await page.waitForFunction(() => !window.__scene!.animating && !window.__scene!.loading);
+  await page.waitForFunction(() => !window.__scene!.animating && !window.__scene!.loading && !window.__scene!.preparing);
   // Let label layout and the last frame land.
   await page.waitForTimeout(250);
 }

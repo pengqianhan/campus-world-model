@@ -126,7 +126,9 @@ On the full tier `CampusScene.depthFirst(mesh, on)` gives each wall mesh (the Un
 city's, an open building's "below") and each terrain mesh a twin at `renderOrder -1`, with a
 colour-less material and a small polygon offset, so that walls go into the depth buffer alone and
 the facade shader runs once per pixel: a street of buildings drawn in no particular order would
-otherwise shade the walls behind as well. The leaves have depth cards of their own at -0.2 and are
+otherwise shade the walls behind as well. A landmark's full form has twins of its own
+(`src/scene/landmarks.ts`). A block that a landmark stands in place of goes to layer 1 with its
+twin, so that no camera draws it and a click still finds it. The leaves have depth cards of their own at -0.2 and are
 coloured with `EqualDepth`. Render order in a walker view: twins -1; open ground -0.9 on the basic
 tier; paint from -0.63 (rail) to -0.51 (park), top layer first; open ground colour -0.3 on the
 full tier; leaf depth -0.2; everything else 0; the sky dome 1. On the map every order goes back to

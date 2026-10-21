@@ -269,7 +269,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   requests in one second to `study.auckland.ac.nz` and about 22 to third-party analytics before it
   blocked them. Exploration of a site goes through the same pacing as fetching (RECON.md).
 - Landmarks, since 2026-10-21 (pull requests #63 and #64): buildings drawn in three.js from code,
-  in `landmarks/` (`landmarks/README.md`). Three sources (the user, 2026-10-21):
+  in `landmarks/` (`landmarks/README.md`). The site draws the Clock Tower in place of the blocks of
+  105 and 105S since pull request #66 (`src/app/landmarks.ts`). Three sources (the user, 2026-10-21):
   - Sizes: LINZ, Auckland LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*`, from
     OpenTopography's public bucket. CC BY 4.0, no sign-in; LINZ data, as the terrain is. The tiles
     stay local. The sizes measured from them are committed (the config's `frame.expected`,
@@ -510,3 +511,10 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    times will be republished on a public site. With a key, follow the README section "Adding the
    class timetable" (`UOA_API_KEY`), and take up pull request #24, the course catalogue, at the same
    time (see "Other sources").
+2. **Check how LINZ asks the Auckland LiDAR (2024) to be credited.** The site draws the Clock Tower
+   to sizes measured from it, and About, the README and `NOTICE` credit "Land Information New
+   Zealand, CC BY 4.0". LINZ's page on attributing elevation data
+   (https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)
+   answered 403 to the research browser on 2026-10-21 and was left alone. A web search's summary of
+   it named Regional Software Holdings Limited as the licensor of the Auckland 2024 LiDAR DEMs; that
+   is not checked. Open the page in a browser and correct the credit if it asks for more.

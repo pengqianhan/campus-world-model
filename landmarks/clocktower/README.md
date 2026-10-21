@@ -8,7 +8,9 @@ shared by every landmark: [`../README.md`](../README.md).
 ![The Clock Tower, rendered from code](../../docs/landmarks/clocktower-front.jpg)
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=clocktower&view=orbit`
-  with the repository root served on port 8765.
+  with the repository root served on port 8765. On the site it stands in place of the blocks of
+  building 105 and of its south range, 105S ("The Clock Tower South Wing" on the campus map), when
+  the camera comes near: [`../README.md`](../README.md), "On the site".
 - Run its pipeline: `landmarks/pipeline/run.sh clocktower [stage ...]`.
 - The rules the agents worked to: [`docs/CONTRACT.md`](docs/CONTRACT.md) and
   [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
@@ -18,8 +20,8 @@ shared by every landmark: [`../README.md`](../README.md).
 | `model.js` | assembles the parts: `pavilions`, `centre`, `tower`, `ranges` |
 | `parts/` | one file per part, plus `common.js` (the sizes every part shares) and the parts' own kits (`tower_kit.js`, `centre_kit.js`) |
 | `landscape.js` | Princes St, the forecourt, the planting and 60 trees from the LiDAR, for the viewer |
-| `config/clocktower.json` | the LiDAR and aerial tiles, the frame, the door, the 12 Street View panoramas, the refinement bounds |
-| `placement.json` | where it stands on the campus map (written by the `place` stage) |
+| `config/clocktower.json` | the buildings it draws (105, and 105S in `also`), the LiDAR and aerial tiles, the frame, the door, the 12 Street View panoramas, the refinement bounds |
+| `placement.json` | where it stands on the campus map, and the blocks it stands in place of (written by the `place` stage) |
 
 ## The frame
 
@@ -34,6 +36,9 @@ shared by every landmark: [`../README.md`](../README.md).
   map, it agrees with the LiDAR to within about 1 m: the pavilion fronts at z 16.2–17.7 (LiDAR
   17.1–17.9), the centre's wall at 10.6–11.2 (10.8), the back at -16.5 to -18.1 (-17.8). Read as if
   it were in the LiDAR frame, it stands 3.9–5.2 m off.
+- Seen from above on the map (0.5 m grid, 2026-10-21), the model covers 95% of building 105's block
+  and 94% of 105S's, and 0.3% of 119's (the East Wing, which it touches). So it stands in place of
+  105 and 105S.
 
 ## Round 1 (October 2026)
 

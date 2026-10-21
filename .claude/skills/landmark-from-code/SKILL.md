@@ -6,8 +6,8 @@ argument-hint: "[new <building> | round <landmark> | check <landmark>]"
 
 # A landmark drawn from code
 
-A **landmark** is one real building drawn in detail, beside the campus map and not part of it. Every
-mesh and texture is generated in code. The LiDAR gives its sizes. Street View photographs are the
+A **landmark** is one real building drawn in detail, which the site draws in place of the building's
+block once it is listed there. Every mesh and texture is generated in code. The LiDAR gives its sizes. Street View photographs are the
 references the model is compared with: they are never traced, sampled or published. The Clock Tower
 (`landmarks/clocktower/`, October 2026) is the first one and the reference for this skill.
 
@@ -17,10 +17,10 @@ the agents were given are in [briefs/](briefs/).
 
 ## What binds the work
 
-- **Not the site yet.** A landmark lives in `landmarks/<name>/`. Nothing in it is built, tested or
-  deployed with the site, and the map does not read it. The maintainer decided on 2026-10-21 to
-  bring landmarks into the map (`PROGRESS.md`, "Decisions": one source for a University building);
-  its `placement.json` says where it will stand.
+- **On the site once listed.** A landmark lives in `landmarks/<name>/`. The site draws it in place
+  of its buildings' blocks once it is listed in `src/app/landmarks.ts` and
+  `src/scene/landmarkWorker.ts` (`landmarks/README.md`, "On the site"). Every merge is a release, so
+  list it when the person wants it shown, in a pull request of its own.
 - **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
   `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
   "Decisions": all network fetching). Build on what is local, or build that first.
@@ -70,9 +70,10 @@ A new landmark is steps 1 to 5. Another round on a landmark is steps 3 to 5. A c
    Done when no part fails to build, the triangle and draw-call counts are within the contract's
    budget, and you have looked at every strip.
 
-5. **Record.** Set `door` in the config to the foot of the entrance and run
+5. **Record.** Set `door` in the config to the foot of the entrance, and `building.also` to every
+   other building of the campus map whose block the model covers. Run
    `landmarks/pipeline/run.sh <name> place`, so that `placement.json` says where the model stands on
-   the map. Commit with what changed. Put renders of the model only (no photograph) in
+   the map and which blocks it stands in place of. Commit with what changed. Put renders of the model only (no photograph) in
    `docs/landmarks/`. Tell the person what got better, what did not, and what the next round
    should do; if they want it in the repository, open a pull request as `AGENTS.md` says.
    Done when `placement.json` is written, the commit holds no Street View picture and the person

@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-21
+
+### Added
+
+- **The Clock Tower drawn in detail.** Near the Clock Tower the map now draws the building as it
+  is, from code: the tower with its clock and pinnacles, the gabled pavilions, the windows and the
+  long ranges either side, to sizes measured from a LiDAR survey. On the map it has the map's
+  colours, and it lights up under the pointer and after dark as every other building does. From a
+  walker's height it is drawn in stone, glass and slate on a computer with a graphics card, and in
+  the map's colours on phones and on computers without one. It stands in place of the blocks of
+  buildings 105 and 105S (its south range), which still answer a click and open on their floors.
+  Further away nothing changes, and nothing of it is loaded. About and the building bar say which
+  buildings are drawn in detail, and that the heights of the others are estimated from their
+  floors (#66).
+
 ## 2026-10-19
 
 ### Fixed

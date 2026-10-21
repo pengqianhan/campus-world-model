@@ -266,12 +266,15 @@ test("a walker view that stands still is drawn once, however long a frame takes"
       return view === "eyes" && (await page.evaluate(() => window.__scene!.streetState().sky));
     })
     .toBe(true);
-  // Until a long frame draws nothing more: the walker, its view and the sky have come in.
+  // Until a long frame draws nothing more: the walker, its view, the sky and the Clock Tower have
+  // come in. The Clock Tower is made in a worker and its shaders on the graphics driver's threads
+  // (landmark.spec.ts), which the page's clock does not hold back, so they are waited for as well.
   await expect
     .poll(async () => {
       const before = await page.evaluate(() => window.__scene!.frames);
       await page.clock.fastForward(1500);
-      return (await page.evaluate(() => window.__scene!.frames)) - before;
+      const drawn = (await page.evaluate(() => window.__scene!.frames)) - before;
+      return drawn + (await page.evaluate(() => window.__scene!.loading + window.__scene!.preparing));
     })
     .toBe(0);
   const before = await page.evaluate(() => window.__scene!.frames);

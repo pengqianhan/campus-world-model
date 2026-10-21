@@ -1,10 +1,11 @@
 // About: the unofficial notice, data sources with snapshot dates, coverage, and known limitations.
 import { useEffect, useRef } from "preact/hooks";
 import { formatDate, intlLocale, lang, languages, setLang, t } from "../app/i18n.ts";
+import { LANDMARKS, landmarkBuildings } from "../app/landmarks.ts";
 import { INSPIRED_BY, REPO } from "../app/links.ts";
 import { data, panel } from "../app/state.ts";
 import { aucklandWallTime } from "../shared/time.ts";
-import { IconButton, Section } from "./common.tsx";
+import { IconButton, Section, buildingTitle } from "./common.tsx";
 import { WorldLink } from "./Travel.tsx";
 
 const longDate: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" };
@@ -18,6 +19,13 @@ export function AboutPanel() {
   const n = (x: number) => x.toLocaleString(intlLocale());
   const pct = (x: number) => (c.sessions ? ` (${Math.round((x / c.sessions) * 100)}%)` : "");
   const available = d.schedule.available;
+  // The buildings drawn in detail, by number and name.
+  const detailed = new Intl.ListFormat(intlLocale(), { type: "conjunction" }).format(
+    LANDMARKS.flatMap(landmarkBuildings).map((id) => {
+      const b = d.buildingById.get(id);
+      return [id, b && buildingTitle(b)].filter(Boolean).join(" ");
+    }),
+  );
 
   return (
     <div class="modal-wrap" onClick={(e) => e.target === e.currentTarget && (panel.value = "none")}>
@@ -65,6 +73,15 @@ export function AboutPanel() {
               {t("about.osm")}{" "}
               <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
                 {t("about.osmLink")}
+              </a>
+            </p>
+          </Section>
+
+          <Section title={t("about.landmarksTitle")}>
+            <p id="landmarks">
+              {t("about.landmarks", { buildings: detailed })}{" "}
+              <a href={`${REPO}/tree/main/landmarks`} target="_blank" rel="noopener noreferrer">
+                {t("about.landmarksLink")}
               </a>
             </p>
           </Section>

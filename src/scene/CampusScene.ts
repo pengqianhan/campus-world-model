@@ -36,6 +36,7 @@ import {
   UnsignedByteType,
   Vector2,
   Vector3,
+  WebGLRenderTarget,
   WebGLRenderer,
   type Material,
   type MeshStandardMaterial,
@@ -59,6 +60,8 @@ import { streetTier } from "./street/tier.ts";
 import { PART, STYLE, STYLES, buildingSeed, cityStoreys, facadeCode, facadeStyle } from "./street/rules.ts";
 import { GROUND, RAIL_WIDTH, ROAD_EDGE_WIDTH, ROAD_WIDTH, type GroundKind } from "./street/roads.ts";
 import type { TreeSpec } from "./street/crowns.ts";
+import { LANDMARKS } from "../app/landmarks.ts";
+import { Landmark, type Cover, type LandmarkForm } from "./landmarks.ts";
 
 export interface Selection {
   building?: string;
@@ -206,6 +209,18 @@ const CUT_WALL_THICKNESS = 0.3;
 const FLOOR_FILL = { wide: [0.56, 0.66], narrow: [0.84, 0.48] } as const;
 /** How much of the ground shows over an open floor below it: the floor is seen through the ground. */
 const GROUND_VEIL = 0.45;
+/** The panes of the windows drawn on University building walls (makeWindowTexture), and of a landmark's light form. */
+const WINDOW_PANE = "#93a3ab";
+/**
+ * The map draws a landmark (landmarks.ts) in place of its block where a metre of ground takes this
+ * many pixels or more, about where its windows and pinnacles start to show. Further out the block is
+ * drawn as before, and the landmark is not made at all until the camera first comes this near.
+ */
+const LANDMARK_PIXELS = 1.5;
+/** Metres from a walker view's camera within which a landmark is drawn in place of its block. */
+const LANDMARK_REACH = 600;
+/** The layer a block goes to while a landmark stands in its place: no camera draws it, and a click still finds it. */
+const HIDDEN_LAYER = 1;
 
 const easeInOut = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
 
@@ -330,6 +345,13 @@ export class CampusScene {
   private roomsByCode = new Map<string, Room>();
   private buildingMeshes = new Map<string, Mesh>();
   private buildingEdges = new Map<string, LineSegments>();
+  /** The landmarks, drawn in place of their buildings' blocks where the camera is near (landmarks.ts). */
+  private landmarks: Landmark[] = [];
+  /** The landmark that stands in place of a building's block, by building id. */
+  private landmarkBlocks = new Map<string, Landmark>();
+  /** Whether a walker view may draw a landmark's full form: on the full tier only (street/tier.ts). */
+  private landmarkFull = false;
+  private needsLandmarks = true;
   private roomMeshes = new Map<string, Mesh>();
   private plans = new Map<string, FloorPlans>();
   private planObjects: (Mesh | LineSegments)[] = [];
@@ -443,6 +465,7 @@ export class CampusScene {
     this.controls.addEventListener("change", () => {
       this.needsRender = true;
       this.needsLabels = true;
+      this.needsLandmarks = true;
       // The space under the pointer has moved away from it.
       this.showSpace(undefined);
     });
@@ -497,7 +520,27 @@ export class CampusScene {
     });
     this.scene.add(this.walkers.group);
 
-    this.wallTexture = this.makeWindowTexture("#ffffff", "#93a3ab", { slab: "#ddd6c8", lintel: "#7d8d96", sill: "#e9e3d6" });
+    // The buildings drawn in detail from code, each made the first time the camera comes near it.
+    this.landmarkFull = tier === "full";
+    for (const entry of LANDMARKS) {
+      const landmark = new Landmark(entry, {
+        loading: (change) => (this.loading += change),
+        prepare: (form) => this.prepareLandmark(form),
+        ready: () => {
+          this.needsLandmarks = true;
+          this.needsShadow = true;
+          this.needsRender = true;
+          this.arrived++;
+        },
+      });
+      this.landmarks.push(landmark);
+      for (const id of landmark.buildings) this.landmarkBlocks.set(id, landmark);
+      this.scene.add(landmark.group);
+    }
+    // A block that a landmark stands in place of is on a layer the cameras leave out; clicks still find it.
+    this.raycaster.layers.enableAll();
+
+    this.wallTexture = this.makeWindowTexture("#ffffff", WINDOW_PANE, { slab: "#ddd6c8", lintel: "#7d8d96", sill: "#e9e3d6" });
     this.glowTexture = this.makeWindowTexture("#000000", "#ffffff");
     this.applyPalette();
 
@@ -595,11 +638,94 @@ export class CampusScene {
       this.uniGroup.add(edges);
       this.buildingEdges.set(b.id, edges);
     }
+    this.standLandmarks();
+    this.layBlocks();
     this.dressBuildings();
     this.applyFocus();
     this.rebuildLabels();
     this.needsShadow = true;
     this.needsRender = true;
+  }
+
+  /** Stands each landmark on the ground at its door, where its model's y = 0 is. */
+  private standLandmarks(): void {
+    for (const l of this.landmarks) l.stand(this.groundAt(...l.door));
+    this.needsLandmarks = true;
+  }
+
+  /** Puts each block a landmark stands in place of on the hidden layer, and every other block on the cameras' layer. */
+  private layBlocks(): void {
+    for (const [id, mesh] of this.buildingMeshes) {
+      const layer = this.landmarkBlocks.get(id)?.shown ? HIDDEN_LAYER : 0;
+      mesh.traverse((o) => o.layers.set(layer));
+    }
+  }
+
+  /**
+   * Draws each landmark in place of its buildings' blocks where the camera is near it, in the form
+   * the view takes, and asks for that form the first time. While one of its buildings is open it
+   * gives way to the blocks. In a walker view the light form stands in until the full one is made.
+   */
+  private updateLandmarks(): void {
+    this.needsLandmarks = false;
+    let changed = false;
+    for (const l of this.landmarks) {
+      const blocks = l.buildings.flatMap((id) => this.buildingMeshes.get(id) ?? []);
+      const want = this.buildingMeshes.has(l.buildings[0]!) ? this.landmarkWanted(l) : undefined;
+      if (want) l.want(want, () => this.landmarkCovers(l));
+      let form: LandmarkForm | undefined;
+      if (want && blocks.every((b) => b.visible)) form = want === "full" && l.has("full") ? "full" : l.has("light") ? "light" : undefined;
+      if (l.show(form)) changed = true;
+    }
+    if (!changed) return;
+    this.layBlocks();
+    // The blocks' inked edges, and the shadows, change with them.
+    this.applyFocus();
+  }
+
+  /**
+   * Makes a landmark form's shaders before its first frame, on the graphics driver's own threads
+   * where the browser allows it (KHR_parallel_shader_compile). Made in the frame, the full form's
+   * stopped the page for half a second (measured 2026-10-21). In a walker view of the full tier the
+   * scene is drawn into the renderer's half-float picture rather than the screen, so the shaders
+   * are made for a picture: with no tone mapping, in the working colour space.
+   */
+  private prepareLandmark(form: Object3D): Promise<unknown> {
+    const was = this.renderer.getRenderTarget();
+    if (this.street.active && this.landmarkFull) this.renderer.setRenderTarget((this.picture ??= new WebGLRenderTarget(1, 1, { type: HalfFloatType })));
+    const made = this.renderer.compileAsync(form, this.activeCamera, this.scene);
+    this.renderer.setRenderTarget(was);
+    // Counted until the frame after it is ready (frame): it is waited for with the page's timers,
+    // which a tab in the background, or a test's clock, holds back.
+    this.preparing++;
+    return made;
+  }
+  /** A picture like the one the full tier draws a walker view into, for making shaders for it. */
+  private picture?: WebGLRenderTarget;
+
+  /** The outlines of a landmark's buildings in its model's frame, for sorting its triangles by building. */
+  private landmarkCovers(l: Landmark): Cover[] {
+    return l.buildings.flatMap((id) => {
+      const b = this.buildings.get(id);
+      if (!b || b.offMap) return [];
+      return [{ id, rings: b.outline.map((ring) => decodeRing(ring).map(([x, y]) => l.toModel(x, y))) }];
+    });
+  }
+
+  /** The form a landmark is drawn in from where the camera is now; none when it is far. */
+  private landmarkWanted(l: Landmark): LandmarkForm | undefined {
+    const [x, y] = l.centre;
+    if (this.view === "map") {
+      const zoom = this.camera.zoom;
+      if ((this.height * zoom) / VIEW_HEIGHT < LANDMARK_PIXELS) return undefined;
+      // Within a screen's width of the middle of the view.
+      const t = this.controls.target;
+      const reach = (VIEW_HEIGHT / zoom) * Math.max(1, this.width / this.height);
+      return Math.hypot(t.x - x, -t.z - y) < reach ? "light" : undefined;
+    }
+    const at = this.persp.position;
+    if (Math.hypot(at.x - x, -at.z - y) > LANDMARK_REACH) return undefined;
+    return this.landmarkFull ? "full" : "light";
   }
 
   /** The floor plans of one building: the other spaces on its floors, drawn as shapes tinted by type. */
@@ -1131,9 +1257,23 @@ export class CampusScene {
         street.color.setHex(hovered ? lerpColour(0xffffff, p.hover, 0.55) : 0xffffff);
         this.street.facades?.setAway(street, this.focus);
       }
+      // A landmark's light form takes its block's colours: its walls and roofs, the panes of its
+      // windows, which glow after dark as the block's do, and its openings a step darker.
+      const light = this.landmarkBlocks.get(id)?.light(id);
+      if (light) {
+        const wall = tone(this.wallColour(b));
+        light.walls.color.setHex(wall);
+        light.roof.color.setHex(tone(this.roofColour(b)));
+        light.glass.color.setHex(wall).multiply(this.pane);
+        light.glass.emissiveIntensity = walls.emissiveIntensity;
+        light.openings.color.setHex(lerpColour(wall, p.uniEdge, 0.5));
+      }
     }
     if (this.cityMaterial) this.street.facades?.setAway(this.cityMaterial, this.focus);
   }
+
+  /** The colour of the windows' panes, which a landmark's light form takes for its glass. */
+  private pane = new Color(WINDOW_PANE);
 
   private wallColour(b: Building): number {
     return b.roomCount > 0 ? this.palette.uniTeaching : this.palette.uni;
@@ -1190,11 +1330,15 @@ export class CampusScene {
       const edges = this.buildingEdges.get(id)!;
       const isSelected = id === selected && this.focus > 0;
       mesh.visible = !isSelected;
-      // The inked edges are the model's, seen from above; from a walker's height a corner shows by its light.
-      edges.visible = !isSelected && this.focus < 0.5 && this.view === "map";
+      // The inked edges are the model's, seen from above; from a walker's height a corner shows by
+      // its light. A landmark in the block's place has none.
+      edges.visible = !isSelected && this.focus < 0.5 && this.view === "map" && !this.landmarkBlocks.get(id)?.shown;
       mesh.scale.y = scale;
       edges.scale.y = scale;
     }
+    for (const l of this.landmarks) l.squash(scale);
+    // An open building takes its landmark away with its block.
+    this.needsLandmarks = true;
     // Surrounding buildings sink to their footprints where they stand.
     const sq = this.contextSquash;
     if (sq && sq.scale !== scale) {
@@ -1960,6 +2104,7 @@ export class CampusScene {
       this.lastView = e.slice();
       this.needsRender = true;
       this.needsLabels = true;
+      this.needsLandmarks = true;
     }
   }
   /** The walker view's camera matrix when last drawn. */
@@ -2182,6 +2327,7 @@ export class CampusScene {
     this.applyViewShift();
     this.needsRender = true;
     this.needsLabels = true;
+    this.needsLandmarks = true;
   }
 
   private frame = (now: number): void => {
@@ -2210,6 +2356,7 @@ export class CampusScene {
     }
     if (this.view === "map") this.controls.update();
     else this.placeWalkerCamera(dt);
+    if (this.needsLandmarks) this.updateLandmarks();
     if (!this.needsRender) return;
     this.needsRender = false;
     if (this.needsShadow && this.renderer.shadowMap.enabled) {
@@ -2222,6 +2369,8 @@ export class CampusScene {
       this.labels.update(this.activeCamera, this.width, this.height);
     }
     this.frames++;
+    this.preparing -= this.arrived;
+    this.arrived = 0;
   };
 
   /** The camera the picture is drawn with. */
@@ -2263,6 +2412,14 @@ export class CampusScene {
 
   /** Data requests the host is still waiting for; lets tests wait for the whole picture. */
   loading = 0;
+
+  /**
+   * Landmark forms being made ready to draw (prepareLandmark), until the frame after they are ready
+   * is drawn; lets tests wait for the whole picture.
+   */
+  preparing = 0;
+  /** Landmark forms ready since the last frame drawn. */
+  private arrived = 0;
 
   /** Number of unnamed floor-plan shapes drawn on the open floor. For tests. */
   get planShapes(): number {
@@ -2369,6 +2526,7 @@ export class CampusScene {
     const from = new Vector3(ax, height, -ay);
     const along = new Vector3(bx, height, -by).sub(from);
     const ray = new Raycaster(from, along.clone().normalize(), 0, along.length());
+    ray.layers.enableAll();
     const hits = ray.intersectObjects([...this.buildingMeshes.values()], false);
     return [...new Set(hits.map((h) => (h.object.userData.pick as { id: string }).id))];
   }
@@ -2549,12 +2707,28 @@ export class CampusScene {
       twin.matrixAutoUpdate = false;
       twin.userData.noPick = true;
       twin.raycast = () => {};
+      // On the hidden layer with a block that a landmark stands in place of (layBlocks).
+      twin.layers.mask = mesh.layers.mask;
       mesh.add(twin);
       mesh.userData.depthTwin = twin;
     }
     if (twin) twin.visible = on;
   }
   private depthOnly = Object.assign(new MeshBasicMaterial({ colorWrite: false }), { polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+
+  /**
+   * Each landmark: the buildings it draws, the form drawn now ("none" while their blocks are drawn),
+   * the forms made so far, and the colour of each building's walls in the light form. For tests.
+   */
+  landmarkState(): { name: string; buildings: string[]; form: LandmarkForm | "none"; made: LandmarkForm[]; walls: Record<string, number> }[] {
+    return this.landmarks.map((l) => ({
+      name: l.name,
+      buildings: l.buildings,
+      form: l.shown ?? "none",
+      made: (["light", "full"] as const).filter((f) => l.has(f)),
+      walls: Object.fromEntries(l.buildings.map((id) => [id, l.light(id)!.walls.color.getHex()])),
+    }));
+  }
 
   /** The groups whose floors are drawn on the open floor, each with its colour now. For tests. */
   spaceFloors(): { kind: SpaceKind; colour: number }[] {
@@ -2649,6 +2823,7 @@ export class CampusScene {
     cancelAnimationFrame(this.raf);
     this.controls.dispose();
     this.street.dispose();
+    for (const l of this.landmarks) l.dispose();
     this.renderer.dispose();
     this.renderer.domElement.remove();
     this.labels.clear();
