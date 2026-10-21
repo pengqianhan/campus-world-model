@@ -180,7 +180,18 @@
   "spine_radius": 40,
   "near_outline": 3,
   "street_side": "west",
-  "axis_from": "walls"
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    24.55041097,
+    109.30094868
+   ],
+   "axis": [
+    -0.74513034,
+    0.66691887
+   ],
+   "tolerance_m": 0.05
+  }
  },
  "streetview": {
   "max_panos": 12,
