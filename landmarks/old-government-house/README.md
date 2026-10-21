@@ -9,7 +9,8 @@ the pipeline, the viewer and how to run them are shared by every landmark:
 [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=old-government-house&view=orbit`
-  with the repository root served on port 8765. It is not on the site yet.
+  with the repository root served on port 8765. On the site it stands in place of building 102's
+  block (its config says `"site": true`).
 - Run its pipeline: `landmarks/pipeline/run.sh old-government-house [stage ...]`; the check from
   above is the `topview` stage.
 - The rules the agents worked to: [`docs/CONTRACT.md`](docs/CONTRACT.md) and
