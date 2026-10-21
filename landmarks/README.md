@@ -52,6 +52,10 @@ landmarks/pipeline/run.sh clocktower compare    # one stage; stages can be chain
 Every stage and tool runs in the landmark's folder; `run.sh` goes there. To run a tool alone, go there
 first: `cd landmarks/clocktower && node ../pipeline/tools/compare.mjs --out out/me --match tower`.
 
+The `data` and `refs` stages fetch outside `scripts/lib/snapshot.ts`. They are not run until their
+fetches go through it (`PROGRESS.md`, "Decisions": all network fetching); `place`, `refine`,
+`compare` and `metrics` work from what is on disk.
+
 In a fresh clone the first `refs` needs a Google Maps key and `ALLOW_FETCH=1` (it buys the Street View
 tiles once: about 1,500 for the Clock Tower, inside the free monthly quota; see "What is billed").
 After that every run is offline from the local cache.

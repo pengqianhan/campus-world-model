@@ -11,7 +11,7 @@ up an open issue instead. "Decisions" and "Tried and did not work" bind you too.
 with a date are records of that day: what was true then, not now; `CHANGELOG.md` has what came
 after. Notes on "this machine" are about the maintainer's Windows computer.
 
-Last updated: 2026-10-18 NZDT
+Last updated: 2026-10-21 NZDT
 
 ## Now working on
 
@@ -268,14 +268,40 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   The research for it, by a sub-agent on 2026-10-15, let a headless browser send up to six
   requests in one second to `study.auckland.ac.nz` and about 22 to third-party analytics before it
   blocked them. Exploration of a site goes through the same pacing as fetching (RECON.md).
+- Landmarks, since 2026-10-21 (pull requests #63 and #64): buildings drawn in three.js from code,
+  in `landmarks/` (`landmarks/README.md`). Three sources (the user, 2026-10-21):
+  - Sizes: LINZ, Auckland LiDAR point cloud (2024), tiles `CL2_BA32_2024_1000_*`, from
+    OpenTopography's public bucket. CC BY 4.0, no sign-in; LINZ data, as the terrain is. The tiles
+    stay local. The sizes measured from them are committed (the config's `frame.expected`,
+    `parts/common.js`).
+  - Check figure: LINZ, Auckland Central 0.06 m urban aerial photos (2023), CC BY 4.0, no sign-in.
+  - References: Street View, through Google's Map Tiles API with the user's key. Renders are
+    compared with it. It is never published, traced or sampled, and it stays local. Anyone can see
+    the same views in Google Maps without signing in. Google Maps Platform Terms 3.2.3(c):
+    "Customer will not create content based on Google Maps Content." The user chose on 2026-10-21
+    to keep Street View as the references.
 
 ## Decisions (and why) — do not re-litigate without new information
 
-- **One source for a University building (the user, 2026-10-13).** Its shape comes from the campus
-  map alone. OpenStreetMap's copy stays dropped, although it tags a height on 9 of these buildings
-  and maps the Clock Tower in 13 parts with a dome and pinnacles: the two sources disagree on
-  height (building 405 is tagged 50 m and stands 32 m here from its floors), and mixing them would
-  leave some buildings surveyed and their neighbours estimated. Reopen only if the user asks.
+- **One source for a University building (the user, 2026-10-13; amended 2026-10-21).** Its data
+  (outline, floors, rooms) comes from the campus map alone. OpenStreetMap's copy stays dropped,
+  although it tags a height on 9 of these buildings and maps the Clock Tower in 13 parts with a dome
+  and pinnacles: the two sources disagree on height (building 405 is tagged 50 m and stands 32 m
+  here from its floors), and mixing them would leave some buildings surveyed and their neighbours
+  estimated. Reopen only if the user asks.
+  - **Landmarks (the user, 2026-10-21).** A building that has a landmark (`landmarks/<name>/`,
+    sized by the LINZ LiDAR, placed by its `placement.json`) is drawn by its landmark in place of
+    its block, in the walker views and in the map view. The block stays: a click finds it, and it
+    opens on its floors. Some buildings are then surveyed and their neighbours estimated, which
+    this decision had avoided: About and the building card say which buildings are landmarks, and
+    that the heights of the others are estimated from their floors.
+  - **On the map, a light form.** It takes the map's palette, hover and night, has no textures,
+    and loads only when the camera comes near. Why: the full Clock Tower in the map view costs every
+    visitor (measured 2026-10-21 on preview builds of 5435a91, 1440×900, an NVIDIA Quadro P600):
+    textures of 64 MB made in 1.0 s on the main thread (5.2 s with the processor slowed four
+    times, as on a phone), the page usable 1.3 s later (6.8 s slowed), and frames 24 to 42% slower
+    on SwiftShader. "Only the walker views change" (the street look) does not hold for these
+    buildings.
 - **A pull request says how it was made (the user, 2026-10-15).** The model as the tool names it,
   the harness with its version and the thinking effort, in "How it was made" on the pull-request
   form, which CI checks is filled in (`scripts/check-pr-form.ts`, `.github/workflows/pr-form.yml`;
@@ -302,12 +328,18 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     ground layers; after the trees, two of eight map vantages differed now and then by at most 8 of
     255 on a few pixels (not visible; the cause, probably timing, was not found; see PR #50).
     Attributes the map never reads are the only cost there (about 24 MB, and `setContext` about
-    70 ms slower).
+    70 ms slower). Since 2026-10-21 a building with a landmark is the exception: see "One source for
+    a University building".
   - **By rule from the data already published; nothing placed.** Storeys, bays, wall materials,
     lit rooms, lane lines, kerbs, grass, leaves: all come from outlines, heights, classes and
     positions in `public/data/`, seeded by position so they are stable, and About says what is by
     rule. No doors, crossings, arrows, signs, lamps, benches, cars or people: none are mapped. Lamp
     posts and benches from OpenStreetMap would be a new fetch, so a gate; not asked for.
+    Since 2026-10-21 one exception (the user): a landmark's building (`landmarks/<name>/model.js`),
+    drawn for that building by agents from the LiDAR and compared with photographs. Its doors,
+    steps and porch are part of the building. Its landscape (street, signs, lamp post, crossing,
+    trees) stays in the landmark viewer: round it, the walker views keep their streets and trees by
+    rule. About says which buildings are landmarks.
   - **At street level the University's windows are split into lights and curtain walls get
     mullions**, within the 3.2 m x 3.6 m grid of the 2026-10-14 decision on how a University
     building looks from outside. The map is unchanged; the pull request flags this as a gate.
@@ -401,6 +433,14 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   2026-10-13 this takes the 139 buildings on the map from 471 blocks to 303.
 - **All network fetching goes through `scripts/lib/snapshot.ts`** (cache-first, ≥1.1 s between
   requests, honest User-Agent). Never fetch a URL that already has a snapshot unless `--refresh`.
+  Since 2026-10-21 this covers the landmark pipeline too (the user chose this over an exception in
+  `AGENTS.md`): its LiDAR tiles, its aerial photos and its Street View calls are to go through
+  `snapshot.ts`, by a batch entry that the Python tools call. Each is then cached in `data/raw/`,
+  fetched at most once a second with the project's User-Agent, and logged in `data/sources.json`.
+  None is committed: the LiDAR is too large, and Street View is Google's. The key never reaches a
+  logged URL or a commit. Street View then takes about 28 minutes a building (1,526 tiles for the
+  Clock Tower). Until that is built, the `data` and `refs` stages are not run: they fetch outside
+  `snapshot.ts`.
 - **Labels are HTML, hit-tested by the scene** (`pointer-events: none`) so that a drag starting on a
   label still rotates the map.
 - **Building view = cut-away:** floors above the selected one are hidden, floors below are a solid
