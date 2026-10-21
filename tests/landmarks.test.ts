@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { Vector3 } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
@@ -9,11 +10,24 @@ const host = { loading: () => {}, prepare: async () => {}, ready: () => {} };
 
 describe("landmarks on the map", () => {
   it("the Clock Tower draws building 105 and its south range, 105S, and no other", () => {
-    expect(LANDMARKS.map((l) => l.name)).toEqual(["clocktower"]);
-    expect(landmarkBuildings(LANDMARKS[0]!)).toEqual(["105", "105S"]);
+    const clocktower = LANDMARKS.find((l) => l.name === "clocktower");
+    expect(clocktower).toBeDefined();
+    expect(landmarkBuildings(clocktower!)).toEqual(["105", "105S"]);
     expect(landmarkOf("105")?.name).toBe("clocktower");
     expect(landmarkOf("105S")?.name).toBe("clocktower");
-    expect(landmarkOf("119")).toBeUndefined();
+    expect(landmarkOf("119")?.name).not.toBe("clocktower");
+  });
+
+  it("the site finds every landmark whose placement says site: true, and only those, each with its model", () => {
+    const folders = fs.readdirSync("landmarks", { withFileTypes: true }).filter((d) => d.isDirectory() && fs.existsSync(`landmarks/${d.name}/placement.json`));
+    const onSite = folders.filter((d) => JSON.parse(fs.readFileSync(`landmarks/${d.name}/placement.json`, "utf8")).site === true).map((d) => d.name);
+    expect(onSite).toContain("clocktower");
+    expect(LANDMARKS.map((l) => l.name)).toEqual(onSite.sort());
+    // The worker loads landmarks/<name>/model.js by the same name.
+    for (const name of onSite) expect(fs.existsSync(`landmarks/${name}/model.js`), name).toBe(true);
+    // A building's block gives way to one landmark at most.
+    const buildings = LANDMARKS.flatMap(landmarkBuildings);
+    expect(new Set(buildings).size).toBe(buildings.length);
   });
 
   it("the scene puts the model's door where place.py puts it on the map, and back", () => {

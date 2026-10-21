@@ -279,8 +279,10 @@ describe("published floor plans", () => {
     const byBuilding = new Map(plans.map((p) => [p.building, p]));
     for (const [id, i] of blank) expect(byBuilding.get(id)?.floors[i], `${id} floor ${i}`).toBeUndefined();
     for (const b of campus.buildings) {
-      if (/Early Childhood|Kohanga Reo/i.test(b.sourceText)) expect(b.planShapes, b.id).toBeUndefined();
+      if (/Early Childhood|K[oō]hanga Reo|\bECE\b/i.test(b.sourceText)) expect(b.planShapes, b.id).toBeUndefined();
     }
+    // an early childhood education centre that the source names by its initials
+    expect(campus.buildings.find((b) => b.id === "841")?.floors.every((f) => f.noPlan === "childcare")).toBe(true);
   });
   it("mark the floors the campus map leaves bare, and only those", () => {
     const byBuilding = new Map(plans.map((p) => [p.building, p]));
