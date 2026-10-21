@@ -14,6 +14,15 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-22
+
+### Fixed
+
+- **A childcare centre's floor was drawn.** The ground floor of building 841, Nicholls Lane ECE
+  (an early childhood education centre), showed 22 shapes of its spaces, unnamed. Childcare centres
+  are left blank, and the data build now knows them by "ECE" as well as by "Early Childhood" and
+  "Kōhanga Reo": its floor is blank, and its bar says it is a childcare centre (#69).
+
 ## 2026-10-21
 
 ### Added

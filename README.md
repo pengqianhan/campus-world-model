@@ -40,17 +40,13 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-22:** the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
+  childcare centre's is.
 - **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
   click still opens its floors.
 - **2026-10-19:** on a slow screen a walker view that stands still is drawn once, not again and
   again.
-- **2026-10-18:** the walker's views at street level look near the real thing, by rule from the
-  map's own data: a sky lit from the real sun, stars and a moon, haze and exposure; every building
-  with storeys, windows, glass that reflects the sky and walls of plaster, brick, concrete, stone,
-  glass or weatherboard, lit room by room after dark; asphalt with lane lines, kerbs, footpaths,
-  lawn and water, wet in rain; trees with bark and leaves. The map view is unchanged. On a slow
-  screen the view now comes back round behind a walker walked by hand, as on a fast one.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -83,7 +79,7 @@ Everything, with its pull request, is in the [changelog](CHANGELOG.md).
   heights and roof shapes OpenStreetMap holds, from house gables to the Sky Tower.
 - **A cut-away view of every building:** pick a floor, see its learning spaces (lecture theatres,
   teaching rooms, labs, studios, study spaces) drawn from the outlines on the official campus map, set
-  in the rest of the floor plan: 14,862 other spaces without names, each tinted by its type on the
+  in the rest of the floor plan: 14,840 other spaces without names, each tinted by its type on the
   campus map (office, other lab, toilet, stairs or lift, service) and showing that type when pointed
   at or tapped. Stairs, lifts and toilets carry a sign.
 - **Search** over 786 learning spaces, 4,668 further rooms (located as a point), 194 buildings and 251
