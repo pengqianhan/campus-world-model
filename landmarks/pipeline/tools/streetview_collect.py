@@ -4,17 +4,19 @@
 #
 #   python -I ../pipeline/tools/streetview_collect.py [--config config/<name>.json] [--offline] [--allow-fetch]
 #
-# Cache-first: tiles live in refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg and are never fetched
-# again. A missing tile is NOT fetched (tiles are billed) unless --allow-fetch is given; without it the
-# run lists the missing tiles and leaves them black. Online, the run makes only the free calls
-# (createSession, panoIds, metadata) and saves the metadata to refs/streetview/metadata.json;
-# --offline rebuilds every view from that file and the cached tiles without any network call.
-# A view whose tiles are not all cached keeps its existing image (a fresh clone has the views but no tiles).
-# Key: $GOOGLE_MAPS_KEY or ~/.gmaps_key. Needs data/<name>_frame.json etc. (run the data stage first).
-import argparse, io, json, math, os, sys, time
-from concurrent.futures import ThreadPoolExecutor
+# Every call goes through scripts/lib/snapshot.ts (data/fetch_bridge.py), cache first: metadata and tiles
+# are kept in data/raw/landmarks/streetview/ and never fetched again. Tiles cached here before that, in
+# refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg, are still read. A missing tile is NOT fetched
+# (tiles are billed) unless --allow-fetch is given; then the ledger ($GMAPS_BUDGET check N) must allow
+# them first. Without it the run counts the missing tiles and leaves them black. Online, the run makes
+# only the free calls (createSession, panoIds, metadata) for what is not cached, and saves the metadata
+# to refs/streetview/metadata.json; --offline rebuilds every view from that file and the cached tiles
+# without any network call. A view whose tiles are not all cached keeps its existing image (a fresh
+# clone has the views but no tiles). Key: $GOOGLE_MAPS_KEY or ~/.gmaps_key, read by the Node side only.
+# Needs data/<name>_frame.json etc. (run the data stage first).
+import argparse, json, math, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
-import common
+import common, fetch_bridge
 import numpy as np
 from PIL import Image
 from pyproj import Transformer
@@ -29,7 +31,6 @@ cfg = common.load(a.config); SV = cfg["streetview"]
 MAX = a.max_panos or SV["max_panos"]; RADIUS = SV["radius_m"]
 OUT = os.path.join(common.ROOT, "refs", "streetview"); os.makedirs(OUT, exist_ok=True)
 META = os.path.join(OUT, "metadata.json")
-API = "https://tile.googleapis.com/v1"
 
 fr = common.load_frame(cfg)
 E0, N0, centre, ax, to_street, G = fr["E0"], fr["N0"], fr["centre"], fr["axis"], fr["toStreet"], fr["ground"]
@@ -56,23 +57,12 @@ def bearing_to_tower(lat, lng):
     x = math.cos(math.radians(lat)) * math.sin(math.radians(lat_t)) - math.sin(math.radians(lat)) * math.cos(math.radians(lat_t)) * math.cos(math.radians(lng_t - lng))
     return math.degrees(math.atan2(y, x)) % 360, lat_t, lng_t
 
-calls = {"createSession": 0, "panoIds": 0, "metadata": 0, "tiles": 0}
-s = q = None
+calls = {"panoIds": 0, "metadata": 0, "tiles": 0}
 if a.offline:
     if not os.path.exists(META): sys.exit(f"--offline needs {META}; run once online first")
     raw = json.load(open(META))["metadata"]
     print(f"offline: {len(raw)} panoramas from {os.path.relpath(META, common.ROOT)}")
 else:
-    import requests
-    key = os.environ.get("GOOGLE_MAPS_KEY")
-    if not key:  # ~/.gmaps_key holds either the bare key or a line "export GOOGLE_MAPS_KEY=..."
-        key = open(os.path.expanduser("~/.gmaps_key")).read().strip().split("=", 1)[-1].strip().strip("'\"")
-    s = requests.Session()
-    r = s.post(f"{API}/createSession?key={key}", json={"mapType": "streetview", "language": "en-US", "region": "NZ"}).json()
-    if "session" not in r: sys.exit(f"createSession failed: {r.get('error', {}).get('message', r)} (or run with --offline)")
-    session = r["session"]
-    calls["createSession"] += 1
-    q = f"session={session}&key={key}"
     # 1. panoramas near the tower (free calls), or the ones the config names
     _, lat_t, lng_t = bearing_to_tower(-36.85, 174.77)
     locs = None if SV.get("pano_ids") else []
@@ -81,12 +71,12 @@ else:
             if dn * dn + de * de <= RADIUS * RADIUS:
                 locs.append({"lat": lat_t + dn / 111320, "lng": lng_t + de / (111320 * math.cos(math.radians(lat_t)))})
     ids = set(SV.get("pano_ids", []))
-    for i in range(0, len(locs or []), 100):
-        r = s.post(f"{API}/streetview/panoIds?{q}", json={"locations": locs[i:i + 100], "radius": 12}).json(); calls["panoIds"] += 1
-        ids |= {p for p in r.get("panoIds", []) if p}
-    with ThreadPoolExecutor(4) as ex:
-        raw = [m for m in ex.map(lambda i: s.get(f"{API}/streetview/metadata?{q}&panoId={i}").json(), sorted(ids)) if "lat" in m]
-    calls["metadata"] += len(ids)
+    for r in fetch_bridge.run([{"op": "panoIds", "locations": locs[i:i + 100], "radius": 12} for i in range(0, len(locs or []), 100)]):
+        calls["panoIds"] += r["sent"]
+        ids |= {p for p in r["panoIds"] if p}
+    r = fetch_bridge.run([{"op": "metadata", "panos": sorted(ids)}])[0]
+    calls["metadata"] += r["sent"]
+    raw = [m for m in r["metadata"] if "lat" in m]
     raw.sort(key=lambda m: m["panoId"])
     json.dump({"note": "Map Tiles API Street View metadata, saved for --offline. Imagery and metadata (c) Google; references only.", "radius_m": RADIUS, "metadata": raw}, open(META, "w"), indent=1)
     print(f"{len(raw)} panoramas within {RADIUS:.0f} m; metadata saved to {os.path.relpath(META, common.ROOT)}")
@@ -104,36 +94,37 @@ json.dump([{k: m[k] for k in ("panoId", "lat", "lng", "date", "heading", "tilt",
 for m in metas[:MAX]: print(f"  {m['panoId'][:12]}  {m['date']}  {m['dist']:5.1f} m  at x {m['view_xz'][0]:6.1f} z {m['view_xz'][1]:6.1f}")
 
 # 2. tiles facing the building, stitched (cache first); 3. perspective views aimed at it
-missing = []
-def fetch_band(m, zoom, yaw_c, half_yaw, pitch_lo, pitch_hi):
+def band_tiles(m, zoom, yaw_c, half_yaw, pitch_lo, pitch_hi):
     W = 512 * (1 << zoom); H = W // 2
     cols, rows = W // 512, H // 512
     def col_of(yaw): return int(((yaw - m["heading"] + 180) % 360) / 360 * W) // 512
     c0 = col_of(yaw_c - half_yaw); n_cols = int(math.ceil(2 * half_yaw / 360 * cols)) + 2
     r0 = max(0, int((90 - pitch_hi) / 180 * H) // 512); r1 = min(rows - 1, int((90 - pitch_lo) / 180 * H) // 512)
-    tiles = [((c0 + i) % cols, r) for i in range(n_cols) for r in range(r0, r1 + 1)]
+    return [((c0 + i) % cols, r) for i in range(n_cols) for r in range(r0, r1 + 1)]
+
+def stitch(zoom, tiles, paths):
+    W = 512 * (1 << zoom); H = W // 2
     pano = np.zeros((H, W, 3), np.uint8)
-    cache = os.path.join(OUT, "tiles", m["panoId"]); os.makedirs(cache, exist_ok=True)
-    def get(t):
-        c, r = t
-        fn = os.path.join(cache, f"{zoom}_{c}_{r}.jpg")
-        if os.path.exists(fn): return t, open(fn, "rb").read(), False
-        if not a.allow_fetch or s is None:
-            missing.append(fn); return t, None, False
-        for attempt in range(3):
-            resp = s.get(f"{API}/streetview/tiles/{zoom}/{c}/{r}?{q}&panoId={m['panoId']}")
-            if resp.ok:
-                open(fn, "wb").write(resp.content)
-                return t, resp.content, True
-            time.sleep(1)
-        return t, None, True
-    fetched = 0
-    with ThreadPoolExecutor(6) as ex:
-        for (c, r), data, new in ex.map(get, tiles):
-            fetched += new
-            if data:
-                pano[r * 512:(r + 1) * 512, c * 512:(c + 1) * 512] = np.asarray(Image.open(io.BytesIO(data)).convert("RGB"))
-    return pano, len(tiles), fetched
+    for (c, r), fn in zip(tiles, paths):
+        if fn: pano[r * 512:(r + 1) * 512, c * 512:(c + 1) * 512] = np.asarray(Image.open(fn).convert("RGB"))
+    return pano
+
+def old_cache(m, zoom, c, r):
+    """Where tiles were cached before the fetches went through snapshot.ts: read, never written."""
+    return os.path.join(OUT, "tiles", m["panoId"], f"{zoom}_{c}_{r}.jpg")
+
+plans = []
+for m in metas[:MAX]:
+    b, _, _ = bearing_to_tower(m["lat"], m["lng"])
+    g = ground_at(m["lat"], m["lng"]); cam_y = (g if g is not None else G) + SV["camera_height_m"] - G
+    zoom = 5 if m["dist"] < 70 else 4
+    plans.append((m, b, g, cam_y, zoom, band_tiles(m, zoom, b, 60, -30, 80)))
+# All the tiles in one batch: the ledger is asked once, for all that are missing.
+ask = [{"pano": m["panoId"], "zoom": zoom, "x": c, "y": r} for m, _, _, _, zoom, tiles in plans for c, r in tiles
+       if not os.path.exists(old_cache(m, zoom, c, r))]
+got = fetch_bridge.run([{"op": "tiles", "tiles": ask}], allow_fetch=a.allow_fetch and not a.offline)[0] if ask else {"paths": [], "sent": 0}
+cached = {(t["pano"], t["zoom"], t["x"], t["y"]): p for t, p in zip(ask, got["paths"])}
+calls["tiles"] = got["sent"]
 
 def perspective(pano, m, yaw, pitch, hfov, w, h):
     H, W = pano.shape[:2]
@@ -152,14 +143,13 @@ def perspective(pano, m, yaw, pitch, hfov, w, h):
 
 views = []
 used = 0
-for m in metas[:MAX]:
-    b, _, _ = bearing_to_tower(m["lat"], m["lng"])
+missing = set()
+for m, b, g, cam_y, zoom, tiles in plans:
     dist = m["dist"]
-    g = ground_at(m["lat"], m["lng"]); cam_y = (g if g is not None else G) + SV["camera_height_m"] - G
-    zoom = 5 if dist < 70 else 4
-    n_missing = len(missing)
-    pano, n, fetched = fetch_band(m, zoom, b, 60, -30, 80); used += n; calls["tiles"] += fetched
-    incomplete = len(missing) > n_missing  # some tiles are not cached: never overwrite a good image with a holed one
+    paths = [old_cache(m, zoom, c, r) if os.path.exists(old_cache(m, zoom, c, r)) else cached.get((m["panoId"], zoom, c, r)) for c, r in tiles]
+    pano = stitch(zoom, tiles, paths); used += len(tiles)
+    gaps = {(m["panoId"], zoom, c, r) for (c, r), p in zip(tiles, paths) if not p}; missing |= gaps
+    incomplete = bool(gaps)  # some tiles are not cached: never overwrite a good image with a holed one
     x, z = m["view_xz"]
     pid = m["panoId"][:16]
     for V in SV["views"]:
@@ -170,9 +160,9 @@ for m in metas[:MAX]:
         if not (incomplete and os.path.exists(os.path.join(OUT, fn))): img.save(os.path.join(OUT, fn), quality=92)
         vfov = math.degrees(2 * math.atan(math.tan(math.radians(hfov) / 2) * h / w))
         views.append({"file": fn, "pano": m["panoId"], "date": m["date"], "position": [x, cam_y, z], "target": [0, aim_y, 0], "vfov": vfov, "width": w, "height": h, "bearing": b, "pitch": pitch, "ground_lidar": g})
-    print(f"  {pid}: {n} tiles at zoom {zoom} ({fetched} downloaded), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
+    print(f"  {pid}: {len(tiles)} tiles at zoom {zoom} ({len(gaps)} missing), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
 json.dump(views, open(os.path.join(OUT, "views.json"), "w"), indent=1)
 print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed); "
-      f"free calls: {calls['createSession']} createSession, {calls['panoIds']} panoIds, {calls['metadata']} metadata")
+      f"free calls sent: {calls['panoIds']} panoIds, {calls['metadata']} metadata (and createSession when the cached session is near its end)")
 if missing:
     print(f"WARNING: {len(missing)} tiles not in the cache and not fetched (views that need them keep their existing image, or are left with black holes if new); rerun with --allow-fetch to buy them (~${len(missing) * 0.002:.2f} past the free tier)")

@@ -447,8 +447,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   fetched at most once a second with the project's User-Agent, and logged in `data/sources.json`.
   None is committed: the LiDAR is too large, and Street View is Google's. The key never reaches a
   logged URL or a commit. Street View then takes about 28 minutes a building (1,526 tiles for the
-  Clock Tower). Until that is built, the `data` and `refs` stages are not run: they fetch outside
-  `snapshot.ts`.
+  Clock Tower). Built on 2026-10-22: `scripts/landmarks/fetch.ts` (`landmarks/README.md`,
+  "Fetching").
 - **Labels are HTML, hit-tested by the scene** (`pointer-events: none`) so that a drag starting on a
   label still rotates the map.
 - **Building view = cut-away:** floors above the selected one are hidden, floors below are a solid

@@ -4,14 +4,16 @@
 #   landmarks/pipeline/run.sh <name> [data|place|refs|refine|compare|metrics|all] ...      (default: all)
 # Environment:
 #   CONFIG=config/<name>.json       building config, in the landmark's folder
-#   PY=python3                      Python with numpy laspy[lazrs] pyproj scipy pillow matplotlib rasterio requests
+#   PY=python3                      Python with numpy laspy[lazrs] pyproj scipy pillow matplotlib rasterio
 #   OUT=out/pipeline/compare        compare/metrics output folder
-#   REFS_ONLINE=1                   refs: ask Google for panorama ids and metadata again (free calls) instead of
-#                                   rebuilding from refs/streetview/metadata.json; tiles still come from the cache
+#   REFS_ONLINE=1                   refs: make refs/streetview/metadata.json again from the snapshots, asking Google
+#                                   (free calls) for what is not cached; tiles still come from the cache
 #   QUERY="only=tower"              passed to the page by compare
 #   PORT=8765                       where the pages are served (each tool reads $PORT too)
 #   ALLOW_FETCH=1                   refs: buy the Street View tiles that are not cached (billed; needed once in a fresh clone)
-# Street View tiles are bought only with ALLOW_FETCH=1 (see landmarks/README.md, "What is billed").
+#   GMAPS_BUDGET=<script>           refs: the ledger that must allow them first (`check N`) and records them (`add X`)
+# Every fetch goes through scripts/lib/snapshot.ts (landmarks/README.md, "Fetching"). Street View tiles
+# are bought only with ALLOW_FETCH=1 and the ledger's leave (see landmarks/README.md, "What is billed").
 set -euo pipefail
 T=$(cd "$(dirname "$0")" && pwd)/tools
 ROOT=$(cd "$T/../../.." && pwd)
