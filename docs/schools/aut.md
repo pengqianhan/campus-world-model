@@ -12,7 +12,7 @@ name). Time zone: Pacific/Auckland.
 
 | Layer | Verdict | What decided it |
 | --- | --- | --- |
-| 1. Footprints and surroundings | usable | OpenStreetMap (ODbL). The City Campus is already in the committed `central` snapshot: 20 AUT buildings there carry `ref` (WA to WZ). North and South need one Overpass area each |
+| 1. Footprints and surroundings | usable | OpenStreetMap (ODbL). The City Campus is already in the committed `central` snapshot: 20 AUT buildings there carry `ref` (WA to WZ). North and South need one Overpass area each, fetched by `scripts/fetch-osm.ts` as the repository's other areas are (see "Needs the maintainer", 4) |
 | 2. Indoor: buildings, floors, rooms | needs the maintainer | The public MazeMap map gives 72 building records, 181 floors and room shapes with code and type, with no sign-in. MazeMap's terms forbid extraction of its maps or data without a written agreement |
 | 3. Timetable | needs the maintainer | Open: Arion's public course pages list every class meeting with dates, day, time and room code. AUT's copyright page allows only private research and study, and asks for permission for other uses |
 | 4. Academic calendar | needs the maintainer | Open: the semester-dates page (2026, 2027) and "Academic Dates" in the AUT Calendar PDF. The same AUT copyright condition applies |
@@ -54,8 +54,11 @@ OpenStreetMap tags WQ `building=dormitory` with 15 levels, and MazeMap draws onl
   located to a building and a floor from its code. The floor is labelled as from the code, not
   from a map. Course search and the calendar work too.
 - **With a written agreement from MazeMap, and AUT's consent as the owner of the map data:**
-  buildings with an outline for each floor, and rooms with their code and type. Classes are then
-  located to the room. The floor names in MazeMap match the level digit in room codes: floor "WA5"
+  buildings with an outline for each floor; teaching and study spaces with their code and type;
+  every other space as an unnamed shape with MazeMap's type for it ("Places, not people"). Whether
+  MazeMap marks a room as public or searchable was not checked, so a room it hides from its own
+  search cannot yet be told apart; such a room would stay unnamed. Classes are then located to the
+  room. The floor names in MazeMap match the level digit in room codes: floor "WA5"
   holds rooms WA504 to WA527.
 
 ## Layer 1: footprints and surroundings
@@ -205,8 +208,10 @@ Not checked: two known heights on each campus and pits where land meets sea (REC
 
 ## Request log
 
-Every request went through `scripts/research/polite.mjs`: 29 reader runs (`politePage` from the
-main checkout, documents and in-page fetches only) and three `sniff.mjs` runs on the MazeMap app.
+Every request but six redirect hops (below) went through `scripts/research/polite.mjs`: 29 reader
+runs (`politePage` from the main checkout, documents and in-page fetches only) and three `sniff.mjs`
+runs on the MazeMap app. Web searches, and reading two earlier student projects on GitHub, did not
+touch the school's hosts and are not in the log.
 UTC 2026-10-21 11:41:56 to 12:04:40 (2026-10-22 00:41 to 01:05 in New Zealand).
 
 - **Sent:** 165. `api.mazemap.com` 59, `use.mazemap.com` 27, `www.aut.ac.nz` 23,
@@ -219,13 +224,17 @@ UTC 2026-10-21 11:41:56 to 12:04:40 (2026-10-22 00:41 to 01:05 in New Zealand).
   images (`www.aut.ac.nz` 434, `arion.aut.ac.nz` 117), and third parties: Mapbox 39, Datadog 22,
   Google Tag Manager 19, LinkedIn 19, Typekit 19, CookieYes 17 and others. No cookie banner was
   loaded, so none had to be refused.
-- **Rate:** the shortest gap between two sent requests was 1.088 s; no one-second window held two.
+- **Rate:** the shortest gap between two logged requests was 1.088 s. The six redirect hops
+  outside the log were not paced: the Arion sign-in redirect sent a second request to the same host
+  at once, so for that pair the rate of one a second was not kept.
 - **Outside the log:** six redirect hops that the browser followed at once (four from
   `mazemap.aut.ac.nz` to `use.mazemap.com`, one Arion sign-in redirect, one from
   `api.openstreetmap.org` to `www.openstreetmap.org`). With them, 171 requests in all.
-- **401, 403 and sign-in walls:** `auth.mazemap.com/permissions` 401 (asked by the MazeMap app
-  itself), `arion.aut.ac.nz/ArionMain/CourseInfo/` 403, the Arion sign-in redirect,
-  `s3.amazonaws.com/robots.txt` 403, `www.linz.govt.nz` 403 (`robots.txt` and the page). Each was
-  recorded and not tried again. Overpass answered 406; it was not tried again either.
+- **401, 403 and sign-in walls:** `arion.aut.ac.nz/ArionMain/CourseInfo/` 403, the Arion sign-in
+  redirect, `s3.amazonaws.com/robots.txt` 403 and `www.linz.govt.nz` 403 (`robots.txt` and the
+  page) were each recorded and not tried again. Overpass answered 406; it was not tried again
+  either. `auth.mazemap.com/permissions` answered 401 twice: the MazeMap app asks for it by itself,
+  and the third sniff ran with that host still allowed. That is a lapse: after the first 401 the
+  host should have been blocked.
 
 The raw answers stay outside the repository and are not committed.
