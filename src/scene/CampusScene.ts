@@ -691,7 +691,8 @@ export class CampusScene {
    * are made for a picture: with no tone mapping, in the working colour space. A walker view's look
    * comes in a chunk of its own: shaders made before it is in place were made again in the first
    * frame that drew the form (0.56 to 0.77 s, a form made soon after a walker view opened from the
-   * map, measured 2026-10-22), so they are made once it is.
+   * map, measured 2026-10-22), so they are made once a frame has been drawn with it (its sky sets
+   * the environment then).
    */
   private prepareLandmark(form: Object3D): Promise<unknown> {
     // Counted until the frame after it is ready (frame): it is waited for with the page's timers,
