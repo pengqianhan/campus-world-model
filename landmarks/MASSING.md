@@ -25,7 +25,8 @@ the generator makes.
   merged). They cover local x -759 to 1161 m and y -692 to 748 m: the whole City campus.
   The generator reads them from disk. It fetches nothing.
 - **The building's outline** from `public/data/campus.json`, taken from the map's frame to local
-  NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`). The outline chooses the points:
+  NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`, on the branch
+  `loop-a2-old-government-house` until it is merged). The outline chooses the points:
   building points (class 6) inside it, or within 1 m of it for the eaves.
 - **The ground**: the LiDAR's ground points (class 2) within 5 m outside the outline.
 - **The building's record** in `campus.json`: its id, its floors and their `noPlan` marks. The
@@ -69,10 +70,13 @@ measured shape alone:
 
 - **Walls** take the street look's facade in the walker views, as the blocks next to them do
   (`street-look` skill). On the map they take the map's palette, as a landmark's light form does.
-- **Storeys**: the wall height divided into whole storeys as near to 3.6 m as possible (a 7.8 m
-  wall has two storeys of 3.9 m). Windows sit on the street look's bay grid (`PROGRESS.md`,
-  "Decisions": how a University building looks from outside, 3.2 m by 3.6 m). The alternative, the
-  campus map's floor count, is decision 4.
+- **Storeys** come from the published data, as the blocks' storeys do: the building's number of
+  levels at or above the ground in `campus.json`, spaced evenly from the ground to each eave. A
+  storey is never under 2.4 m (the wall then has fewer storeys) or over 4.5 m (a plain band stays
+  above the top storey). A 7.8 m wall under three levels has three storeys of 2.6 m. Windows sit
+  on the street look's bay grid (`PROGRESS.md`, "Decisions": how a University building looks from
+  outside, 3.2 m by 3.6 m). The alternative, storeys from the measured wall height alone, is
+  decision 4; it needs one more amendment (section 3).
 - **Roofs** take the map's roof colour, as the blocks do. A pitched roof takes the same colour; it
   shows its form by its light. Flat roofs keep the rim.
 
@@ -165,9 +169,19 @@ Decisions in `PROGRESS.md` that a measured massing touches:
    Storeys, bays and wall materials come from what is in `public/data/`. The one exception is a
    landmark's building, "drawn for that building by agents from the LiDAR and compared with
    photographs". A measured massing reads the LiDAR, which is not in `public/data/`, and it is
-   neither drawn by agents nor compared with photographs. **This needs an amendment (a gate):** the
-   exception also covers a measured massing's shape and heights; its walls, storeys and windows stay
-   by rule. Nothing is placed: no doors, signs or street furniture.
+   neither drawn by agents nor compared with photographs. **This needs an amendment (a gate).**
+   Proposed words, after the sentence on the landmark's exception:
+
+   > Since <date> a second exception (the user): a measured massing (`landmarks/MASSING.md`). Its
+   > shape and heights come from the LiDAR, by a program, and are not compared with photographs.
+   > Its walls, storeys, bays and windows stay by rule from `public/data/`: storeys from the
+   > building's published levels, spaced to the measured walls. Nothing is placed on it: no doors,
+   > steps, signs or street furniture. About says which buildings are measured massings.
+
+   If the maintainer takes storeys from the measured wall height instead (decision 4), the words
+   end differently: "Its walls, bays and windows stay by rule from `public/data/`; its storeys are
+   the measured wall height in whole storeys near 3.6 m, which may differ from the building's
+   published levels."
 3. **"The street look", sub-point "Only the walker views change".** It already makes an exception
    for a building with a landmark: the map changes near it. Amendment 1 carries a measured massing
    into that exception. Further away, the blocks are drawn as before, and the map does not change
@@ -176,8 +190,9 @@ Decisions in `PROGRESS.md` that a measured massing touches:
    It loads only when the camera comes near, as a landmark does. No amendment.
 5. **"How a University building looks from outside" (the user, 2026-10-14).** Roofs keep their own
    colour and flat roofs their rim. Windows keep the 3.2 m by 3.6 m grid. Only the storey height
-   moves away from 3.6 m to fit a measured wall (decision 4). No amendment if the maintainer takes
-   the storey rule proposed here; it is listed as a decision so that it is seen.
+   moves away from 3.6 m, so that the published levels fit a measured wall. No amendment: the
+   number of storeys still comes from the published data. Decision 4 says what changes if it does
+   not.
 6. **"All network fetching goes through `scripts/lib/snapshot.ts`".** The City campus needs no new
    fetch: its eight tiles are on disk. Grafton, Newmarket and the other campuses need more tiles of
    the same LiDAR, which is a fetch the pipeline has not asked for before (a gate). Tai Tokerau
@@ -197,6 +212,24 @@ lowest block from `massing()`), and the building view keeps its cut-away of the 
   from their floors." The LiDAR credit there already covers them.
 - **The README's "Known limitations"** names the measured buildings, or points to About for the
   list.
+- **The walker's look report** (`src/app/walker.ts:215`) says "Building heights are estimated from
+  the number of floors, not surveyed." It then says: "Building heights are estimated from the
+  number of floors, except those of the landmarks and the measured massings, which the LiDAR
+  measures." (This note is already out of date for the Clock Tower.)
+
+## Which buildings
+
+The generator is for the City campus buildings that no landmark is planned for. The landmark queue
+puts the others in two tiers, and the generator leaves them to it:
+
+- **Tier 1, historic and landmark buildings:** 102, 103, 104, 105 and 105S (the Clock Tower, on
+  the site), 107, 109, 118, 119, 130, 801, 802, 803 and 804.
+- **Tier 2, large teaching buildings and towers:** 106, 110, 110N, 201, 206, 207, 250, 260, 301,
+  302, 303, 303S, 305, 310, 311, 315, 401, 402, 405, 421E, 421W, 439, 440, 441, 442, 614, 616,
+  619, 620, 810, 818, 820 and 831 to 837.
+
+Every other City campus building is the generator's (tier 3): 48 of them lie in the eight tiles.
+A building moves out of tier 3 when the maintainer plans a landmark for it.
 
 ## Places, not people
 
@@ -204,15 +237,21 @@ lowest block from `massing()`), and the building view keeps its cut-away of the 
   no plan and no use. But a measured massing does make such a building plainer to see. Until the
   maintainer decides (decision 6), the generator leaves the block for every building with a floor
   marked `noPlan: "residential"` or `noPlan: "childcare"`, and for every building whose source name
-  names a childcare centre. In the tiles on this machine that is 123 Lodge, 436 University Hall
-  Apartments, 617 7 City Road and 838 Stuart McCutcheon House (residential floors), and 255 Te
-  Kohanga Reo and 410 Symonds Street Early Childhood Centre (childcare). **841 Nicholls Lane ECE**
-  is a childcare centre by its name, but `PLAN_CHILDCARE_BUILDINGS` in `scripts/build-data.ts`
-  (`/Early Childhood|K[oō]hanga Reo/i`) does not match "ECE", so its floor is not marked. The
-  generator's test must catch it; the pipeline's test may need the same fix. **450 UniLodge
-  Whitaker** is student housing by its name, but its one floor is marked `unmapped`, not
-  `residential`. Its block is 3.6 m tall, and the LiDAR shows a tower about 47 m tall there. The
-  generator would make the largest change of all to it, so it also stays a block until decision 6.
+  names a childcare centre. Among the buildings it would draw (those outside tiers 1 and 2, see
+  "Which buildings") that is 123 Lodge, 436 University Hall Apartments, 617 7 City Road and 838
+  Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo and 410 Symonds Street
+  Early Childhood Centre (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
+  833 of tiers 1 and 2 also have residential floors. The generator does not draw them, but
+  decision 6 bears on them too: 102 Old Government House (residential floors 10 and 20) is being
+  drawn as a landmark, outside and in detail, on the branch `loop-a2-old-government-house`.
+  **841 Nicholls Lane ECE** is a childcare centre by its name. On `main` the data build's test
+  (`PLAN_CHILDCARE_BUILDINGS` in `scripts/build-data.ts`) does not match "ECE", so its floor is not
+  marked. Open PR #69 fixes that: the build then knows a childcare centre by "ECE" too, and 841's
+  floor is blank. Once it is merged, 841 is caught by its `noPlan` mark like the others.
+  **450 UniLodge Whitaker** is student housing by its name, but its one floor is marked
+  `unmapped`, not `residential`. Its block is 3.6 m tall, and the LiDAR shows a tower about 47 m
+  tall there. The generator would make the largest change of all to it, so it also stays a block
+  until decision 6.
 - **Waipapa Marae (251 to 256) and Fale Pasifika (275).** They are culturally significant. The
   generator gives them massing only: blocks and roof forms at measured heights, in the map's own
   colours. It never draws carvings, patterns, or colours of their own, and nobody adds them later
@@ -247,13 +286,14 @@ What each would become:
   ground is 3.8 m higher, about 8.3 m. The ridge is at 14.2 m (47.3 m NZVD2016). Today's block is
   flat at 10.8 m, so the roof gains 1.3 m at the eave and 3.4 m at the ridge, and the building gets
   its roof form.
-- **113 Building 113.** A long flat-roofed block of two storeys, 7.8 m to its rim. Along its
-  middle a narrower block rises to 8.9 m, with a gable of 17° to a ridge at 10.0 m. Today's block
-  is about 3.0 m too high over 60% of the roof, and 0.8 m above the ridge.
-- **409 Security.** Two flat blocks: 709 m² at 7.7 m (two storeys) and 174 m² at 10.1 m (three
-  storeys). Today's block is 10.8 m everywhere, so most of the roof comes down by 3.1 m. The 44 m²
-  piece that fits no plane is not drawn, and the batch's table flags it: its cells count as LiDAR
-  only in the top-view check.
+- **113 Building 113.** A long flat-roofed block, 7.8 m to its rim, with three storeys of 2.6 m
+  (its three published levels; two of 3.9 m under the other storey rule). Along its middle a
+  narrower block rises to 8.9 m, with a gable of 17° to a ridge at 10.0 m. Today's block is about
+  3.0 m too high over 60% of the roof, and 0.8 m above the ridge.
+- **409 Security.** Two flat blocks: 709 m² at 7.7 m (three storeys of 2.6 m) and 174 m² at
+  10.1 m (three storeys of 3.4 m), from its three published levels. Today's block is 10.8 m
+  everywhere, so most of the roof comes down by 3.1 m. The 44 m² piece that fits no plane is not
+  drawn, and the batch's table flags it: its cells count as LiDAR only in the top-view check.
 
 None of the three has a residential or childcare floor, and none is culturally significant.
 
@@ -274,14 +314,13 @@ The same measurement leaves these as blocks:
 
 ### How the numbers were measured
 
-The eight tiles were cropped to the City buildings outside tiers 1 and 2 of the landmark queue (48
-of them lie in the tiles). Outlines were taken from `campus.json` to local NZTM metres with the
-same projection as `common.py`. For each building: building points inside the outline or within
-1 m of it; a 0.5 m heightmap of the highest point in each cell; roof cells above 2.5 m; layers by
-height bands and connected cells; slopes from a plane fitted to each point's neighbours within
-1.2 m. Cover and IoU are on the 0.5 m grid with single gaps closed, as `topview.py` does. The
-script stayed outside the repository. The generator will measure these again, and its numbers
-decide.
+The eight tiles were cropped to the 48 tier-3 buildings (see "Which buildings"). Outlines were
+taken from `campus.json` to local NZTM metres with the same projection as `common.py`. For each
+building: building points inside the outline or within 1 m of it; a 0.5 m heightmap of the
+highest point in each cell; roof cells above 2.5 m; layers by height bands and connected cells;
+slopes from a plane fitted to each point's neighbours within 1.2 m. Cover and IoU are on the
+0.5 m grid with single gaps closed, as `topview.py` does. The script stayed outside the repository.
+The generator will measure these again, and its numbers decide.
 
 ## Decisions the maintainer must take
 
@@ -293,20 +332,26 @@ decide.
 3. **The limits.** Roof cover of 85% of the outline or more, vegetation over 15% or less,
    footprint IoU of 0.90 or more and 90% of cells within 0.5 m in the top-view check. Below any of
    them the block stays.
-4. **Storeys.** From the measured wall height in whole storeys near 3.6 m (proposed), or from the
-   campus map's floor count. They disagree: 113 has three floors on the map under a 7.8 m roof.
+4. **Storeys.** From the building's published levels, spaced to the measured walls (proposed; no
+   further amendment), or from the measured wall height in whole storeys near 3.6 m (amendment 2
+   then ends with the other words in section 3). They disagree: 113 has three levels on the map
+   under a 7.8 m roof, so three storeys of 2.6 m, against two of 3.9 m.
 5. **Roofs.** The map's roof colour for flat and pitched roofs alike, and no colour from the aerial
    photos (proposed). Or a second roof colour for pitched roofs.
 6. **Where people live and childcare centres.** Draw their exterior shell, or keep their blocks
-   (the default until decided). Also: whether 841 Nicholls Lane ECE is a childcare centre that the
-   pipeline's test should catch, and whether 450 UniLodge Whitaker counts as a place where people
-   live although its floor is not marked so.
+   (the default until decided). The same answer applies to the landmarks: 102 Old Government House
+   has residential floors and is being drawn outside in detail on `loop-a2-old-government-house`.
+   Also: whether 450 UniLodge Whitaker counts as a place where people live although its floor is
+   not marked so. (841 Nicholls Lane ECE needs no decision here: open PR #69 marks its floor as a
+   childcare centre's.)
 7. **Waipapa Marae (251 to 256) and Fale Pasifika (275).** Massing only in any case. Include them
    in the first batch, or keep their blocks until the maintainer has asked the people they belong
    to.
 8. **Bridges and canopies.** Keep their blocks (proposed for the first batch), or draw them open
    below with an underside one storey under the measured top, labelled "estimated" on screen.
-9. **Which buildings first.** The City campus outside tiers 1 and 2, in the eight tiles already on
-   disk (proposed). Other campuses need new tiles (a gate), and Tai Tokerau another LiDAR set (a new
-   data source).
-10. **408 UniPress.** The 2024 LiDAR shows no roof on its outline. Check the campus map's record.
+9. **Which buildings first.** The 48 tier-3 buildings of the City campus (see "Which buildings"),
+   in the eight tiles already on disk (proposed). Other campuses need new tiles (a gate), and Tai
+   Tokerau another LiDAR set (a new data source).
+10. **408 UniPress.** The 2024 LiDAR shows no roof on its outline. Keep its block and open a
+    `source-data` issue to check the campus map's record (proposed), or keep its block and leave it
+    at that.
