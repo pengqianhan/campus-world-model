@@ -418,13 +418,13 @@ If you represent the University and would like something changed or removed, ple
   panoramas near it, and the two see the upper storey of its south-east end. Its sizes and roofs
   come from the LiDAR. What no photograph shows is drawn plainly or after the parts the photographs
   do show: most of the garden front (its windows repeat the two that are seen), the porch, the
-  north-west lobby, the low south-east range, the north-west balcony (like the south-east one) and
-  the ranges round the courtyard behind.
+  north-west wing, the backs of the main block, the north-west lobby, the low south-east range, the
+  north-west balcony (like the south-east one) and the ranges round the courtyard behind.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
-  than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the map's ground rises 2.75 m from end to end
-  where the LiDAR's rises 1.1 m: its north-west end stands up to 1.2 m too deep, and some of its
-  ground-floor windows there are partly under the drawn ground.
+  than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the
+  map's ground rises 2.75 m from end to end, more than the LiDAR's: its north-west end stands up to
+  1.2 m too deep, and some of its ground-floor windows there are partly under the drawn ground.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
   campus map's type and nothing more; where the map's type says nothing ("Non Usable Area",
   "Nonasgn Rentable" and the like) the site says "Other area". Floors where people live and

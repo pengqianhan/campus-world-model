@@ -70,6 +70,10 @@ describe("a landmark's forms", () => {
     const real = globalThis.Worker;
     globalThis.Worker = StandIn as unknown as typeof Worker;
     const settle = () => new Promise((r) => setTimeout(r, 100));
+    // Until the full form is made, or 20 s: the kit's first import can be slow on a busy machine.
+    const made = async (l: Landmark) => {
+      for (let t = 0; t < 200 && !l.has("full"); t++) await new Promise((r) => setTimeout(r, 100));
+    };
     const entry = LANDMARKS[0]!;
     const covers = () => [{ id: landmarkBuildings(entry)[0]!, rings: [] }];
     try {
@@ -83,8 +87,7 @@ describe("a landmark's forms", () => {
             await settle();
           }
           l.want("full", covers);
-          await settle();
-          await settle();
+          await made(l);
           const how = `${s ? "stone" : "no stone"}, ${mapFirst ? "map first" : "walker first"}`;
           expect(l.has("full"), how).toBe(true);
           // The stone's textures only for a model with stone.
@@ -95,7 +98,7 @@ describe("a landmark's forms", () => {
     } finally {
       globalThis.Worker = real;
     }
-  });
+  }, 120_000);
 });
 
 describe("each landmark on the site's ground", () => {
@@ -115,23 +118,26 @@ describe("each landmark on the site's ground", () => {
       model.updateMatrixWorld(true);
       const meshes: Mesh[] = [];
       model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
-      let foot = Infinity;
-      for (const m of meshes) {
-        m.geometry.computeBoundingBox();
-        foot = Math.min(foot, new Box3().copy(m.geometry.boundingBox!).applyMatrix4(m.matrixWorld).min.y);
-      }
+      // Each mesh that comes down to the porch's level or below, at its own lowest points. The kit's
+      // Builder joins a model's parts into one mesh a material, so this is a material's foot, not
+      // a part's: give every part the same foot (Old Government House's take FOOT from common.js).
       let worst = -Infinity;
+      let at = "";
       const v = new Vector3();
       for (const m of meshes) {
+        m.geometry.computeBoundingBox();
+        const foot = new Box3().copy(m.geometry.boundingBox!).applyMatrix4(m.matrixWorld).min.y;
+        if (foot > 0) continue;
         const p = m.geometry.getAttribute("position");
         for (let i = 0; i < p.count; i++) {
           v.fromBufferAttribute(p, i).applyMatrix4(m.matrixWorld);
           if (v.y > foot + 0.01) continue;
           v.applyMatrix4(l.group.matrixWorld);
-          worst = Math.max(worst, v.y - terrain.height(v.x, -v.z));
+          const gap = v.y - terrain.height(v.x, -v.z);
+          if (gap > worst) [worst, at] = [gap, `${m.parent?.name ?? ""}/${m.name}`];
         }
       }
-      expect(worst, entry.name).toBeLessThan(0.25);
+      expect(worst, `${entry.name} ${at}`).toBeLessThan(0.25);
       l.dispose();
     }
   }, 60_000);

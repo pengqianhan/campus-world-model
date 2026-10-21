@@ -189,13 +189,13 @@ function glassPale(space) {
   }`, {}, undefined, space);
 }
 
+/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
+export const STONE = ["ashlar", "smooth", "dressed", "shade"];
+
 /**
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
  * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
  */
-/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
-export const STONE = ["ashlar", "smooth", "dressed", "shade"];
-
 export function makeTextures(quality = "high") {
   return { ashlar: ashlar(7, quality === "low" ? 1024 : 2048), smooth: smoothAshlar(13, 1024), dressed: dressed(11, 1024) };
 }
