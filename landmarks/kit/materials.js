@@ -1,8 +1,9 @@
 // The building's materials, by name (the parts use these names): limestone in three finishes, glass,
 // timber, slate, iron, the clock dial and the dark louvres. Weathering is added in world space in the
 // shaders (onBeforeCompile): grime low down and on the tops of ledges, faint drip streaks, lichen.
+// A model moved and turned into place (the campus map) takes it in its own frame instead (`space`).
 import * as THREE from "three";
-import { ashlar, dressed, smoothAshlar, rng } from "./textures.js";
+import { METRES, ashlar, dressed, smoothAshlar, rng } from "./textures.js";
 
 // World-space noise shared by the weathering hooks.
 const NOISE = /* glsl */ `
@@ -17,24 +18,25 @@ float wfbm(vec3 x) { return 0.5 * wn(x) + 0.25 * wn(x * 2.03 + 7.1) + 0.125 * wn
 `;
 
 const VERT_DECL = "varying vec3 vWPos; varying vec3 vWNrm;\n";
-const VERT_BODY = `
+/** The varyings' frame: "world", or "object" (the model's own, before the object is moved and turned). */
+const vertBody = (space) => `
   vec4 wpw = vec4(transformed, 1.0);
   #ifdef USE_INSTANCING
   wpw = instanceMatrix * wpw;
   #endif
-  vWPos = (modelMatrix * wpw).xyz;
-  vWNrm = normalize(mat3(modelMatrix) * objectNormal);
+  vWPos = ${space === "object" ? "wpw.xyz" : "(modelMatrix * wpw).xyz"};
+  vWNrm = normalize(${space === "object" ? "objectNormal" : "mat3(modelMatrix) * objectNormal"});
 `;
 
 /** Adds world position and normal varyings and runs `frag` (GLSL editing diffuseColor) after the map. */
-function hook(material, key, frag, extraUniforms = {}, after = "#include <map_fragment>") {
+function hook(material, key, frag, extraUniforms = {}, after = "#include <map_fragment>", space = "world") {
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, extraUniforms);
-    shader.vertexShader = VERT_DECL + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n" + VERT_BODY);
+    shader.vertexShader = VERT_DECL + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n" + vertBody(space));
     shader.fragmentShader = NOISE + Object.keys(extraUniforms).map((k) => `uniform ${extraUniforms[k].type ?? "float"} ${k};\n`).join("") +
       shader.fragmentShader.replace(after, after + "\n" + frag);
   };
-  material.customProgramCacheKey = () => key;
+  material.customProgramCacheKey = () => (space === "world" ? key : `${key}-${space}`);
   return material;
 }
 
@@ -69,15 +71,15 @@ const WEATHER = /* glsl */ `
 }
 `;
 
-function stone(t, roughness, { normalScale = 1.6, weather = 1, tower = 1, tint = [1, 1, 1], key }) {
+function stone(t, roughness, { normalScale = 1.6, weather = 1, tower = 1, tint = [1, 1, 1], key, space }) {
   const m = new THREE.MeshStandardMaterial({ map: t.map, normalMap: t.normalMap, roughness, color: 0xffffff });
   m.normalScale.set(normalScale, normalScale);
   m.userData.metres = t.metres;
-  return hook(m, key, WEATHER, { weatherAmt: { value: weather }, towerAmt: { value: tower }, stoneTint: { value: new THREE.Vector3(...tint), type: "vec3" } });
+  return hook(m, key, WEATHER, { weatherAmt: { value: weather }, towerAmt: { value: tower }, stoneTint: { value: new THREE.Vector3(...tint), type: "vec3" } }, undefined, space);
 }
 
 /** Glass: dark, reflecting sky and trees, with leaded/sash bars and a dim interior behind. */
-function glass(bars = false) {
+function glass(bars = false, space) {
   const m = new THREE.MeshPhysicalMaterial({ color: 0x1a1f22, roughness: 0.05, metalness: 0, ior: 1.52, envMapIntensity: 3.0, specularIntensity: 1 });
   m.userData.metres = 2;
   return hook(m, "glass-v3", /* glsl */ `
@@ -92,11 +94,11 @@ function glass(bars = false) {
     float bar = 0.0;
     if (glassBars > 0.5) { vec2 e = abs(fract(vec2(side / 0.42, P.y / 0.5)) - 0.5); bar = smoothstep(0.47, 0.49, max(e.x, e.y)); }
     diffuseColor.rgb = mix(inside, vec3(0.30, 0.30, 0.28), bar * 0.6);
-  }`, { glassBars: { value: bars ? 1 : 0 } });
+  }`, { glassBars: { value: bars ? 1 : 0 } }, undefined, space);
 }
 
 /** Timber: warm brown, with a grain running up the boards. */
-function timber() {
+function timber(space) {
   const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.62 });
   m.userData.metres = 2;
   return hook(m, "timber-v1", /* glsl */ `
@@ -104,11 +106,11 @@ function timber() {
     vec3 P = vWPos;
     float grain = wn(vec3(P.x * 30.0 + P.z * 30.0, P.y * 1.2, 0.5)) * 0.6 + wn(vec3(P.x * 90.0, P.y * 3.0, P.z * 90.0)) * 0.4;
     diffuseColor.rgb = mix(vec3(0.17, 0.075, 0.03), vec3(0.32, 0.16, 0.07), grain);
-  }`);
+  }`, {}, undefined, space);
 }
 
 /** Slate and lead roofs: dark grey with courses of slates. */
-function roof() {
+function roof(space) {
   const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.75 });
   m.userData.metres = 2;
   return hook(m, "roof-v1", /* glsl */ `
@@ -117,27 +119,48 @@ function roof() {
     float course = smoothstep(0.0, 0.06, fract(P.y / 0.18 + P.x * 0.0));
     float slate = wh(floor(vec3(P.x / 0.3 + floor(P.y / 0.18) * 0.5, P.y / 0.18, P.z / 0.3)));
     diffuseColor.rgb = vec3(0.095, 0.10, 0.11) * (0.8 + 0.4 * slate) * (0.7 + 0.3 * course);
-  }`);
+  }`, {}, undefined, space);
 }
 
-export function makeMaterials(quality = "high") {
-  const big = quality === "low" ? 1024 : 2048;
-  const dr = dressed(11, 1024);
+/**
+ * The stone textures the materials are drawn with. They take about a second to make at "high", so
+ * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
+ */
+export function makeTextures(quality = "high") {
+  return { ashlar: ashlar(7, quality === "low" ? 1024 : 2048), smooth: smoothAshlar(13, 1024), dressed: dressed(11, 1024) };
+}
+
+/**
+ * The materials, by name. `textures` are makeTextures()'s, made here when not given. `space` is the
+ * frame the weathering is laid in: "world" (the viewer), or "object", the model's own, for a model
+ * that is moved and turned into place (the campus map).
+ */
+export function makeMaterials(quality = "high", textures = makeTextures(quality), { space = "world" } = {}) {
+  const dr = textures.dressed;
   const m = {
-    ashlar: stone(ashlar(7, big), 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97] }),
-    smooth: stone(smoothAshlar(13, 1024), 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03] }),
-    dressed: stone(dr, 0.78, { normalScale: 1.0, weather: 0.7, key: "dressed-v2", tint: [1.08, 1.075, 1.06] }),
-    glass: glass(new URLSearchParams(globalThis.location?.search ?? "").get("glassbars") === "1"),
-    timber: timber(),
-    roof: roof(),
+    ashlar: stone(textures.ashlar, 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97], space }),
+    smooth: stone(textures.smooth, 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03], space }),
+    dressed: stone(dr, 0.78, { normalScale: 1.0, weather: 0.7, key: "dressed-v2", tint: [1.08, 1.075, 1.06], space }),
+    glass: glass(new URLSearchParams(globalThis.location?.search ?? "").get("glassbars") === "1", space),
+    timber: timber(space),
+    roof: roof(space),
     iron: Object.assign(new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.55, metalness: 0.4 }), { userData: { metres: 2 } }),
     dial: Object.assign(new THREE.MeshStandardMaterial({ color: 0xf4f1e8, roughness: 0.4, emissive: 0x2a2924 }), { userData: { metres: 2 } }),
     // the dark interiors behind openings (belfry, doorways): matte, very dark warm grey, never pure black
     void: Object.assign(new THREE.MeshStandardMaterial({ color: 0x1b1916, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // recessed blind panels: the same dressed stone, a little darker for the shadow of the recess
-    shade: stone(dr, 0.85, { normalScale: 1.0, weather: 0.8, key: "shade-v2", tint: [0.8, 0.79, 0.77] }),
+    shade: stone(dr, 0.85, { normalScale: 1.0, weather: 0.8, key: "shade-v2", tint: [0.8, 0.79, 0.77], space }),
   };
   return m;
+}
+
+/**
+ * The materials without their textures: enough to build a model's geometry (worldUV reads each
+ * texture's `metres`), quickly and where nothing is drawn, as in a worker. Not for drawing.
+ */
+export function geometryMaterials() {
+  const blank = (metres) => ({ map: null, normalMap: null, metres });
+  return makeMaterials("high", { ashlar: blank(METRES.ashlar), smooth: blank(METRES.smoothAshlar), dressed: blank(METRES.dressed) });
 }
 
 export { hook, NOISE, rng };
