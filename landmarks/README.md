@@ -193,7 +193,8 @@ agent and no photograph. All of them share one model and have a data file each:
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
   lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
   plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
-  with its eaves round it; the others stand on it, traced from the LiDAR and put onto the outline
+  with its eaves round it (how far building points at its eave reach out past the outline: the
+  median along the edge); the others stand on it, traced from the LiDAR and put onto the outline
   where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
   left out.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
@@ -213,6 +214,14 @@ agent and no photograph. All of them share one model and have a data file each:
   building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
   or removed: run it with `--fsModuleCache=false` after the generator has run.
+- Kept as blocks by decision, whatever the LiDAR (each in `measured/exclusions.json` with its
+  reason): places where people live (123, 436, 617, 838, and 450 by its name) and childcare centres
+  (410, 841), until the maintainer decides (MASSING.md decision 6); Waipapa Marae (251 to 256) and
+  Fale Pasifika (275), until the maintainer has asked the people they belong to (decision 7); and
+  408 UniPress, whose outline the LiDAR shows no roof on (decision 10).
+- Roofs: every roof, flat or sloping, takes its block's roof: the map's roof colour on the map, and
+  the street look's flat roof in the walker views (decision 5). A sloping facet is marked as the
+  builder's roofs are (`MeshBuilder.facet`, `facade.cap`).
 - To make one a landmark: start `<name>/` as for any landmark, with the massing's numbers as its
   first contract, and delete `measured/buildings/<id>.json` in the same pull request.
 

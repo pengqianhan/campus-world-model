@@ -46,13 +46,19 @@ TIER1 = {"102", "103", "104", "105", "105S", "107", "109", "118", "119", "130", 
 TIER2 = {"106", "110", "110N", "201", "206", "207", "250", "260", "301", "302", "303", "303S", "305", "310",
          "311", "315", "401", "402", "405", "421E", "421W", "439", "440", "441", "442", "614", "616", "619",
          "620", "810", "818", "820"} | {str(i) for i in range(831, 838)}
-# The maintainer's decisions on the design (2026-10-22): these keep their blocks in this batch.
+# Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
+# take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
+# 6 stays at the design's default until the maintainer decides (residential and childcare below).
 KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people "
               "it belongs to (decision 7)" for i in ("251", "252", "253", "254", "255", "256")},
         "275": "Fale Pasifika: culturally significant; its block stays until the maintainer has asked the people "
                "it belongs to (decision 7)",
         "408": "the 2024 LiDAR shows no roof on its outline; its block stays, and the campus map's record is for "
-               "the maintainer to check (decision 10)"}
+               "the maintainer to check (decision 10)",
+        "450": "decision 6, a place where people live (student housing by its name, though its floor is marked "
+               "unmapped): kept until the maintainer decides"}
+RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
+
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
 CHILDCARE = re.compile(r"child|\bk[oō]hanga\b|early learning|\bECE\b|kindergarten|cr[eè]che", re.I)
 
@@ -231,7 +237,7 @@ def load_points(boxes, to_map):
     parts = []
     for t in TILES:
         f = os.path.join(LIDAR, t + ".laz")
-        if not os.path.exists(f): sys.exit(f"missing {f}: the generator fetches nothing (landmarks/README.md, Fetching)")
+        if not os.path.exists(f): sys.exit(f"missing {os.path.relpath(f, ROOT)}: the generator fetches nothing (landmarks/README.md, Fetching)")
         with laspy.open(f) as r:
             for ch in r.chunk_iterator(4_000_000):
                 x = np.asarray(ch.x); y = np.asarray(ch.y)
@@ -527,12 +533,32 @@ def measure(b, P, others, campus_origin):
     levels = levels_of(b)
     base = layers[0]
     out = []
-    # the lowest layer stands on the whole outline; the roof round it outside the outline is its overhang
-    out_cells = roof & ~Cin & np.isin(lab, layers)
-    perim = sum(float(np.hypot(*(np.roll(r, -1, 0) - r).T).sum()) for r in rings)
-    over = float(out_cells.sum() * A / perim)
-    over = round(min(EAVE_BAND, over), 2) if over >= MIN_OVERHANG else 0.0
+    # the lowest layer stands on the whole outline. Its overhang is measured from the points: at each
+    # half metre of the outline where building points at the layer's eave (within 0.6 m) lie just
+    # inside, how far out such points go, in a strip 1 m wide, with no gap of more than 0.6 m; the
+    # overhang is the median of these, if half of the edge has roof at the eave
     bi = info[base]
+    eave0 = bi["height"] if bi["form"] == "flat" else float(roof_at(bi["planes"], *(along(outer) - centre).T).min())
+    pts = xy[B & (np.abs(z - zero - eave0) <= 0.6)]
+    over = 0.0
+    edge = along(outer, 0.5)
+    step = np.roll(edge, -1, axis=0) - edge
+    tang = step / np.maximum(np.hypot(*step.T), 1e-9)[:, None]
+    reach = []
+    for p_, t_ in zip(edge, tang):
+        n_ = np.array([t_[1], -t_[0]])                       # out of a counter-clockwise ring
+        v = pts - p_
+        along_t, out_d = v @ t_, v @ n_
+        dd = np.sort(out_d[(np.abs(along_t) <= 0.5) & (out_d >= -0.5) & (out_d <= EAVE_BAND + 0.2)])
+        if not len(dd) or dd[0] > 0: continue                # no roof at the eave just inside
+        r_ = 0.0
+        for k in range(1, len(dd)):
+            if dd[k] - dd[k - 1] > 0.6: break
+            r_ = max(r_, float(dd[k]))
+        reach.append(min(r_, EAVE_BAND))
+    if len(reach) >= 0.5 * len(edge):
+        over = float(np.median(reach))
+    over = round(min(EAVE_BAND, over), 2) if over >= MIN_OVERHANG else 0.0
     if bi["inside"] < 0.5 * Cin.sum() and bi["form"] != "flat":
         bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
     out.append(layer_record(rings, bi, -1.0, over, levels, centre))
@@ -580,9 +606,12 @@ def _hull(p):
 
 
 def trace(mask, cx, cy):
-    import contourpy
+    """The outlines of a mask's regions, through matplotlib's contour (its own contour algorithm
+    "serial"), on a figure that is never drawn."""
+    from matplotlib.figure import Figure
     z = np.pad(mask.astype(float), 1)
-    lines = contourpy.contour_generator(z=z, line_type="Separate").lines(0.5)
+    cs = Figure().add_subplot().contour(z, levels=[0.5], algorithm="serial")
+    lines = [ln for path in cs.get_paths() for ln in path.to_polygons(closed_only=False)]
     out = []
     for ln in lines:
         if len(ln) < 4: continue
@@ -709,6 +738,10 @@ def main():
     to_map, to_grid = projector(origin)
     bounds = []
     import laspy
+    missing = [t for t in TILES if not os.path.exists(os.path.join(LIDAR, t + ".laz"))]
+    if missing:
+        sys.exit(f"missing {', '.join(missing)} in {os.path.relpath(LIDAR, ROOT)}: the generator fetches nothing "
+                 "(landmarks/README.md, Fetching)")
     for t in TILES:
         with laspy.open(os.path.join(LIDAR, t + ".laz")) as r: bounds.append((*r.header.mins[:2], *r.header.maxs[:2]))
     def in_tiles(ring):
@@ -741,22 +774,21 @@ def main():
         floors = b["floors"]
         policy = KEEP.get(bid)
         if not policy and (any(f.get("noPlan") == "childcare" for f in floors) or CHILDCARE.search(b["sourceText"] + " " + name)):
-            policy = "a childcare centre: its block stays (decision 6)"
+            policy = "decision 6, a childcare centre: its block stays"
+        if not policy and any(f.get("noPlan") == "residential" for f in floors): policy = RESIDENTIAL
         if data and not why:
             data["check"] = topview(b, data, P, others, rec.pop("skip", None))
             c = data["check"]
+            rec["check"] = c
             if c["iou"] < IOU_MIN or c["within_0.5m"] < WITHIN_MIN:
                 why = f"top-view check: footprint IoU {c['iou']:.3f} (limit {IOU_MIN}), {c['within_0.5m']:.0%} of cells within 0.5 m (limit {WITHIN_MIN:.0%})"
-                rec["check"] = c
         why = policy or why
-        residential = any(f.get("noPlan") == "residential" for f in floors)
         if why:
             rec.pop("skip", None)
             ex[bid] = {"name": name, "reason": why, **({"measured": rec} if rec else {})}
             rows.append((bid, name, None, why))
             print(f"{bid} {name}: block stays: {why}")
         else:
-            if residential: data["note"] += " People live here: the model is the outside shell only, and its floors stay blank (decision 6)."
             open(target, "w", encoding="utf-8", newline="\n").write(compact(data))
             rows.append((bid, name, data, None))
             c = data["check"]
@@ -778,4 +810,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # Names such as "Māori" go to a console or a pipe that may not be UTF-8 (Windows: cp1252).
+    if hasattr(sys.stdout, "reconfigure"): sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     main()

@@ -61,6 +61,18 @@ describe("measured massings", () => {
     }
   });
 
+  it("each data file was made from the campus map now published: its outline and its centre", () => {
+    for (const { file, data } of DATA) {
+      const b = byId.get(data.place.building)!;
+      expect(data.place.centre, file).toEqual(b.center.map((v) => Math.round(v * 100) / 100));
+      // The lowest layer stands on the outline itself (massing.py turns it counter-clockwise).
+      const outline = (b.outline[0] as number[]).reduce<number[][]>((acc, v, i, all) => (i % 2 ? acc : [...acc, [v / 10, all[i + 1]! / 10]]), []);
+      const ring = data.layers[0]!.rings[0]!;
+      const same = (a: number[][]) => a.length === ring.length && a.every((p, i) => Math.abs(p[0]! - ring[i]![0]!) < 0.006 && Math.abs(p[1]! - ring[i]![1]!) < 0.006);
+      expect(same(outline) || same([...outline].reverse()), `${file}: its lowest layer is not the campus map's outline`).toBe(true);
+    }
+  });
+
   it("no building is drawn by two models", () => {
     const drawn = [...LANDMARKS, ...MEASURED].flatMap(landmarkBuildings);
     expect(new Set(drawn).size).toBe(drawn.length);

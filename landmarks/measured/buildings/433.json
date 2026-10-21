@@ -37,7 +37,7 @@
    "eave": 21.47,
    "wall": 21.17,
    "ridge": 21.47,
-   "overhang": 0.44,
+   "overhang": 0.73,
    "storey": 3.529,
    "storeys": 6,
    "m2": 35.0
@@ -121,10 +121,10 @@
   "not_drawn_m2": 6.2
  },
  "check": {
-  "iou": 0.925,
+  "iou": 0.919,
   "lidar_m2": 980.5,
-  "model_m2": 1000.2,
-  "within_0.5m": 0.976,
+  "model_m2": 1045.5,
+  "within_0.5m": 0.975,
   "model_minus_lidar_m": {
    "p10": -0.16,
    "p50": -0.03,

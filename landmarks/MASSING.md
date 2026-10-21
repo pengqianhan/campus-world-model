@@ -2,7 +2,10 @@
 
 This is the design of the measured massings. The maintainer took its recommendations on
 2026-10-22 (see "Decisions the maintainer must take"), and it is built as `landmarks/README.md`,
-"Measured massings", says. It touches recorded decisions, so it was a gate (`AGENTS.md`, "How a
+"Measured massings", says. Decisions 6 and 7 had no recommendation: decision 6 stays at its default
+(the blocks of places where people live and of childcare centres are kept) until the maintainer
+decides, and the campus loop's lead kept the blocks of Waipapa Marae and Fale Pasifika (decision 7)
+until the maintainer has asked the people they belong to. It touches recorded decisions, so it was a gate (`AGENTS.md`, "How a
 change lands"). Where the built generator measures in another way than the steps below, the README
 says so, and its numbers decide.
 
@@ -249,8 +252,8 @@ A building moves out of tier 3 when the maintainer plans a landmark for it.
   drawn as a landmark, outside and in detail, on the branch `loop-a2-old-government-house`.
   **841 Nicholls Lane ECE** is a childcare centre by its name. On `main` the data build's test
   (`PLAN_CHILDCARE_BUILDINGS` in `scripts/build-data.ts`) does not match "ECE", so its floor is not
-  marked. Open PR #69 fixes that: the build then knows a childcare centre by "ECE" too, and 841's
-  floor is blank. Once it is merged, 841 is caught by its `noPlan` mark like the others.
+  marked. PR #69 (merged) fixed that: the build knows a childcare centre by "ECE" too, and 841's
+  floor is blank and caught by its `noPlan` mark like the others.
   **450 UniLodge Whitaker** is student housing by its name, but its one floor is marked
   `unmapped`, not `residential`. Its block is 3.6 m tall, and the LiDAR shows a tower about 47 m
   tall there. The generator would make the largest change of all to it, so it also stays a block
@@ -347,8 +350,8 @@ The generator will measure these again, and its numbers decide.
    (the default until decided). The same answer applies to the landmarks: 102 Old Government House
    has residential floors and is being drawn outside in detail on `loop-a2-old-government-house`.
    Also: whether 450 UniLodge Whitaker counts as a place where people live although its floor is
-   not marked so. (841 Nicholls Lane ECE needs no decision here: open PR #69 marks its floor as a
-   childcare centre's.)
+   not marked so. (841 Nicholls Lane ECE needs no decision here: PR #69 marked its floor as a
+   childcare centre's.) Until decided, the generator keeps the blocks of all of them, 450 too.
 7. **Waipapa Marae (251 to 256) and Fale Pasifika (275).** Massing only in any case. Include them
    in the first batch, or keep their blocks until the maintainer has asked the people they belong
    to.

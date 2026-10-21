@@ -308,14 +308,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     program, with walls, storeys and windows by the street look's rules. It stands in place of its
     block as a landmark does, and only where the LiDAR covers it and the top-view check passes;
     elsewhere the block stays. About and the building card say which buildings are measured
-    massings. Taken with the design's other recommendations: one shared model and a data file a
-    building; its limits; storeys from the published levels; on the map, the map's roof colour for
-    every roof (in the walker views roofs follow the street look's rules, as the city's do);
-    bridges and canopies keep their blocks; the tier-3 City buildings in the eight tiles first;
-    408 UniPress keeps its block. Where the design left it open, the campus loop's lead decided on
-    2026-10-22, for the user to confirm with the pull request: where people live, the outside shell
-    is drawn and the floors stay blank (the user accepted that for 102 Old Government House the same
-    day); childcare centres, Waipapa Marae (251 to 256) and Fale Pasifika (275) keep their blocks.
+    massings.
   - **On the map, a light form.** It takes the map's palette, hover and night, has no textures,
     and loads only when the camera comes near. Why: the full Clock Tower in the map view costs every
     visitor (measured 2026-10-21 on preview builds of 5435a91, 1440×900, an NVIDIA Quadro P600):
@@ -548,6 +541,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    trees. Its block stays (`landmarks/measured/exclusions.json`); the issue asks whether the campus
    map's record (its outline or its place) is out of date.
 4. **Waipapa Marae (251 to 256) and Fale Pasifika (275).** Their blocks stay in the first batch of
-   measured massings (decision 7). Drawing even their massing (measured heights and roof forms in
-   the map's own colours, never carvings, patterns or colours of their own) waits until you have
-   asked the people they belong to.
+   measured massings (`landmarks/MASSING.md`, decision 7, kept by the campus loop's lead). Drawing
+   even their massing (measured heights and roof forms in the map's own colours, never carvings,
+   patterns or colours of their own) waits until you have asked the people they belong to.
+5. **Where people live, for the measured massings (`landmarks/MASSING.md`, decision 6).** Draw their
+   outside shell, with their floors blank, or keep their blocks. Until you decide, the generator
+   keeps the blocks of 123 Lodge, 436 University Hall Apartments, 617 7 City Road, 838 Stuart
+   McCutcheon House and 450 UniLodge Whitaker (student housing by its name); in the first batch none
+   of them passes the top-view check either (`landmarks/measured/exclusions.json` has their
+   numbers). Childcare centres keep their blocks in any case.

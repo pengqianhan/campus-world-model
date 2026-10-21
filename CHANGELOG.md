@@ -18,14 +18,13 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
-- **Measured massings.** Near the camera, eight plain buildings of the City Campus are drawn from
-  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 431 and 433
-  Fine Arts Studio Blocks, 434 Waikohanga House, 435 58 Symonds Street and 436 University Hall
-  Apartments.
+- **Measured massings.** Near the camera, six plain buildings of the City Campus are drawn from
+  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
+  Studio Block 433, 434 Waikohanga House and 435 58 Symonds Street.
   A program measures their layers and roofs (flat, or sloping planes); their walls, storeys and
   windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
-  Of University Hall Apartments, where people live, only the outside is drawn. The building card
-  and About name them. The other 40 small buildings in the LiDAR keep their blocks, each with its
+  The building card and About name them. The other 42 small buildings in the LiDAR keep their
+  blocks, among them every place where people live and every childcare centre, each with its
   reason (`landmarks/measured/exclusions.json`) (#NN).
 
 ### Changed

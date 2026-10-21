@@ -290,7 +290,8 @@ export class MeshBuilder {
   /**
    * A flat polygon from points given as [east, height, north] in order round it, as the measured
    * massings draw their roofs (landmarks/measured/model.js). A sloping one is a roof, in the second
-   * material group and wound to face up; an upright one (the end of a gable, a wall up to a sloping
+   * material group, wound to face up and marked as the builder's roofs are (`facade.cap`), so that it
+   * takes the same roof as a flat one; an upright one (the end of a gable, a wall up to a sloping
    * roof) stays with the walls as plain wall, and faces out when its points go round it as a wall of
    * a counter-clockwise ring does in `extrude`.
    */
@@ -309,8 +310,8 @@ export class MeshBuilder {
 
   /**
    * One flat-shaded triangle from points given as [east, height, north], wound to face out and up.
-   * With `second`, a sloping triangle goes into the second material group, as a roof, and an upright
-   * one stays with the walls as plain wall.
+   * With `second`, a sloping triangle goes into the second material group as a roof, marked as the
+   * builder's roofs are (`facade.cap`), and an upright one stays with the walls as plain wall.
    */
   private face(a: readonly number[], b: readonly number[], c: readonly number[], color?: RGB, second = false): void {
     // Scene axes: x is east, y is up, z is south.
@@ -329,7 +330,7 @@ export class MeshBuilder {
     const i = this.vertexCount;
     for (const p of [a, b, c]) {
       this.vertex(p[0]!, p[1]!, -p[2]!, nx / len, ny / len, nz / len, color);
-      this.markAt(roof ? PART.pitched : PART.plain, p[0]!, p[1]!, -p[2]!);
+      this.markAt(!second ? PART.pitched : roof ? (this.facade?.cap ?? PART.roof) : PART.plain, p[0]!, p[1]!, -p[2]!);
     }
     (second && roof ? this.roofIndices : this.indices).push(i, i + 1, i + 2);
   }

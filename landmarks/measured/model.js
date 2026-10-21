@@ -18,6 +18,8 @@ const DEFAULT_STYLE = { bay: 3.2, rim: 0.9, tints: { roof: WHITE, wall: WHITE, r
 /** Metres in from a flat roof's edge, and out from it, where a higher layer means no rim there. */
 const RIM_IN = 0.6;
 const RIM_OUT = 0.3;
+/** Metres: a layer on a roof lower than this has no storeys of its own (massing.py STOREY_MIN). */
+const STOREY_MIN = 2.4;
 /** Metres between the points where a rim is tested. */
 const RIM_STEP = 1;
 
@@ -34,8 +36,11 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
   layers.forEach((l, k) => {
     const rings = l.local.map(flat);
     // Windows up to the top of the last storey, but not below the foot of the walls (a layer that
-    // stands on a taller one can start above its own storeys).
-    const textured = Math.max(l.y0, Math.min(l.wall, l.storey * l.storeys));
+    // stands on a taller one can start above its own storeys); none on a layer on a roof that is lower
+    // than a storey. Within 1 cm of the wall's top, the storeys go to the top.
+    let textured = Math.max(l.y0, Math.min(l.wall, l.storey * l.storeys));
+    if (l.y0 > 0 && l.wall - l.y0 < STOREY_MIN) textured = l.y0;
+    if (l.wall - textured <= 0.01) textured = l.wall;
     if (style.facade) {
       const [ax, ay] = style.facade.anchor;
       mb.facade = { ...style.facade, storey: l.storey, ground: l.storey, top: textured, base: 0, anchor: [ax - cx, ay - cy] };
@@ -55,7 +60,8 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
       // A flat roof that overhangs its walls is a slab round them; the rim stands on its edge.
       const edge = l.overhang ? outset(outer, l.overhang) : outer;
       if (l.overhang) mb.extrude([flat(edge)], l.wall, l.eave, tints.roof, tints.wall, true, { roofGroup: true, bottom: true });
-      for (const ring of l.overhang ? [edge] : l.local) rim(mb, ring, higher, l.eave, l.eave + rimHeight, tints.rim);
+      // Tested from the outline in: the slab's edge stands the overhang out from it.
+      for (const ring of l.overhang ? [edge] : l.local) rim(mb, ring, higher, l.eave, l.eave + rimHeight, tints.rim, RIM_IN + l.overhang);
     } else {
       // A sloping roof is the lowest of its measured planes at each point: each plane is drawn where
       // it is the lowest, over the outline and the eaves round it. The walls rise to it.
@@ -170,7 +176,7 @@ function unit(x, y) {
  * where a higher layer stands behind the edge or in front of it: there its wall rises from the edge.
  * Outer rings go counter-clockwise and holes clockwise (massing.py), so the roof is on the left.
  */
-function rim(mb, ring, higher, y0, y1, color) {
+function rim(mb, ring, higher, y0, y1, color, inset = RIM_IN) {
   const n = ring.length;
   for (let i = 0; i < n; i++) {
     const a = ring[i];
@@ -186,7 +192,7 @@ function rim(mb, ring, higher, y0, y1, color) {
       const t = (k + 0.5) / steps;
       const x = a[0] + (b[0] - a[0]) * t;
       const y = a[1] + (b[1] - a[1]) * t;
-      const open = k < steps && !higher.some((h) => inside(h, x + nx * RIM_IN, y + ny * RIM_IN) || inside(h, x - nx * RIM_OUT, y - ny * RIM_OUT));
+      const open = k < steps && !higher.some((h) => inside(h, x + nx * inset, y + ny * inset) || inside(h, x - nx * RIM_OUT, y - ny * RIM_OUT));
       if (open && from < 0) from = k;
       if (!open && from >= 0) {
         const p = from / steps;
