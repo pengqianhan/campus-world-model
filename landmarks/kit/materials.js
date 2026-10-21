@@ -109,6 +109,11 @@ function timber(space) {
   }`, {}, undefined, space);
 }
 
+/** A plain colour, no texture and no weathering. */
+function plain(color, roughness) {
+  return Object.assign(new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 }), { userData: { metres: 2 } });
+}
+
 /** Slate and lead roofs: dark grey with courses of slates. */
 function roof(space) {
   const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.75 });
@@ -150,6 +155,11 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     void: Object.assign(new THREE.MeshStandardMaterial({ color: 0x1b1916, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // recessed blind panels: the same dressed stone, a little darker for the shadow of the recess
     shade: stone(dr, 0.85, { normalScale: 1.0, weather: 0.8, key: "shade-v2", tint: [0.8, 0.79, 0.77], space }),
+    // painted timber (Old Government House): plain colours, no textures, until a look round draws them
+    boards: plain(0xece2bf, 0.8),   // weatherboard walls, pale cream-yellow
+    trim: plain(0xd2a94e, 0.7),     // surrounds, pilasters, bands and brackets, yellow-ochre
+    paint: plain(0xf1efe8, 0.6),    // white: glazing bars, balusters, chimney caps
+    roofPale: plain(0xa4a8ab, 0.6), // light grey roof
   };
   return m;
 }

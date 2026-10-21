@@ -43,9 +43,37 @@ sampled from them into the model.
   warning you cause. The GPU is shared: render what you need.
 
 ## Ownership (edit only your files; read anything)
-The parts and their owners are set when the rough model is drawn (the lead), and written here then.
-`../kit/` and `../pipeline/` are shared by every landmark: a change there adds options with defaults
-and leaves the Clock Tower's viewer pictures (`?quality=low`, `?mask=1`) identical.
+| Owner | Files |
+| --- | --- |
+| lead | `model.js`, `parts/common.js`, `config/`, `docs/` |
+| front | `parts/main.js`, `parts/bay.js`, new `parts/front_*.js`: the main block and its chimneys, the south-east bay and its balcony, the porch |
+| back | `parts/back.js`, new `parts/back_*.js`: the lower ranges behind round the courtyard |
+| look | `../kit/materials.js`, `../kit/textures.js`, `../pipeline/viewer/main.js`, `sky.js`, `post.js` |
+
+- `../kit/` and `../pipeline/` are shared by every landmark: a change there adds options with
+  defaults and leaves the Clock Tower's viewer pictures (`?quality=low`, `?mask=1`) identical, pixel
+  for pixel. The site builds every landmark with the kit's materials (`src/scene/landmarks.ts`): a
+  material this building adds must cost the Clock Tower nothing (no texture made for it unless a
+  model uses it).
+- The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for this
+  building: `boards` (the painted weatherboard walls), `trim` (yellow-ochre surrounds, pilasters,
+  bands, brackets), `paint` (white: glazing bars, balusters, chimney caps), `roofPale` (the light grey
+  roofs), `glass`, and `void` for dark openings. They are plain colours now; the look agent draws them.
+  A name the kit does not have makes the part fail: ask the lead.
+- Parts are added to `model.js` by the lead; tell the lead the name and file of a new part.
+
+## Checking (no photograph shows it whole)
+- `../pipeline/run.sh old-government-house topview` (or `node ../pipeline/tools/topview.mjs --out out/<you>/topview`
+  in this folder): the model from above against the LiDAR. Footprint IoU (≥ 0.80 to pass; the rough
+  model is 0.862), model minus LiDAR heights (p10/p50/p90; aim for the cells within 0.5 m), the highest
+  point, and `topview.png` (LiDAR | model | difference: red higher, blue lower, orange LiDAR only,
+  purple model only). Look at the picture.
+- The two references for the look of the south-east end: `compare.mjs --match hRE5`. The model there is
+  drawn bigger and lower than the photograph (camera position under trees, not yet resolved): judge
+  what the surfaces look like, not where they fall.
+- GPU: before each render batch (compare, topview, shot) take `~/.campus-loop/gpu.lock`: if it exists
+  and is younger than 60 minutes, wait for it to go; else write `<date> A2 102 <you>` into it, and
+  delete it as soon as the batch ends. Another task runs long GPU tests meanwhile.
 
 ## Budget (tier 1: the site runs in a browser, phones too)
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (merged by material). Build time of a part

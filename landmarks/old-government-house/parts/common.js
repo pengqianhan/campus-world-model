@@ -17,7 +17,7 @@ export const MEASURED = {
 };
 
 /** A hipped roof over the rectangle x0..x1, z0..z1: eaves at `eave`, the ridge at `ridge`, along the longer side. */
-export function hipRoof(b, x0, x1, z0, z1, eave, ridge, material = "roof") {
+export function hipRoof(b, x0, x1, z0, z1, eave, ridge, material = "roofPale") {
   const alongX = x1 - x0 >= z1 - z0;
   const half = (alongX ? z1 - z0 : x1 - x0) / 2;
   const p = [];
