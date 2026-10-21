@@ -295,7 +295,7 @@
   "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the 2022-09 panoramas of the south-west range, seen in nAxE at bearing about 41.5 deg and 48 deg up (late morning), so the range's south-west face is in open shade under a bright hazy sky; the other numbers start from Old Government House's"
  },
  "refine": {
-  "position_m": 5,
+  "position_m": 3,
   "height_m": 1,
   "yaw_deg": 2,
   "pitch_deg": 2,
@@ -306,6 +306,5 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Grafton Road footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the Symonds Street footpath along the south-west range rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)",
- "refine_note": "position_m 5 (the Clock Tower's 3): the three panoramas of 2022-09 record their camera about 3.5 m nearer the south-west range than it stood (a fit to the parapet and the plinth's foot in the photographs puts them about 13.5 m from its face, their metadata 10 m), so the search needs the room"
+ "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Grafton Road footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the Symonds Street footpath along the south-west range rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)"
 }
