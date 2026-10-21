@@ -1,10 +1,22 @@
 // A landmark: a building drawn in detail from code (landmarks/), in place of its blocks where the
-// camera comes near it. The Clock Tower draws building 105 and its south range, 105S.
+// camera comes near it. The Clock Tower draws building 105 and its south range, 105S. The site finds
+// every landmark whose landmarks/<name>/placement.json says `site: true`; each is tested at the end.
+import fs from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, settle, shot } from "./helpers.ts";
+import { expectRealRender, open, params, settle, shot } from "./helpers.ts";
 
 const T = "light=day&time=preview&date=2026-03-20&t=15:00";
-const clockTower = (page: Page) => page.evaluate(() => window.__scene!.landmarkState()[0]!);
+const landmark = (page: Page, name: string) => page.evaluate((name) => window.__scene!.landmarkState().find((l) => l.name === name)!, name);
+const clockTower = (page: Page) => landmark(page, "clocktower");
+
+/** The landmarks on the site, as their folders say: name, the buildings they draw, and where they stand. */
+const ON_SITE = fs
+  .readdirSync("landmarks", { withFileTypes: true })
+  .filter((d) => d.isDirectory() && fs.existsSync(`landmarks/${d.name}/placement.json`))
+  .map((d) => ({ name: d.name, placement: JSON.parse(fs.readFileSync(`landmarks/${d.name}/placement.json`, "utf8")) }))
+  .filter((l) => l.placement.site === true)
+  .map(({ name, placement: p }) => ({ name, buildings: [p.building, ...(p.also ?? [])] as string[], centre: p.centre as [number, number] }))
+  .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
 test("near it, the map draws the Clock Tower from code in its own colours, in place of its blocks, which still open on their floors", async ({ page }) => {
   await open(page, `?${T}`);
@@ -64,3 +76,33 @@ test("from a walker's height the Clock Tower is drawn in its own stone on a grap
   await expectRealRender(page);
   await shot(page, "30-landmark-eyes");
 });
+
+test("the site finds every landmark whose folder puts it on the site, and no other", async ({ page }) => {
+  expect(ON_SITE.map((l) => l.name)).toContain("clocktower");
+  await open(page, `?${T}`);
+  const found = await page.evaluate(() => window.__scene!.landmarkState().map((l) => ({ name: l.name, buildings: l.buildings })));
+  expect(found).toEqual(ON_SITE.map(({ name, buildings }) => ({ name, buildings })));
+});
+
+for (const { name, buildings, centre } of ON_SITE) {
+  test(`near ${name}, the map draws it in its light form in place of its blocks, and a click opens its building`, async ({ page }) => {
+    await open(page, `?${T}`);
+    // From the campus view its blocks are drawn, and it is not even made.
+    expect(await landmark(page, name)).toMatchObject({ buildings, form: "none", made: [] });
+    await page.evaluate((c) => window.__scene!.showCampus(c, 160, false), centre);
+    await expect.poll(async () => (await landmark(page, name)).form).toBe("light");
+    await settle(page);
+    expect(await landmark(page, name)).toMatchObject({ form: "light", made: ["light"] });
+    await expectRealRender(page);
+    // A click on it finds its block and opens the building on its floors; the landmark gives way.
+    const at = (await page.evaluate((id) => window.__scene!.screenPoint("building", id), buildings[0]!))!;
+    expect(at, `${buildings[0]} on screen`).toBeDefined();
+    await page.mouse.click(at.x, at.y);
+    await expect.poll(() => params(page).get("building")).toBe(buildings[0]);
+    await expect(page.locator("#building-bar")).toBeVisible();
+    await settle(page);
+    expect((await landmark(page, name)).form).toBe("none");
+    await expect(page.locator(".floors")).toBeVisible();
+    await expect(page.locator("#height-note")).toContainText("measured by LiDAR");
+  });
+}
