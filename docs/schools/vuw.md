@@ -14,7 +14,7 @@ Pacific/Auckland.
 | Layer | Verdict | What decided it |
 | --- | --- | --- |
 | 1. Footprints and surroundings | usable | OpenStreetMap (ODbL). The Auckland premises are already in the committed `central` snapshot (one building named "Victoria University of Wellington"). Wellington has no area in the repository yet: Kelburn, Pipitea and Te Aro need new areas, fetched by `scripts/fetch-osm.ts` as the repository's other areas are (see "Needs the maintainer", 5) |
-| 2. Indoor: buildings, floors, rooms | usable for a room list; floor and room outlines not published | No indoor-mapping vendor: the campus maps are Google Maps embeds with named points. "Locate a room" lists 48 building codes and their campus; the ITS room report lists 266 rooms with capacity and equipment class, 193 of them in teaching classes. Floor plans are PDF pictures only |
+| 2. Indoor: buildings, floors, rooms | usable for a room list; floor and room outlines not published | No indoor-mapping vendor: the campus maps are Google Maps embeds with named points. "Locate a room" lists 48 building codes and their campus; the ITS room report lists 266 rooms with capacity and equipment class, 186 of them in the five classes it names as teaching or learning spaces. Floor plans are PDF pictures only |
 | 3. Timetable | needs the maintainer | Open: the "Academic Timetable" spreadsheets (2026, 2027) give every lecture, tutorial, lab and studio with days, times, weeks and room code, with no sign-in. But they sit under `/tools`, which `www.wgtn.ac.nz/robots.txt` disallows for all agents, so they were not fetched. Without them, lecture days and times are public only to the campus (no room). myTimetable (Scientia Publish) has guest timetables switched off |
 | 4. Academic calendar | needs the maintainer | The dates are in the key-dates app and the 2026 Calendar PDF, both served from `/__data/`. `robots.txt` has `Disallow: /__data/.*`, which reads two ways (see "Needs the maintainer", 2). Only the teaching weeks are on an allowed page |
 | 5. Subjects and courses | usable | The "Printable Course Catalogue" on `service-web.wgtn.ac.nz` (no `robots.txt`): four requests give all 2026 courses, 3,513 course codes in 174 subject codes, with title, points, trimester, CRN, lecture days and times, and campus |
@@ -58,13 +58,15 @@ childcare centre were not located in this recon.
 - **With the usable layers only:** Kelburn, Pipitea and Te Aro in 3D from OpenStreetMap
   footprints on LINZ ground (and the Auckland premises, which the `central` area already holds).
   Buildings can take their names from VUW's own map points (24 on Kelburn) where a point falls in
-  a footprint, and their codes from "Locate a room". The 193 rooms in the ITS report's teaching
-  classes can be listed by code and capacity: the code gives the building, and its first digit the
-  level by VUW's rule, so a room is located to a building and an inferred floor, labelled as from
-  the code, with no outline. Where the code holds a street number or a prefix that "Locate a room"
-  does not list (layer 2), the floor stays unknown. The report's 12 meeting rooms and 61 rooms of
-  the undefined class X are not teaching spaces as far as the source says, so they stay unnamed
-  ("Places, not people"). Course search knows 3,513 course codes with titles and, for each offering, the
+  a footprint, and their codes from "Locate a room". The 186 rooms in the five classes that the
+  ITS report names as teaching or learning spaces (FFTS, STR, CETS, LT, FLS) can be listed by code
+  and capacity: the code gives the building, and its first digit the level by VUW's rule, so a
+  room is located to a building and an inferred floor, labelled as from the code, with no outline.
+  Where the code holds a street number, a four-digit room number or a prefix that "Locate a room"
+  does not list (layer 2), the floor stays unknown. The other 80 rooms stay unnamed ("Places, not
+  people"): 12 meeting rooms, 61 rooms of the undefined class X, and the MAV (5) and AVL (2) rooms,
+  which are teaching spaces only by inference from the report's title. Course search knows 3,513
+  course codes with titles and, for each offering, the
   trimester and the lecture days and times. Those times are known only to the campus, so they
   cannot be placed in a building or room: search can show them as "Kelburn campus, room not
   published", and the map shows no classes.
@@ -92,7 +94,9 @@ Licence for OpenStreetMap: ODbL, credit in About.
 VUW's site header has a "Mapi / Maps" link to "Our campuses and sites". Each campus page has a
 Google Maps frame and a list of named points. No indoor-mapping vendor (MazeMap, MapsIndoors,
 Concept3D, Mappedin, ArcGIS Indoors, Pointr) was named in the pages read, and a web search found
-none. The map frame itself was not read (next table).
+none. RECON's first route, the campus map's own requests, was not run: the map lives in a frame
+on `/nestable-content/`, which `robots.txt` disallows, so its requests were not watched or read.
+The named points in the campus pages themselves stand in for it.
 
 | Route | URL | Answer (2026-10-22) | What it holds |
 | --- | --- | --- | --- |
@@ -100,7 +104,7 @@ none. The map frame itself was not read (next table).
 | The map frame | `…/nestable-content/maps/map?…` (four campuses) | 200, loaded by the browser by itself as part of each page (a lapse: `robots.txt` disallows `/nestable-content/`; see "Request log") | Not saved and not read. Its Google Maps scripts (`maps.googleapis.com`) were blocked |
 | A Google My Maps frame | `https://www.google.com/maps/d/embed?mid=…` in the Kelburn page | not requested | It sits inside an HTML comment, so the page does not show it |
 | Room directory: "Locate a room" | `https://www.wgtn.ac.nz/about/campuses-facilities/room-location` | 200 `text/html`, about 118 KB | 48 rows: building code, building name, campus or location (counts in "Campuses"). The room-code rule. No rooms listed |
-| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. 193 rooms are in the seven teaching classes; MR and X are not. Most codes start with a building code of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Exceptions: 21 codes put a street number first (`KP24101`, `FT83201`, `WR06102` and others; VUW's own example "KP10 107" is "a room on the ground floor"), 11 use a prefix that "Locate a room" does not list (`HERCCS` 4, `WIG` and `VSWIG` 6, `HUVICRM` 1), and some carry a letter level (`GBG04`, `RHMZ03`). No floor field, no outline |
+| Room directory: ITS room report | `https://www.wgtn.ac.nz/itsroomspecs/RoomDetail.ashx` | 200 `text/html`, 11,822 bytes | "Rooms By Equipment Specification (with room capacity)": 266 rooms, each with code and capacity (0 to 355), in nine classes: FFTS ("Flat Floor Teaching Space") 75, X (no definition in the report) 61, STR ("Small Teaching Room") 55, LT ("Lecture Theatre") 35, FLS ("Flexible Learning Space") 13, MR ("Meeting Room") 12, CETS ("Computer Equipped Teaching Space") 8, MAV ("Medium AV") 5, AVL ("AV Equipped Lab") 2. The report names five classes as teaching or learning spaces (FFTS, STR, CETS, LT, FLS): 186 rooms. MAV and AVL (7 rooms) are teaching spaces only by inference from the report's title ("All teaching rooms have a minimum of an OHP…"); MR and X are not. Most codes start with a building code of "Locate a room" (CO, KK, MY, RH, VS, VZ and others). Exceptions: 21 codes put a street number first (`KP24101`, `FT83201`, `WR06102` and others; VUW's own example "KP10 107" is "a room on the ground floor"), 3 have a four-digit room number (`RH1113`, `RH1219`, `RH1220`; Rutherford House also has `RH819`, so their first digit is not their level), 11 use a prefix that "Locate a room" does not list (`HERCCS` 4, `WIG` and `VSWIG` 6, `HUVICRM` 1), and some carry a letter level (`GBG04`, `RHMZ03`). No floor field, no outline |
 | Venue hire: lecture theatres | `https://www.wgtn.ac.nz/about/campuses-facilities/venue-hire/lecture-theatres` | 200 `text/html`, 119,570 bytes | Capacity ranges only ("134 to 340 people", "42 to 85 people") |
 | Open data | web search for a VUW GIS or open-data portal | none found | Wellington City Council's 3D buildings (layer 1) are exteriors, not indoor |
 | Floor-plan PDF, Kelburn | `https://www.wgtn.ac.nz/about/campuses-facilities/campuses/kelburn/kelburn-campus-map.pdf` | 200 `application/pdf`, 2,515,969 bytes, 2 pages, made 2025-12-08 | "Kelburn Campus Map" 2026: a campus drawing, accessible routes, and a directory of buildings, faculties, schools and services with building codes and grid references. Legend symbols include "Early childhood centre" and "Student hall of residence". No floor plans |
@@ -132,8 +136,9 @@ requests, and the course pages add nothing that the lists do not have.
 
 Precision: a room code locates a meeting to a room code. The building comes from the code list,
 and the level from the first digit, which VUW says is "typically" the level: inferred and
-labelled so. Where a code puts a street number first, or uses a prefix that "Locate a room" does
-not list (layer 2), the floor stays unknown. Rooms have no outlines.
+labelled so. Where a code puts a street number first, has a four-digit room number (`RH1220`
+beside `RH819`), or uses a prefix that "Locate a room" does not list (layer 2), the floor stays
+unknown. Rooms have no outlines.
 
 ## Layer 4: academic calendar
 
@@ -188,20 +193,21 @@ The Pipitea tile reaches the harbour (it mixes in SRTM and GMTED), so the pit ch
 | `www.wgtn.ac.nz` | 200 (last modified 2026-07-13). For all agents, among others: `Disallow: /tools`, `Disallow: /__data/.*`, `Disallow: /nestable-content/`, `Disallow: /search`, `Disallow: /api/.*`, `Disallow: /_service/` with `Allow: /_service/courses/`, `Disallow: /study/programmes-courses/courses.*`, `Disallow: /students/study/enrolment/courses/by-subject`. Agent groups `HeadlessChrome`, `ClaudeBot` and `Claude-Web` each have `Crawl-delay: 10` | <https://www.wgtn.ac.nz/site-info/copyright>: "You can reproduce such material free of charge for non-commercial purposes and without further permission from Te Herenga Waka—Victoria University of Wellington (the University), as long as you:" reproduce it accurately and without modifications, not in a derogatory or misleading context, and acknowledge the source and the owner. Commercial use needs prior written permission |
 | `search.wgtn.ac.nz` | 200: `Disallow: /search/`, `Disallow: /s/` for all agents | as above |
 | `service-web.wgtn.ac.nz` | 404: none | as above |
-| `timetable.victoria.ac.nz` | none: every path, `/robots.txt` too, returns the app page (200 `text/html`) | as above; Scientia's terms not read (the route is closed) |
+| `timetable.victoria.ac.nz` | none: `/robots.txt` returns the same app page as `/` (200 `text/html`) | as above; Scientia's terms not read (the route is closed) |
 | `cyon-syd-v4-api-d1-03.azurewebsites.net` (Scientia's API) | 404: none | not read |
 | `puaha.wgtn.ac.nz` | not requested | — |
 | `nz-elevation.s3.ap-southeast-2.amazonaws.com` | 404: none | CC BY 4.0 per collection |
-| `s3.amazonaws.com` | not requested (AUT's recon got 403 for it the same day) | AWS Open Data registry (already used by the repo) |
+| `s3.amazonaws.com` | not requested (AUT's recon got 403 for it the same day). That 403 answered `/robots.txt` alone, a route of its own; the three tile requests of layer 6 are the repository's existing terrain source (`scripts/fetch-terrain.ts`), not a retry of it | AWS Open Data registry (already used by the repo) |
 | `catalogue.data.govt.nz` | 200: `Disallow: /api/` and query patterns; `Crawl-Delay: 10` | the WCC dataset says "No License Provided" |
 | `overpass-api.de` | not requested (AUT's recon: `Disallow: /api/`) | ODbL for the data |
 
 Two notes on `www.wgtn.ac.nz/robots.txt`. Under RFC 9309 an agent follows the most specific group
 that names it, so a `HeadlessChrome` browser falls under a group with only a crawl delay, while the
 pipeline's own User-Agent (`scripts/lib/snapshot.ts`) falls under `*` and its disallows. This recon
-kept both: the `*` disallows and the 10 s delay. Lines such as `/__data/.*` are written like
-regular expressions; RFC 9309 gives the dot no special meaning, so read literally they match only
-paths that start `/__data/.`. This recon took the wider reading.
+meant to keep both, the `*` disallows and the 10 s delay, and did except for the lapses listed in
+"Request log" (four requests to `/nestable-content/`, ten gaps under 10 s). Lines such as
+`/__data/.*` are written like regular expressions; RFC 9309 gives the dot no special meaning, so
+read literally they match only paths that start `/__data/.`. This recon took the wider reading.
 
 ## Needs the maintainer
 
@@ -260,13 +266,17 @@ did not touch the school's hosts and are not in the log. UTC 2026-10-21 20:29:51
   Insights and Rapid7 logging from the myTimetable app 7, Google Fonts 3, and others. No cookie
   banner was loaded, so none had to be refused.
 - **Rate:** the shortest gap between two requests was 1.100 s, and no second held more than one.
-- **Crawl delays:** `www.wgtn.ac.nz` asks 10 s of `HeadlessChrome` and `ClaudeBot`. Most of its
-  requests were 10 s or more apart, but ten gaps were shorter: four map frames that the browser
-  loaded 1.1 s after their campus pages, from a disallowed path (`/nestable-content/`); two
-  redirect hops 1.1 s after the request that led to them; and four pages that came 9 s after one
-  of those frames. After that run the pages were read by in-page fetch, one every 10 s.
-  `catalogue.data.govt.nz` asks `Crawl-Delay: 10`: its second request went 4.0 s after its
-  `robots.txt`, read in the same run. Both are lapses.
+- **Disallowed path:** 4 requests, a lapse. The browser loaded the map frame
+  `/nestable-content/maps/map?…` of the Kelburn, Pipitea, Te Aro and Auckland pages by itself,
+  because a frame passes a documents-only filter. `robots.txt` disallows `/nestable-content/`.
+  The frames were not saved or read. After that run the pages were read by in-page fetch, which
+  loads no frames.
+- **Crawl delays:** eleven short gaps, all lapses. `www.wgtn.ac.nz` asks 10 s of
+  `HeadlessChrome` and `ClaudeBot`; most of its requests were 10 s or more apart, but ten gaps were
+  shorter: the four frames above, each 1.1 s after its campus page; two redirect hops 1.1 s after
+  the request that led to them; and four pages that came 9 s after one of those frames. From the
+  next run on, its pages came one every 10 s. `catalogue.data.govt.nz` asks `Crawl-Delay: 10`:
+  its second request went 4.0 s after its `robots.txt`, read in the same run.
 - **Order:** each host's `robots.txt` was read before anything else was sent to it, with one
   exception: `s3.amazonaws.com`, whose `robots.txt` answered 403 to AUT's recon the same day, so
   it was not asked for again. The myTimetable app's first load asked for
