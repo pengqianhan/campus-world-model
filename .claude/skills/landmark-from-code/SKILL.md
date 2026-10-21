@@ -17,10 +17,13 @@ the agents were given are in [briefs/](briefs/).
 
 ## What binds the work
 
-- **Not the site.** A landmark lives in `landmarks/<name>/`. Nothing in it is built, tested or
-  deployed with the site, and the map does not read it. Bringing a landmark into the map is a
-  decision for the maintainer (`PROGRESS.md`, "Decisions": one source for a University building).
-  Its `placement.json` says where it would stand on the map.
+- **Not the site yet.** A landmark lives in `landmarks/<name>/`. Nothing in it is built, tested or
+  deployed with the site, and the map does not read it. The maintainer decided on 2026-10-21 to
+  bring landmarks into the map (`PROGRESS.md`, "Decisions": one source for a University building);
+  its `placement.json` says where it will stand.
+- **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
+  `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
+  "Decisions": all network fetching). Build on what is local, or build that first.
 - **Shared kit and pipeline.** `landmarks/kit/` (what every model is built with) and
   `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark adds
   only its own folder. A change to them adds options with defaults and leaves the other landmarks'
