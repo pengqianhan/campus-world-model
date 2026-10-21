@@ -541,3 +541,11 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    stops), would now count tiles twice: no hand `check` or `add` is needed. The tile cache is now
    `data/raw/landmarks/streetview/tiles/`, not a landmark's `refs/streetview/tiles/`, so the notes'
    list of places where Google's data may be kept needs it too.
+3. **A `source-data` issue for 408 UniPress (measured massings, decision 10).** The 2024 LiDAR
+   shows no roof on its outline in the campus map: ground is seen in 187 of its 1 m cells, under
+   trees. Its block stays (`landmarks/measured/exclusions.json`); the issue asks whether the campus
+   map's record (its outline or its place) is out of date.
+4. **Waipapa Marae (251 to 256) and Fale Pasifika (275).** Their blocks stay in the first batch of
+   measured massings (decision 7). Drawing even their massing (measured heights and roof forms in
+   the map's own colours, never carvings, patterns or colours of their own) waits until you have
+   asked the people they belong to.
