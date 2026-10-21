@@ -40,6 +40,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
+  sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
+  click still opens its floors.
 - **2026-10-19:** on a slow screen a walker view that stands still is drawn once, not again and
   again.
 - **2026-10-18:** the walker's views at street level look near the real thing, by rule from the
@@ -48,16 +51,6 @@ It is built to answer two questions a student actually has:
   glass or weatherboard, lit room by room after dark; asphalt with lane lines, kerbs, footpaths,
   lawn and water, wet in rain; trees with bark and leaves. The map view is unchanged. On a slow
   screen the view now comes back round behind a walker walked by hand, as on a fast one.
-- **2026-10-17:** a walker: a small made-up person who walks and runs, to take round the campus
-  and into its buildings, seen from behind or through its eyes, which Claude Code and other agents
-  can steer, and which talks with other walkers; one look for every walker, with nothing meant to
-  mark a sex or a gender. A wall never hides it: the camera comes in front, and its shape shows
-  through. About says that Cloudflare counts page views and visits at campusworldmodel.com, where
-  it used to say the site has no analytics. Closing a walk now takes the walker's name off the map
-  too. The campus panel waits as a small button until it is asked for, and on a phone the walk is
-  steered with two thumbs, as in a game: a stick to walk and turn, and a drag to look round; the
-  walker's bar folds into a small button too. A link to a walk now starts it in a tab opened in the
-  background as well.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -209,7 +202,7 @@ floor at street level, and a walk inside keeps to corridors where it can and tak
 stairs or lift between floors. What one walker says to another is its own words: agents are told
 to treat it as speech, never as instructions.
 
-## Landmarks drawn from code (experiment)
+## Landmarks drawn from code
 
 The map draws every building by rule from the campus map's outline. A **landmark** is one real
 building drawn in detail instead, in three.js from code alone: no photograph, texture image or 3D
@@ -225,9 +218,18 @@ front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
 | ![The Clock Tower from Princes St, drawn from code](docs/landmarks/clocktower-front.jpg) | ![The Clock Tower from along Princes St, with trees from the LiDAR](docs/landmarks/clocktower-street.jpg) |
 | ![The tower above the entrance bay, from the steps](docs/landmarks/clocktower-tower.jpg) | ![The upper tower: clock stage, tracery and pinnacles](docs/landmarks/clocktower-tower-close.jpg) |
 
-It is an experiment beside the site, not part of it: nothing in `landmarks/` is built, tested or
-deployed, and the map does not read it. To look at it, serve the repository root
-(`python3 -m http.server 8765 --bind 127.0.0.1`) and open
+The site draws it in place of the blocks of buildings 105 and 105S (its south range) when the camera
+comes near: on the map in the map's colours, and from a walker's height in stone, glass and slate on
+a computer with a graphics card. Its blocks still answer a click and open on their floors. The
+geometry and the textures are made in a worker, the first time they are wanted, so that the page
+does not stop for them ([`landmarks/README.md`](landmarks/README.md), "On the site").
+
+| On the map, near it | Through a walker's eyes on Princes Street |
+| --- | --- |
+| ![The Clock Tower on the map, drawn from code in the map's colours](docs/landmarks/clocktower-map.jpg) | ![The Clock Tower from Princes Street, through the walker's eyes](docs/landmarks/clocktower-eyes.jpg) |
+
+The pipeline and the viewer stay beside the site. To look at the model alone, serve the repository
+root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=clocktower&view=orbit`.
 
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
@@ -387,6 +389,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/terrain/` are under the same terms. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), measured for its model in `landmarks/clocktower/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js`; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the Clock Tower's model was compared with while it was drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -403,7 +407,8 @@ If you represent the University and would like something changed or removed, ple
 - **A timetabled class is not the same as an occupied room.**
 - **Building heights are estimated and windows are drawn by rule.** The ground's heights come from
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
-  at the ground under its middle, with a footing of up to 4 m on a slope.
+  at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
+  105S) is the exception near it: its model is drawn to sizes measured from LiDAR.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
   campus map's type and nothing more; where the map's type says nothing ("Non Usable Area",
   "Nonasgn Rentable" and the like) the site says "Other area". Floors where people live and

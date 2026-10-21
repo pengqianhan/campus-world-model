@@ -2,6 +2,9 @@
 // `metres` (how many metres one repeat of the texture covers), for use with worldUV() in gothic.js.
 import * as THREE from "three";
 
+/** How many metres one repeat of each stone texture covers. */
+export const METRES = { ashlar: 4, smoothAshlar: 4, dressed: 2 };
+
 /** A seeded random generator, so that the same stone is drawn every time. */
 export function rng(seed) {
   let s = seed >>> 0 || 1;
@@ -55,7 +58,8 @@ function normalFromHeight(h, size, strength) {
   return data;
 }
 
-function texture(data, size, srgb) {
+/** A tiling texture from RGBA bytes, `size` square: sRGB for colour, linear for a normal map. */
+export function texture(data, size, srgb) {
   const t = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
@@ -71,7 +75,7 @@ function texture(data, size, srgb) {
  * 0.5 to 1.4 m, each face quarried rough and raised from fine joints. One repeat covers 4 m.
  */
 export function ashlar(seed = 7, size = 2048) {
-  const metres = 4, px = size / metres;
+  const metres = METRES.ashlar, px = size / metres;
   const rand = rng(seed);
   const height = new Float32Array(size * size);
   const tint = new Float32Array(size * size * 3);
@@ -125,7 +129,7 @@ export function dressed(seed = 11, size = 1024) {
     for (let c = 0; c < 3; c++) color[k * 4 + c] = Math.min(255, base[c] * v * 255);
     color[k * 4 + 3] = 255; h[k] = f[k] * 0.3;
   }
-  return { map: texture(color, size, true), normalMap: texture(normalFromHeight(h, size, 1.5), size, false), metres: 2 };
+  return { map: texture(color, size, true), normalMap: texture(normalFromHeight(h, size, 1.5), size, false), metres: METRES.dressed };
 }
 
 /** A flat surface: asphalt, concrete paving or grass, from a base colour and its grain. */
@@ -153,7 +157,7 @@ export function ground(kind, seed = 3, size = 1024) {
 
 /** Smooth ashlar: dressed limestone laid in fine-jointed courses, as on the centre and the tower. */
 export function smoothAshlar(seed = 13, size = 1024) {
-  const metres = 4, px = size / metres, rand = rng(seed);
+  const metres = METRES.smoothAshlar, px = size / metres, rand = rng(seed);
   const n = fbm(seed, size, 5, 6), f = fbm(seed + 3, size, 3, 48);
   const color = new Uint8Array(size * size * 4), h = new Float32Array(size * size).fill(1);
   const base = [0.95, 0.93, 0.87], course = 0.36 * px, rows = Math.round(size / course);

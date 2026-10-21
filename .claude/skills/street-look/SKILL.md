@@ -24,7 +24,9 @@ most of the weight here:
   bough comes from an outline, a height, a class or a position already in `public/data/`, seeded
   by position so it is the same on every visit, and About says what is drawn by rule. What no
   source maps is absent: doors, crossings, arrows, signs, lamps, benches, cars, people. Fetching
-  any of them (OpenStreetMap maps some) is a gate.
+  any of them (OpenStreetMap maps some) is a gate. The one exception, by the maintainer's decision,
+  is a landmark drawn from code (`landmarks/README.md`, "On the site"): its building, without its
+  landscape, stands in place of its blocks.
 - **The map is unchanged.** The map's palette and lighting are settled decisions. Every street
   material goes on when a walker view opens and the map's own comes back when it closes; the
   renderer's output path draws the map straight to the screen as before; and a pixel diff of the

@@ -11,6 +11,10 @@ their terms:
   Zealand and the New Zealand Government, under CC BY 3.0 NZ.
 - What the site takes from the University of Auckland's public campus map and Calendar
   (buildings, floors, rooms, room types, key dates) remains the University of Auckland's copyright.
+- The sizes measured for the landmarks in landmarks/ (each landmark's config/<name>.json and
+  parts/common.js) come from the Auckland Part 1 LiDAR point cloud (2024), sourced from LINZ and
+  licensed by Regional Software Holdings Limited for re-use under CC BY 4.0
+  (https://doi.org/10.5069/G9HH6H8T).
 
 public/models/walker.glb, the walker's figure, is made from "Animated Human" by Quaternius
 (https://opengameart.org/content/animated-human-low-poly), which its author dedicated to the public
