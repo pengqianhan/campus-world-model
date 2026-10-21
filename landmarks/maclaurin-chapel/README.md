@@ -39,11 +39,30 @@ Of the 50 Google panoramas within 120 m, the 19 within 70 m were looked at in lo
 715 zoom-5 tiles were bought for them: 825 tiles for this building. The others see trees, at most the
 spire's tip. User-contributed panoramas are not used. The photographs show the street side only.
 
-## Round 0 (October 2026, the lead alone)
+## Round 0 (October 2026, one agent alone)
 
 From the LiDAR, then from the photographs: the chapel a regular hexagon (fitted to its roof's edge,
-rms 0.21 m), its walls white and plain but for the great window that wraps the street corner, a low
-pyramid roof, a square spire with a cross; the bay; the hall with its flat roofs, fascias, walk-ways
-and entrance. From above against the LiDAR: footprint IoU 0.902, heights p50 −0.04 m, 80% of cells
-within 0.5 m (the rest are trees classed as building over the hall and the chapel's corners); every
-measured height within 0.13 m of the LiDAR's. 2,750 triangles in 7 materials.
+rms 0.21 m), its walls white and plain but for the great window that wraps the street corner (3.9 m
+along the left face, 2.75 m along the right, as two photographs show), a low pyramid roof with a dark
+edge, a square spire with a cross; the bay; the hall with its flat roofs and fascias, walk-ways, and
+the entrance recessed under its roof. The viewer's light is the photographs' (a July morning, the
+sun behind the building; exposure 0.78 puts the plain white face at the photograph's luma, 154).
+
+- From above against the LiDAR: footprint IoU 0.902, heights p10/p50/p90 -8.05/-0.04/0.02 m, 80% of
+  cells within 0.5 m (the rest are trees classed as building over the hall and the chapel's
+  corners); every measured height within 0.13 m of the LiDAR's; 95.3% of block 107 under the model.
+- Against the photographs (`run.sh maclaurin-chapel compare`): silhouette IoU 0.02-0.52, mean 0.22;
+  luma p50 of the building region, photograph 138 and render 159. Neither says much yet: bare winter
+  branches stand in front of every photograph, and the sky masks count the pale sky through them as
+  solid, so the cameras could not be refined (0-1% sky round the silhouette). With textured pixels
+  left out (a diagnostic, not the pipeline's metric) the clearest views reach 0.72 (dsLb upper) and
+  0.77 (dsLb door), mean 0.41.
+- On the site's drawn ground (the 8 m DEM): -0.18 to +0.05 m from the door's under the footprint;
+  the walls go down to -0.70 m, so nothing floats.
+- 3,134 triangles in 7 materials (`paint`, `glass`, `roofPale`, `iron`, `shade`, `timber`, `dressed`),
+  built in 14 ms.
+
+What the next round should look at: a sky mask that leaves bare branches out (an option of
+`sky_mask.py`); the roofs' light green (the kit has no green roof yet); the bay's height (the LiDAR
+7.1-7.5 m, a photograph about half a metre more); the part of the bay and the small rounded room
+beyond it that a tree hides from the LiDAR and every photograph (the floor outline has them).

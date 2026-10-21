@@ -44,5 +44,8 @@ export const MEASURED = {
     middle: { x: [9.0, 22.3], z: [-5.1, 5.9] },
     walks: { z: [[-7.3, -5.1], [5.9, 8.3]] },
     raised: { x: [8.8, 22.6], z: [-5.3, 6.1], eave: 4.55, ridge: 5.0, ridgeZ: 0.4 },
+    // the entrance (the photographs, and the LiDAR's ground under the roof's front metre, 0.16-0.30 m,
+    // rising from 0.02 m at the door): its glazed screen at z 7.2, a porch floor 0.3 m up, three steps
+    porch: { z: 7.2, floor: 0.3, steps: 3, tread: 0.4 },
   },
 };

@@ -35,7 +35,7 @@ export function hall(b) {
   const H = M.hall, R = H.raised, mid = H.middle;
   const near = H.nearEnd, far = H.farEnd;
   // the end rooms: walls under the flat roof
-  b.box(near.x[0], near.x[1], FOOT, H.top - FASCIA, near.z[0] + 0.2, near.z[1] - 0.2, "paint");
+  b.box(near.x[0], near.x[1], FOOT, H.top - FASCIA, near.z[0] + 0.2, H.porch.z, "paint");
   b.box(far.x[0] + 0.1, far.x[1] - 0.2, FOOT, H.farTop - FASCIA, far.z[0] + 0.2, far.z[1] - 0.2, "paint");
   // the middle room, rising to the gable
   b.box(mid.x[0], mid.x[1], FOOT, R.eave - 0.15, mid.z[0], mid.z[1], "paint");
@@ -45,12 +45,20 @@ export function hall(b) {
   flatRoof(b, near.x[0], mid.x[0], near.z[0], near.z[1], H.top);
   for (const [z0, z1] of H.walks.z) flatRoof(b, mid.x[0], mid.x[1], z0, z1, H.top);
   flatRoof(b, far.x[0], far.x[1], far.z[0], far.z[1], H.farTop);
-  // the street side: the glazed entrance in the near end, with a dark timber fascia over its doors and
-  // steps down to the path; glazed walls behind the walk-way and posts under its roof; windows in the far end
-  const zf = near.z[1] - 0.2;
-  glazing(b, near.x[0] + 0.3, near.x[1] - 0.3, 0.45, H.top - FASCIA - 0.25, zf, 1, 0.9);
-  b.box(near.x[0] + 0.3, near.x[1] - 0.3, H.top - FASCIA - 0.25, H.top - FASCIA, zf, zf + 0.06, "timber");
-  for (let i = 0; i < 3; i++) b.box(near.x[0] + 0.6, near.x[1] - 0.6, FOOT, 0.45 - 0.15 * i, zf, zf + 0.4 + 0.35 * i, "dressed");
+  // the street side: the entrance in the near end, a glazed screen set back under the flat roof (the LiDAR
+  // sees the ground under the roof's front metre), the roof's front fascia there dark timber, not white,
+  // posts at the porch's corners, its floor and steps down to the path; glazed walls behind the walk-way
+  // and posts under its roof; windows in the far end
+  const P = H.porch, zf = near.z[1] - 0.1;
+  glazing(b, near.x[0] + 0.3, near.x[1] - 0.2, P.floor, H.top - FASCIA - 0.05, P.z, 1, 0.9);
+  b.box(near.x[0] - 0.06, near.x[1], H.top - FASCIA, H.top - 0.02, near.z[1] + 0.06, near.z[1] + 0.1, "timber");
+  b.add(boxesGeometry([[near.x[0] + 0.1, near.x[0] + 0.22, P.floor, H.top - FASCIA, zf - 0.2, zf - 0.08],
+    [near.x[1] - 0.12, near.x[1], P.floor, H.top - FASCIA, zf - 0.2, zf - 0.08]]), "paint");
+  b.box(near.x[0], near.x[1], FOOT, P.floor, P.z, zf, "dressed");
+  for (let i = 0; i < P.steps; i++) {
+    const h = (P.floor * (P.steps - i)) / (P.steps + 1), z0 = zf + i * P.tread;
+    b.box(near.x[0] + 0.5, near.x[1] - 0.3, FOOT, h, z0, z0 + P.tread, "dressed");
+  }
   glazing(b, mid.x[0] + 0.4, mid.x[1] - 0.4, 0.4, H.top - 0.5, mid.z[1], 1, 1.5);
   const posts = [];
   for (let i = 0; i <= 4; i++) { const x = mid.x[0] + 0.3 + ((mid.x[1] - mid.x[0] - 0.6) * i) / 4; posts.push([x - 0.06, x + 0.06, FOOT, H.top - FASCIA, H.walks.z[1][1] - 0.25, H.walks.z[1][1] - 0.13]); }
