@@ -221,6 +221,11 @@ so its model is
 checked against the LiDAR from above: on a 0.5 m grid its outline covers the building's with an IoU
 of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 
+| | |
+| --- | --- |
+| ![Old Government House from its lawn, the garden front, drawn from code](docs/landmarks/old-government-house-front.jpg) | ![The south-east end and the garden front, drawn from code](docs/landmarks/old-government-house-end.jpg) |
+| ![Old Government House on the map, drawn from code in the map's colours](docs/landmarks/old-government-house-map.jpg) | ![Old Government House from its lawn, through the walker's eyes](docs/landmarks/old-government-house-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102) when the camera comes near: on
 the map in the map's colours, and from a walker's height in its own materials on a computer with a
