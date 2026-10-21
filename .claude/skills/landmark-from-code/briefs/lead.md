@@ -5,15 +5,16 @@ of the model during a round; it keeps the agents apart, carries facts between th
 and closes the round. In round 1 the lead was the same Claude Code session the person was working in.
 
 ## Before the round
-1. Measure the building from the LiDAR (`./run.sh data`): frame, plan extents, heights. Put the sizes
-   every part shares in `src/parts/common.js`.
-2. Collect the references (`./run.sh refs`): Street View views with the camera that took each one.
+1. Measure the building from the LiDAR (`../pipeline/run.sh <name> data`): frame, plan extents, heights. Put the sizes
+   every part shares in `parts/common.js`.
+2. Collect the references (`../pipeline/run.sh <name> refs`): Street View views with the camera that took each one.
 3. Draw a first, rough model yourself and split it into parts, one file per part, so that agents can
-   work side by side without touching each other's files (`src/clocktower.js` assembles them, and a
+   work side by side without touching each other's files (`model.js` assembles them, and a
    part that throws is logged and left out).
 4. Write `docs/CONTRACT.md` (frame, ownership, how to render and compare, budget, rules) and
    `docs/ART_BIBLE.md` (what the building and the light look like; what must never happen).
-5. Make the compare tool work (`tools/compare.mjs`) and keep a baseline render (`out/lead/baseline/`).
+5. Check that the shared compare tool runs on this building (`../pipeline/tools/compare.mjs`) and keep a
+   baseline render (`out/lead/baseline/`).
 6. Commit: that commit is what every agent starts from and what their before strips show.
 
 ## During the round
@@ -26,7 +27,7 @@ and closes the round. In round 1 the lead was the same Claude Code session the p
 
 ## After the round
 1. Read every report. Move measured sizes the agents reported into `common.js` (only the lead edits it).
-2. `./run.sh refine compare`; check that no part fails and the metrics went the right way.
+2. `../pipeline/run.sh <name> refine compare`; check that no part fails and the metrics went the right way.
 3. Look at the strips yourself, then commit with a message that says what changed.
 4. Tell the person what got better, what did not, and what the next round should do.
 

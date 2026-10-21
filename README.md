@@ -228,11 +228,13 @@ front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
 It is an experiment beside the site, not part of it: nothing in `landmarks/` is built, tested or
 deployed, and the map does not read it. To look at it, serve the repository root
 (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
-`http://localhost:8765/landmarks/clocktower/index.html?view=orbit`.
+`http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=clocktower&view=orbit`.
 
-- The model, its pipeline (`./run.sh`: measure from the LiDAR, collect the Street View references,
-  correct their cameras, render and score) and the rules the agents worked to:
-  [`landmarks/clocktower/`](landmarks/clocktower/).
+- The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
+- What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
+  with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
+  collect the Street View references, correct their cameras, render and score, and place the model
+  on the campus map).
 - How to make the next landmark: the `landmark-from-code` skill
   ([`.claude/skills/landmark-from-code/`](.claude/skills/landmark-from-code/SKILL.md)), with the
   method and every agent's brief.
