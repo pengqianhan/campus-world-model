@@ -10,13 +10,17 @@ says only what they and the aerial show. What none of them shows is drawn plainl
   straight to a level top at the eaves: from the street the roof is all but hidden, only a thin dark
   line of its edge above the walls. A corner of the hexagon points at the street, so the street sees
   two faces meeting at it, and two more at a grazing angle.
-- **The great window wraps that corner**: about 3 m along each of the two street faces, from about
-  half a metre above the ground nearly to the eaves. It is a grid of white concrete frames, deep and
+- **The great window wraps that corner**: about 4 m along the left street face and under 3 m along
+  the right one (as seen from the street), from about half a metre above the ground to just under the
+  eaves at the corner. It is a grid of white concrete frames, deep and
   square in section, holding tall narrow panes of dark glass in staggered rows, so that the vertical
   frames run long and the horizontal ones step up and down from one column to the next; its top steps
   up toward the corner with the line of the eaves. The rest of each face is blank wall.
-- **The spire**: a slender square needle, grey (weathered concrete or paint), rising from the roof's
-  apex and tapering to a point, with a small thin cross on its tip.
+- **The spire**: a slender square shaft, grey (weathered concrete or paint), rising from the roof's
+  apex and tapering only a little, under a short pointed cap, with a small thin cross on its tip.
+- **The bay's height**: the LiDAR puts its top at 7.1-7.2 m where it sees it, near the street; in
+  34Yw's upper view it stands about half a metre higher against the chapel. The model keeps 7.5 m
+  (the LiDAR's median over the bay) until a closer look settles it.
 - **The bay** on the chapel's far side (to the left as seen from the street): a lower block of the same
   white walls with a level top, a dark timber door or window at its foot.
 - The roof, seen from above only (the 2023 LINZ aerial): six triangular faces of light green

@@ -20,13 +20,13 @@ export const MEASURED = {
     apex: 10.55,      // a low hexagonal pyramid, about 15 deg: 0.26 m up a metre in toward the apex
   },
   // The great window wrapping the street corner (the photographs; sizes from them against the LiDAR's
-  // walls): 3.0 m along each street face from the corner, six columns a face, from 0.5 m to 8.35 m at
-  // the corner, each column 0.12 m lower outward; deep white frames 0.12 m wide, transoms 0.8-1.5 m apart.
-  window: { width: 3.0, columns: 6, sill: 0.5, top: 8.35, step: 0.12, frame: 0.12, depth: 0.28, pane: [0.8, 1.5] },
-  // A slender spire on the apex: 16 points within 0.5 m of the axis from 11.5 to 21.15 m. The
-  // photographs show a square needle tapering to a point, and a small cross on its tip: two points at
-  // 19.8-19.9 m (the tip), five at 21.0-21.15 m spread over 0.9 m (the cross).
-  spire: { tip: 19.85, top: 21.1, base: 0.5, cross: 0.7 },
+  // walls): from the corner 3.9 m along the left street face (k = 2, facing -x+z) in eight columns and
+  // 2.75 m along the right one (k = 1) in six (dsLb's and 34Yw's upper views: the window reaches further
+  // along the left face), from 0.5 m to 8.8 m at the corner (just under the eaves), each column 0.12 m
+  // lower outward; deep white frames 0.12 m wide, transoms 0.8-1.5 m apart.
+  window: { width: [2.75, 3.9], columns: [6, 8], sill: 0.5, top: 8.8, step: 0.12, frame: 0.12, depth: 0.28, pane: [0.8, 1.5] },
+  // The needle is about 0.5 m square at the roof and 0.2 m under its short pointed cap (34Yw's upper view).
+  spire: { tip: 19.85, top: 21.1, base: 0.5, neck: 0.2, cap: 0.35, cross: 0.7 },
   // A bay against the chapel's far side (-x), 7.1-7.7 m high where the LiDAR sees it (x > -8.4); beyond,
   // a tree's crown hides it, and its end is the floor outline's (x -9.9). A dark timber door at its foot
   // on the street side, near its far end (the photographs).

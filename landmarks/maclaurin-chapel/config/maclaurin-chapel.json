@@ -57,6 +57,8 @@
    {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
   ]
  },
+ "light": {"sunaz": 40, "sunel": 20, "exposure": 0.78,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the five panoramas were taken on a July (winter) morning with the sun low in the north-east, behind the building as seen from Princes Street (it flares in JYSz's wide view, at about bearing 40 deg): so the street faces are in open shade; exposure 0.78 brings the plain white face of dsLb's upper view to the photograph's luma (154; 180 at 1.0)"},
  "refine": {
   "position_m": 3,
   "height_m": 1,

@@ -20,9 +20,9 @@ function faceMatrix(k, a) {
 /** The window's columns on a face whose street corner is its right end (s = +1) or its left end (s = -1):
  * [u0, u1, top] in face coordinates, u0 < u1, sorted by u; the column at the corner is the highest. */
 function windowColumns(s) {
-  const W = M.window, half = M.chapel.wall * Math.tan(Math.PI / 6), cw = W.width / W.columns;
+  const W = M.window, f = s > 0 ? 1 : 0, half = M.chapel.wall * Math.tan(Math.PI / 6), cw = W.width[f] / W.columns[f];
   const cols = [];
-  for (let i = 0; i < W.columns; i++) {
+  for (let i = 0; i < W.columns[f]; i++) {
     const near = half - i * cw, far = half - (i + 1) * cw, top = W.top - i * W.step;
     cols.push(s > 0 ? [far, near, top] : [-near, -far, top]);
   }
@@ -41,9 +41,10 @@ export function chapel(b) {
       const cols = windowColumns(s);
       const head = cols.flatMap(([u0, u1, top]) => [[u0, top], [u1, top]]);
       // round the wall, into the window's stepped head and out along its sill
+      const ww = W.width[s > 0 ? 1 : 0];
       pts = s > 0
-        ? [[-half, FOOT], [half, FOOT], [half, W.sill], [half - W.width, W.sill], ...head, [half, C.eave], [-half, C.eave]]
-        : [[-half, FOOT], [half, FOOT], [half, C.eave], [-half, C.eave], ...head, [-half + W.width, W.sill], [-half, W.sill]];
+        ? [[-half, FOOT], [half, FOOT], [half, W.sill], [half - ww, W.sill], ...head, [half, C.eave], [-half, C.eave]]
+        : [[-half, FOOT], [half, FOOT], [half, C.eave], [-half, C.eave], ...head, [-half + ww, W.sill], [-half, W.sill]];
       // glass a little behind the face, and the white frames: verticals between the columns, and
       // transoms at heights that differ from column to column (deterministic)
       const frames = [], f = W.frame, d = W.depth;
@@ -78,11 +79,16 @@ export function chapel(b) {
 
 export function spire(b) {
   const S = M.spire, C = M.chapel;
-  // a square needle tapering to a point (four sides, turned square to the frame)
-  const g = new THREE.CylinderGeometry(0.03, S.base / Math.SQRT2, S.tip - C.apex + 0.3, 4, 1);
+  // a square shaft tapering a little, under a short pointed cap (four sides, square to the frame)
+  const h = S.tip - S.cap - (C.apex - 0.3);
+  const g = new THREE.CylinderGeometry(S.neck / Math.SQRT2, S.base / Math.SQRT2, h, 4, 1);
   g.rotateY(Math.PI / 4);
-  g.translate(0, (S.tip + C.apex - 0.3) / 2, 0);
+  g.translate(0, C.apex - 0.3 + h / 2, 0);
   b.add(g, "shade");
+  const cap = new THREE.CylinderGeometry(0.01, S.neck / Math.SQRT2, S.cap, 4, 1);
+  cap.rotateY(Math.PI / 4);
+  cap.translate(0, S.tip - S.cap / 2, 0);
+  b.add(cap, "shade");
   // the cross on its tip
   b.box(-0.03, 0.03, S.tip - 0.1, S.top, -0.03, 0.03, "iron");
   b.box(-S.cross / 2, S.cross / 2, S.top - 0.42, S.top - 0.36, -0.03, 0.03, "iron");
