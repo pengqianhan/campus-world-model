@@ -162,6 +162,32 @@ def sorted_unique(pts):
     return out
 
 
+def despike(ring):
+    """A ring without its spikes: points where the edge turns back on itself, within 15 degrees."""
+    pts = [np.asarray(p, float) for p in ring]
+    k = 0
+    while len(pts) > 3 and k < len(pts):
+        a, b, c = pts[k - 1], pts[k], pts[(k + 1) % len(pts)]
+        u, v = a - b, c - b
+        nu, nv = math.hypot(*u), math.hypot(*v)
+        if nu < 1e-6 or nv < 1e-6 or (u @ v) / (nu * nv) > math.cos(math.radians(15)): pts.pop(k); k = max(0, k - 1)
+        else: k += 1
+    return np.array(pts)
+
+
+def crosses(ring):
+    """Whether two edges of a ring cross each other."""
+    n = len(ring)
+    def o(p, q, r): return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+    for i in range(n):
+        a, b = ring[i], ring[(i + 1) % n]
+        for j in range(i + 2, n):
+            if i == 0 and j == n - 1: continue
+            c, d = ring[j], ring[(j + 1) % n]
+            if o(a, b, c) * o(a, b, d) < -1e-9 and o(c, d, a) * o(c, d, b) < -1e-9: return True
+    return False
+
+
 def bounding_angle(ring):
     """The long axis of the smallest rectangle round the ring (boundingRectangle in src/shared/geo.ts)."""
     best = (math.inf, 0.0)
@@ -503,9 +529,15 @@ def measure(b, P, others, campus_origin):
     for k in layers[1:]:
         mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
         for ring in trace(mk, cx, cy):
-            ring = snap(simplify(ring, SIMPLIFY), outer)
-            if len(ring) < 3 or area(ring) < MIN_PIECE: continue
-            out.append(layer_record([ccw(ring)], info[k], out[0]["wall"], 0.0, levels, centre))
+            plain = simplify(ring, SIMPLIFY)
+            ring = snap(plain, outer)
+            # snapping can fold a ring over itself; then the traced edge stays as it is
+            ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
+            if len(ring) >= 3 and crosses(ring): ring = despike(np.round(plain, 2))
+            if len(ring) < 3 or area(ring) < MIN_PIECE or crosses(ring): continue
+            rec_k = layer_record([ccw(ring)], info[k], out[0]["wall"], 0.0, levels, centre)
+            # a layer no higher than the walls it would stand on is part of the roof under it
+            if rec_k["ridge"] > rec_k["y0"] + 0.2 and rec_k["wall"] > rec_k["y0"]: out.append(rec_k)
     data = {
         "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
                 "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "

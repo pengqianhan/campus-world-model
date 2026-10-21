@@ -7,8 +7,12 @@
 // - "full": the same shape in the landmark's own stone, glass and slate (landmarks/kit/), in the
 //   walker views of the full tier.
 // The blocks stay in the scene. They are what a click finds and what opens on their floors (CampusScene).
+// A measured massing (landmarks/MASSING.md) is drawn the same way, in one form only: its walls and
+// roofs take its block's own materials, the map's palette on the map and the facades drawn by rule in
+// the walker views, so that it looks like the blocks round it.
 import { BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Sphere, Vector3, type Material, type Object3D } from "three";
 import { landmarkBuildings, type LandmarkEntry, type Placement } from "../app/landmarks.ts";
+import type { FacadeSpec } from "./geometry.ts";
 
 export type LandmarkForm = "light" | "full";
 export type TextureQuality = "high" | "low";
@@ -19,8 +23,22 @@ export interface Cover {
   rings: number[][][];
 }
 
-/** What the page asks the worker for. */
-export type LandmarkRequest = { name: string; part: "geometry"; covers: Cover[] } | { name: string; part: "textures"; quality: TextureQuality };
+/**
+ * How a measured massing's walls are drawn, as the blocks' are (CampusScene): the facade of the
+ * walker views, the map's window bay and roof rim, and the tints of its roofs, walls, rims and
+ * ground storey. The shared model (landmarks/measured/model.js) spaces the storeys to its walls.
+ */
+export interface MassingStyle {
+  facade: FacadeSpec;
+  bay: number;
+  rim: number;
+  tints: Record<"roof" | "wall" | "rim" | "plinth", readonly [number, number, number]>;
+}
+
+/** What the page asks the worker for. A measured massing names its building and how to draw its walls. */
+export type LandmarkRequest =
+  | { name: string; part: "geometry"; covers: Cover[]; measured?: { building: string; style: MassingStyle } }
+  | { name: string; part: "textures"; quality: TextureQuality };
 
 /** One mesh of a landmark's model, as the worker sends it: in the model's frame, its triangles in one group a building. */
 export interface MeshData {
@@ -83,6 +101,10 @@ export interface LandmarkHost {
   prepare: (form: Object3D) => Promise<unknown>;
   /** A form that was being prepared is ready to draw, or failed: once for each prepare. */
   ready: () => void;
+  /** A measured massing's walls and roofs: how its block's are drawn. */
+  style?: (building: string) => MassingStyle | undefined;
+  /** The material its block draws its walls or roofs with now. */
+  dress?: (building: string, role: "walls" | "roof") => Material | undefined;
 }
 
 /** One mesh of the model, shared by both forms. */
@@ -99,6 +121,8 @@ export class Landmark {
   /** The buildings whose blocks it stands in place of, its own first. */
   readonly buildings: string[];
   readonly placement: Placement;
+  /** A measured massing: one form, in its block's own materials. */
+  readonly measured: boolean;
   /** Stands the landmark where it is on the map; the form drawn is a child of it. */
   readonly group = new Group();
   /** The form drawn now; none while the blocks are drawn in its place. */
@@ -120,6 +144,7 @@ export class Landmark {
     this.name = entry.name;
     this.buildings = landmarkBuildings(entry);
     this.placement = p;
+    this.measured = !!entry.measured;
     this.host = host;
     this.lights = new Map(
       this.buildings.map((id) => [
@@ -182,8 +207,24 @@ export class Landmark {
    * `covers` gives the outlines of its buildings, for the geometry.
    */
   want(form: LandmarkForm, covers: () => Cover[]): void {
-    if (!this.asked.has("geometry")) this.fetch({ name: this.name, part: "geometry", covers: covers() });
-    if (form === "full" && !this.asked.has("textures")) this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+    if (!this.asked.has("geometry")) {
+      const building = this.buildings[0]!;
+      const style = this.measured ? this.host.style?.(building) : undefined;
+      if (this.measured && !style) return;
+      this.fetch({ name: this.name, part: "geometry", covers: covers(), ...(style ? { measured: { building, style } } : {}) });
+    }
+    if (form === "full" && !this.measured && !this.asked.has("textures")) this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+  }
+
+  /** A measured massing takes its block's materials again, after the block's have changed (a walker view begun or ended). */
+  redress(): void {
+    if (!this.measured) return;
+    for (const form of Object.values(this.forms)) {
+      for (const mesh of form.children as Mesh[]) {
+        const m = this.host.dress?.(this.buildings[0]!, mesh.userData.role as "walls" | "roof");
+        if (m) mesh.material = m;
+      }
+    }
   }
 
   /** Draws a form, or none, so that the blocks show. A form not yet made counts as none. True if that changed. */
@@ -227,6 +268,13 @@ export class Landmark {
         geometry.boundingSphere = new Sphere(new Vector3(m.sphere[0], m.sphere[1], m.sphere[2]), m.sphere[3]);
         return { material: m.material, geometry, castShadow: m.castShadow, receiveShadow: m.receiveShadow };
       });
+      if (this.measured) {
+        // Its walls and roofs in its block's materials, whichever the view draws now.
+        const id = this.buildings[0]!;
+        const role = (part: Part) => (part.material === "roof" ? "roof" : "walls");
+        this.place("light", this.form((part) => this.host.dress?.(id, role(part)) ?? this.lights.get(id)![role(part)]));
+        return;
+      }
       // Each building's part in its own colours: one material a group.
       const lights = this.covered.map((id) => this.lights.get(id)!);
       this.place("light", this.form((part) => lights.map((l) => l[LIGHT_ROLE[part.material] ?? "walls"])));
@@ -271,6 +319,7 @@ export class Landmark {
     const g = new Group();
     for (const part of this.parts!) {
       const mesh = new Mesh(part.geometry, materialOf(part));
+      mesh.userData.role = part.material;
       mesh.castShadow = part.castShadow;
       mesh.receiveShadow = part.receiveShadow;
       // A click finds the blocks, not the landmark's hundred thousand triangles.

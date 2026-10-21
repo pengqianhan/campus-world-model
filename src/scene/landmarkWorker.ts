@@ -7,18 +7,22 @@
 // itself: the glob below imports each one, and vite.config.ts counts the kit's files as having side
 // effects, so that the bundler keeps them here even where a file only exports functions. So the
 // build never splits the kit into a chunk of its own, which would be one more request before a
-// model could load.
-import type { BufferAttribute, BufferGeometry, Group, Material, Mesh } from "three";
+// model could load. A measured massing (landmarks/MASSING.md) is built by the shared model,
+// landmarks/measured/model.js, from its data file: the first one asked for loads that model and the
+// data of every measured massing, in one chunk each.
+import { MeshBasicMaterial, type BufferAttribute, type BufferGeometry, type Group, type Material, type Mesh } from "three";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";
 import type { Cover, LandmarkReply, LandmarkRequest, MeshData, TextureData } from "./landmarks.ts";
 
 import.meta.glob("../../landmarks/kit/*.js", { eager: true });
 
-type Build = (materials: Record<string, Material>) => Group;
+type Build = (materials: Record<string, Material>, only?: string[], data?: unknown, style?: unknown) => Group;
 /** Each landmark's model.js, loaded when first asked for, by the name of its folder (src/app/landmarks.ts). */
 const MODELS = import.meta.glob<Build>("../../landmarks/*/model.js", { import: "build" });
 const modelOf = (name: string) => MODELS[`../../landmarks/${name}/model.js`];
+/** Every measured massing's data file, by building. */
+const measuredData = () => import("./measuredData.ts").then((m) => m.MEASURED_DATA);
 
 interface MadeTexture {
   map: { image: { data: Uint8Array; width: number } };
@@ -38,18 +42,21 @@ self.onmessage = ({ data: ask }: MessageEvent<LandmarkRequest>) => {
 async function answer(ask: LandmarkRequest): Promise<void> {
   try {
     if (ask.part === "geometry") {
-      const load = modelOf(ask.name);
+      const measured = ask.measured;
+      const load = modelOf(measured ? "measured" : ask.name);
       if (!load) throw new Error(`no landmark ${ask.name}`);
-      const build = await load();
-      const materials = geometryMaterials() as Record<string, Material>;
-      const names = new Map(Object.entries(materials).map(([k, m]) => [m, k]));
+      const [build, data] = await Promise.all([load(), measured ? measuredData().then((all) => all[measured.building]) : undefined]);
+      if (measured && !data) throw new Error(`no measured massing for ${measured.building}`);
+      // A measured massing has walls and roofs only, which the page draws in its block's materials.
+      const materials = measured ? { walls: new MeshBasicMaterial(), roof: new MeshBasicMaterial() } : (geometryMaterials() as Record<string, Material>);
+      const names = new Map(Object.entries(materials).map(([k, m]) => [m as Material, k]));
       // The parts log how long each took, for the landmark viewer; here that is noise. A part that
       // fails is still reported, as an error.
       const log = console.log;
       console.log = () => {};
       let model: Group;
       try {
-        model = build(materials);
+        model = measured ? build(materials, undefined, data, measured.style) : build(materials);
       } finally {
         console.log = log;
       }

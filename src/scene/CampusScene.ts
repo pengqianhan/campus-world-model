@@ -60,8 +60,8 @@ import { streetTier } from "./street/tier.ts";
 import { PART, STYLE, STYLES, buildingSeed, cityStoreys, facadeCode, facadeStyle } from "./street/rules.ts";
 import { GROUND, RAIL_WIDTH, ROAD_EDGE_WIDTH, ROAD_WIDTH, type GroundKind } from "./street/roads.ts";
 import type { TreeSpec } from "./street/crowns.ts";
-import { LANDMARKS } from "../app/landmarks.ts";
-import { Landmark, type Cover, type LandmarkForm } from "./landmarks.ts";
+import { LANDMARKS, MEASURED } from "../app/landmarks.ts";
+import { Landmark, type Cover, type LandmarkForm, type MassingStyle } from "./landmarks.ts";
 
 export interface Selection {
   building?: string;
@@ -217,6 +217,12 @@ const WINDOW_PANE = "#93a3ab";
  * drawn as before, and the landmark is not made at all until the camera first comes this near.
  */
 const LANDMARK_PIXELS = 1.5;
+/**
+ * The same for a measured massing (landmarks/MASSING.md): nearer, where its storeys start to show
+ * (a 3.2 m bay is 13 pixels wide). It has no details to show further out, the map's views of the
+ * whole campus and its east (500 m across) stay as they were, and fewer are drawn at once.
+ */
+const MEASURED_PIXELS = 4;
 /** Metres from a walker view's camera within which a landmark is drawn in place of its block. */
 const LANDMARK_REACH = 600;
 /** The layer a block goes to while a landmark stands in its place: no camera draws it, and a click still finds it. */
@@ -520,9 +526,10 @@ export class CampusScene {
     });
     this.scene.add(this.walkers.group);
 
-    // The buildings drawn in detail from code, each made the first time the camera comes near it.
+    // The buildings drawn in detail from code, and the measured massings, each made the first time
+    // the camera comes near it.
     this.landmarkFull = tier === "full";
-    for (const entry of LANDMARKS) {
+    for (const entry of [...LANDMARKS, ...MEASURED]) {
       const landmark = new Landmark(entry, {
         loading: (change) => (this.loading += change),
         prepare: (form) => this.prepareLandmark(form),
@@ -532,6 +539,8 @@ export class CampusScene {
           this.needsRender = true;
           this.arrived++;
         },
+        style: (id) => this.massingStyle(id),
+        dress: (id, role) => this.blockMaterial(id, role),
       });
       this.landmarks.push(landmark);
       for (const id of landmark.buildings) this.landmarkBlocks.set(id, landmark);
@@ -671,7 +680,10 @@ export class CampusScene {
     let changed = false;
     for (const l of this.landmarks) {
       const blocks = l.buildings.flatMap((id) => this.buildingMeshes.get(id) ?? []);
-      const want = this.buildingMeshes.has(l.buildings[0]!) ? this.landmarkWanted(l) : undefined;
+      // A measured massing gives way to the blocks while a building is open: its neighbours are then
+      // footprints, which its block draws as well as it would.
+      const open = l.measured && this.focus > 0;
+      const want = this.buildingMeshes.has(l.buildings[0]!) && !open ? this.landmarkWanted(l) : undefined;
       if (want) l.want(want, () => this.landmarkCovers(l));
       let form: LandmarkForm | undefined;
       if (want && blocks.every((b) => b.visible)) form = want === "full" && l.has("full") ? "full" : l.has("light") ? "light" : undefined;
@@ -712,12 +724,34 @@ export class CampusScene {
     });
   }
 
+  /**
+   * How a measured massing's walls are drawn: as its block's (setCampus), with the storeys spaced
+   * to its measured walls by the shared model (landmarks/measured/model.js).
+   */
+  private massingStyle(id: string): MassingStyle | undefined {
+    const b = this.buildings.get(id);
+    if (!b || !this.campus) return undefined;
+    return {
+      facade: universityFacade(b, this.campus.floorHeight, 0),
+      bay: WINDOW_BAY,
+      rim: RIM_HEIGHT,
+      tints: { roof: ROOF_TINT, wall: WALL_TINT, rim: RIM_TINT, plinth: PLINTH_TINT },
+    };
+  }
+
+  /** The material a building's block draws its walls or its roofs with now: a measured massing takes the same. */
+  private blockMaterial(id: string, role: "walls" | "roof"): Material | undefined {
+    const m = this.buildingMeshes.get(id)?.material;
+    if (!m) return undefined;
+    return Array.isArray(m) ? m[role === "roof" ? 1 : 0] : m;
+  }
+
   /** The form a landmark is drawn in from where the camera is now; none when it is far. */
   private landmarkWanted(l: Landmark): LandmarkForm | undefined {
     const [x, y] = l.centre;
     if (this.view === "map") {
       const zoom = this.camera.zoom;
-      if ((this.height * zoom) / VIEW_HEIGHT < LANDMARK_PIXELS) return undefined;
+      if ((this.height * zoom) / VIEW_HEIGHT < (l.measured ? MEASURED_PIXELS : LANDMARK_PIXELS)) return undefined;
       // Within a screen's width of the middle of the view.
       const t = this.controls.target;
       const reach = (VIEW_HEIGHT / zoom) * Math.max(1, this.width / this.height);
@@ -725,7 +759,8 @@ export class CampusScene {
     }
     const at = this.persp.position;
     if (Math.hypot(at.x - x, -at.z - y) > LANDMARK_REACH) return undefined;
-    return this.landmarkFull ? "full" : "light";
+    // A measured massing has one form, in its block's materials: the walker views' facades here.
+    return this.landmarkFull && !l.measured ? "full" : "light";
   }
 
   /** The floor plans of one building: the other spaces on its floors, drawn as shapes tinted by type. */
@@ -2609,6 +2644,8 @@ export class CampusScene {
       mesh.material = facades && street ? street : (mesh.userData.mapMaterial as Material[]);
       this.depthFirst(mesh, first);
     }
+    // The measured massings take their blocks' materials with them.
+    for (const l of this.landmarks) l.redress();
     if (facades && !this.openMaterials) {
       const cut = facades.material("university");
       // Where a room or a shape meets the outer wall their faces coincide; the outer wall wins.
@@ -2726,7 +2763,9 @@ export class CampusScene {
       buildings: l.buildings,
       form: l.shown ?? "none",
       made: (["light", "full"] as const).filter((f) => l.has(f)),
-      walls: Object.fromEntries(l.buildings.map((id) => [id, l.light(id)!.walls.color.getHex()])),
+      walls: Object.fromEntries(
+        l.buildings.map((id) => [id, ((l.measured ? this.blockMaterial(id, "walls") : l.light(id)!.walls) as MeshLambertMaterial).color.getHex()]),
+      ),
     }));
   }
 
