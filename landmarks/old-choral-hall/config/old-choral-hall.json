@@ -259,6 +259,17 @@
    "iz57x0vLC6VL8mOPPeJG2w",
    "C1kGoeaHdjefyiOmT4sTBw"
   ],
+  "camera_fixes_note": "two panoramas of 2022-09 record their camera 3.4 and 3.8 m nearer the south-west range than they stood: the southwest agent fitted each camera to two lines in the photograph, the parapet top (the LiDAR's edge at x' -24.6, 14.3 m) and the plinth's foot on the footpath (the LiDAR ground), about 0.1 m rms (2026-10-22); in the range's frame nAxE at x' -37.9, z' -16.3 and Uype at x' -38.7, z' 9.3, here in the view frame. The refine stage could not correct them: the plane trees leave 13-14% sky round the silhouette. Their views are cut from the panoramas as before; only the camera they are drawn from moves",
+  "camera_fixes": {
+   "nAxETKEXO-y5qtDjPo-hCw": [
+    -41.25,
+    -0.735
+   ],
+   "UypevncKztjOD9D3T0wPNQ": [
+    -32.3,
+    23.26
+   ]
+  },
   "camera_height_m": 2.5,
   "views": [
    {

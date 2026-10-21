@@ -212,8 +212,8 @@ function brick(space) {
     float jx = 1.0 - smoothstep(0.0, 0.043 + ws, min(fract(s), 1.0 - fract(s)) * 2.0);
     float joint = max(jy, jx) * (1.0 - smoothstep(0.35, 0.7, max(wt, ws * 0.37)));
     float b = wh(vec3(row, col, 7.0));
-    vec3 c = mix(vec3(0.26, 0.094, 0.052), vec3(0.34, 0.144, 0.082), b) * (0.94 + 0.12 * wfbm(P * 0.6));
-    vec3 mortar = vec3(0.50, 0.46, 0.40);
+    vec3 c = mix(vec3(0.235, 0.080, 0.036), vec3(0.305, 0.122, 0.056), b) * (0.94 + 0.12 * wfbm(P * 0.6));
+    vec3 mortar = vec3(0.42, 0.38, 0.31);
     float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));
     diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.6), wall);
   }`, {}, undefined, space);
@@ -255,7 +255,7 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
-    render: painted(0xe9dfc6, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
+    render: painted(0xe8d2a8, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
   };
   return m;
 }

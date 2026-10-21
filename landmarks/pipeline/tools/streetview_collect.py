@@ -166,6 +166,10 @@ for m, b, g, cam_y, zoom, tiles in plans:
         if not (incomplete and os.path.exists(os.path.join(OUT, fn))): img.save(os.path.join(OUT, fn), quality=92)
         vfov = math.degrees(2 * math.atan(math.tan(math.radians(hfov) / 2) * h / w))
         views.append({"file": fn, "pano": m["panoId"], "date": m["date"], "position": [x, cam_y, z], "target": [0, aim_y, 0], "vfov": vfov, "width": w, "height": h, "bearing": b, "pitch": pitch, "ground_lidar": g})
+        fix = SV.get("camera_fixes", {}).get(m["panoId"])
+        if fix:  # the config puts this panorama's camera at [x, z] of the view frame (its recorded one is off): cut as before, drawn from there looking the same way
+            fx, fz = fix
+            views[-1].update({"position": [fx, cam_y, fz], "target": [fx - x, aim_y, fz - z], "camera_fix": [x, z]})
     print(f"  {pid}: {len(tiles)} tiles at zoom {zoom} ({len(gaps)} missing), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
 json.dump(views, open(os.path.join(OUT, "views.json"), "w"), indent=1)
 print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed, already in the ledger); "

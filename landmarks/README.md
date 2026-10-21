@@ -225,7 +225,10 @@ cached; a fresh clone has no `metadata.json` and goes online, and so does a run 
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
 hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it. A
 panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels wide at zoom 5, some
-13,312, and those have fewer columns of tiles at every zoom.
+13,312, and those have fewer columns of tiles at every zoom. A panorama whose recorded camera is off
+by more than the refinement can find may have its camera set in the config
+(`streetview.camera_fixes`: panorama id to `[x, z]` in the view frame, with a note saying how it was
+found): its views are cut from the panorama as before, and drawn from there looking the same way.
 
 ### Camera refinement
 
