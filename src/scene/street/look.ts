@@ -111,11 +111,21 @@ export class StreetLook {
   }
 
   /**
-   * In a walker view, resolves once the look (sky, environment, effects) has come and is in place:
-   * shaders made before then are not the ones its frames draw with. Undefined on the map.
+   * In a walker view, resolves once a frame has been drawn with the look in place (render): the
+   * sky's environment is set in that frame, and shaders made before it are not the ones its frames
+   * draw with. Undefined on the map; resolved on leaving the walker view too.
    */
   get loaded(): Promise<void> | undefined {
-    return this.on ? this.loading : undefined;
+    if (!this.on) return undefined;
+    if (this.drawn) return Promise.resolve();
+    return new Promise((resolve) => this.whenDrawn.push(resolve));
+  }
+  /** Whether a frame has been drawn with the look in place since the walker view opened. */
+  private drawn = false;
+  private whenDrawn: (() => void)[] = [];
+  private settleDrawn(drawn: boolean): void {
+    this.drawn = drawn;
+    for (const resolve of this.whenDrawn.splice(0)) resolve();
   }
 
   /**
@@ -169,6 +179,7 @@ export class StreetLook {
   exit(): void {
     if (!this.on) return;
     this.on = false;
+    this.settleDrawn(false);
     const r = this.renderer;
     if (this.kit) this.scene.remove(this.kit.sky.dome, this.kit.night.group);
     this.scene.environment = null;
@@ -207,6 +218,7 @@ export class StreetLook {
     // not the map's sky: the edges of leaves (trees.ts) let it through here and there.
     this.renderer.setClearColor(this.fog.color);
     this.renderer.render(this.scene, this.camera);
+    if (kit && !this.drawn) this.settleDrawn(true);
     this.govern();
   }
 
