@@ -19,7 +19,8 @@ and Canterbury ([uc.md](uc.md), #74). The links work once those pull requests me
 - **A school shows only what its sources give.** There are three forms: *buildings*, *rooms by
   code* and *floor plans* (section 2). From the three reports, AUT and Canterbury can be shown
   today only as buildings. Victoria can be shown as rooms by code if the maintainer accepts the
-  report's reading of its terms. The University of Auckland has floor plans. Every absent layer says why, in the school's own words from its report.
+  report's reading of its terms. The University of Auckland has floor plans. Every absent layer
+  says why, in the school's own words from its report.
 - **The University of Auckland's e2e job stays as it is.** It already takes up to 17 min 26 s of its
   20-minute limit. Every other school gets an e2e job of its own, run in parallel, with a
   10-minute limit (section 8).
@@ -67,7 +68,7 @@ Node 24.19 on Windows 11.
 | e2e step in CI | 46 tests on 2 workers with SwiftShader. Over 26 green runs from 2026-10-18 to 2026-10-22: shortest 9 min 52 s, median 15 min 12 s, 90th percentile 16 min 17 s, longest 16 min 51 s. The job adds about 40 s before the tests (`npm ci`, Playwright install 23 s, build) | `gh run list --workflow deploy.yml`, `gh run view <id> --json jobs` |
 | e2e job against its limit | Longest job 17 min 26 s (run 39664951754), limit `timeout-minutes: 20`. About 42 s of one worker for each test on average (16.3 min × 2 workers ÷ 46) | as above |
 | `deploy-cloudflare` job | 24 to 27 s over the last 4 runs on `main`; in the last two, the build step took 2 s and the upload 7 and 8 s | `gh run view` job and step times |
-| AUT in the committed OpenStreetMap snapshot | 20 buildings tagged `operator=AUT`: 18 with `ref` (WA to WU), 3 with `building:levels`, none with `height`. Among the 20 are a ruin (WW, `building=ruins`), a hall of residence (WQ, `building=dormitory`) and a block of flats (`building=apartments`). One more AUT building, WY, has a `ref` and no `operator` | `data/raw/osm/context.json`, read with a short Node script |
+| AUT in the committed OpenStreetMap snapshot | 20 buildings tagged `operator=AUT`: 18 with `ref` (WA to WZ), 3 with `building:levels`, none with `height`. Among the 20 are a ruin (WW, `building=ruins`), a hall of residence (WQ, `building=dormitory`) and a block of flats (`building=apartments`). One more AUT building, WY, has a `ref` and no `operator` | `data/raw/osm/context.json`, read with a short Node script |
 
 Not measured: the e2e run on the maintainer's GPU, and the size of another school's data, which
 waits on its snapshots.
@@ -120,7 +121,17 @@ published for this school", and About gives one line for each absent layer from 
 example for AUT: "AUT's copyright page allows its material for private research and study only;
 the site has asked AUT for permission." That line is written only once the maintainer has asked.
 The time panel keeps Now and Preview for the sun and the light, and says that no semester dates
-are shown, and why. The walker works as it does today. There are no landmarks.
+are shown, and why. The walker walks round the buildings as it does today. There are no
+landmarks.
+
+**What the app needs for the Buildings form** (built with the first such school):
+
+- `massing()` in `src/shared/massing.ts` stacks floors, so a building with no floors draws nothing
+  today. It gets one rule: a building with no floors stands as one block of its footprint and its
+  height. No University of Auckland building has an empty floor list (0 of 194 in
+  `public/data/campus.json`), so `/uoa/` draws the same blocks.
+- The building card, the floor list, search, the time panel, the status strip and About each get
+  a branch for a layer that is absent, with the words from the school's overlay.
 
 **A school in the Rooms by code form** (Victoria today) adds the building view with inferred floors
 and listed rooms, and search for room codes. A room shows its code, its type and capacity where
@@ -145,7 +156,7 @@ Auckland's files do not change:
 
 ```
 public/data/
-  uoa/                    today's public/data/, moved with git mv; not a byte changes
+  uoa/                    today's public/data/, moved with git mv; no byte changes
     campus.json  calendar.json  schedule.json  subjects.json  meta.json  rooms-index.json
     context.json  context/<area>.json  terrain/<area>.json  plans/<building>.json
   aut/                    the same names; files a form lacks are written empty, never left out
@@ -180,8 +191,7 @@ valid. A new school names its sources and files with its id first (`aut-calendar
 `osm/context-aut-north.json`). Two schools whose areas are the same box share one OpenStreetMap
 snapshot: AUT's City Campus buildings are already in the University of Auckland's `central`
 snapshot, so AUT's City Campus can be built from the committed `data/raw/osm/context.json` with no
-new request. Terrain tiles
-are keyed by zoom, x and y, and every school shares them.
+new request. Terrain tiles are keyed by zoom, x and y, and every school shares them.
 
 **Hand-made inputs** move to a folder for each school: `data/uoa/academic-calendar.json` (moved,
 unchanged) and later `data/<id>/academic-calendar.json`, and any list a parser needs, such as the
@@ -246,14 +256,15 @@ alias `@school` at `src/schools/<SCHOOL>/school.ts`. A build therefore holds one
 descriptor and words only. `tsconfig.json` points `@school` at the University of Auckland's for
 the type check, and a unit test loads every descriptor and checks its fields.
 
-**Words.** `src/i18n/locales/en.json` stays as it is: it holds the University of Auckland's
-words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
+**Words.** `src/i18n/locales/en.json` keeps every key and text it has: they are the University of
+Auckland's words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
 school, its campus map or its verdicts: 35 of today's 292 keys, among them `app.*`,
 `about.unofficial`, `about.limits.*`, `attribution.short`, `room.noTimetableWhy`, `travel.leaving`
 and `travel.stay`. A unit test makes every school other than `uoa` override each of these keys.
 For `uoa` there is no overlay, so the dictionary is today's. `index.html` takes its title,
-description and `noscript` text from the school's overlay through the same Vite plugin; for `uoa`
-the built `index.html` keeps today's text.
+descriptions and `noscript` text from the school's words through the same Vite plugin. Two of
+those texts are not in `en.json` today (the `og:description` and the `noscript` paragraph): they
+become keys there, with today's text, so the built `index.html` of `uoa` keeps today's text.
 
 ## 6. Each school's identity
 
@@ -340,9 +351,9 @@ sees.
 | Step | What changes | Proof that `/uoa/` did not change |
 | --- | --- | --- |
 | **M1. Data in a folder** (gate: deployment) | `git mv public/data/* public/data/uoa/`; the Vite plugin of section 3; `OUT` in `build-data.ts` becomes `public/data/<school>/`; the paths in six unit tests | `git diff -M --stat` shows only renames at 100%. `dist/` built before and after is identical, file for file (`diff -r`): the app's code does not change in this step, so the asset names do not either. The 46 e2e tests pass with no e2e file changed |
-| **M2. The descriptor** | `src/schools/uoa/school.ts` holds today's constants, copied unchanged (`ORIGIN`, `LAT`, `LON`, the weather address, `CAMPUS_SPAN`, the areas, the room-code grammar); the `@school` alias; overlays and `index.html` through the plugin; landmarks filtered by school | The built `index.html` has today's text. The map's pixel diff (`.claude/skills/street-look/CHECKS.md`, "The map's pixel diff") is 0 at seven vantages, below, on the GPU and on SwiftShader, three times each. The 46 e2e tests pass unchanged |
+| **M2. The descriptor** | `src/schools/uoa/school.ts` holds today's constants, copied unchanged (`ORIGIN`, `LAT`, `LON`, the weather address, `CAMPUS_SPAN`, the areas, the room-code grammar); the `@school` alias; overlays and `index.html` through the plugin; landmarks filtered by school | The built `index.html` has today's text. The map's pixel diff (`.claude/skills/street-look/CHECKS.md`, "The map's pixel diff") is 0 at the seven vantages below, on the GPU and on SwiftShader, three times each. The 46 e2e tests pass unchanged |
 | **M3. The build split** (needs a rebuild by the maintainer) | `buildContext` and `buildTerrain` to `scripts/lib/`; `buildCampus` to the `mapsindoors` adapter; the three fetch scripts to `scripts/schools/uoa/`; `data/academic-calendar.json` to `data/uoa/` | The maintainer rebuilds: only `generatedAt` differs, and `coverage` is the same before and after |
-| **M4. CI and deploy for a list of schools** (gate: `.github/`) | The deploy jobs loop over a list that holds only `uoa`; the `e2e-schools` matrix and the `schools` job, empty until a school joins | The site on Cloudflare has the same files at `/uoa/` (compare the hash of each file before and after). The live e2e passes, run twice |
+| **M4. CI and deploy for a list of schools** (gate: `.github/`) | The deploy jobs loop over a list that holds only `uoa`; the `e2e-schools` matrix and the `schools` job, skipped while the list holds no other school | The site on Cloudflare has the same files at `/uoa/` (compare the hash of each file before and after). The live e2e passes, run twice |
 
 Then **B3**, one pull request for each new school: its descriptor, overlay, fetch scripts (a gate),
 data, tests, and a line in the list. The picker and the `_redirects` change are a pull request of
@@ -369,7 +380,7 @@ the GitHub Pages copy.
 ## 10. Risks
 
 1. **A refactor changes `/uoa/`.** Shared code moves in M2 and M3. Each step carries the proof in
-   section 9, and M1 and M3 move code without editing it.
+   section 9, and M1 and M3 move files and code with as few edits as the move needs.
 2. **The e2e job runs out of time.** It already uses up to 17 min 26 s of 20. A test added to it for
    another school would fail it. So no school's test goes there, and each school's job has a limit
    of its own.
@@ -398,9 +409,10 @@ the GitHub Pages copy.
    keep their types.
 10. **More for the maintainer to hold.** Each school adds snapshots that only the maintainer has,
     and rebuilds that only the maintainer runs. The loop opens pull requests and merges none.
-11. **Hosting limits.** Each school adds about 200 files and a few MB to the Cloudflare
-    deployment. Cloudflare Pages limits the files in a deployment and the size of a file: compare
-    the figures in Cloudflare's own documents before M4.
+11. **Hosting limits.** Each school adds up to about 200 files and a few MB to the Cloudflare
+    deployment (the University of Auckland's build is 194 files and 5.6 MB). Cloudflare Pages
+    limits the files in a deployment and the size of a file: compare the figures in Cloudflare's
+    own documents before M4.
 
 ## 11. Decisions for the maintainer
 
@@ -409,7 +421,7 @@ the GitHub Pages copy.
    loads (every school's code and words in every visitor's download), and a repository for each
    school, as the `campus-world-model` skill does (no shared fixes).
 2. **Moving the University of Auckland's data.** M1 moves `public/data/` to `public/data/uoa/` with
-   `git mv`, so not a byte changes. `AGENTS.md` says `public/data/` is written only by
+   `git mv`, so no byte changes. `AGENTS.md` says `public/data/` is written only by
    `npm run data:build`: approve the move as a rename, or rebuild instead, which changes
    `generatedAt` in three files and so the "built" date in About.
 3. **GitHub Pages.** Keep it as a copy of the University of Auckland only (proposed), or retire it.
