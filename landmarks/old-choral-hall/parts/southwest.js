@@ -5,13 +5,15 @@
 // Grafton Road), turned into place with swMatrix().
 import * as THREE from "three";
 import { SW, swMatrix } from "./common.js";
-import { southwestRange, FACE, BACK, CORNER } from "./southwest_range.js";
+import { southwestRange, FACE, BACK, CORNER, NWP, CEP } from "./southwest_range.js";
 
 export function southwest(b) {
   southwestRange(b);
   b.matrix = swMatrix();
-  // the mass behind the faces, up to the cornice's top (its top is under the roof)
-  b.box(FACE + 0.35, SW.inner, -0.6, 13.95, BACK + 0.35, CORNER, "brick");
+  // the mass behind the faces, up to the cornice's top (its top is under the roof); behind the pavilions it
+  // starts behind their recessed bays (0.6 m in, 0.3 m thick), so that their doors and windows show
+  b.box(FACE + 0.35, SW.inner, -0.6, 13.95, NWP.u1, CEP.u0, "brick");
+  for (const [z0, z1] of [[BACK + 0.35, NWP.u1], [CEP.u0, CORNER]]) b.box(FACE + 0.95, SW.inner, -0.6, 13.95, z0, z1, "brick");
   // the low roof behind the parapet: its ridge along z' at x' -19.5, its eaves at the parapet's back
   const wall = FACE + 0.1;
   const s = new THREE.Shape([

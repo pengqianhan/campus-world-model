@@ -255,7 +255,7 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
-    render: painted(0xe8d2a8, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
+    render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
   };
   return m;
 }

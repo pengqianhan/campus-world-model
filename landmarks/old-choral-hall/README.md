@@ -96,3 +96,45 @@ inside a cafe, not of the building. Views `*_wide.jpg` (hfov 95°), `*_upper.jpg
 | `Uype…`, `nAxE…`, `e8T_…` | 2022-09 | Symonds Street, from off the corner (x -30, z 20) to the north-west (x -43, z -12.5) | before the works: the south-west range whole, red brick and cream dressings, with its two end pavilions, through the plane trees; in the morning sun from the north-east, the face in shade |
 | `C1kG…` | 2024-10 | across the corner (x -32, z 40) | the corner pavilion and the south-west range restored, out of their scaffolds; the middle still in scaffolding and the north-east block wrapped |
 | `xKYw…` | 2025-05 | behind, on the north-west (x -21, z -37) | still the works: a block wrapped in white sheeting, a scaffold on the roof behind it |
+
+The cameras: two panoramas of 2022-09, nAxE and Uype, record their camera 3.4 and 3.8 m nearer the
+range than they stood, and the refine stage cannot find that through the plane trees (13-14% sky
+round the silhouette); their cameras were fitted to two lines in each photograph, the parapet top
+and the plinth's foot on the footpath (0.1 m rms), and are set in the config
+(`streetview.camera_fixes`). C1kG's camera is off by more than that (the model draws about twice the
+photograph's size there) and is not fixed: that view is used for what the corner pavilion looks like.
+From there the refine stage corrected seven panoramas' cameras within its ±3 m (nAxE and Uype among
+them); ctyQ, OpqZ, xKYw and C1kG kept theirs (too little sky round the silhouette, or too little gain).
+
+## Round 1 (October 2026)
+
+Two agents and the lead; a usage limit stopped both agents at 10:24, part way through their rounds.
+
+- **The south-west range** (`parts/southwest.js`, `southwest_range.js`, `southwest_kit.js`): ten bays
+  of red brick with cream dressings between two cream pavilions, as the panoramas of 2022-09 show it:
+  eared architraves on the ground floor, the first floor on a sill band with a cream band at its
+  upper panes, multi-pane windows, a dentilled cornice under the parapet; the pavilions with giant
+  columns in antis between rusticated pilasters and segmental pediments; the corner pavilion's face
+  on Grafton Road. Floor heights fitted to the photographs (plinth top 2.78 m, ground-floor glass
+  4.63-7.57, first-floor sill band 8.86-9.33, glass 9.66-12.55, cornice from 12.77), the plan and the
+  parapet (14.3 m) to the LiDAR.
+- **The rest** (`parts/massing.js`): every other block fitted to the LiDAR's roof planes (rms
+  0.02-0.05 m), plainly: no windows, no ornament. The scaffold decks of May 2024 are left out (the
+  11.2 m deck in the street front's recess, lifts along the back), and the walls go down to y -2.0,
+  where the site's 8 m DEM falls 1.43 m below the door's under the north-east wing.
+- **The look**: brick and cream render as shaders in the kit, measured against nAxE in shade (brick
+  luma 61, cream 133-135); the sun of the 2022-09 panoramas (config `light`).
+
+From above against the LiDAR: footprint IoU 0.917; heights p10/p50/p90 -1.90/-0.04/0.06 m and 85%
+of cells within 0.5 m; without the plane trees' crowns over the south-west side (class-6 points above
+17.3 m west of x -14) -0.24/-0.04/0.06 m and 89%. Highest point 16.81 m against the LiDAR's 17.24 m
+(p99.9 without the trees). Ridges and eaves sampled against the LiDAR (model / LiDAR, m): middle
+range 16.18 / 16.09, right range 16.64 / 16.56, north-east front gable 16.55 / 16.46, the block behind
+16.83 / 16.76 and its eave 14.23 / 14.17, the south-west range's ridge 15.10 / 15.10-15.24 and its
+parapet 14.30 / 14.0-14.35. 93.4% of block 104 under the model, and no other block of the campus map
+by more than 2.3% (136 Chiller), so `building.also` is empty.
+
+Against the photographs (33 views, cameras refined): silhouette IoU 0.831 on average; luma median
+of the building region 163 drawn against 153 (mean over the views). 19,057 triangles in 6 draw calls
+(`render`, `paint`, `brick`, `void`, `glassPale`, `roofPale`).
+

@@ -185,9 +185,11 @@ function pavilion(b, acc, P, { door = false, cornerRight = false } = {}) {
   // the bands across the bay (as the range's), set on the recessed face
   acc.box("render", b0, b1, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
   acc.box("render", w0 - 0.15, w1 + 0.15, H.band[1], H.ff.sill, bayD, bayD + 0.12);
-  // the upper window, three lights, to the frieze
-  acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
-  acc.box("void", w0, w1, H.ff.sill, H.arch[1], bayD - 0.3, bayD - 0.05);
+  // the upper window, three lights, to the frieze, in a cream surround (sides and sill; the frieze is its head)
+  acc.box("render", w0 - 0.18, w0, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w1, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill - 0.08, H.ff.sill + 0.02, bayD - 0.05, bayD + 0.08);
+  acc.box("void", w0, w1, H.ff.sill, H.arch[1], bayD - 0.3, bayD - 0.2);   // behind the glass (0.14 in)
   {
     const sub = new Acc();
     threeLight(sub, w0, w1, H.ff.sill + 0.02, H.arch[1] - 0.05, { tr: 0.72, lo: 4, hi: 2 });
@@ -202,7 +204,7 @@ function pavilion(b, acc, P, { door = false, cornerRight = false } = {}) {
     sub.quad("glassPale", c - 0.68, c - 0.08, base + 1.0, 5.0, -0.095);
     sub.quad("glassPale", c + 0.08, c + 0.68, base + 1.0, 5.0, -0.095);
     sub.box("paint", c - 0.02, c + 0.02, base, 5.25, -0.1, -0.08);
-    sub.box("render", c - 0.8, c + 0.8, 5.9, H.gf.glass[1], -0.1, 0.0);
+    sub.box("render", c - 0.8, c + 0.8, 5.9, H.gf.glass[1], 0.0, 0.04);   // the panel over the doors, proud of the brick
     sub.box("render", c - 0.8, c + 0.8, 5.25, 5.9, -0.12, -0.08);
     shift(sub, acc, bayD);
   } else {
@@ -333,10 +335,21 @@ function backEnd(b) {
   // u here runs along -x': u = -x'. The face spans x' from the pavilion's face to the inner side (-13)
   const ua = 13.0, ub = -(FACE - PAV_D);    // u from 13 (inner) to 24.75 (the corner)
   const pil = 0.62 * S;
-  acc.box("brick", ua, ub - pil, H.plinth, H.cornice[0], -0.4, 0);
+  // e8T_ (2022-09) shows, next to the pavilion's pilaster, a first-floor window like the range's and a
+  // smaller ground-floor window in a cream surround
+  const wu = ub - pil - 1.5, g0 = wu - GLASS_W / 2, g1 = wu + GLASS_W / 2, s0 = wu - 0.5, s1 = wu + 0.5, sy = [5.6, H.gf.glass[1]];
+  wallWithHoles(acc, "brick", ua, ub - pil, H.plinth, H.cornice[0], -0.4, 0, [[g0, g1, H.ff.sill, H.ff.top], [s0, s1, sy[0], sy[1]]]);
+  steelWindow(acc, g0, g1, H.ff.sill, H.ff.top, { cols: 4, lo: 4, hi: 2, tr: 0.68, reveal: "brick" });
+  acc.box("render", g0 - 0.12, g1 + 0.12, H.band[1], H.ff.sill - 0.08, 0, 0.1);
+  acc.box("render", g0 - 0.16, g1 + 0.16, H.ff.sill - 0.08, H.ff.sill, 0, 0.15);
+  steelWindow(acc, s0, s1, sy[0], sy[1], { cols: 2, lo: 2, hi: 1, tr: 0.7 });
+  acc.box("render", s0 - 0.16, s0, sy[0] - 0.1, sy[1] + 0.16, 0, 0.08);
+  acc.box("render", s1, s1 + 0.16, sy[0] - 0.1, sy[1] + 0.16, 0, 0.08);
+  acc.box("render", s0 - 0.16, s1 + 0.16, sy[1], sy[1] + 0.16, 0, 0.08);
+  acc.box("render", s0 - 0.22, s1 + 0.22, sy[0] - 0.22, sy[0], 0, 0.14);
   acc.box("render", ua, ub, FOOT, H.plinth, -0.3, 0.1);
   acc.box("render", ua, ub - pil, H.band[0], H.band[1], -0.1, 0.06);
-  acc.box("render", ua, ub - pil, H.ff.upper[0], H.ff.upper[1], 0, 0.03);
+  wallWithHoles(acc, "render", ua, ub - pil, H.ff.upper[0], H.ff.upper[1], 0, 0.03, [[g0 - 0.04, g1 + 0.04, H.ff.upper[0], H.ff.upper[1]]]);
   rusticated(acc, ub - pil, ub, H.plinth, H.cap - 0.35, PAV_D, { course: 0.42, joint: 0.07, deep: 0.05 });
   acc.box("render", ub - pil, ub, H.cap - 0.35, H.arch[1], 0, PAV_D + 0.06);
   acc.box("render", ua, ub, H.arch[1], H.cornice[0], -0.3, 0.02);
