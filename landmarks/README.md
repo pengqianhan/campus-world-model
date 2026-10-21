@@ -86,8 +86,11 @@ A landmark is measured in one frame and shown in another.
   tallest part's centre at x = z = 0. `measure.py` finds it in the LiDAR:
   - local metres = NZTM (EPSG:2193) minus the NZTM of the campus origin (-36.8523, 174.7691), grid north;
   - centre = mean x/y of building points (class 6) higher than `frame.tower_above` m above the ground;
+    with `frame.near_outline` (metres), only the points inside the building's outline or that near
+    its edge count, for a building with others in its crop box;
   - facade axis = principal axis of building points `min_above` to `spine_below` m high within
-    `spine_radius` m of the centre (pointing north-ish); x is minus this axis;
+    `spine_radius` m of the centre (pointing north-ish when `street_side` is `west`, south-ish when
+    it is `east`); x is minus this axis;
   - toStreet = the axis turned 90° toward `street_side`; this is +z.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the

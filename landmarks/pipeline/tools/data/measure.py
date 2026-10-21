@@ -43,12 +43,15 @@ json.dump({"ring": ring.tolist(), "E0": E0, "N0": N0, "box": box}, open(outputs[
 # 2. the frame, from the building's points
 F = cfg["frame"]
 B = P[(P[:, 3] == 6) & (P[:, 2] > G + F["min_above"])]
+if "near_outline" in F:  # only this building's points, where another building stands in the crop box
+    B = B[common.near_outline(cfg, B[:, :2], F["near_outline"])]
 c = B[B[:, 2] > G + F["tower_above"], :2].mean(0)
 S = B[(B[:, 2] < G + F["spine_below"]) & (np.linalg.norm(B[:, :2] - c, axis=1) < F["spine_radius"])]
 w, v = np.linalg.eigh(np.cov((S[:, :2] - c).T)); ax = v[:, np.argmax(w)]
 if ax[1] < 0: ax = -ax
 nrm = np.array([-ax[1], ax[0]])
-if (F.get("street_side", "west") == "west") == (nrm[0] > 0): nrm = -nrm
+# turn both, so that z stays x turned 90 deg (x to the right as seen from the street) on either side
+if (F.get("street_side", "west") == "west") == (nrm[0] > 0): ax, nrm = -ax, -nrm
 print("  tower centre local (%.2f, %.2f); facade axis bearing %.2f deg; front faces bearing %.2f deg"
       % (c[0], c[1], np.degrees(np.arctan2(ax[0], ax[1])), np.degrees(np.arctan2(nrm[0], nrm[1])) % 360))
 exp = F.get("expected")

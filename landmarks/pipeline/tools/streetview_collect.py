@@ -46,8 +46,10 @@ def view_frame(lat, lng):
 def ground_at(lat, lng):
     e, n = to_nztm.transform(lng, lat)
     d = np.hypot(ground_pts[:, 0] - (e - E0), ground_pts[:, 1] - (n - N0))
-    near = ground_pts[d < 3]
-    return float(np.median(near[:, 2])) if len(near) else None
+    for r in (3, 6, 10):  # under a tree the nearest ground points can be a few metres away
+        near = ground_pts[d < r]
+        if len(near): return float(np.median(near[:, 2]))
+    return None
 
 def bearing_to_tower(lat, lng):
     """Compass bearing (true north) from a point to the tower's centre."""
