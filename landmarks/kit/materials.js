@@ -224,6 +224,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
     roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
+    // modern cladding (Alfred Nathan House's block): smooth mid-grey panels and fins
+    panel: painted(0x8f9396, 0.5, space),
   };
   return m;
 }

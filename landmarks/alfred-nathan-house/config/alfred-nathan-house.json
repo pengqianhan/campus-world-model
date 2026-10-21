@@ -15,8 +15,8 @@
  "crop_margin": 70,
  "ground": 45.75,
  "door": {
-  "x": 0.0, "z": 31.0,
-  "note": "view frame: the foot of the house's front steps, on its centre line, before the verandah's bowed front (parts/house.js); the LiDAR ground on the path there is 45.72-45.78 m, so ground is 45.75 and the model's y is 0 there; place.py puts it on the map"
+  "x": 0.3, "z": 31.0,
+  "note": "view frame: the foot of the house's front steps, on the porch's centre line (parts/house.js, MEASURED.house.porch); the LiDAR ground on the path there is 45.72-45.78 m, so ground is 45.75 and the model's y is 0 there; place.py puts it on the map"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
