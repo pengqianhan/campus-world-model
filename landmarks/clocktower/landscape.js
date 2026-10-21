@@ -8,8 +8,8 @@
 // Everything merged by material or instanced: ~12 draw calls.
 import * as THREE from "three";
 import { mergeGeometries, mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
-import { ground, rng } from "./textures.js";
-import { hook } from "./look/materials.js";
+import { ground, rng } from "../kit/textures.js";
+import { hook } from "../kit/materials.js";
 
 // ---- the ground --------------------------------------------------------------------------------
 const KERB = 25.0, FAR_KERB = 44.4, FAR_PATH = 50.5, BANK_TOP = 53.5, LAWN = 2.4;

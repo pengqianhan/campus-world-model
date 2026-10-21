@@ -1,15 +1,15 @@
 // Silhouette page for camera refinement and metrics (pipeline-owned; imports the model directly and
-// never touches src/main.js). The model is drawn flat on black: red = building above the cut height,
+// never touches main.js). The model is drawn flat on black: red = building above the cut height,
 // yellow = building below it, green = the ground plane, black = sky. Green channel set = left out of
 // the overlap (IoU); red channel set = building.
-//   http://localhost:8765/tools/mask.html[?only=tower,centre][&cut=8]
+//   http://localhost:8765/landmarks/pipeline/viewer/mask.html?landmark=<name>[&only=tower,centre][&cut=8]
 // API for tools/refine_cameras.mjs and tools/compare.mjs:
 //   __loadMask(name, url)  -> loads a reference mask (0 sky, 128 ignore, 255 solid)
 //   __score(views, delta, scale) -> per view {inter, union, model, photo, valid}
 //   __search(views, bounds, opts) -> {best, score, base, evals}
 //   __label(view, delta, w, h) -> draws the label image on the canvas (for screenshots)
 import * as THREE from "three";
-import { clockTower } from "../src/clocktower.js";
+import { build } from "./landmark.js";
 
 const params = new URLSearchParams(location.search);
 const cut = { value: Number(params.get("cut") ?? 8) };
@@ -31,7 +31,7 @@ renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const t0 = performance.now();
-const model = clockTower(materials, params.get("only")?.split(","));
+const model = build(materials, params.get("only")?.split(","));
 model.traverse((o) => { if (o.isMesh) o.material = label; }); // also parts that bring their own materials
 scene.add(model);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000).rotateX(-Math.PI / 2), groundMat);

@@ -2,7 +2,7 @@
 // places, the stacked "cross" pinnacles of the tower, flared gables, feather (fern) tracery, clocks.
 import * as THREE from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { outline } from "../gothic.js";
+import { outline } from "../../kit/gothic.js";
 
 /** Strips a geometry to positions only, non-indexed, so that anything can be merged with anything. */
 function bare(g) {

@@ -1,8 +1,9 @@
 """Data stage 3: the LiDAR heightmap next to the LINZ aerial photo, north up, with the campus.json
-outline drawn on both (it shows the outline's offset). The aerial crop is read from LINZ's public
+outline drawn on both. The outline is in the map's frame and is drawn without conversion, so it stands
+about 4 m off the building (see place.py). The aerial crop is read from LINZ's public
 bucket once (cloud-optimised GeoTIFF, only the needed blocks) and cached as data/<name>_aerial.tif.
 Outputs: data/<name>_aerial.tif, data/<name>_heightmap_vs_aerial.jpg
-  python -I tools/data/heightmap.py [--config config/clocktower.json] [--force]
+  python -I ../pipeline/tools/data/heightmap.py [--config config/<name>.json] [--force]
 """
 import json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

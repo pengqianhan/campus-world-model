@@ -1,6 +1,6 @@
 // Camera refinement: for each Street View panorama (its views share one camera), searches a small
 // correction (position +-3 m, height +-1 m, yaw/pitch +-2 deg; bounds in the config) that best overlaps
-// the model's silhouette (tools/mask.html) with the photographs' building/sky boundary
+// the model's silhouette (viewer/mask.html) with the photographs' building/sky boundary
 // (refs/streetview/masks, from tools/sky_mask.py). Only the model above refine.min_height_m and the
 // photo's solid/sky pixels count (trees, cars, people and dark glass are ignored). A correction is
 // applied only where the photo's sky is well labelled round the model's silhouette (refine.min_sky of
@@ -8,14 +8,16 @@
 // and it raises the IoU by refine.min_gain; otherwise the view keeps its Street View camera.
 // Writes refs/streetview/views_refined.json (views.json with corrected position/target, plus a
 // `refine` record per view) and out/refine/report.{json,md} and outline images.
-//   node tools/refine_cameras.mjs [--config config/clocktower.json] [--match <pano>] [--out out/refine] [--no-images]
-// Needs the page served from the repository root on $PORT (./run.sh starts it) and the masks (python -I tools/sky_mask.py).
+//   node ../pipeline/tools/refine_cameras.mjs [--config config/<name>.json] [--match <pano>] [--out out/refine] [--no-images]
+// (in the landmark's folder; ../pipeline/run.sh <name> refine runs it there).
+// Needs the page served from the repository root on $PORT (run.sh starts it) and the masks (python -I tools/sky_mask.py).
 import { chromium } from "playwright";
-import { PAGE } from "./page.mjs";
+import { CONFIG, HERE, TOOLS, viewer } from "./page.mjs";
 import fs from "node:fs";
+import path from "node:path";
 import { execFileSync } from "node:child_process";
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
-const cfg = JSON.parse(fs.readFileSync(arg("--config", "config/clocktower.json"), "utf8"));
+const cfg = JSON.parse(fs.readFileSync(arg("--config", CONFIG), "utf8"));
 const R = cfg.refine, out = arg("--out", "out/refine"), match = arg("--match", ""), images = !process.argv.includes("--no-images");
 fs.mkdirSync(out, { recursive: true });
 const views = JSON.parse(fs.readFileSync("refs/streetview/views.json", "utf8"));
@@ -24,11 +26,11 @@ const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL ?? "
 const page = await browser.newPage({ viewport: { width: 800, height: 600 } });
 page.on("console", (m) => console.log("[page]", m.text()));
 page.on("pageerror", (e) => console.log("[page error]", e.message));
-await page.goto(`${PAGE}tools/mask.html?cut=${R.min_height_m}`);
+await page.goto(viewer("mask.html", `cut=${R.min_height_m}`));
 await page.waitForFunction(() => window.__ready === true, undefined, { timeout: 180000 });
 for (const v of views) {
-  if (!fs.existsSync(`refs/streetview/masks/${v.file.replace(".jpg", ".png")}`)) throw new Error(`no mask for ${v.file}: run python -I tools/sky_mask.py`);
-  await page.evaluate(([n, u]) => window.__loadMask(n, u), [v.file, `../refs/streetview/masks/${v.file.replace(".jpg", ".png")}`]);
+  if (!fs.existsSync(`refs/streetview/masks/${v.file.replace(".jpg", ".png")}`)) throw new Error(`no mask for ${v.file}: run python -I ../pipeline/tools/sky_mask.py`);
+  await page.evaluate(([n, u]) => window.__loadMask(n, u), [v.file, `${HERE}refs/streetview/masks/${v.file.replace(".jpg", ".png")}`]);
 }
 const bounds = [R.position_m, R.height_m, R.position_m, R.yaw_deg, R.pitch_deg];
 const old = fs.existsSync("refs/streetview/views_refined.json") ? JSON.parse(fs.readFileSync("refs/streetview/views_refined.json", "utf8")) : [];
@@ -79,5 +81,5 @@ if (images) { // label images before/after, at half size, for the outline overla
     pairs.push(`refs/streetview/${v.file}`, `${out}/${v.file.replace(".jpg", "")}_before.png`, `${out}/${v.file.replace(".jpg", "")}_after.png`);
   }
   await browser.close();
-  execFileSync(process.env.PY ?? "python3", ["-I", "tools/outline.py", ...pairs], { stdio: "inherit" });
+  execFileSync(process.env.PY ?? "python3", ["-I", path.join(TOOLS, "outline.py"), ...pairs], { stdio: "inherit" });
 } else await browser.close();

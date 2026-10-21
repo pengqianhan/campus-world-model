@@ -1,6 +1,6 @@
 # Brief: pipeline agent
 
-<!-- Sent as-is to the pipeline agent at the start of round 1 (Clock Tower, 2026-10-20), with local paths rewritten for `landmarks/clocktower/`. Model: the lead's (Claude Opus); agent type: general-purpose. -->
+<!-- Sent as-is to the pipeline agent at the start of round 1 (Clock Tower, 2026-10-20), with local paths rewritten for `landmarks/clocktower/`. Model: the lead's (Claude Opus); agent type: general-purpose. A record of round 1: the pipeline it built is now shared by every landmark in `landmarks/pipeline/`, so a later landmark needs no pipeline agent. Its paths are as they were in round 1. -->
 
 You are the **pipeline** agent on a small team building the University of Auckland Clock Tower in three.js from code alone, checked against Street View photographs. Project folder: `landmarks/clocktower/` in this repository; paths below are relative to it (do not commit — the lead commits). Other agents (tower, centre, facade, look) are editing `src/` at the same time; you own `tools/`, `run.sh`, `README.md`, `data/` and a new `config/`.
 

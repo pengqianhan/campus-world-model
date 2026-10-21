@@ -1,0 +1,24 @@
+{
+ "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y.",
+ "building": "105",
+ "centre": [
+  30.96,
+  229.141
+ ],
+ "bearing": {
+  "x": 197.942,
+  "z": 287.943
+ },
+ "rotationY": 4.399241,
+ "scale": 1.000094,
+ "door": {
+  "model": [
+   -0.95,
+   17.5
+  ],
+  "map": [
+   14.603,
+   235.437
+  ]
+ }
+}

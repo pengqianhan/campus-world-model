@@ -5,7 +5,7 @@
 // left / 7.4 right), so the pavilions and ranges are drawn in the building's own frame (BUILDING) and
 // turned into the view frame by b.matrix.
 import * as THREE from "three";
-import { addWall, addWindow, addPinnacle, addCourse, addHood, boxesGeometry } from "../gothic.js";
+import { addWall, addWindow, addPinnacle, addCourse, addHood, boxesGeometry } from "../../kit/gothic.js";
 
 /** The building's own frame: x along the front, turned 1.6 degrees about the tower's axis. */
 export const BUILDING = new THREE.Matrix4().makeRotationY(-THREE.MathUtils.degToRad(1.6));

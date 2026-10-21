@@ -20,6 +20,11 @@ the agents were given are in [briefs/](briefs/).
 - **Not the site.** A landmark lives in `landmarks/<name>/`. Nothing in it is built, tested or
   deployed with the site, and the map does not read it. Bringing a landmark into the map is a
   decision for the maintainer (`PROGRESS.md`, "Decisions": one source for a University building).
+  Its `placement.json` says where it would stand on the map.
+- **Shared kit and pipeline.** `landmarks/kit/` (what every model is built with) and
+  `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark adds
+  only its own folder. A change to them adds options with defaults and leaves the other landmarks'
+  pictures identical: compare the viewer's `?quality=low` and `?mask=1` screenshots before and after.
 - **References only.** Street View imagery and metadata are Google's: they stay in the landmark's
   gitignored `refs/` and `out/`, and no picture of them goes into a commit, an issue or a pull
   request. People and cars in them are not part of the model.
@@ -32,17 +37,19 @@ the agents were given are in [briefs/](briefs/).
 
 A new landmark is steps 1 to 5. Another round on a landmark is steps 3 to 5. A check is step 4.
 
-1. **Measure and collect.** Copy `landmarks/clocktower/` to `landmarks/<name>/`, keep `tools/`,
-   `run.sh` and `requirements.txt`, and write `config/<name>.json` (its README, "Another
-   building"). Run `./run.sh data`, then `ALLOW_FETCH=1 ./run.sh refs` once with the person's
-   agreement on the cost. Pin the panoramas you keep in `streetview.pano_ids`.
+1. **Measure and collect.** Make `landmarks/<name>/` with `config/<name>.json`
+   (`landmarks/README.md`, "Another building"). Run `landmarks/pipeline/run.sh <name> data`, then
+   `ALLOW_FETCH=1 landmarks/pipeline/run.sh <name> refs` once with the person's agreement on the
+   cost. Pin the panoramas you keep in `streetview.pano_ids`.
    Done when the plan, elevation and heightmap figures in `data/` show the building where the aerial
    shows it, and `refs/streetview/views.json` has views of each face you will model.
 
-2. **Prepare the round** (alone). Draw a rough model, split into one file per part under
-   `src/parts/`, assembled by `src/<name>.js`. Write `docs/CONTRACT.md` (frame, ownership,
+2. **Prepare the round** (alone). Draw a rough model with `landmarks/kit/`, split into one file per
+   part under `parts/`, assembled by `model.js` (it exports `build(materials, only)`), and give the
+   viewer a first view in `config/default_camera.json`. Write `docs/CONTRACT.md` (frame, ownership,
    budget, rules) and `docs/ART_BIBLE.md` (what the building and the light look like) for this
-   building. Check that `./run.sh refine compare` runs, and commit: this is the baseline.
+   building. Check that `landmarks/pipeline/run.sh <name> refine compare` runs, and commit: this is
+   the baseline.
    Done when every part builds, the strips in `out/` show the rough model over each photograph,
    and the baseline is committed.
 
@@ -53,14 +60,17 @@ A new landmark is steps 1 to 5. Another round on a landmark is steps 3 to 5. A c
    them and hold the budget, as in [briefs/lead.md](briefs/lead.md).
    Done when every agent has sent its report.
 
-4. **Check.** Move the measured sizes the agents reported into `src/parts/common.js`. Run
-   `./run.sh refine compare`. Open the strips and read `out/pipeline/compare/metrics.md`: the
+4. **Check.** Move the measured sizes the agents reported into `parts/common.js`. Run
+   `landmarks/pipeline/run.sh <name> refine compare`. Open the strips and read `out/pipeline/compare/metrics.md`: the
    silhouette IoU of the views whose camera was refined, and the luma of the building in the render
    against the photograph.
    Done when no part fails to build, the triangle and draw-call counts are within the contract's
    budget, and you have looked at every strip.
 
-5. **Record.** Commit with what changed. Put renders of the model only (no photograph) in
+5. **Record.** Set `door` in the config to the foot of the entrance and run
+   `landmarks/pipeline/run.sh <name> place`, so that `placement.json` says where the model stands on
+   the map. Commit with what changed. Put renders of the model only (no photograph) in
    `docs/landmarks/`. Tell the person what got better, what did not, and what the next round
    should do; if they want it in the repository, open a pull request as `AGENTS.md` says.
-   Done when the commit holds no Street View picture and the person has the result.
+   Done when `placement.json` is written, the commit holds no Street View picture and the person
+   has the result.

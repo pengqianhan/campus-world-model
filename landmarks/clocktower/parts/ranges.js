@@ -4,7 +4,7 @@
 // behind it; fronts at z = 6.1 (left) and 6.75 (right), backs at -9.8 and -8.7; the left one ends at
 // x = -50.5 in a taller gabled block, the right one at x = 48.5.
 import * as THREE from "three";
-import { addWall, addCourse, boxesGeometry } from "../gothic.js";
+import { addWall, addCourse, boxesGeometry } from "../../kit/gothic.js";
 import { BUILDING, inFrame } from "./pavilion.js";
 
 const PARAPET = 9.9, EAVE = 9.1, RIDGE = 11.6, PLINTH = 1.2, FLOOR = 4.6;

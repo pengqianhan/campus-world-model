@@ -1,8 +1,8 @@
 out/
 __pycache__/
-# Everything the pipeline downloads or derives is rebuilt by ./run.sh and stays local:
-# the LiDAR and aerial derivatives (LINZ), and all Street View imagery and metadata (Google).
-data/*
-!data/.gitkeep
-refs/*
-!refs/.gitkeep
+# Everything the pipeline downloads or derives is rebuilt by pipeline/run.sh and stays local, in each
+# landmark's folder: the LiDAR and aerial derivatives (LINZ), and all Street View imagery and metadata (Google).
+/*/data/*
+!/*/data/.gitkeep
+/*/refs/*
+!/*/refs/.gitkeep

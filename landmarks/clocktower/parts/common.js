@@ -1,4 +1,4 @@
-// Shared sizes (from the LINZ 2024 LiDAR, see tools/data/) and roof helpers. Owned by the lead: read, do not edit.
+// Shared sizes (from the LINZ 2024 LiDAR, see ../../pipeline/tools/data/) and roof helpers. Owned by the lead: read, do not edit.
 // View frame: x to the right as seen from Princes St, y up from the ground at the door (45.8 m NZVD2016),
 // z toward the street, the tower's centre at x = z = 0.
 import * as THREE from "three";

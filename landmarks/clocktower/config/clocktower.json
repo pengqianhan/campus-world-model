@@ -3,15 +3,19 @@
  "building": {
   "id": "105",
   "title": "University of Auckland Clock Tower",
-  "note": "outline: building 105's outline from the main project's campus.json (local metres east/north of origin). It is several metres off the LiDAR and is used only to choose the crop box and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "note": "outline: building 105's outline from the main project's campus.json, in the map's frame (equirectangular metres east/north of the origin, true north), not in the LiDAR frame (local NZTM). Here the two differ by about 4.2 m and 1.06 deg; converted, the outline agrees with the LiDAR to within about 1 m (placement.json, tools/data/place.py). It is used only to choose the crop box and to draw on the heightmap figure, where it is drawn without conversion; the frame comes from the LiDAR.",
   "outline": [[41.5, 275.3], [50.8, 271.9], [51.6, 274.1], [56.8, 272.2], [46.7, 245.5], [50.9, 243.9], [49.1, 239.4], [52.8, 237.9], [49.2, 228.5], [43.3, 230.7], [42.4, 228.4], [43.0, 227.1], [41.5, 226.4], [40.6, 224.1], [41.3, 222.7], [40.0, 222.1], [39.2, 220.0], [45.2, 217.8], [41.5, 208.1], [9.5, 220.2], [13.1, 229.7], [18.7, 227.6], [19.7, 230.1], [18.4, 230.6], [17.8, 228.9], [16.0, 229.6], [16.6, 231.3], [18.4, 230.7], [18.8, 231.8], [20.2, 231.4], [21.4, 234.5], [20.1, 235.1], [20.4, 236.1], [21.8, 235.8], [22.8, 238.3], [17.0, 240.2], [20.6, 249.9], [30.7, 246.2]]
  },
  "origin": {
   "lat": -36.8523, "lon": 174.7691,
-  "note": "the campus origin; local metres = NZTM (EPSG:2193) minus the NZTM of this point, computed as in campus.json (lon/lat offset by 111320 m per degree)"
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
  "ground": 45.8,
+ "door": {
+  "x": -0.95, "z": 17.5,
+  "note": "view frame: the foot of the entrance steps on the doorway's axis (parts/centre.js AX and STEP_END), where the ground is `ground` m and the model's y is 0; place.py puts it on the map"
+ },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706"],

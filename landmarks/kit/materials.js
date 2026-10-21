@@ -2,7 +2,7 @@
 // timber, slate, iron, the clock dial and the dark louvres. Weathering is added in world space in the
 // shaders (onBeforeCompile): grime low down and on the tops of ledges, faint drip streaks, lichen.
 import * as THREE from "three";
-import { ashlar, dressed, smoothAshlar, rng } from "../textures.js";
+import { ashlar, dressed, smoothAshlar, rng } from "./textures.js";
 
 // World-space noise shared by the weathering hooks.
 const NOISE = /* glsl */ `

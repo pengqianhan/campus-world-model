@@ -1,7 +1,7 @@
 """Data stage 1: the LINZ 2024 LiDAR tiles (public, no login) into data/lidar/.
 A tile already in data/lidar/ is skipped; one found in a mirror directory (config lidar.mirrors) is
 symlinked; otherwise it is downloaded from OpenTopography's public bucket.
-  python -I tools/data/fetch_lidar.py [--config config/clocktower.json]
+  python -I ../pipeline/tools/data/fetch_lidar.py [--config config/<name>.json]
 """
 import os, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

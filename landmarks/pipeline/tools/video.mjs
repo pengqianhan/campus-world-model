@@ -1,9 +1,10 @@
 // Renders the model along a camera path through the front panoramas' refined cameras, one frame per
 // step, for tools/video.py to stack under the photographs as a video. At each panorama the camera
 // holds (photo and model line up); between two, it moves and the photo crossfades.
-//   node tools/video.mjs --out out/video [--kinds wide,tower,door] [--panos 5w8k,d0Oz,aOMM] [--fps 30]
+//   node ../pipeline/tools/video.mjs --out out/video [--kinds wide,tower,door] [--panos 5w8k,d0Oz,aOMM] [--fps 30]
+// (in the landmark's folder).
 import { chromium } from "playwright";
-import { PAGE } from "./page.mjs";
+import { viewer } from "./page.mjs";
 import fs from "node:fs";
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const out = arg("--out", "out/video"), fps = Number(arg("--fps", 30));
@@ -16,7 +17,7 @@ const lerp = (a, b, t) => a.map((x, i) => x + (b[i] - x) * t);
 const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL ?? "chrome", args: ["--enable-gpu", "--ignore-gpu-blocklist", "--use-angle=vulkan", "--enable-features=Vulkan"] });
 const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
 page.on("pageerror", (e) => console.log("[page error]", e.message));
-await page.goto(`${PAGE}index.html?${arg("--query", "")}`);
+await page.goto(viewer("index.html", arg("--query", "")));
 await page.waitForFunction(() => window.__ready === true, undefined, { timeout: 180000 });
 for (const kind of kinds) {
   const keys = panos.map((p) => views.find((v) => v.file.startsWith(p) && v.file.endsWith(`_${kind}.jpg`)));

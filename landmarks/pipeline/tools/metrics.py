@@ -1,7 +1,7 @@
 """Metrics stage: per view, how well the render matches the reference photograph.
-  python -I tools/metrics.py <compare out dir>
+  python -I ../pipeline/tools/metrics.py <compare out dir>
 Reads <dir>/views_used.json (written by tools/compare.mjs: per view the reference, the render and the
-model's label image from tools/mask.html) and the sky masks (refs/streetview/masks, made by
+model's label image from viewer/mask.html) and the sky masks (refs/streetview/masks, made by
 tools/sky_mask.py; computed on the fly for a reference without one). Writes <dir>/metrics.json and
 <dir>/metrics.md:
   iou          silhouette overlap above the cut height (model building vs photo solid; pixels the
@@ -16,7 +16,7 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sky_mask import classify
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.getcwd()  # the landmark's folder: every stage runs there
 out = sys.argv[1]
 used = json.load(open(os.path.join(out, "views_used.json")))
 W709 = np.array([0.2126, 0.7152, 0.0722])

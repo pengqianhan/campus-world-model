@@ -5,8 +5,8 @@ Outputs in data/ (prefix = config name):
   <name>_frame.json      centre, axis (along the facade = -x of the view frame), toStreet (= +z), ground
   <name>_plan_frame.png  plan heightmap in the building frame (street side up)
   <name>_front_elevation.png  front elevation, colour = distance toward the street
-The frame comes from the LiDAR points, not from the campus.json outline (which is offset by metres).
-  python -I tools/data/measure.py [--config config/clocktower.json] [--force]
+The frame comes from the LiDAR points, not from the campus.json outline (which is in the map's frame, not the LiDAR's: see place.py).
+  python -I ../pipeline/tools/data/measure.py [--config config/<name>.json] [--force]
 """
 import glob, json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

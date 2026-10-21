@@ -1,6 +1,6 @@
 """Stacks the frames from tools/video.mjs into one video per kind: the photograph on top, the model
 in the middle, the two laid half over each other at the bottom.
-  python -I tools/video.py out/video [wide tower door] [--across tower,door]   (needs FFMPEG=/path/to/ffmpeg or ffmpeg on PATH)
+  python -I ../pipeline/tools/video.py out/video [wide tower door] [--across tower,door]   (needs FFMPEG=/path/to/ffmpeg or ffmpeg on PATH)
 --across lays the three side by side (photo, model, overlay from left to right) for the kinds named.
 Writes out/video/<kind>.mp4. The photographs are Google Street View: for looking at, not for publishing."""
 import json, os, subprocess, sys

@@ -4,7 +4,7 @@
 // Sizes from the LINZ 2024 LiDAR (wall face, bay width, steps, porch, parapet, pinnacles) and, for
 // what the LiDAR cannot see, scaled from the Street View door views (see the centre report).
 import * as THREE from "three";
-import { addWindow, addPinnacle, addCourse, outline, cuspedOutline } from "../gothic.js";
+import { addWindow, addPinnacle, addCourse, outline, cuspedOutline } from "../../kit/gothic.js";
 import { TOWER_HALF } from "./common.js";
 import { tudor, archBand, ring, shapeOf, pathOf, loft, pedestal, boss, pendant, shield, lantern, faceFrame } from "./centre_kit.js";
 

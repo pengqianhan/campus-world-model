@@ -2,11 +2,20 @@
 // the low sun in the north-east, behind the building, so the street front stands in open shade.
 import * as THREE from "three";
 
-// The view frame on the compass: x runs at bearing 199° (x = -u, u at 19°), z (toward the street) at 289°.
-const X_EN = [-0.32563, -0.94550], Z_EN = [-0.94550, 0.32563];
+/**
+ * The view frame on the compass, from the config's `frame`: its facade axis (east, north; pointing
+ * north-ish) and the side the street is on. x runs along minus the axis and z toward the street, as
+ * tools/data/measure.py measures them. The Clock Tower: axis at 19° (grid), so x at 199° and z at 289°.
+ */
+export function viewFrame(frame) {
+  const ax = frame.expected.axis;
+  let nrm = [-ax[1], ax[0]];
+  if (((frame.street_side ?? "west") === "west") === (nrm[0] > 0)) nrm = [-nrm[0], -nrm[1]];
+  return { X_EN: [-ax[0], -ax[1]], Z_EN: nrm };
+}
 
 /** A unit vector in the view frame toward a compass bearing (degrees from north) and elevation. */
-export function frameDir(bearing, elevation) {
+export function frameDir({ X_EN, Z_EN }, bearing, elevation) {
   const b = THREE.MathUtils.degToRad(bearing), e = THREE.MathUtils.degToRad(elevation);
   const E = Math.sin(b), N = Math.cos(b), c = Math.cos(e);
   return new THREE.Vector3(c * (X_EN[0] * E + X_EN[1] * N), Math.sin(e), c * (Z_EN[0] * E + Z_EN[1] * N)).normalize();

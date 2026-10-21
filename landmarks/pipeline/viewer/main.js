@@ -1,15 +1,14 @@
-// Clock Tower prototype: the building drawn in code, seen from where the reference photos were taken.
-// ?view=orbit to look round; ?overlay=0.5 to lay the reference over the picture.
+// A landmark drawn in code, seen from where the reference photos were taken: ?landmark=<name> (its
+// folder in landmarks/). ?view=orbit to look round; ?overlay=0.5 to lay the reference over the picture.
 // Look options: ?quality=high|medium|low (AO and MSAA / MSAA / neither, shadow map size), ?tone=neutral|
 // agx|aces, ?exposure=, ?hour= (NZST, sun place), ?sunaz=&sunel= (compass bearing and elevation),
-// ?mask=1 (building/sky mask for measuring), ?landscape=0.
+// ?mask=1 (building/sky mask for measuring), ?landscape=0 (leave out the landmark's landscape.js).
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { clockTower } from "./clocktower.js";
-import { makeMaterials } from "./look/materials.js";
-import { makeSky, sunPosition, frameDir } from "./look/sky.js";
-import { makePost } from "./look/post.js";
-import { landscape } from "./landscape.js";
+import { DIR, config, build } from "./landmark.js";
+import { makeMaterials } from "../../kit/materials.js";
+import { makeSky, sunPosition, frameDir, viewFrame } from "./sky.js";
+import { makePost } from "./post.js";
 
 const params = new URLSearchParams(location.search);
 const num = (k, d) => (params.has(k) ? Number(params.get(k)) : d);
@@ -27,16 +26,16 @@ renderer.shadowMap.type = quality === "low" ? THREE.PCFShadowMap : THREE.PCFShad
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const cam = await (await fetch("./config/default_camera.json")).json();
+const cam = await (await fetch(`${DIR}config/default_camera.json`)).json();
 const camera = new THREE.PerspectiveCamera(cam.vfov, innerWidth / innerHeight, 0.3, 3000);
 camera.position.fromArray(cam.position);
 camera.lookAt(new THREE.Vector3().fromArray(cam.target));
 let refImage = null;  // ?sv=<view file> sets it: the overlay needs a reference to lay over the picture
 if (params.get("sv")) {
-  const v = (await (await fetch("./refs/streetview/views.json")).json()).find((v) => v.file === params.get("sv"));
+  const v = (await (await fetch(`${DIR}refs/streetview/views.json`)).json()).find((v) => v.file === params.get("sv"));
   camera.position.fromArray(v.position); camera.lookAt(new THREE.Vector3().fromArray(v.target));
   camera.fov = v.vfov; camera.updateProjectionMatrix();
-  refImage = "./refs/streetview/" + v.file;
+  refImage = `${DIR}refs/streetview/${v.file}`;
 }
 if (params.get("pos")) {
   camera.position.fromArray(params.get("pos").split(",").map(Number));
@@ -46,7 +45,7 @@ if (params.get("pos")) {
 
 // ---- light: the low winter sun behind the building, the blue sky in front --------------------------
 const sunPlace = sunPosition(num("hour", 9.25));
-const sunDir = frameDir(num("sunaz", sunPlace.bearing), num("sunel", sunPlace.elevation));
+const sunDir = frameDir(viewFrame(config.frame), num("sunaz", sunPlace.bearing), num("sunel", sunPlace.elevation));
 const { sky } = makeSky(renderer, scene, { sunDir, envIntensity: num("env", 2.25), envSat: num("envsat", 0.5), quality });
 scene.fog = new THREE.FogExp2(0xb4c4d8, num("fog", 0.0018));
 
@@ -72,10 +71,12 @@ scene.add(sun, sun.target);
 
 // ---- the building and the street ---------------------------------------------------------------
 const materials = makeMaterials(quality);
-const building = clockTower(materials, params.get("only")?.split(","));
+const building = build(materials, params.get("only")?.split(","));
 building.name = "building";
 scene.add(building);
-const land = params.get("landscape") === "0" ? null : landscape(scene, { quality, shadows: !mask });
+// The street round the building, when the landmark has one (landscape.js beside its model.js).
+const hasLand = params.get("landscape") !== "0" && (await fetch(`${DIR}landscape.js`, { method: "HEAD" })).ok;
+const land = hasLand ? (await import(`${DIR}landscape.js`)).landscape(scene, { quality, shadows: !mask }) : null;
 
 // ---- mask mode: building above 2.3 m white, below red, sky blue, everything else black ---------------
 if (mask) {

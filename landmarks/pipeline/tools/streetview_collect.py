@@ -2,7 +2,7 @@
 # that took it in the model's view frame (x right as seen from the street, y up from the ground at the
 # door, z toward the street, tower centre at x = z = 0). Only the tiles that face the building are used.
 #
-#   python -I tools/streetview_collect.py [--config config/clocktower.json] [--offline] [--allow-fetch]
+#   python -I ../pipeline/tools/streetview_collect.py [--config config/<name>.json] [--offline] [--allow-fetch]
 #
 # Cache-first: tiles live in refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg and are never fetched
 # again. A missing tile is NOT fetched (tiles are billed) unless --allow-fetch is given; without it the

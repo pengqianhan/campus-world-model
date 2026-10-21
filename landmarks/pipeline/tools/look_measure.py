@@ -1,5 +1,5 @@
 # Luminance and colour of the building and the sky, reference vs render, inside the render's own mask.
-#   python tools/look_measure.py <render dir> <mask dir> [match]
+#   python -I ../pipeline/tools/look_measure.py <render dir> <mask dir> [match]
 # Masks come from compare.mjs --query mask=1 (building above 2.3 m white, sky blue). Prints p02/p10/p50/p90/p98
 # of luma (0..255, Rec.709 on sRGB values) and the mean sRGB colour, for each view.
 import sys, os, json, glob

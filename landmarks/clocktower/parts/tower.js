@@ -7,7 +7,7 @@
 // corner pinnacles at r = 3.7-3.8 m reach 36.3 m, the gables' foot is at 32.7 m, the spirelet 40.8 m;
 // the corner blocks fill |x|, |z| from 2.3 to 6.7-6.9 m, walls to 18.6 m, pinnacles to 21-23 m.
 import * as THREE from "three";
-import { addWindow, outline } from "../gothic.js";
+import { addWindow, outline } from "../../kit/gothic.js";
 import { SPIRE_TOP } from "./common.js";
 import { Part, faceMatrix, crossPinnacle, gablePts, gableCoping, fern, pointedBand, clock } from "./tower_kit.js";
 

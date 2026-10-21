@@ -4,14 +4,14 @@ where it touches clear-blue sky. Trees (green, orange leaves, dark trunks), dark
 'ignore': they are neither model nor sky. Everything else (cream stone, lit or in shade) is 'solid'.
 Output: refs/streetview/masks/<view>.png, 0 = sky, 128 = ignore, 255 = solid. Skips masks newer than
 their photo unless --force.
-  python -I tools/sky_mask.py [--force] [--debug out/dir] [file ...]
+  python -I ../pipeline/tools/sky_mask.py [--force] [--debug out/dir] [file ...]
 """
 import argparse, glob, os, sys
 import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.getcwd()  # the landmark's folder: every stage runs there
 SV = os.path.join(ROOT, "refs", "streetview")
 
 
