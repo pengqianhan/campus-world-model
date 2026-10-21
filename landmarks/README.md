@@ -1,10 +1,11 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs. The site draws the landmarks that
-`src/app/landmarks.ts` lists in place of their buildings' blocks (see "On the site"). The pipeline
+LiDAR and checked against Street View photographs. The site draws the landmarks whose
+`placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
+A design for the many plain buildings, drawn by rule from the LiDAR: [MASSING.md](MASSING.md).
 
 | Folder | What it holds | Shared? |
 | --- | --- | --- |
@@ -110,6 +111,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 | key | what it is |
 | --- | --- |
+| `site` | whether the site draws the landmark: the config's `site`, `true` or `false` (left out: `false`) |
 | `building` | the campus map's building id |
 | `also` | the other buildings of the campus map whose blocks the model covers (config `building.also`): the Clock Tower's south range is 105S |
 | `centre` | the model's x = z = 0, in map metres east and north |
@@ -120,12 +122,13 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
-The stage needs no LiDAR: it reads `frame.expected`, `door` and `building` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site
 
-The site draws each landmark that `LANDMARKS` in `src/app/landmarks.ts` lists, in place of the
+The site draws each landmark whose `<name>/placement.json` says `site: true`, in place of the
 blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a University building).
+It finds them itself (`import.meta.glob` in `src/app/landmarks.ts`): no list in `src/` names them.
 
 - **Only near it.** Nothing is fetched or made until the camera comes near: on the map, where a
   metre of ground takes 1.5 pixels or more; in a walker view, within 600 m (`LANDMARK_PIXELS` and
@@ -135,7 +138,16 @@ blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a Un
   no texture. The map draws it, and so do the walker views of the basic tier (phones and software
   rendering). The full form has the kit's materials. The walker views of the full tier draw it.
 - **Off the main thread.** A worker (`src/scene/landmarkWorker.ts`) builds the geometry with
-  `geometryMaterials()` and the textures with `makeTextures("low")`. The page then makes the
+  `geometryMaterials()` and the textures with `makeTextures("low")`. It is an ES module
+  (`worker.format` in `vite.config.ts`) that loads `<name>/model.js` by the landmark's name the
+  first time it is asked for, so each model is a chunk of its own
+  (`assets/landmark-<name>-<hash>.js`): coming near one landmark downloads the worker, which holds
+  three.js and every file of `kit/` (`vite.config.ts` counts the kit's files as having side
+  effects, so the build keeps each one in the worker), and then that landmark's model, and no other
+  landmark's model.
+  Every `<name>/model.js` is built and published as a chunk, on the site or not, and every
+  `placement.json` goes into the page's code; "off the site" means only that the site does not draw
+  it. The page then makes the
   materials with `makeMaterials("low", textures, { space: "object" })`, which lays the weathering
   in the model's own frame, as the viewer shows it, and makes their shaders before the form's first
   frame (`compileAsync`). A form is drawn once its shaders are made; until then the light form, or
@@ -146,10 +158,29 @@ blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a Un
 - **The landscape stays in the viewer.** The walker views keep their own streets and trees round
   the building.
 
-To put another landmark on the site, run `place`, add the landmark to `LANDMARKS` and its `build` to
-`MODELS` in `src/scene/landmarkWorker.ts`, and list in `building.also` every other building of the
-campus map whose block the model covers. Then look at it on the map and from a walker's height, and
-give the speed numbers (`docs/standards.md`, check 9).
+To put another landmark on the site, set `"site": true` in its config, list in `building.also`
+every other building of the campus map whose block the model covers, and run `place`. The site
+finds the new `placement.json` and loads the folder's `model.js`: no code in `src/` lists the
+landmarks, and `e2e/landmark.spec.ts` tests every landmark it finds. The same pull request also
+needs:
+
+- a line in `CHANGELOG.md` and a few words in the README's "What's new": a new landmark changes
+  what the site shows (`docs/standards.md`, check 6);
+- a check of About's fixed words for the landmarks (`about.landmarks` in
+  `src/i18n/locales/*.json`), which say they are drawn "in stone, glass and slate": change them if
+  the new building is not, for example a building of painted timber;
+- for each material of the model that the kit's `roof`, `glass`, `iron` or `void` does not cover
+  but that is a roof, a pane or an opening, its part in `LIGHT_ROLE` in `src/scene/landmarks.ts`.
+  Every other material is drawn as wall in the light form, so on the map a roof in a material
+  such as `roofPale` takes the wall colour until it is listed there;
+- in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
+  estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
+- a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
+  check 9).
+
+To take one off the site, set `site` to `false` and run `place` again, and change the same
+`CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map
+and the walker's views where it stood, and give the speed numbers (check 9).
 
 ## Stages
 
@@ -160,7 +191,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else fetched once into `data/raw/landmarks/` and linked) |
 | | `tools/data/measure.py` | LiDAR tiles, config | `data/<name>_pts.npy` (x, y, z, class in local m), `_ring.json` (E0, N0, crop box, outline), `_frame.json`, `_plan_frame.png`, `_front_elevation.png` |
 | | `tools/data/heightmap.py` | points, LINZ aerial (whole public tiles, fetched once into `data/raw/landmarks/`) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
-| place | `tools/data/place.py` | config `frame.expected`, `door`, `building` | `placement.json` |
+| place | `tools/data/place.py` | config `frame.expected`, `door`, `building`, `site` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
@@ -318,4 +349,4 @@ in `scripts/lib/landmark-fetch.ts`.
    round of agents as in the skill's `METHOD.md`.
 5. Set `door` in the config to the foot of the entrance, where the ground is `ground`, and run
    `landmarks/pipeline/run.sh <name> place`.
-6. To show it on the site, see "On the site".
+6. To show it on the site, set `"site": true` in the config and run `place` again: see "On the site".

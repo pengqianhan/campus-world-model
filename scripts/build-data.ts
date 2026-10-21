@@ -189,8 +189,9 @@ const INDEX_EXCLUDED_TYPES = new Set([
 
 /** A floor holding any of these gets no floor plan: where people live is not drawn, even unnamed. */
 const PLAN_RESIDENTIAL_TYPES = new Set(["Stud Residential Accom"]);
-/** Buildings that get no floor plan, by their name in the source: childcare centres. */
-const PLAN_CHILDCARE_BUILDINGS = /Early Childhood|K[oō]hanga Reo/i;
+/** Buildings that get no floor plan, by their name in the source: childcare centres ("ECE" is early
+ * childhood education, as in "Nicholls Lane ECE"). */
+const PLAN_CHILDCARE_BUILDINGS = /Early Childhood|K[oō]hanga Reo|\bECE\b/i;
 /** Shapes that are not rooms: single parking bays and the source's own test records. */
 const PLAN_SKIPPED_TYPES = new Set(["Parking For Vehicles", "Void 2.0 test"]);
 /**
