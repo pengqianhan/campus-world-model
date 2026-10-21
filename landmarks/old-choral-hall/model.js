@@ -1,13 +1,14 @@
 // Old Choral Hall (University of Auckland, building 104), drawn by rule from code alone.
 // Each part lives in parts/ and is built here; a part that throws is logged and left out, so that
-// one broken part never stops the others. `only` (the viewer's ?only=hall,blocks) builds just those
+// one broken part never stops the others. `only` (the viewer's ?only=southwest,massing) builds just those
 // parts. Every landmark's model.js exports build(materials, only), which returns a Group.
 import { Builder } from "../kit/gothic.js";
-import { blocks, hall } from "./parts/massing.js";
+import { southwest } from "./parts/southwest.js";
+import { massing } from "./parts/massing.js";
 
 const PARTS = {
-  hall: (b) => hall(b),
-  blocks: (b) => blocks(b),
+  southwest: (b) => southwest(b),
+  massing: (b) => massing(b),
 };
 
 export function build(materials, only) {
