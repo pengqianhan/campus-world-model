@@ -447,8 +447,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   fetched at most once a second with the project's User-Agent, and logged in `data/sources.json`.
   None is committed: the LiDAR is too large, and Street View is Google's. The key never reaches a
   logged URL or a commit. Street View then takes about 28 minutes a building (1,526 tiles for the
-  Clock Tower). Until that is built, the `data` and `refs` stages are not run: they fetch outside
-  `snapshot.ts`.
+  Clock Tower). Built on 2026-10-22: `scripts/landmarks/fetch.ts` (`landmarks/README.md`,
+  "Fetching").
 - **Labels are HTML, hit-tested by the scene** (`pointer-events: none`) so that a drag starting on a
   label still rotates the map.
 - **Building view = cut-away:** floors above the selected one are hidden, floors below are a solid
@@ -518,3 +518,10 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    times will be republished on a public site. With a key, follow the README section "Adding the
    class timetable" (`UOA_API_KEY`), and take up pull request #24, the course catalogue, at the same
    time (see "Other sources").
+2. **Your Street View notes outside the repository (`~/.gmaps_streetview.md`).** Since the landmark
+   pipeline fetches through `snapshot.ts` (2026-10-22), it runs the ledger itself: `check N` before
+   a batch and `add` before each 25 tiles go out. Step 3 of those notes, which adds the
+   "downloaded (billed)" count by hand (or N when that line is missing, as it is after a batch
+   stops), would now count tiles twice: no hand `check` or `add` is needed. The tile cache is now
+   `data/raw/landmarks/streetview/tiles/`, not a landmark's `refs/streetview/tiles/`, so the notes'
+   list of places where Google's data may be kept needs it too.

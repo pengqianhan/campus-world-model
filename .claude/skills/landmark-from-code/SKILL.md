@@ -28,19 +28,21 @@ the agents were given are in [briefs/](briefs/).
   View, and gives a look at it on the map and from a walker's height and the speed numbers
   (`docs/standards.md`, check 9). Taking one off the site changes the same lines. Every merge is a release, so
   set it when the person wants it shown, in a pull request of its own.
-- **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
-  `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
-  "Decisions": all network fetching). Build on what is local, or build that first.
+- **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch through
+  `scripts/lib/snapshot.ts` (`landmarks/README.md`, "Fetching"): only the LINZ buckets and Street
+  View calls it lets through, each cached once in `data/raw/landmarks/` and logged in
+  `data/sources.json`. A LiDAR or aerial set it does not list is a new data source: ask first.
 - **Shared kit and pipeline.** `landmarks/kit/` (what every model is built with) and
   `landmarks/pipeline/` (`run.sh`, the tools, the viewer) serve every landmark; a new landmark's
   model, config and placement are its own folder (what else going on the site needs: the first
   point above). A change to them adds options with defaults and leaves the other landmarks'
   pictures identical: compare the viewer's `?quality=low` and `?mask=1` screenshots before and after.
-- **References only.** Street View imagery and metadata are Google's: they stay in the landmark's
-  gitignored `refs/` and `out/`, and no picture of them goes into a commit, an issue or a pull
-  request. People and cars in them are not part of the model.
+- **References only.** Street View imagery and metadata are Google's: they stay in the gitignored
+  `data/raw/landmarks/streetview/` and the landmark's `refs/` and `out/`, and no picture of them
+  goes into a commit, an issue or a pull request. People and cars in them are not part of the model.
 - **Billed tiles.** Street View tiles cost money past the free monthly quota. The pipeline buys none
-  unless `ALLOW_FETCH=1` is given; the key lives in `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`.
+  unless `ALLOW_FETCH=1` is given and the ledger in `GMAPS_BUDGET` allows them; the key lives in
+  `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`.
 - **One writer per file.** Each agent edits only the files it owns. The lead commits.
 - **Measure, don't guess**, and **a budget**: the rules in the landmark's `docs/CONTRACT.md`.
 

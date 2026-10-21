@@ -1,7 +1,8 @@
 """Data stage 3: the LiDAR heightmap next to the LINZ aerial photo, north up, with the campus.json
 outline drawn on both. The outline is in the map's frame and is drawn without conversion, so it stands
-about 4 m off the building (see place.py). The aerial crop is read from LINZ's public
-bucket once (cloud-optimised GeoTIFF, only the needed blocks) and cached as data/<name>_aerial.tif.
+about 4 m off the building (see place.py). The aerial tiles are fetched whole from LINZ's public bucket
+through scripts/lib/snapshot.ts (fetch_bridge.py: cached once in data/raw/landmarks/, logged in
+data/sources.json), read on this machine, and the crop is cached as data/<name>_aerial.tif.
 Outputs: data/<name>_aerial.tif, data/<name>_heightmap_vs_aerial.jpg
   python -I ../pipeline/tools/data/heightmap.py [--config config/<name>.json] [--force]
 """
@@ -34,10 +35,10 @@ dr.line(pts + [pts[0]], fill=(255, 255, 255), width=3)
 
 E0, N0 = r["E0"], r["N0"]
 if not os.path.exists(tif):
-    os.environ.setdefault("GDAL_DISABLE_READDIR_ON_OPEN", "EMPTY_DIR")
     import rasterio
     from rasterio.merge import merge
-    srcs = ["/vsicurl/" + cfg["aerial"]["url"].format(tile=t) for t in cfg["aerial"]["tiles"]]
+    import fetch_bridge
+    srcs = fetch_bridge.files([cfg["aerial"]["url"].format(tile=t) for t in cfg["aerial"]["tiles"]])
     arr, tr = merge([rasterio.open(s) for s in srcs], bounds=(E0 + x0, N0 + y0, E0 + x1, N0 + y1), res=res / 2, indexes=[1, 2, 3])
     with rasterio.open(tif, "w", driver="GTiff", width=arr.shape[2], height=arr.shape[1], count=3, dtype=arr.dtype, crs="EPSG:2193", transform=tr, compress="deflate") as f:
         f.write(arr)
