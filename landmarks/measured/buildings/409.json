@@ -61,13 +61,13 @@
    "y0": 7.5,
    "roof": "mono",
    "planes": [
-    [0.2953, 0.404, 16.124]
+    [0.2847, 0.3834, 15.837]
    ],
    "slope": 22.5,
-   "wall": 8.15,
-   "ridge": 11.63,
+   "wall": 8.19,
+   "ridge": 11.5,
    "overhang": 0.0,
-   "storey": 2.716,
+   "storey": 2.73,
    "storeys": 3,
    "m2": 21.2
   },
@@ -167,14 +167,14 @@
   "iou": 0.912,
   "lidar_m2": 960.8,
   "model_m2": 960.0,
-  "within_0.5m": 0.925,
+  "within_0.5m": 0.926,
   "model_minus_lidar_m": {
    "p10": -0.22,
    "p50": 0.01,
    "p90": 0.21
   },
   "highest_m": {
-   "model": 11.53,
+   "model": 11.41,
    "lidar": 14.79
   }
  }

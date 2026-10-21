@@ -67,12 +67,12 @@
     "cover": 0.87,
     "vegetation": 0.049,
     "open_below": 0.272,
-    "not_drawn_m2": 6.2,
+    "not_drawn_m2": 6.5,
     "check": {
      "iou": 0.787,
      "lidar_m2": 76.5,
      "model_m2": 76.8,
-     "within_0.5m": 0.223,
+     "within_0.5m": 0.224,
      "model_minus_lidar_m": {
       "p10": -2.41,
       "p50": -1.22,
@@ -222,7 +222,7 @@
   },
   "212": {
    "name": "Belgrave",
-   "reason": "top-view check: footprint IoU 0.884 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.884 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 120.8,
     "ground": {
@@ -235,19 +235,19 @@
     "cover": 0.996,
     "vegetation": 0.006,
     "open_below": 0.153,
-    "not_drawn_m2": 24.0,
+    "not_drawn_m2": 23.5,
     "check": {
      "iou": 0.884,
      "lidar_m2": 147.5,
      "model_m2": 133.2,
-     "within_0.5m": 0.864,
+     "within_0.5m": 0.868,
      "model_minus_lidar_m": {
-      "p10": -0.08,
+      "p10": -0.1,
       "p50": 0.03,
-      "p90": 0.79
+      "p90": 0.73
      },
      "highest_m": {
-      "model": 13.68,
+      "model": 13.62,
       "lidar": 19.1
      }
     }
@@ -255,7 +255,7 @@
   },
   "215": {
    "name": "Okareta",
-   "reason": "top-view check: footprint IoU 0.857 (limit 0.9), 74% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.857 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 155.1,
     "ground": {
@@ -268,16 +268,16 @@
     "cover": 0.977,
     "vegetation": 0.029,
     "open_below": 0.245,
-    "not_drawn_m2": 47.2,
+    "not_drawn_m2": 46.5,
     "check": {
      "iou": 0.857,
      "lidar_m2": 175.5,
      "model_m2": 154.5,
-     "within_0.5m": 0.743,
+     "within_0.5m": 0.76,
      "model_minus_lidar_m": {
-      "p10": -1.19,
-      "p50": -0.05,
-      "p90": 0.07
+      "p10": -1.02,
+      "p50": -0.04,
+      "p90": 0.08
      },
      "highest_m": {
       "model": 14.2,
@@ -288,7 +288,7 @@
   },
   "216": {
    "name": "Mona",
-   "reason": "top-view check: footprint IoU 0.913 (limit 0.9), 67% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.913 (limit 0.9), 68% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 153.5,
     "ground": {
@@ -301,19 +301,19 @@
     "cover": 0.992,
     "vegetation": 0.041,
     "open_below": 0.171,
-    "not_drawn_m2": 25.0,
+    "not_drawn_m2": 21.5,
     "check": {
      "iou": 0.913,
      "lidar_m2": 176.2,
      "model_m2": 166.2,
-     "within_0.5m": 0.667,
+     "within_0.5m": 0.676,
      "model_minus_lidar_m": {
-      "p10": -1.67,
-      "p50": -0.08,
-      "p90": 0.08
+      "p10": -1.46,
+      "p50": -0.07,
+      "p90": 0.1
      },
      "highest_m": {
-      "model": 14.7,
+      "model": 14.73,
       "lidar": 24.9
      }
     }
@@ -334,12 +334,12 @@
     "cover": 0.934,
     "vegetation": 0.063,
     "open_below": 0.148,
-    "not_drawn_m2": 22.0,
+    "not_drawn_m2": 21.8,
     "check": {
      "iou": 0.888,
      "lidar_m2": 319.5,
      "model_m2": 320.5,
-     "within_0.5m": 0.305,
+     "within_0.5m": 0.304,
      "model_minus_lidar_m": {
       "p10": -2.16,
       "p50": -0.62,
@@ -404,7 +404,7 @@
   },
   "226": {
    "name": "Te Ruawaihanga - Material Culture Studio",
-   "reason": "top-view check: footprint IoU 0.375 (limit 0.9), 27% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.392 (limit 0.9), 27% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 166.1,
     "ground": {
@@ -419,17 +419,17 @@
     "open_below": 0.054,
     "not_drawn_m2": 48.0,
     "check": {
-     "iou": 0.375,
+     "iou": 0.392,
      "lidar_m2": 186.0,
-     "model_m2": 74.2,
-     "within_0.5m": 0.27,
+     "model_m2": 77.5,
+     "within_0.5m": 0.267,
      "model_minus_lidar_m": {
-      "p10": -2.02,
-      "p50": -0.93,
-      "p90": -0.15
+      "p10": -2.08,
+      "p50": -0.98,
+      "p90": -0.16
      },
      "highest_m": {
-      "model": 7.52,
+      "model": 7.51,
       "lidar": 17.6
      }
     }
@@ -455,10 +455,10 @@
      "iou": 0.899,
      "lidar_m2": 257.2,
      "model_m2": 248.8,
-     "within_0.5m": 0.408,
+     "within_0.5m": 0.409,
      "model_minus_lidar_m": {
-      "p10": -1.63,
-      "p50": -0.35,
+      "p10": -1.62,
+      "p50": -0.34,
       "p90": 0.92
      },
      "highest_m": {
@@ -528,7 +528,7 @@
       "p90": 0.42
      },
      "highest_m": {
-      "model": 11.2,
+      "model": 11.24,
       "lidar": 14.82
      }
     }
@@ -549,19 +549,19 @@
     "cover": 0.979,
     "vegetation": 0.045,
     "open_below": 0.126,
-    "not_drawn_m2": 94.8,
+    "not_drawn_m2": 94.5,
     "check": {
-     "iou": 0.632,
+     "iou": 0.635,
      "lidar_m2": 664.5,
-     "model_m2": 433.5,
-     "within_0.5m": 0.224,
+     "model_m2": 439.2,
+     "within_0.5m": 0.226,
      "model_minus_lidar_m": {
-      "p10": -4.2,
-      "p50": -1.95,
-      "p90": -0.06
+      "p10": -4.18,
+      "p50": -1.94,
+      "p90": -0.04
      },
      "highest_m": {
-      "model": 9.66,
+      "model": 9.67,
       "lidar": 15.19
      }
     }
@@ -604,14 +604,14 @@
      "iou": 0.871,
      "lidar_m2": 222.8,
      "model_m2": 222.0,
-     "within_0.5m": 0.768,
+     "within_0.5m": 0.759,
      "model_minus_lidar_m": {
       "p10": -0.59,
       "p50": -0.0,
-      "p90": 0.52
+      "p90": 0.55
      },
      "highest_m": {
-      "model": 7.02,
+      "model": 6.94,
       "lidar": 8.56
      }
     }
@@ -699,19 +699,19 @@
     "cover": 0.981,
     "vegetation": 0.0,
     "open_below": 0.071,
-    "not_drawn_m2": 91.5,
+    "not_drawn_m2": 90.8,
     "check": {
      "iou": 0.978,
      "lidar_m2": 356.8,
      "model_m2": 361.2,
-     "within_0.5m": 0.679,
+     "within_0.5m": 0.687,
      "model_minus_lidar_m": {
-      "p10": -0.11,
-      "p50": 0.17,
-      "p90": 1.58
+      "p10": -0.13,
+      "p50": 0.16,
+      "p90": 1.55
      },
      "highest_m": {
-      "model": 17.78,
+      "model": 17.8,
       "lidar": 17.87
      }
     }
@@ -749,19 +749,19 @@
     "cover": 0.986,
     "vegetation": 0.005,
     "open_below": 0.088,
-    "not_drawn_m2": 4.8,
+    "not_drawn_m2": 5.0,
     "check": {
      "iou": 0.899,
      "lidar_m2": 218.8,
      "model_m2": 217.0,
-     "within_0.5m": 0.648,
+     "within_0.5m": 0.652,
      "model_minus_lidar_m": {
       "p10": -1.58,
       "p50": -0.02,
-      "p90": 0.63
+      "p90": 0.61
      },
      "highest_m": {
-      "model": 13.22,
+      "model": 13.17,
       "lidar": 12.65
      }
     }
@@ -816,7 +816,7 @@
     "cover": 0.976,
     "vegetation": 0.004,
     "open_below": 0.167,
-    "not_drawn_m2": 7.2,
+    "not_drawn_m2": 7.0,
     "check": {
      "iou": 0.891,
      "lidar_m2": 236.2,
@@ -828,7 +828,7 @@
       "p90": 0.03
      },
      "highest_m": {
-      "model": 6.13,
+      "model": 6.12,
       "lidar": 10.69
      }
     }
@@ -853,7 +853,7 @@
   },
   "423": {
    "name": "Conference Centre",
-   "reason": "top-view check: footprint IoU 0.925 (limit 0.9), 51% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.925 (limit 0.9), 52% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 2018.9,
     "ground": {
@@ -866,16 +866,16 @@
     "cover": 0.963,
     "vegetation": 0.01,
     "open_below": 0.045,
-    "not_drawn_m2": 10.0,
+    "not_drawn_m2": 11.5,
     "check": {
      "iou": 0.925,
      "lidar_m2": 2118.2,
      "model_m2": 2151.0,
-     "within_0.5m": 0.511,
+     "within_0.5m": 0.516,
      "model_minus_lidar_m": {
       "p10": -4.32,
-      "p50": -0.11,
-      "p90": 0.12
+      "p50": -0.13,
+      "p90": 0.1
      },
      "highest_m": {
       "model": 21.31,
@@ -917,39 +917,6 @@
     }
    }
   },
-  "433": {
-   "name": "Fine Arts Studio Block 433",
-   "reason": "top-view check: footprint IoU 0.925 (limit 0.9), 28% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 934.1,
-    "ground": {
-     "p5": 28.76,
-     "p50": 32.6,
-     "p95": 33.18,
-     "zero": 28.97
-    },
-    "roof_inside_m2": 903.0,
-    "cover": 0.967,
-    "vegetation": 0.03,
-    "open_below": 0.177,
-    "not_drawn_m2": 6.2,
-    "check": {
-     "iou": 0.925,
-     "lidar_m2": 980.5,
-     "model_m2": 1000.2,
-     "within_0.5m": 0.275,
-     "model_minus_lidar_m": {
-      "p10": -1.47,
-      "p50": -1.01,
-      "p90": 0.01
-     },
-     "highest_m": {
-      "model": 25.45,
-      "lidar": 25.59
-     }
-    }
-   }
-  },
   "450": {
    "name": "UniLodge Whitaker",
    "reason": "top-view check: footprint IoU 0.860 (limit 0.9), 93% of cells within 0.5 m (limit 90%)",
@@ -977,7 +944,7 @@
       "p90": 0.06
      },
      "highest_m": {
-      "model": 50.48,
+      "model": 50.45,
       "lidar": 51.62
      }
     }
@@ -998,19 +965,19 @@
     "cover": 0.988,
     "vegetation": 0.046,
     "open_below": 0.128,
-    "not_drawn_m2": 51.0,
+    "not_drawn_m2": 52.8,
     "check": {
      "iou": 0.911,
      "lidar_m2": 548.0,
      "model_m2": 507.2,
-     "within_0.5m": 0.729,
+     "within_0.5m": 0.731,
      "model_minus_lidar_m": {
-      "p10": -1.48,
+      "p10": -1.65,
       "p50": -0.02,
-      "p90": 0.05
+      "p90": 0.06
      },
      "highest_m": {
-      "model": 50.2,
+      "model": 49.97,
       "lidar": 52.74
      }
     }
@@ -1031,12 +998,12 @@
     "cover": 0.955,
     "vegetation": 0.046,
     "open_below": 0.118,
-    "not_drawn_m2": 11.2,
+    "not_drawn_m2": 9.0,
     "check": {
      "iou": 0.699,
      "lidar_m2": 3067.8,
      "model_m2": 4366.2,
-     "within_0.5m": 0.933,
+     "within_0.5m": 0.934,
      "model_minus_lidar_m": {
       "p10": -0.24,
       "p50": 0.01,

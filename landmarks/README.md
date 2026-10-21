@@ -192,7 +192,7 @@ agent and no photograph. All of them share one model and have a data file each:
   where most of its points are building points over 2.5 m); layers where neighbouring cells step
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
   lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
-  plane fitted to the cells that fall that way. The lowest layer stands on the campus outline,
+  plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
   with its eaves round it; the others stand on it, traced from the LiDAR and put onto the outline
   where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
   left out.
@@ -210,7 +210,9 @@ agent and no photograph. All of them share one model and have a data file each:
   drawn by rule in the walker views. It is drawn where a metre of ground takes 4 pixels or more
   (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open.
 - `tests/measured.test.ts` checks every data file (closed rings, heights, the limits) and that no
-  building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three.
+  building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
+  keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
+  or removed: run it with `--fsModuleCache=false` after the generator has run.
 - To make one a landmark: start `<name>/` as for any landmark, with the massing's numbers as its
   first contract, and delete `measured/buildings/<id>.json` in the same pull request.
 

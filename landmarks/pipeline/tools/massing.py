@@ -363,6 +363,16 @@ def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
         if math.degrees(math.atan(math.hypot(gx, gy))) < max(FLAT_DEG, 0.5 * float(np.median(slope[m]))): continue
         planes.append([round(float(gx), 4), round(float(gy), 4), round(float(z0), 3)]); dirs.append(math.atan2(-gy, -gx))
     if not planes: return {"form": "flat", "height": float(np.median(h))}, ""
+    # then each plane again from the cells it fits best (within 0.5 m), three times
+    for _ in range(3):
+        pred = np.array([p[2] + p[0] * x + p[1] * y for p in planes])
+        best = np.argmin(np.abs(pred - h), 0); off = np.abs(pred - h).min(0)
+        for k in range(len(planes)):
+            m = (best == k) & (off <= 0.5)
+            if m.sum() < 8: continue
+            z0, gx, gy = fit_plane(x[m], y[m], h[m])
+            planes[k] = [round(float(gx), 4), round(float(gy), 4), round(float(z0), 3)]
+    dirs = [math.atan2(-p[1], -p[0]) for p in planes]
     opposite = len(dirs) == 2 and abs((dirs[0] - dirs[1]) % (2 * math.pi) - math.pi) < math.radians(30)
     form = "mono" if len(planes) == 1 else "gable" if opposite else "hip"
     return {"form": form, "planes": planes, "slope": float(np.median(slope[sl]))}, ""
