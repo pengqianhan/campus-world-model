@@ -5,6 +5,7 @@ LiDAR and checked against Street View photographs. The site draws the landmarks 
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
+A design for the many plain buildings, drawn by rule from the LiDAR: [MASSING.md](MASSING.md).
 
 | Folder | What it holds | Shared? |
 | --- | --- | --- |
