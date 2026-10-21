@@ -53,13 +53,13 @@ landmarks/pipeline/run.sh clocktower compare    # one stage; stages can be chain
 Every stage and tool runs in the landmark's folder; `run.sh` goes there. To run a tool alone, go there
 first: `cd landmarks/clocktower && node ../pipeline/tools/compare.mjs --out out/me --match tower`.
 
-The `data` and `refs` stages fetch outside `scripts/lib/snapshot.ts`. They are not run until their
-fetches go through it (`PROGRESS.md`, "Decisions": all network fetching); `place`, `refine`,
-`compare` and `metrics` work from what is on disk.
+The `data` and `refs` stages fetch through `scripts/lib/snapshot.ts` (see "Fetching"); `place`,
+`refine`, `compare` and `metrics` work from what is on disk.
 
-In a fresh clone the first `refs` needs a Google Maps key and `ALLOW_FETCH=1` (it buys the Street View
-tiles once: about 1,500 for the Clock Tower, inside the free monthly quota; see "What is billed").
-After that every run is offline from the local cache.
+In a fresh clone the first `refs` needs a Google Maps key, `ALLOW_FETCH=1` and a ledger in
+`GMAPS_BUDGET` (it buys the Street View tiles once: about 1,500 for the Clock Tower, inside the free
+monthly quota, in about 28 minutes at one request every 1.1 s; see "What is billed"). After that
+every run is offline from the local cache.
 
 ## Requirements
 
@@ -151,9 +151,9 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 
 | stage | script | inputs | outputs |
 | --- | --- | --- | --- |
-| data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else downloaded) |
+| data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else fetched once into `data/raw/landmarks/` and linked) |
 | | `tools/data/measure.py` | LiDAR tiles, config | `data/<name>_pts.npy` (x, y, z, class in local m), `_ring.json` (E0, N0, crop box, outline), `_frame.json`, `_plan_frame.png`, `_front_elevation.png` |
-| | `tools/data/heightmap.py` | points, LINZ aerial (public COG, read once) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
+| | `tools/data/heightmap.py` | points, LINZ aerial (whole public tiles, fetched once into `data/raw/landmarks/`) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
 | place | `tools/data/place.py` | config `frame.expected`, `door`, `building` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
@@ -176,12 +176,13 @@ stay on the machine that fetched them.
 
 ### References (Street View)
 
-Cache-first: tiles are kept in `refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg` and are
-never fetched again. A tile that is not cached is **not** bought unless `--allow-fetch` is given;
-the run lists it, and a view that would need it keeps its existing image. By default `run.sh refs`
-works offline from `metadata.json` (no network call at all); `REFS_ONLINE=1` repeats the free calls
-(createSession, panoIds, metadata) and saves the metadata again; a fresh clone has no
-`metadata.json` and goes online. The panoramas are the ones listed in the config's
+Cache-first: metadata and tiles are kept in `data/raw/landmarks/streetview/` (see "Fetching") and
+are never fetched again. A tile that is not cached is **not** bought unless `--allow-fetch` is given
+and the ledger allows it;
+the run counts it, and a view that would need it keeps its existing image. By default `run.sh refs`
+works offline from `refs/streetview/metadata.json` (no network call at all); `REFS_ONLINE=1` makes
+it again from the snapshots, with the free calls (createSession, panoIds, metadata) for what is not
+cached; a fresh clone has no `metadata.json` and goes online, and so does a run with `ALLOW_FETCH=1`. The panoramas are the ones listed in the config's
 `streetview.pano_ids` (without that list, those within `radius_m` of the building). Each panorama
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
 hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it.
@@ -212,12 +213,58 @@ Per view: silhouette IoU (as above) and, inside the building region (model build
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
 
+## Fetching
+
+Every request the pipeline sends goes through `scripts/lib/snapshot.ts` (`PROGRESS.md`,
+"Decisions": all network fetching). The Python stages give a batch of operations to
+`scripts/landmarks/fetch.ts` through `tools/data/fetch_bridge.py`; what it lets through, and how, is
+in `scripts/lib/landmark-fetch.ts`.
+
+- **Only these.** Whole files from the two LINZ buckets the Clock Tower is measured from (the LiDAR
+  on OpenTopography, the aerial photos on AWS), and the Map Tiles API's Street View `createSession`,
+  `panoIds`, `metadata` and `tiles`. Any other host or path is an error before anything is sent. A
+  landmark measured from another LiDAR or aerial set adds its bucket there: that is a new data
+  source, for the maintainer to decide.
+- **Cached once.** All of it is kept in `data/raw/landmarks/` (gitignored), shared by all landmarks,
+  and never fetched again: `lidar/`, `aerial/`, and `streetview/` (`metadata/<panoId>.json`,
+  `panoIds/`, `tiles/<panoId>/<zoom>_<col>_<row>.jpg`). A file is written whole or not at all. The
+  one exception is the session (`streetview/session.json`): it is used again until ten minutes
+  before it expires (two weeks), then asked for anew. The data stage links the LiDAR tiles into the
+  landmark's `data/lidar/`. Tiles that the pipeline cached before 2026-10-22, in a landmark's
+  `refs/streetview/tiles/<panoId>/`, are no longer read: move each panorama's folder to
+  `data/raw/landmarks/streetview/tiles/<panoId>/`, and the next `refs` records them instead of
+  buying them again.
+- **Paced and logged.** One request every 1.1 s, also from one batch to the next, and one batch at a
+  time for the user, from any checkout (a lock in `~/.campus-world-model/`, beside the ledger it
+  guards), with the project's User-Agent. The time and URL of
+  each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
+  LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
+  for each panorama's tiles: their count, total size, one sha256 over the sorted list of
+  `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
+  A batch records each panorama's tiles when it is done with them, and at its start records any
+  that a batch killed part way left unrecorded. No redirect is followed: a redirect stops the
+  batch.
+- **The key** is read at the moment of a request, from `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`, and sent
+  in the `X-Goog-Api-Key` header, never in a URL. The session token is written as `<session>` in
+  every logged URL, and both are taken out of every error message.
+- **Tiles are bought through a ledger only.** With `ALLOW_FETCH=1` the batch counts the tiles that
+  are not cached (N) and runs `$PY -I $GMAPS_BUDGET check N` first: if it exits other than 0,
+  nothing is bought. Then it adds the tiles to the ledger before it sends them, 25 at a time
+  (`check 25`, `add 25`), so a batch stopped part way, even killed, has counted a few too many,
+  never too few: do not add them to the ledger by hand. A tile that fails with a server error
+  (5xx) is tried three times, each try counted. Anything else stops the batch: a refusal (4xx), a
+  redirect, a timeout, a dropped connection, a failed write, or a tile that fails all three tries.
+  The reason is written to `data/raw/landmarks/streetview/closed.txt`, and no tile is bought
+  until a person has looked and deleted it ("closed is a verdict"); a rerun then goes on from the
+  cache. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
+  monthly and a daily count under a cap.
+
 ## What is billed
 
 - Map Tiles API **Street View tiles**: 100,000 free a month, then **$2 per 1,000** (the Clock
   Tower's 12 panoramas use 1,526 tiles: free inside the monthly quota, about $3 beyond it). The
-  pipeline downloads **0** tiles unless `ALLOW_FETCH=1` (`--allow-fetch`) is given; a rerun reports
-  `0 downloaded`.
+  pipeline downloads **0** tiles unless `ALLOW_FETCH=1` (`--allow-fetch`) is given and the ledger
+  allows them (see "Fetching"); a rerun reports `0 downloaded`.
 - createSession, panoIds and metadata calls: free.
 - LINZ LiDAR (OpenTopography bucket) and LINZ aerial (AWS open data): free, no login.
 
@@ -247,8 +294,8 @@ the reference and of the render; plus the mean over views.
    `data/<name>_frame.json`. Add empty `data/.gitkeep` and `refs/.gitkeep`.
 2. `landmarks/pipeline/run.sh <name> data` and look at the plan, elevation and heightmap figures.
 3. References: set `streetview` in the config (leave out `pano_ids` to search round the building,
-   then pin the ones you keep) and run `ALLOW_FETCH=1 landmarks/pipeline/run.sh <name> refs` once
-   (billed, see above).
+   then pin the ones you keep) and run `ALLOW_FETCH=1 GMAPS_BUDGET=<ledger> landmarks/pipeline/run.sh <name> refs`
+   once (billed, see above).
 4. The model: `model.js` and `parts/`, built with `kit/`, and `config/default_camera.json`; then a
    round of agents as in the skill's `METHOD.md`.
 5. Set `door` in the config to the foot of the entrance, where the ground is `ground`, and run

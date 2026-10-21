@@ -29,6 +29,8 @@ export interface SnapshotRecord {
   bytes: number;
   sha256: string;
   source: string;
+  /** For a record of a folder of files fetched alike (one Street View panorama's tiles): how many. */
+  count?: number;
 }
 
 interface Manifest {
@@ -52,10 +54,17 @@ function writeManifest(m: Manifest): void {
 }
 
 let lastRequestAt = 0;
-async function throttle(): Promise<void> {
-  const wait = lastRequestAt + MIN_INTERVAL_MS - Date.now();
-  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+/** Wait as if a request had just been sent: for a process that follows another one's last request. */
+export function paceFromNow(): void {
   lastRequestAt = Date.now();
+}
+/** Waits out the interval and returns the time the request is let through. */
+async function throttle(): Promise<number> {
+  // A timer can fire a millisecond early: wait until the whole interval has passed.
+  for (let wait = lastRequestAt + MIN_INTERVAL_MS - Date.now(); wait > 0; wait = lastRequestAt + MIN_INTERVAL_MS - Date.now()) {
+    await new Promise((r) => setTimeout(r, wait));
+  }
+  return (lastRequestAt = Date.now());
 }
 
 export interface FetchOptions {
@@ -69,6 +78,25 @@ export interface FetchOptions {
   headers?: Record<string, string>;
   /** Re-download even if the snapshot exists. */
   refresh?: boolean;
+  /** The URL as logged and in errors, when `url` holds a secret (a session token). Default `url`. */
+  logUrl?: string;
+  /** False: cache and pace, but leave the record in data/sources.json to the caller. Default true. */
+  record?: boolean;
+  /** Longer for large files. Default 240 s. */
+  timeoutMs?: number;
+  /** Called the moment the request is let through, after the pacing. */
+  onSend?: (at: Date) => void;
+  /** "error": a redirect fails instead of being followed to a host nobody checked. Default "follow". */
+  redirect?: RequestRedirect;
+}
+
+/** A response other than 2xx, with its status. */
+export class HttpError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
 }
 
 /** Returns the snapshot bytes, downloading them only if they are not on disk yet. */
@@ -76,33 +104,53 @@ export async function snapshot(opts: FetchOptions): Promise<Buffer> {
   const abs = path.join(RAW_DIR, opts.file);
   if (fs.existsSync(abs) && !opts.refresh) return fs.readFileSync(abs);
 
-  await throttle();
-  const res = await fetch(opts.url, {
-    method: opts.method ?? "GET",
-    body: opts.body,
-    headers: { "User-Agent": USER_AGENT, Accept: "application/json, */*;q=0.5", ...opts.headers },
-    // A server that never answers is a failure like any other, not a wait without end.
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`${opts.url} -> HTTP ${res.status}`);
-  const buf = Buffer.from(await res.arrayBuffer());
+  const logUrl = opts.logUrl ?? opts.url;
+  const sentAt = await throttle();
+  opts.onSend?.(new Date(sentAt));
+  let res: Response;
+  let buf: Buffer;
+  try {
+    res = await fetch(opts.url, {
+      method: opts.method ?? "GET",
+      body: opts.body,
+      headers: { "User-Agent": USER_AGENT, Accept: "application/json, */*;q=0.5", ...opts.headers },
+      redirect: opts.redirect ?? "follow",
+      // A server that never answers is a failure like any other, not a wait without end.
+      signal: AbortSignal.timeout(opts.timeoutMs ?? TIMEOUT_MS),
+    });
+    buf = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
+  } catch (e) {
+    // The error of a failed fetch can quote the URL: give the logged one only.
+    const why = e instanceof Error ? `${e.name}: ${e.message}${e.cause instanceof Error ? ` (${e.cause.message})` : ""}` : String(e);
+    throw new Error(`${logUrl} -> ${why.replaceAll(opts.url, logUrl)}`);
+  }
+  if (!res.ok) throw new HttpError(`${logUrl} -> HTTP ${res.status}`, res.status);
   fs.mkdirSync(path.dirname(abs), { recursive: true });
-  fs.writeFileSync(abs, buf);
+  // Written whole or not at all: a file cut short by a kill would pass for a snapshot.
+  fs.writeFileSync(`${abs}.part`, buf);
+  fs.renameSync(`${abs}.part`, abs);
 
+  const file = opts.file.replaceAll("\\", "/");
+  if (opts.record ?? true) {
+    recordSnapshot({
+      file,
+      url: logUrl,
+      fetchedAt: new Date().toISOString(),
+      bytes: buf.length,
+      sha256: createHash("sha256").update(buf).digest("hex"),
+      source: opts.source,
+    });
+  }
+  console.log(`fetched ${file} (${buf.length} B)`);
+  return buf;
+}
+
+/** Adds a record to data/sources.json, in place of any earlier one for the same file. */
+export function recordSnapshot(rec: SnapshotRecord): void {
   const m = readManifest();
-  const rec: SnapshotRecord = {
-    file: opts.file.replaceAll("\\", "/"),
-    url: opts.url,
-    fetchedAt: new Date().toISOString(),
-    bytes: buf.length,
-    sha256: createHash("sha256").update(buf).digest("hex"),
-    source: opts.source,
-  };
   m.snapshots = m.snapshots.filter((s) => s.file !== rec.file);
   m.snapshots.push(rec);
   writeManifest(m);
-  console.log(`fetched ${rec.file} (${rec.bytes} B)`);
-  return buf;
 }
 
 export function readSnapshot(file: string): Buffer {
