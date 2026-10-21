@@ -89,7 +89,7 @@ export function landscape(scene, { shadows = true } = {}) {
   const p = g.attributes.position;
   for (let k = 0; k < p.count; k++) p.setY(k, groundAt(p.getX(k), p.getZ(k)) - 0.02);
   g.computeVertexNormals();
-  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x6b675f, roughness: 0.92 }));
+  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x57544e, roughness: 0.95 }));
   mesh.receiveShadow = shadows;
   mesh.name = "ground";
   const group = new THREE.Group(); group.name = "landscape"; group.add(mesh);

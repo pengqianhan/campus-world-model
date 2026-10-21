@@ -298,7 +298,11 @@ function graftonFace(b) {
   wallWithHoles(acc, "brick", b0, b1, base, H.arch[1], bayD - 0.3, bayD, [[w0, w1, H.ff.sill, H.arch[1]], [w0, w1, H.gf.glass[0], H.gf.glass[1]]]);
   acc.box("render", b0, b1, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
   acc.box("render", w0 - 0.15, w1 + 0.15, H.band[1], H.ff.sill, bayD, bayD + 0.12);
-  acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w0 - 0.18, w0, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w1, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill - 0.08, H.ff.sill + 0.02, bayD - 0.05, bayD + 0.08);
+  acc.box("void", w0, w1, H.ff.sill, H.arch[1], bayD - 0.3, bayD - 0.2);
+  acc.box("void", w0, w1, H.gf.glass[0], H.gf.glass[1], bayD - 0.3, bayD - 0.2);
   const sub = new Acc();
   threeLight(sub, w0, w1, H.ff.sill + 0.02, H.arch[1] - 0.05, { tr: 0.72 });
   threeLight(sub, w0, w1, H.gf.glass[0], H.gf.glass[1], { tr: 0.68 });
