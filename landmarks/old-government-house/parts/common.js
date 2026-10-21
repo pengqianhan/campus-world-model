@@ -12,6 +12,13 @@
 //   southEast: x [-16, -10.6], its ridge stopping at x -13.0; south: from x -7.4 to 16.0-16.15.
 // The front range looks turned about 1.3 deg in the frame (north-west end toward the lawn): its
 // balustrade stands at z 6.6 near x -12 and 7.1 near x +9 (main.js FRONT.backFlush makes up for it).
+// Where the walls start: below the ground at the porch (y = 0), deep enough for the site's ground. The site
+// stands the model at its ground under the door, and that ground is the 8 m elevation model, which falls
+// up to 1.1 m below the porch under the south-east end (the LiDAR's ground there: 0.6-0.9 m) and rises up
+// to 2.4 m under the north-west end. The walls go down to 1.6 m below the porch, so that no end hangs in
+// the air, as a block's footing does (src/scene/terrain.ts).
+export const FOOT = -1.6;
+
 export const MEASURED = {
   // the front range: eave edge, a flat cornice band, and a hipped roof rising from z 6.5 to its ridge
   front: { x: [-17.6, 16.3], z: [-2.0, 7.75], cornice: 10.8, ridge: 12.65, ridgeZ: 2.6 },

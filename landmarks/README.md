@@ -119,6 +119,9 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
+The two can be a metre or more apart: a model's walls go down below y = 0 as far as the map's ground
+falls under it (Old Government House's to 1.6 m below its porch), so that nothing hangs in the air,
+and `tests/landmarks.test.ts` checks every landmark on the site for it.
 The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site
@@ -284,7 +287,8 @@ in `scripts/lib/landmark-fetch.ts`.
   each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
   LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
   for each panorama's tiles: their count, total size, one sha256 over the sorted list of
-  `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
+  `<file> <sha256>` lines, and when the newest came (the Clock Tower's 1,526 tiles are in 12 records;
+  three of the panoramas also gave Old Government House a few tiles, so those records now count both).
   A batch records each panorama's tiles when it is done with them, and at its start records any
   that a batch killed part way left unrecorded. No redirect is followed: a redirect stops the
   batch.

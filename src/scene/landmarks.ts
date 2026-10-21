@@ -44,7 +44,8 @@ export interface TextureData {
 }
 
 export type LandmarkReply =
-  | { name: string; part: "geometry"; meshes: MeshData[] }
+  /** `stone`: whether a mesh is in one of the kit's stone materials, the only ones the textures are for. */
+  | { name: string; part: "geometry"; meshes: MeshData[]; stone: boolean }
   | { name: string; part: "textures"; quality: TextureQuality; textures: Record<string, TextureData> }
   | { name: string; part: "geometry" | "textures"; error: string };
 
@@ -124,6 +125,10 @@ export class Landmark {
   /** The full form while it is being made: it needs the geometry and the textures, whichever comes last. */
   private makingFull?: Promise<void>;
   private asked = new Set<LandmarkRequest["part"]>();
+  /** The full form was asked for; its textures are asked for once the geometry says whether it needs them. */
+  private wantsFull = false;
+  /** Whether the model has stone, as the geometry says. */
+  private stone = false;
 
   constructor(entry: LandmarkEntry, host: LandmarkHost) {
     const p = entry.placement;
@@ -193,7 +198,24 @@ export class Landmark {
    */
   want(form: LandmarkForm, covers: () => Cover[]): void {
     if (!this.asked.has("geometry")) this.fetch({ name: this.name, part: "geometry", covers: covers() });
-    if (form === "full" && !this.asked.has("textures")) this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+    if (form === "full") {
+      this.wantsFull = true;
+      this.askTextures();
+    }
+  }
+
+  /**
+   * The full form's textures, once the geometry has come: the kit's textures are its stone's, so a
+   * model with no stone, as one of painted timber, asks for none and makes its full form without them.
+   */
+  private askTextures(): void {
+    if (!this.wantsFull || !this.parts || this.asked.has("textures")) return;
+    if (this.stone) {
+      this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+    } else {
+      this.asked.add("textures");
+      this.textures = {};
+    }
   }
 
   /** Draws a form, or none, so that the blocks show. A form not yet made counts as none. True if that changed. */
@@ -240,6 +262,8 @@ export class Landmark {
       // Each building's part in its own colours: one material a group.
       const lights = this.covered.map((id) => this.lights.get(id)!);
       this.place("light", this.form((part) => lights.map((l) => l[LIGHT_ROLE[part.material] ?? "walls"])));
+      this.stone = reply.stone;
+      this.askTextures();
     } else {
       this.textures = reply.textures;
     }

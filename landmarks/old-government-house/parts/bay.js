@@ -8,9 +8,9 @@
 //     in no photograph: square pillars, a plain entablature and a low pediment).
 import { Acc, face, fbox, sash, balustrade, hip, gableZ, leanTo, bar } from "./front_kit.js";
 import { MIDDLE } from "./main.js";
-import { MEASURED as M } from "./common.js";
+import { MEASURED as M, FOOT } from "./common.js";
 
-const BASE = -0.4;
+const BASE = FOOT;                         // walls start below the ground (common.js, FOOT)
 
 // [x0, x1, z0, z1]: from the wing's end wall to the front range's end wall, and out from the wing's front;
 // the end that stands free (-1 south-east, +1 north-west). The south-east bay's end is flush with the wing's

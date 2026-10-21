@@ -1,8 +1,10 @@
 import fs from "node:fs";
-import { Vector3 } from "three";
+import { Box3, Vector3, type Mesh, type Object3D } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
 import { Landmark } from "../src/scene/landmarks.ts";
+import { Terrain } from "../src/scene/terrain.ts";
+import type { TerrainData } from "../src/shared/types.ts";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeMaterials } from "../landmarks/kit/materials.js";
 
@@ -47,6 +49,45 @@ describe("landmarks on the map", () => {
       l.dispose();
     }
   });
+});
+
+describe("each landmark on the site's ground", () => {
+  it("stands at its door with no part of its walls' foot in the air: the walls go down as far as the drawn ground falls under it", async () => {
+    // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the
+    // models are measured to; ordinary blocks get a footing for it (terrain.ts), a landmark its walls.
+    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);
+    for (const entry of LANDMARKS) {
+      const l = new Landmark(entry, host);
+      l.stand(terrain.height(...(entry.placement.door.map as [number, number])));
+      l.group.updateMatrixWorld(true);
+      const { build } = (await import(`../landmarks/${entry.name}/model.js`)) as { build: (m: unknown) => Object3D };
+      const log = console.log;
+      console.log = () => {};
+      const model = build(geometryMaterials());
+      console.log = log;
+      model.updateMatrixWorld(true);
+      const meshes: Mesh[] = [];
+      model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
+      let foot = Infinity;
+      for (const m of meshes) {
+        m.geometry.computeBoundingBox();
+        foot = Math.min(foot, new Box3().copy(m.geometry.boundingBox!).applyMatrix4(m.matrixWorld).min.y);
+      }
+      let worst = -Infinity;
+      const v = new Vector3();
+      for (const m of meshes) {
+        const p = m.geometry.getAttribute("position");
+        for (let i = 0; i < p.count; i++) {
+          v.fromBufferAttribute(p, i).applyMatrix4(m.matrixWorld);
+          if (v.y > foot + 0.01) continue;
+          v.applyMatrix4(l.group.matrixWorld);
+          worst = Math.max(worst, v.y - terrain.height(v.x, -v.z));
+        }
+      }
+      expect(worst, entry.name).toBeLessThan(0.25);
+      l.dispose();
+    }
+  }, 60_000);
 });
 
 describe("the landmark kit", () => {

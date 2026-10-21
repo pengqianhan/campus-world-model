@@ -216,7 +216,8 @@ front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
 | ![The tower above the entrance bay, from the steps](docs/landmarks/clocktower-tower.jpg) | ![The upper tower: clock stage, tracery and pinnacles](docs/landmarks/clocktower-tower-close.jpg) |
 
 The second is Old Government House (102), a building of painted timber in its garden. Trees hide it
-from every Street View panorama near it but two, which show its south-east end, so its model is
+from every Street View panorama near it but two, which see the upper storey of its south-east end,
+so its model is
 checked against the LiDAR from above: on a 0.5 m grid its outline covers the building's with an IoU
 of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 
@@ -414,9 +415,16 @@ If you represent the University and would like something changed or removed, ple
   105S) and Old Government House (102) are the exceptions: their models are drawn to sizes measured
   from LiDAR.
 - **Old Government House is seen in only two photographs.** Trees hide it from the other Street View
-  panoramas near it, and the two show its south-east end. Its sizes and roofs come from the LiDAR.
-  What no photograph shows, most of the garden front and the porch, is drawn plainly or after the
-  parts the photographs do show.
+  panoramas near it, and the two see the upper storey of its south-east end. Its sizes and roofs
+  come from the LiDAR. What no photograph shows is drawn plainly or after the parts the photographs
+  do show: most of the garden front (its windows repeat the two that are seen), the porch, the
+  north-west lobby, the low south-east range, the north-west balcony (like the south-east one) and
+  the ranges round the courtyard behind.
+- **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
+  map's ground under its door, and its walls go down as far as that ground falls under it, so that
+  nothing hangs in the air. Under Old Government House the map's ground rises 2.75 m from end to end
+  where the LiDAR's rises 1.1 m: its north-west end stands up to 1.2 m too deep, and some of its
+  ground-floor windows there are partly under the drawn ground.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
   campus map's type and nothing more; where the map's type says nothing ("Non Usable Area",
   "Nonasgn Rentable" and the like) the site says "Other area". Floors where people live and

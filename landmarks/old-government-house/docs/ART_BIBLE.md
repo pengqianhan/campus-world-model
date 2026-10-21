@@ -40,7 +40,7 @@ most, and only what they show.
   weathering (paint, not stone).
 - Painted trim: yellow-ochre, smooth.
 - Glass: dark and reflective, white glazing bars; never flat black.
-- Roof: light grey, smooth; the ridges and hips a little darker.
+- Roof: light grey, smooth. (The ridges and hips are not drawn darker: the kit's flat faces give a shader no way to find them.)
 
 ## Never
 - Nothing traced or sampled from the photographs (no projected textures, no image files).

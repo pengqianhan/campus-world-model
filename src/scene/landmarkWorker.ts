@@ -10,7 +10,7 @@
 // model could load.
 import type { BufferAttribute, BufferGeometry, Group, Material, Mesh } from "three";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
-import { geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";
+import { STONE, geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";
 import type { Cover, LandmarkReply, LandmarkRequest, MeshData, TextureData } from "./landmarks.ts";
 
 import.meta.glob("../../landmarks/kit/*.js", { eager: true });
@@ -74,7 +74,9 @@ async function answer(ask: LandmarkRequest): Promise<void> {
           sphere: [...sphere.center.toArray(), sphere.radius],
         });
       });
-      reply({ name: ask.name, part: "geometry", meshes }, [...buffers]);
+      // A material the kit does not name is drawn in ashlar (landmarks.ts), so it counts as stone.
+      const stone = meshes.some((m) => m.material === "" || (STONE as string[]).includes(m.material));
+      reply({ name: ask.name, part: "geometry", meshes, stone }, [...buffers]);
     } else {
       const made = makeTextures(ask.quality) as Record<string, MadeTexture>;
       const textures: Record<string, TextureData> = {};

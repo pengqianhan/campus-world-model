@@ -9,9 +9,9 @@
 //   - the wing behind the middle (eaves 10.5, ridge 12.1) and the flat-roofed two-storey blocks between
 //     it and the end wings (9.2-9.4). The single-storey rooms round the courtyard are back's.
 import { Acc, face, fbox, sash, brackets, pairedBrackets, balustrade, quoins, cornerBoard, hip, gableZ, leanTo } from "./front_kit.js";
-import { MEASURED as M } from "./common.js";
+import { MEASURED as M, FOOT } from "./common.js";
 
-const BASE = -0.4;                         // walls start a little below the ground (0.2-0.8 m round the house)
+const BASE = FOOT;                         // walls start below the ground (common.js, FOOT)
 // the front range: wall faces (0.4 m in from the cornice's edge at the ends, 0.3 at the back, 0.45 at the
 // front), the cornice's top, the roof behind the balustrade
 const F = M.front;

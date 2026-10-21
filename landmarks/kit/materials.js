@@ -158,17 +158,16 @@ function painted(color, roughness, space) {
 }
 
 /**
- * A pale painted roof, smooth, its hips, ridges and valleys a little darker: where the face's normal
- * turns within a pixel's neighbours (the faces are flat, so only at the meeting of two roof planes).
+ * A pale painted roof, smooth, with the paint's faint unevenness. Its hips and ridges are not drawn
+ * darker: the kit's faces are flat and share no corners, so a shader cannot find where two meet.
  */
 function roofPale(color, space) {
   const m = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
   m.userData.metres = 2;
   return hook(m, "roofPale-v1", /* glsl */ `
   {
-    vec3 P = vWPos, N = normalize(vWNrm);
-    float edge = clamp(length(fwidth(N)) * 1.5, 0.0, 1.0);
-    diffuseColor.rgb *= (0.975 + 0.05 * wfbm(P * 0.3)) * (1.0 - 0.22 * edge);
+    vec3 P = vWPos;
+    diffuseColor.rgb *= 0.975 + 0.05 * wfbm(P * 0.3);
   }`, {}, undefined, space);
 }
 
@@ -194,6 +193,9 @@ function glassPale(space) {
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
  * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
  */
+/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
+export const STONE = ["ashlar", "smooth", "dressed", "shade"];
+
 export function makeTextures(quality = "high") {
   return { ashlar: ashlar(7, quality === "low" ? 1024 : 2048), smooth: smoothAshlar(13, 1024), dressed: dressed(11, 1024) };
 }
@@ -204,10 +206,12 @@ export function makeTextures(quality = "high") {
  * that is moved and turned into place (the campus map).
  */
 export function makeMaterials(quality = "high", textures = makeTextures(quality), { space = "world" } = {}) {
-  const dr = textures.dressed;
+  // A set not given (a model with no stone asks for none): its stone is made without maps, never drawn.
+  const set = (k) => textures[k] ?? { map: null, normalMap: null, metres: 2 };
+  const dr = set("dressed");
   const m = {
-    ashlar: stone(textures.ashlar, 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97], space }),
-    smooth: stone(textures.smooth, 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03], space }),
+    ashlar: stone(set("ashlar"), 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97], space }),
+    smooth: stone(set("smooth"), 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03], space }),
     dressed: stone(dr, 0.78, { normalScale: 1.0, weather: 0.7, key: "dressed-v2", tint: [1.08, 1.075, 1.06], space }),
     glass: glass(new URLSearchParams(globalThis.location?.search ?? "").get("glassbars") === "1", space),
     timber: timber(space),

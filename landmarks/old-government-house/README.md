@@ -35,14 +35,15 @@ the pipeline, the viewer and how to run them are shared by every landmark:
   bearing 142.68° (grid), so the garden front faces 52.68°.
 - On the map (`placement.json`): the centre is at (122.650, 272.089), x runs at 321.62° and z at
   51.62° (true). The door, at the foot of the porch steps, is at (133.92, 280.25).
-- Seen from above (0.5 m grid, cells above 2.5 m, 2026-10-22), the model covers 92.2% of building
+- Seen from above (0.5 m grid, cells above 2.5 m, 2026-10-22), the model covers 93.4% of building
   102's block and under 0.5% of any other block within 80 m, so it stands in place of 102 alone.
 
 ## References
 
 Of the 30 Google panoramas within 120 m, only two (2025-05, from the campus road 72 and 82 m beyond
 the south-east end) see the building, through trees; they were found with a low-resolution look at
-all 30 (zoom 3, 180 tiles) before 96 tiles were bought for the two. User-contributed panoramas are
+all 30 (zoom 3, 180 tiles, asked through `snapshot.ts` by a one-off script, not in the repository:
+the pipeline asks for zoom 4 or 5 only) before 96 tiles were bought for the two. User-contributed panoramas are
 not used. The sun stands in one of them, so the viewer's light for this building is the
 photographs' (config `light`: bearing 335°, 33° up). Their cameras could not be refined: trees hide
 three quarters of the outline round the model.
