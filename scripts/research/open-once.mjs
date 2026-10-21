@@ -1,11 +1,10 @@
 // Research helper: open one URL in headless Chromium and report status / body prefix. Only the
 // page itself is requested (polite.mjs, documents only): none of the scripts, images or analytics
 // it would load.
-import { chromium } from "@playwright/test";
-import { POLITE_ARGS, politePage } from "./polite.mjs";
+import { politeLaunch, politePage } from "./polite.mjs";
 
 const url = process.argv[2];
-const browser = await chromium.launch({ args: POLITE_ARGS });
+const { browser, close } = await politeLaunch();
 const { page, log, closed } = await politePage(browser, { url, types: ["document"] });
 try {
   const res = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -18,4 +17,4 @@ try {
 console.log("requests:", log.filter((r) => r.sent).length, "sent,", log.filter((r) => !r.sent).length, "blocked");
 for (const r of log) console.log(" ", r.sent ? `sent ${r.status ?? r.error ?? ""}` : `blocked (${r.reason})`, r.url);
 for (const [host, why] of closed) console.log("closed:", host, why);
-await browser.close();
+await close();

@@ -1,5 +1,5 @@
 // Types for polite.mjs, so that TypeScript files (the test in e2e/polite.spec.ts) can use it.
-import type { Browser, BrowserContext, Page } from "@playwright/test";
+import type { Browser, BrowserContext, LaunchOptions, Page } from "@playwright/test";
 
 export declare const PACE_MS: number;
 /** How long a request to a host waits for the answer to the request before it. */
@@ -28,9 +28,10 @@ export interface PoliteRow {
   error?: string;
   /** Why it was blocked: "host not allowed", "type not allowed", "closed: 403", "gone" and so on. */
   reason?: string;
-  /** What this file changed in the answer, for a page: "speculation rules removed" and so on. */
-  note?: string;
 }
+
+/** A research browser: the full Chromium build with "Preload pages" off. `close()` also deletes its profile. */
+export declare function politeLaunch(options?: LaunchOptions): Promise<{ browser: Browser; close: () => Promise<void> }>;
 
 export declare function politePage(
   browser: Browser,

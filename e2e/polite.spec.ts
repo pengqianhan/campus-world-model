@@ -1,13 +1,14 @@
 // The research browser (scripts/research/polite.mjs) keeps to "Snapshot once" and "Closed is a
 // verdict" for every request it sees, the hops of a redirect too. These tests do not use the site.
-// The browser tests each launch a browser of their own and start servers of their own on
-// 127.0.0.1 (one, or three for speculation rules), and ask no other host.
+// The browser tests each launch a browser of their own (politeLaunch(), but for the one that pins
+// a limit of a plain browser) and start one to three servers of their own on 127.0.0.1; the
+// WebRTC test also opens a UDP and a TCP socket there. They ask no other host.
 // They are here and not in tests/ because the CI job that runs vitest has no browser installed.
 import dgram from "node:dgram";
 import http from "node:http";
-import type { AddressInfo } from "node:net";
+import net, { type AddressInfo } from "node:net";
 import { chromium, expect, test, type Browser, type Page } from "@playwright/test";
-import { PACE_MS, POLITE_ARGS, isSignIn, politePage, type PoliteRow } from "../scripts/research/polite.mjs";
+import { ANSWER_WAIT_MS, PACE_MS, isSignIn, politeLaunch, politePage, type PoliteRow } from "../scripts/research/polite.mjs";
 
 type Answer = (res: http.ServerResponse, req: http.IncomingMessage) => void;
 interface Hit {
@@ -27,7 +28,9 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
   let answers: Record<string, Answer> = {};
   const server = http.createServer((req, res) => {
     const path = req.url ?? "/";
-    hits.push({ host: req.headers.host ?? "", path, at: Date.now() });
+    // The full Chromium build asks each host for /favicon.ico. That request goes through the gate
+    // like any other (paced and logged), but the tests leave it out of their lists of pages.
+    if (path !== "/favicon.ico") hits.push({ host: req.headers.host ?? "", path, at: Date.now() });
     const answer = answers[path.split("?")[0]!];
     if (answer) return answer(res, req);
     res.writeHead(404, { "content-type": "text/plain" });
@@ -79,6 +82,8 @@ const status =
 /** The gaps in milliseconds between one time and the next. */
 const gaps = (times: number[]) => times.slice(1).map((t, i) => t - times[i]!);
 const sentTimes = (log: PoliteRow[]) => log.filter((r) => r.sent).map((r) => Date.parse(r.at));
+/** The log without the browser's own /favicon.ico requests (see serve()). */
+const pages = (log: PoliteRow[]) => log.filter((r) => !r.url.endsWith("/favicon.ico"));
 const expectPaced = (log: PoliteRow[]) => {
   for (const gap of gaps(sentTimes(log))) expect(gap).toBeGreaterThanOrEqual(PACE_MS);
 };
@@ -89,13 +94,59 @@ const expectPacedAt = (hits: Hit[]) => {
 /** A global that the page's own script set. */
 const value = (page: Page, name: string) => page.evaluate((n) => (window as unknown as Record<string, unknown>)[n], name);
 
+// Speculation rules make Chromium prefetch and prerender outside the Fetch domain. Each page below
+// names three pages in its rules: another path on the page's own host (it would go out at once,
+// unpaced), a host not allowed, and a host closed by a 403. Returns the three servers after it.
+const SPECULATION = ["a list in the page", "the Speculation-Rules header", "a rule that the page's script adds", "a character reference in the type", "an XHTML page"] as const;
+async function speculate(browser: Browser, how: (typeof SPECULATION)[number]) {
+  let rules = "";
+  const xhtml: Answer = (res) => {
+    res.writeHead(200, { "content-type": "application/xhtml+xml" });
+    res.end(`<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://www.w3.org/1999/xhtml"><head></head><body><p>xhtml</p><h:script type="speculationrules">${rules}</h:script></body></html>`);
+  };
+  const site = await serve(() => ({
+    "/page": (res, req) =>
+      ({
+        "a list in the page": () => html(`list<script type="speculationrules">${rules}</script>`),
+        "the Speculation-Rules header": () => html("header", { "speculation-rules": '"/rules.json"' }),
+        "a rule that the page's script adds": () =>
+          html(
+            `script<script>` +
+              `const a = document.createElement("script"); a.type = "speculationrules"; a.textContent = ${JSON.stringify(rules)}; document.head.append(a);` +
+              `const b = document.createElement("script"); b.setAttribute("type", "speculationrules"); b.textContent = ${JSON.stringify(rules)}; document.head.append(b);` +
+              `</script>`,
+          ),
+        "a character reference in the type": () => html(`charref<script type="&#115;peculationrules">${rules}</script>`),
+        "an XHTML page": () => xhtml,
+      })[how]()(res, req),
+    "/rules.json": (res) => {
+      res.writeHead(200, { "content-type": "application/speculationrules+json" });
+      res.end(rules);
+    },
+  }));
+  const outside = await serve(() => ({}));
+  const shut = await serve(() => ({ "/forbidden": status(403) }));
+  const urls = [`${site.base}/same-host`, `${outside.base}/not-allowed`, `${shut.base}/closed-host`];
+  rules = JSON.stringify({ prefetch: [{ source: "list", urls }], prerender: [{ source: "list", urls: urls.map((u) => `${u}?prerender`) }] });
+  try {
+    const { page } = await politePage(browser, { url: site.base, allow: [shut.host] });
+    await page.goto(`${shut.base}/forbidden`);
+    await page.goto(`${site.base}/page`);
+    await page.waitForTimeout(3000);
+    return { site: site.paths(), outside: outside.paths(), outsideConnections: outside.connections(), shut: shut.paths() };
+  } finally {
+    await Promise.all([site.stop(), outside.stop(), shut.stop()]);
+  }
+}
+
 test.describe("research browser", () => {
   let browser: Browser;
+  let close: () => Promise<void>;
   test.beforeEach(async () => {
-    browser = await chromium.launch({ args: POLITE_ARGS });
+    ({ browser, close } = await politeLaunch());
   });
   test.afterEach(async () => {
-    await browser.close();
+    await close();
   });
 
   test("each hop of a redirect, of a page and of a script, waits its turn and is logged", async () => {
@@ -118,7 +169,7 @@ test.describe("research browser", () => {
 
       // Each hop went through the gate: logged as sent, with the hop it came from and its status.
       const path = (url?: string) => url?.slice(site.base.length);
-      const sent = log.filter((r) => r.sent).map((r) => ({ url: path(r.url), type: r.type, from: path(r.from), status: r.status }));
+      const sent = pages(log).filter((r) => r.sent).map((r) => ({ url: path(r.url), type: r.type, from: path(r.from), status: r.status }));
       expect(sent).toEqual([
         { url: "/a", type: "document", from: undefined, status: 302 },
         { url: "/b", type: "document", from: "/a", status: 301 },
@@ -126,7 +177,7 @@ test.describe("research browser", () => {
         { url: "/s1", type: "script", from: undefined, status: 307 },
         { url: "/s2", type: "script", from: "/s1", status: 200 },
       ]);
-      expect(log.filter((r) => !r.sent)).toEqual([]);
+      expect(pages(log).filter((r) => !r.sent)).toEqual([]);
       expect(site.paths()).toEqual(["/a", "/b", "/c", "/s1", "/s2"]);
 
       // Each one left at least PACE_MS after the one before in the log, and well apart at the server.
@@ -287,7 +338,7 @@ test.describe("research browser", () => {
       const popup = context.waitForEvent("page");
       await page.goto(`${site.base}/start`);
       await (await popup).waitForURL(`${site.base}/pop2`);
-      expect(log.map((r) => [r.url.slice(site.base.length), r.from?.slice(site.base.length), r.sent])).toEqual([
+      expect(pages(log).map((r) => [r.url.slice(site.base.length), r.from?.slice(site.base.length), r.sent])).toEqual([
         ["/start", undefined, true],
         ["/pop1", undefined, true],
         ["/pop2", "/pop1", true],
@@ -310,7 +361,7 @@ test.describe("research browser", () => {
       const second = await politePage(browser, { url: site.base });
       expect(second.closed).toBe(first.closed);
       await expect(second.page.goto(`${site.base}/ok`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
-      expect(second.log).toMatchObject([{ url: `${site.base}/ok`, sent: false, reason: "closed: 403" }]);
+      expect(pages(second.log)).toMatchObject([{ url: `${site.base}/ok`, sent: false, reason: "closed: 403" }]);
       await second.context.close();
       expect(site.paths()).toEqual(["/ok", "/forbidden"]);
 
@@ -320,7 +371,9 @@ test.describe("research browser", () => {
         const third = await politePage(browser, { url: other.base });
         await third.page.goto(`${other.base}/ok`);
         expect(other.hits[0]!.at - site.hits[1]!.at).toBeGreaterThanOrEqual(PACE_MS / 2);
-        expect(Date.parse(third.log[0]!.at) - Date.parse(first.log[1]!.at)).toBeGreaterThanOrEqual(PACE_MS);
+        const lastOfFirst = first.log.filter((r) => r.sent).at(-1)!;
+        const firstOfThird = third.log.filter((r) => r.sent)[0]!;
+        expect(Date.parse(firstOfThird.at) - Date.parse(lastOfFirst.at)).toBeGreaterThanOrEqual(PACE_MS);
         await third.context.close();
       } finally {
         await other.stop();
@@ -347,73 +400,100 @@ test.describe("research browser", () => {
     }
   });
 
-  // Speculation rules make Chromium prefetch and prerender outside the Fetch domain. Each case
-  // names three pages: another path on the page's own host (it would go out at once, unpaced), a
-  // host not allowed, and a host closed by a 403. None of them may reach a server.
-  for (const how of ["a list in the page", "the Speculation-Rules header", "a rule that the page's script adds"] as const) {
-    test(`speculation rules from ${how} are removed, so nothing is prefetched or prerendered`, async () => {
-      let rules = "";
-      const ruleScript = () =>
-        `const a = document.createElement("script"); a.type = "speculationrules"; a.textContent = ${JSON.stringify(rules)}; document.head.append(a);` +
-        `const b = document.createElement("script"); b.setAttribute("type", "speculationrules"); b.textContent = ${JSON.stringify(rules)}; document.head.append(b);`;
-      const site = await serve(() => ({
-        "/page": (res, req) =>
-          ({
-            "a list in the page": html(`list<script type="speculationrules">${rules}</script>`),
-            "the Speculation-Rules header": html("header", { "speculation-rules": '"/rules.json"' }),
-            "a rule that the page's script adds": html(`script<script>${ruleScript()}</script>`),
-          })[how](res, req),
-        "/rules.json": (res) => {
-          res.writeHead(200, { "content-type": "application/speculationrules+json" });
-          res.end(rules);
-        },
-      }));
-      const outside = await serve(() => ({}));
-      const shut = await serve(() => ({ "/forbidden": status(403) }));
-      const urls = [`${site.base}/same-host`, `${outside.base}/not-allowed`, `${shut.base}/closed-host`];
-      rules = JSON.stringify({
-        prefetch: [{ source: "list", urls }],
-        prerender: [{ source: "list", urls: urls.map((u) => `${u}?prerender`) }],
-      });
-      try {
-        const { page, log } = await politePage(browser, { url: site.base, allow: [shut.host] });
-        await page.goto(`${shut.base}/forbidden`);
-        await page.goto(`${site.base}/page`);
-        await page.waitForTimeout(3000);
-        expect(site.paths()).toEqual(["/page"]);
-        expect(shut.paths()).toEqual(["/forbidden"]);
-        expect(outside.hits).toEqual([]);
-        expect(outside.connections()).toBe(0);
-        if (how !== "a rule that the page's script adds") expect(log.find((r) => r.url === `${site.base}/page`)?.note).toMatch(/removed/);
-      } finally {
-        await Promise.all([site.stop(), outside.stop(), shut.stop()]);
-      }
+  test("a request that the page aborts after it was sent frees its host at once, not after ANSWER_WAIT_MS", async () => {
+    const site = await serve(() => ({
+      "/start": html(`<script>
+        const stop = new AbortController();
+        fetch("/slow", { signal: stop.signal }).catch(() => {});
+        // /slow leaves one turn of the pace after this page; it is aborted well after that.
+        setTimeout(() => { stop.abort(); fetch("/next").then((r) => { window.NEXT = r.status; }); }, ${2 * PACE_MS});
+      </script>`),
+      "/slow": status(200, 8000),
+      "/next": status(200),
+    }));
+    try {
+      const { page, log } = await politePage(browser, { url: site.base });
+      await page.goto(`${site.base}/start`);
+      await expect.poll(() => value(page, "NEXT"), { timeout: ANSWER_WAIT_MS + 5000 }).toBe(200);
+      expect(log.find((r) => r.url === `${site.base}/slow`)).toMatchObject({ sent: true });
+      const at = (path: string) => site.hits.find((h) => h.path === path)!.at;
+      // Without the release, /next would wait the full ANSWER_WAIT_MS after /slow.
+      expect(at("/next") - at("/slow")).toBeLessThan(ANSWER_WAIT_MS - 2 * PACE_MS);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  for (const how of SPECULATION) {
+    test(`speculation rules from ${how} prefetch and prerender nothing in a browser from politeLaunch()`, async () => {
+      // The browser still reads the header's rule file, through the gate, but acts on none of its rules.
+      const site = how === "the Speculation-Rules header" ? ["/page", "/rules.json"] : ["/page"];
+      expect(await speculate(browser, how)).toEqual({ site, outside: [], outsideConnections: 0, shut: ["/forbidden"] });
     });
   }
 
-  test("with POLITE_ARGS, WebRTC sends nothing to a STUN server", async () => {
+  test("WebRTC is gone from every page and frame, so it reaches no STUN or TURN server, over UDP or TCP", async () => {
     const udp = dgram.createSocket("udp4");
     let packets = 0;
     udp.on("message", () => packets++);
     await new Promise<void>((done) => udp.bind(0, "127.0.0.1", done));
-    const stun = `stun:127.0.0.1:${(udp.address() as AddressInfo).port}`;
+    let connections = 0;
+    const tcp = net.createServer((socket) => {
+      connections++;
+      socket.on("error", () => {});
+    });
+    await new Promise<void>((done) => tcp.listen(0, "127.0.0.1", done));
+    const servers = [
+      { urls: `stun:127.0.0.1:${(udp.address() as AddressInfo).port}` },
+      { urls: `turn:127.0.0.1:${(tcp.address() as AddressInfo).port}?transport=tcp`, username: "u", credential: "c" },
+    ];
+    const connect = (where: string, relay: boolean) =>
+      `try { const pc = new ${where}RTCPeerConnection({ iceServers: ${JSON.stringify(servers)}${relay ? `, iceTransportPolicy: "relay"` : ""} });` +
+      ` pc.createDataChannel("x"); pc.createOffer().then((o) => pc.setLocalDescription(o)); out.push("made"); } catch { out.push("none"); }`;
     const site = await serve(() => ({
       "/start": html(`<script>
-        const pc = new RTCPeerConnection({ iceServers: [{ urls: ${JSON.stringify(stun)} }] });
-        pc.createDataChannel("x");
-        pc.createOffer().then((o) => pc.setLocalDescription(o));
+        window.out = [];
+        ${connect("", false)}
+        ${connect("", true)}
+        const blank = document.body.appendChild(document.createElement("iframe"));
+        ${connect("blank.contentWindow.", true)}
+        out.push(typeof blank.contentWindow.webkitRTCPeerConnection);
+        const srcdoc = document.createElement("iframe");
+        srcdoc.srcdoc = "<p>frame</p>";
+        srcdoc.onload = () => out.push(typeof srcdoc.contentWindow.RTCPeerConnection);
+        document.body.appendChild(srcdoc);
+        const worker = new Worker(URL.createObjectURL(new Blob(["postMessage(typeof RTCPeerConnection)"])));
+        worker.onmessage = (e) => out.push(e.data);
       </script>`),
     }));
     try {
       const { page } = await politePage(browser, { url: site.base });
       await page.goto(`${site.base}/start`);
+      await expect.poll(() => value(page, "out")).toHaveLength(6);
+      expect(await value(page, "out")).toEqual(["none", "none", "none", "undefined", expect.any(String), expect.any(String)]);
+      expect((await value(page, "out") as string[]).slice(4).sort()).toEqual(["undefined", "undefined"]);
       await page.waitForTimeout(3000);
-      expect(packets).toBe(0);
+      expect({ packets, connections }).toEqual({ packets: 0, connections: 0 });
     } finally {
       udp.close();
+      tcp.close();
       await site.stop();
     }
   });
+});
+
+// A limit, pinned: in a browser that politeLaunch() did not start (Playwright's default headless
+// shell), speculation rules prefetch past the gate, to any host, even a closed one.
+test("research browser: in a plain browser, speculation rules still prefetch outside the gate (a known limit)", async () => {
+  const browser = await chromium.launch();
+  try {
+    const seen = await speculate(browser, "a list in the page");
+    expect(seen.site).toContain("/same-host");
+    expect(seen.outside).toContain("/not-allowed");
+    expect(seen.shut).toContain("/closed-host");
+  } finally {
+    await browser.close();
+  }
 });
 
 test("research browser: what counts as a sign-in page", () => {
