@@ -71,12 +71,13 @@ measured shape alone:
 - **Walls** take the street look's facade in the walker views, as the blocks next to them do
   (`street-look` skill). On the map they take the map's palette, as a landmark's light form does.
 - **Storeys** come from the published data, as the blocks' storeys do: the building's number of
-  levels at or above the ground in `campus.json`, spaced evenly from the ground to each eave. A
+  levels at or above index 0 in `campus.json` (as `src/shared/massing.ts` counts them for the blocks: 216 Mona's B, G and 1 are three), spaced evenly from the ground to each eave. A
   storey is never under 2.4 m (the wall then has fewer storeys) or over 4.5 m (a plain band stays
   above the top storey). A 7.8 m wall under three levels has three storeys of 2.6 m. Windows sit
-  on the street look's bay grid (`PROGRESS.md`, "Decisions": how a University building looks from
-  outside, 3.2 m by 3.6 m). The alternative, storeys from the measured wall height alone, is
-  decision 4; it needs one more amendment (section 3).
+  on the street look's bays (`PROGRESS.md`, "Decisions": how a University building looks from
+  outside), 3.2 m wide, one row a storey: the grid's 3.6 m is the storey itself, so its rows follow
+  the storey height (`src/scene/CampusScene.ts`, `storey: floorHeight`). The alternative, storeys from the measured wall height alone, is
+  decision 4; amendment 2 then ends with other words (section 3).
 - **Roofs** take the map's roof colour, as the blocks do. A pitched roof takes the same colour; it
   shows its form by its light. Flat roofs keep the rim.
 
@@ -189,7 +190,7 @@ Decisions in `PROGRESS.md` that a measured massing touches:
 4. **"On the map, a light form".** This holds as it is. A measured massing has no textures at all.
    It loads only when the camera comes near, as a landmark does. No amendment.
 5. **"How a University building looks from outside" (the user, 2026-10-14).** Roofs keep their own
-   colour and flat roofs their rim. Windows keep the 3.2 m by 3.6 m grid. Only the storey height
+   colour and flat roofs their rim. Windows keep the 3.2 m bays, one row a storey. Only the storey height
    moves away from 3.6 m, so that the published levels fit a measured wall. No amendment: the
    number of storeys still comes from the published data. Decision 4 says what changes if it does
    not.
@@ -335,7 +336,9 @@ The generator will measure these again, and its numbers decide.
 4. **Storeys.** From the building's published levels, spaced to the measured walls (proposed; no
    further amendment), or from the measured wall height in whole storeys near 3.6 m (amendment 2
    then ends with the other words in section 3). They disagree: 113 has three levels on the map
-   under a 7.8 m roof, so three storeys of 2.6 m, against two of 3.9 m.
+   under a 7.8 m roof, so three storeys of 2.6 m, against two of 3.9 m. Spaced to each eave, parts
+   of one building under different eaves get different storeys (409: 2.6 m and 3.4 m side by side),
+   so their window rows do not line up where the parts meet.
 5. **Roofs.** The map's roof colour for flat and pitched roofs alike, and no colour from the aerial
    photos (proposed). Or a second roof colour for pitched roofs.
 6. **Where people live and childcare centres.** Draw their exterior shell, or keep their blocks
