@@ -1,0 +1,226 @@
+{
+ "name": "general-library",
+ "building": {
+  "id": "109",
+  "also": [],
+  "title": "General Library, University of Auckland",
+  "note": "outline: building 109's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    -1.4,
+    156.6
+   ],
+   [
+    27.8,
+    132.9
+   ],
+   [
+    37.0,
+    144.4
+   ],
+   [
+    57.1,
+    128.5
+   ],
+   [
+    49.2,
+    118.5
+   ],
+   [
+    60.1,
+    109.8
+   ],
+   [
+    59.3,
+    108.8
+   ],
+   [
+    59.7,
+    108.4
+   ],
+   [
+    53.2,
+    100.4
+   ],
+   [
+    52.8,
+    100.7
+   ],
+   [
+    50.6,
+    98.0
+   ],
+   [
+    50.9,
+    97.8
+   ],
+   [
+    50.5,
+    97.3
+   ],
+   [
+    50.2,
+    97.5
+   ],
+   [
+    45.9,
+    92.1
+   ],
+   [
+    46.1,
+    91.9
+   ],
+   [
+    40.3,
+    85.1
+   ],
+   [
+    22.1,
+    99.3
+   ],
+   [
+    14.3,
+    89.8
+   ],
+   [
+    11.2,
+    92.3
+   ],
+   [
+    10.3,
+    91.2
+   ],
+   [
+    4.9,
+    95.6
+   ],
+   [
+    11.3,
+    103.4
+   ],
+   [
+    9.9,
+    104.5
+   ],
+   [
+    5.1,
+    98.5
+   ],
+   [
+    -27.9,
+    124.6
+   ],
+   [
+    -16.3,
+    139.6
+   ],
+   [
+    -17.3,
+    140.5
+   ],
+   [
+    -15.4,
+    142.8
+   ],
+   [
+    -14.5,
+    142.0
+   ],
+   [
+    -14.1,
+    142.4
+   ],
+   [
+    -6.0,
+    152.5
+   ],
+   [
+    -5.8,
+    152.3
+   ],
+   [
+    -2.4,
+    156.5
+   ],
+   [
+    -1.9,
+    156.0
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 44.0,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 109's outline: centre = mean x/y of points higher than tower_above m: the roof of the tower slab and the plant room on it; axis = the bearing of most of the walls seen from above (axis_from walls), the one of the two square to each other nearest the principal axis of the points from min_above to spine_below m within spine_radius m of the centre, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: south-west, to Alfred Street.",
+  "min_above": 3,
+  "tower_above": 24,
+  "spine_below": 40,
+  "spine_radius": 40,
+  "near_outline": 3,
+  "street_side": "west",
+  "axis_from": "walls"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 14,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 26,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 4,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 6,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "provisional: the LiDAR ground on Alfred Street in front of the middle of the south-west face (43.7 to 44.3 m; the site falls about 5 m from Princes Street on the west, 45.6 m, to 40.5 m on the east); set at the door once the references show it"
+}
