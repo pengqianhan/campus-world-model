@@ -42,7 +42,9 @@
   }
  },
  "streetview": {
-  "max_panos": 12,
+  "max_panos": 5,
+  "pano_ids_note": "the five Google panoramas that show the building (2024-07, on Princes Street 32-41 m from the chapel, in front of its street side; 2026-10-22). Of the 50 Google panoramas within 120 m, the 19 within 70 m were looked at in a low-resolution probe (zoom 3, 118 tiles, 110 of them bought): these five show the chapel and the hall, a sixth on the same row (2YsL7HxV6pA9, 40 m) only the tree in front of it, and the 13 others (Princes Street further off, Waterloo Quadrant 2026-04) trees, at most the spire's tip. User-contributed panoramas are not used.",
+  "pano_ids": ["dtDwTiTGcX_MOJOSUpp_oA", "dsLbToS1nQd0mgvmZekNaA", "PC_4joH8Z4OrGCcAXq8vbw", "34Yw_KHRhh1xME3OCc8gVw", "JYSzWEjct6NbmvBDb5PjVA"],
   "radius_m": 120,
   "camera_height_m": 2.5,
   "views": [
