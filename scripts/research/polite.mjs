@@ -3,9 +3,10 @@
 // this file. Launch it with politeLaunch() and open its page with politePage(). The browser can
 // send requests only to the hosts being studied, at most one request every PACE_MS. A request to
 // a host waits for the answer to the request before it on that host, for at most ANSWER_WAIT_MS.
-// Service workers are blocked. A request for /favicon.ico is blocked: the full Chromium build asks
-// each host for it by itself. Every request that this file sees is logged, sent or blocked. The
-// limits below say what it does not see.
+// Service workers are blocked. The browser's own fetch of a page's icon (its <link rel="icon">, or
+// else /favicon.ico) is blocked: the full Chromium build makes it by itself, and the headless shell
+// never did. Every request that this file sees is logged, sent or blocked. The limits below say
+// what it does not see.
 //
 // The gate is the DevTools Fetch domain on the browser's own session, not page.route(). Playwright
 // routes only the first request of a redirect chain and lets the browser follow each 3xx by itself,
@@ -146,7 +147,7 @@ async function open(browser, state, { url, allow, types, viewport }) {
     const row = { type: typeOf(e), method: e.request.method, url: e.request.url };
     const from = sentRows.get(e.redirectedRequestId);
     if (from) row.from = from.url;
-    if (URL.parse(row.url)?.pathname === "/favicon.ico") return block(e, row, "favicon");
+    if (isBrowserIcon(e)) return block(e, row, "favicon");
     const host = hostOf(e.request.url);
     if (!hosts.has(host)) return block(e, row, "host not allowed");
     if (wanted && !wanted.has(row.type)) return block(e, row, "type not allowed");
@@ -251,6 +252,16 @@ async function open(browser, state, { url, allow, types, viewport }) {
 /** The resource type as the Fetch domain gives it, in lower case: "document", "script", "xhr" and so on. */
 function typeOf(e) {
   return String(e.resourceType ?? "other").toLowerCase();
+}
+
+/**
+ * True for the browser's own fetch of a page's icon: the Fetch domain gives it the type "Other",
+ * and it asks for an image. Each image that the page itself loads has the type "Image", and the
+ * page's other "Other" requests (a worker's script, <object>, <embed>) accept any type.
+ */
+function isBrowserIcon(e) {
+  const accept = Object.entries(e.request.headers ?? {}).find(([name]) => name.toLowerCase() === "accept")?.[1] ?? "";
+  return e.resourceType === "Other" && accept.startsWith("image/");
 }
 
 function hostOf(url) {

@@ -83,8 +83,8 @@ const status =
 /** The gaps in milliseconds between one time and the next. */
 const gaps = (times: number[]) => times.slice(1).map((t, i) => t - times[i]!);
 const sentTimes = (log: PoliteRow[]) => log.filter((r) => r.sent).map((r) => Date.parse(r.at));
-/** The log without the rows of the browser's own /favicon.ico requests, which the gate blocks (see the favicon test). */
-const pages = (log: PoliteRow[]) => log.filter((r) => !r.url.endsWith("/favicon.ico"));
+/** The log without the rows of the browser's own icon requests, which the gate blocks (see the favicon tests). */
+const pages = (log: PoliteRow[]) => log.filter((r) => r.reason !== "favicon");
 const expectPaced = (log: PoliteRow[]) => {
   for (const gap of gaps(sentTimes(log))) expect(gap).toBeGreaterThanOrEqual(PACE_MS);
 };
@@ -438,6 +438,24 @@ test.describe("research browser", () => {
       await expect.poll(() => log.find((r) => r.url === `${site.base}/favicon.ico`)).toMatchObject({ sent: false, reason: "favicon" });
       expect(log.filter((r) => r.sent).map((r) => r.url)).toEqual([`${site.base}/start`]);
       expect(site.paths()).toEqual(["/start"]);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  test("the browser's own request for the icon a page names is blocked, at any path, and the page's own image still goes through", async () => {
+    const site = await serve(() => ({
+      "/start": (res) => {
+        res.writeHead(200, { "content-type": "text/html" });
+        res.end(`<!doctype html><html><head><link rel="icon" href="/brand/icon.png"></head><body><img src="/brand/other.png"></body></html>`);
+      },
+    }));
+    try {
+      const { page, log } = await politePage(browser, { url: site.base });
+      await page.goto(`${site.base}/start`);
+      await expect.poll(() => log.find((r) => r.url === `${site.base}/brand/icon.png`)).toMatchObject({ sent: false, reason: "favicon" });
+      expect(log.find((r) => r.url === `${site.base}/brand/other.png`)).toMatchObject({ type: "image", sent: true });
+      expect(site.paths()).toEqual(["/start", "/brand/other.png"]);
     } finally {
       await site.stop();
     }
