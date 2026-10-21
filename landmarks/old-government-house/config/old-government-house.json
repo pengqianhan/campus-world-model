@@ -25,10 +25,10 @@
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
-  "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m (the main roof's ridges); axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing south-east, as street_side is east); toStreet = the axis turned 90 deg toward street_side: north-east, to the lawn and the garden front of the main two-storey block, where most of the Google panoramas are. The lower service wings are on the south-west side (-z). Only building points inside the outline or within near_outline m of it count: another building stands in the crop box.",
-  "min_above": 3.5, "tower_above": 9.5, "spine_below": 12.5, "spine_radius": 35, "near_outline": 3,
+  "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m (the main roof's ridges); axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre: the upper roofs of the main block and its end wings, as min_above is the height of the eaves (lower, the service ranges behind turn it 10 deg off the garden front) (pointing south-east, as street_side is east); toStreet = the axis turned 90 deg toward street_side: north-east, to the lawn and the garden front of the main two-storey block, where most of the Google panoramas are. The lower service wings are on the south-west side (-z). Only building points inside the outline or within near_outline m of it count: another building stands in the crop box.",
+  "min_above": 9.5, "tower_above": 9.5, "spine_below": 12.5, "spine_radius": 35, "near_outline": 3,
   "street_side": "east",
-  "expected": {"centre": [127.660, 269.745], "axis": [0.731273, -0.682085], "tolerance_m": 0.05}
+  "expected": {"centre": [127.660, 269.745], "axis": [0.60624840, -0.79527534], "tolerance_m": 0.05}
  },
  "streetview": {
   "max_panos": 2,

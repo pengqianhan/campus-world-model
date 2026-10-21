@@ -11,12 +11,14 @@ sampled from them into the model.
   ground at the porch of the garden front (37.5 m NZVD2016), **z** toward the lawn (north-east); the
   centre of the main roof's high points at x = z = 0. `config/old-government-house.json`, `frame`.
 - What the LiDAR shows, in this frame (`data/old-government-house_plan_frame.png`, `_front_elevation.png`):
-  - the main block, two storeys, from x ≈ -24 to 24 and z ≈ -5 to 10, eaves about 9.5–10.5 m,
-    ridges about 12.2 m, and chimneys to 13.3–14.6 m;
-  - an end wing at each end (x ≈ -24 to -12 and 12 to 24) reaching back to z ≈ -17, ridges about
-    10.5–11 m;
-  - lower service ranges round a courtyard behind (south-west, z ≈ -27 to -5), 3–8 m;
-  - a porch of about 4.4 m at the middle of the garden front (x ≈ -5 to 0.6, z ≈ 9 to 13.4).
+  - the main block, two storeys, from x ≈ -24 to 23 and z ≈ -10 to 8: its middle (x ≈ -18 to 15)
+    stands forward to z ≈ 8, its ends to z ≈ 5; eaves about 9–10.5 m, ridges about 12.4–12.7 m,
+    chimneys to 13.8–15.1 m;
+  - lower ranges behind it round a courtyard (south-west, z ≈ -25 to -1), eaves up to about 8.5–9 m,
+    with one higher ridge at z ≈ -19 (x ≈ -9 to 15);
+  - a porch of about 4.4 m at the middle of the garden front (x ≈ -6 to 0, z ≈ 8 to 12).
+- The axis is that of the upper roofs (`frame.min_above` 9.5 m), along the garden front: with the
+  lower ranges counted it turns 10° off it.
 - The sizes every part shares go in `parts/common.js` (the lead's). If a size there is wrong, measure
   it from the LiDAR (`data/old-government-house_pts.npy`: x, y, z, class in local NZTM metres) and
   say so in your report with the numbers; do not edit `common.js`.
