@@ -109,11 +109,6 @@ function timber(space) {
   }`, {}, undefined, space);
 }
 
-/** A plain colour, no texture and no weathering. */
-function plain(color, roughness) {
-  return Object.assign(new THREE.MeshStandardMaterial({ color, roughness, metalness: 0 }), { userData: { metres: 2 } });
-}
-
 /** Slate and lead roofs: dark grey with courses of slates. */
 function roof(space) {
   const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.75 });
@@ -124,6 +119,56 @@ function roof(space) {
     float course = smoothstep(0.0, 0.06, fract(P.y / 0.18 + P.x * 0.0));
     float slate = wh(floor(vec3(P.x / 0.3 + floor(P.y / 0.18) * 0.5, P.y / 0.18, P.z / 0.3)));
     diffuseColor.rgb = vec3(0.095, 0.10, 0.11) * (0.8 + 0.4 * slate) * (0.7 + 0.3 * course);
+  }`, {}, undefined, space);
+}
+
+// Painted timber (Old Government House): shader hooks only, no textures, so a model that does not use
+// them pays nothing. Paint is barely weathered: a faint broad unevenness and a little dirt at the foot.
+const PAINT_TONE = "(0.97 + 0.06 * wfbm(P * 0.45)) * mix(0.90, 1.0, smoothstep(0.0, 0.9, P.y + 0.4))";
+
+/**
+ * Painted weatherboards: horizontal boards 0.2 m high on every wall whatever way it faces, each
+ * lapped over the one below, so a fine shadow runs under every board's lower edge. The lines fade to
+ * their average where a board is under about two pixels, so the far walls do not shimmer.
+ */
+function boards(color, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness: 0.78 });
+  m.userData.metres = 2;
+  return hook(m, "boards-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));               // walls only, not sills and soffits
+    float t = P.y / 0.2, f = fract(t), w = fwidth(t);
+    // under the board above: a soft shadow over the top few centimetres of each board
+    float sh = 1.0 - smoothstep(0.0, 0.22 + w, 1.0 - f);
+    // the board's own lower edge, a lip that faces down
+    float lip = 1.0 - smoothstep(0.0, 0.05 + w, f);
+    float g = 1.0 - 0.42 * sh - 0.12 * lip;
+    g *= 0.985 + 0.03 * wh(vec3(floor(t), floor(P.x * 0.25 + P.z * 0.25), 3.0));  // board to board
+    g = mix(0.95, g, 1.0 - smoothstep(0.35, 0.7, w));                // their average when too fine to draw
+    diffuseColor.rgb *= mix(1.0, g, wall) * ${PAINT_TONE};
+  }`, {}, undefined, space);
+}
+
+/** Smooth paint (trim, white work): the paint's faint unevenness only. One shader for both. */
+function painted(color, roughness, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness });
+  m.userData.metres = 2;
+  return hook(m, "paint-v1", `{ vec3 P = vWPos; diffuseColor.rgb *= ${PAINT_TONE}; }`, {}, undefined, space);
+}
+
+/**
+ * A pale painted roof, smooth, its hips, ridges and valleys a little darker: where the face's normal
+ * turns within a pixel's neighbours (the faces are flat, so only at the meeting of two roof planes).
+ */
+function roofPale(color, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
+  m.userData.metres = 2;
+  return hook(m, "roofPale-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float edge = clamp(length(fwidth(N)) * 1.5, 0.0, 1.0);
+    diffuseColor.rgb *= (0.975 + 0.05 * wfbm(P * 0.3)) * (1.0 - 0.22 * edge);
   }`, {}, undefined, space);
 }
 
@@ -155,11 +200,11 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     void: Object.assign(new THREE.MeshStandardMaterial({ color: 0x1b1916, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // recessed blind panels: the same dressed stone, a little darker for the shadow of the recess
     shade: stone(dr, 0.85, { normalScale: 1.0, weather: 0.8, key: "shade-v2", tint: [0.8, 0.79, 0.77], space }),
-    // painted timber (Old Government House): plain colours, no textures, until a look round draws them
-    boards: plain(0xece2bf, 0.8),   // weatherboard walls, pale cream-yellow
-    trim: plain(0xd2a94e, 0.7),     // surrounds, pilasters, bands and brackets, yellow-ochre
-    paint: plain(0xf1efe8, 0.6),    // white: glazing bars, balusters, chimney caps
-    roofPale: plain(0xa4a8ab, 0.6), // light grey roof
+    // painted timber (Old Government House): shader hooks, no textures
+    boards: boards(0xece4d3, space),                    // weatherboard walls, pale cream-yellow
+    trim: painted(0xe6c790, 0.6, space),                // surrounds, pilasters, bands and brackets, yellow-ochre
+    paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
+    roofPale: roofPale(0xcac7c0, space),                // light grey roof
   };
   return m;
 }

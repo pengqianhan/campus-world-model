@@ -66,8 +66,12 @@ vec3 skyColor(vec3 d) {
   return c * gain;
 }`;
 
-/** The visible sky dome, and an environment for image-based light built from the same sky. */
-export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.5, quality = "high" }) {
+/**
+ * The visible sky dome, and an environment for image-based light built from the same sky. `haze`
+ * (0..1) pales the visible blue overhead toward the horizon's white, as a photograph exposed for the
+ * walls washes out its sky; the light from the sky keeps its blue. 0: the sky as it is.
+ */
+export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.5, haze = 0, quality = "high" }) {
   const uniforms = () => ({
     zenith: { value: new THREE.Color(0.18, 0.40, 0.86) },
     horizon: { value: new THREE.Color(0.84, 0.84, 0.86) },
@@ -85,6 +89,7 @@ export function makeSky(renderer, scene, { sunDir, envIntensity = 1, envSat = 0.
     fragmentShader: skyGLSL + "\nvarying vec3 vDir; void main(){ gl_FragColor = vec4(skyColor(normalize(vDir)), 1.0);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}",
   });
   const skyU = uniforms();
+  if (haze > 0) skyU.zenith.value.lerp(skyU.horizon.value, haze);
   const sky = new THREE.Mesh(new THREE.SphereGeometry(1000, 48, 24), mat(skyU));
   sky.frustumCulled = false; sky.renderOrder = -1; sky.name = "sky";
   sky.onBeforeRender = (r, s, camera) => sky.position.copy(camera.position);

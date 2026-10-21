@@ -19,8 +19,11 @@ most, and only what they show.
 - Around it: a lawn and large trees, a tarmac path; these are not part of the model.
 
 ## The light (match the photographs)
-- Taken in May 2025 by day, with the sun on the south-east end. The lit boards read
-  cream-white, the ochre surrounds warm; the shade under the eaves is deep.
+- Taken in May 2025 at about half past one, the sun in the north-north-west (bearing about 335°,
+  33° up; it shows in `hRE5…_wide.jpg`). So the south-east end is in open shade, its boards a cool
+  cream under the blue sky, and the garden front catches the sun at a grazing angle. The ochre
+  surrounds stay warm in the shade; the shade under the eaves is deep. The viewer takes this light
+  from the config's `light`.
 - Measure, don't guess: compare the luminance of the lit boards and of the eave shadows between a
   strip's reference and its render (crop the same region of both).
 
