@@ -1,0 +1,60 @@
+{
+ "name": "maclaurin-chapel",
+ "building": {
+  "id": "107",
+  "also": [],
+  "title": "Maclaurin Chapel, University of Auckland",
+  "note": "outline: building 107's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[78.3, 382.0], [79.4, 383.5], [81.2, 383.7], [82.7, 382.6], [82.9, 380.6], [87.1, 379.1], [85.9, 375.8], [87.0, 372.3], [86.7, 371.7], [87.2, 371.5], [87.2, 369.4], [87.6, 369.3], [87.3, 368.6], [86.9, 368.8], [86.7, 368.1], [86.3, 368.3], [85.6, 367.2], [85.1, 367.4], [84.9, 366.8], [82.0, 364.5], [86.1, 363.0], [84.9, 359.8], [82.5, 360.7], [77.8, 348.0], [80.2, 347.2], [78.2, 341.7], [63.3, 347.1], [65.3, 352.6], [67.7, 351.7], [72.3, 364.4], [69.9, 365.3], [71.1, 368.4], [75.3, 366.9], [74.5, 370.4], [74.7, 371.1], [74.3, 371.2], [74.4, 372.5], [74.0, 372.7], [74.3, 373.3], [73.9, 373.5], [74.7, 374.7], [75.2, 374.5], [76.0, 375.6], [76.3, 375.5], [76.5, 376.0], [79.4, 378.2], [79.7, 378.1], [80.2, 379.3], [78.7, 380.3]]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 43.6,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3604"],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802"],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 107's outline: centre = mean x/y of points higher than tower_above m; axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing north-ish, as street_side is west); toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
+  "min_above": 2.5,
+  "tower_above": 9.5,
+  "spine_below": 6,
+  "spine_radius": 35,
+  "near_outline": 1,
+  "street_side": "west"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 7, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "upper", "aim_y": 13, "hfov": 40, "width": 1200, "height": 900},
+   {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "provisional: the LiDAR ground along the Princes Street (west-north-west) side of the building; set at the door once the references show it"
+}
