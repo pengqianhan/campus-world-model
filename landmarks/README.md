@@ -88,7 +88,10 @@ A landmark is measured in one frame and shown in another.
   - local metres = NZTM (EPSG:2193) minus the NZTM of the campus origin (-36.8523, 174.7691), grid north;
   - centre = mean x/y of building points (class 6) higher than `frame.tower_above` m above the ground;
     with `frame.near_outline` (metres), only the points inside the building's outline or that near
-    its edge count, for a building with others in its crop box;
+    its edge count, for a building with others in its crop box; with `frame.tower_radius` (metres),
+    only those within that distance, in plan, of the highest of them, for a building whose points
+    above `tower_above` include more than its tallest part (a tree's crown that the LiDAR classes as
+    building, over a lower roof);
   - facade axis = principal axis of building points `min_above` to `spine_below` m high within
     `spine_radius` m of the centre (pointing north-ish when `street_side` is `west`, south-ish when
     it is `east`); x is minus this axis. With `frame.axis_from: "walls"`, for a building of wings

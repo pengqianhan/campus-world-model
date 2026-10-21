@@ -26,13 +26,20 @@
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
-  "method": "LiDAR building points (class 6) within near_outline m of building 107's outline: centre = mean x/y of points higher than tower_above m; axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre (pointing north-ish, as street_side is west); toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
+  "method": "LiDAR building points (class 6) within near_outline m of building 107's outline (2.5: the hall's flat roof reaches 1.5-1.7 m beyond the outline, which follows its walls, over a walk along each long side): centre = mean x/y of points higher than tower_above m and within tower_radius m (in plan) of the highest of them: the top of the chapel's low pyramid roof and the slender spire on it (a tree's crown over the south-west corner of the hall, 9 to 19 m up, is classed as building, so without tower_radius it pulls the centre 13.6 m away); axis = the bearing of most of the walls seen from above (axis_from walls: the hall is nearly square and the chapel is many-sided, so their principal axis, 11.0 deg, is 8.8 deg off the hall's walls), the one of the two square to each other nearest the principal axis, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
   "min_above": 2.5,
-  "tower_above": 9.5,
+  "tower_above": 9.6,
+  "tower_radius": 4,
   "spine_below": 6,
   "spine_radius": 35,
-  "near_outline": 1,
-  "street_side": "west"
+  "near_outline": 2.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [87.40185904, 369.25269226],
+   "axis": [0.33910033, 0.94075021],
+   "tolerance_m": 0.05
+  }
  },
  "streetview": {
   "max_panos": 12,

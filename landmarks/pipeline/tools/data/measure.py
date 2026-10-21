@@ -45,7 +45,11 @@ F = cfg["frame"]
 B = P[(P[:, 3] == 6) & (P[:, 2] > G + F["min_above"])]
 if "near_outline" in F:  # only this building's points, where another building stands in the crop box
     B = B[common.near_outline(cfg, B[:, :2], F["near_outline"])]
-c = B[B[:, 2] > G + F["tower_above"], :2].mean(0)
+if "tower_radius" in F:  # only the tallest part: the points within tower_radius m (in plan) of the highest
+    T = B[B[:, 2] > G + F["tower_above"]]
+    c = T[np.linalg.norm(T[:, :2] - T[np.argmax(T[:, 2]), :2], axis=1) < F["tower_radius"], :2].mean(0)
+else:
+    c = B[B[:, 2] > G + F["tower_above"], :2].mean(0)
 S = B[(B[:, 2] < G + F["spine_below"]) & (np.linalg.norm(B[:, :2] - c, axis=1) < F["spine_radius"])]
 w, v = np.linalg.eigh(np.cov((S[:, :2] - c).T)); ax = v[:, np.argmax(w)]
 
