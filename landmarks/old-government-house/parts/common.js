@@ -1,44 +1,30 @@
-// Shared sizes, measured in the LINZ 2024 LiDAR (data/old-government-house_pts.npy, in the view frame of
-// config/old-government-house.json), and the roof helper. Owned by the lead: read, do not edit.
-// View frame: x to the right as seen from the lawn on the north-east, y up from the ground at the
-// porch (37.5 m NZVD2016), z toward the lawn; the centre of the main roof's high points at x = z = 0.
-import * as THREE from "three";
-
+// Shared sizes, measured in the LINZ 2024 LiDAR (data/old-government-house_pts.npy) by the first round's
+// front and back agents (2026-10-22), in the view frame of config/old-government-house.json: x to the
+// right as seen from the lawn on the north-east, y up from the ground at the porch (37.5 m NZVD2016),
+// z toward the lawn; the centre of the main roof's high points at x = z = 0. Owned by the lead: read,
+// do not edit. The parts still keep their own copies of these numbers (main.js, bay.js, back.js); the
+// next round moves them to read from here.
 export const MEASURED = {
-  main: { x: [-24, 23], z: [-10, 5], eave: 10.5, ridge: 12.5 },       // the two-storey block
-  front: { x: [-18, 15], z: [5, 8] },                                    // its middle stands forward to the lawn
-  back: { x: [-12, 21], z: [-25.5, -10], eave: 8.4, ridge: 10.0 },    // the lower ranges behind, round a courtyard
-  backLeft: { x: [-18, -12], z: [-15.5, -10], top: 7.5 },
-  bay: { x: [-30.5, -24], z: [-9.4, 2.7], top: 4.0, balustrade: 4.6 }, // single storey at the south-east end, a balcony on top
-  porch: { x: [-6, 0], z: [8, 12], top: 4.4 },                           // at the middle of the garden front
-  chimneys: [                                                            // [x, z, top]
-    [14.75, 3.2, 14.2], [-15.55, 2.75, 14.1], [-0.85, -0.75, 13.9],
-  ],
+  // the front range: eave edge, a flat cornice band, and a hipped roof rising from z 6.5 to its ridge
+  front: { x: [-17.6, 16.3], z: [-2.0, 7.75], cornice: 10.8, ridge: 12.65, ridgeZ: 2.6 },
+  // its middle bay, 0.65 m forward under a cross gable that stops at z 6.5
+  middle: { x: [-4.85, 3.65], front: 8.4, ridge: 12.85, ridgeX: -0.6 },
+  // the end wings, their ridges along z
+  wings: { se: { x: [-24.1, -14.4], z: [-10.2, 4.85] }, nw: { x: [14.0, 23.25], z: [-10.2, 5.75] }, eave: 9.9, ridge: 11.6 },
+  // the wing behind the middle
+  behind: { x: [-3.6, 3.75], back: -7.6, eave: 10.5, ridge: 12.1 },
+  // the balcony bays in the corners between the wings and the front range
+  balconies: { se: { x: [-24.3, -17.2], z: [4.25, 6.4] }, nw: { x: [15.9, 22.65], z: [5.15, 7.25] }, floor: 4.4, cornice: 5.35, rail: 6.3 },
+  // the low range at the south-east end: a hipped roof, and a lean-to against the wing
+  low: { x: [-36.5, -23.5], eave: 3.3, ridge: 4.6, ridgeZ: -6.65 },
+  // the porch in the middle of the garden front
+  porch: { x: [-3.55, 2.35], z: [7.95, 13.1], eave: 4.5, ridge: 5.1 },
+  // chimneys: [x, z, top]
+  chimneys: [[14.75, 3.2, 14.2], [-15.55, 2.75, 14.1], [-0.85, -0.75, 13.9], [19.25, -4.25, 12.95]],
+  // the ranges behind, round the courtyard (back agent): the south range is turned 2.58 deg off the frame
+  south: { x: [-7.3, 16], z: [-25.5, -12.3], eave: 5.8, ridge: 9.4, turn: 2.58 },
+  east: { x: [16, 22.15], z: [-21.6, -14.6], eave: 4.65, ridge: 6.55 },
+  northEast: { x: [14.6, 22.8], z: [-14.6, -10.3], roof: 7.7, parapet: 8.35 },
+  west: { x: [-11.05, -7.5], z: [-26.1, -8], eave: 3.7, ridge: 4.5 },
+  southEast: { x: [-16, -11], z: [-15.3, -8], eave: 3.95, ridge: 5.2 },
 };
-
-/** A hipped roof over the rectangle x0..x1, z0..z1: eaves at `eave`, the ridge at `ridge`, along the longer side. */
-export function hipRoof(b, x0, x1, z0, z1, eave, ridge, material = "roofPale") {
-  const alongX = x1 - x0 >= z1 - z0;
-  const half = (alongX ? z1 - z0 : x1 - x0) / 2;
-  const p = [];
-  const tri = (a, c, d) => p.push(...a, ...c, ...d);
-  if (alongX) {
-    const zm = (z0 + z1) / 2, r0 = [x0 + half, ridge, zm], r1 = [x1 - half, ridge, zm];
-    const a = [x0, eave, z1], c = [x1, eave, z1], d = [x1, eave, z0], e = [x0, eave, z0];
-    tri(a, c, r1); tri(a, r1, r0);  // toward +z
-    tri(d, e, r0); tri(d, r0, r1);  // toward -z
-    tri(e, a, r0);                  // end at x0
-    tri(c, d, r1);                  // end at x1
-  } else {
-    const xm = (x0 + x1) / 2, r0 = [xm, ridge, z0 + half], r1 = [xm, ridge, z1 - half];
-    const a = [x0, eave, z0], c = [x0, eave, z1], d = [x1, eave, z1], e = [x1, eave, z0];
-    tri(a, c, r1); tri(a, r1, r0);  // toward -x
-    tri(d, e, r0); tri(d, r0, r1);  // toward +x
-    tri(e, a, r0);                  // end at z0
-    tri(c, d, r1);                  // end at z1
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(p, 3));
-  g.computeVertexNormals();
-  b.add(g, material);
-}
