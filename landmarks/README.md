@@ -254,7 +254,9 @@ in `scripts/lib/landmark-fetch.ts`.
   never too few: do not add them to the ledger by hand. A tile that fails with a server error
   (5xx) is tried three times, each try counted. Anything else stops the batch: a refusal (4xx), a
   redirect, a timeout, a dropped connection, a failed write, or a tile that fails all three tries.
-  A rerun goes on from the cache. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
+  The reason is written to `data/raw/landmarks/streetview/closed.txt`, and no tile is bought
+  until a person has looked and deleted it ("closed is a verdict"); a rerun then goes on from the
+  cache. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
   monthly and a daily count under a cap.
 
 ## What is billed

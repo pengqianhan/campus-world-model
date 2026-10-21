@@ -18,6 +18,7 @@ function fake(over: Partial<Deps> = {}) {
   const sent: FetchOptions[] = [];
   const ledger: string[] = [];
   const cached = new Set<string>();
+  let verdict: string | undefined;
   const d: Deps = {
     allowFetch: false,
     has: (file) => cached.has(file),
@@ -36,6 +37,10 @@ function fake(over: Partial<Deps> = {}) {
       return true;
     },
     recordTiles: () => {},
+    closed: () => verdict,
+    close: (why) => {
+      verdict = why;
+    },
     ...over,
   };
   return { d, sent, ledger };
@@ -158,11 +163,16 @@ describe("the landmark pipeline's fetches", () => {
     expect(at.length).toBe(1);
   });
 
-  it("count nothing when there is no key to send", async () => {
+  it("count nothing when there is no key to send, even with a session still cached", async () => {
     delete process.env.GOOGLE_MAPS_KEY;
     const home = fs.mkdtempSync(path.join(os.tmpdir(), "home-"));
     process.env.HOME = process.env.USERPROFILE = home;
-    const { d, sent, ledger } = fake({ allowFetch: true });
+    const session = JSON.stringify({ session: SESSION, expiry: String(Math.round(Date.now() / 1000) + 86_400) });
+    const { d, sent, ledger } = fake({
+      allowFetch: true,
+      has: (file) => file === "landmarks/streetview/session.json",
+      read: () => Buffer.from(session),
+    });
     await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/no Google Maps key/);
     expect(sent).toEqual([]);
     expect(ledger).toEqual(["check 2"]);
@@ -173,6 +183,10 @@ describe("the landmark pipeline's fetches", () => {
     const { d, ledger } = fake({ allowFetch: true });
     const at = counting(d, ledger, (n) => (n === 2 ? new HttpError("tile -> HTTP 403", 403) : undefined));
     await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/HTTP 403/);
+    expect(at.length).toBe(2);
+    expect(ledger).toEqual(["check 2", "check 2", "add 2"]);
+    // Recorded once: the next batch buys nothing and asks nothing until a person clears it.
+    await expect(runBatch([{ op: "tiles", tiles }], d)).rejects.toThrow(/tiles were closed: tile -> HTTP 403/);
     expect(at.length).toBe(2);
     expect(ledger).toEqual(["check 2", "check 2", "add 2"]);
   });
@@ -210,16 +224,21 @@ describe("the landmark pipeline's fetches", () => {
     const lock = path.join(home, ".campus-world-model", "landmark-fetch.lock");
     const release = takeLock();
     expect(fs.readFileSync(lock, "utf8").split(" ")[0]).toBe(String(process.pid));
-    expect(() => takeLock()).toThrow(/another landmark fetch is running/);
     release();
     expect(fs.existsSync(lock)).toBe(false);
+    // Held by a batch that is alive (here the test runner's parent process): refused.
+    fs.writeFileSync(lock, `${process.ppid} ${Date.now()}`);
+    expect(() => takeLock()).toThrow(/another landmark fetch is running/);
     // A batch that died: a pid no process has.
     fs.writeFileSync(lock, `999999999 ${Date.now()}`);
     takeLock()();
     expect(fs.existsSync(lock)).toBe(false);
-    // A lock that cannot be read, but is young: held.
+    // A dead batch's pid, given again to this process: taken over.
+    fs.writeFileSync(lock, `${process.pid} ${Date.now()}`);
+    takeLock()();
+    // A lock that cannot be read, but is young: held, and the message names no home folder.
     fs.writeFileSync(lock, "");
-    expect(() => takeLock()).toThrow(/another landmark fetch is running/);
+    expect(() => takeLock()).toThrow(/another landmark fetch is running.*delete ~\/\.campus-world-model\/landmark-fetch\.lock$/);
   });
 
   it("send nothing for a file already cached", async () => {

@@ -520,6 +520,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    time (see "Other sources").
 2. **Your Street View notes outside the repository (`~/.gmaps_streetview.md`).** Since the landmark
    pipeline fetches through `snapshot.ts` (2026-10-22), it runs the ledger itself: `check N` before
-   a batch and `add` before each 25 tiles go out. Adding the "downloaded (billed)" count by hand, as
-   steps 2 and 3 of those notes say, would count every tile twice. The tile cache is now
-   `data/raw/landmarks/streetview/tiles/`, not a landmark's `refs/streetview/tiles/`.
+   a batch and `add` before each 25 tiles go out. Step 3 of those notes, which adds the
+   "downloaded (billed)" count by hand (or N when that line is missing, as it is after a batch
+   stops), would now count tiles twice: no hand `check` or `add` is needed. The tile cache is now
+   `data/raw/landmarks/streetview/tiles/`, not a landmark's `refs/streetview/tiles/`, so the notes'
+   list of places where Google's data may be kept needs it too.

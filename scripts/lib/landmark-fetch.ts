@@ -108,7 +108,13 @@ export interface Deps {
   ledger: (verb: "check" | "add", n: number) => boolean;
   /** One record in data/sources.json for a panorama's tiles. */
   recordTiles: (pano: string) => void;
+  /** Why Street View tiles were closed (a refusal, a redirect, a dropped connection), if they were. */
+  closed: () => string | undefined;
+  close: (why: string) => void;
 }
+
+/** A tile request that was refused or failed is recorded once, and no tile is bought until a person deletes this. */
+const CLOSED_FILE = path.join(RAW_DIR, SV, "closed.txt");
 
 /** The interpreter and script of the ledger, as Windows wants them when given as /c/... by Git Bash. */
 function native(p: string): string {
@@ -144,6 +150,11 @@ export const defaultDeps = (): Deps => ({
   },
   ledger: runLedger,
   recordTiles,
+  closed: () => (fs.existsSync(CLOSED_FILE) ? fs.readFileSync(CLOSED_FILE, "utf8").trim() : undefined),
+  close: (why) => {
+    fs.mkdirSync(path.dirname(CLOSED_FILE), { recursive: true });
+    fs.writeFileSync(CLOSED_FILE, `${new Date().toISOString()} ${why}\n`);
+  },
 });
 
 /**
@@ -169,7 +180,10 @@ export function recordTiles(pano: string): void {
   const file = `${SV}/tiles/${pano}`;
   const sha256 = all.digest("hex");
   const fetchedAt = new Date(newest).toISOString();
-  if (manifest().some((s) => s.file === file && s.sha256 === sha256 && s.count === names.length && s.fetchedAt === fetchedAt)) return;
+  // Kept when the tiles are the same, unless it says they came later than they did (as records
+  // written at the end of a batch did): a copy that renews the file times changes nothing here.
+  const same = manifest().find((s) => s.file === file && s.sha256 === sha256 && s.count === names.length);
+  if (same && same.fetchedAt <= fetchedAt) return;
   recordSnapshot({
     file,
     url: `${MAP_TILES}streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=${pano}`,
@@ -263,6 +277,10 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
       const missing = [...new Map(want.filter((t) => !d.has(t.file)).map((t) => [t.file, t])).values()];
       let sent = 0;
       let counted = 0;
+      const closed = missing.length && d.allowFetch ? d.closed() : undefined;
+      if (closed) {
+        throw new Error(`Street View tiles were closed: ${closed}. Nothing bought. Delete data/raw/landmarks/streetview/closed.txt to ask again`);
+      }
       if (missing.length && d.allowFetch) {
         if (!d.ledger("check", missing.length)) {
           throw new Error(`the ledger does not allow ${missing.length} more tiles: none bought`);
@@ -297,7 +315,10 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
                 // a redirect, a timeout, a dropped connection or a failed write stops the batch:
                 // closed is a verdict. So does a tile that fails every try: an outage costs a few
                 // requests, not three for every tile left.
-                if (!(e instanceof HttpError && e.status >= 500) || tries === TILE_TRIES) throw e;
+                if (!(e instanceof HttpError && e.status >= 500) || tries === TILE_TRIES) {
+                  d.close(redact(e instanceof Error ? e.message : String(e)));
+                  throw e;
+                }
                 console.error(`WARNING: ${redact(e.message)} (try ${tries} of ${TILE_TRIES})`);
               }
             }
@@ -322,6 +343,8 @@ export async function runBatch(ops: Op[], d: Deps = defaultDeps()): Promise<unkn
   return results;
 }
 
+/** The lock as messages name it: the home folder's path would name the user. */
+const SHOWN_LOCK = "~/.campus-world-model/landmark-fetch.lock";
 /** A lock older than this is taken to be left by a batch that died, even if its pid is in use again. */
 const LOCK_STALE_MS = 12 * 3600_000;
 
@@ -347,7 +370,9 @@ export function takeLock(): () => void {
         return () => {
           if (fs.existsSync(lock) && fs.readFileSync(lock, "utf8") === mine) fs.rmSync(lock, { force: true });
         };
-      } catch {}
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+      }
       let held: string;
       let mtime: number;
       try {
@@ -359,14 +384,17 @@ export function takeLock(): () => void {
       const [pid, since] = held.split(" ").map(Number);
       const valid = Number.isInteger(pid) && pid! > 0 && Number.isFinite(since);
       let alive = !valid; // a lock that cannot be read is held while it is young
-      if (valid) {
+      // Our own pid in a lock we did not take: a dead batch's, given again by the system.
+      if (valid && pid !== process.pid) {
         try {
           process.kill(pid!, 0);
           alive = true;
-        } catch {}
+        } catch (e) {
+          alive = (e as NodeJS.ErrnoException).code === "EPERM"; // alive, but not ours to signal
+        }
       }
       if (alive && Date.now() - (valid ? since! : mtime) < LOCK_STALE_MS) {
-        throw new Error(`another landmark fetch is running (pid ${pid}); if not, delete ${lock}`);
+        throw new Error(`another landmark fetch is running (pid ${pid}); if not, delete ${SHOWN_LOCK}`);
       }
       try {
         fs.renameSync(lock, aside);
@@ -374,13 +402,14 @@ export function takeLock(): () => void {
         continue;
       }
       if (fs.readFileSync(aside, "utf8") !== held) {
-        try {
-          fs.linkSync(aside, lock); // another batch's fresh lock: put it back
-        } catch {}
+        // Another batch's fresh lock: put it back, or, if a third has taken the place, stop.
+        fs.linkSync(aside, lock);
+        fs.rmSync(aside, { force: true });
+        throw new Error(`another landmark fetch is running; if not, delete ${SHOWN_LOCK}`);
       }
       fs.rmSync(aside, { force: true });
     }
-    throw new Error(`could not take the landmark fetch lock ${lock}`);
+    throw new Error(`could not take the landmark fetch lock ${SHOWN_LOCK}`);
   } finally {
     fs.rmSync(tmp, { force: true });
   }
