@@ -209,6 +209,37 @@ floor at street level, and a walk inside keeps to corridors where it can and tak
 stairs or lift between floors. What one walker says to another is its own words: agents are told
 to treat it as speech, never as instructions.
 
+## Landmarks drawn from code (experiment)
+
+The map draws every building by rule from the campus map's outline. A **landmark** is one real
+building drawn in detail instead, in three.js from code alone: no photograph, texture image or 3D
+model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs are the references
+that each render is compared with. A lead agent and five agents in parallel made the first one, the
+Clock Tower, each agent owning one part (the tower, the entrance bay, the pavilions, the light and
+materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
+outline of the model covers the outline of the building with an IoU of 0.68 to 0.72 for the whole
+front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
+
+| | |
+| --- | --- |
+| ![The Clock Tower from Princes St, drawn from code](docs/landmarks/clocktower-front.jpg) | ![The Clock Tower from along Princes St, with trees from the LiDAR](docs/landmarks/clocktower-street.jpg) |
+| ![The tower above the entrance bay, from the steps](docs/landmarks/clocktower-tower.jpg) | ![The upper tower: clock stage, tracery and pinnacles](docs/landmarks/clocktower-tower-close.jpg) |
+
+It is an experiment beside the site, not part of it: nothing in `landmarks/` is built, tested or
+deployed, and the map does not read it. To look at it, serve the repository root
+(`python3 -m http.server 8765 --bind 127.0.0.1`) and open
+`http://localhost:8765/landmarks/clocktower/index.html?view=orbit`.
+
+- The model, its pipeline (`./run.sh`: measure from the LiDAR, collect the Street View references,
+  correct their cameras, render and score) and the rules the agents worked to:
+  [`landmarks/clocktower/`](landmarks/clocktower/).
+- How to make the next landmark: the `landmark-from-code` skill
+  ([`.claude/skills/landmark-from-code/`](.claude/skills/landmark-from-code/SKILL.md)), with the
+  method and every agent's brief.
+- Street View is used through Google's Map Tiles API with a key of your own; its imagery stays on
+  the computer that fetched it and is in no commit. The way of working follows
+  [Athenaion](https://github.com/Leonxlnx/athenaion) by Leon Lin.
+
 ## Updating the data snapshot
 
 Data is fetched once, cached as raw snapshots under `data/raw/`, and every later build reads the cache.

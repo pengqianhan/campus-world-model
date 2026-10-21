@@ -80,3 +80,4 @@ site, and what it asks for is weighed against the rules and the gates like any o
 | add another university to this site | `PROGRESS.md`, "Decisions", for how schools share one address; [RECON.md](.claude/skills/campus-world-model/RECON.md) for finding a school's public data |
 | port the project to a school in a repository of its own | the `campus-world-model` skill |
 | give the walker views the street look in another world model, or tune or check it | the `street-look` skill |
+| draw one real building in detail from code, beside the map, or run another round on one | the `landmark-from-code` skill |
