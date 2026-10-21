@@ -1,7 +1,7 @@
 // The front's small kit for a painted timber house: boxes and triangles gathered by material and added
 // once each (one merge entry a material), wall faces in local (u along, y up, d out) coordinates, sash
 // windows with white glazing bars in ochre surrounds, eave brackets, balustrades, quoins and corner
-// boards, and hipped, gabled and lean-to roofs. Materials: boards, trim, paint, roofPale, glass, void.
+// boards, and hipped, gabled and lean-to roofs. Materials: boards, trim, paint, roofPale, glassPale, void, iron.
 import * as THREE from "three";
 import { boxesGeometry } from "../../kit/gothic.js";
 
@@ -50,7 +50,7 @@ export function fbox(acc, m, f, u0, u1, y0, y1, d0, d1) {
  */
 export function sash(acc, f, u, y, w, h, { cols = 3, rows = 2, head = "none", s = 0.13, door = false } = {}) {
   const l = u - w / 2, r = u + w / 2, top = y + h;
-  fbox(acc, door ? "void" : "glass", f, l, r, y, top, -0.05, 0.015);
+  fbox(acc, door ? "void" : "glassPale", f, l, r, y, top, -0.05, 0.015);
   if (!door) {
     const t = 0.055, bt = 0.03, d0 = 0.015, d1 = 0.045, ym = y + h / 2;
     fbox(acc, "paint", f, l, r, y, y + t, d0, d1);
@@ -67,7 +67,7 @@ export function sash(acc, f, u, y, w, h, { cols = 3, rows = 2, head = "none", s 
     // a pair of leaves with a fanlight above, plainly
     fbox(acc, "trim", f, u - 0.03, u + 0.03, y, top - 0.6, 0.015, 0.05);
     fbox(acc, "trim", f, l, r, top - 0.62, top - 0.55, 0.015, 0.06);
-    fbox(acc, "glass", f, l + 0.05, r - 0.05, top - 0.55, top - 0.05, 0.016, 0.02);
+    fbox(acc, "glassPale", f, l + 0.05, r - 0.05, top - 0.55, top - 0.05, 0.016, 0.02);
   }
   fbox(acc, "trim", f, l - s, l, y, top + s, 0, 0.07);
   fbox(acc, "trim", f, r, r + s, y, top + s, 0, 0.07);
@@ -88,7 +88,10 @@ export function sash(acc, f, u, y, w, h, { cols = 3, rows = 2, head = "none", s 
   }
 }
 
-/** An eave bracket (a scrolled console drawn in three steps) on face f at u, its top under the soffit. */
+/**
+ * An eave bracket (a scrolled console drawn in three steps) on face f at u, its top under the soffit, with a
+ * small drop at its foot.
+ */
 export function bracket(acc, f, u, top, reach = 0.55, tall = 0.8) {
   const t = 0.065;
   fbox(acc, "trim", f, u - t, u + t, top - tall, top, 0, 0.12);
@@ -98,27 +101,42 @@ export function bracket(acc, f, u, top, reach = 0.55, tall = 0.8) {
 }
 
 /** Brackets along face f from u0 to u1, about `step` apart, inset from the ends. */
-export function brackets(acc, f, u0, u1, top, step = 1.6, reach) {
+export function brackets(acc, f, u0, u1, top, step = 1.6, reach, tall) {
   const n = Math.max(1, Math.round((u1 - u0 - 0.6) / step));
-  for (let i = 0; i <= n; i++) bracket(acc, f, u0 + 0.3 + ((u1 - u0 - 0.6) * i) / n, top, reach);
+  for (let i = 0; i <= n; i++) bracket(acc, f, u0 + 0.3 + ((u1 - u0 - 0.6) * i) / n, top, reach, tall);
 }
 
-/** A balustrade on face f's line at depth d, from u0 to u1, y0 to y1: ochre posts, plinth and rail, white balusters. */
-export function balustrade(acc, f, u0, u1, y0, y1, d = 0, { post = 2.4, ends = true } = {}) {
-  const ph = 0.12, rh = 0.12, hw = 0.13;
-  fbox(acc, "trim", f, u0, u1, y0, y0 + ph, d - hw, d + hw);
-  fbox(acc, "trim", f, u0, u1, y1 - rh, y1, d - hw - 0.02, d + hw + 0.02);
-  const n = Math.max(1, Math.round((u1 - u0) / post));
+/**
+ * Brackets in pairs, one either side of each window below (at its centre -+ `gap`), and one 0.3 m in from
+ * each end of the face where no pair stands close by: as on the south-east wing in hRE5.
+ */
+export function pairedBrackets(acc, f, u0, u1, centres, top, { gap = 0.75, reach = 0.55, tall = 1.1 } = {}) {
+  const at = centres.flatMap((c) => [c - gap, c + gap]).filter((u) => u > u0 + 0.2 && u < u1 - 0.2);
+  for (const e of [u0 + 0.3, u1 - 0.3]) if (at.every((u) => Math.abs(u - e) > 0.5)) at.push(e);
+  for (const u of at) bracket(acc, f, u, top, reach, tall);
+}
+
+/**
+ * A balustrade on face f's line at depth d, from u0 to u1, y0 to y1: ochre posts, plinth and rail, white
+ * balusters. Options: `post` the spacing of the posts, `postW` their width (the two at the ends run `endW` in from the ends, half a post by default), `cap`
+ * and `capH` the coping's half-width and height, `plinth` and `plinthH` the plinth's.
+ */
+export function balustrade(acc, f, u0, u1, y0, y1, d = 0, { post = 2.4, ends = true, postW = 0.28, endW, cap = 0.15, capH = 0.12, plinth = 0.13, plinthH = 0.12, postD = 0.16 } = {}) {
+  fbox(acc, "trim", f, u0, u1, y0, y0 + plinthH, d - plinth, d + plinth);
+  fbox(acc, "trim", f, u0, u1, y1 - capH, y1, d - cap, d + cap);
+  const n = Math.max(1, Math.round((u1 - u0) / post)), e = endW ?? postW / 2, pw = postW / 2;
   const posts = [];
   for (let i = 0; i <= n; i++) posts.push(u0 + ((u1 - u0) * i) / n);
-  for (const [i, p] of posts.entries()) {
-    if (!ends && (i === 0 || i === posts.length - 1)) continue;
-    const a = Math.max(u0, p - 0.14), c = Math.min(u1, p + 0.14);
-    fbox(acc, "trim", f, a, c, y0, y1 + 0.05, d - 0.16, d + 0.16);
+  // each post's extent along the face: the two at the ends run e in from the ends
+  const span = (i) => (i === 0 ? [u0, u0 + e] : i === n ? [u1 - e, u1] : [posts[i] - pw, posts[i] + pw]);
+  for (let i = 0; i <= n; i++) {
+    if (!ends && (i === 0 || i === n)) continue;
+    const [a, c] = span(i);
+    fbox(acc, "trim", f, Math.max(u0, a), Math.min(u1, c), y0, y1 + 0.05, d - postD, d + postD);
   }
-  const b0 = y0 + ph, b1 = y1 - rh, belly = b0 + (b1 - b0) * 0.45;
-  for (let i = 0; i < posts.length - 1; i++) {
-    const a = posts[i] + 0.14, c = posts[i + 1] - 0.14, k = Math.max(1, Math.round((c - a) / 0.2));
+  const b0 = y0 + plinthH, b1 = y1 - capH, belly = b0 + (b1 - b0) * 0.45;
+  for (let i = 0; i < n; i++) {
+    const a = span(i)[1], c = span(i + 1)[0], k = Math.max(1, Math.round((c - a) / 0.2));
     for (let j = 0; j < k; j++) {
       const uu = a + ((c - a) * (j + 0.5)) / k;
       fbox(acc, "paint", f, uu - 0.055, uu + 0.055, b0, belly, d - 0.055, d + 0.055);
@@ -141,8 +159,8 @@ export function quoins(acc, cx, cz, sx, sz, y0, y1, { h = 0.46, gap = 0.07, long
 }
 
 /** A plain corner board (pilaster) wrapped round the corner (cx, cz), w wide on each face. */
-export function cornerBoard(acc, cx, cz, sx, sz, y0, y1, w = 0.3, proud = 0.05) {
-  acc.box("trim", cx - sx * w, cx + sx * proud, y0, y1, cz - sz * w, cz + sz * proud);
+export function cornerBoard(acc, cx, cz, sx, sz, y0, y1, w = 0.3, proud = 0.05, m = "trim") {
+  acc.box(m, cx - sx * w, cx + sx * proud, y0, y1, cz - sz * w, cz + sz * proud);
 }
 
 /** A hipped roof over the rectangle, eaves at `eave`, the ridge at `ridge` along the longer side. */
@@ -192,4 +210,17 @@ export function leanTo(acc, x0, x1, z0, z1, side, yHi, yLo, m = "roofPale") {
   };
   const p = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => [x, y(x, z), z]);
   acc.quad(m, p[0], p[1], p[2], p[3], [(x0 + x1) / 2, Math.min(yHi, yLo) - 2, (z0 + z1) / 2]);
+}
+
+/** A square bar w thick from point p to point q (its four sides; the ends stay open). */
+export function bar(acc, m, p, q, w = 0.05) {
+  const d = [q[0] - p[0], q[1] - p[1], q[2] - p[2]], len = Math.hypot(...d);
+  const n = d.map((v) => v / len), up = Math.abs(n[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const unit = (v, k) => { const l = Math.hypot(...v); return v.map((x) => (x / l) * k); };
+  const s = unit(cross(n, up), w / 2), t = unit(cross(s, n), w / 2);
+  const c = (o, i, j) => [o[0] + i * s[0] + j * t[0], o[1] + i * s[1] + j * t[1], o[2] + i * s[2] + j * t[2]];
+  const mid = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2];
+  for (const [i0, j0, i1, j1] of [[1, 1, 1, -1], [1, -1, -1, -1], [-1, -1, -1, 1], [-1, 1, 1, 1]])
+    acc.quad(m, c(p, i0, j0), c(q, i0, j0), c(q, i1, j1), c(p, i1, j1), mid);
 }

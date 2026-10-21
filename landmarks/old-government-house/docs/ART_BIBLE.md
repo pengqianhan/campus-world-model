@@ -7,15 +7,23 @@ most, and only what they show.
 
 ## The building (what `hRE5…_upper.jpg` shows of the south-east end)
 - **Two storeys of painted timber.** Horizontal boards, painted a pale cream-yellow, with the window
-  surrounds, the corner pilasters and the bands between the floors in a deeper yellow-ochre.
-- **Sash windows**, tall and narrow, with white glazing bars and dark glass, in ochre surrounds; those
-  of the ground floor taller than those above.
-- **A single-storey bay** stands out from the south-east end, with a flat roof that is a balcony: a
-  balustrade of white balusters between ochre posts.
-- **The roof**: low hipped roofs, light grey, over deep eaves carried on brackets above a plain frieze.
-  White chimney stacks with moulded caps rise above them (the LiDAR's spikes at 13.3–14.6 m).
-- The garden front (north-east, to the lawn) and its porch are not seen in any photograph. Draw them
-  with the same boards, windows and eaves at the LiDAR's sizes, and plainly.
+  surrounds and the ochre quoins at the front range's corners in a deeper yellow-ochre. The south-east
+  wing has no band between its floors, and plain white corner boards.
+- **Sash windows**, tall and narrow, with white glazing bars and pale glass that reflects the sky, in
+  ochre surrounds. On the south-east wing they stand in two tiers of their own: short six-over-six
+  windows under the eaves, and below them a tall staircase window on the end and windows onto the
+  balcony on the front.
+- **A single-storey balcony bay** in the corner between the south-east wing and the front range, with
+  a flat roof that is a balcony: white vase balusters, with broad ochre pedestals at the ends and the
+  corner, under a heavy ochre coping. A fire-escape stair, painted pale grey, runs from a landing under
+  the wing's eave down to the balcony.
+- **The roof**: low hipped roofs, pale grey (white in the photograph's light), over deep eaves carried
+  on pairs of tall brackets above a plain frieze; the soffits are ochre. White chimney stacks with
+  moulded caps rise above them (the LiDAR's spikes at 13.3–14.6 m).
+- **The garden front** (north-east, to the lawn) is seen only at its south-east end, very obliquely:
+  its two nearest upper windows have triangular pediments on consoles, so the front's other upper
+  windows are drawn the same; the front is otherwise drawn with the same boards, windows and eaves at
+  the LiDAR's sizes, and plainly. The porch is in no photograph: plain, at the LiDAR's sizes.
 - Around it: a lawn and large trees, a tarmac path; these are not part of the model.
 
 ## The light (match the photographs)

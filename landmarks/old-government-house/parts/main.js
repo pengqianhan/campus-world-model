@@ -8,23 +8,36 @@
 //   - the two end wings, lower: bracketed deep eaves at 9.9, hipped roofs to 11.6 (hRE5's left wing);
 //   - the wing behind the middle (eaves 10.5, ridge 12.1) and the flat-roofed two-storey blocks between
 //     it and the end wings (9.2-9.4). The single-storey rooms round the courtyard are back's.
-import { Acc, face, fbox, sash, brackets, balustrade, quoins, cornerBoard, hip, gableZ } from "./front_kit.js";
+import { Acc, face, fbox, sash, brackets, pairedBrackets, balustrade, quoins, cornerBoard, hip, gableZ, leanTo } from "./front_kit.js";
+import { MEASURED as M } from "./common.js";
 
 const BASE = -0.4;                         // walls start a little below the ground (0.2-0.8 m round the house)
-// the front range: wall faces, the cornice's top, the roof behind the balustrade
-export const FRONT = { x: [-17.2, 15.9], z: [-1.7, 7.3], top: 10.0, cornice: 10.8, ridge: 12.65, roof: { x: [-16.4, 15.1], z: [-1.7, 6.5] }, rail: -0.5 };
-// the middle bay of the garden front, forward under a pediment, on the axis of the porch
-export const MIDDLE = { x: [-4.35, 3.15], z: 7.95, axis: -0.6, half: 4.25, ridge: 12.85 };
-// the end wings: wall faces and eave edges, eaves 9.9, ridge 11.6
+// the front range: wall faces (0.4 m in from the cornice's edge at the ends, 0.3 at the back, 0.45 at the
+// front), the cornice's top, the roof behind the balustrade
+const F = M.front;
+export const FRONT = { x: [F.x[0] + 0.4, F.x[1] - 0.4], z: [F.z[0] + 0.3, F.z[1] - 0.45], top: 10.0, cornice: F.cornice, ridge: F.ridge,
+  roof: { x: [F.x[0] + 1.2, F.x[1] - 1.2], z: [F.z[0] + 0.3, 6.5] }, rail: -0.5, backFlush: [7.9, 14.0] };
+// the middle bay of the garden front, forward under a pediment, on the axis of the porch: its walls 0.5 m in
+// from the pediment's edges, its front 0.45 m behind the cornice's
+export const MIDDLE = { x: [M.middle.x[0] + 0.5, M.middle.x[1] - 0.5], z: M.middle.front - 0.45, axis: M.middle.ridgeX,
+  half: (M.middle.x[1] - M.middle.x[0]) / 2, ridge: M.middle.ridge };
+// the end wings: wall faces 0.6 m in from the eave edges, eaves 9.9, ridge 11.6. The south-east wing's eave to
+// the courtyard side stands at -14.1, not common.js's -14.4 (the LiDAR's 10.0 m roof edge covers x -14.5 to
+// -14.0 from z -9.5 to -4.5; the back's roofs at 4-5 m start at -14.0)
+const wingOf = ([ex0, ex1], [ez0, ez1]) => ({ x: [ex0 + 0.6, ex1 - 0.6], z: [ez0 + 0.6, ez1 - 0.6], eaves: [ex0, ex1, ez0, ez1] });
 export const WINGS = {
-  se: { x: [-23.5, -15.0], z: [-9.6, 4.25], eaves: [-24.1, -14.4, -10.2, 4.85] },
-  nw: { x: [14.6, 22.65], z: [-9.6, 5.15], eaves: [14.0, 23.25, -10.2, 5.75] },
-  top: 9.55, eave: 9.9, ridge: 11.6,
+  se: { ...wingOf(M.wings.se.x, M.wings.se.z), eaves: [M.wings.se.x[0], -14.1, ...M.wings.se.z] },
+  nw: wingOf(M.wings.nw.x, M.wings.nw.z),
+  top: M.wings.eave - 0.35, eave: M.wings.eave, ridge: M.wings.ridge,
 };
-// the wing behind the middle
-export const REAR = { x: [-3.0, 3.2], z: [-7.2, -1.7], eaves: [-3.6, 3.75, -7.6], top: 10.2, eave: 10.5, ridge: 12.1 };
+// the wing behind the middle. Its eave edges stand at x -3.95 and 3.5, not common.js's -3.6 and 3.75 (the
+// LiDAR's 10.5-10.7 m eave covers x -4.0 to -3.5 from z -7.5 to -2.5; on the other side it ends at 3.5,
+// where the flat roof at 8.7-8.8 begins); the walls stay where they were
+const B = M.behind;
+export const REAR = { x: [B.x[0] + 0.6, B.x[1] - 0.55], z: [B.back + 0.4, F.z[0] + 0.3], eaves: [-3.95, 3.5, B.back], top: B.eave - 0.3, eave: B.eave, ridge: B.ridge };
 // flat-roofed two-storey blocks behind the front range: [x0, x1, z0, z1, top]
-const FLATS = [[-15.0, -8.25, -4.1, -1.7, 9.3], [-5.35, -3.0, -7.4, -1.7, 9.4], [3.2, 4.6, -6.5, -1.7, 8.7], [8.0, 14.6, -5.2, -1.7, 9.2]];
+// (the first ends at x -8.6 and z -3.9, the second at z -7.1: the LiDAR's flat roofs at 9.0-9.5 stop there, the back's at 4-6 m begin)
+const FLATS = [[-15.0, -8.6, -3.9, -1.7, 9.3], [-5.35, -3.0, -7.1, -1.7, 9.4], [3.2, 4.6, -6.5, -1.7, 8.7], [8.0, 14.6, -5.2, -1.7, 9.2]];
 
 const FLOOR = [5.0, 5.35];                 // the band between the floors
 const GROUND = { y: 1.5, h: 2.8 }, UPPER = { y: 6.15, h: 2.3 }, WUPPER = { y: 6.05, h: 2.05 };
@@ -35,9 +48,16 @@ const spread = (u0, u1, n, edge) => Array.from({ length: n }, (_, i) => (n === 1
 function frontRange(a) {
   const { x: [x0, x1], z: [z0, z1], top, cornice } = FRONT;
   a.box("boards", x0, x1, BASE, top, z0, z1);
-  // the cornice all round (deeper at the back, where the roof comes down to it) and a moulding under it
-  a.box("trim", x0 - 0.4, x1 + 0.4, top, cornice, z0 - 0.3, z1 + 0.45);
-  a.box("trim", x0 - 0.18, x1 + 0.18, top - 0.3, top, z0 - 0.18, z1 + 0.2);
+  // the cornice all round (deeper at the back, where the roof comes down to it) and a moulding under it; at
+  // the back, from x 7.9 to 14.0, it stops at the wall, over the flat roof behind (the LiDAR: 9.2-9.3 m from
+  // z -1.5 back there, the cornice's 10.7 at z -2.0 either side)
+  const [bx0, bx1] = FRONT.backFlush;
+  a.box("trim", x0 - 0.4, x1 + 0.4, top, cornice, z0 + 0.1, z1 + 0.45);
+  a.box("trim", x0 - 0.18, x1 + 0.18, top - 0.3, top, z0 + 0.1, z1 + 0.2);
+  for (const [u0, u1] of [[x0 - 0.4, bx0], [bx1, x1 + 0.4]]) {
+    a.box("trim", u0, u1, top, cornice, z0 - 0.3, z0 + 0.1);
+    a.box("trim", Math.max(u0, x0 - 0.18), Math.min(u1, x1 + 0.18), top - 0.3, top, z0 - 0.18, z0 + 0.1);
+  }
   a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z0 - 0.06, z1 + 0.06);
   // the roof behind the balustrade
   const r = FRONT.roof;
@@ -52,12 +72,13 @@ function frontRange(a) {
   balustrade(a, gf, MIDDLE.x[1] - 0.1, x1 + d, cornice, cornice + 1.0, d, ends);
   balustrade(a, se, WINGS.se.z[1] + 0.6, z1 + d + 0.16, cornice, cornice + 1.0, d, ends);
   balustrade(a, nw, WINGS.nw.z[1] + 0.6, z1 + d + 0.16, cornice, cornice + 1.0, d, ends);
-  // the garden front's windows: four a floor either side of the middle bay. No photograph shows this
-  // front, so their heads are plain (docs/CONTRACT.md: no ornament that no reference shows)
+  // the garden front's windows: four a floor either side of the middle bay. hRE5 sees the upper floor's first
+  // two from the south-east end, very obliquely: tall, under pediments on consoles; the rest of the front is
+  // seen in no photograph and repeats them. The ground floor's heads stay plain (no reference shows them)
   const left = spread(x0, MIDDLE.x[0], 4, 1.75), right = spread(MIDDLE.x[1], x1, 4, 1.75);
   for (const u of [...left, ...right]) {
     sash(a, gf, u, GROUND.y, 1.2, GROUND.h, { cols: 3, rows: 3 });
-    sash(a, gf, u, UPPER.y, 1.08, UPPER.h, { cols: 2, rows: 3 });
+    sash(a, gf, u, UPPER.y, 1.08, UPPER.h, { cols: 2, rows: 3, head: "pediment", s: 0.16 });
   }
 }
 
@@ -78,34 +99,65 @@ function middleBay(a) {
   for (const u of [axis - 2.35, axis, axis + 2.35]) sash(a, f, u, UPPER.y, 1.08, UPPER.h, { cols: 2, rows: 3 });
 }
 
+// The south-east wing as hRE5 shows its end and the front above the balcony: no band between the floors,
+// two tiers of windows that are not the front range's two floors. Under the eaves, short six-over-six sashes
+// (glass about 0.65 by 1.3 m, sills about 7.75 m) in broad ochre surrounds; below them, on the end, one tall
+// window between the first two (a staircase's, its head about 7.1 m), and on the front, windows onto the
+// balcony with heads about 7.0 m. Heights from the photograph scaled by the LiDAR's eave (9.55) and the
+// balcony's rail (6.3), which stand 112 px apart in it.
+const SE_LOOK = { upper: { y: 7.75, w: 0.65, h: 1.3, s: 0.2 }, stair: { z: 1.75, y: 4.2, w: 0.95, h: 2.75, s: 0.2 },
+  balcony: { y: 5.4, w: 0.9, h: 1.55, s: 0.2 } };
+
 function wing(a, w, end) {
   const { x: [x0, x1], z: [z0, z1], eaves: [ex0, ex1, ez0, ez1] } = w, { top, eave, ridge } = WINGS;
+  const se = end < 0;
   a.box("boards", x0, x1, BASE, top, z0, z1);
-  a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z0 - 0.06, z1 + 0.06);
-  // the deep eaves: a white soffit and fascia slab under the hipped roof, on brackets above a plain frieze
-  a.box("paint", ex0, ex1, top, eave, ez0, ez1);
+  if (!se) a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z0 - 0.06, z1 + 0.06);
+  // the deep eaves: a soffit and fascia slab under the hipped roof (warm in the shade, as hRE5's), on tall
+  // brackets above a plain frieze
+  a.box("trim", ex0, ex1, top, eave, ez0, ez1);
+  for (const [u0, u1, v0, v1] of [[ex0 - 0.02, ex1 + 0.02, ez0 - 0.02, ez0], [ex0 - 0.02, ex1 + 0.02, ez1, ez1 + 0.02], [ex0 - 0.02, ex0, ez0, ez1], [ex1, ex1 + 0.02, ez0, ez1]])
+    a.box("paint", u0, u1, top + 0.05, eave, v0, v1);                 // the fascia, pale above the warm soffit (hRE5)
+  a.box("boards", x0 - 0.03, x1 + 0.03, top - 0.32, top, z0 - 0.03, z1 + 0.03);
   hip(a, ex0, ex1, ez0, ez1, eave, ridge);
-  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, 0, top);
-  const fEnd = face("x", end < 0 ? x0 : x1, end), fFront = face("z", z1, 1), fBack = face("z", z0, -1);
-  const fIn = face("x", end < 0 ? x1 : x0, -end);
-  const inner = end < 0 ? [FRONT.x[0], x1] : [x0, FRONT.x[1]];      // the front range covers this much of the wing's front
-  const open = end < 0 ? [x0, FRONT.x[0]] : [FRONT.x[1], x1];        // the rest is open, above its balcony bay
-  brackets(a, fEnd, z0, z1, top);
-  brackets(a, fFront, open[0], open[1], top);
-  brackets(a, fBack, x0, x1, top);
-  brackets(a, fIn, z0, end < 0 ? FLATS[0][2] : FLATS[3][2], top);
-  // the end: six windows a floor, the first 1.25 m from the front corner (hRE5); the south-east end's ground
-  // floor is behind the low range there, all but its first
-  const zs = spread(z0, z1, 6, 1.25);
+  // corner boards: ochre, but white on the south-east wing, whose corner hRE5 shows plain
+  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, 0, top, 0.3, 0.05, se ? "paint" : "trim");
+  const fEnd = face("x", se ? x0 : x1, end), fFront = face("z", z1, 1), fBack = face("z", z0, -1);
+  const fIn = face("x", se ? x1 : x0, -end);
+  const open = se ? [x0, FRONT.x[0]] : [FRONT.x[1], x1];             // the wing's front not covered by the front range
+  const tall = 1.1, zIn = se ? FLATS[0][2] : FLATS[3][2];
+  // the end: six windows a floor, the first 1.25 m from the front corner (hRE5)
+  const zs = spread(z0, z1, 6, 1.25), xs = spread(open[0], open[1], 3, 1.05);
+  const wb = spread(x0, x1, 2, 2.0), wi = spread(z0, -4.25, 2, 1.3);
+  if (se) {
+    const { upper: U, stair: T, balcony: L } = SE_LOOK, six = { cols: 3, rows: 2, s: U.s };
+    pairedBrackets(a, fEnd, z0, z1, zs, top);
+    pairedBrackets(a, fFront, open[0], open[1], xs, top);
+    brackets(a, fBack, x0, x1, top, 1.6, undefined, tall);
+    brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall);
+    for (const u of zs) sash(a, fEnd, u, U.y, U.w, U.h, six);
+    sash(a, fEnd, T.z, T.y, T.w, T.h, { cols: 3, rows: 3, s: T.s });
+    for (const u of xs) {
+      sash(a, fFront, u, U.y, U.w, U.h, six);
+      sash(a, fFront, u, L.y, L.w, L.h, { cols: 3, rows: 2, s: L.s });
+    }
+    // the back and the side to the courtyard (seen in no photograph): the same tier under the eaves
+    for (const u of wb) sash(a, fBack, u, U.y, U.w, U.h, six);
+    for (const u of wi) sash(a, fIn, u, U.y, U.w, U.h, six);
+    return;
+  }
+  // the north-west wing, seen in no photograph: two floors as the front range's
+  brackets(a, fEnd, z0, z1, top, 1.6, undefined, tall);
+  brackets(a, fFront, open[0], open[1], top, 1.6, undefined, tall);
+  brackets(a, fBack, x0, x1, top, 1.6, undefined, tall);
+  brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall);
   for (const u of zs) {
     sash(a, fEnd, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
-    if (end > 0 || u > 2.6) sash(a, fEnd, u, GROUND.y, 1.1, GROUND.h, { cols: 3, rows: 3 });
+    sash(a, fEnd, u, GROUND.y, 1.1, GROUND.h, { cols: 3, rows: 3 });
   }
   // the front, above the balcony bay: tall windows onto the balcony
-  for (const u of spread(open[0], open[1], 3, 1.05)) sash(a, fFront, u, 5.45, 1.0, 2.75, { cols: 3, rows: 3 });
-  // the back and the side to the courtyard, above the single-storey rooms
-  for (const u of spread(x0, x1, 2, 2.0)) sash(a, fBack, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
-  if (end < 0) for (const u of spread(z0, -4.25, 2, 1.3)) sash(a, fIn, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
+  for (const u of xs) sash(a, fFront, u, 5.45, 1.0, 2.75, { cols: 3, rows: 3 });
+  for (const u of wb) sash(a, fBack, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
 }
 
 function rearWing(a) {
@@ -121,15 +173,27 @@ function rearWing(a) {
   for (const u of spread(x0, x1, 2, 1.6)) sash(a, fb, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
 }
 
+// a single-storey room between the first two flat blocks, against the front range's back: the LiDAR's roof
+// falls from 5.7 m at z -2.25 to 5.1 at z -4.0, from x -8.6 to -5.6 (seen in no photograph)
+const BETWEEN = { x: [-8.6, -5.6], z: [-4.0, -1.7], hi: 5.75, lo: 5.1 };
+
 function flats(a) {
+  {
+    const { x: [x0, x1], z: [z0, z1], hi, lo } = BETWEEN;
+    a.box("boards", x0, x1, BASE, lo - 0.25, z0 + 0.3, z1);
+    a.box("paint", x0, x1, lo - 0.25, lo, z0, z0 + 0.3);
+    leanTo(a, x0, x1, z0, z1, "z1", hi, lo);
+  }
   for (const [x0, x1, z0, z1, t] of FLATS) {
     a.box("boards", x0, x1, BASE, t - 0.35, z0, z1);
     a.box("trim", x0 - 0.1, x1 + 0.1, t - 0.35, t - 0.12, z0, z1);
     a.box("roofPale", x0, x1, t - 0.12, t, z0, z1);
   }
   // windows on the two wide blocks' backs
-  for (const u of spread(-15.0, -8.25, 2, 1.6)) sash(a, face("z", -4.25, -1), u, WUPPER.y, 1.0, 1.9, { cols: 3, rows: 2 });
-  for (const u of spread(8.0, 14.6, 2, 1.6)) sash(a, face("z", -5.5, -1), u, WUPPER.y, 1.0, 1.9, { cols: 3, rows: 2 });
+  for (const k of [0, 3]) {
+    const [x0, x1, z0] = FLATS[k];
+    for (const u of spread(x0, x1, 2, 1.6)) sash(a, face("z", z0, -1), u, WUPPER.y, 1.0, 1.9, { cols: 3, rows: 2 });
+  }
 }
 
 export function main(b) {
@@ -143,9 +207,12 @@ export function main(b) {
   a.flush(b);
 }
 
-// The chimneys, from the LiDAR's spikes: two large stacks over the ends of the front range and one
-// over the middle behind; white, with moulded caps (hRE5). [x0, x1, z0, z1, top]
-export const CHIMNEYS = [[-16.45, -14.65, 1.35, 4.1, 14.1], [13.85, 15.7, 1.85, 4.55, 14.2], [-1.35, -0.3, -1.3, -0.25, 13.95], [18.45, 20.05, -4.55, -3.95, 12.95]];
+// The chimneys, from the LiDAR's spikes: two large stacks over the ends of the front range, one over the
+// middle behind, and one on each wing's ridge; white, with moulded caps (hRE5). [x0, x1, z0, z1, top]
+// The wings' two stand at x 17.15-18.9 and -20.55 to -19.15, z -4.6 to -3.8, tops 12.9 and 12.85 (the LiDAR's
+// 12.6-12.9 m points, 0.25 m grid); common.js has only the north-west one, at x 19.25
+export const CHIMNEYS = [[-16.45, -14.65, 1.35, 4.1, 14.1], [13.85, 15.7, 1.85, 4.55, 14.2], [-1.35, -0.3, -1.3, -0.25, 13.95],
+  [17.15, 18.9, -4.55, -3.85, 12.9], [-20.55, -19.15, -4.55, -3.85, 12.85]];
 
 export function chimneys(b) {
   const a = new Acc();
