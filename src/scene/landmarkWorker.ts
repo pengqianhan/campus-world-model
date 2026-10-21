@@ -1,16 +1,18 @@
 // Builds a landmark's geometry and its stone textures away from the page's main thread, where they
 // would stop the page: the textures took 1.0 s there on a desktop and 5.2 s with the processor
 // slowed four times, as on a phone (PROGRESS.md, measured 2026-10-21). landmarks.ts draws them.
+// The worker is an ES module (vite.config.ts, worker.format): each landmark's model.js is a chunk of
+// its own, fetched the first time that landmark is asked for, so coming near one building loads its
+// model and the shared kit and no other model.
 import type { BufferAttribute, BufferGeometry, Group, Material, Mesh } from "three";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeTextures } from "../../landmarks/kit/materials.js";
-// @ts-expect-error plain JavaScript in the landmark's own folder
-import { build as clocktower } from "../../landmarks/clocktower/model.js";
 import type { Cover, LandmarkReply, LandmarkRequest, MeshData, TextureData } from "./landmarks.ts";
 
 type Build = (materials: Record<string, Material>) => Group;
-/** Each landmark's model.js, by the name of its folder (src/app/landmarks.ts). */
-const MODELS: Record<string, Build> = { clocktower };
+/** Each landmark's model.js, loaded when first asked for, by the name of its folder (src/app/landmarks.ts). */
+const MODELS = import.meta.glob<Build>("../../landmarks/*/model.js", { import: "build" });
+const modelOf = (name: string) => MODELS[`../../landmarks/${name}/model.js`];
 
 interface MadeTexture {
   map: { image: { data: Uint8Array; width: number } };
@@ -20,11 +22,19 @@ interface MadeTexture {
 
 const reply = (message: LandmarkReply, transfer: ArrayBuffer[] = []) => self.postMessage(message, { transfer });
 
+// One request after another, in the order they came, as when every model was in this file: a
+// request waits while the one before it fetches its model.
+let queue = Promise.resolve();
 self.onmessage = ({ data: ask }: MessageEvent<LandmarkRequest>) => {
+  queue = queue.then(() => answer(ask));
+};
+
+async function answer(ask: LandmarkRequest): Promise<void> {
   try {
     if (ask.part === "geometry") {
-      const build = MODELS[ask.name];
-      if (!build) throw new Error(`no landmark ${ask.name}`);
+      const load = modelOf(ask.name);
+      if (!load) throw new Error(`no landmark ${ask.name}`);
+      const build = await load();
       const materials = geometryMaterials() as Record<string, Material>;
       const names = new Map(Object.entries(materials).map(([k, m]) => [m, k]));
       // The parts log how long each took, for the landmark viewer; here that is noise. A part that
@@ -72,7 +82,7 @@ self.onmessage = ({ data: ask }: MessageEvent<LandmarkRequest>) => {
   } catch (e) {
     reply({ name: ask.name, part: ask.part, error: e instanceof Error ? e.message : String(e) });
   }
-};
+}
 
 /**
  * The triangles of a mesh sorted by the building they stand in, one group each, so that each part

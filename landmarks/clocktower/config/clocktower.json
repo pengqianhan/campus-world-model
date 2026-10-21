@@ -1,5 +1,6 @@
 {
  "name": "clocktower",
+ "site": true,
  "building": {
   "id": "105",
   "also": ["105S"],

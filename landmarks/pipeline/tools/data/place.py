@@ -5,8 +5,9 @@ north. The map (public/data/campus.json) uses metres east and north of the same 
 equirectangular projection, true north. The two frames differ: at the Clock Tower by 4.2 m and 1.06 deg.
 So this stage takes the frame's centre and axes through longitude and latitude to the map, and the
 site needs only placement.json.
-Reads the config's frame.expected (the frame that the model and the cameras use), door, and
-building.id and building.also (the campus map's buildings whose blocks the model stands in place of);
+Reads the config's frame.expected (the frame that the model and the cameras use), door,
+building.id and building.also (the campus map's buildings whose blocks the model stands in place of),
+and site (true puts the landmark on the site, which finds every placement.json that says so);
 needs no LiDAR, so it runs in a fresh clone.
   python -I ../pipeline/tools/data/place.py [--config config/<name>.json]
 """
@@ -38,6 +39,9 @@ if abs((bz - bx - 90 + 180) % 360 - 180) > 0.1:
              "and no turn puts it on the map")
 door = cfg["door"]
 dm = to_map(*local(door["x"], door["z"]))
+site = cfg.get("site", False)
+if not isinstance(site, bool):
+    sys.exit(f"place: site is {site!r}: true puts the landmark on the site, false or no site leaves it off")
 r3 = lambda v: round(v, 3)
 placement = {
     "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py "
@@ -45,6 +49,7 @@ placement = {
             "true north, as public/data/campus.json. In three.js (scene x east, y up, z south), put the model "
             "at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place "
             "of the blocks of `building` and of the buildings in `also`.",
+    "site": site,
     "building": cfg["building"]["id"],
     "also": cfg["building"].get("also", []),
     "centre": [r3(c[0]), r3(c[1])],

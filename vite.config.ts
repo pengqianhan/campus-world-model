@@ -18,6 +18,20 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 900,
   },
+  // The landmark worker (src/scene/landmarkWorker.ts) is an ES module, as the page already starts
+  // it ({ type: "module" }), so that it can load each landmark's model as a chunk of its own, named
+  // after the landmark's folder: assets/landmark-clocktower-<hash>.js.
+  worker: {
+    format: "es",
+    rolldownOptions: {
+      output: {
+        chunkFileNames: (chunk) => {
+          const landmark = /landmarks[\\/]([^\\/]+)[\\/]model\.js$/.exec(chunk.facadeModuleId ?? "")?.[1];
+          return landmark ? `assets/landmark-${landmark}-[hash].js` : "assets/[name]-[hash].js";
+        },
+      },
+    },
+  },
   test: {
     include: ["tests/**/*.test.ts"],
     environment: "node",

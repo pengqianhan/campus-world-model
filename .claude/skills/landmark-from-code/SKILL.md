@@ -17,10 +17,11 @@ the agents were given are in [briefs/](briefs/).
 
 ## What binds the work
 
-- **On the site once listed.** A landmark lives in `landmarks/<name>/`. The site draws it in place
-  of its buildings' blocks once it is listed in `src/app/landmarks.ts` and
-  `src/scene/landmarkWorker.ts` (`landmarks/README.md`, "On the site"). Every merge is a release, so
-  list it when the person wants it shown, in a pull request of its own.
+- **On the site once it says so.** A landmark lives in `landmarks/<name>/`. The site draws it in
+  place of its buildings' blocks once its config says `"site": true` and `place` has written that
+  into its `placement.json`; the site finds it there, with no list in `src/` to edit
+  (`landmarks/README.md`, "On the site"). Every merge is a release, so set it when the person wants
+  it shown, in a pull request of its own.
 - **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch outside
   `scripts/lib/snapshot.ts`, so they are not run until their fetches go through it (`PROGRESS.md`,
   "Decisions": all network fetching). Build on what is local, or build that first.
@@ -73,7 +74,8 @@ A new landmark is steps 1 to 5. Another round on a landmark is steps 3 to 5. A c
 5. **Record.** Set `door` in the config to the foot of the entrance, and `building.also` to every
    other building of the campus map whose block the model covers. Run
    `landmarks/pipeline/run.sh <name> place`, so that `placement.json` says where the model stands on
-   the map and which blocks it stands in place of. Commit with what changed. Put renders of the model only (no photograph) in
+   the map, which blocks it stands in place of and, with `"site": true` in the config, that the
+   site draws it. Commit with what changed. Put renders of the model only (no photograph) in
    `docs/landmarks/`. Tell the person what got better, what did not, and what the next round
    should do; if they want it in the repository, open a pull request as `AGENTS.md` says.
    Done when `placement.json` is written, the commit holds no Street View picture and the person
