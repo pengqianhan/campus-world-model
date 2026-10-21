@@ -222,7 +222,9 @@ shows whole: the model's triangles and the LiDAR's points of this building and o
 `building.also` (inside their outlines, from `campus.json` for `also`, or within `frame.near_outline`
 m of them) are drawn as heightmaps on a 0.5 m grid in the view frame of `frame.expected`. It gives the IoU of the two footprints (cells above 2.5 m; gaps between LiDAR points
 closed), model minus LiDAR heights on the cells both cover (p10/p50/p90, and the share within
-0.5 m), the highest point of each, and `topview.png` (LiDAR | model | difference).
+0.5 m), the highest point of each, `topview.png` (LiDAR | model | difference), and for every
+block of the campus map within 80 m the share of it under the model's footprint: the blocks it
+covers by half or more go in `building.also`.
 
 ## Fetching
 

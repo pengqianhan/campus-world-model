@@ -3,6 +3,7 @@
  "building": {
   "id": "102",
   "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, run.sh topview) it covers 92.2% of 102's block and less than 0.5% of any other block within 80 m.",
   "title": "Old Government House, University of Auckland",
   "note": "outline: building 102's outline from the main project's campus.json, in the map's frame (equirectangular metres east/north of the origin, true north), not in the LiDAR frame (local NZTM). It is used only to choose the crop box and to draw on the heightmap figure; the frame comes from the LiDAR.",
   "outline": [[141.3, 254.9], [140.0, 253.9], [143.0, 249.6], [140.8, 248.1], [143.9, 243.6], [143.1, 243.0], [138.4, 249.9], [136.1, 248.3], [141.4, 240.6], [140.0, 239.6], [141.8, 237.1], [143.2, 238.1], [144.9, 235.7], [143.5, 234.7], [142.0, 236.8], [139.3, 234.9], [126.1, 253.5], [120.7, 249.7], [119.4, 251.6], [116.9, 249.8], [118.9, 247.0], [116.7, 245.6], [114.7, 248.4], [119.4, 251.6], [117.8, 253.9], [121.6, 256.6], [119.2, 260.1], [106.3, 251.1], [89.3, 275.4], [90.2, 276.0], [89.9, 276.4], [93.6, 279.0], [93.0, 279.9], [94.6, 281.0], [95.2, 280.1], [97.1, 281.4], [96.8, 281.9], [98.1, 282.8], [97.9, 283.1], [106.3, 289.0], [104.8, 291.1], [108.2, 293.4], [109.7, 291.3], [111.4, 292.5], [108.8, 296.2], [106.7, 294.7], [106.3, 295.4], [108.4, 296.8], [111.4, 292.5], [115.6, 295.5], [119.9, 289.4], [120.5, 289.8], [128.2, 278.8], [128.7, 279.1], [132.2, 274.1], [131.8, 273.8], [139.4, 262.8], [139.0, 262.3], [143.2, 256.3]]
@@ -13,6 +14,10 @@
  },
  "crop_margin": 50,
  "ground": 37.5,
+ "door": {
+  "x": -0.6, "z": 13.9,
+  "note": "view frame: the foot of the porch steps on the middle bay's axis (parts/main.js MIDDLE.axis, parts/bay.js PORCH), where the ground is `ground` m and the model's y is 0; place.py puts it on the map"
+ },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": ["3604", "3605"],

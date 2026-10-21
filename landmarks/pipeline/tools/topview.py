@@ -8,6 +8,8 @@ Writes $OUT/metrics.json, metrics.md and topview.png (LiDAR | model | difference
   - footprint IoU: cells higher than 2.5 m in the model against those in the LiDAR (gaps between LiDAR
     points closed);
   - height: model minus LiDAR on the cells both cover, and the highest point of each.
+  - blocks: for each block of public/data/campus.json whose centre is within 80 m, the share of its
+    cells under the model's footprint (what building.also lists: the blocks it covers by half or more).
   python -I ../pipeline/tools/topview.py [--config config/<name>.json] [--out out/topview]
 """
 import argparse, json, os, sys
@@ -78,6 +80,28 @@ r = {
                "highest_m": {"model": round(float(model.max()), 2), "lidar": round(float(lidar.max()), 2),
                              "lidar_p99.9": round(float(np.percentile(lh, 99.9)), 2)}},
 }
+# the campus map's blocks under the model (for building.also): the share of each block's 0.5 m cells
+# that the model's footprint covers, for every block whose centre is within 80 m
+from matplotlib.path import Path
+to_local, to_map = common.map_to_local(cfg), common.map_projector(cfg)
+cm_x, cm_z = to_map(*centre)
+campus = json.load(open(os.path.join(common.ROOT, "..", "..", "public", "data", "campus.json"), encoding="utf-8"))
+r["blocks"] = []
+for bld in campus["buildings"]:
+    if np.hypot(bld["center"][0] - cm_x, bld["center"][1] - cm_z) > 80: continue
+    ring = bld["outline"][0]
+    pts = np.array([to_local(ring[k] / 10, ring[k + 1] / 10) for k in range(0, len(ring), 2)]) - centre
+    pts = np.c_[-(pts @ axis), pts @ to_street]
+    j = np.arange(int(np.floor((pts[:, 0].min() - x0) / RES)), int(np.ceil((pts[:, 0].max() - x0) / RES)) + 1)
+    i = np.arange(int(np.floor((pts[:, 1].min() - z0) / RES)), int(np.ceil((pts[:, 1].max() - z0) / RES)) + 1)
+    J, I = np.meshgrid(j, i)
+    inside = Path(pts).contains_points(np.c_[(x0 + (J.ravel() + 0.5) * RES), (z0 + (I.ravel() + 0.5) * RES)])
+    if not inside.any(): continue
+    J, I = J.ravel()[inside], I.ravel()[inside]
+    ok = (J >= 0) & (J < nx) & (I >= 0) & (I < nz)
+    share = float(M[I[ok], J[ok]].sum()) / len(J)
+    if share >= 0.005: r["blocks"].append({"id": bld["id"], "name": bld["name"].get("en", ""), "covered": round(share, 3)})
+r["blocks"].sort(key=lambda b: -b["covered"])
 json.dump(r, open(os.path.join(a.out, "metrics.json"), "w"), indent=1)
 md = ["| top view | value |", "| --- | ---: |",
       f"| footprint IoU (cells above {FLOOR} m) | {r['footprint']['iou']:.3f} |",
@@ -87,6 +111,7 @@ if both.any():
     md += [f"| model - LiDAR height p10 / p50 / p90 (m) | {h['model_minus_lidar_m']['p10']} / {h['model_minus_lidar_m']['p50']} / {h['model_minus_lidar_m']['p90']} |",
            f"| cells within 0.5 m | {h['within_0.5m'] * 100:.0f}% of {h['cells']} |",
            f"| highest point model / LiDAR (p99.9) (m) | {h['highest_m']['model']} / {h['highest_m']['lidar_p99.9']} |"]
+md += [f"| block {b['id']} ({b['name']}) under the model | {b['covered'] * 100:.1f}% |" for b in r["blocks"]]
 open(os.path.join(a.out, "metrics.md"), "w", encoding="utf-8").write("\n".join(md) + "\n")
 print("\n".join(md))
 
