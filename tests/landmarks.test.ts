@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { Box3, Vector3, type Mesh, type Object3D } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
-import { Landmark } from "../src/scene/landmarks.ts";
+import { Landmark, type LandmarkRequest } from "../src/scene/landmarks.ts";
 import { Terrain } from "../src/scene/terrain.ts";
 import type { TerrainData } from "../src/shared/types.ts";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
@@ -51,8 +51,55 @@ describe("landmarks on the map", () => {
   });
 });
 
+describe("a landmark's forms", () => {
+  it("makes the full form whether the map's light form or a walker's full form is asked for first, with stone or without", async () => {
+    // A stand-in for the worker: it answers each request a moment later, in order.
+    let stone = false;
+    const asked: string[] = [];
+    class StandIn {
+      onmessage?: (e: { data: unknown }) => void;
+      onerror: unknown = null;
+      postMessage(r: LandmarkRequest) {
+        asked.push(r.part);
+        const mesh = { material: stone ? "ashlar" : "boards", castShadow: true, receiveShadow: true, attributes: [{ name: "position", array: new Float32Array(9), itemSize: 3 }], groups: [{ start: 0, count: 3, materialIndex: 0 }], sphere: [0, 0, 0, 1] };
+        const data = r.part === "geometry" ? { name: r.name, part: "geometry", meshes: [mesh], stone } : { name: r.name, part: "textures", quality: r.quality, textures: {} };
+        setTimeout(() => this.onmessage?.({ data }), 5);
+      }
+      terminate() {}
+    }
+    const real = globalThis.Worker;
+    globalThis.Worker = StandIn as unknown as typeof Worker;
+    const settle = () => new Promise((r) => setTimeout(r, 100));
+    const entry = LANDMARKS[0]!;
+    const covers = () => [{ id: landmarkBuildings(entry)[0]!, rings: [] }];
+    try {
+      for (const s of [false, true]) {
+        for (const mapFirst of [true, false]) {
+          stone = s;
+          asked.length = 0;
+          const l = new Landmark(entry, host);
+          if (mapFirst) {
+            l.want("light", covers);
+            await settle();
+          }
+          l.want("full", covers);
+          await settle();
+          await settle();
+          const how = `${s ? "stone" : "no stone"}, ${mapFirst ? "map first" : "walker first"}`;
+          expect(l.has("full"), how).toBe(true);
+          // The stone's textures only for a model with stone.
+          expect(asked, how).toEqual(s ? ["geometry", "textures"] : ["geometry"]);
+          l.dispose();
+        }
+      }
+    } finally {
+      globalThis.Worker = real;
+    }
+  });
+});
+
 describe("each landmark on the site's ground", () => {
-  it("stands at its door with no part of its walls' foot in the air: the walls go down as far as the drawn ground falls under it", async () => {
+  it("stands at its door with the foot of its walls nowhere more than 0.25 m above the drawn ground", async () => {
     // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the
     // models are measured to; ordinary blocks get a footing for it (terrain.ts), a landmark its walls.
     const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);

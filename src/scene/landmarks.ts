@@ -215,7 +215,14 @@ export class Landmark {
     } else {
       this.asked.add("textures");
       this.textures = {};
+      // The geometry may have come long before (the map wanted the light form first): make it now.
+      this.makeFullWhenReady()?.catch((e) => console.error(`landmark ${this.name}`, e));
     }
+  }
+
+  /** Makes the full form once the geometry and the textures are both in, whichever comes last. */
+  private makeFullWhenReady(): Promise<void> | undefined {
+    return this.parts && this.textures ? (this.makingFull ??= this.makeFull()) : undefined;
   }
 
   /** Draws a form, or none, so that the blocks show. A form not yet made counts as none. True if that changed. */
@@ -267,7 +274,7 @@ export class Landmark {
     } else {
       this.textures = reply.textures;
     }
-    if (this.parts && this.textures) await (this.makingFull ??= this.makeFull());
+    await this.makeFullWhenReady();
   }
 
   /** Puts a form among those that can be drawn once its shaders are made, and says so, made or not. */
@@ -359,7 +366,9 @@ function startWorker(): Worker {
     const key = `${data.name}:${data.part}`;
     waiting.get(key)?.(data);
     waiting.delete(key);
-    done();
+    // Not before the reply's handlers have run: what they ask for next (a landmark's textures once
+    // its geometry has come) goes to this worker, not a new one.
+    setTimeout(done);
   };
   // The worker could not start or stopped: every request still open fails.
   w.onerror = (e) => {

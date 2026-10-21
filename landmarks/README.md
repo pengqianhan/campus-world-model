@@ -120,8 +120,10 @@ latitude to the map's frame and writes `<name>/placement.json`:
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
 The two can be a metre or more apart: a model's walls go down below y = 0 as far as the map's ground
-falls under it (Old Government House's to 1.6 m below its porch), so that nothing hangs in the air,
-and `tests/landmarks.test.ts` checks every landmark on the site for it.
+falls under it (Old Government House's to 1.6 m below its porch), so that their foot is nowhere
+more than 0.25 m above it. `tests/landmarks.test.ts` checks that for every landmark on the site, at
+the model's lowest points: give every part's walls the same foot, as Old Government House's parts
+take `FOOT` from `common.js`.
 The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site

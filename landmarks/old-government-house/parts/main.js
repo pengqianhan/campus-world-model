@@ -62,9 +62,11 @@ function frontRange(a) {
   // the roof behind the balustrade
   const r = FRONT.roof;
   hip(a, r.x[0], r.x[1], r.z[0], r.z[1], cornice, FRONT.ridge);
-  // quoins at the four corners of the garden front's ends
+  // quoins at the four corners of the garden front's ends, over a plain board down to the walls' foot
   quoins(a, x0, z1, -1, 1, 0, top - 0.3);
   quoins(a, x1, z1, 1, 1, 0, top - 0.3);
+  cornerBoard(a, x0, z1, -1, 1, BASE, 0, 0.45);
+  cornerBoard(a, x1, z1, 1, 1, BASE, 0, 0.45);
   // the balustrade on the wall line: along the garden front either side of the middle bay, and round the ends
   const gf = face("z", z1, 1), se = face("x", x0, -1), nw = face("x", x1, 1);
   const d = FRONT.rail, ends = { post: 2.4 };
@@ -90,6 +92,8 @@ function middleBay(a) {
   a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z1, zf + 0.06);
   quoins(a, x0, zf, -1, 1, 0, top - 0.3, { long: 0.6, short: 0.38 });
   quoins(a, x1, zf, 1, 1, 0, top - 0.3, { long: 0.6, short: 0.38 });
+  cornerBoard(a, x0, zf, -1, 1, BASE, 0, 0.38);
+  cornerBoard(a, x1, zf, 1, 1, BASE, 0, 0.38);
   // the pediment: a gabled roof from the main roof forward to the cornice's edge, its tympanum on the wall line
   // its ridge stops at z 6.5 (the LiDAR: the main roof at 11.1 at z 6), the back hipped steeply into the main roof
   gableZ(a, axis, half, 5.2, zf + 0.45, cornice, ridge, { setback: 0.45, ridgeFrom: 6.5 });
@@ -121,7 +125,7 @@ function wing(a, w, end) {
   a.box("boards", x0 - 0.03, x1 + 0.03, top - 0.32, top, z0 - 0.03, z1 + 0.03);
   hip(a, ex0, ex1, ez0, ez1, eave, ridge);
   // corner boards: ochre, but white on the south-east wing, whose corner hRE5 shows plain
-  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, 0, top, 0.3, 0.05, se ? "paint" : "trim");
+  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, BASE, top, 0.3, 0.05, se ? "paint" : "trim");
   const fEnd = face("x", se ? x0 : x1, end), fFront = face("z", z1, 1), fBack = face("z", z0, -1);
   const fIn = face("x", se ? x1 : x0, -end);
   const open = se ? [x0, FRONT.x[0]] : [FRONT.x[1], x1];             // the wing's front not covered by the front range
@@ -166,7 +170,7 @@ function rearWing(a) {
   a.box("paint", ex0, ex1, top, eave, ez0, z1);
   // hipped at the back; its front hip runs into the front range's roof and is hidden there
   hip(a, ex0, ex1, ez0, 5.1, eave, ridge);
-  for (const [cx, sx] of [[x0, -1], [x1, 1]]) cornerBoard(a, cx, z0, sx, -1, 0, top);
+  for (const [cx, sx] of [[x0, -1], [x1, 1]]) cornerBoard(a, cx, z0, sx, -1, BASE, top);
   const fb = face("z", z0, -1), fx = face("x", x1, 1);
   brackets(a, fb, x0, x1, top);
   brackets(a, fx, z0, FLATS[2][2], top);

@@ -421,8 +421,8 @@ If you represent the University and would like something changed or removed, ple
   north-west lobby, the low south-east range, the north-west balcony (like the south-east one) and
   the ranges round the courtyard behind.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
-  map's ground under its door, and its walls go down as far as that ground falls under it, so that
-  nothing hangs in the air. Under Old Government House the map's ground rises 2.75 m from end to end
+  map's ground under its door, and its walls go down far enough that their foot is nowhere more
+  than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the map's ground rises 2.75 m from end to end
   where the LiDAR's rises 1.1 m: its north-west end stands up to 1.2 m too deep, and some of its
   ground-floor windows there are partly under the drawn ground.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
