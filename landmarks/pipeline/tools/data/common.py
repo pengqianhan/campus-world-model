@@ -78,13 +78,23 @@ def map_to_local(cfg):
     return to_local
 
 
-def near_outline(cfg, xy, d):
+def also_outlines(cfg):
+    """The outlines (map metres) of the campus map's buildings in building.also, from the main project's
+    public/data/campus.json (decimetres there)."""
+    also = set(cfg["building"].get("also", []))
+    if not also: return []
+    c = json.load(open(os.path.join(ROOT, "..", "..", "public", "data", "campus.json"), encoding="utf-8"))
+    return [[[r[i] / 10, r[i + 1] / 10] for i in range(0, len(r), 2)] for b in c["buildings"] if b["id"] in also for r in b["outline"][:1]]
+
+
+def near_outline(cfg, xy, d, outline=None):
     """Which of the points xy (local NZTM metres, shape (n, 2)) stand inside the building's outline
-    (config building.outline, in the map's frame, taken to local metres) or within d m of its edge."""
+    (config building.outline, or the one given, in the map's frame, taken to local metres) or within d m
+    of its edge."""
     import numpy as np
     from matplotlib.path import Path
     to_local = map_to_local(cfg)
-    a = np.array([to_local(x, y) for x, y in cfg["building"]["outline"]])
+    a = np.array([to_local(x, y) for x, y in (outline or cfg["building"]["outline"])])
     ab = np.roll(a, -1, axis=0) - a
     t = np.clip(((xy[:, None, :] - a) * ab).sum(-1) / (ab * ab).sum(-1), 0, 1)
     edge = np.linalg.norm(xy[:, None, :] - (a + t[..., None] * ab), axis=-1).min(1)

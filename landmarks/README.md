@@ -163,6 +163,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
 | compare | `tools/compare.mjs` | the viewer, `views_refined.json` (else `views.json`) | `$OUT/<view>.png`, `<view>_strip.jpg` (reference, render, overlay), `labels/`, `views_used.json`, then metrics |
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
+| topview | `tools/topview.mjs` + `tools/topview.py` | the model (`model.js`), the data stage's points | `out/topview/triangles.bin`, `metrics.json`, `metrics.md`, `topview.png` |
 
 `$OUT` defaults to `out/pipeline/compare`. `compare.mjs` keeps its command line
 (`--out`, `--match`, `--query`); `--no-metrics` skips the silhouette renders and the metrics. Other
@@ -215,6 +216,13 @@ with hazy white sky, views mostly of trees, and back views keep their Street Vie
 Per view: silhouette IoU (as above) and, inside the building region (model building ∩ photo
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
+
+From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
+shows whole: the model's triangles and the LiDAR's points of this building and of those in
+`building.also` (inside their outlines, from `campus.json` for `also`, or within `frame.near_outline`
+m of them) are drawn as heightmaps on a 0.5 m grid in the view frame of `frame.expected`. It gives the IoU of the two footprints (cells above 2.5 m; gaps between LiDAR points
+closed), model minus LiDAR heights on the cells both cover (p10/p50/p90, and the share within
+0.5 m), the highest point of each, and `topview.png` (LiDAR | model | difference).
 
 ## Fetching
 
