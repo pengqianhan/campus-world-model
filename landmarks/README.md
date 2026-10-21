@@ -1,10 +1,11 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs. The site draws the landmarks that
-`src/app/landmarks.ts` lists in place of their buildings' blocks (see "On the site"). The pipeline
+LiDAR and checked against Street View photographs. The site draws the landmarks whose
+`placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
+A design for the many plain buildings, drawn by rule from the LiDAR: [MASSING.md](MASSING.md).
 
 | Folder | What it holds | Shared? |
 | --- | --- | --- |
@@ -53,13 +54,13 @@ landmarks/pipeline/run.sh clocktower compare    # one stage; stages can be chain
 Every stage and tool runs in the landmark's folder; `run.sh` goes there. To run a tool alone, go there
 first: `cd landmarks/clocktower && node ../pipeline/tools/compare.mjs --out out/me --match tower`.
 
-The `data` and `refs` stages fetch outside `scripts/lib/snapshot.ts`. They are not run until their
-fetches go through it (`PROGRESS.md`, "Decisions": all network fetching); `place`, `refine`,
-`compare` and `metrics` work from what is on disk.
+The `data` and `refs` stages fetch through `scripts/lib/snapshot.ts` (see "Fetching"); `place`,
+`refine`, `compare` and `metrics` work from what is on disk.
 
-In a fresh clone the first `refs` needs a Google Maps key and `ALLOW_FETCH=1` (it buys the Street View
-tiles once: about 1,500 for the Clock Tower, inside the free monthly quota; see "What is billed").
-After that every run is offline from the local cache.
+In a fresh clone the first `refs` needs a Google Maps key, `ALLOW_FETCH=1` and a ledger in
+`GMAPS_BUDGET` (it buys the Street View tiles once: about 1,500 for the Clock Tower, inside the free
+monthly quota, in about 28 minutes at one request every 1.1 s; see "What is billed"). After that
+every run is offline from the local cache.
 
 ## Requirements
 
@@ -104,6 +105,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 | key | what it is |
 | --- | --- |
+| `site` | whether the site draws the landmark: the config's `site`, `true` or `false` (left out: `false`) |
 | `building` | the campus map's building id |
 | `also` | the other buildings of the campus map whose blocks the model covers (config `building.also`): the Clock Tower's south range is 105S |
 | `centre` | the model's x = z = 0, in map metres east and north |
@@ -114,12 +116,13 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
-The stage needs no LiDAR: it reads `frame.expected`, `door` and `building` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site
 
-The site draws each landmark that `LANDMARKS` in `src/app/landmarks.ts` lists, in place of the
+The site draws each landmark whose `<name>/placement.json` says `site: true`, in place of the
 blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a University building).
+It finds them itself (`import.meta.glob` in `src/app/landmarks.ts`): no list in `src/` names them.
 
 - **Only near it.** Nothing is fetched or made until the camera comes near: on the map, where a
   metre of ground takes 1.5 pixels or more; in a walker view, within 600 m (`LANDMARK_PIXELS` and
@@ -129,7 +132,16 @@ blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a Un
   no texture. The map draws it, and so do the walker views of the basic tier (phones and software
   rendering). The full form has the kit's materials. The walker views of the full tier draw it.
 - **Off the main thread.** A worker (`src/scene/landmarkWorker.ts`) builds the geometry with
-  `geometryMaterials()` and the textures with `makeTextures("low")`. The page then makes the
+  `geometryMaterials()` and the textures with `makeTextures("low")`. It is an ES module
+  (`worker.format` in `vite.config.ts`) that loads `<name>/model.js` by the landmark's name the
+  first time it is asked for, so each model is a chunk of its own
+  (`assets/landmark-<name>-<hash>.js`): coming near one landmark downloads the worker, which holds
+  three.js and every file of `kit/` (`vite.config.ts` counts the kit's files as having side
+  effects, so the build keeps each one in the worker), and then that landmark's model, and no other
+  landmark's model.
+  Every `<name>/model.js` is built and published as a chunk, on the site or not, and every
+  `placement.json` goes into the page's code; "off the site" means only that the site does not draw
+  it. The page then makes the
   materials with `makeMaterials("low", textures, { space: "object" })`, which lays the weathering
   in the model's own frame, as the viewer shows it, and makes their shaders before the form's first
   frame (`compileAsync`). A form is drawn once its shaders are made; until then the light form, or
@@ -140,10 +152,29 @@ blocks of `building` and `also` (`PROGRESS.md`, "Decisions": one source for a Un
 - **The landscape stays in the viewer.** The walker views keep their own streets and trees round
   the building.
 
-To put another landmark on the site, run `place`, add the landmark to `LANDMARKS` and its `build` to
-`MODELS` in `src/scene/landmarkWorker.ts`, and list in `building.also` every other building of the
-campus map whose block the model covers. Then look at it on the map and from a walker's height, and
-give the speed numbers (`docs/standards.md`, check 9).
+To put another landmark on the site, set `"site": true` in its config, list in `building.also`
+every other building of the campus map whose block the model covers, and run `place`. The site
+finds the new `placement.json` and loads the folder's `model.js`: no code in `src/` lists the
+landmarks, and `e2e/landmark.spec.ts` tests every landmark it finds. The same pull request also
+needs:
+
+- a line in `CHANGELOG.md` and a few words in the README's "What's new": a new landmark changes
+  what the site shows (`docs/standards.md`, check 6);
+- a check of About's fixed words for the landmarks (`about.landmarks` in
+  `src/i18n/locales/*.json`), which say they are drawn "in stone, glass and slate": change them if
+  the new building is not, for example a building of painted timber;
+- for each material of the model that the kit's `roof`, `glass`, `iron` or `void` does not cover
+  but that is a roof, a pane or an opening, its part in `LIGHT_ROLE` in `src/scene/landmarks.ts`.
+  Every other material is drawn as wall in the light form, so on the map a roof in a material
+  such as `roofPale` takes the wall colour until it is listed there;
+- in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
+  estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
+- a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
+  check 9).
+
+To take one off the site, set `site` to `false` and run `place` again, and change the same
+`CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map
+and the walker's views where it stood, and give the speed numbers (check 9).
 
 ## Stages
 
@@ -151,10 +182,10 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 
 | stage | script | inputs | outputs |
 | --- | --- | --- | --- |
-| data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else downloaded) |
+| data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else fetched once into `data/raw/landmarks/` and linked) |
 | | `tools/data/measure.py` | LiDAR tiles, config | `data/<name>_pts.npy` (x, y, z, class in local m), `_ring.json` (E0, N0, crop box, outline), `_frame.json`, `_plan_frame.png`, `_front_elevation.png` |
-| | `tools/data/heightmap.py` | points, LINZ aerial (public COG, read once) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
-| place | `tools/data/place.py` | config `frame.expected`, `door`, `building` | `placement.json` |
+| | `tools/data/heightmap.py` | points, LINZ aerial (whole public tiles, fetched once into `data/raw/landmarks/`) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
+| place | `tools/data/place.py` | config `frame.expected`, `door`, `building`, `site` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
@@ -176,12 +207,13 @@ stay on the machine that fetched them.
 
 ### References (Street View)
 
-Cache-first: tiles are kept in `refs/streetview/tiles/<panoId>/<zoom>_<col>_<row>.jpg` and are
-never fetched again. A tile that is not cached is **not** bought unless `--allow-fetch` is given;
-the run lists it, and a view that would need it keeps its existing image. By default `run.sh refs`
-works offline from `metadata.json` (no network call at all); `REFS_ONLINE=1` repeats the free calls
-(createSession, panoIds, metadata) and saves the metadata again; a fresh clone has no
-`metadata.json` and goes online. The panoramas are the ones listed in the config's
+Cache-first: metadata and tiles are kept in `data/raw/landmarks/streetview/` (see "Fetching") and
+are never fetched again. A tile that is not cached is **not** bought unless `--allow-fetch` is given
+and the ledger allows it;
+the run counts it, and a view that would need it keeps its existing image. By default `run.sh refs`
+works offline from `refs/streetview/metadata.json` (no network call at all); `REFS_ONLINE=1` makes
+it again from the snapshots, with the free calls (createSession, panoIds, metadata) for what is not
+cached; a fresh clone has no `metadata.json` and goes online, and so does a run with `ALLOW_FETCH=1`. The panoramas are the ones listed in the config's
 `streetview.pano_ids` (without that list, those within `radius_m` of the building). Each panorama
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
 hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it.
@@ -212,12 +244,58 @@ Per view: silhouette IoU (as above) and, inside the building region (model build
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
 
+## Fetching
+
+Every request the pipeline sends goes through `scripts/lib/snapshot.ts` (`PROGRESS.md`,
+"Decisions": all network fetching). The Python stages give a batch of operations to
+`scripts/landmarks/fetch.ts` through `tools/data/fetch_bridge.py`; what it lets through, and how, is
+in `scripts/lib/landmark-fetch.ts`.
+
+- **Only these.** Whole files from the two LINZ buckets the Clock Tower is measured from (the LiDAR
+  on OpenTopography, the aerial photos on AWS), and the Map Tiles API's Street View `createSession`,
+  `panoIds`, `metadata` and `tiles`. Any other host or path is an error before anything is sent. A
+  landmark measured from another LiDAR or aerial set adds its bucket there: that is a new data
+  source, for the maintainer to decide.
+- **Cached once.** All of it is kept in `data/raw/landmarks/` (gitignored), shared by all landmarks,
+  and never fetched again: `lidar/`, `aerial/`, and `streetview/` (`metadata/<panoId>.json`,
+  `panoIds/`, `tiles/<panoId>/<zoom>_<col>_<row>.jpg`). A file is written whole or not at all. The
+  one exception is the session (`streetview/session.json`): it is used again until ten minutes
+  before it expires (two weeks), then asked for anew. The data stage links the LiDAR tiles into the
+  landmark's `data/lidar/`. Tiles that the pipeline cached before 2026-10-22, in a landmark's
+  `refs/streetview/tiles/<panoId>/`, are no longer read: move each panorama's folder to
+  `data/raw/landmarks/streetview/tiles/<panoId>/`, and the next `refs` records them instead of
+  buying them again.
+- **Paced and logged.** One request every 1.1 s, also from one batch to the next, and one batch at a
+  time for the user, from any checkout (a lock in `~/.campus-world-model/`, beside the ledger it
+  guards), with the project's User-Agent. The time and URL of
+  each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
+  LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
+  for each panorama's tiles: their count, total size, one sha256 over the sorted list of
+  `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
+  A batch records each panorama's tiles when it is done with them, and at its start records any
+  that a batch killed part way left unrecorded. No redirect is followed: a redirect stops the
+  batch.
+- **The key** is read at the moment of a request, from `$GOOGLE_MAPS_KEY` or `~/.gmaps_key`, and sent
+  in the `X-Goog-Api-Key` header, never in a URL. The session token is written as `<session>` in
+  every logged URL, and both are taken out of every error message.
+- **Tiles are bought through a ledger only.** With `ALLOW_FETCH=1` the batch counts the tiles that
+  are not cached (N) and runs `$PY -I $GMAPS_BUDGET check N` first: if it exits other than 0,
+  nothing is bought. Then it adds the tiles to the ledger before it sends them, 25 at a time
+  (`check 25`, `add 25`), so a batch stopped part way, even killed, has counted a few too many,
+  never too few: do not add them to the ledger by hand. A tile that fails with a server error
+  (5xx) is tried three times, each try counted. Anything else stops the batch: a refusal (4xx), a
+  redirect, a timeout, a dropped connection, a failed write, or a tile that fails all three tries.
+  The reason is written to `data/raw/landmarks/streetview/closed.txt`, and no tile is bought
+  until a person has looked and deleted it ("closed is a verdict"); a rerun then goes on from the
+  cache. Without `GMAPS_BUDGET` nothing is bought. The ledger is a script outside the repository that keeps a
+  monthly and a daily count under a cap.
+
 ## What is billed
 
 - Map Tiles API **Street View tiles**: 100,000 free a month, then **$2 per 1,000** (the Clock
   Tower's 12 panoramas use 1,526 tiles: free inside the monthly quota, about $3 beyond it). The
-  pipeline downloads **0** tiles unless `ALLOW_FETCH=1` (`--allow-fetch`) is given; a rerun reports
-  `0 downloaded`.
+  pipeline downloads **0** tiles unless `ALLOW_FETCH=1` (`--allow-fetch`) is given and the ledger
+  allows them (see "Fetching"); a rerun reports `0 downloaded`.
 - createSession, panoIds and metadata calls: free.
 - LINZ LiDAR (OpenTopography bucket) and LINZ aerial (AWS open data): free, no login.
 
@@ -247,10 +325,10 @@ the reference and of the render; plus the mean over views.
    `data/<name>_frame.json`. Add empty `data/.gitkeep` and `refs/.gitkeep`.
 2. `landmarks/pipeline/run.sh <name> data` and look at the plan, elevation and heightmap figures.
 3. References: set `streetview` in the config (leave out `pano_ids` to search round the building,
-   then pin the ones you keep) and run `ALLOW_FETCH=1 landmarks/pipeline/run.sh <name> refs` once
-   (billed, see above).
+   then pin the ones you keep) and run `ALLOW_FETCH=1 GMAPS_BUDGET=<ledger> landmarks/pipeline/run.sh <name> refs`
+   once (billed, see above).
 4. The model: `model.js` and `parts/`, built with `kit/`, and `config/default_camera.json`; then a
    round of agents as in the skill's `METHOD.md`.
 5. Set `door` in the config to the foot of the entrance, where the ground is `ground`, and run
    `landmarks/pipeline/run.sh <name> place`.
-6. To show it on the site, see "On the site".
+6. To show it on the site, set `"site": true` in the config and run `place` again: see "On the site".
