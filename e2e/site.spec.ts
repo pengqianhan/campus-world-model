@@ -531,11 +531,11 @@ test("the rest of a floor is drawn as unnamed shapes that carry the campus map's
   await page.locator("#search-input").fill("410-101");
   const found = page.locator(".result.type-marker");
   await expect(found).toContainText("410-101");
-  await expect(found).toContainText("does not place such rooms");
+  await expect(found).toContainText("does not place unnamed rooms there");
   await expect(found).not.toContainText("shown as a pin");
   await expect(found).not.toContainText("inferred");
   await open(page, "?room=410-101&light=day");
-  await expect(page.locator("#precision-note")).toContainText("does not place such rooms");
+  await expect(page.locator("#precision-note")).toContainText("does not place unnamed rooms there");
   await expect(page.locator('[data-label="pin"]')).toHaveCount(0);
 });
 

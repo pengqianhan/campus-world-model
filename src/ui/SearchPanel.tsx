@@ -70,10 +70,11 @@ function goToSession(d: AppData, s: Session): void {
   else if (s.room) {
     const precision = s.precision === "room" ? "indexed" : s.precision === "floor" ? "floor" : "building";
     openMarker({ code: s.room, building: s.building, floor: s.floor, precision });
-    // The campus map may know where the room is even though its outline is not published.
-    if (precision === "indexed") {
+    // The campus map may know where the room is even though its outline is not published, or the
+    // room may stand on a floor this site leaves blank: resolveRoom says which.
+    if (precision !== "floor") {
       void resolveRoom(s.room).then((r) => {
-        if (r?.marker && selRoom.value === s.room) openMarker(r.marker);
+        if (r?.marker && selRoom.value === s.room && (precision === "indexed" || r.marker.blank)) openMarker(r.marker);
       });
     }
   } else openBuilding(s.building, s.floor);
