@@ -37,10 +37,11 @@ no photograph shows is drawn plain, at the LiDAR's sizes.
 | `glassPale` | every pane, and the canopy: they show the sky and the trees, light grey-blue, not dark |
 | `iron` | the dark window frames, the canopy's posts |
 | `roofPale` | the flat roofs (light grey in the aerial) |
-| `timber` | the red-brown brick plinth on Alfred Street: a stand-in, dark red-brown, until the kit has a brick (the Old Choral Hall's branch adds one) |
+| `brick` | the red-brown brick plinth on Alfred Street and by the stair tower (the kit's brick, the Old Choral Hall's) |
+| `grey` | the south-east end's piers, the back wing's plinth: the kit's mid-grey |
 
-Not yet drawn: the grey of the south-east end's piers and cladding, of the back wing's plinth and of
-the north-west end's stone panel (drawn white or as glazing: the kit has no mid-grey), the white grille
+Not yet drawn: the grey of the south-east end's cladding and of the north-west end's stone panel
+(drawn white or as glazing), the white grille
 on the north-west end, the narrow windows in the stair tower's sides, the hoods' hollow undersides,
 the ribs of the podium's roof.
 

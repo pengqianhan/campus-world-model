@@ -6,7 +6,7 @@
 import * as THREE from "three";
 import { boxesGeometry } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT, SLAB_TURN } from "./common.js";
-import { face, ribbons, glazing } from "./facade.js";
+import { face, ribbons, glazing, piers } from "./facade.js";
 
 const IN = 0.3; // the mass stands this far inside the faces, behind the spandrels
 
@@ -39,6 +39,7 @@ export function slab(b) {
   // the south-east end: ribbons above the ground floor, which is glazed between dark piers (the entrance)
   ribbons(b, face("x", u1, 1, E.back, E.frontRight), 5.0, top, S.floors, { deep: 0.6 });
   glazing(b, face("x", u1, 1, w0, w1), M.ground.seEnd, 5.0, { inset: 0.6, bay: 4.4 });
+  piers(b, face("x", u1, 1, w0, w1), FOOT, 5.0, { bay: 4.4 });
   // the north-west end above the podium: ribbons too (Qaci's upper view)
   ribbons(b, face("x", E.nw, -1, E.back, E.frontLeft), P.top, top, S.floors, { deep: u0 + IN - E.nw });
   b.matrix = null;

@@ -52,7 +52,8 @@ sampled from them into the model.
 
 ## Budget (tier 1)
 - At most 150,000 triangles and 12 draw calls (one per material) for the whole model; round 0 is
-  10,128 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 3-18 ms.
+  10,128 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 3-18 ms;
+  on the site 10,248 in 6 (`brick` and `grey` in place of `timber`).
 - No textures: the materials above are shader hooks without image textures, so the site never makes
   the stone textures for this model.
 

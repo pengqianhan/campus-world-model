@@ -60,3 +60,16 @@ export function glazing(b, f, y0, y1, { inset = 0.3, bay = 1.8, frame = "iron", 
   bars.push(faceBox(f, a0, a1, y0, y0 + 0.12, -inset, -inset + 0.12), faceBox(f, a0, a1, y1 - 0.12, y1, -inset, -inset + 0.12));
   b.add(boxesGeometry(bars), frame);
 }
+
+/**
+ * Piers on a face from y0 to y1, `width` m wide, standing from `d0` to `d1` out of it, where glazing()
+ * with the same `bay` puts its mullions: so a glazed band between them reads as bays between piers.
+ */
+export function piers(b, f, y0, y1, { bay = 1.8, width = 0.9, d0 = -0.6, d1 = 0, a0 = f.a0, a1 = f.a1, material = "grey" } = {}) {
+  const n = Math.max(1, Math.round((a1 - a0) / bay)), P = [];
+  for (let k = 0; k <= n; k++) {
+    const a = a0 + ((a1 - a0) * k) / n, lo = Math.max(a0, a - width / 2), hi = Math.min(a1, a + width / 2);
+    P.push(faceBox(f, lo, hi, y0, y1, d0, d1));
+  }
+  b.add(boxesGeometry(P), material);
+}

@@ -8,7 +8,7 @@
 // main block's back on the service lane, the low block's north-east face) are plain.
 import { boxesGeometry } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT } from "./common.js";
-import { face, faceBox, ribbons, glazing, prism } from "./facade.js";
+import { face, faceBox, ribbons, glazing, prism, piers } from "./facade.js";
 
 const IN = 0.3;
 /** How far the crown's teeth stand out of the glazing behind the fins: the LiDAR's roof edge is theirs. */
@@ -58,10 +58,10 @@ export function podium(b) {
   // Alfred Street: a brick plinth and the fin screen the whole length of the front block; its end by the
   // stair tower (facing +x, B4NW's photograph) glazed in two storeys of dark frames over the brick
   const front = face("z", A.z[1] - OUT, 1, A.x[0], A.x[1]), plinth = 5.2;
-  b.add(boxesGeometry([faceBox(front, A.x[0], A.x[1], FOOT, plinth, -0.5, 1.0)]), "timber");
+  b.add(boxesGeometry([faceBox(front, A.x[0], A.x[1], FOOT, plinth, -0.5, 1.0)]), "brick");
   fins(b, front, plinth, 10.4, A.top, { a0: A.x[0] + 0.4, a1: A.x[1] - 0.4 });
   const end = face("x", A.x[1], 1, M.stair.w[1] + 0.1, A.z[1] - OUT + 1.0);
-  b.add(boxesGeometry([faceBox(end, end.a0, end.a1, FOOT, plinth, -0.2, 0.05)]), "timber");
+  b.add(boxesGeometry([faceBox(end, end.a0, end.a1, FOOT, plinth, -0.2, 0.05)]), "brick");
   b.add(boxesGeometry([faceBox(end, end.a0, end.a1, plinth, plinth + 0.45, -0.2, 0.25), faceBox(end, end.a0, end.a1, 12.2, A.top, -0.2, 0.25)]), "paint");
   glazing(b, end, plinth + 0.45, 12.2, { inset: -0.15, bay: 1.4 });
   // the north-west end (Qaci): a band of glazing under a white fascia, and toward Alfred Street
@@ -73,7 +73,7 @@ export function podium(b) {
   // the back wing's north-east face (the lawn): grey plinth, dark glazing, a white floor edge, the fins
   const ne = face("z", P.back.z[0] + OUT, -1, P.back.x[0] + OUT, P.back.x[1]);
   glazing(b, ne, G.back + 1.6, 5.6, { inset: 0.8, bay: 5.0 });
-  b.add(boxesGeometry([faceBox(ne, ne.a0, ne.a1, FOOT, G.back + 1.6, -1.0, 0)]), "paint");
+  b.add(boxesGeometry([faceBox(ne, ne.a0, ne.a1, FOOT, G.back + 1.6, -1.0, 0)]), "grey");
   b.add(boxesGeometry([faceBox(ne, ne.a0, ne.a1, 5.6, 6.3, -IN, 0.15)]), "paint");
   fins(b, ne, 6.3, 10.0, P.back.top, { a0: ne.a0 + 0.4, a1: ne.a1 - 0.4 });
   // its north-west side, as EX9b's photograph shows it: the same fins
@@ -81,6 +81,7 @@ export function podium(b) {
   // the low block's south-east end: glazing between dark piers, two floors above the ground floor
   ribbons(b, face("x", P.low.x[1], 1, P.low.z[0], P.low.z[1]), 5.0, P.low.top, [8.5], { sp: 0.9, bay: 2.2 });
   glazing(b, face("x", P.low.x[1], 1, P.low.z[0], P.low.z[1]), G.seEnd - 0.3, 5.0, { inset: 0.6, bay: 4.4 });
+  piers(b, face("x", P.low.x[1], 1, P.low.z[0], P.low.z[1]), FOOT, 5.0, { bay: 4.4 });
 }
 
 /** The glass canopy along the slab's foot on Alfred Street, on slender posts. */
