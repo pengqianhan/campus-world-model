@@ -22,9 +22,11 @@ sampled from them into the model.
     left edge, 0.79 from the right, 0.27 from the east end, 0.125 from the west), its apex about
     16.5 m up near x 3.5, z -8; a plant room on it, x 1.85 to 4.9, z -9.25 to -6.45, 18.55 m.
   - **the house**: x -6.6 to 8.4 behind (z 17.5 to 21.5) and -6.9 to 7.2 in front (to z 26.3); a flat
-    roof at 10.25 m behind a parapet that rises to 11.45 on the front wall; a verandah of two storeys
-    before it, its roof 8.75-9.15 m up, its front bowed from z 27.6 at its ends to 29.9 on the
-    centre line.
+    roof at 10.25 m behind a parapet that rises to 11.45 on the front wall; before the front, tops
+    8.75-9.15 m up, two canted bays to z 28.4 and between them a balcony bowed out to z 29.8 over the
+    porch (the LiDAR sees x -7.5 to 6.9 at z 27.5, -5.1 to 5.0 at 28.5, -2.4 to 2.2 at 29.5). The
+    widths of the bays and the porch, and the heights of the floors, come from vZGe's photographs
+    (`parts/common.js`).
   - **the ground** falls away from the house's front: 0 at the door, -1.35 at the house's back
     corners, -2.2 at the block's west end, -3.35 at its east end, -4.5 at its north-north-east corner.
     The walls go down to `FOOT` in `parts/common.js` (the house -1.9, the block -4.8).
@@ -72,7 +74,7 @@ sampled from them into the model.
 - The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for
   this building: `paint` (the house's white walls, trim, posts; the block's lowest storey),
   `panel` (the block's grey cladding and fins: added to the kit for this building), `glass` (the
-  block's glazing), `glassPale` (the house's sashes), `roofPale` (the roofs), `dressed` (steps and
+  block's glazing), `glassPale` (the house's sashes), `roofPale` (the flat and hipped roofs), `roof` (the slate over the bays), `dressed` (steps and
   the porch's floor), `timber` (the house's two dark red doors).
 
 ## Budget (tier 1: the site runs in a browser, phones too)

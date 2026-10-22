@@ -34,3 +34,48 @@ them are shared by every landmark: [`../README.md`](../README.md).
 - In the LiDAR frame (local NZTM metres) the centre is at (23.908, 161.163). On the map
   (`placement.json`): the centre at (20.920, 161.593), x at 198.93° and z at 288.93° (true); the
   door at (-8.50, 171.37).
+
+## References
+
+Of the 53 panoramas within 120 m, the 13 Google ones within 70 m were looked at in low resolution
+(zoom 3, 88 tiles); five show the building and 638 zoom-5 tiles were bought for them: 726 tiles for
+this building. Three on Princes Street (2024-07, 48-49 m from the centre, 18-20 m from the house's
+front) see the house's front, the block's top behind it; two on the campus path east of the block
+(2025-05) see its east end and, at a slant, its long side toward the library. The others stand too
+close to the east wall, behind a bus, or see the General Library and trees. User-contributed
+panoramas are not used. No photograph shows the long side toward the Clock Tower whole, nor the
+house's back.
+
+## Round 0 (October 2026, one agent alone)
+
+From the LiDAR, then from the photographs. The block: grey walls with standing seams, eaves level at
+13.3 m, a hipped roof of four planes of different pitch fitted to its roof points (rms 0.21 m), the
+plant room; its east end a grey frame round three bays of veiled glazing on pale bands, the storeys
+taken from fF8q's photograph, and the lowest storey set back over a landing and steps. The house:
+white walls, a cornice and a balustraded parapet with pedestals and finials, quoins, two canted bays
+with slate tops, the porch up eight steps behind three round-headed openings, the balcony bowed over
+it; the widths of the bays and the porch from vZGe's photograph. The viewer's light is the Clock
+Tower's at exposure 0.74 (the house's paint at the photographs' luma).
+
+- From above against the LiDAR: footprint IoU 0.916, heights p10/p50/p90 -0.18/0.01/0.23 m, 92% of
+  cells within 0.5 m; highest point 18.55 m (LiDAR p99.9 18.73); 98.9% of block 103 under the model
+  and under 0.5% of any other block. Eaves 13.3 (LiDAR 13.3-13.5), the roof's apex 16.5 (its ridge
+  16.0-16.25), the house's parapet 11.45 (11.45), roof 10.25 (10.15-10.35), bays 8.9 (8.87), the
+  balcony's entablature 8.75 (8.75).
+- Against the photographs (`run.sh alfred-nathan-house compare`, every view on its Street View
+  camera: see `refine.min_gain_note` in the config): silhouette IoU mean 0.515 over the 15 views;
+  straight in front (vZGe) 0.16 wide, 0.71 upper, 0.75 door; the east end (fF8q) 0.34, 0.96, 0.94.
+  The wide views are low because the General Library, the Clock Tower's ranges and the trees fill
+  them and the model alone stands in them. The Street View cameras are not exact: the model stands
+  a little to the side in the Princes Street views and about 0.7 m low in fF8q's. Luma p50 of the building region, photographs 133 and render 139 (mean over the views).
+- On the site's drawn ground (stood at 41.48 m under the door, 4.3 m under the LiDAR's): it lies
+  -0.87 to +0.01 m from the door's under the model; every material's lowest points are 1.32 m or
+  more below it, so nothing floats; the block's east end, 3.35 m lower in the LiDAR, is partly under
+  it on the map.
+- 9,446 triangles in 8 materials (`panel`, `paint`, `glass`, `dressed`, `roofPale`, `roof`,
+  `glassPale`, `timber`), built in about 20 ms.
+
+What the next round should look at: the doors' dark red and the ground-floor windows' round-cornered
+heads; the cornice's brackets; the bands' slight bow between the fins; the block's long side toward
+the Clock Tower, in no photograph; the heights of the two campus-path cameras, about 1.1 m above where
+their photographs put them.

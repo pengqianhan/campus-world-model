@@ -39,10 +39,14 @@ export const MEASURED = {
     back: { x: [-6.6, 8.4], z: [17.5, 21.5] },
     front: { x: [-6.9, 7.2], z: [21.5, 26.3] },
     roof: 10.25, cornice: 10.6, parapet: 11.45,
-    // each bay in plan: its corners at the wall and at its front, from left to right
-    bays: [[[-6.6, 26.3], [-5.6, 28.4], [-3.2, 28.4], [-2.2, 26.3]], [[2.8, 26.3], [3.8, 28.4], [6.2, 28.4], [7.2, 26.3]]],
+    // each bay in plan: its corners at the wall and at its front, from left to right. Widths from vZGe's
+    // upper view, as shares of the front between the quoins: each bay 4.3 m at the wall and 2.6 m across
+    // its front, the porch and balcony 6.3 m between the bays' front corners; the openings in it
+    bays: [[[-6.45, 26.3], [-5.6, 28.4], [-3.0, 28.4], [-2.15, 26.3]], [[2.45, 26.3], [3.3, 28.4], [5.9, 28.4], [6.75, 26.3]]],
     bayTop: 8.9,
-    porch: { x: [-2.2, 2.8], front: 28.4, floor: 1.5, arch: 4.8, top: 5.25 },
+    porch: { x: [-3.0, 3.3], front: 28.4, floor: 1.5, arch: 4.8, top: 5.25, openings: [[-2.65, -0.95], [-0.7, 1.3], [1.55, 2.95]] },
+    // the parapet's pedestals: the corners and two between (vZGe's upper view)
+    pedestals: [-6.65, -2.6, 2.05, 6.95],
     balcony: { bow: 29.8, rail: 6.1, top: 8.75 },
     windows: { ground: [2.2, 4.5], upper: [6.8, 8.2] },
   },

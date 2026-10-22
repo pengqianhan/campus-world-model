@@ -3,6 +3,7 @@
  "building": {
   "id": "103",
   "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, topview) it covers 98.7% of 103's block and under 0.5% of any other block within 80 m (105, 105S, 109 and 119 among them).",
   "title": "Alfred Nathan House, University of Auckland",
   "note": "outline: building 103's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
   "outline": [[-0.8, 159.8], [-1.5, 160.0], [-1.1, 161.3], [-6.5, 163.2], [-6.2, 164.0], [-6.6, 164.1], [-7.2, 165.6], [-6.7, 167.1], [-7.4, 169.2], [-6.9, 171.4], [-6.2, 172.4], [-4.4, 173.6], [-3.9, 175.0], [-2.6, 175.8], [-2.1, 175.6], [-1.8, 176.4], [0.7, 175.6], [1.7, 176.0], [3.2, 175.5], [3.6, 174.5], [33.6, 164.0], [33.3, 163.1], [34.3, 162.7], [34.6, 163.6], [42.4, 160.9], [41.1, 160.2], [37.2, 149.2], [37.8, 147.9], [30.1, 150.6], [30.4, 151.5], [29.4, 151.8], [29.0, 151.0], [5.2, 159.3], [4.7, 157.8]]
@@ -57,6 +58,8 @@
    {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
   ]
  },
+ "light": {"exposure": 0.74,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the Clock Tower's, whose front faces the same way (289 deg), with the exposure lowered so that the house's white paint, in soft shade in the three photographs from Princes Street (2024-07, a hazy winter day), comes near their luma (house regions p50 138-155; 180 at 1.0)"},
  "refine": {
   "position_m": 3,
   "height_m": 1,
@@ -65,7 +68,8 @@
   "min_height_m": 4,
   "scale": 0.25,
   "prior": 0.01,
-  "min_gain": 0.01,
+  "min_gain": 0.1,
+  "min_gain_note": "0.1, not 0.01: the one panorama the search would correct (fF8q: IoU 0.657 to 0.740 on 2026-10-22) goes to the edges of its bounds (camera 1 m higher, 2 deg more pitch), which moves the model's top further below the photograph's (out/refine/fF8q*_outline.jpg). Its rows taken onto the east face with the Street View camera give the frame's top 14.5 m and the path -2.35 m, a span within 0.2 m of the LiDAR's (13.3 to -3.35): that camera stands about 1.1 m too high, and the search, scoring the silhouette against the library and trees round it, moves it the other way. So every view keeps its Street View camera.",
   "min_sky": 0.2,
   "max_solid": 0.5
  },
