@@ -17,8 +17,10 @@ Recon ends with one verdict per layer under "Data sources" in `PROGRESS.md`:
 
 A layer whose verdict is not "usable" ships absent. Every route tried gets a row: URL, what came back
 (status, shape, size), date. Before fetching from a
-host, read its `robots.txt` and its terms page. Before fetching in bulk, count the requests it will
-take.
+host, read its `robots.txt` and its terms page, and quote both in the write-up. The research browser
+below asks for `robots.txt` before anything else on a host, keeps the file (`robots` from
+`politePage()`) and blocks each path it disallows, so you do not decide by hand which paths to
+leave alone. Before fetching in bulk, count the requests it will take.
 
 Looking at a site counts as fetching from it. A headless browser loads a page's scripts, its
 analytics and its service worker in a burst: on 2026-10-15 one exploration sent six requests in a
