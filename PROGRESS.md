@@ -544,9 +544,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    measured massings (`landmarks/MASSING.md`, decision 7, kept by the campus loop's lead). Drawing
    even their massing (measured heights and roof forms in the map's own colours, never carvings,
    patterns or colours of their own) waits until you have asked the people they belong to.
-5. **Where people live, for the measured massings (`landmarks/MASSING.md`, decision 6).** Draw their
-   outside shell, with their floors blank, or keep their blocks. Until you decide, the generator
-   keeps the blocks of 123 Lodge, 436 University Hall Apartments, 617 7 City Road, 838 Stuart
-   McCutcheon House and 450 UniLodge Whitaker (student housing by its name); in the first batch none
-   of them passes the top-view check either (`landmarks/measured/exclusions.json` has their
-   numbers). Childcare centres keep their blocks in any case.
+5. **Where people live and childcare centres, for the measured massings (`landmarks/MASSING.md`,
+   decision 6).** Draw their outside shell, with their floors blank, or keep their blocks. Until you
+   decide, the generator keeps the blocks of the places where people live (123 Lodge, 436 University
+   Hall Apartments, 617 7 City Road, 838 Stuart McCutcheon House by their residential floors; 434
+   Waikohanga House, whose floor 2 has an Accommodation Reception on the campus map; 450 UniLodge
+   Whitaker by its name) and of the childcare centres (410, 841). You accepted 102 Old Government
+   House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
+   too. Of these, only 434 passes the top-view check in the first batch
+   (`landmarks/measured/exclusions.json` has their numbers).

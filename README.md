@@ -40,7 +40,7 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-22:** six plain buildings of the City Campus (113, 114, 409, 433, 434 and 435)
+- **2026-10-22:** five plain buildings of the City Campus (113, 114, 409, 433 and 435)
   are drawn near the camera as measured massings: their heights and roofs from the LiDAR, their
   walls and windows by rule. The floor of Nicholls Lane ECE, an early childhood centre, is left
   blank, as every childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
@@ -233,7 +233,7 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Six are on the site
+  measured heights, walls, storeys and windows by the street look's rules. Five are on the site
   (`landmarks/measured/`); the other tier-3 buildings keep their blocks, each with its reason in
   `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built

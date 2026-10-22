@@ -48,13 +48,16 @@ TIER2 = {"106", "110", "110N", "201", "206", "207", "250", "260", "301", "302", 
          "620", "810", "818", "820"} | {str(i) for i in range(831, 838)}
 # Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
 # take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
-# 6 stays at the design's default until the maintainer decides (residential and childcare below).
+# 6 stays at the design's default until the maintainer decides: places where people live (residential
+# floors, and 434 and 450 by hand below) and childcare centres keep their blocks.
 KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people "
               "it belongs to (decision 7)" for i in ("251", "252", "253", "254", "255", "256")},
         "275": "Fale Pasifika: culturally significant; its block stays until the maintainer has asked the people "
                "it belongs to (decision 7)",
         "408": "the 2024 LiDAR shows no roof on its outline; its block stays, and the campus map's record is for "
                "the maintainer to check (decision 10)",
+        "434": "decision 6, a place where people live (the campus map shows an Accommodation Reception on its "
+               "floor 2, though its floors are not marked residential): kept until the maintainer decides",
         "450": "decision 6, a place where people live (student housing by its name, though its floor is marked "
                "unmapped): kept until the maintainer decides"}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
@@ -774,7 +777,7 @@ def main():
         floors = b["floors"]
         policy = KEEP.get(bid)
         if not policy and (any(f.get("noPlan") == "childcare" for f in floors) or CHILDCARE.search(b["sourceText"] + " " + name)):
-            policy = "decision 6, a childcare centre: its block stays"
+            policy = "decision 6, a childcare centre: kept until the maintainer decides"
         if not policy and any(f.get("noPlan") == "residential" for f in floors): policy = RESIDENTIAL
         if data and not why:
             data["check"] = topview(b, data, P, others, rec.pop("skip", None))

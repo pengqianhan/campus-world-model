@@ -215,8 +215,9 @@ agent and no photograph. All of them share one model and have a data file each:
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
   or removed: run it with `--fsModuleCache=false` after the generator has run.
 - Kept as blocks by decision, whatever the LiDAR (each in `measured/exclusions.json` with its
-  reason): places where people live (123, 436, 617, 838, and 450 by its name) and childcare centres
-  (410, 841), until the maintainer decides (MASSING.md decision 6); Waipapa Marae (251 to 256) and
+  reason): places where people live (123, 436, 617 and 838 by their residential floors; 434, whose
+  floor 2 has an Accommodation Reception on the campus map; 450 by its name) and childcare centres
+  (410, 841), both until the maintainer decides (MASSING.md decision 6); Waipapa Marae (251 to 256) and
   Fale Pasifika (275), until the maintainer has asked the people they belong to (decision 7); and
   408 UniPress, whose outline the LiDAR shows no roof on (decision 10).
 - Roofs: every roof, flat or sloping, takes its block's roof: the map's roof colour on the map, and
