@@ -48,7 +48,7 @@ the ribs of the podium's roof.
 - The Alfred Street panoramas (2022-09) are of a bright spring day under thin cloud, the faces in soft
   light; the south-east end and the back (2025-05) of a clear autumn afternoon, the back wing's fins
   in full sun. The viewer's light for this building is the default sun with exposure 0.8 (config
-  `light`), which brings the building region's luma median to the photographs' (142 against 150).
+  `light`), which brings the building region's luma median near the photographs' (142 against 137 drawn).
 
 ## Works and changes
 - None of the twelve panoramas shows scaffolding, wraps or works on the building. The south-east end's

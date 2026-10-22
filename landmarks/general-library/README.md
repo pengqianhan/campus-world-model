@@ -16,6 +16,11 @@ shared by every landmark: [`../README.md`](../README.md).
 | `parts/` | `slab.js` (the tower slab, its core and stair tower), `podium.js` (the podium, its fin screens, the canopy), `facade.js` (ribbon windows and glazing on any face), `common.js` (the sizes measured in the LiDAR) |
 | `config/general-library.json` | the building (109), the LiDAR and aerial tiles, the frame, the ground and the door, the twelve Street View panoramas, the viewer's light |
 | `placement.json` | where it stands on the campus map (written by the `place` stage); not on the site |
+| `landscape.js` | the ground round it, for the viewer only: the LiDAR's ground on a 2.5 m grid |
+
+Renders of the model (no photograph): [`docs/landmarks/general-library-alfred.jpg`](../../docs/landmarks/general-library-alfred.jpg)
+(from Alfred Street), [`-southeast.jpg`](../../docs/landmarks/general-library-southeast.jpg) (the south-east
+end) and [`-above.jpg`](../../docs/landmarks/general-library-above.jpg).
 
 ## The frame
 
@@ -55,23 +60,36 @@ east), `EX9b…` (beside `fF8q…`), `S1Vu…` and `B-1T…` (beside `Qaci…`).
 
 ## Round 0 (October 2026, one agent alone)
 
-A rough model from the LiDAR and the photographs: the slab with ribbon windows, its core and plant,
-the stair tower; the podium's blocks with the fin screens and their crowns on Alfred Street and the
-back lawn, the brick plinth, the glazed end by the stair tower, the north-west end's glazing, the
-south-east end's glazed ground floor and entrance, the canopy.
+A rough model from the LiDAR and the photographs, then a first pass over it against them: the slab with
+ribbon windows on all four faces, its floors' edges standing out of its roof's as the LiDAR's sill
+points show, its core and plant, the stair tower; the podium's blocks with the fin screens and their
+crowns of hoods on Alfred Street and the back lawn (the roof's edge behind the hoods at 12.0 m, so the
+sky shows between them), the brick plinth, the glazed end by the stair tower, the north-west end's
+glazing and blank panel, the south-east end's glazed ground floor and entrance, the canopy; and, for the
+viewer, the LiDAR's ground round it (`landscape.js`).
 
-- From above against the LiDAR (`topview`): footprint IoU 0.942; model minus LiDAR heights
-  p10/p50/p90 -0.67/-0.03/+0.92 m, 70% of cells within 0.5 m (the podium's ribbed roof swings about
-  its median, and a tree's crown over the front block is classed as building); highest point 38.8 m
-  against the LiDAR's 38.78 m (p99.9); 94.1% of block 109 under the model, and under 0.5% of any other block within 80 m (`building.also` is empty).
-- Against the photographs (`run.sh general-library refine compare`, 36 views, two cameras refined):
-  silhouette IoU 0.793 on average; building region luma median 142 in the photographs and 150 drawn.
+- From above against the LiDAR (`topview`): footprint IoU 0.946; model minus LiDAR heights
+  p10/p50/p90 -0.34/-0.02/+0.94 m, 73% of cells within 0.5 m (the podium's ribbed roof swings ±0.5 m
+  about its median, and a tree's crown over the front block is classed as building); highest point
+  38.8 m against the LiDAR's 38.78 m (p99.9). Heights drawn at the LiDAR's: the slab's roof 30.1 (p50
+  30.07), its raised middle 31.6, the core 36.05 (36.05), the plant 38.8 (p95 38.8), the stair tower
+  32.0 (31.3-32.0), the podium 12.96 (12.96), the back wing 12.91 (12.91), the low block 12.1 (12.05-12.1).
+  93.9% of block 109 under the model, and under 0.5% of any other block within 80 m (`building.also` is
+  empty).
+- Against the photographs (`run.sh general-library refine compare`, 36 views, 35 scored; the cameras of
+  `xKYw…` and `Qaci…` refined, the others kept: too little sky round the silhouette under the plane trees,
+  or too close): silhouette IoU 0.795 on average, from 0.34 (`Qaci…` wide: bushes and trees in front of
+  the north-west end) to 1.0; building region luma median 142 in the photographs and 137 drawn
+  (exposure 0.8). By face the luma differs more: the white fins of the back wing in full sun are drawn
+  brighter (200-243 against 135-167), the south-east end's grey piers and cladding darker (83-110 against
+  110-158), as the kit has no mid-grey.
 - On the site's drawn ground (the 8 m DEM, at the door 40.60 m against the LiDAR's 41.5): the DEM
   under the model's foot lies -0.21 to +1.00 m from the door's; the walls go down to -1.5 m, so no foot
   point stands above it (the highest is 1.29 m below).
-- 9,468 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 13 ms.
+- 10,128 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 3-18 ms.
 
-What the next round should look at: the grey of the south-east end's piers and cladding and of the back
-wing's plinth; a brick for the plinth; the fins' hoods (larger, each a folded plate the fins run up
-into); the slab's lower floors on Alfred Street (taller glazing) and its front face's ledges (the
-LiDAR has points up to 1.1 m in front of the roof's edge); the ribs of the podium's roof.
+What the next round should look at: the grey of the south-east end's piers and cladding, of the back
+wing's plinth and of the north-west end's stone panel (a mid-grey in the kit); a brick for the plinth;
+the hoods' hollow undersides; the slab's lower floors on Alfred Street (taller glazing) and the
+transoms of its ribbon windows; the ribs of the podium's roof (about 2.4-2.5 m apart; a first try was
+out of step with the LiDAR's); the light of the back's sunlit views.

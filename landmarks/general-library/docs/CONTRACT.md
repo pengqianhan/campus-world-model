@@ -48,10 +48,11 @@ sampled from them into the model.
 | `parts/podium.js` | `podium` (the blocks, the fin screens and their crowns, the brick plinth, the glazed end by the stair tower, the north-west end, the back wing, the low block's end) and `canopy` (the glass canopy on Alfred Street) |
 | `parts/facade.js` | the face helpers every part uses: `face`, `faceBox`, `ribbons`, `glazing` |
 | `parts/common.js` | the measured sizes (the lead's) |
+| `landscape.js` | the LiDAR's ground round the building, for the viewer only (the lead's) |
 
 ## Budget (tier 1)
 - At most 150,000 triangles and 12 draw calls (one per material) for the whole model; round 0 is
-  9,468 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 13 ms.
+  10,128 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 3-18 ms.
 - No textures: the materials above are shader hooks without image textures, so the site never makes
   the stone textures for this model.
 
