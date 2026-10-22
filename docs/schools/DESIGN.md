@@ -15,7 +15,8 @@ and Canterbury ([uc.md](uc.md), #74). The links work once those pull requests me
   tests are shared. Each school brings a small descriptor, its own words, its fetch scripts and its
   published data in `public/data/<id>/`.
 - **`/uoa/` does not change.** Its addresses, its data bytes and its map pixels stay the same
-  through four small migration pull requests, each with a check that proves it (section 9).
+  through four small migration pull requests, each with a check that proves it (section 9). The
+  one rebuild in them is a check whose output is compared and not committed.
 - **A school shows only what its sources give.** There are three forms: *buildings*, *rooms by
   code* and *floor plans* (section 2). From the three reports, AUT and Canterbury can be shown
   today only as buildings. Victoria can be shown as rooms by code if the maintainer accepts the
@@ -40,8 +41,9 @@ the first migration pull request does, once approved.
 | "Two hosts since 2026-10-13" | GitHub Pages keeps the University of Auckland at `/campus-world-model/`, built as today. Cloudflare Pages carries every school | Add: "GitHub Pages carries the University of Auckland only. Every other school is on Cloudflare Pages alone." |
 | "A preview for each of the user's own branches" | A branch preview holds every school: `<branch>.campus-world-model.pages.dev/<id>/` | Add "for every school" after "branch preview" |
 | "One source for a University building" | Each school's buildings have one source. For the University of Auckland that stays its campus map | Add a sub-entry: "**A school whose campus map cannot be used.** Its buildings come from OpenStreetMap alone, picked by a rule on their tags in its descriptor (for AUT, its `operator` and `ref` tags). The building card names the source and says how the height was found. Floors and rooms stay absent until a usable indoor source exists." |
-| "Building height = (levels at or above index 0) × 3.6 m" (under "Buildings, floors, rooms") | Unchanged for a building from a campus map | Add: "A building from OpenStreetMap takes its `height` tag, else `building:levels` × 3.3 m + 1 m, else 6.5 m (10 m over 900 m²), as the surrounding buildings do (`buildContext` in `scripts/build-data.ts`). `heightSource` says which, and the building card says so." |
-| "No advertising" | AUT's, Victoria's and Canterbury's terms all turn on non-commercial use; the reports' verdicts hold only while the site has no advertising | none |
+| "Building height = (levels at or above index 0) × 3.6 m" (under "Buildings, floors, rooms") | Unchanged for a building from a campus map | Add: "A school's building from OpenStreetMap takes its `height` tag; else its `building:levels` × 3.6 m, the storey the windows are drawn at (`campus.floorHeight`), so that it shows as many storeys as it has levels; else 6.5 m, or 10 m over 900 m², the defaults of the surrounding buildings (`buildContext` in `scripts/build-data.ts`). `heightSource` says which, and the building card says so." |
+| "How a University building looks from outside" (2026-10-14) | A school's own buildings get the same five changes: their roof colour, a rim, storeys and windows by rule. Today they are drawn on campus-map outlines; a building from OpenStreetMap is one block on its OpenStreetMap outline, since it has no floors to stack | Add: "A school's building from OpenStreetMap is drawn by the same rules, as one block on its OpenStreetMap outline, with its storeys at 3.6 m." |
+| "No advertising" | Victoria's copyright page allows non-commercial reproduction, so its usable verdicts hold only while the site has no advertising. AUT and Canterbury need permission for any use of their material, with or without advertising | none |
 | "Vite `base` is `/campus-world-model/`" | The default build (`SCHOOL=uoa`, no `BASE_PATH`) stays exactly this | none |
 | "All network fetching goes through `scripts/lib/snapshot.ts`" | Every school's fetch scripts use it. A raw snapshot two schools share is fetched once | none |
 | "The street look": "Only the walker views change" | The map of `/uoa/` stays the same picture, checked by the map's pixel diff | none |
@@ -91,7 +93,11 @@ waits on its snapshots.
 - **GitHub Pages** (`pengqianhan.github.io/campus-world-model/`) keeps the University of Auckland
   only, built with the default base as today. The `deploy` job does not change.
 - **Branch previews** hold every school, at `<branch>.campus-world-model.pages.dev/<id>/`.
-- An unknown path gets Cloudflare's 404. `www.campusworldmodel.com` stays not set up.
+- **An unknown path.** Cloudflare Pages treats a site with no top-level `404.html` as a
+  single-page app and may answer an unknown path with the root page. Once the picker is the root
+  page, that would be the picker with status 200. The picker's pull request checks this on its
+  preview and adds a top-level `404.html` if needed.
+- `www.campusworldmodel.com` stays not set up.
 
 ## 2. What a school's site shows
 
@@ -138,17 +144,19 @@ and listed rooms, and search for room codes. A room shows its code, its type and
 the source gives them, its building, its floor with "inferred", and no outline and no pin, since
 the source gives no position.
 
-**The data contract** (`src/shared/types.ts`) grows only by optional fields, so the University of
-Auckland's files do not change:
+**The data contract** (`src/shared/types.ts`) grows by optional fields and by new values of one
+field. The University of Auckland's files do not change:
 
-- `Building.heightSource` gains `"osm-height"`, `"osm-levels"` and `"estimated"`; `Building.osm`
-  (for example `"way/104475936"`) traces a building to its OpenStreetMap element. In the Buildings
-  form `floors` is empty.
+- `Building.heightSource`, today only `"floor-count"`, gains the values `"osm-height"`,
+  `"osm-levels"` and `"estimated"`, so code that reads it must handle them. `Building.osm` (for
+  example `"way/104475936"`) traces a building to its OpenStreetMap element. In the Buildings form
+  `floors` is empty.
 - `CampusData.listedRooms` (optional) holds rooms without a shape: code, building, floor or none,
   `floorInferred`, kind and the source's type. `Room` itself, which every room with an outline
   uses, does not change.
-- `AcademicCalendar` gains `available?: false` for a school without usable dates, with `terms`
-  empty.
+- `AcademicCalendar` gains `available?: false` for a school without usable dates. Such a file
+  keeps every required field, with `holidays: []` and `terms: []`, because `termStatus` in
+  `src/shared/calendar.ts` reads both.
 - `Meta.layers` (optional) gives each layer's verdict (`usable`, `needs-permission`,
   `not-published`), which About and the status strip turn into the school's own words.
 
@@ -161,7 +169,7 @@ public/data/
     context.json  context/<area>.json  terrain/<area>.json  plans/<building>.json
   aut/                    the same names; files a form lacks are written empty, never left out
     campus.json           buildings from OpenStreetMap, floors []
-    calendar.json         { available: false, terms: [] }
+    calendar.json         available: false; timezone, source, notes; holidays [], terms []
     schedule.json         available: false
     subjects.json         []
     rooms-index.json      {}
@@ -193,8 +201,8 @@ snapshot: AUT's City Campus buildings are already in the University of Auckland'
 snapshot, so AUT's City Campus can be built from the committed `data/raw/osm/context.json` with no
 new request. Terrain tiles are keyed by zoom, x and y, and every school shares them.
 
-**Hand-made inputs** move to a folder for each school: `data/uoa/academic-calendar.json` (moved,
-unchanged) and later `data/<id>/academic-calendar.json`, and any list a parser needs, such as the
+**Hand-made inputs** move to a folder for each school: `data/uoa/academic-calendar.json` (moved
+with `git mv`; `build-data.ts` and `fetch-classes.ts` read it from there) and later `data/<id>/academic-calendar.json`, and any list a parser needs, such as the
 short venue names of Canterbury's exam timetable.
 
 ## 4. Fetching and building for each school
@@ -204,25 +212,38 @@ short venue names of Canterbury's exam timetable.
   school in turn.
 - **The descriptor** `src/schools/<id>/school.ts` is data only, read by the pipeline and the app.
   It names the school's areas (box and raw OpenStreetMap file), its origin, its campuses, its
-  fetch scripts, its campus adapter and the source lines that About shows.
+  fetch scripts, its campus adapter and the source lines that About shows. The pipeline loads it
+  by its path, `await import(\`../src/schools/${SCHOOL}/school.ts\`)`, not through the app's
+  `@school` alias (section 5): `tsx` follows the alias in `tsconfig.json`, which names the
+  University of Auckland's. Modules that the pipeline and the app share (`src/shared/`, such as
+  `roomcode.ts`) take the descriptor as an argument and never import `@school`.
 - **Shared fetches** run over the chosen school's areas: `scripts/fetch-osm.ts` and
   `scripts/fetch-terrain.ts` already loop over a list of areas and skip a file already on disk.
 - **The school's own fetches** live in `scripts/schools/<id>/`. The University of Auckland's three
-  (`fetch-mapsindoors.ts`, `fetch-calendar.ts`, `fetch-classes.ts`) move there unchanged. A new
+  (`fetch-mapsindoors.ts`, `fetch-calendar.ts`, `fetch-classes.ts`) move there; only their import
+  paths and the calendar's path change, and the files they write keep their names. A new
   school's first fetch script is a gate: a new data source, or a request a host has not had before.
   Only the maintainer runs fetches, as now.
 - **The build** `scripts/build-data.ts` becomes the shared driver:
   1. the school's campus adapter makes `CampusData`, the room index and the floor plans;
-  2. `buildContext` (moved to `scripts/lib/context.ts`, unchanged) draws the surroundings and drops
-     the OpenStreetMap copies of the school's own buildings, as it does today;
+  2. `buildContext` (moved to `scripts/lib/context.ts`) draws the surroundings and drops the
+     OpenStreetMap copies of the school's own buildings, as it does today. The module state it
+     reads today (`project`, `sceneBox`, `CENTRAL`) becomes its arguments;
   3. `buildTerrain` (moved to `scripts/lib/terrain.ts`) writes the ground for each area;
   4. the school's calendar, subjects and timetable builders run, or the empty forms are written;
   5. `meta.json` takes the school's source lines and coverage, and every file goes to
      `public/data/<id>/`.
+- **Snapshot dates for each school.** `snapshotDate(source)` in `build-data.ts` takes the latest
+  record of a whole source in the shared `data/sources.json`, and the shared fetch scripts record
+  every school's files as `osm` and `terrain`. Left so, AUT's first OpenStreetMap or terrain fetch
+  would change the dates that About shows for `/uoa/` at its next rebuild. So the date of a source
+  becomes the latest record among the files that this school's build reads. Today every `osm`
+  and `terrain` record is the University of Auckland's, so its dates do not change.
 - **Campus adapters.** `mapsindoors` is today's `buildCampus` with its constants (`LEARNING_TYPES`,
   `INDEX_EXCLUDED_TYPES`, `PLAN_*`, `SPACE_KINDS`, `SPACE_ICONS`, `CODE_RE`, `STACK_OVERLAP`), all in
   the University of Auckland's words. `osm-buildings` is new and shared: it takes the buildings that
-  match the descriptor's tag rule, gives them heights as the surroundings get them, and no floors.
+  match the descriptor's tag rule, gives them heights by the rule in "What this design rests on",
+  and no floors.
   A `room-list` adapter comes with the first school in the Rooms by code form.
 - **Proof for each school.** A pull request that builds a school's data gives its `coverage`
   before and after, as `docs/standards.md` check 3 asks. For the University of Auckland, a refactor
@@ -245,7 +266,7 @@ built in. Each goes one of two ways:
 | Sun and weather: `LAT`, `LON` in `src/shared/daylight.ts`, `WEATHER_URL` in `src/ui/weather.ts` | the descriptor; the code is shared |
 | Seasons: `deciduousColour` | shared: every school is in the southern hemisphere |
 | Timetable model, calendar | shared model; terms, term codes and the calendar file for each school |
-| Base path | `BASE_PATH=/<id>/`. With no `BASE_PATH` the default stays `/campus-world-model/` for `uoa`, and is `/<id>/` for any other school |
+| Base path: `base` in `vite.config.ts`, `baseURL` in `playwright.config.ts` | `BASE_PATH=/<id>/`. With no `BASE_PATH` the default stays `/campus-world-model/` for `uoa`, and is `/<id>/` for any other school. `playwright.config.ts` takes `SCHOOL` too: its `baseURL` (and the `webServer` address it waits on) becomes `http://localhost:4273/<id>/` for a school other than `uoa`, and it picks the tests (section 8). `LOCAL` in `scripts/walker/daemon.ts` follows the same rule |
 | Names and words: `index.html`, `en.json`, `REPO`, `USER_AGENT`, `CAMPUS_SPAN` | `index.html` and the locale overlay for each school; `REPO` and `USER_AGENT` shared (one project); `CAMPUS_SPAN` in the descriptor |
 | Look: `src/scene/palette.ts`, `public/favicon.svg`, the accent | shared, the project's own (section 6) |
 | Other worlds: `WORLDS` | shared |
@@ -253,18 +274,21 @@ built in. Each goes one of two ways:
 
 **How the app gets its school.** `vite.config.ts` reads `SCHOOL` (default `uoa`) and points the
 alias `@school` at `src/schools/<SCHOOL>/school.ts`. A build therefore holds one school's
-descriptor and words only. `tsconfig.json` points `@school` at the University of Auckland's for
-the type check, and a unit test loads every descriptor and checks its fields.
+descriptor and words only. Only the app's own modules (`src/app/`, `src/ui/`, `src/scene/`)
+import `@school`; the pipeline loads the descriptor by its path (section 4). `tsconfig.json`
+points `@school` at the University of Auckland's for the type check, and a unit test loads every
+descriptor and checks its fields.
 
 **Words.** `src/i18n/locales/en.json` keeps every key and text it has: they are the University of
 Auckland's words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
 school, its campus map or its verdicts: 35 of today's 292 keys, among them `app.*`,
 `about.unofficial`, `about.limits.*`, `attribution.short`, `room.noTimetableWhy`, `travel.leaving`
 and `travel.stay`. A unit test makes every school other than `uoa` override each of these keys.
-For `uoa` there is no overlay, so the dictionary is today's. `index.html` takes its title,
-descriptions and `noscript` text from the school's words through the same Vite plugin. Two of
-those texts are not in `en.json` today (the `og:description` and the `noscript` paragraph): they
-become keys there, with today's text, so the built `index.html` of `uoa` keeps today's text.
+For `uoa` there is no overlay, so the dictionary is today's. `index.html` takes its `<title>`,
+`og:title`, meta description, `og:description` and `noscript` text from the school's words through
+the same Vite plugin. Two of those texts are not in `en.json` today (the `og:description` and the
+`noscript` paragraph): they become keys there, with today's text, so the built `index.html` of
+`uoa` keeps today's text.
 
 ## 6. Each school's identity
 
@@ -272,8 +296,8 @@ become keys there, with today's text, so the built `index.html` of `uoa` keeps t
   "UoA World Model": "AUT World Model", "VUW World Model", "UC World Model" (decision 4). The name
   shares the phone's top bar with four buttons, and `e2e/mobile.spec.ts` measures the fit down to a
   360 px screen. A name longer than "UoA World Model" needs a shorter form there.
-- **Unofficial notice** in the page title (`app.documentTitle` and `<title>`), the description,
-  the `noscript` text, About (`about.unofficial`, with the school's full name: "not affiliated
+- **Unofficial notice** in the page title (`app.documentTitle`, `<title>` and `og:title`), the
+  descriptions (meta and `og:description`), the `noscript` text, About (`about.unofficial`, with the school's full name: "not affiliated
   with, endorsed by or maintained by Auckland University of Technology"), the README and the
   picker.
 - **Palette and favicon.** The project's own, the same for every school: the map palette settled
@@ -292,6 +316,11 @@ become keys there, with today's text, so the built `index.html` of `uoa` keeps t
   Every other layer waits for the maintainer's reading or the school's answer.
 - **README.** One README for the project. Its opening names every school live, each with its
   unofficial line, and "Data sources and licences" gets a part for each school.
+- **NOTICE.** `NOTICE` names `public/data/context.json`, `context/` and `terrain/` and puts what
+  the site takes from the campus map and Calendar under the University of Auckland's copyright.
+  M1 changes its paths to `public/data/<school>/`. Each school's pull request adds its own lines:
+  for a school in the Buildings form its `campus.json` comes from OpenStreetMap, under the ODbL,
+  and holds nothing of the school's.
 - **Handover.** `docs/schools/<id>.md` keeps each school's research. `PROGRESS.md` gains a
   "Schools" section: for each school its form, its coverage and its open "Needs the user" items.
 - **The porting skill.** `.claude/skills/campus-world-model/` keeps its port into a repository of
@@ -319,9 +348,9 @@ become keys there, with today's text, so the built `index.html` of `uoa` keeps t
 | Job | Today (measured) | With more schools |
 | --- | --- | --- |
 | `build` | 18 to 28 s over the last 4 runs on `main`: type check, 242 unit tests in 4.9 s, build in 1 to 2 s | Also builds every school (about 1 s each) and runs every school's unit tests. Budget: `npm test` under 30 s |
-| `e2e` (University of Auckland) | 46 tests; job up to 17 min 26 s of its 20 | **Unchanged**: same name, same 46 tests, same base. `playwright.config.ts` leaves out `e2e/schools/` when `SCHOOL=uoa`. Nothing for other schools goes into this job |
-| `e2e-schools` (new) | none | A matrix, one job for each other school, in parallel: build with `SCHOOL=<id>`, run `e2e/schools/common.spec.ts` and `e2e/schools/<id>/`. At most 8 tests a school: about 3 min at CI's 42 s of a worker for each test, plus about 40 s to set up. `timeout-minutes: 10` |
-| `schools` (new) | none | Waits for the matrix and fails if any school failed, so one required check covers every school however many there are |
+| `e2e` (University of Auckland) | 46 tests; job up to 17 min 26 s of its 20 | **Unchanged**: same name, same 46 tests, same base. With `SCHOOL` unset or `uoa`, `playwright.config.ts` keeps today's `baseURL` and runs every spec outside `e2e/schools/`. Nothing for other schools goes into this job |
+| `e2e-schools` (new) | none | A matrix, one job for each other school, in parallel: build with `SCHOOL=<id>`; `playwright.config.ts` then serves `/<id>/` and runs only `e2e/schools/common.spec.ts` and `e2e/schools/<id>/`. At most 8 tests a school: about 3 min at CI's 42 s of a worker for each test, plus about 40 s to set up. `timeout-minutes: 10`. A matrix with no values fails a workflow, so the job has an `if:` that skips it while the list holds no other school |
+| `schools` (new) | none | Runs with `if: always()` after the matrix and fails unless every `needs.*.result` is `success` or `skipped`. A required job skipped because its `needs` failed counts as passed, so the `if: always()` matters. One required check then covers every school however many there are |
 | `deploy-cloudflare`, `deploy-preview` | 24 to 27 s | Build each school in turn (about 2 s each), the picker, then one upload |
 | `deploy` (GitHub Pages) | 11 to 72 s over the last 4 runs on `main` | Unchanged |
 
@@ -350,16 +379,19 @@ sees.
 
 | Step | What changes | Proof that `/uoa/` did not change |
 | --- | --- | --- |
-| **M1. Data in a folder** (gate: deployment) | `git mv public/data/* public/data/uoa/`; the Vite plugin of section 3; `OUT` in `build-data.ts` becomes `public/data/<school>/`; the paths in six unit tests | `git diff -M --stat` shows only renames at 100%. `dist/` built before and after is identical, file for file (`diff -r`): the app's code does not change in this step, so the asset names do not either. The 46 e2e tests pass with no e2e file changed |
-| **M2. The descriptor** | `src/schools/uoa/school.ts` holds today's constants, copied unchanged (`ORIGIN`, `LAT`, `LON`, the weather address, `CAMPUS_SPAN`, the areas, the room-code grammar); the `@school` alias; overlays and `index.html` through the plugin; landmarks filtered by school | The built `index.html` has today's text. The map's pixel diff (`.claude/skills/street-look/CHECKS.md`, "The map's pixel diff") is 0 at the seven vantages below, on the GPU and on SwiftShader, three times each. The 46 e2e tests pass unchanged |
-| **M3. The build split** (needs a rebuild by the maintainer) | `buildContext` and `buildTerrain` to `scripts/lib/`; `buildCampus` to the `mapsindoors` adapter; the three fetch scripts to `scripts/schools/uoa/`; `data/academic-calendar.json` to `data/uoa/` | The maintainer rebuilds: only `generatedAt` differs, and `coverage` is the same before and after |
-| **M4. CI and deploy for a list of schools** (gate: `.github/`) | The deploy jobs loop over a list that holds only `uoa`; the `e2e-schools` matrix and the `schools` job, skipped while the list holds no other school | The site on Cloudflare has the same files at `/uoa/` (compare the hash of each file before and after). The live e2e passes, run twice |
+| **M1. Data in a folder** (gate: deployment) | `git mv public/data/* public/data/uoa/`; the Vite plugin of section 3; `OUT` in `build-data.ts` becomes `public/data/<school>/`; the paths in six unit tests and in `NOTICE` | `git diff -M --stat` shows only renames at 100%. `dist/` built before and after is identical, file for file (`diff -r`): the app's code does not change in this step, so the asset names do not either. The 46 e2e tests pass with no e2e file changed |
+| **M2. The descriptor** | `src/schools/uoa/school.ts` holds today's constants, copied unchanged (`ORIGIN`, `LAT`, `LON`, the weather address, `CAMPUS_SPAN`, the areas, the room-code grammar); the `@school` alias; overlays and `index.html` through the plugin; landmarks filtered by school | The built `index.html` has today's text. The map's pixel diff (`.claude/skills/street-look/CHECKS.md`, "The map's pixel diff") is 0 at the eight vantages below, on the GPU and on SwiftShader, three times each. The 46 e2e tests pass unchanged |
+| **M3. The build split** (the maintainer rebuilds to check it) | `buildContext` and `buildTerrain` to `scripts/lib/`, with the module state they read passed in; `buildCampus` to the `mapsindoors` adapter; the three fetch scripts to `scripts/schools/uoa/`, with their import paths changed; `data/academic-calendar.json` to `data/uoa/`; snapshot dates taken from the school's own files | The maintainer rebuilds as a check and does not commit the result: only `generatedAt` differs from the committed files, and `coverage` and every source's snapshot date are the same. This rebuild, not the size of the edits, is the proof |
+| **M4. CI and deploy for a list of schools** (gate: `.github/`) | The deploy jobs loop over a list that holds only `uoa`; `playwright.config.ts` takes `SCHOOL`; the `e2e-schools` matrix and the `schools` job, skipped while the list holds no other school | The site on Cloudflare has the same files at `/uoa/` (compare the hash of each file before and after). The live e2e passes, run twice |
 
 Then **B3**, one pull request for each new school: its descriptor, overlay, fetch scripts (a gate),
 data, tests, and a line in the list. The picker and the `_redirects` change are a pull request of
 their own, after the first new school is live.
 
-**The seven vantages**, canvas only, 1280 × 800, with the interface and the walkers hidden:
+**The eight vantages**, canvas only, 1280 × 800, with the interface and the walkers hidden. They
+are the vantages of the map's pixel diff in `.claude/skills/street-look/CHECKS.md` (day, night, a
+building open, a floor below the ground open, the map after leaving each walker view), with
+Grafton and a campus in an area of its own:
 
 1. the City Campus by day: `?light=day&time=preview&date=2026-03-20&t=15:00`
 2. by night: `?light=night&time=preview&date=2026-03-20&t=21:00`
@@ -367,7 +399,8 @@ their own, after the first new school is live.
 4. a floor below the ground: `?building=310&floor=B2&light=day&time=preview&date=2026-03-20&t=12:00`
 5. Grafton: `?campus=grafton&light=day&time=preview&date=2026-03-20&t=15:00`
 6. a campus in an area of its own: `?campus=leigh&light=day&time=preview&date=2026-03-20&t=15:00`
-7. the map after leaving a walker view: open `?walk=1&view=follow&light=day&time=preview&date=2026-03-20&t=15:00`, then leave it
+7. the map after leaving the walker's follow view: open `?walk=1&view=follow&light=day&time=preview&date=2026-03-20&t=15:00`, then leave it
+8. the map after leaving the walker's eyes view: open `?walk=1&view=eyes&light=day&time=preview&date=2026-03-20&t=15:00`, then leave it
 
 M2 commits the script that takes them, so a later change to shared map code can run it again. Two
 vantages have been seen to differ now and then by at most 8 of 255 on a few pixels since the
@@ -379,8 +412,9 @@ the GitHub Pages copy.
 
 ## 10. Risks
 
-1. **A refactor changes `/uoa/`.** Shared code moves in M2 and M3. Each step carries the proof in
-   section 9, and M1 and M3 move files and code with as few edits as the move needs.
+1. **A refactor changes `/uoa/`.** Shared code moves in M2 and M3, and the moves need edits:
+   paths, and module state passed as arguments. Each step carries the proof in section 9, which
+   checks what the site serves, not the edits.
 2. **The e2e job runs out of time.** It already uses up to 17 min 26 s of 20. A test added to it for
    another school would fail it. So no school's test goes there, and each school's job has a limit
    of its own.
@@ -389,7 +423,8 @@ the GitHub Pages copy.
    `/uoa/` when it touches the scene.
 4. **A shared snapshot.** AUT's City Campus and the University of Auckland share
    `data/raw/osm/context.json`. Fetching it again (`--refresh`) changes both sites: rebuild both and
-   give both `coverage` blocks.
+   give both `coverage` blocks. A fetch of a file that only one school reads must not change the
+   other's snapshot dates: today `snapshotDate` would let it, which M3 fixes (section 4).
 5. **Terms.** AUT and Canterbury need permission for anything of their own; Victoria allows
    non-commercial use on a condition the site meets only by the maintainer's reading; MazeMap's
    terms forbid extraction without an agreement. The Buildings form avoids all of these.
