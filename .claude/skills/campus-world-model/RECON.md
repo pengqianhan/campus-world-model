@@ -26,6 +26,9 @@ second to the catalogue host and about twenty to third-party analytics before th
 Queue the browser's requests through the same one-a-second pacing, allow only the hosts you are
 studying, block service workers, and log every request. `scripts/research/polite.mjs` does all four
 for the research tools here (`sniff.mjs`, `open-once.mjs`); a browser of your own goes through it too.
+It works in Chromium only, with one polite page per browser at a time: start the browser with its
+`politeLaunch()` and open the page with `politePage()`. What still goes out without the gate is
+listed under "Limits" in its header.
 
 ## Layers
 
@@ -43,7 +46,7 @@ area of its own: list every campus the indoor layer names and where its building
 1. **The campus map's own requests.** The school's public campus map has to download buildings and
    rooms to draw them, which makes it the richest source. `node scripts/research/sniff.mjs <map URL>
    <out prefix> --allow=<vendor host>` opens the page headless, one request a second, and lists every
-   request, including those it blocked: a blocked host that carries the data is the one to allow
+   request the gate sees, including those it blocked: a blocked host that carries the data is the one to allow
    on the next run. Look for JSON, GeoJSON or vector
    tiles from an indoor-mapping vendor (MapsIndoors, MazeMap, Concept3D, Mappedin, ArcGIS Indoors,
    Pointr) or from the school's own endpoint. Requests the page makes anonymously are the source.
