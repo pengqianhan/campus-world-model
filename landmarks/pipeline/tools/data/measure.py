@@ -70,6 +70,8 @@ def walls_axis(xy, near):
     return max(cands, key=lambda u: abs(u @ near))
 
 
+if F.get("axis_from", "walls") != "walls":  # left out: the principal axis
+    sys.exit(f"measure: frame.axis_from can only be \"walls\" (or left out), not {F['axis_from']!r}")
 if F.get("axis_from") == "walls":
     ax = walls_axis(B[:, :2], ax)
 if ax[1] < 0: ax = -ax

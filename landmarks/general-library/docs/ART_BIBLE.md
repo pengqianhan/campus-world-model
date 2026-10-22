@@ -53,5 +53,6 @@ the ribs of the podium's roof.
 
 ## Works and changes
 - None of the twelve panoramas shows scaffolding, wraps or works on the building. The south-east end's
-  grey piers and curtain wall are drawn as the 2025-05 panoramas show them; the Alfred Street front as
-  the 2022-09 ones do (no newer panorama there).
+  grey piers are drawn as the 2025-05 panoramas show them, its two-storey curtain wall as the slab's
+  ribbon windows and its dark stone cladding and louvre as glazing (simpler than the photographs); the
+  Alfred Street front as the 2022-09 ones show it (no newer panorama there).

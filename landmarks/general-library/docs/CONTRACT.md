@@ -64,8 +64,9 @@ sampled from them into the model.
   off the north-west end (2024-07: `Qaci…`), each with `*_wide.jpg` (hfov 95°), `*_upper.jpg` (40°) and
   `*_door.jpg` (45°). The Alfred Street views are under plane trees and close to the building (25-37 m
   from the slab's centre), so the refine stage corrected only two cameras (`xKYw…`, `Qaci…`).
-- Faces in no photograph: the main block's back on the service lane (north-east of the front block),
-  the low block's north-east face, the slab's north-west end above the podium. They are drawn plain.
+- Faces in no photograph: the main block's back on the service lane (north-east of the front block)
+  and the low block's north-east face. They are drawn plain. The slab's north-west end above the
+  podium is drawn from `Qaci…`'s upper view.
 - Do not fetch Street View imagery yourself (it is billed per tile); ask the lead.
 
 ## Running things

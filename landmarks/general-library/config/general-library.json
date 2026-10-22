@@ -4,7 +4,7 @@
  "building": {
   "id": "109",
   "also": [],
-  "also_note": "no other building of the campus map: measured 2026-10-22 from the round-0 model's footprint (cells above 2.5 m, 0.5 m grid, run.sh topview) it covers 94.1% of 109's block and under 0.5% of any other block within 80 m.",
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, run.sh topview) it covers 93.9% of 109's block and under 0.5% of the other two blocks within 80 m (103 and 322).",
   "title": "General Library, University of Auckland",
   "note": "outline: building 109's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
   "outline": [

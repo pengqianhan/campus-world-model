@@ -228,9 +228,10 @@ of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 | ![Old Government House on the map, drawn from code in the map's colours](docs/landmarks/old-government-house-map.jpg) | ![Old Government House from its lawn, through the walker's eyes](docs/landmarks/old-government-house-eyes.jpg) |
 
 The third is the General Library (109) on Alfred Street: a tower slab of ribbon windows over a podium
-whose white fins stand on a brick plinth. Twelve Street View panoramas see each of its faces. Seen
-from them, the outline of the model covers the outline of the building with an IoU of 0.80 on
-average over 35 views; from above, its footprint covers the LiDAR's with an IoU of 0.946, and its
+whose white fins stand on a brick plinth. Twelve Street View panoramas see its front on Alfred Street,
+its two ends and its back wing; two faces are in none of them and are drawn plain (see Known
+limitations). Seen from them, the outline of the model covers the outline of the building with an IoU
+of 0.80 on average over 35 views; from above, its footprint covers the LiDAR's with an IoU of 0.946, and its
 highest point is 38.8 m, as the LiDAR's.
 
 | | |
@@ -437,6 +438,12 @@ If you represent the University and would like something changed or removed, ple
   do show: most of the garden front (its windows repeat the two that are seen), the porch, the
   north-west wing, the backs of the main block, the north-west lobby, the low south-east range, the
   north-west balcony (like the south-east one) and the ranges round the courtyard behind.
+- **The General Library is drawn plainly where no photograph shows it, and simpler than the
+  photographs where they do.** No Street View panorama shows the main block's back on the service
+  lane or the low block's north-east face: they are drawn plain. At the south-east end, the
+  two-storey curtain wall over the entrance is drawn as the slab's ribbon windows, the dark stone
+  cladding and the louvre of the ground floor as glazing between the grey piers, and the north-west
+  end's stone panel is drawn white.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the

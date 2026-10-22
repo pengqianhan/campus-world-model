@@ -21,12 +21,14 @@ A change to what the site does or shows adds its line here, and the README's
 - **The General Library drawn in detail.** Near the General Library (building 109) the map now
   draws it from code, to sizes measured from the LiDAR survey: the tower slab with its ribbon
   windows floor by floor, the core and stair tower, the podium with its screens of white fins under
-  a crown of folded hoods, the brick plinth on Alfred Street, the south-east end glazed between grey
-  piers, and the glass canopy. On the map it has the map's colours. From a walker's height it is
-  drawn in white concrete, brick, grey and glass on a computer with a graphics card, and in the
-  map's colours on phones and on computers without one. Twelve Street View panoramas see its faces,
-  and it was checked against them and against the LiDAR from above. Its block still answers a click
-  and opens on its floors. About now names brick and concrete among the landmarks' materials (#PR).
+  a crown of folded hoods, the brick plinth on Alfred Street, the grey piers of the south-east end,
+  and the glass canopy. On the map it has the map's colours. From a walker's height it is drawn in
+  white concrete, brick, grey and glass on a computer with a graphics card, and in the map's colours
+  on phones and on computers without one. It was checked against the LiDAR from above and against
+  twelve Street View panoramas, which see its front, its two ends and its back wing; the two faces
+  they do not show are drawn plain, and the south-east end is simpler than in the photographs. Its
+  block still answers a click and opens on its floors. About now names brick and concrete among the
+  landmarks' materials, and says that what no photograph shows is drawn plainly (#PR).
 - **Old Government House drawn in detail.** Near Old Government House (building 102) the map now
   draws it from code, to sizes measured from the LiDAR survey: its two storeys and the ranges
   behind, the low hipped roofs on bracketed eaves, the chimneys, the bay, the balconies and the
