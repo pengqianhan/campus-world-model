@@ -45,7 +45,7 @@ end) and [`-above.jpg`](../../docs/landmarks/general-library-above.jpg); from th
 
 Within 120 m there are 63 panoramas: 50 of Google's own and 13 user-contributed (left out). The 26 of
 Google's within 75 m were looked at in low resolution (zoom 3, 148 tiles, 126 of them bought); 22 show
-the building. Twelve were pinned to cover each face and their zoom-5 tiles bought (a dry run counted
+the building. Twelve were pinned, to see as many faces as the trees allow, and their zoom-5 tiles bought (a dry run counted
 N = 1,650; 1,650 bought; 1,776 tiles for this building with the probe, inside the tier's 2,000). No
 panorama used is indoors.
 

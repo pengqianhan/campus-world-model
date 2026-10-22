@@ -439,8 +439,8 @@ If you represent the University and would like something changed or removed, ple
   do show: most of the garden front (its windows repeat the two that are seen), the porch, the
   north-west wing, the backs of the main block, the north-west lobby, the low south-east range, the
   north-west balcony (like the south-east one) and the ranges round the courtyard behind.
-- **The General Library is drawn plainly where its photographs do not show it, and simpler than
-  them where they do.** None of its twelve Street View panoramas shows the main block's back on the
+- **The General Library is drawn plain, or after the faces they do show, where its photographs do
+  not show it, and simpler than them where they do.** None of its twelve Street View panoramas shows the main block's back on the
   service lane, the low block's north-east face or either end of the back wing: the back wing's
   north-west end is drawn with the fins of its north-east face, the others plain.
   At the south-east end, the
