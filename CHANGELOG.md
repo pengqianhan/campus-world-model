@@ -14,7 +14,7 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-10-22
+## 2026-10-23
 
 ### Added
 
@@ -29,6 +29,11 @@ A change to what the site does or shows adds its line here, and the README's
   side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
   block still answers a click and opens on its floors. About now names brick and concrete among the
   landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#PR).
+
+## 2026-10-22
+
+### Added
+
 - **Old Government House drawn in detail.** Near Old Government House (building 102) the map now
   draws it from code, to sizes measured from the LiDAR survey: its two storeys and the ranges
   behind, the low hipped roofs on bracketed eaves, the chimneys, the bay, the balconies and the
