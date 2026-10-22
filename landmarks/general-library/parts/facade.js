@@ -1,0 +1,47 @@
+// Faces of the General Library drawn by rule: a face is a plane square to x or to z, with an outward
+// sign, spanning [a0, a1] along it. Every box on it is given as (along, up, out-of-face) ranges, so the
+// same code draws any of the building's faces.
+import { boxesGeometry } from "../../kit/gothic.js";
+
+/** A face: `axis` is the axis its normal lies on ("x" or "z"), `at` its plane, `s` the outward sign. */
+export function face(axis, at, s, a0, a1) { return { axis, at, s, a0, a1 }; }
+
+/** The box [a0, a1] along the face, [y0, y1] up, [d0, d1] out of it (positive = outward). */
+export function faceBox(f, a0, a1, y0, y1, d0, d1) {
+  const p = f.at + f.s * d0, q = f.at + f.s * d1, lo = Math.min(p, q), hi = Math.max(p, q);
+  return f.axis === "z" ? [a0, a1, y0, y1, lo, hi] : [lo, hi, y0, y1, a0, a1];
+}
+
+/**
+ * Ribbon windows: from y0 to y1, a band of glazing between spandrels at each floor level in `floors`
+ * (a spandrel `sp` high at each level, standing 0.12 m proud), the glass 0.25 m in, with dark mullions
+ * every `bay` metres. The wall behind is the mass's own box.
+ */
+export function ribbons(b, f, y0, y1, floors, { sp = 1.1, bay = 1.6, frame = "iron", glass = "glassPale", wall = "paint" } = {}) {
+  const lv = [y0, ...floors.filter((y) => y > y0 + 0.5 && y < y1 - 0.5), y1];
+  const walls = [], panes = [], bars = [];
+  for (let i = 0; i < lv.length - 1; i++) {
+    const s0 = lv[i], s1 = Math.min(lv[i] + sp, lv[i + 1]);
+    walls.push(faceBox(f, f.a0, f.a1, s0, s1, -0.3, 0.12));
+    if (lv[i + 1] - s1 < 0.4) continue;
+    panes.push(faceBox(f, f.a0, f.a1, s1, lv[i + 1], -0.27, -0.24));
+    const n = Math.max(1, Math.round((f.a1 - f.a0) / bay));
+    for (let k = 0; k <= n; k++) {
+      const a = f.a0 + ((f.a1 - f.a0) * k) / n;
+      bars.push(faceBox(f, a - 0.05, a + 0.05, s1, lv[i + 1], -0.25, -0.15));
+    }
+    bars.push(faceBox(f, f.a0, f.a1, (s1 + lv[i + 1]) / 2 + 0.3, (s1 + lv[i + 1]) / 2 + 0.38, -0.25, -0.17));
+  }
+  b.add(boxesGeometry(walls), wall);
+  if (panes.length) b.add(boxesGeometry(panes), glass);
+  if (bars.length) b.add(boxesGeometry(bars), frame);
+}
+
+/** A plain glazed band from y0 to y1, set `inset` into the face, with mullions every `bay` metres. */
+export function glazing(b, f, y0, y1, { inset = 0.3, bay = 1.8, frame = "iron", glass = "glassPale", a0 = f.a0, a1 = f.a1 } = {}) {
+  b.add(boxesGeometry([faceBox(f, a0, a1, y0, y1, -inset - 0.03, -inset)]), glass);
+  const n = Math.max(1, Math.round((a1 - a0) / bay)), bars = [];
+  for (let k = 0; k <= n; k++) { const a = a0 + ((a1 - a0) * k) / n; bars.push(faceBox(f, a - 0.06, a + 0.06, y0, y1, -inset, -inset + 0.12)); }
+  bars.push(faceBox(f, a0, a1, y0, y0 + 0.12, -inset, -inset + 0.12), faceBox(f, a0, a1, y1 - 0.12, y1, -inset, -inset + 0.12));
+  b.add(boxesGeometry(bars), frame);
+}
