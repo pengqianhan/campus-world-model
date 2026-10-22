@@ -91,7 +91,10 @@ A landmark is measured in one frame and shown in another.
     its edge count, for a building with others in its crop box;
   - facade axis = principal axis of building points `min_above` to `spine_below` m high within
     `spine_radius` m of the centre (pointing north-ish when `street_side` is `west`, south-ish when
-    it is `east`); x is minus this axis;
+    it is `east`); x is minus this axis. With `frame.axis_from: "walls"`, for a building of wings
+    at different angles whose principal axis falls between them, the axis is instead the bearing of
+    most of its wall length, seen from above in its points (of the two square to each other, the
+    one nearest the principal axis);
   - toStreet = the axis turned 90° toward `street_side`; this is +z.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the
