@@ -28,7 +28,7 @@ A change to what the site does or shows adds its line here, and the README's
   twelve Street View panoramas, which see its front, its two ends and its back wing's north-east
   side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
   block still answers a click and opens on its floors. About now names brick and concrete among the
-  landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#PR).
+  landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#80).
 
 ## 2026-10-22
 
