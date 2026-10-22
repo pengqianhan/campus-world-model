@@ -143,7 +143,8 @@ It finds them itself (`import.meta.glob` in `src/app/landmarks.ts`): no list in 
     noise. Three was measured to hold with two forms as heavy as the Clock Tower's among the three
     (one of them a stand-in, below) and Old Government House's, not with three forms that heavy.
     So measure again before a landmark with more triangles than Old Government House's comes to
-    stand near others, or before another round takes one that stands near others past that.
+    stand near others, or before another round adds triangles to one near others that has, or comes
+    to have, more than that (the Clock Tower among them).
   - **How the number was measured** (2026-10-23): at the densest corner of the campus, buildings
     102, 103, 104, 105, 107 and 109, at 1440 x 900, on an NVIDIA Quadro P600 and in software
     (SwiftShader). Three real landmarks (the Clock Tower, Old Government House, the General
@@ -198,7 +199,7 @@ needs:
   check 9);
 - if it stands near other landmarks and has more triangles than Old Government House (33,902), the
   map's budget measured again (see "Three at once on the map" above); the same for another round
-  that takes a landmark near others past that.
+  that adds triangles to a landmark near others that has, or comes to have, more than that.
 
 To take one off the site, set `site` to `false` and run `place` again, and change the same
 `CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map
