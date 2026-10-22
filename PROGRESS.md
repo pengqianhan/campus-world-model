@@ -549,7 +549,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    decide, the generator keeps the blocks of the places where people live (123 Lodge, 436 University
    Hall Apartments, 617 7 City Road, 838 Stuart McCutcheon House by their residential floors; 434
    Waikohanga House, whose floor 2 has an Accommodation Reception on the campus map; 450 UniLodge
-   Whitaker by its name) and of the childcare centres (410, 841). You accepted 102 Old Government
+   Whitaker by its name) and of the childcare centres (410, 841, and 255 Te Kohanga Reo, which decision 7
+   keeps too). You accepted 102 Old Government
    House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
-   too. Of these, only 434 passes the top-view check in the first batch
+   too. Of these, 434 and 436 pass the top-view check in the first batch
    (`landmarks/measured/exclusions.json` has their numbers).
