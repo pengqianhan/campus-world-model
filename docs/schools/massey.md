@@ -49,6 +49,14 @@ sitemap lists a childcare page and three pages under it, about Palmerston North 
 campus. The Manawatū facilities page lists a "Childcare centre". This document names none of them.
 A build must find them in the source and leave them blank.
 
+Pages read for this section that are not in a layer's table:
+
+| Route | URL | Answer (2026-10-23) | What it holds |
+| --- | --- | --- | --- |
+| Study on campus | `https://www.massey.ac.nz/study/study-on-campus/` | 200 `text/html; charset=utf-8`, 61,510 bytes | "Study on campus with Massey University in Auckland, Wellington, the Manawatū or Singapore." "Explore our 4 campus options in Auckland, Palmerston North, Wellington and Singapore to find the best place to call home." Links to one "Study on the … campus" page each for Auckland, Manawatū and Wellington (not read). Nothing else on the page was recorded |
+| Manawatū campus facilities | `https://www.massey.ac.nz/student-life/campus-guides-maps/manawat%C5%AB-campus-maps-transport-and-parking/manawat%C5%AB-campus-facilities/` | 200 `text/html; charset=utf-8`, 97,194 bytes | A "Childcare centre" entry: "We offer high-quality early childhood education. The childcare service providers are independent." "The Dining Hall", for "Students staying in Massey university halls". "Some halls of residence also have small computer labs." Only the lines about childcare and halls were looked at; the rest of the page was not recorded |
+| Study in Singapore | `https://www.massey.ac.nz/study/international-students/study-in-singapore/` | 200 `text/html; charset=utf-8`, 52,251 bytes | The partner sentence quoted in the table above; intakes "in March, July and November"; a list of qualifications (the first is "Bachelor of Business"), with fees and applications on the partner's website. Nothing else on the page was recorded |
+
 ## What the site could do
 
 - **With the usable layers only:** no campus in 3D yet. Footprints wait on the maintainer's Overpass
@@ -63,7 +71,9 @@ A build must find them in the source and leave them blank.
   OpenStreetMap footprint, and each floor would be inferred and labelled so. This helps only once a
   list of rooms or classes exists.
 - **If Massey opens the timetable (layer 3):** class meetings would be located to a venue code, so
-  to a floor of a building by the key above, not to a room outline.
+  to a building by the key above and, where the key gives one, a floor; not to a room outline. The
+  key gives a floor for some rows only: ten of the 28 Manawatū rows give the floor rule, and
+  `AH1-AH5` names a block with no floor.
 - **Floor and room outlines:** no source found publishes them. The one campus map PDF read
   (Wellington) is a drawing of buildings, not floor plans. The Massey Uni app's map might hold
   more, but it was not read.
@@ -118,7 +128,7 @@ any floor would be inferred and labelled so.
 | Earlier student projects | two GitHub searches through the GitHub API ("massey timetable": no result; "massey university" with timetable, planner or course: 15 results) | — | None reads Massey's timetable. The 15 are course material and assignments |
 
 Precision, if Massey opens the timetable: a venue code, which the building-codes key puts on a
-building and, for most codes, a floor.
+building and, where the key gives one, a floor.
 
 ## Layer 4: academic calendar
 
@@ -201,7 +211,10 @@ University of Auckland's verdict rests on the same kind of condition (RECON.md, 
    blank.
 7. **The licence condition.** Massey's licence is "for non-commercial purposes only". Keep the
    site free of advertising while Massey data is on it, or ask Massey for written permission.
-8. **Two tool gaps,** as in the earlier recons: `polite.mjs` does not read `robots.txt`, and it lets
+8. **Terms read after content.** LibCal's (Springshare's) terms were not read before its Manawatū
+   room list was read, and they are still unread. On `www.massey.ac.nz`, two pages (campus guides
+   and key dates) were read before the copyright page ("robots.txt and terms").
+9. **Two tool gaps,** as in the earlier recons: `polite.mjs` does not read `robots.txt`, and it lets
    frames load from any path. This recon's reader read each host's `robots.txt` itself and let only
    documents and fetches through.
 
