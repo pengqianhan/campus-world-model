@@ -62,6 +62,7 @@ import { GROUND, RAIL_WIDTH, ROAD_EDGE_WIDTH, ROAD_WIDTH, type GroundKind } from
 import type { TreeSpec } from "./street/crowns.ts";
 import { LANDMARKS } from "../app/landmarks.ts";
 import { Landmark, type Cover, type LandmarkForm } from "./landmarks.ts";
+import { withinBudget } from "./landmarkBudget.ts";
 
 export interface Selection {
   building?: string;
@@ -217,6 +218,17 @@ const WINDOW_PANE = "#93a3ab";
  * drawn as before, and the landmark is not made at all until the camera first comes this near.
  */
 const LANDMARK_PIXELS = 1.5;
+/**
+ * How many landmarks the map draws at once: the nearest to the middle of the view (landmarkBudget.ts).
+ * The others keep their blocks, and one is not made until it is among the nearest. Walker views
+ * have no such limit. How the number was measured: landmarks/README.md, "On the site".
+ */
+const LANDMARK_BUDGET = 3;
+/**
+ * A landmark within the budget counts as this share of the view's height nearer than it is, so
+ * that two landmarks at about the same distance do not change places while the map pans.
+ */
+const LANDMARK_HOLD = 0.05;
 /** Metres from a walker view's camera within which a landmark is drawn in place of its block. */
 const LANDMARK_REACH = 600;
 /** The layer a block goes to while a landmark stands in its place: no camera draws it, and a click still finds it. */
@@ -351,6 +363,8 @@ export class CampusScene {
   private landmarkBlocks = new Map<string, Landmark>();
   /** Whether a walker view may draw a landmark's full form: on the full tier only (street/tier.ts). */
   private landmarkFull = false;
+  /** The landmarks within the map's budget at the last update (LANDMARK_BUDGET). */
+  private landmarksHeld = new Set<Landmark>();
   private needsLandmarks = true;
   private roomMeshes = new Map<string, Mesh>();
   private plans = new Map<string, FloorPlans>();
@@ -665,13 +679,17 @@ export class CampusScene {
    * Draws each landmark in place of its buildings' blocks where the camera is near it, in the form
    * the view takes, and asks for that form the first time. While one of its buildings is open it
    * gives way to the blocks. In a walker view the light form stands in until the full one is made.
+   * The map draws only the nearest LANDMARK_BUDGET of them; the others keep their blocks and are
+   * not asked for.
    */
   private updateLandmarks(): void {
     this.needsLandmarks = false;
+    const wanted = this.landmarks.map((l) => (this.buildingMeshes.has(l.buildings[0]!) ? this.landmarkWanted(l) : undefined));
+    this.budgetLandmarks(wanted);
     let changed = false;
-    for (const l of this.landmarks) {
+    for (const [i, l] of this.landmarks.entries()) {
       const blocks = l.buildings.flatMap((id) => this.buildingMeshes.get(id) ?? []);
-      const want = this.buildingMeshes.has(l.buildings[0]!) ? this.landmarkWanted(l) : undefined;
+      const want = wanted[i];
       if (want) l.want(want, () => this.landmarkCovers(l));
       let form: LandmarkForm | undefined;
       if (want && blocks.every((b) => b.visible)) form = want === "full" && l.has("full") ? "full" : l.has("light") ? "light" : undefined;
@@ -710,6 +728,28 @@ export class CampusScene {
       if (!b || b.offMap) return [];
       return [{ id, rings: b.outline.map((ring) => decodeRing(ring).map(([x, y]) => l.toModel(x, y))) }];
     });
+  }
+
+  /**
+   * On the map, takes away the form wanted for each landmark past the budget: only the
+   * LANDMARK_BUDGET nearest to the middle of the view keep theirs. `wanted` is by landmark, as
+   * this.landmarks. Every control change asks for an update (needsLandmarks), so the ranking
+   * follows the middle of the view as the map pans.
+   */
+  private budgetLandmarks(wanted: (LandmarkForm | undefined)[]): void {
+    if (this.view !== "map") {
+      this.landmarksHeld.clear();
+      return;
+    }
+    const t = this.controls.target;
+    const near = this.landmarks.flatMap((l, i) => (wanted[i] ? [{ i, l }] : []));
+    const entries = near.map(({ l }) => ({ distance: Math.hypot(t.x - l.centre[0], -t.z - l.centre[1]), held: this.landmarksHeld.has(l) }));
+    const within = new Set(withinBudget(entries, LANDMARK_BUDGET, (LANDMARK_HOLD * VIEW_HEIGHT) / this.camera.zoom).map((k) => near[k]!.i));
+    this.landmarksHeld.clear();
+    for (const { i, l } of near) {
+      if (within.has(i)) this.landmarksHeld.add(l);
+      else wanted[i] = undefined;
+    }
   }
 
   /** The form a landmark is drawn in from where the camera is now; none when it is far. */
