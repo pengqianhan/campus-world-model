@@ -21,7 +21,9 @@ shared by every landmark: [`../README.md`](../README.md).
 
 Renders of the model (no photograph): [`docs/landmarks/general-library-alfred.jpg`](../../docs/landmarks/general-library-alfred.jpg)
 (from Alfred Street), [`-southeast.jpg`](../../docs/landmarks/general-library-southeast.jpg) (the south-east
-end) and [`-above.jpg`](../../docs/landmarks/general-library-above.jpg).
+end) and [`-above.jpg`](../../docs/landmarks/general-library-above.jpg); from the site, on the map
+([`-map.jpg`](../../docs/landmarks/general-library-map.jpg)) and through a walker's eyes on Alfred Street
+([`-eyes.jpg`](../../docs/landmarks/general-library-eyes.jpg)).
 
 ## The frame
 

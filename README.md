@@ -236,7 +236,7 @@ highest point is 38.8 m, as the LiDAR's.
 | | |
 | --- | --- |
 | ![The General Library from Alfred Street, drawn from code](docs/landmarks/general-library-alfred.jpg) | ![The General Library's south-east end, its entrance between grey piers, drawn from code](docs/landmarks/general-library-southeast.jpg) |
-| ![The General Library from above, drawn from code](docs/landmarks/general-library-above.jpg) | |
+| ![The General Library on the map, drawn from code in the map's colours](docs/landmarks/general-library-map.jpg) | ![The General Library from Alfred Street, through the walker's eyes](docs/landmarks/general-library-eyes.jpg) |
 
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
