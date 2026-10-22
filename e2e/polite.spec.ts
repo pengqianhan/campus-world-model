@@ -1,5 +1,6 @@
 // The research browser (scripts/research/polite.mjs) keeps to "Snapshot once" and "Closed is a
-// verdict" for every request it sees, the hops of a redirect too. These tests do not use the site.
+// verdict" for every request it sees, the hops of a redirect too, and to each host's robots.txt,
+// which it asks for before anything else on that host. These tests do not use the site.
 // The browser tests each launch a browser of their own (politeLaunch(), but for the one that pins
 // a limit of a plain browser) and start one to three servers of their own on 127.0.0.1; the
 // WebRTC and WebTransport test also opens a UDP and a TCP socket there. They ask no other host.
@@ -70,6 +71,12 @@ const script =
   (res) => {
     res.writeHead(200, { "content-type": "text/javascript" });
     res.end(code);
+  };
+const text =
+  (body: string): Answer =>
+  (res) => {
+    res.writeHead(200, { "content-type": "text/plain" });
+    res.end(body);
   };
 const status =
   (code: number, delay = 0): Answer =>
@@ -172,6 +179,7 @@ test.describe("research browser", () => {
       const path = (url?: string) => url?.slice(site.base.length);
       const sent = pages(log).filter((r) => r.sent).map((r) => ({ url: path(r.url), type: r.type, from: path(r.from), status: r.status }));
       expect(sent).toEqual([
+        { url: "/robots.txt", type: "robots", from: undefined, status: 404 },
         { url: "/a", type: "document", from: undefined, status: 302 },
         { url: "/b", type: "document", from: "/a", status: 301 },
         { url: "/c", type: "document", from: "/b", status: 200 },
@@ -179,7 +187,7 @@ test.describe("research browser", () => {
         { url: "/s2", type: "script", from: "/s1", status: 200 },
       ]);
       expect(pages(log).filter((r) => !r.sent)).toEqual([]);
-      expect(site.paths()).toEqual(["/a", "/b", "/c", "/s1", "/s2"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/a", "/b", "/c", "/s1", "/s2"]);
 
       // Each one left at least PACE_MS after the one before in the log, and well apart at the server.
       expectPaced(log);
@@ -206,7 +214,7 @@ test.describe("research browser", () => {
       await expect(page.goto(`${site.base}/leave`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
       expect(log.find((r) => r.url === `${site.other}/landing`)).toMatchObject({ type: "document", from: `${site.base}/leave`, sent: false, reason: "host not allowed" });
 
-      expect(site.hits.map((h) => `${h.host.split(":")[0]} ${h.path}`)).toEqual(["127.0.0.1 /start", "127.0.0.1 /away.js", "127.0.0.1 /leave"]);
+      expect(site.hits.map((h) => `${h.host.split(":")[0]} ${h.path}`)).toEqual(["127.0.0.1 /robots.txt", "127.0.0.1 /start", "127.0.0.1 /away.js", "127.0.0.1 /leave"]);
       expectPaced(log);
     } finally {
       await site.stop();
@@ -234,7 +242,7 @@ test.describe("research browser", () => {
       expect(Object.fromEntries(closed)).toEqual({ [site.host]: "403" });
       // A new page load on the closed host is blocked too.
       await expect(page.goto(`${site.base}/start`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
-      expect(site.paths()).toEqual(["/start", "/forbidden"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/start", "/forbidden"]);
       expectPaced(log);
     } finally {
       await site.stop();
@@ -257,7 +265,7 @@ test.describe("research browser", () => {
       await expect.poll(() => value(page, "ALL"), { timeout: 20_000 }).toEqual([403, "blocked", "blocked"]);
       expect(Object.fromEntries(closed)).toEqual({ [site.host]: "403" });
       for (const path of ["/next1", "/next2"]) expect(log.find((r) => r.url === `${site.base}${path}`)).toMatchObject({ sent: false, reason: "closed: 403" });
-      expect(site.paths()).toEqual(["/start", "/slow-forbidden"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/start", "/slow-forbidden"]);
     } finally {
       await site.stop();
     }
@@ -279,7 +287,7 @@ test.describe("research browser", () => {
         reason: "closed: sign-in redirect",
       });
       expect(Object.fromEntries(closed)).toEqual({ [site.host]: "sign-in redirect" });
-      expect(site.paths()).toEqual(["/private"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/private"]);
     } finally {
       await site.stop();
     }
@@ -295,7 +303,7 @@ test.describe("research browser", () => {
       await page.goto(`${site.base}/start`);
       await expect.poll(() => log.find((r) => r.url === `${site.base}/account/login`)).toMatchObject({ type: "document", sent: false, reason: "closed: sign-in page" });
       expect(Object.fromEntries(closed)).toEqual({ [site.host]: "sign-in page" });
-      expect(site.paths()).toEqual(["/start"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/start"]);
     } finally {
       await site.stop();
     }
@@ -320,8 +328,8 @@ test.describe("research browser", () => {
       // The log has one row for /drop. The server got it twice, at once: the keep-alive connection
       // of /start was dropped, and Chromium sent /drop again below the Fetch domain.
       expect(log.filter((r) => r.url === `${site.base}/drop`)).toHaveLength(1);
-      expect(site.paths()).toEqual(["/start", "/drop", "/drop"]);
-      const [, first, second] = site.hits;
+      expect(site.paths()).toEqual(["/robots.txt", "/start", "/drop", "/drop"]);
+      const [, , first, second] = site.hits;
       expect(second!.at - first!.at).toBeLessThan(PACE_MS / 2);
     } finally {
       await site.stop();
@@ -340,6 +348,7 @@ test.describe("research browser", () => {
       await page.goto(`${site.base}/start`);
       await (await popup).waitForURL(`${site.base}/pop2`);
       expect(pages(log).map((r) => [r.url.slice(site.base.length), r.from?.slice(site.base.length), r.sent])).toEqual([
+        ["/robots.txt", undefined, true],
         ["/start", undefined, true],
         ["/pop1", undefined, true],
         ["/pop2", "/pop1", true],
@@ -364,14 +373,14 @@ test.describe("research browser", () => {
       await expect(second.page.goto(`${site.base}/ok`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
       expect(pages(second.log)).toMatchObject([{ url: `${site.base}/ok`, sent: false, reason: "closed: 403" }]);
       await second.context.close();
-      expect(site.paths()).toEqual(["/ok", "/forbidden"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/ok", "/forbidden"]);
 
       // The pace too: a page on another host, opened at once, still waits its turn.
       const other = await serve(() => ({ "/ok": html("ok") }));
       try {
         const third = await politePage(browser, { url: other.base });
         await third.page.goto(`${other.base}/ok`);
-        expect(other.hits[0]!.at - site.hits[1]!.at).toBeGreaterThanOrEqual(PACE_MS / 2);
+        expect(other.hits[0]!.at - site.hits[2]!.at).toBeGreaterThanOrEqual(PACE_MS / 2);
         const lastOfFirst = first.log.filter((r) => r.sent).at(-1)!;
         const firstOfThird = third.log.filter((r) => r.sent)[0]!;
         expect(Date.parse(firstOfThird.at) - Date.parse(lastOfFirst.at)).toBeGreaterThanOrEqual(PACE_MS);
@@ -436,8 +445,8 @@ test.describe("research browser", () => {
       const { page, log } = await politePage(browser, { url: site.base });
       await page.goto(`${site.base}/start`);
       await expect.poll(() => log.find((r) => r.url === `${site.base}/favicon.ico`)).toMatchObject({ sent: false, reason: "favicon" });
-      expect(log.filter((r) => r.sent).map((r) => r.url)).toEqual([`${site.base}/start`]);
-      expect(site.paths()).toEqual(["/start"]);
+      expect(log.filter((r) => r.sent).map((r) => r.url)).toEqual([`${site.base}/robots.txt`, `${site.base}/start`]);
+      expect(site.paths()).toEqual(["/robots.txt", "/start"]);
     } finally {
       await site.stop();
     }
@@ -455,7 +464,164 @@ test.describe("research browser", () => {
       await page.goto(`${site.base}/start`);
       await expect.poll(() => log.find((r) => r.url === `${site.base}/brand/icon.png`)).toMatchObject({ sent: false, reason: "favicon" });
       expect(log.find((r) => r.url === `${site.base}/brand/other.png`)).toMatchObject({ type: "image", sent: true });
-      expect(site.paths()).toEqual(["/start", "/brand/other.png"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/start", "/brand/other.png"]);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  test("robots.txt: a frame, an image and a worker's fetch on a disallowed path are blocked before they go; an allowed path loads", async () => {
+    const site = await serve(() => ({
+      "/robots.txt": text("User-agent: *\nDisallow: /private/\n"),
+      "/start": html(`<iframe src="/private/x.html"></iframe><img src="/private/a.png"><iframe src="/public/y.html"></iframe><img src="/public/b.png">
+        <script>new Worker("/public/w.js");</script>`),
+      "/private/x.html": html("private"),
+      "/public/y.html": html("public"),
+      "/public/b.png": status(200),
+      "/public/w.js": script(`fetch("/private/from-worker").catch(() => {});`),
+    }));
+    try {
+      const { page, log, robots } = await politePage(browser, { url: `${site.base}/start` });
+      await page.goto(`${site.base}/start`);
+      const wanted = ["/private/x.html", "/private/a.png", "/public/y.html", "/public/b.png", "/public/w.js", "/private/from-worker"];
+      await expect.poll(() => wanted.filter((p) => log.some((r) => r.url === `${site.base}${p}`)), { timeout: 20_000 }).toEqual(wanted);
+      const rule = "robots: Disallow: /private/";
+      expect(log.find((r) => r.url === `${site.base}/private/x.html`)).toMatchObject({ type: "document", sent: false, reason: rule });
+      expect(log.find((r) => r.url === `${site.base}/private/a.png`)).toMatchObject({ type: "image", sent: false, reason: rule });
+      expect(log.find((r) => r.url === `${site.base}/private/from-worker`)).toMatchObject({ sent: false, reason: rule });
+      for (const p of ["/public/y.html", "/public/b.png", "/public/w.js"]) expect(log.find((r) => r.url === `${site.base}${p}`)).toMatchObject({ sent: true, status: 200 });
+      // The server got robots.txt first, then only the allowed paths.
+      expect(site.paths()[0]).toBe("/robots.txt");
+      expect(site.paths().slice(1).sort()).toEqual(["/public/b.png", "/public/w.js", "/public/y.html", "/start"]);
+      expect(robots.get(site.base)).toMatchObject({
+        status: 200,
+        rules: [{ allow: false, path: "/private/", text: "Disallow: /private/", line: 2 }],
+        text: "User-agent: *\nDisallow: /private/\n",
+      });
+      expectPaced(log);
+      expectPacedAt(site.hits);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  test("robots.txt: the first request to each host is its robots.txt, at the pace, and a second polite page does not ask again", async () => {
+    const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nAllow: /\n"), "/i.png": status(200) }));
+    const site = await serve(() => ({
+      "/robots.txt": text("User-agent: *\nAllow: /\n"),
+      "/a": html(`a<img src="${other.base}/i.png">`),
+      "/b": html("b"),
+    }));
+    try {
+      const first = await politePage(browser, { url: `${site.base}/a`, allow: [other.host] });
+      await first.page.goto(`${site.base}/a`);
+      await expect.poll(() => other.paths()).toEqual(["/robots.txt", "/i.png"]);
+      expect(site.paths()).toEqual(["/robots.txt", "/a"]);
+      expect(pages(first.log).map((r) => [r.url, r.type, r.sent, r.status, r.reason])).toEqual([
+        [`${site.base}/robots.txt`, "robots", true, 200, "robots"],
+        [`${site.base}/a`, "document", true, 200, undefined],
+        [`${other.base}/robots.txt`, "robots", true, 200, "robots"],
+        [`${other.base}/i.png`, "image", true, 200, undefined],
+      ]);
+      expectPaced(first.log);
+      expectPacedAt([...site.hits, ...other.hits].sort((x, y) => x.at - y.at));
+      await first.context.close();
+
+      const second = await politePage(browser, { url: `${site.base}/b`, allow: [other.host] });
+      await second.page.goto(`${site.base}/b`);
+      expect(site.paths()).toEqual(["/robots.txt", "/a", "/b"]);
+      expect(second.log.filter((r) => r.type === "robots")).toEqual([]);
+      expect(second.robots).toBe(first.robots);
+      expect([...second.robots.keys()]).toEqual([site.base, other.base]);
+      await second.context.close();
+    } finally {
+      await Promise.all([site.stop(), other.stop()]);
+    }
+  });
+
+  test("robots.txt: a 404 allows everything", async () => {
+    const site = await serve(() => ({ "/start": html(`<img src="/img.png">`), "/img.png": status(200) }));
+    try {
+      const { page, log, robots, blocked } = await politePage(browser, { url: `${site.base}/start` });
+      expect(blocked).toBeUndefined();
+      await page.goto(`${site.base}/start`);
+      await expect.poll(() => site.paths()).toEqual(["/robots.txt", "/start", "/img.png"]);
+      expect(robots.get(site.base)).toEqual({ url: `${site.base}/robots.txt`, status: 404, rules: [] });
+      expect(pages(log).filter((r) => !r.sent)).toEqual([]);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  for (const [answer, why, closedAs] of [
+    [status(503), "robots: unreachable (503)", undefined],
+    [((_res, req) => req.socket.destroy()) as Answer, "robots: unreachable (ECONNRESET)", undefined],
+    [status(403), "closed: 403", "403"],
+  ] as const) {
+    test(`robots.txt: ${why.replace("robots: ", "")} leaves the host alone; nothing but robots.txt is asked for`, async () => {
+      const site = await serve(() => ({ "/robots.txt": answer, "/start": html("start") }));
+      try {
+        const { page, log, closed, blocked } = await politePage(browser, { url: `${site.base}/start` });
+        expect(blocked).toBe(why);
+        await expect(page.goto(`${site.base}/start`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
+        expect(log[0]).toMatchObject({ url: `${site.base}/robots.txt`, type: "robots", sent: true });
+        expect(log.find((r) => r.url === `${site.base}/start`)).toMatchObject({ sent: false, reason: why });
+        expect(closed.get(site.host)).toBe(closedAs);
+        expect(site.paths()).toEqual(["/robots.txt"]);
+      } finally {
+        await site.stop();
+      }
+    });
+  }
+
+  test("robots.txt: a redirect is followed at the pace within the hosts allowed; one to a host not allowed leaves the host alone", async () => {
+    const site = await serve(() => ({
+      "/robots.txt": redirect("/robots-moved.txt", 301),
+      "/robots-moved.txt": text("User-agent: *\nDisallow: /no/\n"),
+      "/yes": html("yes"),
+      "/no/x": html("no"),
+    }));
+    try {
+      const { page, context, log, robots } = await politePage(browser, { url: `${site.base}/yes` });
+      await page.goto(`${site.base}/yes`);
+      await expect(page.goto(`${site.base}/no/x`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
+      expect(pages(log).map((r) => [r.url.slice(site.base.length), r.from?.slice(site.base.length), r.sent, r.reason])).toEqual([
+        ["/robots.txt", undefined, true, "robots"],
+        ["/robots-moved.txt", "/robots.txt", true, "robots"],
+        ["/yes", undefined, true, undefined],
+        ["/no/x", undefined, false, "robots: Disallow: /no/"],
+      ]);
+      expect(robots.get(site.base)).toMatchObject({ status: 200, rules: [{ path: "/no/" }] });
+      expect(site.paths()).toEqual(["/robots.txt", "/robots-moved.txt", "/yes"]);
+      expectPaced(log);
+      expectPacedAt(site.hits);
+      await context.close();
+    } finally {
+      await site.stop();
+    }
+
+    const away = await serve((port) => ({ "/robots.txt": redirect(`http://localhost:${port}/robots.txt`), "/start": html("start") }));
+    try {
+      const { blocked, log } = await politePage(browser, { url: `${away.base}/start` });
+      expect(blocked).toBe("robots: unreachable (redirect to a host not allowed: localhost:" + away.host.split(":")[1] + ")");
+      expect(log.find((r) => r.url === `${away.other}/robots.txt`)).toMatchObject({ type: "robots", sent: false, reason: "host not allowed" });
+      expect(away.hits.map((h) => `${h.host.split(":")[0]} ${h.path}`)).toEqual(["127.0.0.1 /robots.txt"]);
+    } finally {
+      await away.stop();
+    }
+  });
+
+  test("robots.txt: a url that robots.txt disallows is reported by politePage(), and nothing but robots.txt is asked for", async () => {
+    const site = await serve(() => ({ "/robots.txt": text("User-agent: *\nDisallow: /private\n"), "/private/page": html("private") }));
+    try {
+      const { page, log, blocked } = await politePage(browser, { url: `${site.base}/private/page` });
+      expect(blocked).toBe("robots: Disallow: /private");
+      await expect(page.goto(`${site.base}/private/page`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
+      expect(pages(log).map((r) => [r.url.slice(site.base.length), r.sent, r.reason])).toEqual([
+        ["/robots.txt", true, "robots"],
+        ["/private/page", false, "robots: Disallow: /private"],
+      ]);
+      expect(site.paths()).toEqual(["/robots.txt"]);
     } finally {
       await site.stop();
     }
@@ -464,8 +630,8 @@ test.describe("research browser", () => {
   for (const how of SPECULATION) {
     test(`speculation rules from ${how} prefetch and prerender nothing in a browser from politeLaunch()`, async () => {
       // The browser still reads the header's rule file, through the gate, but acts on none of its rules.
-      const site = how === "the Speculation-Rules header" ? ["/page", "/rules.json"] : ["/page"];
-      expect(await speculate(browser, how)).toEqual({ site, outside: [], outsideConnections: 0, shut: ["/forbidden"] });
+      const site = how === "the Speculation-Rules header" ? ["/robots.txt", "/page", "/rules.json"] : ["/robots.txt", "/page"];
+      expect(await speculate(browser, how)).toEqual({ site, outside: [], outsideConnections: 0, shut: ["/robots.txt", "/forbidden"] });
     });
   }
 
