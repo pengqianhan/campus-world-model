@@ -87,8 +87,11 @@ A landmark is measured in one frame and shown in another.
   tallest part's centre at x = z = 0. `measure.py` finds it in the LiDAR:
   - local metres = NZTM (EPSG:2193) minus the NZTM of the campus origin (-36.8523, 174.7691), grid north;
   - centre = mean x/y of building points (class 6) higher than `frame.tower_above` m above the ground;
+    with `frame.near_outline` (metres), only the points inside the building's outline or that near
+    its edge count, for a building with others in its crop box;
   - facade axis = principal axis of building points `min_above` to `spine_below` m high within
-    `spine_radius` m of the centre (pointing north-ish); x is minus this axis;
+    `spine_radius` m of the centre (pointing north-ish when `street_side` is `west`, south-ish when
+    it is `east`); x is minus this axis;
   - toStreet = the axis turned 90° toward `street_side`; this is +z.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the
@@ -116,6 +119,12 @@ latitude to the map's frame and writes `<name>/placement.json`:
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
+The two can be a metre or more apart: a model's walls go down below y = 0 as far as the map's ground
+falls under it (Old Government House's to 1.6 m below its porch), so that their foot is nowhere
+more than 0.25 m above it. `tests/landmarks.test.ts` checks that for every landmark on the site, at
+the lowest points of each material's mesh that reaches y = 0 (the kit joins a model's parts by
+material, so a part with a higher foot can hide behind another): give every part's walls the same
+foot, as Old Government House's parts take `FOOT` from `common.js`.
 The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site
@@ -161,12 +170,12 @@ needs:
 - a line in `CHANGELOG.md` and a few words in the README's "What's new": a new landmark changes
   what the site shows (`docs/standards.md`, check 6);
 - a check of About's fixed words for the landmarks (`about.landmarks` in
-  `src/i18n/locales/*.json`), which say they are drawn "in stone, glass and slate": change them if
-  the new building is not, for example a building of painted timber;
-- for each material of the model that the kit's `roof`, `glass`, `iron` or `void` does not cover
-  but that is a roof, a pane or an opening, its part in `LIGHT_ROLE` in `src/scene/landmarks.ts`.
-  Every other material is drawn as wall in the light form, so on the map a roof in a material
-  such as `roofPale` takes the wall colour until it is listed there;
+  `src/i18n/locales/*.json`), which name their materials ("such as stone, painted timber, glass
+  and slate"): change them if the new building is of another;
+- for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
+  (it lists `roof`, `roofPale`, `glass`, `glassPale`, `iron` and `void`) but that is a roof, a pane
+  or an opening, its part there. Every other material is drawn as wall in the light form, so on
+  the map a roof in a new material takes the wall colour until it is listed;
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
   estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
@@ -191,6 +200,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
 | compare | `tools/compare.mjs` | the viewer, `views_refined.json` (else `views.json`) | `$OUT/<view>.png`, `<view>_strip.jpg` (reference, render, overlay), `labels/`, `views_used.json`, then metrics |
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
+| topview | `tools/topview.mjs` + `tools/topview.py` | the model (`model.js`), the data stage's points | `out/topview/triangles.bin`, `metrics.json`, `metrics.md`, `topview.png` |
 
 `$OUT` defaults to `out/pipeline/compare`. `compare.mjs` keeps its command line
 (`--out`, `--match`, `--query`); `--no-metrics` skips the silhouette renders and the metrics. Other
@@ -244,6 +254,15 @@ Per view: silhouette IoU (as above) and, inside the building region (model build
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
 
+From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
+shows whole: the model's triangles and the LiDAR's points of this building and of those in
+`building.also` (inside their outlines, from `campus.json` for `also`, or within `frame.near_outline`
+m of them) are drawn as heightmaps on a 0.5 m grid in the view frame of `frame.expected`. It gives the IoU of the two footprints (cells above 2.5 m; gaps between LiDAR points
+closed), model minus LiDAR heights on the cells both cover (p10/p50/p90, and the share within
+0.5 m), the highest point of each, `topview.png` (LiDAR | model | difference), and for every
+block of the campus map within 80 m the share of it under the model's footprint: the blocks it
+covers by half or more go in `building.also`.
+
 ## Fetching
 
 Every request the pipeline sends goes through `scripts/lib/snapshot.ts` (`PROGRESS.md`,
@@ -271,7 +290,8 @@ in `scripts/lib/landmark-fetch.ts`.
   each request go to `data/raw/landmarks/requests.log`. `data/sources.json` gets one record for each
   LiDAR or aerial file, each panorama's metadata, each `panoIds` answer and the session, and one
   for each panorama's tiles: their count, total size, one sha256 over the sorted list of
-  `<file> <sha256>` lines, and when the newest came (12 records for the Clock Tower's 1,526 tiles).
+  `<file> <sha256>` lines, and when the newest came (the Clock Tower's 1,526 tiles are in 12 records;
+  three of the panoramas also gave Old Government House a few tiles, so those records now count both).
   A batch records each panorama's tiles when it is done with them, and at its start records any
   that a batch killed part way left unrecorded. No redirect is followed: a redirect stops the
   batch.

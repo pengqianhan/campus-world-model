@@ -21,7 +21,7 @@ the agents were given are in [briefs/](briefs/).
   place of its buildings' blocks once its config says `"site": true` and `place` has written that
   into its `placement.json`; the site finds it there, with no list in `src/` to edit
   (`landmarks/README.md`, "On the site"). That pull request also adds a `CHANGELOG.md` line and a
-  README "What's new" entry, checks About's words for the landmarks ("stone, glass and slate", in
+  README "What's new" entry, checks About's words for the landmarks' materials (in
   `src/i18n/locales/`), and gives each new roof, pane or opening material its part in `LIGHT_ROLE`
   (`src/scene/landmarks.ts`), or the map draws it in the wall colour. It also names the building in
   the README's "Known limitations" and in the sources table's "Used for" for the LiDAR and Street

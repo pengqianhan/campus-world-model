@@ -1,0 +1,62 @@
+{
+ "name": "old-government-house",
+ "site": true,
+ "building": {
+  "id": "102",
+  "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, run.sh topview) it covers 93.4% of 102's block and less than 0.5% of any other block within 80 m.",
+  "title": "Old Government House, University of Auckland",
+  "note": "outline: building 102's outline from the main project's campus.json, in the map's frame (equirectangular metres east/north of the origin, true north), not in the LiDAR frame (local NZTM). It is used only to choose the crop box and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[141.3, 254.9], [140.0, 253.9], [143.0, 249.6], [140.8, 248.1], [143.9, 243.6], [143.1, 243.0], [138.4, 249.9], [136.1, 248.3], [141.4, 240.6], [140.0, 239.6], [141.8, 237.1], [143.2, 238.1], [144.9, 235.7], [143.5, 234.7], [142.0, 236.8], [139.3, 234.9], [126.1, 253.5], [120.7, 249.7], [119.4, 251.6], [116.9, 249.8], [118.9, 247.0], [116.7, 245.6], [114.7, 248.4], [119.4, 251.6], [117.8, 253.9], [121.6, 256.6], [119.2, 260.1], [106.3, 251.1], [89.3, 275.4], [90.2, 276.0], [89.9, 276.4], [93.6, 279.0], [93.0, 279.9], [94.6, 281.0], [95.2, 280.1], [97.1, 281.4], [96.8, 281.9], [98.1, 282.8], [97.9, 283.1], [106.3, 289.0], [104.8, 291.1], [108.2, 293.4], [109.7, 291.3], [111.4, 292.5], [108.8, 296.2], [106.7, 294.7], [106.3, 295.4], [108.4, 296.8], [111.4, 292.5], [115.6, 295.5], [119.9, 289.4], [120.5, 289.8], [128.2, 278.8], [128.7, 279.1], [132.2, 274.1], [131.8, 273.8], [139.4, 262.8], [139.0, 262.3], [143.2, 256.3]]
+ },
+ "origin": {
+  "lat": -36.8523, "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 50,
+ "ground": 37.5,
+ "door": {
+  "x": -0.6, "z": 13.9,
+  "note": "view frame: the foot of the porch steps on the middle bay's axis (parts/main.js MIDDLE.axis, parts/bay.js PORCH), where the ground is `ground` m and the model's y is 0; place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3604", "3605"],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802", "1803"],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6): centre = mean x/y of points higher than tower_above m (the main roof's ridges); axis = principal axis of points between min_above and spine_below m high within spine_radius m of the centre: the upper roofs of the main block and its end wings, as min_above is the height of the eaves (lower, the service ranges behind turn it 10 deg off the garden front) (pointing south-east, as street_side is east); toStreet = the axis turned 90 deg toward street_side: north-east, to the lawn and the garden front of the main two-storey block, where most of the Google panoramas are. The lower service wings are on the south-west side (-z). Only building points inside the outline or within near_outline m of it count: another building stands in the crop box.",
+  "min_above": 9.5, "tower_above": 9.5, "spine_below": 12.5, "spine_radius": 35, "near_outline": 3,
+  "street_side": "east",
+  "expected": {"centre": [127.660, 269.745], "axis": [0.60624840, -0.79527534], "tolerance_m": 0.05}
+ },
+ "streetview": {
+  "max_panos": 2,
+  "pano_ids_note": "the only two Google panoramas that show the building (2025-05, on the campus road 72 and 82 m from its south-east end, through trees; 2026-10-22). The building stands in its grounds among large trees: of the 30 Google panoramas within 120 m, the other 28 see only trees (looked at in a low-resolution probe, zoom 3, 180 tiles). User-contributed panoramas are not used. So this landmark is checked as having no references for its silhouette (landmarks/README.md); these two show the upper storey of the south-east end and the garden front, in part.",
+  "pano_ids": ["hRE5_E2OMaC9CgXtLqzhXw", "d8o4wy-x1FKtoG0SQcLZcQ"],
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 6, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "upper", "aim_y": 9, "hfov": 40, "width": 1200, "height": 900},
+   {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "light": {"sunaz": 335, "sunel": 33, "sun": 10, "env": 2.5, "envsat": 1.0, "haze": 0.6, "exposure": 1.04, "ground": [0.16, 0.15, 0.10], "groundshade": 0.4,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the two panoramas (2025-05), seen in hRE5's wide view at bearing about 337 deg and 32.5 deg up, about 13:30 NZST; 335/33 fits the shading of the garden front; a sunlit lawn below the horizon (ground, groundshade) lights the walls from below as in the photographs, measured surface by surface in the look agent's round 2"},
+ "refine": {
+  "position_m": 3, "height_m": 1, "yaw_deg": 2, "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}

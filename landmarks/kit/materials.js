@@ -122,6 +122,76 @@ function roof(space) {
   }`, {}, undefined, space);
 }
 
+// Painted timber (Old Government House): shader hooks only, no textures, so a model that does not use
+// them pays nothing. Paint is barely weathered: a faint broad unevenness and a little dirt at the foot.
+const PAINT_TONE = "(0.97 + 0.06 * wfbm(P * 0.45)) * mix(0.90, 1.0, smoothstep(0.0, 0.9, P.y + 0.4))";
+
+/**
+ * Painted weatherboards: horizontal boards 0.2 m high on every wall whatever way it faces, each
+ * lapped over the one below, so a fine shadow runs under every board's lower edge. The lines fade to
+ * their average where a board is under about two pixels, so the far walls do not shimmer.
+ */
+function boards(color, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness: 0.78 });
+  m.userData.metres = 2;
+  return hook(m, "boards-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));               // walls only, not sills and soffits
+    float t = P.y / 0.2, f = fract(t), w = fwidth(t);
+    // under the board above: a soft shadow over the top few centimetres of each board
+    float sh = 1.0 - smoothstep(0.0, 0.22 + w, 1.0 - f);
+    // the board's own lower edge, a lip that faces down
+    float lip = 1.0 - smoothstep(0.0, 0.05 + w, f);
+    float g = 1.0 - 0.42 * sh - 0.12 * lip;
+    g *= 0.985 + 0.03 * wh(vec3(floor(t), floor(P.x * 0.25 + P.z * 0.25), 3.0));  // board to board
+    g = mix(0.95, g, 1.0 - smoothstep(0.35, 0.7, w));                // their average when too fine to draw
+    diffuseColor.rgb *= mix(1.0, g, wall) * ${PAINT_TONE};
+  }`, {}, undefined, space);
+}
+
+/** Smooth paint (trim, white work): the paint's faint unevenness only. One shader for both. */
+function painted(color, roughness, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness });
+  m.userData.metres = 2;
+  return hook(m, "paint-v1", `{ vec3 P = vWPos; diffuseColor.rgb *= ${PAINT_TONE}; }`, {}, undefined, space);
+}
+
+/**
+ * A pale painted roof, smooth, with the paint's faint unevenness. Its hips and ridges are not drawn
+ * darker: the kit's faces are flat and share no corners, so a shader cannot find where two meet.
+ */
+function roofPale(color, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
+  m.userData.metres = 2;
+  return hook(m, "roofPale-v1", /* glsl */ `
+  {
+    vec3 P = vWPos;
+    diffuseColor.rgb *= 0.975 + 0.05 * wfbm(P * 0.3);
+  }`, {}, undefined, space);
+}
+
+/**
+ * Old sash glazing (Old Government House): the photographs show its panes grey-blue and light, full of
+ * the bright hazy sky, not dark. So twice the sky is reflected that `glass` reflects, a little blurred
+ * by the old glass's waviness, over rooms behind lighter than `glass`'s (measured: a window of hRE5's
+ * upper view, glass and bars, about 117 luma). No bars: the sash kit draws them.
+ */
+function glassPale(space) {
+  const m = new THREE.MeshPhysicalMaterial({ color: 0x1a1f22, roughness: 0.12, metalness: 0, ior: 1.52, envMapIntensity: 6.0, specularIntensity: 1 });
+  m.userData.metres = 2;
+  return hook(m, "glassPale-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float side = abs(N.x) > abs(N.z) ? P.z : P.x;
+    float rooms = wn(vec3(side * 0.9, P.y * 1.3, 3.0));
+    diffuseColor.rgb = mix(vec3(0.14, 0.15, 0.16), vec3(0.26, 0.24, 0.21), smoothstep(0.35, 0.85, rooms));
+  }`, {}, undefined, space);
+}
+
+/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
+export const STONE = ["ashlar", "smooth", "dressed", "shade"];
+
 /**
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
  * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
@@ -136,10 +206,12 @@ export function makeTextures(quality = "high") {
  * that is moved and turned into place (the campus map).
  */
 export function makeMaterials(quality = "high", textures = makeTextures(quality), { space = "world" } = {}) {
-  const dr = textures.dressed;
+  // A set not given (a model with no stone asks for none): its stone is made without maps, never drawn.
+  const set = (k) => textures[k] ?? { map: null, normalMap: null, metres: 2 };
+  const dr = set("dressed");
   const m = {
-    ashlar: stone(textures.ashlar, 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97], space }),
-    smooth: stone(textures.smooth, 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03], space }),
+    ashlar: stone(set("ashlar"), 0.9, { normalScale: 1.1, key: "ashlar-v2", tint: [0.97, 0.97, 0.97], space }),
+    smooth: stone(set("smooth"), 0.82, { normalScale: 1.0, key: "smooth-v2", tint: [1.04, 1.04, 1.03], space }),
     dressed: stone(dr, 0.78, { normalScale: 1.0, weather: 0.7, key: "dressed-v2", tint: [1.08, 1.075, 1.06], space }),
     glass: glass(new URLSearchParams(globalThis.location?.search ?? "").get("glassbars") === "1", space),
     timber: timber(space),
@@ -150,6 +222,12 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     void: Object.assign(new THREE.MeshStandardMaterial({ color: 0x1b1916, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // recessed blind panels: the same dressed stone, a little darker for the shadow of the recess
     shade: stone(dr, 0.85, { normalScale: 1.0, weather: 0.8, key: "shade-v2", tint: [0.8, 0.79, 0.77], space }),
+    // painted timber (Old Government House): shader hooks, no textures
+    boards: boards(0xece4d3, space),                    // weatherboard walls, pale cream-yellow
+    trim: painted(0xe6c790, 0.6, space),                // surrounds, pilasters, bands and brackets, yellow-ochre
+    paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
+    roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
+    glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
   };
   return m;
 }
