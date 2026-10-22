@@ -2,7 +2,7 @@
 
 What the photographs show (twelve Google panoramas, 2022-09 on Alfred Street, 2024-07 on Princes
 Street's side, 2025-05 at the south-east end and behind) and the LiDAR measures. Draw only that; what
-no photograph shows is drawn plain, at the LiDAR's sizes.
+no photograph shows is drawn plain, or after the faces the photographs show, at the LiDAR's sizes.
 
 ## The building
 - **A modernist library of white concrete**: a tower slab of about eight floors standing across the

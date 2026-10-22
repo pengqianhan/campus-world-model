@@ -5,8 +5,8 @@
 // behind; the front block's end by the stair tower glazed in dark frames; at the north-west
 // end (Princes Street's side, 2024-07) a band of glazing under a deep white fascia; at the south-east
 // end of the low block (2025-05) glazing between dark piers. The faces that none of the twelve
-// panoramas shows (the main block's back on the service lane, the low block's north-east face, the
-// back wing's south-east side) are plain.
+// panoramas shows (the main block's back on the service lane, the low block's north-east face, both
+// ends of the back wing) are plain, but for the back wing's north-west end, drawn like its north-east face.
 import { boxesGeometry } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT } from "./common.js";
 import { face, faceBox, ribbons, glazing, prism, piers } from "./facade.js";
@@ -77,7 +77,7 @@ export function podium(b) {
   b.add(boxesGeometry([faceBox(ne, ne.a0, ne.a1, FOOT, G.back + 1.6, -1.0, 0)]), "grey");
   b.add(boxesGeometry([faceBox(ne, ne.a0, ne.a1, 5.6, 6.3, -IN, 0.15)]), "paint");
   fins(b, ne, 6.3, 10.0, P.back.top, { a0: ne.a0 + 0.4, a1: ne.a1 - 0.4 });
-  // its north-west side, as EX9b's photograph shows it: the same fins
+  // its north-west end, which no photograph shows (EX9b's probe sees it edge-on): the north-east face's fins
   fins(b, face("x", P.back.x[0] + OUT, -1, P.back.z[0] + OUT, P.back.z[1]), 6.3, 10.0, P.back.top, { a0: P.back.z[0] + OUT + 0.4, a1: P.back.z[1] - 0.4 });
   // the low block's south-east end: glazing between dark piers, two floors above the ground floor
   ribbons(b, face("x", P.low.x[1], 1, P.low.z[0], P.low.z[1]), 5.0, P.low.top, [8.5], { sp: 0.9, bay: 2.2 });

@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   white concrete, brick, grey and glass on a computer with a graphics card, and in the map's colours
   on phones and on computers without one. It was checked against the LiDAR from above and against
   twelve Street View panoramas, which see its front, its two ends and its back wing's north-east
-  side; the three faces they do not show are drawn plain, and the south-east end is simpler than in the photographs. Its
+  side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
   block still answers a click and opens on its floors. About now names brick and concrete among the
   landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#PR).
 - **Old Government House drawn in detail.** Near Old Government House (building 102) the map now

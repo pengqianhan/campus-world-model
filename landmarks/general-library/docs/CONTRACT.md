@@ -65,9 +65,9 @@ sampled from them into the model.
   `*_door.jpg` (45°). The Alfred Street views are under plane trees and close to the building (25-37 m
   from the slab's centre), so the refine stage corrected only two cameras (`xKYw…`, `Qaci…`).
 - Faces in none of the twelve: the main block's back on the service lane (north-east of the front
-  block), the low block's north-east face and the back wing's south-east side. They are drawn plain.
-  The back wing's north-west side is drawn with the fins of `EX9b…`'s low-resolution probe image
-  (zoom 3, not one of the twelve). The slab's north-west end above the podium is drawn from
+  block), the low block's north-east face and both ends of the back wing. The back wing's north-west
+  end is drawn with the fins of its north-east face (`EX9b…`'s probe image, not one of the twelve,
+  sees it only edge-on); the others are drawn plain. The slab's north-west end above the podium is drawn from
   `Qaci…`'s upper view.
 - Do not fetch Street View imagery yourself (it is billed per tile); ask the lead.
 

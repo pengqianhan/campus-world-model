@@ -229,8 +229,8 @@ of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 
 The third is the General Library (109) on Alfred Street: a tower slab of ribbon windows over a podium
 whose white fins stand on a brick plinth. Twelve Street View panoramas see its front on Alfred Street,
-its two ends and its back wing's north-east side; three faces are in none of them and are drawn
-plain (see Known limitations). Seen from them, the outline of the model covers the outline of the building with an IoU
+its two ends and its back wing's north-east side; the faces they do not show are drawn plain or
+after the faces they do show (see Known limitations). Seen from them, the outline of the model covers the outline of the building with an IoU
 of 0.80 on average over 35 views; from above, its footprint covers the LiDAR's with an IoU of 0.946, and its
 highest point is 38.8 m, as the LiDAR's.
 
@@ -438,10 +438,10 @@ If you represent the University and would like something changed or removed, ple
   do show: most of the garden front (its windows repeat the two that are seen), the porch, the
   north-west wing, the backs of the main block, the north-west lobby, the low south-east range, the
   north-west balcony (like the south-east one) and the ranges round the courtyard behind.
-- **The General Library is drawn plainly where no photograph shows it, and simpler than the
-  photographs where they do.** None of its twelve Street View panoramas shows the main block's back
-  on the service lane, the low block's north-east face or the back wing's south-east side: they are
-  drawn plain. The back wing's north-west side has the fins that a low-resolution probe image shows.
+- **The General Library is drawn plainly where its photographs do not show it, and simpler than
+  them where they do.** None of its twelve Street View panoramas shows the main block's back on the
+  service lane, the low block's north-east face or either end of the back wing: the back wing's
+  north-west end is drawn with the fins of its north-east face, the others plain.
   At the south-east end, the
   two-storey curtain wall over the entrance is drawn as the slab's ribbon windows, the dark stone
   cladding and the louvre of the ground floor as glazing between the grey piers, and the north-west
