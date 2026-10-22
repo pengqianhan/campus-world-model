@@ -128,6 +128,28 @@ It finds them itself (`import.meta.glob` in `src/app/landmarks.ts`): no list in 
   metre of ground takes 1.5 pixels or more; in a walker view, within 600 m (`LANDMARK_PIXELS` and
   `LANDMARK_REACH` in `src/scene/CampusScene.ts`). Further away the blocks are drawn as before, and
   the map does not change by a pixel.
+- **Three at once on the map.** The map draws at most three landmarks at once (`LANDMARK_BUDGET` in
+  `src/scene/CampusScene.ts`): of those near enough, the three nearest to the middle of the view
+  (`withinBudget` in `src/scene/landmarkBudget.ts`). The others keep their blocks. A landmark is not
+  fetched or made until it is among the three. A landmark within the budget counts as 5% of the
+  view's height nearer than it is (`LANDMARK_HOLD`), so that two landmarks at about the same
+  distance do not change places again and again while the map pans. The walker views have no
+  budget: they draw every landmark within `LANDMARK_REACH`.
+  - **The unit is a count of landmarks**, not a sum of triangles. The light forms differ a lot:
+    the Clock Tower has 128,615 triangles, Old Government House 33,902 and the General Library
+    10,248. In software, each alone at 4.2 pixels a metre, the Clock Tower added 23 ms to a frame of
+    about 270 ms, and the other two added 1 to 3 ms. But three of the heaviest together (two Clock
+    Towers and Old Government House) stay inside the limits below, and a count needs nothing that
+    is known only after a form is made. If three landmarks heavier than the Clock Tower come to
+    stand close together, measure again.
+  - **How the number was measured** (2026-10-23): at the densest corner of the campus, buildings
+    102, 103, 104, 105, 107 and 109, at 1440 x 900, on an NVIDIA Quadro P600 and in software
+    (SwiftShader). Three real landmarks (the Clock Tower, Old Government House, the General
+    Library) and three stand-ins (copies of them on 103, 104 and 107), in three views. The limits:
+    6 ms of GPU time a frame on the P600, and a frame in software no more than 25% slower than
+    `main` (the Clock Tower alone) at the same view. With three drawn, the P600 took at most 4.6 ms
+    a frame (all six: at most 5.3 ms), and software was 1% to 14% slower than `main` (all six: 15%
+    to 19%).
 - **Two forms of one geometry** (`src/scene/landmarks.ts`). The light form has the map's colours and
   no texture. The map draws it, and so do the walker views of the basic tier (phones and software
   rendering). The full form has the kit's materials. The walker views of the full tier draw it.
@@ -170,7 +192,9 @@ needs:
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
   estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
-  check 9).
+  check 9);
+- if its light form has more triangles than the Clock Tower's (128,615) and it stands near other
+  landmarks, the map's budget measured again (see "Three at once on the map" above).
 
 To take one off the site, set `site` to `false` and run `place` again, and change the same
 `CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map

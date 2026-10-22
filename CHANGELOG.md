@@ -14,6 +14,16 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-23
+
+### Changed
+
+- **Three landmarks at once on the map.** Where several landmarks stand close together, the map
+  draws in detail only the three nearest to the middle of the view, and the others as their blocks,
+  so that the zoomed-in map stays quick, most of all on a computer without a graphics card. As the
+  map pans, the ones drawn in detail change with it. A block drawn in place of a landmark still
+  answers a click. The walker views do not change (#NN).
+
 ## 2026-10-22
 
 ### Changed
