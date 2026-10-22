@@ -154,7 +154,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 70,
- "ground": 44.0,
+ "ground": 41.5,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -174,9 +174,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) within near_outline m of building 109's outline: centre = mean x/y of points higher than tower_above m: the roof of the tower slab and the plant room on it; axis = the bearing of most of the walls seen from above (axis_from walls), the one of the two square to each other nearest the principal axis of the points from min_above to spine_below m within spine_radius m of the centre, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: south-west, to Alfred Street.",
-  "min_above": 3,
-  "tower_above": 24,
-  "spine_below": 40,
+  "min_above": 5.5,
+  "tower_above": 26.5,
+  "spine_below": 42.5,
   "spine_radius": 40,
   "near_outline": 3,
   "street_side": "west",
@@ -219,6 +219,21 @@
     "width": 1200,
     "height": 900
    }
+  ],
+  "pano_ids_note": "the twelve Google panoramas pinned on 2026-10-22, each showing the building: six on Alfred Street in front of the south-west face (2022-09: B4NW, MMME, w8_f, CHbl, v7l7, vbVX, 25-37 m from the slab's centre), three at the south-east end and its corner (2025-05: bsR6, 3HyL, xKYw), two behind on the north-east (2025-05: Zvdo, fF8q) and one on Princes Street off the north-west end (2024-07: Qaci). Of the 63 panoramas within 120 m, 50 are Google's and 13 user-contributed (left out). The 26 Google panoramas within 75 m were looked at in a low-resolution probe (zoom 3, 148 tiles, 126 of them bought): 22 show the building; of the others, vbf9 and ln-V see trees, BzLX a bus and nAxE trees and Old Choral Hall. Left out though they show it: Ac3I (beside bsR6, the same view), -JHj and uM18 (close to the back's lower walls), dyTf and u2Aj (Alfred Street further west, through trees), FgM3 and e8T_ (further east), EX9b (behind, beside fF8q), S1Vu and B-1T (Princes Street, beside Qaci). 1,650 zoom-5 tiles were bought for the twelve: 1,776 for this building with the probe.",
+  "pano_ids": [
+   "B4NWsmtaqPytHES8a8nnjA",
+   "MMMEj9i294M-nxdvFHOM-A",
+   "w8_fQCH2DIW-5_2w7C3Pzw",
+   "CHblo7U0lQ5bnbqXfdqEkw",
+   "v7l7BhygLfc2z7Z-favnyg",
+   "vbVXwtIBekjUWlwb8-S7mQ",
+   "bsR6qOzSgXNuI8eMwRUAVg",
+   "3HyLPn3-_MX4kbEUbwPC0w",
+   "xKYw4GYJuvaMThjKjm-nNg",
+   "ZvdomzJWrKnxW-ziEUyaTw",
+   "fF8qpg3HX5EKEJL3GdXL_w",
+   "QacisP0AACBENqfbIBW1Tw"
   ]
  },
  "refine": {
@@ -233,5 +248,5 @@
   "min_sky": 0.2,
   "max_solid": 0.5
  },
- "ground_note": "provisional: the LiDAR ground on Alfred Street in front of the middle of the south-west face (43.7 to 44.3 m; the site falls about 5 m from Princes Street on the west, 45.6 m, to 40.5 m on the east); set at the door once the references show it"
+ "ground_note": "provisional: the LiDAR ground on the footway at the main entrance, in the middle of the south-east end (41.45 to 41.55 m at x 30.5 to 32, z -8; the site falls about 5 m from Princes Street on the west, 45.6 m, to 40.6 m at the north-east corner, and Alfred Street in front of the south-west face is 43.3 to 44.8 m); the frame's thresholds are above this ground (2.5 m more than with the first, provisional 44.0, so the frame is the same); set at the door once the references show it"
 }
