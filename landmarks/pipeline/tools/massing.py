@@ -536,34 +536,43 @@ def measure(b, P, others, campus_origin):
     levels = levels_of(b)
     base = layers[0]
     out = []
-    # the lowest layer stands on the whole outline. Its overhang is measured from the points: at each
-    # half metre of the outline where building points at the layer's eave (within 0.6 m) lie just
-    # inside, how far out such points go, in a strip 1 m wide, with no gap of more than 0.6 m; the
-    # overhang is the median of these, if half of the edge has roof at the eave
+    # the lowest layer stands on the whole outline (flat if it covers less than half of it). Its eaves
+    # are measured from the points, edge by edge: at each half metre of an edge where building points
+    # at the layer's eave (within 0.6 m) lie just inside, how far out such points go, in a strip 1 m
+    # wide, with no gap of more than 0.6 m. An edge's overhang is the median of these, if half of the
+    # edge has roof at the eave; an edge under 1 m long takes the larger of its neighbours'
     bi = info[base]
+    if bi["inside"] < 0.5 * Cin.sum() and bi["form"] != "flat":
+        bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
     eave0 = bi["height"] if bi["form"] == "flat" else float(roof_at(bi["planes"], *(along(outer) - centre).T).min())
     pts = xy[B & (np.abs(z - zero - eave0) <= 0.6)]
-    over = 0.0
-    edge = along(outer, 0.5)
-    step = np.roll(edge, -1, axis=0) - edge
-    tang = step / np.maximum(np.hypot(*step.T), 1e-9)[:, None]
-    reach = []
-    for p_, t_ in zip(edge, tang):
+
+    def reach_at(p_, t_):
         n_ = np.array([t_[1], -t_[0]])                       # out of a counter-clockwise ring
         v = pts - p_
         along_t, out_d = v @ t_, v @ n_
         dd = np.sort(out_d[(np.abs(along_t) <= 0.5) & (out_d >= -0.5) & (out_d <= EAVE_BAND + 0.2)])
-        if not len(dd) or dd[0] > 0: continue                # no roof at the eave just inside
+        if not len(dd) or dd[0] > 0: return None             # no roof at the eave just inside
         r_ = 0.0
         for k in range(1, len(dd)):
             if dd[k] - dd[k - 1] > 0.6: break
             r_ = max(r_, float(dd[k]))
-        reach.append(min(r_, EAVE_BAND))
-    if len(reach) >= 0.5 * len(edge):
-        over = float(np.median(reach))
-    over = round(min(EAVE_BAND, over), 2) if over >= MIN_OVERHANG else 0.0
-    if bi["inside"] < 0.5 * Cin.sum() and bi["form"] != "flat":
-        bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
+        return min(r_, EAVE_BAND)
+
+    ne = len(outer)
+    eaves, short = [0.0] * ne, [False] * ne
+    for k in range(ne):
+        a_, b_ = outer[k], outer[(k + 1) % ne]
+        L = float(np.hypot(*(b_ - a_)))
+        if L < 1.0: short[k] = True; continue
+        t_ = (b_ - a_) / L
+        m = int(math.ceil(L / 0.5))
+        got = [r for r in (reach_at(a_ + (b_ - a_) * (j + 0.5) / m, t_) for j in range(m)) if r is not None]
+        o = float(np.median(got)) if len(got) >= 0.5 * m else 0.0
+        eaves[k] = round(min(EAVE_BAND, o), 2) if o >= MIN_OVERHANG else 0.0
+    eaves = [max(eaves[k - 1] if not short[k - 1] else 0.0, eaves[(k + 1) % ne] if not short[(k + 1) % ne] else 0.0)
+             if short[k] else eaves[k] for k in range(ne)]
+    over = eaves if any(eaves) else 0.0
     out.append(layer_record(rings, bi, -1.0, over, levels, centre))
     for k in layers[1:]:
         mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
@@ -639,7 +648,10 @@ def layer_record(rings, li, y0, over, levels, centre):
         ridge = float(max(roof_at(li["planes"], inner[:, 0], inner[:, 1]).max(), wall))
         r.update(roof=li["form"], planes=li["planes"], slope=round(li["slope"], 1))
     s, n = storeys(max(0.0, wall), levels)
-    r.update(wall=round(wall, 2), ridge=round(ridge, 2), overhang=over, storey=s, storeys=n, m2=round(li["m2"], 1))
+    r.update(wall=round(wall, 2), ridge=round(ridge, 2), overhang=max(over) if isinstance(over, list) else over,
+             storey=s, storeys=n, m2=round(li["m2"], 1))
+    # the overhang of each edge of the outer ring, from its first point; `overhang` is the largest
+    if isinstance(over, list): r["eaves"] = over
     return r
 
 

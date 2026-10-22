@@ -193,8 +193,8 @@ agent and no photograph. All of them share one model and have a data file each:
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
   lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
   plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
-  with its eaves round it (how far building points at its eave reach out past the outline: the
-  median along the edge); the others stand on it, traced from the LiDAR and put onto the outline
+  with its eaves round it, edge by edge (how far building points at its eave reach out past each
+  edge: the median along it); the others stand on it, traced from the LiDAR and put onto the outline
   where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
   left out.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`

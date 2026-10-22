@@ -69,14 +69,14 @@
     "open_below": 0.272,
     "not_drawn_m2": 6.5,
     "check": {
-     "iou": 0.787,
+     "iou": 0.843,
      "lidar_m2": 76.5,
-     "model_m2": 76.8,
-     "within_0.5m": 0.224,
+     "model_m2": 82.5,
+     "within_0.5m": 0.268,
      "model_minus_lidar_m": {
-      "p10": -2.41,
-      "p50": -1.22,
-      "p90": 0.04
+      "p10": -2.4,
+      "p50": -1.12,
+      "p90": 0.2
      },
      "highest_m": {
       "model": 3.74,
@@ -155,7 +155,7 @@
   },
   "132": {
    "name": "George Fraser Gallery",
-   "reason": "top-view check: footprint IoU 0.785 (limit 0.9), 59% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 118.3,
     "ground": {
@@ -170,14 +170,14 @@
     "open_below": 0.115,
     "not_drawn_m2": 46.5,
     "check": {
-     "iou": 0.785,
+     "iou": 0.797,
      "lidar_m2": 147.5,
-     "model_m2": 118.5,
-     "within_0.5m": 0.587,
+     "model_m2": 120.2,
+     "within_0.5m": 0.889,
      "model_minus_lidar_m": {
-      "p10": -3.39,
-      "p50": -0.06,
-      "p90": 0.21
+      "p10": -0.16,
+      "p50": 0.01,
+      "p90": 0.44
      },
      "highest_m": {
       "model": 12.34,
@@ -222,7 +222,7 @@
   },
   "212": {
    "name": "Belgrave",
-   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 120.8,
     "ground": {
@@ -237,14 +237,14 @@
     "open_below": 0.153,
     "not_drawn_m2": 23.5,
     "check": {
-     "iou": 0.872,
+     "iou": 0.858,
      "lidar_m2": 147.5,
-     "model_m2": 130.5,
-     "within_0.5m": 0.868,
+     "model_m2": 127.0,
+     "within_0.5m": 0.865,
      "model_minus_lidar_m": {
       "p10": -0.1,
       "p50": 0.03,
-      "p90": 0.73
+      "p90": 0.74
      },
      "highest_m": {
       "model": 13.62,
@@ -321,7 +321,7 @@
   },
   "219": {
    "name": "8 Grafton Road",
-   "reason": "top-view check: footprint IoU 0.888 (limit 0.9), 30% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 31% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 320.0,
     "ground": {
@@ -336,12 +336,12 @@
     "open_below": 0.148,
     "not_drawn_m2": 21.8,
     "check": {
-     "iou": 0.888,
+     "iou": 0.89,
      "lidar_m2": 319.5,
-     "model_m2": 320.5,
-     "within_0.5m": 0.304,
+     "model_m2": 321.2,
+     "within_0.5m": 0.306,
      "model_minus_lidar_m": {
-      "p10": -2.16,
+      "p10": -2.15,
       "p50": -0.62,
       "p90": 0.79
      },
@@ -371,7 +371,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.819 (limit 0.9), 11% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 12% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -386,14 +386,14 @@
     "open_below": 0.155,
     "not_drawn_m2": 12.2,
     "check": {
-     "iou": 0.819,
+     "iou": 0.83,
      "lidar_m2": 188.2,
-     "model_m2": 167.0,
-     "within_0.5m": 0.11,
+     "model_m2": 171.8,
+     "within_0.5m": 0.12,
      "model_minus_lidar_m": {
-      "p10": -2.58,
-      "p50": -1.71,
-      "p90": -0.39
+      "p10": -2.57,
+      "p50": -1.69,
+      "p90": -0.15
      },
      "highest_m": {
       "model": 4.3,
@@ -437,7 +437,7 @@
   },
   "240": {
    "name": "Building 240",
-   "reason": "top-view check: footprint IoU 0.899 (limit 0.9), 41% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 43% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 246.8,
     "ground": {
@@ -452,13 +452,13 @@
     "open_below": 0.266,
     "not_drawn_m2": 55.2,
     "check": {
-     "iou": 0.899,
+     "iou": 0.93,
      "lidar_m2": 257.2,
-     "model_m2": 248.8,
-     "within_0.5m": 0.409,
+     "model_m2": 266.2,
+     "within_0.5m": 0.432,
      "model_minus_lidar_m": {
-      "p10": -1.62,
-      "p50": -0.34,
+      "p10": -1.58,
+      "p50": -0.29,
       "p90": 0.92
      },
      "highest_m": {
@@ -485,14 +485,14 @@
     "open_below": 0.093,
     "not_drawn_m2": 38.0,
     "check": {
-     "iou": 0.895,
+     "iou": 0.852,
      "lidar_m2": 241.5,
-     "model_m2": 265.0,
-     "within_0.5m": 0.318,
+     "model_m2": 213.8,
+     "within_0.5m": 0.363,
      "model_minus_lidar_m": {
-      "p10": -1.45,
-      "p50": -0.15,
-      "p90": 1.21
+      "p10": -1.48,
+      "p50": -0.34,
+      "p90": 0.8
      },
      "highest_m": {
       "model": 4.54,
@@ -518,12 +518,12 @@
     "open_below": 0.197,
     "not_drawn_m2": 26.2,
     "check": {
-     "iou": 0.885,
+     "iou": 0.903,
      "lidar_m2": 520.0,
-     "model_m2": 509.5,
-     "within_0.5m": 0.835,
+     "model_m2": 521.2,
+     "within_0.5m": 0.834,
      "model_minus_lidar_m": {
-      "p10": -0.55,
+      "p10": -0.54,
       "p50": 0.01,
       "p90": 0.41
      },
@@ -601,17 +601,17 @@
     "open_below": 0.274,
     "not_drawn_m2": 6.8,
     "check": {
-     "iou": 0.864,
+     "iou": 0.917,
      "lidar_m2": 222.8,
-     "model_m2": 228.8,
-     "within_0.5m": 0.759,
+     "model_m2": 220.0,
+     "within_0.5m": 0.764,
      "model_minus_lidar_m": {
       "p10": -0.59,
       "p50": -0.0,
-      "p90": 0.54
+      "p90": 0.53
      },
      "highest_m": {
-      "model": 6.96,
+      "model": 6.94,
       "lidar": 8.56
      }
     }
@@ -753,8 +753,8 @@
     "check": {
      "iou": 0.858,
      "lidar_m2": 218.8,
-     "model_m2": 192.8,
-     "within_0.5m": 0.696,
+     "model_m2": 194.2,
+     "within_0.5m": 0.697,
      "model_minus_lidar_m": {
       "p10": -1.56,
       "p50": -0.01,
@@ -818,10 +818,10 @@
     "open_below": 0.167,
     "not_drawn_m2": 7.0,
     "check": {
-     "iou": 0.825,
+     "iou": 0.835,
      "lidar_m2": 236.2,
-     "model_m2": 198.5,
-     "within_0.5m": 0.996,
+     "model_m2": 205.5,
+     "within_0.5m": 0.992,
      "model_minus_lidar_m": {
       "p10": -0.03,
       "p50": 0.0,
@@ -853,7 +853,7 @@
   },
   "423": {
    "name": "Conference Centre",
-   "reason": "top-view check: footprint IoU 0.891 (limit 0.9), 52% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 54% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 2018.9,
     "ground": {
@@ -868,14 +868,14 @@
     "open_below": 0.045,
     "not_drawn_m2": 11.5,
     "check": {
-     "iou": 0.891,
+     "iou": 0.924,
      "lidar_m2": 2118.2,
-     "model_m2": 2020.8,
-     "within_0.5m": 0.524,
+     "model_m2": 2095.8,
+     "within_0.5m": 0.536,
      "model_minus_lidar_m": {
-      "p10": -4.31,
-      "p50": -0.1,
-      "p90": 0.11
+      "p10": -4.3,
+      "p50": -0.12,
+      "p90": 0.1
      },
      "highest_m": {
       "model": 21.31,
@@ -903,12 +903,12 @@
     "check": {
      "iou": 0.89,
      "lidar_m2": 851.0,
-     "model_m2": 800.5,
+     "model_m2": 801.5,
      "within_0.5m": 0.944,
      "model_minus_lidar_m": {
       "p10": -0.06,
       "p50": 0.01,
-      "p90": 0.09
+      "p90": 0.1
      },
      "highest_m": {
       "model": 19.26,
@@ -919,7 +919,7 @@
   },
   "432": {
    "name": "Fine Arts Studio Block 432",
-   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 785.0,
     "ground": {
@@ -934,14 +934,14 @@
     "open_below": 0.04,
     "not_drawn_m2": 4.5,
     "check": {
-     "iou": 0.87,
+     "iou": 0.921,
      "lidar_m2": 854.0,
-     "model_m2": 785.0,
+     "model_m2": 831.8,
      "within_0.5m": 0.859,
      "model_minus_lidar_m": {
-      "p10": -0.72,
+      "p10": -0.73,
       "p50": -0.01,
-      "p90": 0.08
+      "p90": 0.07
      },
      "highest_m": {
       "model": 17.69,
@@ -967,14 +967,14 @@
     "open_below": 0.287,
     "not_drawn_m2": 19.8,
     "check": {
-     "iou": 0.915,
+     "iou": 0.933,
      "lidar_m2": 662.8,
-     "model_m2": 616.2,
-     "within_0.5m": 0.935,
+     "model_m2": 629.2,
+     "within_0.5m": 0.936,
      "model_minus_lidar_m": {
       "p10": -0.27,
       "p50": 0.14,
-      "p90": 0.22
+      "p90": 0.23
      },
      "highest_m": {
       "model": 29.72,
@@ -1000,14 +1000,14 @@
     "open_below": 0.11,
     "not_drawn_m2": 10.2,
     "check": {
-     "iou": 0.853,
+     "iou": 0.908,
      "lidar_m2": 740.0,
-     "model_m2": 666.8,
-     "within_0.5m": 0.996,
+     "model_m2": 709.5,
+     "within_0.5m": 0.995,
      "model_minus_lidar_m": {
       "p10": -0.13,
-      "p50": -0.0,
-      "p90": 0.11
+      "p50": 0.0,
+      "p90": 0.12
      },
      "highest_m": {
       "model": 17.09,
@@ -1033,12 +1033,12 @@
     "open_below": 0.031,
     "not_drawn_m2": 19.8,
     "check": {
-     "iou": 0.833,
+     "iou": 0.872,
      "lidar_m2": 484.5,
-     "model_m2": 469.8,
-     "within_0.5m": 0.961,
+     "model_m2": 497.8,
+     "within_0.5m": 0.933,
      "model_minus_lidar_m": {
-      "p10": -0.07,
+      "p10": -0.1,
       "p50": -0.0,
       "p90": 0.06
      },
@@ -1066,14 +1066,14 @@
     "open_below": 0.128,
     "not_drawn_m2": 52.8,
     "check": {
-     "iou": 0.911,
+     "iou": 0.967,
      "lidar_m2": 548.0,
-     "model_m2": 507.2,
-     "within_0.5m": 0.731,
+     "model_m2": 539.0,
+     "within_0.5m": 0.685,
      "model_minus_lidar_m": {
-      "p10": -1.65,
-      "p50": -0.02,
-      "p90": 0.06
+      "p10": -1.53,
+      "p50": -0.03,
+      "p90": 0.05
      },
      "highest_m": {
       "model": 49.97,
@@ -1099,9 +1099,9 @@
     "open_below": 0.118,
     "not_drawn_m2": 9.0,
     "check": {
-     "iou": 0.707,
+     "iou": 0.708,
      "lidar_m2": 3067.8,
-     "model_m2": 4294.0,
+     "model_m2": 4297.0,
      "within_0.5m": 0.936,
      "model_minus_lidar_m": {
       "p10": -0.24,

@@ -58,7 +58,7 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     const higher = layers.filter((h, j) => j !== k && (h.eave ?? h.wall) >= (l.eave ?? l.wall) - 0.3).map((h) => h.local[0]);
     if (flatRoof) {
       // A flat roof that overhangs its walls is a slab round them; the rim stands on its edge.
-      const edge = l.overhang ? outset(outer, l.overhang) : outer;
+      const edge = l.overhang ? outset(outer, l.eaves ?? l.overhang) : outer;
       if (l.overhang) mb.extrude([flat(edge)], l.wall, l.eave, tints.roof, tints.wall, true, { roofGroup: true, bottom: true });
       // Tested from the outline in: the slab's edge stands the overhang out from it.
       for (const ring of l.overhang ? [edge] : l.local) rim(mb, ring, higher, l.eave, l.eave + rimHeight, tints.rim, RIM_IN + l.overhang);
@@ -68,7 +68,7 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
       const planes = l.planes;
       const height = (x, y) => Math.min(...planes.map(([gx, gy, z0]) => z0 + gx * x + gy * y));
       for (const ring of l.local) wallsUp(mb, ring, planes, height, l.wall, tints.wall);
-      const edge = l.overhang ? outset(outer, l.overhang) : outer;
+      const edge = l.overhang ? outset(outer, l.eaves ?? l.overhang) : outer;
       planes.forEach(([gx, gy, z0], i) => {
         let region = edge;
         planes.forEach(([hx, hy, h0], j) => {
@@ -150,20 +150,37 @@ function wallsUp(mb, ring, planes, height, from, color) {
   }
 }
 
-/** A counter-clockwise ring moved out by d metres, each corner mitred (massing.py offset). */
+/**
+ * A counter-clockwise ring with each edge moved out by its own distance (`d`: one number for all, or
+ * one an edge, from the edge's first point), the corners where the moved edges meet. Where two edges
+ * run nearly straight on, or turn back on each other, both moved ends are kept instead of a corner
+ * far away.
+ */
 function outset(ring, d) {
   const n = ring.length;
-  return ring.map((a, i) => {
+  const dist = (i) => (Array.isArray(d) ? (d[i] ?? 0) : d);
+  const out = [];
+  for (let i = 0; i < n; i++) {
     const p = ring[(i + n - 1) % n];
+    const a = ring[i];
     const q = ring[(i + 1) % n];
     const e1 = unit(a[0] - p[0], a[1] - p[1]);
     const e2 = unit(q[0] - a[0], q[1] - a[1]);
     const n1 = [e1[1], -e1[0]];
     const n2 = [e2[1], -e2[0]];
-    const m = [n1[0] + n2[0], n1[1] + n2[1]];
-    const k = m[0] * n1[0] + m[1] * n1[1];
-    return k > 1 / 3 ? [a[0] + (m[0] / k) * d, a[1] + (m[1] / k) * d] : [a[0] + n2[0] * d, a[1] + n2[1] * d];
-  });
+    const d1 = dist((i + n - 1) % n);
+    const d2 = dist(i);
+    const det = n1[0] * n2[1] - n1[1] * n2[0];
+    if (Math.abs(det) > 0.3) {
+      out.push([a[0] + (d1 * n2[1] - d2 * n1[1]) / det, a[1] + (n1[0] * d2 - n2[0] * d1) / det]);
+    } else {
+      const u = [a[0] + n1[0] * d1, a[1] + n1[1] * d1];
+      const v = [a[0] + n2[0] * d2, a[1] + n2[1] * d2];
+      out.push(u);
+      if (Math.hypot(u[0] - v[0], u[1] - v[1]) > 0.01) out.push(v);
+    }
+  }
+  return out;
 }
 
 function unit(x, y) {

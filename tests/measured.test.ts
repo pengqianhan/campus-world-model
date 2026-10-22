@@ -19,6 +19,8 @@ interface Layer {
   eave?: number;
   planes?: number[][];
   overhang: number;
+  /** The lowest layer's overhang, edge by edge of its outer ring. */
+  eaves?: number[];
   storey: number;
   storeys: number;
 }
@@ -119,6 +121,12 @@ describe("measured massings", () => {
         if (l.wall >= 2.4) expect(l.storey, file).toBeGreaterThanOrEqual(2.4 - 1e-3);
         expect(l.storey, file).toBeLessThanOrEqual(4.5 + 1e-3);
         expect(l.storey * l.storeys, file).toBeLessThanOrEqual(l.wall + 0.01);
+        // Eaves edge by edge: one an edge of the outer ring, 0 to 1 m, the largest as `overhang`.
+        if (l.eaves) {
+          expect(l.eaves.length, file).toBe(l.rings[0]!.length);
+          for (const e of l.eaves) expect(e >= 0 && e <= 1, file).toBe(true);
+          expect(Math.max(...l.eaves), file).toBe(l.overhang);
+        }
       }
     }
   });
