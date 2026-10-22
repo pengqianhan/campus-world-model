@@ -226,6 +226,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
     // modern cladding (Alfred Nathan House's block): smooth mid-grey panels and fins
     panel: painted(0x8f9396, 0.5, space),
+    // dark red painted doors (Alfred Nathan House's front and balcony doors)
+    doorRed: painted(0x4a1512, 0.45, space),
   };
   return m;
 }

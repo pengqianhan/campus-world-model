@@ -87,6 +87,14 @@ export function house(b) {
     [bx0 - c, bx0, cy, H.cornice, bz0, bz1], [bx1, bx1 + c, cy, H.cornice, bz0, bz1],
     [fx0, fx0 + 0.3, H.cornice, H.cornice + 0.5, fz0, fz1 - 0.3], [fx1 - 0.3, fx1, H.cornice, H.cornice + 0.5, fz0, fz1 - 0.3],
   ]), "paint");
+  // the brackets under the cornice, in pairs about every 0.55 m along the front and its sides, and the
+  // frieze below them (vZGe's upper view)
+  const brackets = [[fx0 - 0.04, fx1 + 0.04, cy - 0.45, cy, fz1, fz1 + 0.04]];
+  for (let x = fx0 + 0.3; x < fx1 - 0.2; x += 0.55) brackets.push([x - 0.06, x + 0.06, cy - 0.3, cy, fz1, fz1 + c - 0.04]);
+  for (let z = fz0 + 0.3; z < fz1; z += 0.55) {
+    brackets.push([fx0 - c + 0.04, fx0, cy - 0.3, cy, z - 0.06, z + 0.06], [fx1, fx1 + c - 0.04, cy - 0.3, cy, z - 0.06, z + 0.06]);
+  }
+  b.add(boxesGeometry(brackets), "paint");
   const pz = fz1 - 0.05;
   balustrade(b, [[fx0, pz], [fx1, pz]], H.cornice, H.parapet);
   // pedestals at the corners and either side of the middle (vZGe's views), a ball finial on each
@@ -119,7 +127,7 @@ export function house(b) {
   b.box(px0, px1, FOOT.house, P.floor, fz1, pf, "paint");
   const steps = 8, tread = (31.0 - pf) / steps; // to the door (config: x 0.3, z 31.0)
   for (let i = 0; i < steps; i++) b.box(-0.9, 1.5, FOOT.house, (P.floor * (steps - i)) / (steps + 1), pf + i * tread, pf + (i + 1) * tread, "dressed");
-  b.box(-0.45, 1.05, P.floor, 4.1, fz1, fz1 + 0.04, "timber");
+  b.box(-0.45, 1.05, P.floor, 4.1, fz1, fz1 + 0.04, "doorRed");
   // the porch's front: a wall from its floor to the balcony with three round-headed openings, a wide
   // one in the middle and a narrow one each side, all crowned at P.arch; columns between them
   const front = new THREE.Shape([[px0, P.floor], [px1, P.floor], [px1, P.top], [px0, P.top]].map(([x, y]) => new THREE.Vector2(x, y)));
@@ -143,7 +151,7 @@ export function house(b) {
   b.add(boxesGeometry(cols), "paint");
   band(b, bow, Bal.top - 0.55, Bal.top, 0.35, "paint");
   slab(b, plan, Bal.top - 0.1, Bal.top, "roofPale");
-  b.box(-0.45, 1.05, P.top, P.top + 2.6, fz1, fz1 + 0.04, "timber");
+  b.box(-0.45, 1.05, P.top, P.top + 2.6, fz1, fz1 + 0.04, "doorRed");
   // the sides: plain, two windows a floor on the left side's front part (rA70's view, through a
   // tree), one small window high on the right side (RHEq's)
   const L0 = [fx0, fz0], L1 = [fx0, fz1]; // outward (-x) to the left of L0 -> L1

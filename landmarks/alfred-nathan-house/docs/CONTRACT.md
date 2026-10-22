@@ -75,7 +75,7 @@ sampled from them into the model.
   this building: `paint` (the house's white walls, trim, posts; the block's lowest storey),
   `panel` (the block's grey cladding and fins: added to the kit for this building), `glass` (the
   block's glazing), `glassPale` (the house's sashes), `roofPale` (the flat and hipped roofs), `roof` (the slate over the bays), `dressed` (steps and
-  the porch's floor), `timber` (the house's two dark red doors).
+  the porch's floor), `doorRed` (the house's two dark red doors: added to the kit for this building).
 
 ## Budget (tier 1: the site runs in a browser, phones too)
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (merged by material). Build time of a part

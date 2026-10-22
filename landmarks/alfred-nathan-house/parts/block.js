@@ -20,7 +20,7 @@ export const LEVELS = [0.8, 5.2, 9.0];
 const BAND = 1.15, GLAZE_TOP = 12.55, SOFFIT = 0.15, LANDING = -2.1;
 const RECESS = 1.8;                         // how far the lowest storey stands back under the east end
 const FRAME = { side: 0.7, out: 0.45 };     // the east end's grey frame
-const SEAM = 0.45;                          // the standing seams of the long sides' cladding
+const SEAM = 0.9;                           // the standing seams of the long sides' cladding (the photographs: closer; 0.9 m keeps them from shimmering far off)
 
 export function block(b) {
   const [x0, x1] = B.x, [z0, z1] = B.z, E = B.eave, g = B.eastGround;
@@ -30,7 +30,7 @@ export function block(b) {
   // standing seams on both long sides (thin ribs), up to the eaves
   const seams = [];
   for (let z = z0 + 0.3; z < z1; z += SEAM) {
-    seams.push([x0 - 0.04, x0, SOFFIT, E - 0.3, z - 0.02, z + 0.02], [x1, x1 + 0.04, SOFFIT, E - 0.3, z - 0.02, z + 0.02]);
+    seams.push([x0 - 0.05, x0, SOFFIT, E - 0.3, z - 0.03, z + 0.03], [x1, x1 + 0.05, SOFFIT, E - 0.3, z - 0.03, z + 0.03]);
   }
   b.add(boxesGeometry(seams), "panel");
   // the east end: the frame, the two fins, and the three storeys of bands and veiled glazing
