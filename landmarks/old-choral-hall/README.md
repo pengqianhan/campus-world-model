@@ -3,27 +3,30 @@
 Old Choral Hall (building 104 of the University of Auckland's campus map), at the corner of Symonds
 Street and Grafton Road, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, by a lead
 agent and a team of agents (October 2026). Every source shows the building during building works (see "The sources: works in
-progress"), except the panoramas of 2022-09 of its south-west range. So that range, with its two end
-pavilions, is drawn in detail as those panoramas show it, and the rest of the building plainly, at
-the LiDAR's sizes, with no windows or ornament. The kit, the pipeline and the viewer are shared by
-every landmark: [`../README.md`](../README.md).
+progress"), except the panoramas of its south-west range on Symonds Street from before the works
+(2022-09) and after them (2024-10). So only that range, with its two end pavilions, is drawn in
+detail as those panoramas show it. The rest of the building keeps the campus map's estimated block
+until the works end: the maintainer's choice of 2026-10-23 (see "On the site"). The kit, the
+pipeline and the viewer are shared by every landmark: [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=old-choral-hall&view=orbit`
-  with the repository root served on port 8765. It is not on the site.
+  with the repository root served on port 8765. The site draws it in place of block 104.
 - Run its pipeline: `landmarks/pipeline/run.sh old-choral-hall [stage ...]`.
 
 | File | What it is |
 | --- | --- |
-| `config/old-choral-hall.json` | the building (104), the LiDAR and aerial tiles, the frame, the ground and the door, the eleven Street View panoramas (`streetview.pano_ids`), the viewer's light |
-| `placement.json` | where it stands on the campus map (written by the `place` stage); not on the site |
-| `model.js` | assembles the parts: `southwest`, `massing` |
-| `parts/` | one file per part (`southwest.js`: the south-west range and its pavilions; `massing.js`: the rest, plainly) and `common.js` (the sizes measured in the LiDAR) |
+| `config/old-choral-hall.json` | the building (104), `site: true`, the LiDAR and aerial tiles, the frame, the ground and the door, the eleven Street View panoramas (`streetview.pano_ids`), the viewer's light |
+| `placement.json` | where it stands on the campus map (written by the `place` stage); on the site |
+| `model.js` | assembles the parts: `southwest`, `rest` |
+| `parts/` | one file per part (`southwest.js`, `southwest_range.js`, `southwest_kit.js`: the south-west range and its pavilions, in detail; `rest.js`: the rest, as the campus map's estimated block) and `common.js` (the range's frame and the footpaths, measured in the LiDAR) |
 | `docs/` | the rules the agents worked to: `CONTRACT.md`, `ART_BIBLE.md` |
 | `landscape.js` | the ground round it, for the viewer only: the LiDAR's ground on a 2.5 m grid |
 
 Renders of the model (no photograph): [`docs/landmarks/old-choral-hall-symonds.jpg`](../../docs/landmarks/old-choral-hall-symonds.jpg)
 (the south-west range from Symonds Street), [`-corner.jpg`](../../docs/landmarks/old-choral-hall-corner.jpg)
-(the corner pavilion) and [`-above.jpg`](../../docs/landmarks/old-choral-hall-above.jpg).
+(the range from off the corner, the corner pavilion at the right) and
+[`-above.jpg`](../../docs/landmarks/old-choral-hall-above.jpg) (the range, and the rest as the map's
+block behind it).
 
 ## The frame
 
@@ -64,12 +67,59 @@ cream dressings between two cream pavilions with giant columns; and in 2024-10 (
 pavilion and the range stand restored, out of their scaffolds, as they were. The LiDAR measured that
 range's roof and parapet (a scaffold deck stood 1.7 m out from the parapet in May 2024, classed as
 vegetation), and its plan and parapet agree with those panoramas. That range is drawn in detail; the
-rest is drawn plainly, as the rules say for what no photograph shows.
+rest keeps the campus map's estimated block (see "On the site").
 
 **What would let the rest be drawn**: Google panoramas on Grafton Road taken after the works (newer
 than 2024-08), for the street front and its look; and, for the roofs, LiDAR flown after the works
 (another LiDAR set is a new data source, for the maintainer). With newer panoramas alone the walls
 could be drawn and checked, but the roofs of the wrapped blocks would stay unmeasured.
+
+## On the site: the street range only (2026-10-23)
+
+The maintainer chose to put on the site now only the south-west range on Symonds Street, the part
+that panoramas show before the works (2022-09) and after them (2024-10). How to draw the whole
+building is the maintainer's to decide later. So the model is two parts:
+
+- **`southwest`**: the range and its two pavilions as round 1 drew them (below), at the measured
+  sizes.
+- **`rest`** (`parts/rest.js`): the rest of building 104 as the campus map draws it. Its footprint is
+  block 104's outline in `public/data/campus.json` (the config's `building.outline`), taken into the
+  view frame through `placement.json`, less the part on the range's side of the range's inner wall
+  (x' ≤ −13.0 in the range's frame: the range and its corner pavilion stand wholly there, and the
+  map's outline runs up to 3 m beyond the range's face toward Symonds Street). Its top is flat and
+  stands where the map's block top stands: the map draws block 104 as 2 storeys of 3.6 m (7.2 m,
+  `heightSource` "floor-count", `src/shared/massing.ts`) on its footing (`terrain.ts`: the DEM at
+  the outline's middle, 38.60 m), so 45.80 m, which is y 8.97 over the DEM at the door (36.83 m).
+  Its walls are plain and go down to y −2.0, below the DEM everywhere under it (its lowest is
+  y −1.41). Nothing in it comes from the LiDAR or the photographs: the scaffold era's roofs, heights
+  and shapes stay out. Round 1's LiDAR-measured rest (`parts/massing.js`, commit 83c449d) is not
+  drawn.
+- **Its finish.** In the walker views the rest's walls are `plain`: no texture and no shader, in the
+  map's own wall colour for a teaching building by day (`0xfaf1dc`). That is the plainest finish
+  that is honest: it claims no surface, as the map's block claims none, where cream render or brick
+  would claim one that no photograph shows as it stands. Its flat roof is `roofGrey`, the roofs'
+  grey in the 2023 aerial. On the map the light form draws both in the map's colours (`roofGrey` is
+  a roof in `LIGHT_ROLE`, `src/scene/landmarks.ts`).
+
+What this gives (2026-10-23, against round 1):
+
+- From above, the model covers 95.5% of block 104 on a 0.5 m grid (the 4.5% it does not cover is
+  on the range's side of the map's outline, most of it beyond the range's face), and no other block
+  of the campus map at all (136 Chiller: 0%), so `building.also` stays empty.
+- The range's heights are round 1's (below), against the LiDAR's points over the range without the
+  plane trees' crowns: parapet 14.30 m against 14.39 (the median along its outer edge), ridge 15.10
+  against 15.15 (the median in a 1 m band along it). The model's highest point, 15.50 m, is the
+  pavilions' pediments, sized from the photographs: over them the LiDAR has only the plane trees'
+  crowns, 14.3 to 24 m. The rest's top is y 8.97, the map's block top to 0.01 m.
+- 19,413 triangles in 7 draw calls (`render`, `paint`, `brick`, `void`, `glassPale`, `roofGrey`,
+  `plain`); the rest is 119 of them.
+- Against the photographs (`refine compare`): the nine views of 2022-09, which show the range, keep
+  their refined cameras and an IoU of 0.58 to 1.0 (mean 0.883); C1kG (2024-10) falls from 0.72,
+  0.83 and 0.98 to 0.38, 0.61 and 0.62, because behind the corner pavilion it sees the wrapped
+  middle and north-east blocks, up to 16 m, where the map's block is 9 m high. The luma median of
+  the building in the nine 2022-09 views is 126 in the photographs and 134 drawn. The Grafton Road
+  views of 2024-08 show the wraps, which the map's block does not match: over all 33 views the mean
+  IoU is 0.667, and the refine stage now corrects 4 panoramas' cameras, not 7.
 
 ## The first rough model (superseded)
 
@@ -133,7 +183,8 @@ rounds; the lead finished the round.
   north-west end.
 - **The rest** (`parts/massing.js`; the rest agent): every other block fitted to the LiDAR's roof
   planes (rms 0.02-0.05 m), plainly: no windows, no ornament. The scaffold decks of May 2024 are left
-  out (the 11.2 m deck in the street front's recess, lifts along the back).
+  out (the 11.2 m deck in the street front's recess, lifts along the back). Not drawn since
+  2026-10-23 (see "On the site"); the file is in commit 83c449d.
 - **The look** (the lead): brick and cream render as shaders in the kit, measured against the
   2022-09 views in shade; the sun of those panoramas (config `light`); and, for the viewer only, the
   LiDAR's ground (`landscape.js`), so that the plinth meets the footpaths, which rise about 3 m from

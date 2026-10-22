@@ -14,6 +14,22 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-23
+
+### Added
+
+- **Old Choral Hall's range on Symonds Street drawn in detail.** Near Old Choral Hall (building
+  104) the map now draws its south-west range from code, to sizes measured from the LiDAR survey:
+  ten bays of red brick with cream dressings between two pavilions with giant columns in antis,
+  rusticated pilasters and arched pediments, and the corner pavilion's face on Grafton Road. Every
+  source shows the rest of the building during building works, so the rest keeps the map's
+  estimated block: two storeys, flat-topped, plain walls. On the map it all has the map's colours.
+  From a walker's height the range is drawn in brick and cream render, with glass and grey roofs, on
+  a computer with a graphics card, and in the map's colours on phones and on computers without one.
+  Its block still answers a click and opens on its floors. About now names brick and painted render
+  among the landmarks' materials, and says that a building under works is drawn in detail only
+  where the photographs show it as it stands (#PR).
+
 ## 2026-10-22
 
 ### Added

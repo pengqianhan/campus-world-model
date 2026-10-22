@@ -40,14 +40,15 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-23:** near Old Choral Hall the map draws its range on Symonds Street in detail, in red
+  brick and cream render from a walker's height; the rest of the building, under building works,
+  keeps the map's estimated block.
 - **2026-10-22:** near Old Government House the map draws it in detail, in painted timber from a
   walker's height; the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
   childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
 - **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
   click still opens its floors.
-- **2026-10-19:** on a slow screen a walker view that stands still is drawn once, not again and
-  again.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -226,8 +227,20 @@ of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 | ![Old Government House from its lawn, the garden front, drawn from code](docs/landmarks/old-government-house-front.jpg) | ![The south-east end and the garden front, drawn from code](docs/landmarks/old-government-house-end.jpg) |
 | ![Old Government House on the map, drawn from code in the map's colours](docs/landmarks/old-government-house-map.jpg) | ![Old Government House from its lawn, through the walker's eyes](docs/landmarks/old-government-house-eyes.jpg) |
 
+The third is Old Choral Hall (104), at the corner of Symonds Street and Grafton Road. Every source
+shows it during building works, so only its range on Symonds Street is drawn in detail: ten bays of
+red brick with cream dressings between two pavilions with giant columns, as panoramas show it before
+the works and after. Seen from the three panoramas of 2022-09, its outline covers the building's
+with an IoU of 0.58 to 1.0. The rest of the building keeps the map's estimated block until the
+works end.
+
+| | |
+| --- | --- |
+| ![Old Choral Hall's range on Symonds Street, drawn from code](docs/landmarks/old-choral-hall-corner.jpg) | ![Old Choral Hall from above: the range in detail, the rest as the map's estimated block](docs/landmarks/old-choral-hall-above.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
-105 and 105S, its south range; Old Government House in place of 102) when the camera comes near: on
+105 and 105S, its south range; Old Government House in place of 102; Old Choral Hall in place of
+104) when the camera comes near: on
 the map in the map's colours, and from a walker's height in its own materials on a computer with a
 graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -398,8 +411,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S) and Old Government House (102), measured for their models in `landmarks/clocktower/` and `landmarks/old-government-house/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js`; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower and Old Government House were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102) and the range of Old Choral Hall (104) on Symonds Street, measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/` and `landmarks/old-choral-hall/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js`; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House and Old Choral Hall were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -417,8 +430,14 @@ If you represent the University and would like something changed or removed, ple
 - **Building heights are estimated and windows are drawn by rule.** The ground's heights come from
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
-  105S) and Old Government House (102) are the exceptions: their models are drawn to sizes measured
-  from LiDAR.
+  105S), Old Government House (102) and the range of Old Choral Hall (104) on Symonds Street are the
+  exceptions: their models are drawn to sizes measured from LiDAR.
+- **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
+  building during building works: the LiDAR of May 2024 has scaffold decks over its north-east
+  blocks, and the newest Street View panoramas show them wrapped. Only the south-west range and its
+  two pavilions are seen as they stand, before the works (2022-09) and after them (2024-10). The
+  rest of the building keeps the map's estimated block (two storeys, flat-topped, plain walls) until
+  the works end, so it is lower than the building is.
 - **Old Government House is seen in only two photographs.** Trees hide it from the other Street View
   panoramas near it, and the two see the upper storey of its south-east end. Its sizes and roofs
   come from the LiDAR. What no photograph shows is drawn plainly or after the parts the photographs

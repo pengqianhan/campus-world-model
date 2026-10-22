@@ -6,13 +6,18 @@ shared viewer, `../pipeline/viewer/index.html`. No external 3D models or image t
 and texture is generated in code. Photographs are **references only**; nothing is traced or sampled
 from them into the model.
 
-## What this round draws, and why only that
+## What is drawn, and why only that
 Every source shows the building during works (README.md, "The sources: works in progress"): the LiDAR was flown
 on 18 May 2024 with the north-east blocks scaffolded and wrapped, and the Grafton Road panoramas of
 2024-08 show the wraps. Only the **south-west range and its two end pavilions** are seen as they are,
-in panoramas of 2022-09 taken before the works, and the LiDAR measured them unwrapped. So this round
-draws that range in detail, and **everything else plainly** at the LiDAR's sizes: no windows, no
-ornament where no photograph shows a face.
+in panoramas of 2022-09 taken before the works and of 2024-10 after them, and the LiDAR measured them
+unwrapped. So that range is drawn in detail (`southwest`). **Everything else is the campus map's
+estimated block** (`rest`), by the maintainer's choice of 2026-10-23: block 104's outline from
+`public/data/campus.json` less the range's side, flat-topped at the map's block top, plain walls.
+Nothing measured from the LiDAR or seen in a photograph outside the range goes into `rest`. Round 1
+drew the rest at the LiDAR's sizes (`parts/massing.js`, in the history at 83c449d); it is not drawn,
+because those sizes are partly the scaffolds'. How to draw the whole building after the works is the
+maintainer's to decide.
 
 ## Frame and sizes
 - View frame, metres: **x** to the right as seen from Grafton Road on the south-east, **y** up from
@@ -21,7 +26,12 @@ ornament where no photograph shows a face.
 - `parts/common.js` (the lead's) holds the shared sizes: `GROUND` (the footpaths: the front falls from
   +0.8 to −0.85 m along x; the south-west footpath rises from +1.0 m at the corner to +2.9 m at the
   back), `SW` (the south-west range, turned 22.25° from the frame, with `swMatrix()` and `swPoint()`
-  to draw it in its own frame x', z'), `FRONT`, `RANGES`, `NE`, `BACK`.
+  to draw it in its own frame x', z'). The rest's LiDAR sizes of round 1 (`FRONT`, `RANGES`, `NE`,
+  `BACK`) are left out with it.
+- `parts/rest.js` holds the map's block: `OUTLINE` (building 104's outline in `campus.json`, taken
+  into the view frame through `placement.json`), `MAP_BLOCK` (its footing 1.77 m above the DEM at the
+  door, and its 7.2 m: 2 storeys of 3.6 m) and `TOP` (y 8.97). If the door or the placement moves,
+  work `OUTLINE` and `MAP_BLOCK.base` out again.
 - The LiDAR: `data/old-choral-hall_pts.npy` (x, y, z, class in local NZTM metres; class 6 building,
   2 ground, 5 high vegetation). Its frame: `data/old-choral-hall_frame.json` (`centre`; `axis` = −x;
   `toStreet` = +z; ground 37.7). Beware: along the south-west side the plane trees' crowns, 17.5 to
@@ -65,13 +75,14 @@ ornament where no photograph shows a face.
 | --- | --- |
 | lead | `model.js`, `parts/common.js`, `config/`, `docs/`, `README.md`, the look (`../kit/materials.js`) |
 | southwest | `parts/southwest.js`, new `parts/southwest_*.js`: the south-west range, its two end pavilions and the corner pavilion's face on Grafton Road |
-| rest | `parts/massing.js`, new `parts/massing_*.js`: everything else (the gabled ranges, the north-east wing, the blocks behind, the low block in the recess), plainly |
+| rest | `parts/rest.js`: everything else, as the campus map's estimated block until the works end; a later round replaces this file |
 
 - `../kit/` and `../pipeline/` are shared by every landmark: do not edit them; ask the lead. The
   `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for this
   building: `brick` (red brick with pale joints), `render` (cream painted render), `paint` (white
-  frames and bars), `glassPale` (panes), `roofGrey` (mid-grey roofs), `void` (dark openings). A name
-  the kit does not have makes the part fail.
+  frames and bars), `glassPale` (panes), `roofGrey` (mid-grey roofs), `void` (dark openings), `plain`
+  (the rest's walls: no texture, no shader, the map's wall colour). A name the kit does not have makes
+  the part fail.
 - Parts are added to `model.js` by the lead; tell the lead the name and file of a new part.
 
 ## Budget (tier 1: the site runs in a browser, phones too)
@@ -85,7 +96,8 @@ ornament where no photograph shows a face.
 - Determinism: same code, same picture. Seeded randomness only, no `Math.random`, no `Date`.
 - Real sizes first: the LiDAR is the truth for positions and heights; the photographs for what the
   surfaces look like. Where they disagree, say so in the report.
-- What no photograph and no measurement shows is drawn plainly, not invented.
+- What no photograph and no measurement shows is drawn plainly, not invented. Where every source shows
+  the building during works, the map's estimated block stands in for it (`rest`).
 - Do not commit; the lead commits after reviewing.
 - Finish with a short report: what you built, files, numbers (triangles, build ms), before/after
   strips (paths), measurements, what still differs and what you would do next.

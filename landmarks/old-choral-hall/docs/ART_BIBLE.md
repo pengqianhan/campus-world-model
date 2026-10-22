@@ -5,8 +5,8 @@ reads as the same building as in the Street View panoramas of 2022-09, before th
 its sizes from the LiDAR. Look at the photographs yourself, at full size: `nAxE…_*.jpg` (the range and
 its north-west pavilion), `Uype…_*.jpg` (the range and the corner pavilion at Grafton Road),
 `e8T_…_*.jpg`, and `C1kG…` (2024-10: the corner pavilion restored, out of its scaffold) for the corner. This page says what matters most, and only what they
-show. The rest of the building is drawn plainly: no photograph shows it as it stands (README.md, "The
-sources: works in progress").
+show. The rest of the building keeps the campus map's estimated block: no photograph shows it as it
+stands (README.md, "The sources: works in progress").
 
 ## The south-west range (what nAxE and Uype show)
 - **Two storeys of red brick with cream dressings**, Edwardian classical. A long range of about a dozen
@@ -26,10 +26,17 @@ sources: works in progress").
   between the columns and the pilasters.
 - Plane trees stand along the footpath and hide parts of the range: they are not part of the model.
 
-## The rest (drawn plainly)
-- The middle ranges, the north-east wing and the blocks behind: walls and gabled roofs at the LiDAR's
-  sizes, in plain cream render and pale grey roofs, with no windows or ornament: no reference shows
-  their faces as they are (2024-08: wrapped and scaffolded; the 2023 aerial shows grey hipped roofs).
+## The rest (the map's estimated block)
+- The middle ranges, the north-east wing and the blocks behind are not drawn as they look: every source
+  shows them during the works (2024-08: wrapped and scaffolded; the LiDAR of May 2024: the scaffolds'
+  temporary roofs). Until the works end they keep the campus map's block (maintainer, 2026-10-23):
+  block 104's outline less the range's side, flat-topped where the map's block top is (y 8.97), plain
+  walls with no windows or ornament.
+- Its finish says that it is an estimate: walls in `plain` (no texture and no shader, so no surface is
+  claimed, in the map's own wall colour for a teaching building by day), the flat roof in `roofGrey`
+  (the roofs' grey in the 2023 aerial). On the map the light form draws both in the map's colours.
+- The range's inner side above the rest's roof shows the range's brick mass: in the building the
+  taller middle range stands against it there.
 
 ## The light (match the 2022-09 photographs)
 - A spring morning, the sun high in the north-east (in nAxE it stands almost straight beyond the
@@ -43,6 +50,7 @@ sources: works in progress").
 - `render`: cream painted render for columns, pilasters, bands, architraves, cornices and parapets.
 - `paint`: the white-grey window frames and glazing bars; `glassPale` for the panes.
 - `roofGrey`: the roofs, mid-grey metal as in the 2023 aerial (luma about 110-150); `void` for dark openings and doorways.
+- `plain`: the rest's walls (the map's estimated block): no texture, no shader.
 
 ## Never
 - Nothing traced or sampled from the photographs (no projected textures, no image files).

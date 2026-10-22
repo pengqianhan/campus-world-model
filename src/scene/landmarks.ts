@@ -66,6 +66,7 @@ export interface LightMaterials {
 const LIGHT_ROLE: Record<string, keyof LightMaterials> = {
   roof: "roof",
   roofPale: "roof",
+  roofGrey: "roof",
   glass: "glass",
   glassPale: "glass",
   iron: "openings",

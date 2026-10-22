@@ -1,5 +1,6 @@
 {
  "name": "old-choral-hall",
+ "site": true,
  "building": {
   "id": "104",
   "also": [],
