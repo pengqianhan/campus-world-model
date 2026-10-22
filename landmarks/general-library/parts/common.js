@@ -20,7 +20,11 @@ export const MEASURED = {
   // Floors are 3.5 m apart: the LiDAR's horizontal lines on the street face (sills and spandrels) are at
   // 12.0, 15.5, 19.0, 22.5, 26.0.
   slab: { u: [-31.3, 30.0], w: [-9.8, 8.3], roof: 30.1, raised: { u: [9.3, 28.0], w: [-6.5, 3.1], top: 31.6 },
-    floors: [5.0, 8.5, 12.0, 15.5, 19.0, 22.5, 26.0], spandrel: 1.1 },
+    floors: [5.0, 8.5, 12.0, 15.5, 19.0, 22.5, 26.0], spandrel: 1.1,
+    // where the floors' edges stand (the LiDAR's points on the sills, 1 m height bands from 15 to 27 m):
+    // Alfred Street's face, right half w 9.4-9.75 and left half 8.6-8.8; the back -10.4 to -10.5; the
+    // north-west end u -31.7. The roof's edge is inside them: w 8.3 and -9.8, u -31.3.
+    edges: { frontRight: 9.5, frontLeft: 8.6, back: -10.35, nw: -31.6 } },
   // The core across the slab's middle: its roof at 36.05 (p50 of 2,410 points), u -8.2 to 7.8, from the
   // slab's back face to 1.2 m in front of its street face; the stair tower in front of it (u -5.9 to 5.8,
   // to w 12.75), its top 31.3-32.0; the plant on the core's roof to 38.8-39.8.
@@ -28,11 +32,17 @@ export const MEASURED = {
   stair: { u: [-5.9, 5.8], w: [9.5, 12.75], top: 32.0 },
   plant: { u: [-4.7, 2.2], w: [-2.7, 5.9], top: 38.8 },
   // The podium, aligned with the frame: its roof at 12.96 (p50) over the front-left block and the main
-  // body, 12.35 over the back wing, 12.1 over the low block at the back right.
+  // body, 12.91 over the back wing, 12.1 over the low block at the back right. The roof is ribbed (the
+  // aerial's rows of roof lights): ribs about 1.5 m wide at 13.05 m between troughs about 1.0 m wide at
+  // 12.05 m, roughly every 2.4-2.5 m along x, running along z; not drawn yet (a first try put the ribs
+  // out of step with the LiDAR's over most of the roof), so the roof is flat at the median and the
+  // LiDAR's heights swing about +-0.5 m round it. Behind the fin screens' hoods the roof's edge is at
+  // the troughs' 12.0 (`edge`).
   podium: {
+    edge: 12.0,
     main: { x: [-46.3, -3.8], z: [-21.2, 21.3], top: 12.96 },
     middle: { x: [-3.8, 16.0], z: [-21.2, -9.0], top: 12.96 },
-    back: { x: [-12.5, 16.0], z: [-36.0, -21.2], top: 12.35 },
+    back: { x: [-12.5, 16.0], z: [-36.0, -21.2], top: 12.91 },
     low: { x: [16.0, 29.4], z: [-24.5, -9.0], top: 12.1 },
   },
   // The ground (LiDAR class 2, p50) along each face, for the plinths and the doors.

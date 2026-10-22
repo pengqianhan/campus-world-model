@@ -1,6 +1,7 @@
 // Faces of the General Library drawn by rule: a face is a plane square to x or to z, with an outward
 // sign, spanning [a0, a1] along it. Every box on it is given as (along, up, out-of-face) ranges, so the
 // same code draws any of the building's faces.
+import * as THREE from "three";
 import { boxesGeometry } from "../../kit/gothic.js";
 
 /** A face: `axis` is the axis its normal lies on ("x" or "z"), `at` its plane, `s` the outward sign. */
@@ -13,16 +14,30 @@ export function faceBox(f, a0, a1, y0, y1, d0, d1) {
 }
 
 /**
- * Ribbon windows: from y0 to y1, a band of glazing between spandrels at each floor level in `floors`
- * (a spandrel `sp` high at each level, standing 0.12 m proud), the glass 0.25 m in, with dark mullions
- * every `bay` metres. The wall behind is the mass's own box.
+ * A prism on a face: the polygon `pts` ([along, up] pairs) pushed out of the face from d0 to d1.
  */
-export function ribbons(b, f, y0, y1, floors, { sp = 1.1, bay = 1.6, frame = "iron", glass = "glassPale", wall = "paint" } = {}) {
+export function prism(b, f, pts, d0, d1, material) {
+  const sa = (f.axis === "z") === (f.s > 0) ? 1 : -1;            // along the face, in the prism's own x
+  const shape = new THREE.Shape(pts.map(([a, y]) => new THREE.Vector2(sa * a, y)));
+  const g = new THREE.ExtrudeGeometry(shape, { depth: d1 - d0, bevelEnabled: false });
+  g.translate(0, 0, d0);
+  const turn = f.axis === "z" ? (f.s > 0 ? 0 : Math.PI) : (f.s > 0 ? Math.PI / 2 : -Math.PI / 2);
+  const m = new THREE.Matrix4().makeRotationY(turn).setPosition(f.axis === "x" ? f.at : 0, 0, f.axis === "z" ? f.at : 0);
+  g.applyMatrix4(m);
+  b.add(g, material);
+}
+
+/**
+ * Ribbon windows: from y0 to y1, a band of glazing between spandrels at each floor level in `floors`
+ * (a spandrel `sp` high at each level, standing 0.12 m proud of the face and reaching `deep` m back
+ * into it, to the mass), the glass 0.25 m in, with dark mullions every `bay` metres.
+ */
+export function ribbons(b, f, y0, y1, floors, { sp = 1.1, bay = 1.6, frame = "iron", glass = "glassPale", wall = "paint", deep = 0.3 } = {}) {
   const lv = [y0, ...floors.filter((y) => y > y0 + 0.5 && y < y1 - 0.5), y1];
   const walls = [], panes = [], bars = [];
   for (let i = 0; i < lv.length - 1; i++) {
     const s0 = lv[i], s1 = Math.min(lv[i] + sp, lv[i + 1]);
-    walls.push(faceBox(f, f.a0, f.a1, s0, s1, -0.3, 0.12));
+    walls.push(faceBox(f, f.a0, f.a1, s0, s1, -deep, 0.12));
     if (lv[i + 1] - s1 < 0.4) continue;
     panes.push(faceBox(f, f.a0, f.a1, s1, lv[i + 1], -0.27, -0.24));
     const n = Math.max(1, Math.round((f.a1 - f.a0) / bay));

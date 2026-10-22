@@ -25,18 +25,22 @@ export function slab(b) {
   for (const [a0, a1, c0, c1] of [[u0, u1, w1 - 0.25, w1], [u0, u1, w0, w0 + 0.25]]) par.push([a0, a1, S.roof - 0.4, S.roof + 0.25, c0, c1]);
   for (const [a0, a1] of [[u0, u0 + 0.25], [u1 - 0.25, u1]]) par.push([a0, a1, S.roof - 0.4, S.roof + 0.25, w0, w1]);
   b.add(boxesGeometry(par), "paint");
-  // the long faces: ribbon windows above the podium on the left, from the first floor on the right
-  const top = S.roof - 0.4;
-  ribbons(b, face("z", w1, 1, u0, C.u[0]), P.top, top, S.floors);
-  ribbons(b, face("z", w1, 1, C.u[1], u1), 5.0, top, S.floors);
-  ribbons(b, face("z", w0, -1, u0, C.u[0]), P.top, top, S.floors);
-  ribbons(b, face("z", w0, -1, C.u[1], u1), M.podium.middle.top, top, S.floors);
+  // the floors' edges stand out of the roof's: on Alfred Street 1.2 m on the right half and 0.3 m on the
+  // left, at the back 0.55 m, at the north-west end 0.3 m (the LiDAR's points on each floor's sill, at
+  // w 9.4-9.75, 8.6-8.8 and -10.4 to -10.5, u -31.7): ribbon windows on those planes, their spandrels
+  // reaching back to the mass
+  const top = S.roof - 0.4, E = S.edges, mw0 = w0 + IN, mw1 = w1 - IN;
+  ribbons(b, face("z", E.frontLeft, 1, E.nw, C.u[0]), P.top, top, S.floors, { deep: E.frontLeft - mw1 });
+  ribbons(b, face("z", E.frontRight, 1, C.u[1], u1), 5.0, top, S.floors, { deep: E.frontRight - mw1 });
+  ribbons(b, face("z", E.back, -1, E.nw, C.u[0]), P.top, top, S.floors, { deep: mw0 - E.back });
+  ribbons(b, face("z", E.back, -1, C.u[1], u1), M.podium.middle.top, top, S.floors, { deep: mw0 - E.back });
   // the right half's ground floor on Alfred Street: dark glazing set back behind the first floor's edge
   glazing(b, face("z", w1, 1, C.u[1], u1), M.ground.frontRight - 0.2, 5.0, { inset: 1.2, bay: 3.0 });
   // the south-east end: ribbons above the ground floor, which is glazed between dark piers (the entrance)
-  ribbons(b, face("x", u1, 1, w0, w1), 5.0, top, S.floors);
+  ribbons(b, face("x", u1, 1, E.back, E.frontRight), 5.0, top, S.floors, { deep: 0.6 });
   glazing(b, face("x", u1, 1, w0, w1), M.ground.seEnd, 5.0, { inset: 0.6, bay: 4.4 });
-  // the north-west end above the podium: blank white
+  // the north-west end above the podium: ribbons too (Qaci's upper view)
+  ribbons(b, face("x", E.nw, -1, E.back, E.frontLeft), P.top, top, S.floors, { deep: u0 + IN - E.nw });
   b.matrix = null;
 }
 

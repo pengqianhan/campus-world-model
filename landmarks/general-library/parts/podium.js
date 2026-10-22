@@ -8,7 +8,7 @@
 // main block's back on the service lane, the low block's north-east face) are plain.
 import { boxesGeometry } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT } from "./common.js";
-import { face, faceBox, ribbons, glazing } from "./facade.js";
+import { face, faceBox, ribbons, glazing, prism } from "./facade.js";
 
 const IN = 0.3;
 /** How far the crown's teeth stand out of the glazing behind the fins: the LiDAR's roof edge is theirs. */
@@ -17,41 +17,43 @@ const OUT = 1.6;
 /**
  * A flat-roofed block with a pale roof. Its mass stands `inset` [x0, x1, z0, z1] inside the block's
  * edges, and below `split` m it stands `low` inside them instead, behind the glazing drawn there.
+ * Above the roof's edge behind the fin screens (MEASURED.podium.edge) it stands `crown` inside them,
+ * so that the sky shows between the hoods.
  */
-function block(b, B, inset, low = inset, split = FOOT) {
-  const [x0, x1] = B.x, [z0, z1] = B.z;
+function block(b, B, inset, low = inset, split = FOOT, crown = null) {
+  const [x0, x1] = B.x, [z0, z1] = B.z, mid = crown ? M.podium.edge : B.top, ins = crown ?? inset;
   if (split > FOOT) b.box(x0 + low[0], x1 - low[1], FOOT, split, z0 + low[2], z1 - low[3], "paint");
-  b.box(x0 + inset[0], x1 - inset[1], split, B.top, z0 + inset[2], z1 - inset[3], "paint");
-  b.box(x0 + 0.4, x1 - 0.4, B.top - 0.05, B.top + 0.02, z0 + 0.4, z1 - 0.4, "roofPale");
+  b.box(x0 + inset[0], x1 - inset[1], split, mid, z0 + inset[2], z1 - inset[3], "paint");
+  if (crown) b.box(x0 + ins[0], x1 - ins[1], mid, B.top, z0 + ins[2], z1 - ins[3], "paint");
+  b.box(x0 + ins[0] + 0.1, x1 - ins[1] - 0.1, B.top - 0.05, B.top + 0.02, z0 + ins[2] + 0.1, z1 - ins[3] - 0.1, "roofPale");
 }
 
 /**
  * The fin screen on a face from y0 to y1: glazing behind, white fins 0.3 m wide standing 1.0 m out every
- * `pitch` metres, and over them a crown of folded teeth, one every three fins, from y1 to `top`, each
- * narrowing downward (drawn as three stepped boxes).
+ * `pitch` metres, and over them a crown of folded hoods, one every three fins, from y1 to `top`: each a
+ * trapezoid, widest at the top (nearly touching the next), a third as wide at its foot, standing OUT
+ * from the glazing at the top (fF8q's and v7l7's upper views).
  */
 function fins(b, f, y0, y1, top, { pitch = 1.3, a0 = f.a0, a1 = f.a1 } = {}) {
   glazing(b, f, y0, y1, { inset: 0.3, bay: pitch * 3, a0, a1 });
   const n = Math.max(1, Math.round((a1 - a0) / pitch)), d = (a1 - a0) / n, F = [];
-  for (let k = 0; k <= n; k++) { const a = a0 + d * k; F.push(faceBox(f, a - 0.15, a + 0.15, y0, y1, 0, 1.0)); }
-  const teeth = Math.max(1, Math.round((a1 - a0) / (3 * d))), t = (a1 - a0) / teeth, h = (top - y1) / 3;
-  for (let k = 0; k < teeth; k++) {
-    const c = a0 + t * (k + 0.5);
-    for (let j = 0; j < 3; j++) {
-      const half = (t / 2 - 0.1) * (0.45 + 0.275 * j);
-      F.push(faceBox(f, c - half, c + half, y1 + h * j, y1 + h * (j + 1), 0, 1.1 + 0.25 * j));
-    }
-  }
+  for (let k = 0; k <= n; k++) { const a = a0 + d * k; F.push(faceBox(f, a - 0.15, a + 0.15, y0, y1 + 0.3, 0, 1.0)); }
   b.add(boxesGeometry(F), "paint");
+  const teeth = Math.max(1, Math.round((a1 - a0) / (3 * d))), t = (a1 - a0) / teeth;
+  for (let k = 0; k < teeth; k++) {
+    const c = a0 + t * (k + 0.5), wt = t / 2 - 0.08, wb = t / 6;
+    prism(b, f, [[c - wb, y1], [c + wb, y1], [c + wt, top], [c - wt, top]], -0.3, OUT, "paint");
+  }
 }
 
 export function podium(b) {
   const P = M.podium, A = P.main, G = M.ground;
   // the masses stand behind the fins' glazing (OUT + 0.5 in from the teeth), and lower down behind the
   // glazing of the north-west end (0.9), of the back wing's ground floor and of the low block's end
-  block(b, A, [IN, 0, IN, OUT + 0.5], [0.9, 0, IN, OUT + 0.5], 9.8);
+  const C = OUT + 2.0;
+  block(b, A, [IN, 0, IN, OUT + 0.5], [0.9, 0, IN, OUT + 0.5], 11.0, [IN, 0, IN, C]);
   block(b, P.middle, [0, 0, 0, 0]);
-  block(b, P.back, [OUT + 0.5, 0, OUT + 0.5, 0], [OUT + 0.5, 0, OUT + 1.0, 0], 6.3);
+  block(b, P.back, [OUT + 0.5, 0, OUT + 0.5, 0], [OUT + 0.5, 0, OUT + 1.0, 0], 6.3, [C, 0, C, 0]);
   block(b, P.low, [0, IN, 0, 0], [0, 0.9, 0, 0], 5.0);
   // Alfred Street: a brick plinth and the fin screen the whole length of the front block; its end by the
   // stair tower (facing +x, B4NW's photograph) glazed in two storeys of dark frames over the brick
@@ -62,10 +64,12 @@ export function podium(b) {
   b.add(boxesGeometry([faceBox(end, end.a0, end.a1, FOOT, plinth, -0.2, 0.05)]), "timber");
   b.add(boxesGeometry([faceBox(end, end.a0, end.a1, plinth, plinth + 0.45, -0.2, 0.25), faceBox(end, end.a0, end.a1, 12.2, A.top, -0.2, 0.25)]), "paint");
   glazing(b, end, plinth + 0.45, 12.2, { inset: -0.15, bay: 1.4 });
-  // the north-west end: a band of glazing under a deep fascia
+  // the north-west end (Qaci): a band of glazing under a white fascia, and toward Alfred Street
+  // (z > 14.6) a blank panel
   const nw = face("x", A.x[0], -1, A.z[0], A.z[1]);
-  glazing(b, nw, G.nwEnd + 1.2, 9.8, { inset: 0.6, bay: 2.4 });
-  b.add(boxesGeometry([faceBox(nw, A.z[0], A.z[1], FOOT, G.nwEnd + 1.2, -0.9, 0), faceBox(nw, A.z[0], A.z[1], 9.8, A.top, -IN, 0)]), "paint");
+  glazing(b, nw, G.nwEnd + 1.2, 11.0, { inset: 0.6, bay: 2.4, a1: 14.6 });
+  b.add(boxesGeometry([faceBox(nw, A.z[0], 14.6, FOOT, G.nwEnd + 1.2, -0.9, 0), faceBox(nw, 14.6, A.z[1] - OUT, FOOT, 11.0, -0.9, 0),
+    faceBox(nw, A.z[0], A.z[1] - OUT, 11.0, M.podium.edge, -IN, 0)]), "paint");
   // the back wing's north-east face (the lawn): grey plinth, dark glazing, a white floor edge, the fins
   const ne = face("z", P.back.z[0] + OUT, -1, P.back.x[0] + OUT, P.back.x[1]);
   glazing(b, ne, G.back + 1.6, 5.6, { inset: 0.8, bay: 5.0 });

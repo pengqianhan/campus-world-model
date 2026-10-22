@@ -18,13 +18,15 @@ no photograph shows is drawn plain, at the LiDAR's sizes.
 - **The podium's fin screens** (Alfred Street's front block, and the back wing on the north-east lawn):
   white concrete fins about 0.3 m thick standing a metre in front of the glazing, about 1.3 m apart,
   crowned at the roof's edge by a row of folded concrete hoods ("teeth"), each about three fins wide,
-  widest at the top. On Alfred Street they stand on a plinth of red-brown brick with doors and grilles
+  widest at the top and about a third as wide at its foot, the fins running up into them, the sky
+  showing between them. On Alfred Street they stand on a plinth of red-brown brick with doors and grilles
   in it; behind, on a plinth of grey render over a band of dark ground-floor glazing behind grey
   columns, with a white floor edge between.
 - **The front block's end by the stair tower**: two storeys of glazing in dark frames over the brick,
   between white concrete edges.
-- **The north-west end of the podium** (Qaci): a deep white fascia over a band of glazing with a white
-  grille; the slab rising behind.
+- **The north-west end of the podium** (Qaci): a white fascia over a band of glazing with a white
+  grille, and toward Alfred Street a blank panel of grey speckled stone; the slab rising behind, its
+  end in ribbon windows like its long faces.
 - **The glass canopy** on slender dark posts along the slab's foot on Alfred Street, in front of planted
   beds and a green fence (the fence and the planting are the street's, not the model's).
 
@@ -37,9 +39,10 @@ no photograph shows is drawn plain, at the LiDAR's sizes.
 | `roofPale` | the flat roofs (light grey in the aerial) |
 | `timber` | the red-brown brick plinth on Alfred Street: a stand-in, dark red-brown, until the kit has a brick (the Old Choral Hall's branch adds one) |
 
-Not yet drawn: the grey of the south-east end's piers and cladding and of the back wing's plinth (drawn
-white or as glazing), the white grille on the north-west end, the vertical slots in the stair tower's
-side, the ribs of the podium's roof.
+Not yet drawn: the grey of the south-east end's piers and cladding, of the back wing's plinth and of
+the north-west end's stone panel (drawn white or as glazing: the kit has no mid-grey), the white grille
+on the north-west end, the narrow windows in the stair tower's sides, the hoods' hollow undersides,
+the ribs of the podium's roof.
 
 ## The light
 - The Alfred Street panoramas (2022-09) are of a bright spring day under thin cloud, the faces in soft
