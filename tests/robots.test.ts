@@ -9,13 +9,54 @@ function judge(robots: string, paths: string[]) {
   return { allowed: paths.filter((p) => robotsAllows(rules, p)), disallowed: paths.filter((p) => !robotsAllows(rules, p)) };
 }
 
+/** A User-Agent like the one the research browser sends. */
+const HEADLESS = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36";
+
 describe("robots.txt groups and lines", () => {
-  it("applies the * groups, merged, and no group that names another agent", () => {
-    const rules = parseRobots(
-      ["User-agent: Googlebot", "Disallow: /google/", "", "User-agent: *", "Disallow: /a/", "", "User-agent: ClaudeBot", "Disallow: /", "", "user-agent: *", "disallow: /b/"].join("\n"),
-    );
+  it("applies the * groups, merged, and no group that names an agent this browser is not", () => {
+    const rules = parseRobots(["User-agent: Googlebot", "Disallow: /google/", "", "User-agent: *", "Disallow: /a/", "", "User-agent: GPTBot", "Disallow: /", "", "user-agent: *", "disallow: /b/"].join("\n"), HEADLESS);
     expect(rules.map((r) => r.text)).toEqual(["Disallow: /a/", "disallow: /b/"]);
     expect(rules.map((r) => r.line)).toEqual([5, 11]);
+    expect(robotsAllows(rules, "/google/x")).toBe(true);
+  });
+
+  it("allows everything when no group applies", () => {
+    const robots = "User-agent: Googlebot\nDisallow: /\n\nUser-agent: GPTBot\nDisallow: /\n";
+    expect(parseRobots(robots, HEADLESS)).toEqual([]);
+    expect(judge(robots, ["/", "/a"]).disallowed).toEqual([]);
+  });
+
+  it("applies a group that names an Anthropic agent: a * Allow with a ClaudeBot Disallow disallows (UC's courseinfo host)", () => {
+    const robots = ["User-agent: *", "Allow: /", "", "User-agent: GPTBot", "User-agent: ClaudeBot", "Disallow: /"].join("\n");
+    const rules = parseRobots(robots, HEADLESS);
+    expect(robotsAllows(rules, "/GetCourseDetails.aspx?course=COSC121")).toBe(false);
+    expect(robotsMatch(rules, "/")).toMatchObject({ text: "Disallow: /", agent: "ClaudeBot" });
+    for (const agent of ["claude-web", "Claude-User", "CLAUDE-SEARCHBOT", "anthropic-ai"])
+      expect(robotsAllows(parseRobots(`User-agent: ${agent}\nDisallow: /x`), "/x/y"), agent).toBe(false);
+  });
+
+  it("applies a group whose token is in a product name of the browser's User-Agent, and not when the User-Agent lacks it", () => {
+    const robots = "User-agent: *\nDisallow: /all/\n\nUser-agent: HeadlessChrome\nDisallow: /headless/\n\nUser-agent: chrome\nDisallow: /chrome/\n";
+    const headless = parseRobots(robots, HEADLESS);
+    expect(robotsAllows(headless, "/headless/x")).toBe(false);
+    expect(robotsMatch(headless, "/headless/x")?.agent).toBe("HeadlessChrome");
+    expect(robotsAllows(headless, "/chrome/x")).toBe(false);
+    expect(robotsAllows(headless, "/all/x")).toBe(false);
+    const plain = parseRobots(robots, HEADLESS.replace("HeadlessChrome", "Chrome"));
+    expect(robotsAllows(plain, "/headless/x")).toBe(true);
+    expect(robotsAllows(plain, "/chrome/x")).toBe(false);
+    // "Gecko" is in a comment of the User-Agent, not in a product name.
+    expect(parseRobots("User-agent: Gecko\nDisallow: /", HEADLESS)).toEqual([]);
+  });
+
+  it("judges each group by its own longest match, and allows a path only if every group allows it", () => {
+    const robots = ["User-agent: *", "Disallow: /a/", "Allow: /a/b", "", "User-agent: ClaudeBot", "Allow: /a/", "Disallow: /a/b/c"].join("\n");
+    const rules = parseRobots(robots, HEADLESS);
+    expect(robotsAllows(rules, "/a/b")).toBe(true);
+    // ClaudeBot's group allows /a/x, but the * group does not.
+    expect(robotsAllows(rules, "/a/x")).toBe(false);
+    // The * group allows /a/b/c, but ClaudeBot's group does not.
+    expect(robotsMatch(rules, "/a/b/c")).toMatchObject({ text: "Disallow: /a/b/c", agent: "ClaudeBot" });
   });
 
   it("takes a run of User-agent lines as one group, and a rule ends the run", () => {
@@ -25,9 +66,9 @@ describe("robots.txt groups and lines", () => {
 
   it("ignores comments, blank lines, other records, rules outside a group and a byte-order mark", () => {
     const rules = parseRobots(
-      ["﻿Disallow: /before-any-group/", "# a comment", "User-agent: * # all", "", "Sitemap: https://example.ac.nz/sitemap.xml", "Crawl-delay: 5", "Disallow: /x/ # private", "nonsense line"].join("\r"),
+      [`${String.fromCharCode(0xfeff)}Disallow: /before-any-group/`, "# a comment", "User-agent: * # all", "", "Sitemap: https://example.ac.nz/sitemap.xml", "Crawl-delay: 5", "Disallow: /x/ # private", "nonsense line"].join("\r"),
     );
-    expect(rules).toEqual([{ allow: false, path: "/x/", text: "Disallow: /x/", line: 7 }]);
+    expect(rules).toEqual([{ allow: false, path: "/x/", text: "Disallow: /x/", line: 7, agent: "*" }]);
   });
 
   it("allows everything for an empty Disallow and for an empty file", () => {

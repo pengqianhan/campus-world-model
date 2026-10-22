@@ -30,10 +30,14 @@
 // request is not the page's: Node sends it (node:http or node:https, one connection that closes
 // after the answer), with the browser's own User-Agent, in its turn at the pace, and logs it with
 // the type "robots" and the reason "robots". It does not depend on a page, and no page sees it.
-// robots.mjs reads the file as RFC 9309 says (the rules of the "*" groups, as the browser names
-// no product token of its own) and says where it reads further. Each request, of any type, from
-// any page, frame, popup or worker, that robots.txt disallows is blocked with the reason
-// "robots: <the rule as written>". A 404 or another 4xx allows everything; a 401 or a 403 closes
+// robots.mjs reads the file as RFC 9309 says, and says where it reads further. It takes the
+// strictest reading of the groups: a path is allowed only if every group that applies allows it.
+// Those are the "*" groups, the groups whose token is in a product name of the browser's own
+// User-Agent (HeadlessChrome, Chrome), and the groups that name an Anthropic agent (ClaudeBot,
+// Claude-Web, Claude-User, Claude-SearchBot, anthropic-ai), because Claude drives this browser.
+// Each request, of any type, from any page, frame, popup or worker, that robots.txt disallows is
+// blocked with the reason "robots: <the rule as written>", and " (User-agent: <token>)" after it
+// when the rule is not of a "*" group. A 404 or another 4xx allows everything; a 401 or a 403 closes
 // the host, as above. A 429, a 5xx, no answer in ANSWER_WAIT_MS, or a dropped connection makes
 // the gate leave the whole host alone for the life of the browser ("robots: unreachable (<why>)").
 // A redirect of robots.txt is followed, a hop at a time at the pace, to the hosts allowed, for at
@@ -70,7 +74,7 @@ import os from "node:os";
 import path from "node:path";
 import { parseRobots, robotsMatch } from "./robots.mjs";
 
-export { parseRobots, robotsAllows, robotsMatch } from "./robots.mjs";
+export { ANTHROPIC_AGENTS, parseRobots, robotsAllows, robotsMatch } from "./robots.mjs";
 
 export const PACE_MS = 1100;
 
@@ -356,7 +360,7 @@ async function askRobots(state, origin, hosts, log) {
       closeHost(state, host, String(status));
       return host === hostOf(url0) ? answer({ status, disallowAll: `closed: ${status}` }) : unreachable(`${status} from ${host}`, { status });
     }
-    if (status >= 200 && status < 300) return answer({ status, rules: parseRobots(got.body), text: got.body });
+    if (status >= 200 && status < 300) return answer({ status, rules: parseRobots(got.body, state.userAgent), text: got.body });
     if (status === 429 || status >= 500) return unreachable(String(status), { status });
     if (status >= 400) return answer({ status });
     if (status < 300) return unreachable(`status ${status}`, { status });
@@ -430,7 +434,8 @@ function robotsReason(answer, url) {
   if (answer.disallowAll) return answer.disallowAll.startsWith("closed: ") ? answer.disallowAll : `robots: ${answer.disallowAll}`;
   const u = new URL(url);
   const rule = robotsMatch(answer.rules, `${u.pathname}${u.search}`);
-  return rule && !rule.allow ? `robots: ${rule.text}` : undefined;
+  if (!rule || rule.allow) return undefined;
+  return rule.agent === "*" ? `robots: ${rule.text}` : `robots: ${rule.text} (User-agent: ${rule.agent})`;
 }
 
 /** "scheme://host:port" for an http or https URL, else "". */

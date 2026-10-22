@@ -627,6 +627,31 @@ test.describe("research browser", () => {
     }
   });
 
+  test("robots.txt: a host whose robots.txt disallows / for ClaudeBot alone is not asked for its page", async () => {
+    const site = await serve(() => ({ "/robots.txt": text("User-agent: *\nAllow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n"), "/start": html("start") }));
+    try {
+      const { page, log, blocked } = await politePage(browser, { url: `${site.base}/start` });
+      expect(blocked).toBe("robots: Disallow: / (User-agent: ClaudeBot)");
+      await expect(page.goto(`${site.base}/start`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
+      expect(log.find((r) => r.url === `${site.base}/start`)).toMatchObject({ sent: false, reason: "robots: Disallow: / (User-agent: ClaudeBot)" });
+      expect(site.paths()).toEqual(["/robots.txt"]);
+    } finally {
+      await site.stop();
+    }
+  });
+
+  test("robots.txt: a group for a product in the browser's own User-Agent (Chrome) applies", async () => {
+    const site = await serve(() => ({ "/robots.txt": text("User-agent: Chrome\nDisallow: /c/\n"), "/start": html(`<img src="/c/i.png"><img src="/ok.png">`), "/ok.png": status(200) }));
+    try {
+      const { page, log } = await politePage(browser, { url: `${site.base}/start` });
+      await page.goto(`${site.base}/start`);
+      await expect.poll(() => log.find((r) => r.url === `${site.base}/c/i.png`)).toMatchObject({ type: "image", sent: false, reason: "robots: Disallow: /c/ (User-agent: Chrome)" });
+      await expect.poll(() => site.paths()).toEqual(["/robots.txt", "/start", "/ok.png"]);
+    } finally {
+      await site.stop();
+    }
+  });
+
   for (const how of SPECULATION) {
     test(`speculation rules from ${how} prefetch and prerender nothing in a browser from politeLaunch()`, async () => {
       // The browser still reads the header's rule file, through the gate, but acts on none of its rules.

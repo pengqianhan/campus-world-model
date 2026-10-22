@@ -2,7 +2,7 @@
 import type { Browser, BrowserContext, LaunchOptions, Page } from "@playwright/test";
 import type { RobotsRule } from "./robots.mjs";
 
-export { parseRobots, robotsAllows, robotsMatch, type RobotsRule } from "./robots.mjs";
+export { ANTHROPIC_AGENTS, parseRobots, robotsAllows, robotsMatch, type RobotsRule } from "./robots.mjs";
 
 export declare const PACE_MS: number;
 /** How long a request to a host waits for the answer to the request before it. */
@@ -33,7 +33,8 @@ export interface PoliteRow {
   error?: string;
   /**
    * Why it was blocked: "host not allowed", "type not allowed", "closed: 403", "favicon", "gone",
-   * "robots: Disallow: /private/", "robots: unreachable (503)" and so on. For the gate's own
+   * "robots: Disallow: /private/", "robots: Disallow: / (User-agent: ClaudeBot)",
+   * "robots: unreachable (503)" and so on. For the gate's own
    * request for robots.txt, sent or not, "robots" or the reason it was not sent.
    */
   reason?: string;
@@ -47,7 +48,7 @@ export interface RobotsAnswer {
   status?: number;
   /** The network error, or "no answer in 10 s", if none came. */
   error?: string;
-  /** The rules of the "*" groups; empty when robots.txt allows everything (a 404, an empty file). */
+  /** The rules of the groups that apply (see parseRobots); empty when robots.txt allows everything (a 404, an empty file). */
   rules: RobotsRule[];
   /** The file as it came (its first 500 KiB), after a 2xx: to quote in a recon's write-up. */
   text?: string;

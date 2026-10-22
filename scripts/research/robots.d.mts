@@ -1,6 +1,9 @@
 // Types for robots.mjs, so that TypeScript files (tests/robots.test.ts, e2e/polite.spec.ts) can use it.
 
-/** One Allow or Disallow rule of the "*" groups of a robots.txt. */
+/** Anthropic's agents, in lower case. A group that names one of them applies to the research browser. */
+export declare const ANTHROPIC_AGENTS: string[];
+
+/** One Allow or Disallow rule of a group of a robots.txt that applies to the research browser. */
 export interface RobotsRule {
   /** True for Allow, false for Disallow. */
   allow: boolean;
@@ -10,13 +13,22 @@ export interface RobotsRule {
   text: string;
   /** The line number in the file, from 1. */
   line: number;
+  /** The token of the rule's group, as written: "*", "ClaudeBot", "HeadlessChrome". */
+  agent: string;
 }
 
-/** The rules that apply to the research browser: those of every "*" group, in the order of the file. */
-export declare function parseRobots(text: string): RobotsRule[];
+/**
+ * The rules of every group that applies to a browser that sends `userAgent`, in the order of the
+ * file: the "*" groups, the groups whose token is in a product name of `userAgent` (ignoring case),
+ * and the groups that name an Anthropic agent.
+ */
+export declare function parseRobots(text: string, userAgent?: string): RobotsRule[];
 
-/** The rule that decides a path with its query ("/a/b?c=d"): the longest match, Allow on a tie. Undefined if none matches. */
+/**
+ * The rule that decides a path with its query ("/a/b?c=d"). Each group gives its longest match
+ * (Allow on a tie); a Disallow from any group decides. Undefined if no rule matches.
+ */
 export declare function robotsMatch(rules: RobotsRule[], pathWithQuery: string): RobotsRule | undefined;
 
-/** True if the rules allow a path with its query. */
+/** True if every group allows a path with its query. */
 export declare function robotsAllows(rules: RobotsRule[], pathWithQuery: string): boolean;
