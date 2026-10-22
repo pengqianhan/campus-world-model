@@ -6,7 +6,8 @@ photographs (October 2026). The kit it is built with, the pipeline, the viewer a
 shared by every landmark: [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=general-library&view=orbit`
-  with the repository root served on port 8765. It is not on the site.
+  with the repository root served on port 8765. The site draws it near building 109 in place of its
+  block (`landmarks/README.md`, "On the site").
 - Run its pipeline: `landmarks/pipeline/run.sh general-library [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
@@ -15,7 +16,7 @@ shared by every landmark: [`../README.md`](../README.md).
 | `model.js` | assembles the parts: `slab`, `core`, `podium`, `canopy` |
 | `parts/` | `slab.js` (the tower slab, its core and stair tower), `podium.js` (the podium, its fin screens, the canopy), `facade.js` (ribbon windows and glazing on any face), `common.js` (the sizes measured in the LiDAR) |
 | `config/general-library.json` | the building (109), the LiDAR and aerial tiles, the frame, the ground and the door, the twelve Street View panoramas, the viewer's light |
-| `placement.json` | where it stands on the campus map (written by the `place` stage); not on the site |
+| `placement.json` | where it stands on the campus map (written by the `place` stage); `site: true` |
 | `landscape.js` | the ground round it, for the viewer only: the LiDAR's ground on a 2.5 m grid |
 
 Renders of the model (no photograph): [`docs/landmarks/general-library-alfred.jpg`](../../docs/landmarks/general-library-alfred.jpg)
@@ -88,8 +89,29 @@ viewer, the LiDAR's ground round it (`landscape.js`).
   point stands above it (the highest is 1.29 m below).
 - 10,128 triangles in 5 materials (`paint`, `glassPale`, `iron`, `roofPale`, `timber`), built in 3-18 ms.
 
-What the next round should look at: the grey of the south-east end's piers and cladding, of the back
-wing's plinth and of the north-west end's stone panel (a mid-grey in the kit); a brick for the plinth;
-the hoods' hollow undersides; the slab's lower floors on Alfred Street (taller glazing) and the
-transoms of its ribbon windows; the ribs of the podium's roof (about 2.4-2.5 m apart; a first try was
-out of step with the LiDAR's); the light of the back's sunlit views.
+## On the site (October 2026)
+
+The kit has a brick now (the Old Choral Hall's, the same shader) and a mid-grey, `grey` (the paint's own
+shader in another colour, so a model that uses it makes no new shader): the plinth on Alfred Street and
+by the stair tower is brick, and the south-east end's ground floor stands between grey piers (0.9 m
+wide, where the glazing's mullions were), as does the low block's end; the back wing's plinth is grey.
+The clock tower's and Old Government House's seven viewer frames (`?quality=low` from five cameras,
+`?mask=1`, `&landscape=0`) are byte-identical before and after.
+
+- Against the photographs (`refine compare` again, 36 views, 35 scored; the cameras of `xKYw…` and
+  `fF8q…` refined): silhouette IoU 0.796 on average; on Alfred Street, the front, 0.507 to 1.0 (the
+  lowest `MMME…` upper, under the plane trees); `Qaci…` wide, off the north-west end, 0.32 (bushes and
+  trees in front). Building region luma median 143 in the photographs and 136 drawn.
+- From above: unchanged (footprint IoU 0.946; highest point 38.8 m against 38.78 m; 93.9% of block 109
+  under it). The blocks within 80 m are 109, 103 (Alfred Nathan House) and 322 (AUSA House); the model
+  covers under 0.5% of the other two, so `also` stays empty.
+- On the site's ground: each material's lowest points are at least 0.09 m below the drawn ground (the
+  test "each landmark on the site's ground" allows 0.25 m above it).
+- 10,248 triangles in 6 materials (`paint`, `glassPale`, `iron`, `roofPale`, `grey`, `brick`): 6 draw
+  calls.
+
+What the next round should look at: the cladding of the south-east end and the brown panel of the low
+block's end; the north-west end's stone panel; the hoods' hollow undersides; the slab's lower floors
+on Alfred Street (taller glazing) and the transoms of its ribbon windows; the ribs of the podium's roof
+(about 2.4-2.5 m apart; a first try was out of step with the LiDAR's); the light of the back's sunlit
+views.
