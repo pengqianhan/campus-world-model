@@ -42,7 +42,7 @@ the first migration pull request does, once approved.
 | "A preview for each of the user's own branches" | A branch preview holds every school: `<branch>.campus-world-model.pages.dev/<id>/` | Add "for every school" after "branch preview" |
 | "One source for a University building" | Each school's buildings have one source. For the University of Auckland that stays its campus map | Add a sub-entry: "**A school whose campus map cannot be used.** Its buildings come from OpenStreetMap alone, picked by a rule on their tags in its descriptor (for AUT, its `operator` and `ref` tags). The building card names the source and says how the height was found. Floors and rooms stay absent until a usable indoor source exists." |
 | "Building height = (levels at or above index 0) × 3.6 m" (under "Buildings, floors, rooms") | Unchanged for a building from a campus map | Add: "A school's building from OpenStreetMap takes its `height` tag; else its `building:levels` × 3.6 m, the storey the windows are drawn at (`campus.floorHeight`), so that it shows as many storeys as it has levels; else 6.5 m, or 10 m over 900 m², the defaults of the surrounding buildings (`buildContext` in `scripts/build-data.ts`). `heightSource` says which, and the building card says so." |
-| "How a University building looks from outside" (2026-10-14) | A school's own buildings get the same five changes: their roof colour, a rim, storeys and windows by rule. Today they are drawn on campus-map outlines; a building from OpenStreetMap is one block on its OpenStreetMap outline, since it has no floors to stack | Add: "A school's building from OpenStreetMap is drawn by the same rules, as one block on its OpenStreetMap outline, with its storeys at 3.6 m." |
+| "How a University building looks from outside" (2026-10-14) | Of its five changes, a school's buildings from OpenStreetMap get the roof colour, the rim and firmer edges, and storeys and windows by rule. "Floors that are alike drawn as one block" does not apply, since they have no floors; fuller trees and ground belong to the whole scene. Today these rules draw on campus-map outlines; a building from OpenStreetMap is one block on its OpenStreetMap outline | Add: "A school's building from OpenStreetMap is drawn by the same rules, as one block on its OpenStreetMap outline, with its storeys at 3.6 m." |
 | "No advertising" | Victoria's copyright page allows non-commercial reproduction, so its usable verdicts hold only while the site has no advertising. AUT and Canterbury need permission for any use of their material, with or without advertising | none |
 | "Vite `base` is `/campus-world-model/`" | The default build (`SCHOOL=uoa`, no `BASE_PATH`) stays exactly this | none |
 | "All network fetching goes through `scripts/lib/snapshot.ts`" | Every school's fetch scripts use it. A raw snapshot two schools share is fetched once | none |
@@ -132,10 +132,11 @@ landmarks.
 
 **What the app needs for the Buildings form** (built with the first such school):
 
-- `massing()` in `src/shared/massing.ts` stacks floors, so a building with no floors draws nothing
-  today. It gets one rule: a building with no floors stands as one block of its footprint and its
-  height. No University of Auckland building has an empty floor list (0 of 194 in
-  `public/data/campus.json`), so `/uoa/` draws the same blocks.
+- Nothing in massing. `massing()` in `src/shared/massing.ts` already draws a building with no
+  floor at or above street level as one block of its footprint and its height (its
+  `base === undefined` branch, which three University of Auckland buildings with only basement
+  floors use today: 422, 501C and 595). A building with no floors takes the same branch, and
+  `CampusScene.ts` puts storeys and windows on it at `campus.floorHeight`.
 - The building card, the floor list, search, the time panel, the status strip and About each get
   a branch for a layer that is absent, with the words from the school's overlay.
 
@@ -202,7 +203,8 @@ snapshot, so AUT's City Campus can be built from the committed `data/raw/osm/con
 new request. Terrain tiles are keyed by zoom, x and y, and every school shares them.
 
 **Hand-made inputs** move to a folder for each school: `data/uoa/academic-calendar.json` (moved
-with `git mv`; `build-data.ts` and `fetch-classes.ts` read it from there) and later `data/<id>/academic-calendar.json`, and any list a parser needs, such as the
+with `git mv`; `build-data.ts`, `fetch-classes.ts` and `tests/calendar-schedule.test.ts` read it
+from there) and later `data/<id>/academic-calendar.json`, and any list a parser needs, such as the
 short venue names of Canterbury's exam timetable.
 
 ## 4. Fetching and building for each school
@@ -236,9 +238,12 @@ short venue names of Canterbury's exam timetable.
 - **Snapshot dates for each school.** `snapshotDate(source)` in `build-data.ts` takes the latest
   record of a whole source in the shared `data/sources.json`, and the shared fetch scripts record
   every school's files as `osm` and `terrain`. Left so, AUT's first OpenStreetMap or terrain fetch
-  would change the dates that About shows for `/uoa/` at its next rebuild. So the date of a source
-  becomes the latest record among the files that this school's build reads. Today every `osm`
-  and `terrain` record is the University of Auckland's, so its dates do not change.
+  would change the dates that About shows for `/uoa/` at its next rebuild. So for the shared
+  sources, `osm` and `terrain`, the date becomes the latest record among this school's own files:
+  its areas' OpenStreetMap files and the tiles under them. A school's own sources (`mapsindoors`,
+  `uoa-calendar`, later `aut-…`) keep today's rule, the latest record of the whole source, so a
+  refetch of the key dates alone still moves the date of "Semester dates". Today every `osm` and
+  `terrain` record is the University of Auckland's, so its dates do not change.
 - **Campus adapters.** `mapsindoors` is today's `buildCampus` with its constants (`LEARNING_TYPES`,
   `INDEX_EXCLUDED_TYPES`, `PLAN_*`, `SPACE_KINDS`, `SPACE_ICONS`, `CODE_RE`, `STACK_OVERLAP`), all in
   the University of Auckland's words. `osm-buildings` is new and shared: it takes the buildings that
@@ -381,7 +386,7 @@ sees.
 | --- | --- | --- |
 | **M1. Data in a folder** (gate: deployment) | `git mv public/data/* public/data/uoa/`; the Vite plugin of section 3; `OUT` in `build-data.ts` becomes `public/data/<school>/`; the paths in six unit tests and in `NOTICE` | `git diff -M --stat` shows only renames at 100%. `dist/` built before and after is identical, file for file (`diff -r`): the app's code does not change in this step, so the asset names do not either. The 46 e2e tests pass with no e2e file changed |
 | **M2. The descriptor** | `src/schools/uoa/school.ts` holds today's constants, copied unchanged (`ORIGIN`, `LAT`, `LON`, the weather address, `CAMPUS_SPAN`, the areas, the room-code grammar); the `@school` alias; overlays and `index.html` through the plugin; landmarks filtered by school | The built `index.html` has today's text. The map's pixel diff (`.claude/skills/street-look/CHECKS.md`, "The map's pixel diff") is 0 at the eight vantages below, on the GPU and on SwiftShader, three times each. The 46 e2e tests pass unchanged |
-| **M3. The build split** (the maintainer rebuilds to check it) | `buildContext` and `buildTerrain` to `scripts/lib/`, with the module state they read passed in; `buildCampus` to the `mapsindoors` adapter; the three fetch scripts to `scripts/schools/uoa/`, with their import paths changed; `data/academic-calendar.json` to `data/uoa/`; snapshot dates taken from the school's own files | The maintainer rebuilds as a check and does not commit the result: only `generatedAt` differs from the committed files, and `coverage` and every source's snapshot date are the same. This rebuild, not the size of the edits, is the proof |
+| **M3. The build split** (the maintainer rebuilds to check it) | `buildContext` and `buildTerrain` to `scripts/lib/`, with the module state they read passed in; `buildCampus` to the `mapsindoors` adapter; the three fetch scripts to `scripts/schools/uoa/`, with their import paths changed; `data/academic-calendar.json` to `data/uoa/`, with the three paths that read it; snapshot dates taken from the school's own files | The maintainer rebuilds as a check and does not commit the result: only `generatedAt` differs from the committed files, and `coverage` and every source's snapshot date are the same. This rebuild, not the size of the edits, is the proof |
 | **M4. CI and deploy for a list of schools** (gate: `.github/`) | The deploy jobs loop over a list that holds only `uoa`; `playwright.config.ts` takes `SCHOOL`; the `e2e-schools` matrix and the `schools` job, skipped while the list holds no other school | The site on Cloudflare has the same files at `/uoa/` (compare the hash of each file before and after). The live e2e passes, run twice |
 
 Then **B3**, one pull request for each new school: its descriptor, overlay, fetch scripts (a gate),
