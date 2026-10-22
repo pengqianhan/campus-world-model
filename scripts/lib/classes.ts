@@ -192,7 +192,8 @@ export function buildSchedule(
         located.precision = "room";
       } else {
         const floor = inferFloor(building.floors, parsed.room);
-        if (floor) {
+        // A floor where people live or children are cared for takes no class, not even an inferred one.
+        if (floor && floor.noPlan !== "residential" && floor.noPlan !== "childcare") {
           located.floor = floor.i;
           located.precision = "floor";
           located.floorInferred = true;

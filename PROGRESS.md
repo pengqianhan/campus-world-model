@@ -171,7 +171,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   "Void 2.0 test" records, shapes under 2 m², and three shapes that lie over a named room. On
   2026-10-13, 14,508 shapes on 490 floors of 108 buildings, 1,027 KB in all, loaded one building at
   a time; 14,840 since every campus was added and 841's floor was left blank (README). The codes of
-  the rooms on those floors are left out of the search too (since 2026-10-23).
+  the unnamed rooms on those floors are left out of the search too (since 2026-10-23).
 - Space types on the floor plans, since 2026-10-14 (the user chose this after asking why floors 6 to
   11 of building 405, all offices and research labs, showed only grey shapes): each shape carries
   the source's own type text, sorted by `SPACE_KINDS` in `build-data.ts` into seven groups that

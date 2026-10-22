@@ -187,10 +187,10 @@ const INDEX_EXCLUDED_TYPES = new Set([
   "Building",
 ]);
 
-/** A floor holding any of these gets no floor plan and no code in the search: where people live is
- * not drawn, even unnamed. */
+/** A floor holding any of these gets no floor plan and no unnamed room's code in the search: where
+ * people live is not drawn, even unnamed. */
 const PLAN_RESIDENTIAL_TYPES = new Set(["Stud Residential Accom"]);
-/** Buildings that get no floor plan and no code in the search, by their name in the source:
+/** Buildings that get no floor plan and no unnamed room's code in the search, by their name in the source:
  * childcare centres ("ECE" is early childhood education, as in "Nicholls Lane ECE"). */
 const PLAN_CHILDCARE_BUILDINGS = /Early Childhood|K[oō]hanga Reo|\bECE\b/i;
 /** Shapes that are not rooms: single parking bays and the source's own test records. */
@@ -483,7 +483,8 @@ function buildCampus(): { data: CampusData; index: RoomIndex; plans: FloorPlans[
     else if (!building.offMap) placed.push({ building, floor, loc });
   }
   // A floor left blank because people live there or it is a childcare centre is blank in the
-  // search too: no code on it can be found and pinned.
+  // search too: no unnamed room on it can be found and pinned. (A named teaching room on such a
+  // floor is published, and found, as any named room is.)
   for (const [bid, list] of Object.entries(index)) {
     const floors = byId.get(bid)!.floors;
     index[bid] = list.filter(([, i]) => {

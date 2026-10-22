@@ -40,16 +40,14 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-23:** the rooms on floors where people live and in childcare centres can no longer be
-  found in the search; their floors were already blank.
+- **2026-10-23:** the unnamed rooms on floors where people live and in childcare centres can no
+  longer be found in the search; their floors were already blank.
 - **2026-10-22:** near Old Government House the map draws it in detail, in painted timber from a
   walker's height; the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
   childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
 - **2026-10-21:** near the Clock Tower the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and in stone, glass and slate from a walker's height. A
   click still opens its floors.
-- **2026-10-19:** on a slow screen a walker view that stands still is drawn once, not again and
-  again.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
