@@ -283,6 +283,11 @@ describe("published floor plans", () => {
     }
     // an early childhood education centre that the source names by its initials
     expect(campus.buildings.find((b) => b.id === "841")?.floors.every((f) => f.noPlan === "childcare")).toBe(true);
+    // and blank in the search too: no code on such a floor can be found and pinned
+    for (const [id, i, why] of blank) {
+      if (why === "unmapped") continue;
+      expect((roomIndex[id] ?? []).some(([, f]) => f === i), `${id} floor ${i} in the search`).toBe(false);
+    }
   });
   it("mark the floors the campus map leaves bare, and only those", () => {
     const byBuilding = new Map(plans.map((p) => [p.building, p]));

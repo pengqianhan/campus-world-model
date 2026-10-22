@@ -187,10 +187,11 @@ const INDEX_EXCLUDED_TYPES = new Set([
   "Building",
 ]);
 
-/** A floor holding any of these gets no floor plan: where people live is not drawn, even unnamed. */
+/** A floor holding any of these gets no floor plan and no code in the search: where people live is
+ * not drawn, even unnamed. */
 const PLAN_RESIDENTIAL_TYPES = new Set(["Stud Residential Accom"]);
-/** Buildings that get no floor plan, by their name in the source: childcare centres ("ECE" is early
- * childhood education, as in "Nicholls Lane ECE"). */
+/** Buildings that get no floor plan and no code in the search, by their name in the source:
+ * childcare centres ("ECE" is early childhood education, as in "Nicholls Lane ECE"). */
 const PLAN_CHILDCARE_BUILDINGS = /Early Childhood|K[oō]hanga Reo|\bECE\b/i;
 /** Shapes that are not rooms: single parking bays and the source's own test records. */
 const PLAN_SKIPPED_TYPES = new Set(["Parking For Vehicles", "Void 2.0 test"]);
@@ -480,6 +481,17 @@ function buildCampus(): { data: CampusData; index: RoomIndex; plans: FloorPlans[
     if (PLAN_RESIDENTIAL_TYPES.has(p.type)) floor.noPlan = "residential";
     else if (m && rooms.has(`${building.id}-${m[2]}`)) continue;
     else if (!building.offMap) placed.push({ building, floor, loc });
+  }
+  // A floor left blank because people live there or it is a childcare centre is blank in the
+  // search too: no code on it can be found and pinned.
+  for (const [bid, list] of Object.entries(index)) {
+    const floors = byId.get(bid)!.floors;
+    index[bid] = list.filter(([, i]) => {
+      const blank = floors.find((f) => f.i === i)?.noPlan;
+      if (blank !== "residential" && blank !== "childcare") return true;
+      bump(`rooms.skipped.${blank}Floor`);
+      return false;
+    });
   }
   const namedOn = new Map<string, Pt[]>();
   for (const r of roomList) namedOn.set(`${r.b}|${r.f}`, [...(namedOn.get(`${r.b}|${r.f}`) ?? []), r.c]);
