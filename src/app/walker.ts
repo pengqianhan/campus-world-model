@@ -359,7 +359,7 @@ export async function walk(args: { name?: unknown; to?: unknown; speed?: unknown
   st = s.walkers.state(name)!;
   const result: WalkResult = target.building ? await s.walkers.walkToBuilding(name, target.building.id, speed) : await s.walkers.walkTo(name, target.at!, speed);
   const out: Reply = { walker: name, to: target.label, ...result };
-  if (target.room && blank) out.note = `${target.room} is inside ${target.building!.id}, on a floor where people live or children are cared for, where this site places no unnamed room. Doors are not mapped, so the walker stops beside the building.`;
+  if (target.room && blank) out.note = `${target.room} is inside ${target.building!.id}; its number points to a floor where people live or children are cared for, where this site places no unnamed room. Doors are not mapped, so the walker stops beside the building.`;
   else if (target.room) out.note = `${target.room} is inside ${target.building!.id}, and where in it is not known. Doors are not mapped, so the walker stops beside the building.`;
   else if (target.building) out.note = `Doors are not mapped: the walker stands beside the nearest wall of ${target.building.id}, which may not be an entrance.`;
   if (result.arrived) out.look = await lookFrom(name);
