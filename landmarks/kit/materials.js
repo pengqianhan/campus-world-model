@@ -193,6 +193,35 @@ function glassPale(space) {
 export const STONE = ["ashlar", "smooth", "dressed", "shade"];
 
 /**
+ * Red brick (Old Choral Hall): courses 0.086 m high (a 76 mm brick and its 10 mm joint), bricks 0.23 m
+ * long, each course set half a brick along from the one below, on every wall whatever way it faces.
+ * Pale mortar joints, a little brick-to-brick variation, a faint broad unevenness. The joints fade to
+ * their average where a course is under about two pixels, so a far wall does not shimmer. Shader hooks
+ * only, no textures, so a model that does not use it pays nothing.
+ */
+function brick(space) {
+  const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.88 });
+  m.userData.metres = 2;
+  return hook(m, "brick-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float side = abs(N.x) > abs(N.z) ? P.z : P.x;
+    float t = P.y / 0.086, row = floor(t);
+    float s = side / 0.23 + 0.5 * mod(row, 2.0), col = floor(s);
+    float wt = fwidth(t), ws = fwidth(s);
+    // joints: 10 mm of the 86 mm course, 10 mm of the 230 mm brick
+    float jy = 1.0 - smoothstep(0.0, 0.116 + wt, min(fract(t), 1.0 - fract(t)) * 2.0);
+    float jx = 1.0 - smoothstep(0.0, 0.043 + ws, min(fract(s), 1.0 - fract(s)) * 2.0);
+    float joint = max(jy, jx) * (1.0 - smoothstep(0.35, 0.7, max(wt, ws * 0.37)));
+    float b = wh(vec3(row, col, 7.0));
+    vec3 c = mix(vec3(0.235, 0.080, 0.036), vec3(0.305, 0.122, 0.056), b) * (0.94 + 0.12 * wfbm(P * 0.6));
+    vec3 mortar = vec3(0.42, 0.38, 0.31);
+    float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));
+    diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.6), wall);
+  }`, {}, undefined, space);
+}
+
+/**
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
  * a page that must stay responsive makes them in a worker and gives them to makeMaterials.
  */
@@ -228,6 +257,10 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
     roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
+    // brick and painted render (Old Choral Hall): shader hooks, no textures
+    brick: brick(space),                                // red brick, pale joints
+    render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
+    roofGrey: roofPale(0x7a8088, space),                // mid-grey metal roofs (the 2023 aerial: about 110-150 luma)
   };
   return m;
 }

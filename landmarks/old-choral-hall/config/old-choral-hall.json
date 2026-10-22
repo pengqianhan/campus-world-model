@@ -1,0 +1,321 @@
+{
+ "name": "old-choral-hall",
+ "building": {
+  "id": "104",
+  "also": [],
+  "title": "Old Choral Hall, University of Auckland",
+  "note": "outline: building 104's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    90.9,
+    112.8
+   ],
+   [
+    91.2,
+    113.1
+   ],
+   [
+    90.6,
+    113.7
+   ],
+   [
+    101.8,
+    125.2
+   ],
+   [
+    111.4,
+    116.0
+   ],
+   [
+    100.2,
+    104.4
+   ],
+   [
+    100.6,
+    104.5
+   ],
+   [
+    102.5,
+    102.6
+   ],
+   [
+    103.1,
+    103.2
+   ],
+   [
+    102.8,
+    103.5
+   ],
+   [
+    105.0,
+    105.7
+   ],
+   [
+    107.2,
+    103.6
+   ],
+   [
+    105.0,
+    101.4
+   ],
+   [
+    104.7,
+    101.7
+   ],
+   [
+    104.2,
+    101.1
+   ],
+   [
+    106.1,
+    99.2
+   ],
+   [
+    105.8,
+    99.0
+   ],
+   [
+    106.2,
+    98.7
+   ],
+   [
+    116.2,
+    109.0
+   ],
+   [
+    122.5,
+    102.8
+   ],
+   [
+    116.7,
+    96.8
+   ],
+   [
+    122.2,
+    91.5
+   ],
+   [
+    129.3,
+    98.8
+   ],
+   [
+    138.8,
+    89.6
+   ],
+   [
+    125.6,
+    76.1
+   ],
+   [
+    119.6,
+    81.8
+   ],
+   [
+    117.8,
+    79.9
+   ],
+   [
+    116.4,
+    81.3
+   ],
+   [
+    107.5,
+    72.2
+   ],
+   [
+    108.9,
+    70.9
+   ],
+   [
+    106.7,
+    68.6
+   ],
+   [
+    112.7,
+    62.8
+   ],
+   [
+    108.2,
+    58.2
+   ],
+   [
+    73.8,
+    71.4
+   ],
+   [
+    80.2,
+    87.5
+   ],
+   [
+    72.1,
+    95.0
+   ],
+   [
+    77.6,
+    100.3
+   ],
+   [
+    77.0,
+    100.9
+   ],
+   [
+    82.8,
+    106.9
+   ],
+   [
+    83.4,
+    106.3
+   ],
+   [
+    87.0,
+    110.0
+   ],
+   [
+    87.8,
+    109.2
+   ],
+   [
+    89.3,
+    111.0
+   ],
+   [
+    88.9,
+    111.4
+   ],
+   [
+    90.5,
+    113.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 50,
+ "ground": 37.7,
+ "door": {
+  "x": 1.5,
+  "z": 22.6,
+  "note": "view frame: on the Grafton Road footpath at the mouth of the forecourt between the corner pavilion and the north-east block, where the LiDAR ground is 37.78 m (median within 1 m), the model's y = 0 at 37.7; the doors themselves are behind the works' hoarding in every panorama of the street front; place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605",
+   "3704",
+   "3705"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803",
+   "1902",
+   "1903"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 104 outline: centre = mean x/y of points higher than tower_above m; axis = the bearing of most of the walls seen from above (axis_from walls: the building is wings at two angles, so the principal axis falls between them), the one of the two square to each other nearest the principal axis; toStreet = the axis turned 90 deg toward street_side: south-east, to Grafton Road (the street names are those on the blades at the corner in panorama C1kG: Symonds Street along the south-west range, Grafton Road along the front).",
+  "min_above": 12.7,
+  "tower_above": 14.7,
+  "spine_below": 22.7,
+  "spine_radius": 40,
+  "near_outline": 3,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    107.52,
+    86.738
+   ],
+   "axis": [
+    -0.71068706,
+    -0.70350829
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 11,
+  "radius_m": 120,
+  "pano_ids_note": "eleven of the twelve nearest of Google's own panoramas (copyright Google) within radius_m: six on Grafton Road in front (2024-08, the works: scaffolds and white wraps), three on Symonds Street off the south-west range (2022-09, before the works), one across the corner (2024-10) and one behind on the north-west (2025-05, the works); the twelfth, BCtN4La4k0spbkhYMtiWyA (undated, 13,312 px wide), is a panorama inside a cafe, not of the building, and is left out (its 99 tiles were bought before it was looked at); user-contributed panoramas are left out",
+  "pano_ids": [
+   "ctyQO7gAPEeHY5D3HM2OyA",
+   "m1hD1kBpLDbBK5XzLczKVA",
+   "OpqZm-xWIu_tQanfDKsOyA",
+   "zPP5CHsE7hCCE6Y1Va5mgA",
+   "UypevncKztjOD9D3T0wPNQ",
+   "nAxETKEXO-y5qtDjPo-hCw",
+   "LwAjZMSjAX1nMDY8gD-9dA",
+   "xKYw4GYJuvaMThjKjm-nNg",
+   "e8T_hlK83IjCflhcYhK1Zw",
+   "iz57x0vLC6VL8mOPPeJG2w",
+   "C1kGoeaHdjefyiOmT4sTBw"
+  ],
+  "camera_fixes_note": "two panoramas of 2022-09 record their camera 3.4 and 3.8 m nearer the south-west range than they stood: the southwest agent fitted each camera to two lines in the photograph, the parapet top (the LiDAR's edge at x' -24.6, 14.3 m) and the plinth's foot on the footpath (the LiDAR ground), about 0.1 m rms (2026-10-22); in the range's frame nAxE at x' -37.9, z' -16.3 and Uype at x' -38.7, z' 9.3, here in the view frame. The refine stage could not correct them: the plane trees leave 13-14% sky round the silhouette. Their views are cut from the panoramas as before; only the camera they are drawn from moves",
+  "camera_fixes": {
+   "nAxETKEXO-y5qtDjPo-hCw": [
+    -41.25,
+    -0.735
+   ],
+   "UypevncKztjOD9D3T0wPNQ": [
+    -32.3,
+    23.26
+   ]
+  },
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 8,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 14,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 3,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "light": {
+  "sunaz": 41.5,
+  "sunel": 48,
+  "sun": 10,
+  "env": 2.5,
+  "envsat": 1.0,
+  "haze": 0.6,
+  "exposure": 1.04,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the sun of the 2022-09 panoramas of the south-west range, seen in nAxE at bearing about 41.5 deg and 48 deg up (late morning), so the range's south-west face is in open shade under a bright hazy sky; the other numbers start from Old Government House's"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 6,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "the LiDAR ground at the door (37.78 m, within 1 m) and in the middle of the street front; the Grafton Road footpath falls from 38.5 m at the corner pavilion (x -18) to 36.85 m at the north-east corner, and the Symonds Street footpath along the south-west range rises from 38.7 m at the corner to 40.6 m at the back pavilion (parts/common.js GROUND)"
+}
