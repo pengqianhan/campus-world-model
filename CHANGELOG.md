@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
   The building card and About name them. The other 43 small buildings in the LiDAR keep their
   blocks, among them every place where people live and every childcare centre, each with its
-  reason (`landmarks/measured/exclusions.json`) (#NN).
+  reason (`landmarks/measured/exclusions.json`) (#79).
 
 ## 2026-10-22
 
