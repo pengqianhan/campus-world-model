@@ -4,8 +4,9 @@
 // to the roof's edge, over a plinth: red-brown brick on Alfred Street, grey render and dark glazing
 // behind; the front block's end by the stair tower glazed in dark frames; at the north-west
 // end (Princes Street's side, 2024-07) a band of glazing under a deep white fascia; at the south-east
-// end of the low block (2025-05) glazing between dark piers. The faces that no photograph shows (the
-// main block's back on the service lane, the low block's north-east face) are plain.
+// end of the low block (2025-05) glazing between dark piers. The faces that none of the twelve
+// panoramas shows (the main block's back on the service lane, the low block's north-east face, the
+// back wing's south-east side) are plain.
 import { boxesGeometry } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT } from "./common.js";
 import { face, faceBox, ribbons, glazing, prism, piers } from "./facade.js";
