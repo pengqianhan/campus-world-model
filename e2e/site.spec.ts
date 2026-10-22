@@ -524,6 +524,16 @@ test("the rest of a floor is drawn as unnamed shapes that carry the campus map's
   await open(page, "?building=410&light=day");
   expect(await page.evaluate(() => window.__scene!.planShapes)).toBe(0);
   await expect(page.locator("#floor-no-plan-note")).toContainText("childcare centre");
+
+  // Their rooms cannot be found either: a code typed in the search is placed in its building only,
+  // with no pin and no floor, and says why.
+  await page.locator("#search-button").click();
+  await page.locator("#search-input").fill("410-101");
+  const found = page.locator(".result.type-marker");
+  await expect(found).toContainText("410-101");
+  await expect(found).toContainText("leaves blank");
+  await expect(found).not.toContainText("shown as a pin");
+  await expect(found).not.toContainText("inferred");
 });
 
 test("a floor the campus map leaves bare, or nearly bare, is marked in the floor list and explained", async ({ page }) => {

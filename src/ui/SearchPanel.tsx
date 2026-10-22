@@ -148,7 +148,9 @@ function Result({ d, item, active, onHover }: { d: AppData; item: SearchItem; ac
           ? t("search.roomIndexed")
           : m.precision === "floor"
             ? t("search.roomInferredFloor", { floor: floorName(b, m.floor) })
-            : t("search.roomBuildingOnly");
+            : m.blank
+              ? t("search.roomBlankFloor")
+              : t("search.roomBuildingOnly");
       break;
     }
     case "course": {

@@ -52,6 +52,7 @@
     "roomIndexed": "Position from the campus map; shown as a pin",
     "roomInferredFloor": "Not on the campus map. Floor {floor} is inferred from the room number.",
     "roomBuildingOnly": "Not on the campus map. Only the building is known.",
+    "roomBlankFloor": "On a floor this site leaves blank, where people live or children are cared for: only the building is shown.",
     "subjectMeta": "{faculty}",
     "subjectNoTimetable": "Class times and rooms for this subject are not available: the timetable is not public.",
     "subjectCourses_one": "{count} course with scheduled classes",

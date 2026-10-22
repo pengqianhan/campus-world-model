@@ -40,6 +40,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-23:** the rooms on floors where people live and in childcare centres can no longer be
+  found in the search; their floors were already blank.
 - **2026-10-22:** near Old Government House the map draws it in detail, in painted timber from a
   walker's height; the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
   childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
@@ -83,7 +85,7 @@ Everything, with its pull request, is in the [changelog](CHANGELOG.md).
   in the rest of the floor plan: 14,840 other spaces without names, each tinted by its type on the
   campus map (office, other lab, toilet, stairs or lift, service) and showing that type when pointed
   at or tapped. Stairs, lifts and toilets carry a sign.
-- **Search** over 786 learning spaces, 4,668 further rooms (located as a point), 194 buildings and 251
+- **Search** over 786 learning spaces, 4,573 further rooms (located as a point), 194 buildings and 251
   subject codes. Māori names match with or without macrons (`Maori` finds `Māori`).
 - **"Now"** (Auckland time, daylight saving included) **and "Preview"** (any day and time), with the
   academic calendar: teaching week, breaks, study break, exams, public holidays.
