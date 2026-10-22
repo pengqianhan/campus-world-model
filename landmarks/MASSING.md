@@ -31,8 +31,7 @@ the generator makes.
   merged). They cover local x -759 to 1161 m and y -692 to 748 m: the whole City campus.
   The generator reads them from disk. It fetches nothing.
 - **The building's outline** from `public/data/campus.json`, taken from the map's frame to local
-  NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`, on the branch
-  `loop-a2-old-government-house` until it is merged). The outline chooses the points:
+  NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`). The outline chooses the points:
   building points (class 6) inside it, or within 1 m of it for the eaves.
 - **The ground**: the LiDAR's ground points (class 2) within 5 m outside the outline.
 - **The building's record** in `campus.json`: its id, its floors and their `noPlan` marks. The
@@ -112,8 +111,7 @@ when:
 ### How it is checked
 
 Every measured massing passes the top-view check of the landmark pipeline (`topview.mjs` and
-`topview.py`, on the branch `loop-a2-old-government-house`; `landmarks/README.md`, "Metrics", once
-it is merged). The check draws the model and the LiDAR as heightmaps on a 0.5 m grid and gives:
+`topview.py`; `landmarks/README.md`, "Metrics"). The check draws the model and the LiDAR as heightmaps on a 0.5 m grid and gives:
 
 - the footprint IoU: cells higher than 2.5 m in the model against those in the LiDAR;
 - model minus LiDAR heights on the cells both cover (p10, p50, p90), and the share within 0.5 m;
@@ -249,8 +247,8 @@ A building moves out of tier 3 when the maintainer plans a landmark for it.
   Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo and 410 Symonds Street
   Early Childhood Centre (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
   833 of tiers 1 and 2 also have residential floors. The generator does not draw them, but
-  decision 6 bears on them too: 102 Old Government House (residential floors 10 and 20) is being
-  drawn as a landmark, outside and in detail, on the branch `loop-a2-old-government-house`.
+  decision 6 bears on them too: 102 Old Government House (residential floors 10 and 20) is drawn
+  as a landmark, outside and in detail (#75).
   **841 Nicholls Lane ECE** is a childcare centre by its name. Before PR #69 the data build's test
   (`PLAN_CHILDCARE_BUILDINGS` in `scripts/build-data.ts`) did not match "ECE"; since it was merged,
   841's floor is blank and caught by its `noPlan` mark like the others.
@@ -351,7 +349,7 @@ The generator will measure these again, and its numbers decide.
    photos (proposed). Or a second roof colour for pitched roofs.
 6. **Where people live and childcare centres.** Draw their exterior shell, or keep their blocks
    (the default until decided). The same answer applies to the landmarks: 102 Old Government House
-   has residential floors and is being drawn outside in detail on `loop-a2-old-government-house`.
+   has residential floors and is drawn outside in detail (#75).
    Also: whether 450 UniLodge Whitaker counts as a place where people live although its floor is
    not marked so. (841 Nicholls Lane ECE needs no decision here: PR #69 marked its floor as a
    childcare centre's.) Until decided, the generator keeps the blocks of all of them, 450 too.

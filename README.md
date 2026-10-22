@@ -426,8 +426,8 @@ If you represent the University and would like something changed or removed, ple
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
   105S) and Old Government House (102) are the exceptions: their models are drawn to sizes measured
-  from LiDAR. So are the measured massings near them (About lists them): their heights and roofs
-  are measured, their walls and windows drawn by rule.
+  from LiDAR. The measured massings (About lists them) are measured too: their heights and roofs
+  come from the LiDAR, their walls and windows are drawn by rule.
 - **Old Government House is seen in only two photographs.** Trees hide it from the other Street View
   panoramas near it, and the two see the upper storey of its south-east end. Its sizes and roofs
   come from the LiDAR. What no photograph shows is drawn plainly or after the parts the photographs
