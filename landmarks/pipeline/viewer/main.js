@@ -2,7 +2,12 @@
 // folder in landmarks/). ?view=orbit to look round; ?overlay=0.5 to lay the reference over the picture.
 // Look options: ?quality=high|medium|low (AO and MSAA / MSAA / neither, shadow map size), ?tone=neutral|
 // agx|aces, ?exposure=, ?hour= (NZST, sun place), ?sunaz=&sunel= (compass bearing and elevation),
-// ?mask=1 (building/sky mask for measuring), ?landscape=0 (leave out the landmark's landscape.js).
+// ?mask=1 (building/sky mask for measuring), ?ids=1 (each material in its own flat colour, red = which
+// material, green = which way the face looks: for measuring a render by surface), ?landscape=0 (leave
+// out the landmark's landscape.js), ?haze= (0..1, a paler sky).
+// A landmark's config may hold a `light` block: defaults for these numbers (sunaz, sunel, hour, sun, env,
+// envsat, haze, exposure, fog), for the light of its own photographs. The address still wins; without the
+// block the light is the Clock Tower's.
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { DIR, config, build } from "./landmark.js";
@@ -11,10 +16,12 @@ import { makeSky, sunPosition, frameDir, viewFrame } from "./sky.js";
 import { makePost } from "./post.js";
 
 const params = new URLSearchParams(location.search);
-const num = (k, d) => (params.has(k) ? Number(params.get(k)) : d);
+const light = config.light ?? {};
+const num = (k, d) => (params.has(k) ? Number(params.get(k)) : typeof light[k] === "number" ? light[k] : d);
 const coarse = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
 const quality = params.get("quality") ?? (coarse ? "medium" : "high");
-const mask = params.get("mask") === "1";
+const ids = params.get("ids") === "1";
+const mask = params.get("mask") === "1" || ids;
 
 const renderer = new THREE.WebGLRenderer({ antialias: quality === "low", preserveDrawingBuffer: true, powerPreference: "high-performance" });
 renderer.setPixelRatio(1);
@@ -46,7 +53,9 @@ if (params.get("pos")) {
 // ---- light: the low winter sun behind the building, the blue sky in front --------------------------
 const sunPlace = sunPosition(num("hour", 9.25));
 const sunDir = frameDir(viewFrame(config.frame), num("sunaz", sunPlace.bearing), num("sunel", sunPlace.elevation));
-const { sky } = makeSky(renderer, scene, { sunDir, envIntensity: num("env", 2.25), envSat: num("envsat", 0.5), quality });
+// `ground` ([r, g, b] linear, or ?ground=r,g,b): a sunlit ground in the light, `groundshade` of it away from the sun
+const ground = params.get("ground")?.split(",").map(Number) ?? (Array.isArray(light.ground) ? light.ground : null);
+const { sky } = makeSky(renderer, scene, { sunDir, envIntensity: num("env", 2.25), envSat: num("envsat", 0.5), haze: num("haze", 0), quality, ground, groundShade: num("groundshade", 0.5) });
 scene.fog = new THREE.FogExp2(0xb4c4d8, num("fog", 0.0018));
 
 const sun = new THREE.DirectionalLight(0xfff0dc, num("sun", 8.0));
@@ -73,6 +82,10 @@ scene.add(sun, sun.target);
 const materials = makeMaterials(quality);
 const building = build(materials, params.get("only")?.split(","));
 building.name = "building";
+// ?swap=glass:glassPale,...: draw a material's mesh with another of the kit's (to try a material before
+// the parts use its name); ?ids=1 still reports the name the parts gave
+for (const [from, to] of (params.get("swap") ?? "").split(",").filter(Boolean).map((s) => s.split(":")))
+  building.traverse((o) => { if (o.isMesh && o.name === from && materials[to]) o.material = materials[to]; });
 scene.add(building);
 // The street round the building, when the landmark has one (landscape.js beside its model.js).
 const hasLand = params.get("landscape") !== "0" && (await fetch(`${DIR}landscape.js`, { method: "HEAD" })).ok;
@@ -84,7 +97,17 @@ if (mask) {
     vertexShader: "varying float vy; void main(){ vy = (modelMatrix * vec4(position, 1.0)).y; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
     fragmentShader: "varying float vy; void main(){ gl_FragColor = vy > 2.3 ? vec4(1.0) : vec4(1.0, 0.0, 0.0, 1.0); }",
   });
-  building.traverse((o) => { if (o.isMesh) o.material = bMat; });
+  // ?ids=1: red = 10 x (the material's place in the kit's list + 1), green = the face's world normal,
+  // 40 +x, 80 -x, 120 +y, 160 -y, 200 +z, 240 -z (the largest component); blue 255
+  const names = Object.keys(materials);
+  const idMat = (name) => new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    vertexShader: "varying vec3 vn; void main(){ vn = mat3(modelMatrix) * normal; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+    fragmentShader: `varying vec3 vn; void main(){ vec3 n = normalize(gl_FrontFacing ? vn : -vn), a = abs(n);
+      float g = a.x >= a.y && a.x >= a.z ? (n.x > 0.0 ? 40.0 : 80.0) : a.y >= a.z ? (n.y > 0.0 ? 120.0 : 160.0) : (n.z > 0.0 ? 200.0 : 240.0);
+      gl_FragColor = vec4(${(10 * (names.indexOf(name) + 1)).toFixed(1)} / 255.0, g / 255.0, 1.0, 1.0); }`,
+  });
+  building.traverse((o) => { if (o.isMesh) o.material = ids ? idMat(o.name) : bMat; });
   land?.traverse((o) => { if (o.isMesh) o.material = new THREE.MeshBasicMaterial({ color: 0x000000 }); });
   sky.material = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.BackSide, depthWrite: false });
   scene.fog = null; scene.environment = null;

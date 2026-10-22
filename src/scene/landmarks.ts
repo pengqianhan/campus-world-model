@@ -4,7 +4,7 @@
 // made (CampusScene.prepareLandmark):
 // - "light": the landmark's shape in the map's colours, with no texture. The map draws it, and so
 //   do the walker views of the basic tier (street/tier.ts): phones and software rendering.
-// - "full": the same shape in the landmark's own stone, glass and slate (landmarks/kit/), in the
+// - "full": the same shape in the landmark's own materials (landmarks/kit/), in the
 //   walker views of the full tier.
 // The blocks stay in the scene. They are what a click finds and what opens on their floors (CampusScene).
 // A measured massing (landmarks/MASSING.md) is drawn the same way, in one form only: its walls and
@@ -62,7 +62,8 @@ export interface TextureData {
 }
 
 export type LandmarkReply =
-  | { name: string; part: "geometry"; meshes: MeshData[] }
+  /** `stone`: whether a mesh is in one of the kit's stone materials, the only ones the textures are for. */
+  | { name: string; part: "geometry"; meshes: MeshData[]; stone: boolean }
   | { name: string; part: "textures"; quality: TextureQuality; textures: Record<string, TextureData> }
   | { name: string; part: "geometry" | "textures"; error: string };
 
@@ -76,8 +77,18 @@ export interface LightMaterials {
   openings: MeshLambertMaterial;
 }
 
-/** The part of the light form each of the kit's materials falls in; every other material is wall. */
-const LIGHT_ROLE: Record<string, keyof LightMaterials> = { roof: "roof", glass: "glass", iron: "openings", void: "openings" };
+/**
+ * The part of the light form each of the kit's materials falls in; every other material is wall,
+ * as the painted timber's boards, trim and paint are.
+ */
+const LIGHT_ROLE: Record<string, keyof LightMaterials> = {
+  roof: "roof",
+  roofPale: "roof",
+  glass: "glass",
+  glassPale: "glass",
+  iron: "openings",
+  void: "openings",
+};
 
 /**
  * The full form's textures. At "low" the rock-faced ashlar repeats every 4 m over 1,024 pixels, half
@@ -138,6 +149,10 @@ export class Landmark {
   /** The full form while it is being made: it needs the geometry and the textures, whichever comes last. */
   private makingFull?: Promise<void>;
   private asked = new Set<LandmarkRequest["part"]>();
+  /** The full form was asked for; its textures are asked for once the geometry says whether it needs them. */
+  private wantsFull = false;
+  /** Whether the model has stone, as the geometry says. */
+  private stone = false;
 
   constructor(entry: LandmarkEntry, host: LandmarkHost) {
     const p = entry.placement;
@@ -213,7 +228,10 @@ export class Landmark {
       if (this.measured && !style) return;
       this.fetch({ name: this.name, part: "geometry", covers: covers(), ...(style ? { measured: { building, style } } : {}) });
     }
-    if (form === "full" && !this.measured && !this.asked.has("textures")) this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+    if (form === "full" && !this.measured) {
+      this.wantsFull = true;
+      this.askTextures();
+    }
   }
 
   /**
@@ -229,6 +247,32 @@ export class Landmark {
         if (m) mesh.material = m;
       }
     }
+  }
+
+  /**
+   * The full form's textures, once the geometry has come: the kit's textures are its stone's, so a
+   * model with no stone, as one of painted timber, asks for none and makes its full form without them.
+   */
+  private askTextures(): void {
+    if (!this.wantsFull || !this.parts || this.asked.has("textures")) return;
+    if (this.stone) {
+      this.fetch({ name: this.name, part: "textures", quality: QUALITY });
+    } else {
+      this.asked.add("textures");
+      this.textures = {};
+      // The geometry may have come long before (the map wanted the light form first): make it now,
+      // counted as loading, as a request to the worker is.
+      const making = this.makeFullWhenReady();
+      if (making) {
+        this.host.loading(1);
+        making.catch((e) => console.error(`landmark ${this.name}`, e)).finally(() => this.host.loading(-1));
+      }
+    }
+  }
+
+  /** Makes the full form once the geometry and the textures are both in, whichever comes last. */
+  private makeFullWhenReady(): Promise<void> | undefined {
+    return this.parts && this.textures ? (this.makingFull ??= this.makeFull()) : undefined;
   }
 
   /** Draws a form, or none, so that the blocks show. A form not yet made counts as none. True if that changed. */
@@ -282,10 +326,12 @@ export class Landmark {
       // Each building's part in its own colours: one material a group.
       const lights = this.covered.map((id) => this.lights.get(id)!);
       this.place("light", this.form((part) => lights.map((l) => l[LIGHT_ROLE[part.material] ?? "walls"])));
+      this.stone = reply.stone;
+      this.askTextures();
     } else {
       this.textures = reply.textures;
     }
-    if (this.parts && this.textures) await (this.makingFull ??= this.makeFull());
+    await this.makeFullWhenReady();
   }
 
   /** Puts a form among those that can be drawn once its shaders are made, and says so, made or not. */
@@ -378,7 +424,9 @@ function startWorker(): Worker {
     const key = `${data.name}:${data.part}`;
     waiting.get(key)?.(data);
     waiting.delete(key);
-    done();
+    // Not before the reply's handlers have run: what they ask for next (a landmark's textures once
+    // its geometry has come) goes to this worker, not a new one.
+    setTimeout(done);
   };
   // The worker could not start or stopped: every request still open fails.
   w.onerror = (e) => {
