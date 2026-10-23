@@ -49,7 +49,13 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
     base: `http://127.0.0.1:${port}`,
     host: `127.0.0.1:${port}`,
     other: `http://localhost:${port}`,
-    stop: () => new Promise((done) => server.close(done)),
+    // close() alone waits for every connection to end, and a browser still open (its prefetches or a
+    // prerendered page) can hold one until the test's own timeout.
+    stop: () =>
+      new Promise((done) => {
+        server.close(done);
+        server.closeAllConnections();
+      }),
   };
 }
 
@@ -535,6 +541,9 @@ test.describe("research browser", () => {
 // A limit, pinned: in a browser that politeLaunch() did not start (Playwright's default headless
 // shell), speculation rules prefetch past the gate, to any host, even a closed one.
 test("research browser: in a plain browser, speculation rules still prefetch outside the gate (a known limit)", async () => {
+  // It takes about 5 s. On CI it has hung to the 3-minute limit, twice in a row on one run, which
+  // pushed the e2e job past its 20 minutes; a hang now costs one minute a try.
+  test.setTimeout(60_000);
   const browser = await chromium.launch();
   try {
     const seen = await speculate(browser, "a list in the page");
