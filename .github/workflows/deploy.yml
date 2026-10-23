@@ -37,7 +37,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # On a slow runner the tests alone took over 20 minutes on 2026-10-23, and the browser install up to 12 more (#53).
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
