@@ -4,9 +4,11 @@
 // the block's height on the map, flat-topped, with plain walls. Nothing here comes from the LiDAR or the
 // photographs. A later round replaces this file.
 //
-// - The outline: building 104's outline in public/data/campus.json (the config's `building.outline`, map
-//   metres east and north), taken into the view frame as the site's Landmark.toModel does with
+// - The outline: the one the map extrudes for block 104 (src/shared/massing.ts: floor G's own outline in
+//   public/data/campus.json, which floor 1 stacks on; not the building's `outline`, which differs by a notch
+//   of about 2 m2 at the back), taken into the view frame as the site's Landmark.toModel does with
 //   placement.json (centre 105.904, 88.723; rotationY 0.798867; scale 1.000086), to 0.01 m.
+//   tests/landmarks.test.ts checks OUTLINE and TOP against campus.json and the terrain.
 // - Less the range: the part of it on the range's side of the range's inner wall (x' <= SW.inner in the
 //   range's frame, parts/common.js). The range and its corner pavilion stand wholly on that side, and the map's
 //   outline runs 3.0 to 3.7 m beyond the range's face toward Symonds Street, so the whole side goes.
@@ -26,15 +28,15 @@ const WALL = "plain", ROOF = "roofGrey", FOOT = -2.0;
 export const MAP_BLOCK = { base: 1.77, height: 7.2 };
 export const TOP = MAP_BLOCK.base + MAP_BLOCK.height;
 
-/** Building 104's outline from the campus map, in the view frame ([x, z], metres). */
+/** The outline the map extrudes for block 104, in the view frame ([x, z], metres). */
 export const OUTLINE = [
-  [6.79, -27.54], [7.21, -27.54], [7.22, -28.39], [23.27, -28.38], [23.38, -15.09], [7.25, -15.02], [7.6, -14.8],
+  [5.87, -27.48], [7.21, -27.54], [7.22, -28.39], [23.27, -28.38], [23.38, -15.09], [7.25, -15.02], [7.6, -14.8],
   [7.57, -12.12], [8.42, -12.11], [8.42, -12.53], [11.53, -12.49], [11.56, -9.45], [8.45, -9.49], [8.46, -9.91],
   [7.68, -9.85], [7.64, -7.17], [7.29, -7.24], [7.36, -6.75], [21.71, -6.77], [21.66, 2.07], [13.32, 2.1],
   [13.36, 9.74], [23.54, 9.74], [23.57, 22.96], [4.69, 22.92], [4.59, 14.64], [1.98, 14.68], [2, 12.7],
-  [-10.73, 12.67], [-10.68, 14.58], [-13.86, 14.61], [-13.83, 22.95], [-20.27, 22.93], [-34.8, -10.92],
-  [-18.8, -17.56], [-19.08, -28.6], [-11.45, -28.35], [-11.43, -29.2], [-3.09, -29.23], [-3.1, -28.38],
-  [2.06, -28.38], [2.05, -27.25], [4.38, -27.43], [4.39, -28], [6.72, -28.04],
+  [-10.73, 12.67], [-10.68, 14.58], [-13.86, 14.61], [-13.83, 22.95], [-20.27, 22.93], [-34.8, -10.92], [-18.8, -17.56],
+  [-19.08, -28.6], [-11.45, -28.35], [-11.43, -29.2], [-3.09, -29.23], [-3.1, -28.38], [2.06, -28.38], [2.05, -27.25],
+  [5.86, -27.2],
 ];
 
 /**

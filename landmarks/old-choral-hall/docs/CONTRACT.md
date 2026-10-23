@@ -28,10 +28,11 @@ maintainer's to decide.
   back), `SW` (the south-west range, turned 22.25° from the frame, with `swMatrix()` and `swPoint()`
   to draw it in its own frame x', z'). The rest's LiDAR sizes of round 1 (`FRONT`, `RANGES`, `NE`,
   `BACK`) are left out with it.
-- `parts/rest.js` holds the map's block: `OUTLINE` (building 104's outline in `campus.json`, taken
-  into the view frame through `placement.json`), `MAP_BLOCK` (its footing 1.77 m above the DEM at the
-  door, and its 7.2 m: 2 storeys of 3.6 m) and `TOP` (y 8.97). If the door or the placement moves,
-  work `OUTLINE` and `MAP_BLOCK.base` out again.
+- `parts/rest.js` holds the map's block: `OUTLINE` (the outline the map extrudes for block 104,
+  floor G's in `campus.json`, taken into the view frame through `placement.json`), `MAP_BLOCK` (its
+  footing 1.77 m above the DEM at the door, and its 7.2 m: 2 storeys of 3.6 m) and `TOP` (y 8.97).
+  `tests/landmarks.test.ts` checks `OUTLINE` and `TOP` against `campus.json` and the terrain: if a
+  data rebuild, the door or the placement moves them, work them out again.
 - The LiDAR: `data/old-choral-hall_pts.npy` (x, y, z, class in local NZTM metres; class 6 building,
   2 ground, 5 high vegetation). Its frame: `data/old-choral-hall_frame.json` (`centre`; `axis` = −x;
   `toStreet` = +z; ground 37.7). Beware: along the south-west side the plane trees' crowns, 17.5 to

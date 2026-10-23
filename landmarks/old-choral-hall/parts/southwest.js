@@ -14,6 +14,13 @@ export function southwest(b) {
   // starts behind their recessed bays (0.6 m in, 0.3 m thick), so that their doors and windows show
   b.box(FACE + 0.35, SW.inner, -0.6, 13.95, NWP.u1, CEP.u0, "brick");
   for (const [z0, z1] of [[BACK + 0.35, NWP.u1], [CEP.u0, CORNER]]) b.box(FACE + 0.95, SW.inner, -0.6, 13.95, z0, z1, "brick");
+  // the mass's inner side, which no photograph shows (the middle range stands against it): plain, as the rest of
+  // the building is (parts/rest.js), 2 cm in front of the brick, over its whole length and height. Below the
+  // rest's flat top it stands inside the rest; above it, and at its front end by the recess, it is what shows.
+  const inner = new THREE.PlaneGeometry(CORNER - BACK - 0.35, 13.95 + 0.6);
+  inner.rotateY(Math.PI / 2);   // facing +x', away from the street
+  inner.translate(SW.inner + 0.02, (13.95 - 0.6) / 2, (CORNER + BACK + 0.35) / 2);
+  b.add(inner, "plain");
   // the low roof behind the parapet: its ridge along z' at x' -19.5, its eaves at the parapet's back
   const wall = FACE + 0.1;
   const s = new THREE.Shape([

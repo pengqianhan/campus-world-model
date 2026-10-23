@@ -30,13 +30,13 @@ stands (README.md, "The sources: works in progress").
 - The middle ranges, the north-east wing and the blocks behind are not drawn as they look: every source
   shows them during the works (2024-08: wrapped and scaffolded; the LiDAR of May 2024: the scaffolds'
   temporary roofs). Until the works end they keep the campus map's block (maintainer, 2026-10-23):
-  block 104's outline less the range's side, flat-topped where the map's block top is (y 8.97), plain
+  the outline the map extrudes for block 104 less the range's side, flat-topped where the map's block top is (y 8.97), plain
   walls with no windows or ornament.
 - Its finish says that it is an estimate: walls in `plain` (no texture and no shader, so no surface is
   claimed, in the map's own wall colour for a teaching building by day), the flat roof in `roofGrey`
   (the roofs' grey in the 2023 aerial). On the map the light form draws both in the map's colours.
-- The range's inner side above the rest's roof shows the range's brick mass: in the building the
-  taller middle range stands against it there.
+- The range's inner side, which no photograph shows (in the building the taller middle range stands
+  against it), is `plain` as the rest is: above the rest's roof and at its front end by the recess.
 
 ## The light (match the 2022-09 photographs)
 - A spring morning, the sun high in the north-east (in nAxE it stands almost straight beyond the

@@ -83,8 +83,9 @@ building is the maintainer's to decide later. So the model is two parts:
 - **`southwest`**: the range and its two pavilions as round 1 drew them (below), at the measured
   sizes.
 - **`rest`** (`parts/rest.js`): the rest of building 104 as the campus map draws it. Its footprint is
-  block 104's outline in `public/data/campus.json` (the config's `building.outline`), taken into the
-  view frame through `placement.json`, less the part on the range's side of the range's inner wall
+  the outline the map extrudes for block 104 (`src/shared/massing.ts`: floor G's own outline in
+  `public/data/campus.json`, which floor 1 stacks on), taken into the view frame through
+  `placement.json`, less the part on the range's side of the range's inner wall
   (x' ≤ −13.0 in the range's frame: the range and its corner pavilion stand wholly there, and the
   map's outline runs 3.0 to 3.7 m beyond the range's face toward Symonds Street). Its top is flat and
   stands where the map's block top stands: the map draws block 104 as 2 storeys of 3.6 m (7.2 m,
@@ -97,13 +98,15 @@ building is the maintainer's to decide later. So the model is two parts:
 - **Its finish.** In the walker views the rest's walls are `plain`: no texture and no shader, in the
   map's own wall colour for a teaching building by day (`0xfaf1dc`). That is the plainest finish
   that is honest: it claims no surface, as the map's block claims none, where cream render or brick
-  would claim one that no photograph shows as it stands. Its flat roof is `roofGrey`, the roofs'
+  would claim one that no photograph shows as it stands. The range's inner side, which no photograph
+  shows either (the middle range stands against it), is `plain` too above the rest's roof and at its
+  front end by the recess. Its flat roof is `roofGrey`, the roofs'
   grey in the 2023 aerial. On the map the light form draws both in the map's colours (`roofGrey` is
   a roof in `LIGHT_ROLE`, `src/scene/landmarks.ts`).
 
 What this gives (2026-10-23, against round 1):
 
-- From above, the model covers 95.5% of block 104 on a 0.5 m grid (the 4.5% it does not cover is
+- From above, the model covers 95.3% of block 104 on a 0.5 m grid (the 4.7% it does not cover is
   on the range's side of the map's outline, most of it beyond the range's face), and no other block
   of the campus map at all (136 Chiller: 0%), so `building.also` stays empty.
 - The range's heights are round 1's (below), against the LiDAR's points over the range without the
@@ -111,8 +114,11 @@ What this gives (2026-10-23, against round 1):
   against 15.15 (the median in a 1 m band along it). The model's highest point, 15.50 m, is the
   pavilions' pediments, sized from the photographs: over them the LiDAR has only the plane trees'
   crowns, 14.3 to 24 m. The rest's top is y 8.97, the map's block top to 0.01 m.
-- 19,413 triangles in 7 draw calls (`render`, `paint`, `brick`, `void`, `glassPale`, `roofGrey`,
-  `plain`); the rest is 119 of them.
+- 19,409 triangles in 7 draw calls (`render`, `paint`, `brick`, `void`, `glassPale`, `roofGrey`,
+  `plain`); the rest is 113 of them.
+- The building's card says that only the range is drawn in detail and that the rest keeps its
+  estimated height: the config's `part` ("Its range on Symonds Street"), which `place` writes into
+  `placement.json`.
 - Against the photographs (`refine compare`): the nine views of 2022-09, which show the range, keep
   their refined cameras and an IoU of 0.58 to 1.0 (mean 0.883); C1kG (2024-10) falls from 0.72,
   0.83 and 0.98 to 0.38, 0.61 and 0.62, because behind the corner pavilion it sees the wrapped
