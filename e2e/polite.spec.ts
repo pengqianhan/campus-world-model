@@ -49,7 +49,14 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
     base: `http://127.0.0.1:${port}`,
     host: `127.0.0.1:${port}`,
     other: `http://localhost:${port}`,
-    stop: () => new Promise((done) => server.close(done)),
+    // close() ends idle keep-alive connections itself, but waits with no time limit for a connection
+    // a browser opened and sent nothing on (a plain browser preconnects), or whose answer is not
+    // finished; the browser is closed only after stop().
+    stop: () =>
+      new Promise((done) => {
+        server.close(done);
+        server.closeAllConnections();
+      }),
   };
 }
 
