@@ -99,8 +99,10 @@ building is the maintainer's to decide later. So the model is two parts:
   map's own wall colour for a teaching building by day (`0xfaf1dc`). That is the plainest finish
   that is honest: it claims no surface, as the map's block claims none, where cream render or brick
   would claim one that no photograph shows as it stands. The range's inner side, which no photograph
-  shows either (the middle range stands against it), is `plain` too above the rest's roof and at its
-  front end by the recess. Its flat roof is `roofGrey`, the roofs'
+  shows either, is `plain` too above the rest's roof and, beyond block 104's outline, down to the
+  ground by the recess. Two pieces are still brick that no photograph shows: the range mass's end
+  face at its front end, about 3.9 m by 14.5 m, in the recess facing Grafton Road, and a strip about
+  0.75 m wide along the top of the brick, where the low roof's valley dips below it. Its flat roof is `roofGrey`, the roofs'
   grey in the 2023 aerial. On the map the light form draws both in the map's colours (`roofGrey` is
   a roof in `LIGHT_ROLE`, `src/scene/landmarks.ts`).
 

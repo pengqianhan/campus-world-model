@@ -35,8 +35,10 @@ stands (README.md, "The sources: works in progress").
 - Its finish says that it is an estimate: walls in `plain` (no texture and no shader, so no surface is
   claimed, in the map's own wall colour for a teaching building by day), the flat roof in `roofGrey`
   (the roofs' grey in the 2023 aerial). On the map the light form draws both in the map's colours.
-- The range's inner side, which no photograph shows (in the building the taller middle range stands
-  against it), is `plain` as the rest is: above the rest's roof and at its front end by the recess.
+- The range's inner side, which no photograph shows, is `plain` as the rest is: above the rest's
+  roof, and down to the ground beyond block 104's outline by the recess. Still brick and not seen:
+  the range mass's end face at the front (about 3.9 m by 14.5 m, in the recess facing Grafton Road)
+  and a strip about 0.75 m wide along the brick's top where the roof's valley dips below it.
 
 ## The light (match the 2022-09 photographs)
 - A spring morning, the sun high in the north-east (in nAxE it stands almost straight beyond the
