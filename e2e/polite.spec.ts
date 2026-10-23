@@ -49,14 +49,7 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
     base: `http://127.0.0.1:${port}`,
     host: `127.0.0.1:${port}`,
     other: `http://localhost:${port}`,
-    // close() ends idle keep-alive connections itself, but waits with no time limit for a connection
-    // the browser opened and has sent nothing on, or whose answer is not finished; the browser is
-    // closed only after stop().
-    stop: () =>
-      new Promise((done) => {
-        server.close(done);
-        server.closeAllConnections();
-      }),
+    stop: () => new Promise((done) => server.close(done)),
   };
 }
 
@@ -552,7 +545,10 @@ test("research browser: in a plain browser, speculation rules still prefetch out
     expect(seen.outside).toContain("/not-allowed");
     expect(seen.shut).toContain("/closed-host");
   } finally {
-    await browser.close();
+    // Closing this browser, with the gate's session still on it, has not returned at times: in one
+    // trace every check had passed and "Close browser" never ended. Playwright ends the browser's
+    // process when the worker exits, if it is still open then.
+    await Promise.race([browser.close(), new Promise((done) => setTimeout(done, 10_000))]);
   }
 });
 
