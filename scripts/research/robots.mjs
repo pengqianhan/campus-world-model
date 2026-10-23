@@ -98,6 +98,9 @@ const UNRESERVED = /^[A-Za-z0-9\-._~]$/;
 /** Characters that stand as they are: the unreserved and the reserved ones of RFC 3986, and "%". */
 const AS_IS = /^[A-Za-z0-9\-._~:/?#[\]@!&'()+,;=%]$/;
 
+/** Text that canon() gives back as it is: no "%", "*" or "$", and nothing to encode. */
+const PLAIN = /^[A-Za-z0-9\-._~:/?#[\]@!&'()+,;=]*$/;
+
 function encode(char) {
   return [...new TextEncoder().encode(char)].map((b) => `%${b.toString(16).toUpperCase().padStart(2, "0")}`).join("");
 }
@@ -107,6 +110,8 @@ function encode(char) {
  * of them is one) and a last "$" stays the end; anywhere else they are %2A and %24.
  */
 function canon(text, pattern) {
+  // Most paths and patterns hold nothing to change.
+  if (PLAIN.test(text)) return text;
   const chars = [...text];
   let out = "";
   for (let i = 0; i < chars.length; i++) {
@@ -145,8 +150,15 @@ function matches(path, pattern) {
   return anchored ? path.length - last.length >= at && path.endsWith(last) : path.indexOf(last, at) >= 0;
 }
 
+/** The canonical pattern of each rule, made once. */
+const patterns = new WeakMap();
+function patternOf(r) {
+  if (!patterns.has(r)) patterns.set(r, canon(r.path, true));
+  return patterns.get(r);
+}
+
 function ruleMatches(r, path) {
-  const pattern = canon(r.path, true);
+  const pattern = patternOf(r);
   if (matches(path, pattern)) return true;
   return !r.allow && pattern.includes(".*") && matches(path, pattern.replaceAll(".*", "*"));
 }
@@ -157,7 +169,7 @@ function longest(rules, path) {
   let length = -1;
   for (const r of rules) {
     if (!ruleMatches(r, path)) continue;
-    const n = canon(r.path, true).length;
+    const n = patternOf(r).length;
     if (n > length || (n === length && r.allow && !best.allow)) {
       best = r;
       length = n;
