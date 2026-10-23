@@ -106,8 +106,8 @@ function encode(char) {
 }
 
 /**
- * The form in which a path and a pattern are compared. In a pattern, "*" stays a wildcard (a run
- * of them is one) and a last "$" stays the end; anywhere else they are %2A and %24.
+ * The form in which a path and a pattern are compared. In a pattern, "*" stays a wildcard and a
+ * last "$" stays the end; anywhere else they are %2A and %24.
  */
 function canon(text, pattern) {
   // Most paths and patterns hold nothing to change.
@@ -121,9 +121,7 @@ function canon(text, pattern) {
       const decoded = String.fromCharCode(parseInt(hex, 16));
       out += UNRESERVED.test(decoded) ? decoded : `%${hex.toUpperCase()}`;
       i += 2;
-    } else if (pattern && c === "*") {
-      if (!out.endsWith("*")) out += c;
-    } else if (pattern && c === "$" && i === chars.length - 1) out += c;
+    } else if (pattern && (c === "*" || (c === "$" && i === chars.length - 1))) out += c;
     else if (c === "*" || c === "$" || !AS_IS.test(c)) out += encode(c);
     else out += c;
   }
@@ -150,15 +148,21 @@ function matches(path, pattern) {
   return anchored ? path.length - last.length >= at && path.endsWith(last) : path.indexOf(last, at) >= 0;
 }
 
-/** The canonical pattern of each rule, made once. */
+/**
+ * The canonical pattern of each rule, made once: `full` to rank it by its length as written (RFC
+ * 9309, 2.2.2: the most octets win), and `match`, with each run of "*" made one, to match it.
+ */
 const patterns = new WeakMap();
 function patternOf(r) {
-  if (!patterns.has(r)) patterns.set(r, canon(r.path, true));
+  if (!patterns.has(r)) {
+    const full = canon(r.path, true);
+    patterns.set(r, { full, match: full.replace(/[*]+/g, "*") });
+  }
   return patterns.get(r);
 }
 
 function ruleMatches(r, path) {
-  const pattern = patternOf(r);
+  const pattern = patternOf(r).match;
   if (matches(path, pattern)) return true;
   return !r.allow && pattern.includes(".*") && matches(path, pattern.replaceAll(".*", "*"));
 }
@@ -169,7 +173,7 @@ function longest(rules, path) {
   let length = -1;
   for (const r of rules) {
     if (!ruleMatches(r, path)) continue;
-    const n = patternOf(r).length;
+    const n = patternOf(r).full.length;
     if (n > length || (n === length && r.allow && !best.allow)) {
       best = r;
       length = n;

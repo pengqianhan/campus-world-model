@@ -108,6 +108,12 @@ describe("robots.txt groups and lines", () => {
 });
 
 describe("robots.txt matching", () => {
+  it("ranks a pattern by its length as written, each '*' counted, though a run of them matches as one", () => {
+    expect(robotsAllows(parseRobots("User-agent: *\nDisallow: /x***\nAllow: /x/a"), "/x/a")).toBe(false);
+    expect(robotsAllows(parseRobots("User-agent: *\nDisallow: /*****\nAllow: /a"), "/a")).toBe(false);
+    expect(robotsAllows(parseRobots("User-agent: *\nDisallow: /x**\nAllow: /x/ab"), "/x/ab")).toBe(true);
+  });
+
   it("takes the longest match, and Allow on a tie", () => {
     const rules = parseRobots(["User-agent: *", "Disallow: /folder/", "Allow: /folder/page", "Disallow: /tie", "Allow: /tie", "Allow: /page", "Disallow: /*.html"].join("\n"));
     expect(robotsAllows(rules, "/folder/page")).toBe(true);
