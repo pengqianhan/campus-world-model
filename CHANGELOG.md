@@ -28,7 +28,7 @@ A change to what the site does or shows adds its line here, and the README's
   a computer with a graphics card, and in the map's colours on phones and on computers without one.
   Its block still answers a click and opens on its floors. About now names brick and painted render
   among the landmarks' materials, and says that a building under works is drawn in detail only
-  where the photographs show it as it stands (#PR).
+  where the photographs show it as it stands (#88).
 
 - **Measured massings.** Near the camera, five plain buildings of the City Campus are drawn from
   the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
