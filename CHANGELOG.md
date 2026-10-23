@@ -27,6 +27,15 @@ A change to what the site does or shows adds its line here, and the README's
   blocks, among them every place where people live and every childcare centre, each with its
   reason (`landmarks/measured/exclusions.json`) (#79).
 
+### Fixed
+
+- **Rooms on blank floors could be found in the search.** Floors where people live and childcare
+  centres are left blank, but 95 codes of unnamed rooms on them were still in the search and put a
+  pin on the blank floor: 59 on floors where people live, in 12 buildings, and 36 in the four childcare
+  centres. The data build now leaves them out of the search, and a code typed for such a floor is
+  placed in its building only, with no pin and no floor, and the search and the room card say why
+  (#84).
+
 ## 2026-10-22
 
 ### Added
