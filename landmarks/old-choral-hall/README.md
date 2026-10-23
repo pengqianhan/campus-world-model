@@ -86,7 +86,7 @@ building is the maintainer's to decide later. So the model is two parts:
   block 104's outline in `public/data/campus.json` (the config's `building.outline`), taken into the
   view frame through `placement.json`, less the part on the range's side of the range's inner wall
   (x' ≤ −13.0 in the range's frame: the range and its corner pavilion stand wholly there, and the
-  map's outline runs up to 3 m beyond the range's face toward Symonds Street). Its top is flat and
+  map's outline runs 3.0 to 3.7 m beyond the range's face toward Symonds Street). Its top is flat and
   stands where the map's block top stands: the map draws block 104 as 2 storeys of 3.6 m (7.2 m,
   `heightSource` "floor-count", `src/shared/massing.ts`) on its footing (`terrain.ts`: the DEM at
   the outline's middle, 38.60 m), so 45.80 m, which is y 8.97 over the DEM at the door (36.83 m).

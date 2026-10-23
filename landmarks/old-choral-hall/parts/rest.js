@@ -9,7 +9,7 @@
 //   placement.json (centre 105.904, 88.723; rotationY 0.798867; scale 1.000086), to 0.01 m.
 // - Less the range: the part of it on the range's side of the range's inner wall (x' <= SW.inner in the
 //   range's frame, parts/common.js). The range and its corner pavilion stand wholly on that side, and the map's
-//   outline runs up to 3 m beyond the range's face toward Symonds Street, so the whole side goes.
+//   outline runs 3.0 to 3.7 m beyond the range's face toward Symonds Street, so the whole side goes.
 // - The height: the map draws block 104 as 2 storeys of 3.6 m (`height` 7.2, `heightSource` "floor-count";
 //   src/shared/massing.ts) standing on its footing (src/scene/terrain.ts `footing`: the 8 m DEM at the
 //   outline's middle, 38.60 m), so its top is 45.80 m. The model stands with y = 0 on the DEM at the door
