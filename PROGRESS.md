@@ -303,6 +303,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     opens on its floors. Some buildings are then surveyed and their neighbours estimated, which
     this decision had avoided: About and the building card say which buildings are landmarks, and
     that the heights of the others are estimated from their floors.
+  - **Measured massings (the user, 2026-10-22).** A plain building may be drawn by a measured massing
+    (`landmarks/MASSING.md`): blocks and roofs at the heights the LiDAR measures, made by a
+    program, with walls, storeys and windows by the street look's rules. It stands in place of its
+    block as a landmark does, and only where the LiDAR covers it and the top-view check passes;
+    elsewhere the block stays. About and the building card say which buildings are measured
+    massings.
   - **On the map, a light form.** It takes the map's palette, hover and night, has no textures,
     and loads only when the camera comes near. Why: the full Clock Tower in the map view costs every
     visitor (measured 2026-10-21 on preview builds of 5435a91, 1440×900, an NVIDIA Quadro P600):
@@ -348,6 +354,11 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     steps and porch are part of the building. Its landscape (street, signs, lamp post, crossing,
     trees) stays in the landmark viewer: round it, the walker views keep their streets and trees by
     rule. About says which buildings are landmarks.
+    Since 2026-10-22 a second exception (the user): a measured massing (`landmarks/MASSING.md`). Its
+    shape and heights come from the LiDAR, by a program, and are not compared with photographs.
+    Its walls, storeys, bays and windows stay by rule from `public/data/`: storeys from the
+    building's published levels, spaced to the measured walls. Nothing is placed on it: no doors,
+    steps, signs or street furniture. About says which buildings are measured massings.
   - **At street level the University's windows are split into lights and curtain walls get
     mullions**, within the 3.2 m x 3.6 m grid of the 2026-10-14 decision on how a University
     building looks from outside. The map is unchanged; the pull request flags this as a gate.
@@ -525,3 +536,21 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    stops), would now count tiles twice: no hand `check` or `add` is needed. The tile cache is now
    `data/raw/landmarks/streetview/tiles/`, not a landmark's `refs/streetview/tiles/`, so the notes'
    list of places where Google's data may be kept needs it too.
+3. **A `source-data` issue for 408 UniPress (measured massings, decision 10).** The 2024 LiDAR
+   shows no roof on its outline in the campus map: ground is seen in 187 of its 1 m cells, under
+   trees. Its block stays (`landmarks/measured/exclusions.json`); the issue asks whether the campus
+   map's record (its outline or its place) is out of date.
+4. **Waipapa Marae (251 to 256) and Fale Pasifika (275).** Their blocks stay in the first batch of
+   measured massings (`landmarks/MASSING.md`, decision 7, kept by the campus loop's lead). Drawing
+   even their massing (measured heights and roof forms in the map's own colours, never carvings,
+   patterns or colours of their own) waits until you have asked the people they belong to.
+5. **Where people live and childcare centres, for the measured massings (`landmarks/MASSING.md`,
+   decision 6).** Draw their outside shell, with their floors blank, or keep their blocks. Until you
+   decide, the generator keeps the blocks of the places where people live (123 Lodge, 436 University
+   Hall Apartments, 617 7 City Road, 838 Stuart McCutcheon House by their residential floors; 434
+   Waikohanga House, whose floor 2 has an Accommodation Reception on the campus map; 450 UniLodge
+   Whitaker by its name) and of the childcare centres (410, 841, and 255 Te Kohanga Reo, which decision 7
+   keeps too). You accepted 102 Old Government
+   House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
+   too. Of these, 434 and 436 pass the top-view check in the first batch
+   (`landmarks/measured/exclusions.json` has their numbers).

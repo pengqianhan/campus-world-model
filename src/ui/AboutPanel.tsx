@@ -1,7 +1,7 @@
 // About: the unofficial notice, data sources with snapshot dates, coverage, and known limitations.
 import { useEffect, useRef } from "preact/hooks";
 import { formatDate, intlLocale, lang, languages, setLang, t } from "../app/i18n.ts";
-import { LANDMARKS, landmarkBuildings } from "../app/landmarks.ts";
+import { LANDMARKS, MEASURED, landmarkBuildings } from "../app/landmarks.ts";
 import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../app/links.ts";
 import { data, panel } from "../app/state.ts";
 import { aucklandWallTime } from "../shared/time.ts";
@@ -19,13 +19,16 @@ export function AboutPanel() {
   const n = (x: number) => x.toLocaleString(intlLocale());
   const pct = (x: number) => (c.sessions ? ` (${Math.round((x / c.sessions) * 100)}%)` : "");
   const available = d.schedule.available;
-  // The buildings drawn in detail, by number and name.
-  const detailed = new Intl.ListFormat(intlLocale(), { type: "conjunction" }).format(
-    LANDMARKS.flatMap(landmarkBuildings).map((id) => {
-      const b = d.buildingById.get(id);
-      return [id, b && buildingTitle(b)].filter(Boolean).join(" ");
-    }),
-  );
+  // The buildings drawn in detail, and those measured and drawn by rule, by number and name.
+  const named = (ids: string[]) =>
+    new Intl.ListFormat(intlLocale(), { type: "conjunction" }).format(
+      ids.map((id) => {
+        const b = d.buildingById.get(id);
+        return [id, b && buildingTitle(b)].filter(Boolean).join(" ");
+      }),
+    );
+  const detailed = named(LANDMARKS.flatMap(landmarkBuildings));
+  const measured = named(MEASURED.flatMap(landmarkBuildings));
 
   return (
     <div class="modal-wrap" onClick={(e) => e.target === e.currentTarget && (panel.value = "none")}>
@@ -79,6 +82,7 @@ export function AboutPanel() {
 
           <Section title={t("about.landmarksTitle")}>
             <p id="landmarks">{t("about.landmarks", { buildings: detailed })}</p>
+            {MEASURED.length > 0 && <p id="measured">{t("about.measured", { buildings: measured })}</p>}
             <p id="landmark-links">
               <a href={LANDMARK_LIDAR} target="_blank" rel="noopener noreferrer">
                 {t("about.landmarksLidar")}

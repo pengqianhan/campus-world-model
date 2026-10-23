@@ -23,9 +23,14 @@ export interface Placement {
 }
 
 export interface LandmarkEntry {
-  /** Its folder in landmarks/. */
+  /** Its folder in landmarks/, or measured/<building> for a measured massing. */
   name: string;
   placement: Placement;
+  /**
+   * A measured massing (landmarks/MASSING.md): a plain building drawn by the shared model
+   * landmarks/measured/model.js from its data file, in its block's own materials.
+   */
+  measured?: true;
 }
 
 /** The landmarks on the site, by the name of their folder. */
@@ -33,6 +38,41 @@ export const LANDMARKS: LandmarkEntry[] = Object.entries(placements)
   .filter(([, placement]) => placement.site === true)
   .map(([path, placement]) => ({ name: path.split("/").at(-2)!, placement }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
+/** Where a measured massing stands, as landmarks/pipeline/tools/massing.py writes it in its data file's `place`. */
+interface MeasuredPlace {
+  building: string;
+  /** Map metres east and north: the building's centre on the campus map, the model's x = z = 0. */
+  centre: number[];
+  /** Map metres east and north: the lowest point of its outline, where the model's y = 0 stands on the map's ground. */
+  door: number[];
+}
+
+// Each measured massing joins the site by its data file alone, landmarks/measured/buildings/<id>.json.
+// Only its `place` goes into the page's code; the worker loads the files whole (landmarkWorker.ts).
+const measuredPlaces = import.meta.glob<MeasuredPlace>("../../landmarks/measured/buildings/*.json", { eager: true, import: "place" });
+
+/** The measured massings on the site, by building. Each stands in place of its building's block as a landmark does. */
+export const MEASURED: LandmarkEntry[] = Object.values(measuredPlaces)
+  .map(({ building, centre, door }) => ({
+    name: `measured/${building}`,
+    measured: true as const,
+    placement: {
+      site: true,
+      building,
+      centre,
+      rotationY: 0,
+      scale: 1,
+      // The model's frame is the map's about the centre, with z to the south.
+      door: { model: [door[0]! - centre[0]!, centre[1]! - door[1]!], map: door },
+    },
+  }))
+  .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
+/** The measured massing that draws a University building, if one does. */
+export function measuredOf(building: string): LandmarkEntry | undefined {
+  return MEASURED.find((l) => l.placement.building === building);
+}
 
 /** The buildings whose blocks a landmark stands in place of: its own first. */
 export function landmarkBuildings(entry: LandmarkEntry): string[] {
