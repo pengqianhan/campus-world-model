@@ -1,7 +1,7 @@
 // Research helper: open a public page in headless Chromium, record which network requests it
 // makes (URL, type, status, size) and take a screenshot. Requests go through polite.mjs: only the
-// page's own host and any given with --allow, one a second, every request the gate sees logged,
-// blocked ones too. What the gate does not see is listed under "Limits" in polite.mjs.
+// page's own host and any given with --allow, one a second, each host's robots.txt first and kept
+// to, every request the gate sees logged, blocked ones too. What the gate does not see is listed under "Limits" in polite.mjs.
 // Usage: node scripts/research/sniff.mjs <url> <outPrefix> [waitMs] [width] [height] [--allow=host,host]
 import fs from "node:fs";
 import { allowArg, politeLaunch, politePage } from "./polite.mjs";
