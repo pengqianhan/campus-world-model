@@ -44,13 +44,14 @@
 // disallows is blocked with the reason "robots: <the rule as written>", and " (User-agent:
 // <token>)" after it when the rule is not of a "*" group. A 404 or another 4xx allows everything.
 // A 401, a 403, a sign-in redirect or a dropped connection closes the host, as above. A 429, a
-// 5xx or no answer in ANSWER_WAIT_MS leaves the host alone for the life of the browser, every
-// scheme of that host name and port ("robots: unreachable (<why>)"). A redirect of robots.txt is
+// 5xx or no answer in ANSWER_WAIT_MS leaves the host alone for the life of the browser, the host
+// as a URL writes it: http://h and https://h are one host, h:8080 another ("robots: unreachable
+// (<why>)"). A redirect of robots.txt is
 // followed a hop at a time at the pace, for at most ROBOTS_REDIRECTS hops, and only to an allowed
 // host. A hop to another origin goes only if that origin's own robots.txt, asked for first,
-// allows it; a target that is that origin's /robots.txt gives its answer to both. A hop within
-// the origin goes unless its rules, if known by then, disallow it. Anything else makes the
-// robots.txt "unreachable". An agent still quotes
+// allows it; a target that is that origin's /robots.txt is always allowed (RFC 9309, 2.2.2) and
+// gives its answer to both. A hop within the origin goes unless the host is closed or left alone.
+// Anything else makes the robots.txt "unreachable". An agent still quotes
 // robots.txt in its report (RECON.md asks for that), but no longer decides by hand which paths to
 // leave alone.
 //
@@ -498,8 +499,6 @@ async function robotsOf(ctx, url, asking) {
   if (!got) return undefined;
   state.robots.set(origin, got.answer);
   if (got.answer.disallowAll && !got.answer.disallowAll.startsWith("closed: ") && !state.unreachable.has(hostOf(origin))) state.unreachable.set(hostOf(origin), got.answer.disallowAll);
-  // A redirect that ended on another origin's /robots.txt gives that origin its answer too.
-  if (got.alsoFor && !state.robots.has(got.alsoFor)) state.robots.set(got.alsoFor, { ...got.answer, url: `${got.alsoFor}/robots.txt` });
   return got.answer;
 }
 
@@ -508,7 +507,7 @@ async function askRobots(ctx, origin, asking) {
   const { state, hosts, log, gone, fetchHop } = ctx;
   const url0 = `${origin}/robots.txt`;
   const host0 = hostOf(url0);
-  const answer = (fields, alsoFor) => ({ answer: { url: url0, rules: [], ...fields }, alsoFor });
+  const answer = (fields) => ({ answer: { url: url0, rules: [], ...fields } });
   const unreachable = (why, fields = {}) => answer({ ...fields, disallowAll: `unreachable (${why})` });
   /** Closed: by the robots.txt of the host itself, or, for a hop on another host, unreachable. */
   const closedBy = (host, why, fields) => (host === host0 ? answer({ ...fields, disallowAll: `closed: ${why}` }) : unreachable(`${why} from ${host}`, fields));
@@ -533,11 +532,9 @@ async function askRobots(ctx, origin, asking) {
       closeHost(state, host, String(status));
       return closedBy(host, String(status), { status });
     }
-    const final = new URL(url);
-    const alsoFor = final.pathname === "/robots.txt" && !final.search && final.origin !== origin ? final.origin : undefined;
-    if (status >= 200 && status < 300) return answer({ status, rules: parseRobots(got.body, state.userAgent), text: got.body }, alsoFor);
+    if (status >= 200 && status < 300) return answer({ status, rules: parseRobots(got.body, state.userAgent), text: got.body });
     if (status === 429 || status >= 500) return unreachable(String(status), { status });
-    if (status >= 400) return answer({ status }, alsoFor);
+    if (status >= 400) return answer({ status });
     if (status < 300) return unreachable(`status ${status}`, { status });
     let target;
     try {
@@ -568,11 +565,15 @@ async function askRobots(ctx, origin, asking) {
       // Another origin: only if its own robots.txt, asked for first, allows the target.
       const theirs = await robotsOf(ctx, target, asking);
       if (gone()) return undefined;
-      refused = refusal(state, target) ?? (theirs ? undefined : "robots: not known");
-      // The target is that origin's own robots.txt, read just now: its answer is this one's too.
-      if (!refused && ownRobots) return answer({ ...theirs, url: url0 });
+      if (ownRobots) {
+        // That origin's own robots.txt, read just now, is always allowed (RFC 9309, 2.2.2), unless
+        // its host is closed or left alone: its answer is this one's too.
+        const there = hostOf(target);
+        refused = state.closed.has(there) ? `closed: ${state.closed.get(there)}` : state.unreachable.has(there) ? `robots: ${state.unreachable.get(there)}` : theirs ? undefined : "robots: not known";
+        if (!refused) return answer({ ...theirs, url: url0 });
+      } else refused = refusal(state, target) ?? (theirs ? undefined : "robots: not known");
     } else if (!ownRobots) {
-      // The same origin: by its rules, if they are known by now.
+      // The same origin, whose robots.txt is being read now: only a closed host, or one left alone, stops it.
       refused = refusal(state, target);
     }
     if (refused) {

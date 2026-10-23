@@ -149,8 +149,9 @@ function matches(path, pattern) {
 }
 
 /**
- * The canonical pattern of each rule, made once: `full` to rank it by its length as written (RFC
- * 9309, 2.2.2: the most octets win), and `match`, with each run of "*" made one, to match it.
+ * The canonical pattern of each rule, made once: `full` to rank it by its length (RFC 9309,
+ * 2.2.2: the most octets win), every "*" counted and percent-encoding in its canonical form, and
+ * `match`, with each run of "*" made one, to match it.
  */
 const patterns = new WeakMap();
 function patternOf(r) {

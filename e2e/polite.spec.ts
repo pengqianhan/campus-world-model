@@ -628,6 +628,22 @@ test.describe("research browser", () => {
     }
   });
 
+  test("robots.txt: a redirect to another host's robots.txt is allowed even when that file's own rules would disallow it", async () => {
+    // RFC 9309, 2.2.2: /robots.txt is always allowed. As with http://h redirecting to https://h.
+    const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nDisallow: /*.txt$\n") }));
+    const site = await serve(() => ({ "/robots.txt": redirect(`${other.base}/robots.txt`), "/page": html("page") }));
+    try {
+      const { page, blocked, robots } = await politePage(browser, { url: `${site.base}/page`, allow: [other.host] });
+      expect(blocked).toBeUndefined();
+      await page.goto(`${site.base}/page`);
+      expect(site.paths()).toEqual(["/robots.txt", "/page"]);
+      expect(other.paths()).toEqual(["/robots.txt"]);
+      expect(robots.get(site.base)).toMatchObject({ status: 200, rules: [{ path: "/*.txt$" }] });
+    } finally {
+      await Promise.all([site.stop(), other.stop()]);
+    }
+  });
+
   test("robots.txt: a redirect on within another host is checked against that host's robots.txt, read on the first hop", async () => {
     const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nDisallow: /private/\n"), "/ok": redirect("/private/x"), "/private/x": text("User-agent: *\nAllow: /\n") }));
     const site = await serve(() => ({ "/robots.txt": redirect(`${other.base}/ok`), "/start": html("start") }));
