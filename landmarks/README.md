@@ -120,6 +120,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `rotationY` | radians about the scene's y axis (x east, y up, z south) that turn the model onto the map |
 | `scale` | map metres per model metre (1.0001 at the Clock Tower: leave it out) |
 | `door` | the point whose ground is the model's y = 0, in the view frame (`model`) and on the map (`map`) |
+| `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.

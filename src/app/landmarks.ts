@@ -20,6 +20,11 @@ export interface Placement {
   scale: number;
   /** The foot of its entrance: model x and z, and map metres east and north. The model's y = 0 is the ground there. */
   door: { model: number[]; map: number[] };
+  /**
+   * When only a part of the building is drawn in detail, the words for that part (its config's `part`):
+   * the rest keeps the map's estimated block, and the building's card says so.
+   */
+  part?: string;
 }
 
 export interface LandmarkEntry {

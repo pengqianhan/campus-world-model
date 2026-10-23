@@ -17,7 +17,7 @@ const ON_SITE = fs
   .filter((d) => d.isDirectory() && fs.existsSync(`landmarks/${d.name}/placement.json`))
   .map((d) => ({ name: d.name, placement: JSON.parse(fs.readFileSync(`landmarks/${d.name}/placement.json`, "utf8")) }))
   .filter((l) => l.placement.site === true)
-  .map(({ name, placement: p }) => ({ name, buildings: [p.building, ...(p.also ?? [])] as string[], centre: p.centre as [number, number] }))
+  .map(({ name, placement: p }) => ({ name, buildings: [p.building, ...(p.also ?? [])] as string[], centre: p.centre as [number, number], part: p.part as string | undefined }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
 /** The measured massings, as their data files say: one building each, and where it stands. */
@@ -25,7 +25,7 @@ const MEASURED = fs
   .readdirSync("landmarks/measured/buildings")
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(fs.readFileSync(`landmarks/measured/buildings/${f}`, "utf8")).place as { building: string; centre: [number, number] })
-  .map((p) => ({ name: `measured/${p.building}`, buildings: [p.building], centre: p.centre }))
+  .map((p) => ({ name: `measured/${p.building}`, buildings: [p.building], centre: p.centre, part: undefined }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 /** The measured massings tested one by one: the first three. */
 const MEASURED_TESTED = MEASURED.slice(0, 3);
@@ -140,7 +140,7 @@ test("from a walker's height a measured massing takes the facades drawn by rule"
   await shot(page, "31-measured-eyes");
 });
 
-for (const { name, buildings, centre } of [...ON_SITE, ...MEASURED_TESTED]) {
+for (const { name, buildings, centre, part } of [...ON_SITE, ...MEASURED_TESTED]) {
   test(`near ${name}, the map draws it in its light form in place of its blocks, and a click opens its building`, async ({ page }) => {
     await open(page, `?${T}`);
     // From the campus view its blocks are drawn, and it is not even made.
@@ -160,6 +160,11 @@ for (const { name, buildings, centre } of [...ON_SITE, ...MEASURED_TESTED]) {
     expect((await landmark(page, name)).form).toBe("none");
     await expect(page.locator(".floors")).toBeVisible();
     await expect(page.locator("#height-note")).toContainText("measured by LiDAR");
+    // A landmark drawn in detail only in part (Old Choral Hall's range) says which part, and that the rest is estimated.
+    if (part) {
+      await expect(page.locator("#height-note")).toContainText(`${part} drawn in detail`);
+      await expect(page.locator("#height-note")).toContainText("the rest of the building keeps its height estimated from the number of floors");
+    }
     if (name.startsWith("measured/")) {
       await expect(page.locator("#height-note")).toContainText("walls and windows drawn by rule");
       await page.getByRole("button", { name: "About", exact: true }).click();

@@ -7,8 +7,9 @@ So this stage takes the frame's centre and axes through longitude and latitude t
 site needs only placement.json.
 Reads the config's frame.expected (the frame that the model and the cameras use), door,
 building.id and building.also (the campus map's buildings whose blocks the model stands in place of),
-and site (true puts the landmark on the site, which finds every placement.json that says so);
-needs no LiDAR, so it runs in a fresh clone.
+and site (true puts the landmark on the site, which finds every placement.json that says so),
+and part, when only a part of the building is drawn in detail (the building's card says which part, and
+that the rest keeps its estimated height); needs no LiDAR, so it runs in a fresh clone.
   python -I ../pipeline/tools/data/place.py [--config config/<name>.json]
 """
 import json, math, os, sys
@@ -58,6 +59,11 @@ placement = {
     "scale": round(math.dist(c, px) / STEP, 6),
     "door": {"model": [door["x"], door["z"]], "map": [r3(dm[0]), r3(dm[1])]},
 }
+part = cfg.get("part")
+if part is not None:
+    if not isinstance(part, str) or not part.strip():
+        sys.exit(f"place: part is {part!r}: the words for the part drawn in detail, or no part when it is the whole building")
+    placement["part"] = part
 dst = os.path.join(common.ROOT, "placement.json")
 with open(dst, "w", encoding="utf-8", newline="\n") as f:
     json.dump(placement, f, indent=1)

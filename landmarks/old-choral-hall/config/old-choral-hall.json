@@ -1,6 +1,8 @@
 {
  "name": "old-choral-hall",
  "site": true,
+ "part": "Its range on Symonds Street",
+ "part_note": "only the south-west range is drawn in detail (the maintainer, 2026-10-23); the rest keeps the map's estimated block (parts/rest.js). place.py writes part into placement.json, and the building's card names it.",
  "building": {
   "id": "104",
   "also": [],
