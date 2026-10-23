@@ -11,6 +11,8 @@ export declare const ANSWER_WAIT_MS: number;
 export declare const POLITE_ARGS: string[];
 /** How many redirects of robots.txt the gate follows. */
 export declare const ROBOTS_REDIRECTS: number;
+/** How much of a robots.txt the gate reads and parses: 500 KiB. */
+export declare const ROBOTS_MAX_BYTES: number;
 
 /** One request, sent or blocked. */
 export interface PoliteRow {
@@ -19,7 +21,7 @@ export interface PoliteRow {
   /**
    * The resource type as the DevTools Fetch domain gives it, in lower case. Most are Playwright's
    * words ("document", "script", "image"), but a fetch() and an EventSource are "xhr", and the
-   * script of a worker is "other". The gate's own request for robots.txt is "robots".
+   * script of a worker is "other". The robots page's request for robots.txt is "robots".
    */
   type: string;
   method: string;
@@ -46,13 +48,16 @@ export interface RobotsAnswer {
   url: string;
   /** The status of the last answer, if one came. */
   status?: number;
-  /** The network error, or "no answer in 10 s", if none came. */
+  /** The network error, if no answer came. */
   error?: string;
   /** The rules of the groups that apply (see parseRobots); empty when robots.txt allows everything (a 404, an empty file). */
   rules: RobotsRule[];
   /** The file as it came (its first 500 KiB), after a 2xx: to quote in a recon's write-up. */
   text?: string;
-  /** Set when the gate leaves the whole origin alone: "unreachable (503)", "closed: 403" and so on. */
+  /**
+   * Set when the gate leaves the whole origin alone: "closed: 403", "closed: dropped (ConnectionReset)",
+   * or "unreachable (503)", which leaves every origin of the host alone.
+   */
   disallowAll?: string;
 }
 

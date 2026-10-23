@@ -19,6 +19,7 @@ interface Hit {
   host: string;
   path: string;
   at: number;
+  headers: http.IncomingHttpHeaders;
 }
 
 /**
@@ -32,7 +33,7 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
   let answers: Record<string, Answer> = {};
   const server = http.createServer((req, res) => {
     const path = req.url ?? "/";
-    hits.push({ host: req.headers.host ?? "", path, at: Date.now() });
+    hits.push({ host: req.headers.host ?? "", path, at: Date.now(), headers: req.headers });
     const answer = answers[path.split("?")[0]!];
     if (answer) return answer(res, req);
     res.writeHead(404, { "content-type": "text/plain" });
@@ -553,26 +554,96 @@ test.describe("research browser", () => {
     }
   });
 
-  for (const [answer, why, closedAs] of [
-    [status(503), "robots: unreachable (503)", undefined],
-    [((_res, req) => req.socket.destroy()) as Answer, "robots: unreachable (ECONNRESET)", undefined],
-    [status(403), "closed: 403", "403"],
+  for (const [name, answer, why, closedAs] of [
+    ["a 503 leaves the host alone", status(503), /^robots: unreachable \(503\)$/, undefined],
+    ["a dropped connection closes the host", ((_res, req) => req.socket.destroy()) as Answer, /^closed: dropped \(/, /^dropped \(/],
+    ["a 403 closes the host", status(403), /^closed: 403$/, /^403$/],
+    ["a redirect to a sign-in page closes the host", redirect("/account/login?ReturnUrl=%2Frobots.txt"), /^closed: sign-in redirect$/, /^sign-in redirect$/],
   ] as const) {
-    test(`robots.txt: ${why.replace("robots: ", "")} leaves the host alone; nothing but robots.txt is asked for`, async () => {
-      const site = await serve(() => ({ "/robots.txt": answer, "/start": html("start") }));
+    test(`robots.txt: ${name}; nothing but robots.txt is asked for`, async () => {
+      const site = await serve(() => ({ "/robots.txt": answer, "/start": html("start"), "/account/login": html("sign in") }));
       try {
         const { page, log, closed, blocked } = await politePage(browser, { url: `${site.base}/start` });
-        expect(blocked).toBe(why);
+        expect(blocked).toMatch(why);
         await expect(page.goto(`${site.base}/start`)).rejects.toThrow(/ERR_BLOCKED_BY_CLIENT/);
         expect(log[0]).toMatchObject({ url: `${site.base}/robots.txt`, type: "robots", sent: true });
-        expect(log.find((r) => r.url === `${site.base}/start`)).toMatchObject({ sent: false, reason: why });
-        expect(closed.get(site.host)).toBe(closedAs);
-        expect(site.paths()).toEqual(["/robots.txt"]);
+        expect(log.find((r) => r.url === `${site.base}/start`)).toMatchObject({ sent: false, reason: expect.stringMatching(why) });
+        if (closedAs) expect(closed.get(site.host)).toMatch(closedAs);
+        else expect(closed.has(site.host)).toBe(false);
+        // Only robots.txt; after a dropped keep-alive connection Chromium may send it again by itself (see the limits).
+        expect(new Set(site.paths())).toEqual(new Set(["/robots.txt"]));
       } finally {
         await site.stop();
       }
     });
   }
+
+  test("robots.txt: the browser itself asks for it, with its own headers", async () => {
+    const site = await serve(() => ({ "/robots.txt": text("User-agent: *\nAllow: /\n") }));
+    try {
+      await politePage(browser, { url: `${site.base}/start` });
+      expect(site.hits.map((h) => h.path)).toEqual(["/robots.txt"]);
+      const headers = site.hits[0]!.headers;
+      expect(headers["user-agent"]).toMatch(/Chrome\/\d/);
+      expect(headers["sec-fetch-dest"]).toBe("document");
+      expect(headers["sec-fetch-mode"]).toBe("navigate");
+    } finally {
+      await site.stop();
+    }
+  });
+
+  for (const [name, theirs] of [
+    ["is unreachable", status(503)],
+    ["disallows the target", text("User-agent: *\nDisallow: /private/\n")],
+  ] as const) {
+    test(`robots.txt: a redirect to another host whose robots.txt ${name} is not followed, and leaves the first host alone`, async () => {
+      const other = await serve(() => ({ "/robots.txt": theirs, "/private/x": text("User-agent: *\nAllow: /\n") }));
+      const site = await serve(() => ({ "/robots.txt": redirect(`${other.base}/private/x`), "/start": html("start") }));
+      try {
+        const { log, blocked } = await politePage(browser, { url: `${site.base}/start`, allow: [other.host] });
+        expect(blocked).toMatch(new RegExp(`^robots: unreachable \\(redirect to ${other.base}/private/x, `));
+        expect(site.paths()).toEqual(["/robots.txt"]);
+        expect(other.paths()).toEqual(["/robots.txt"]);
+        expect(log.find((r) => r.url === `${other.base}/private/x`)).toMatchObject({ type: "robots", from: `${site.base}/robots.txt`, sent: false });
+        expectPaced(log);
+      } finally {
+        await Promise.all([site.stop(), other.stop()]);
+      }
+    });
+  }
+
+  test("robots.txt: a redirect to another host's robots.txt takes that host's answer for both, asked for once", async () => {
+    const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nDisallow: /x\n") }));
+    const site = await serve(() => ({ "/robots.txt": redirect(`${other.base}/robots.txt`), "/x": html("x"), "/y": html("y") }));
+    try {
+      const { page, robots, blocked } = await politePage(browser, { url: `${site.base}/x`, allow: [other.host] });
+      expect(blocked).toBe("robots: Disallow: /x");
+      await page.goto(`${site.base}/y`);
+      expect(site.paths()).toEqual(["/robots.txt", "/y"]);
+      expect(other.paths()).toEqual(["/robots.txt"]);
+      expect(robots.get(site.base)).toMatchObject({ url: `${site.base}/robots.txt`, status: 200, rules: [{ path: "/x" }] });
+      expect(robots.get(other.base)).toMatchObject({ url: `${other.base}/robots.txt`, status: 200, rules: [{ path: "/x" }] });
+    } finally {
+      await Promise.all([site.stop(), other.stop()]);
+    }
+  });
+
+  test("robots.txt: a request still waiting its turn when the context closes asks for nothing, robots.txt included", async () => {
+    const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nAllow: /\n"), "/late.png": status(200) }));
+    const images = Array.from({ length: 4 }, (_, i) => `<img src="/img${i}.png">`).join("");
+    const site = await serve(() => ({ "/start": html(`${images}<img src="${other.base}/late.png">`) }));
+    try {
+      const { page, context, log } = await politePage(browser, { url: site.base, allow: [other.host] });
+      await page.goto(`${site.base}/start`, { waitUntil: "domcontentloaded" });
+      await expect.poll(() => log.some((r) => r.url === `${site.base}/img0.png`)).toBe(true);
+      await context.close();
+      await new Promise((r) => setTimeout(r, 7 * PACE_MS));
+      expect(other.paths()).toEqual([]);
+      expect(log.filter((r) => r.url.startsWith(other.base))).toMatchObject([{ url: `${other.base}/late.png`, sent: false, reason: "gone" }]);
+    } finally {
+      await Promise.all([site.stop(), other.stop()]);
+    }
+  });
 
   test("robots.txt: a redirect is followed at the pace within the hosts allowed; one to a host not allowed leaves the host alone", async () => {
     const site = await serve(() => ({
