@@ -386,6 +386,13 @@ async function open(browser, state, { url, allow, types, viewport }) {
       state.busy = false;
       cdp.detach().catch(() => {});
     });
+    // The requests still waiting their turn stop as soon as close() is called, not when it ends.
+    const closeContext = context.close.bind(context);
+    context.close = (...args) => {
+      closedContext = true;
+      robots.job?.finish({ gone: true });
+      return closeContext(...args);
+    };
     await context.addInitScript({ content: NO_WEBRTC_WEBTRANSPORT });
     robots.page = await context.newPage();
     const frames = await context.newCDPSession(robots.page);
