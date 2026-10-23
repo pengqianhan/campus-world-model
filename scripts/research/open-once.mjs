@@ -1,6 +1,6 @@
 // Research helper: open one URL in headless Chromium and report status / body prefix. Only the
-// page itself is requested (polite.mjs, documents only): none of the scripts, images or analytics
-// it would load.
+// host's robots.txt and the page itself are requested (polite.mjs, documents only): none of the
+// scripts, images or analytics it would load.
 import { politeLaunch, politePage } from "./polite.mjs";
 
 const url = process.argv[2];
