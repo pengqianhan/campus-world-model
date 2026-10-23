@@ -37,7 +37,7 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    # The run took 19 to 20 minutes on 2026-10-23 with nothing failing (#53); 35 leaves a third to spare.
+    # On a slow runner the tests alone took over 20 minutes on 2026-10-23, and the browser install up to 12 more (#53).
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v7
