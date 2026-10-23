@@ -35,6 +35,13 @@ describe("robots.txt groups and lines", () => {
       expect(robotsAllows(parseRobots(`User-agent: ${agent}\nDisallow: /x`), "/x/y"), agent).toBe(false);
   });
 
+  it("applies a group whose token is part of an Anthropic agent's name, and not one that is not", () => {
+    for (const agent of ["Claude", "claude-search", "anthropic", "ANTHROPIC"])
+      expect(robotsAllows(parseRobots(`User-agent: ${agent}\nDisallow: /x`, HEADLESS), "/x/y"), agent).toBe(false);
+    for (const agent of ["OpenAI", "Claude-Code-Bot", "anthropic-ai-crawler"])
+      expect(robotsAllows(parseRobots(`User-agent: ${agent}\nDisallow: /x`, HEADLESS), "/x/y"), agent).toBe(true);
+  });
+
   it("applies a group whose token is in a product name of the browser's User-Agent, and not when the User-Agent lacks it", () => {
     const robots = "User-agent: *\nDisallow: /all/\n\nUser-agent: HeadlessChrome\nDisallow: /headless/\n\nUser-agent: chrome\nDisallow: /chrome/\n";
     const headless = parseRobots(robots, HEADLESS);
@@ -64,11 +71,30 @@ describe("robots.txt groups and lines", () => {
     expect(rules.map((r) => r.path)).toEqual(["/shared/"]);
   });
 
-  it("ignores comments, blank lines, other records, rules outside a group and a byte-order mark", () => {
+  it("ignores comments, blank lines, other records and rules outside a group", () => {
     const rules = parseRobots(
-      [`${String.fromCharCode(0xfeff)}Disallow: /before-any-group/`, "# a comment", "User-agent: * # all", "", "Sitemap: https://example.ac.nz/sitemap.xml", "Crawl-delay: 5", "Disallow: /x/ # private", "nonsense line"].join("\r"),
+      ["Disallow: /before-any-group/", "# a comment", "User-agent: * # all", "", "Sitemap: https://example.ac.nz/sitemap.xml", "Crawl-delay: 5", "Disallow: /x/ # private", "nonsense line"].join("\r"),
     );
     expect(rules).toEqual([{ allow: false, path: "/x/", text: "Disallow: /x/", line: 7, agent: "*" }]);
+  });
+
+  it("reads a User-agent line that starts the file after a byte-order mark", () => {
+    const rules = parseRobots(`${String.fromCharCode(0xfeff)}User-agent: *\nDisallow: /x/\n`);
+    expect(rules).toEqual([{ allow: false, path: "/x/", text: "Disallow: /x/", line: 2, agent: "*" }]);
+  });
+
+  it("parses a 500 KiB hostile line and matches a pattern of 40,000 stars, each in well under a second", () => {
+    const line = `User-agent: *${" ".repeat(500 * 1024)}Disallow: /a${" allow".repeat(1000)}`;
+    let start = performance.now();
+    const rules = parseRobots(`${line}\n${"Disallow: /x".padEnd(500 * 1024, " ")}x\n`);
+    expect(performance.now() - start).toBeLessThan(500);
+    expect(rules.map((r) => r.path.slice(0, 2))).toEqual(["/a", "/x"]);
+    const stars = parseRobots(`User-agent: *\nDisallow: /${"*".repeat(40_000)}b$\nDisallow: /${"*a".repeat(20_000)}$`);
+    start = performance.now();
+    expect(robotsAllows(stars, `/${"a".repeat(200_000)}`)).toBe(false);
+    expect(robotsAllows(stars, `/${"c".repeat(200_000)}`)).toBe(true);
+    expect(robotsAllows(stars, `/${"c".repeat(200_000)}b`)).toBe(false);
+    expect(performance.now() - start).toBeLessThan(500);
   });
 
   it("allows everything for an empty Disallow and for an empty file", () => {

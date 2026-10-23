@@ -2,10 +2,11 @@
 // pure: it fetches nothing and imports nothing, so tests/robots.test.ts runs it in the vitest job.
 //
 // parseRobots(text, userAgent) gives the rules of every group that applies to the research
-// browser, which is the strictest reading: the "*" groups; each group whose product token is in
-// a product name of the browser's own User-Agent, ignoring case ("HeadlessChrome/156.0.0.0" makes
-// the groups for HeadlessChrome and for Chrome apply); and each group that names an Anthropic
-// agent (ANTHROPIC_AGENTS), because Claude drives this browser. RFC 9309 (2.2.1) would apply only
+// browser, which is the strictest reading: the "*" groups, and each group whose token is part of
+// one of our names, ignoring case. Our names are the product names of the browser's own User-Agent
+// ("HeadlessChrome/156.0.0.0" makes the groups for HeadlessChrome and for Chrome apply) and
+// Anthropic's agents (ANTHROPIC_AGENTS: a group for "Claude" or "anthropic" applies too), because
+// Claude drives this browser. RFC 9309 (2.2.1) would apply only
 // the one most specific group. The groups for one token are merged into one (2.2.1). robotsMatch()
 // and robotsAllows() judge a path with its query by each token's group alone: the longest match
 // wins, and Allow wins a tie (2.2.2). The path is allowed only if every group allows it; with no
@@ -24,8 +25,15 @@
 //   place: "Disallow: /__data/.*" leaves alone all of /__data/, not only paths that start
 //   "/__data/.".
 
-/** The directives that start a line of their own when they come after another on one line. */
-const DIRECTIVE_INSIDE = /\s+(?=(?:user-agent|allow|disallow|sitemap|crawl-delay|host|content-signal)\s*:)/i;
+/** The directives that start a line of their own when they come after a space on one line. */
+const DIRECTIVE = /(?:user-agent|allow|disallow|sitemap|crawl-delay|host|content-signal)[ \t]*:/gi;
+
+/** A line cut before each directive that comes after a space: "User-agent: * Disallow: /" gives two. */
+function directives(line) {
+  const starts = [0];
+  for (const m of line.matchAll(DIRECTIVE)) if (m.index > 0 && /\s/.test(line[m.index - 1])) starts.push(m.index);
+  return starts.map((start, k) => line.slice(start, starts[k + 1] ?? line.length));
+}
 
 /** Anthropic's agents, in lower case. A group that names one of them applies to this browser. */
 export const ANTHROPIC_AGENTS = ["claudebot", "claude-web", "claude-user", "claude-searchbot", "anthropic-ai"];
@@ -41,14 +49,15 @@ function tokenOf(value) {
   return /^[A-Za-z_-]*/.exec(value)[0];
 }
 
-/** True if the group for `token` applies to a browser that sends `userAgent`. */
-function applies(token, userAgent) {
+/** Our names: the product names of `userAgent` (each name before a "/") and Anthropic's agents, in lower case. */
+function namesOf(userAgent) {
+  return [...[...String(userAgent).matchAll(/([A-Za-z0-9_-]+)\//g)].map((m) => m[1].toLowerCase()), ...ANTHROPIC_AGENTS];
+}
+
+/** True if the group for `token` applies to us: "*", or a token that is part of one of our names. */
+function applies(token, names) {
   const t = token.toLowerCase();
-  if (t === "*" || ANTHROPIC_AGENTS.includes(t)) return true;
-  if (!t) return false;
-  // The product names of the User-Agent: each name before a "/".
-  const products = [...String(userAgent).matchAll(/([A-Za-z0-9_-]+)\//g)].map((m) => m[1].toLowerCase());
-  return products.some((p) => p.includes(t));
+  return t === "*" || (t !== "" && names.some((name) => name.includes(t)));
 }
 
 /**
@@ -61,11 +70,12 @@ export function parseRobots(text, userAgent = "") {
   const rules = [];
   /** The group being read: its tokens that apply, and whether a rule has ended its run of User-agent lines. */
   let group;
+  const names = namesOf(userAgent);
   let body = String(text);
   if (body.startsWith(BOM)) body = body.slice(1);
   body.split(/\r\n|\r|\n/).forEach((raw, index) => {
     const content = raw.replace(/#.*/, "").trim();
-    for (const part of content.split(DIRECTIVE_INSIDE)) {
+    for (const part of directives(content)) {
       const m = /^([A-Za-z-]+)\s*:\s*(.*)$/.exec(part.trim());
       if (!m) continue;
       const key = m[1].toLowerCase();
@@ -73,7 +83,7 @@ export function parseRobots(text, userAgent = "") {
       if (key === "user-agent") {
         if (!group || group.ruled) group = { agents: [], ruled: false };
         const token = tokenOf(value);
-        if (applies(token, userAgent) && !group.agents.some((a) => a.toLowerCase() === token.toLowerCase())) group.agents.push(token);
+        if (applies(token, names) && !group.agents.some((a) => a.toLowerCase() === token.toLowerCase())) group.agents.push(token);
       } else if (key === "allow" || key === "disallow") {
         if (!group) continue;
         group.ruled = true;
@@ -93,8 +103,8 @@ function encode(char) {
 }
 
 /**
- * The form in which a path and a pattern are compared. In a pattern, "*" stays a wildcard and a
- * last "$" stays the end; anywhere else they are %2A and %24.
+ * The form in which a path and a pattern are compared. In a pattern, "*" stays a wildcard (a run
+ * of them is one) and a last "$" stays the end; anywhere else they are %2A and %24.
  */
 function canon(text, pattern) {
   const chars = [...text];
@@ -106,27 +116,33 @@ function canon(text, pattern) {
       const decoded = String.fromCharCode(parseInt(hex, 16));
       out += UNRESERVED.test(decoded) ? decoded : `%${hex.toUpperCase()}`;
       i += 2;
-    } else if (pattern && (c === "*" || (c === "$" && i === chars.length - 1))) out += c;
+    } else if (pattern && c === "*") {
+      if (!out.endsWith("*")) out += c;
+    } else if (pattern && c === "$" && i === chars.length - 1) out += c;
     else if (c === "*" || c === "$" || !AS_IS.test(c)) out += encode(c);
     else out += c;
   }
   return out;
 }
 
-/** True if `pattern` (in canonical form) matches `path` (in canonical form) from its start. */
+/**
+ * True if `pattern` (in canonical form) matches `path` (in canonical form) from its start. The
+ * parts between the wildcards are found in turn, each at its first place after the one before:
+ * with "*" the only wildcard, the first place is never a worse choice.
+ */
 function matches(path, pattern) {
-  let at = [0];
-  for (let j = 0; j < pattern.length; j++) {
-    const c = pattern[j];
-    if (c === "$" && j === pattern.length - 1) return at.includes(path.length);
-    if (c === "*") {
-      at = Array.from({ length: path.length - at[0] + 1 }, (_, k) => at[0] + k);
-      continue;
-    }
-    at = at.filter((p) => path[p] === c).map((p) => p + 1);
-    if (!at.length) return false;
+  const anchored = pattern.endsWith("$");
+  const parts = (anchored ? pattern.slice(0, -1) : pattern).split("*");
+  if (!path.startsWith(parts[0])) return false;
+  let at = parts[0].length;
+  if (parts.length === 1) return !anchored || at === path.length;
+  for (const part of parts.slice(1, -1)) {
+    const found = path.indexOf(part, at);
+    if (found < 0) return false;
+    at = found + part.length;
   }
-  return true;
+  const last = parts.at(-1);
+  return anchored ? path.length - last.length >= at && path.endsWith(last) : path.indexOf(last, at) >= 0;
 }
 
 function ruleMatches(r, path) {

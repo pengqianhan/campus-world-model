@@ -19,8 +19,8 @@ export interface RobotsRule {
 
 /**
  * The rules of every group that applies to a browser that sends `userAgent`, in the order of the
- * file: the "*" groups, the groups whose token is in a product name of `userAgent` (ignoring case),
- * and the groups that name an Anthropic agent.
+ * file: the "*" groups, and the groups whose token is part of one of our names, ignoring case. Our
+ * names are the product names of `userAgent` and ANTHROPIC_AGENTS.
  */
 export declare function parseRobots(text: string, userAgent?: string): RobotsRule[];
 
