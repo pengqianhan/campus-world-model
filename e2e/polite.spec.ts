@@ -49,8 +49,9 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
     base: `http://127.0.0.1:${port}`,
     host: `127.0.0.1:${port}`,
     other: `http://localhost:${port}`,
-    // close() alone waits for every connection to end, and a browser still open (its prefetches or a
-    // prerendered page) can hold one until the test's own timeout.
+    // close() ends idle keep-alive connections itself, but waits with no time limit for a connection
+    // the browser opened and has sent nothing on, or whose answer is not finished; the browser is
+    // closed only after stop().
     stop: () =>
       new Promise((done) => {
         server.close(done);
