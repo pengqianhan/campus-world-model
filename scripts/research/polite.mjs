@@ -49,8 +49,8 @@
 // (<why>)"). A redirect of robots.txt is
 // followed a hop at a time at the pace, for at most ROBOTS_REDIRECTS hops, and only to an allowed
 // host. A hop to another origin goes only if that origin's own robots.txt, asked for first,
-// allows it; a target that is that origin's /robots.txt is always allowed (RFC 9309, 2.2.2) and
-// gives its answer to both. A hop within the origin goes unless the host is closed or left alone.
+// allows it; a target that is that origin's /robots.txt is allowed (RFC 9309, 2.2.2) unless that
+// host is closed or left alone, and gives its answer to both. A hop within the origin goes unless the host is closed or left alone.
 // Anything else makes the robots.txt "unreachable". An agent still quotes
 // robots.txt in its report (RECON.md asks for that), but no longer decides by hand which paths to
 // leave alone.
