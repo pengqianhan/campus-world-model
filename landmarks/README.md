@@ -5,7 +5,8 @@ LiDAR and checked against Street View photographs. The site draws the landmarks 
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
-A design for the many plain buildings, drawn by rule from the LiDAR: [MASSING.md](MASSING.md).
+The many plain buildings are drawn by a program instead, as **measured massings**: the design is
+[MASSING.md](MASSING.md), and "Measured massings" below says how it is built.
 
 | Folder | What it holds | Shared? |
 | --- | --- | --- |
@@ -184,6 +185,56 @@ needs:
 To take one off the site, set `site` to `false` and run `place` again, and change the same
 `CHANGELOG.md`, "What's new" and README lines (`docs/standards.md`, check 6). Then look at the map
 and the walker's views where it stood, and give the speed numbers (check 9).
+
+## Measured massings
+
+A measured massing (`MASSING.md`) is a plain building drawn by a program from the LiDAR, with no
+agent and no photograph. All of them share one model and have a data file each:
+
+- `pipeline/tools/massing.py` measures every tier-3 building of the City campus that the eight
+  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), from the repository root:
+  `$PY -I landmarks/pipeline/tools/massing.py [ids]`. It writes `measured/buildings/<id>.json` for
+  each that passes the limits, and `measured/exclusions.json` for each that keeps its block, with
+  its reason. Its top views (LiDAR | model | difference) and a table go to `measured/out/`, which
+  is not committed.
+- How it measures: the ground round the outline; roof cells (a 0.5 m heightmap, a cell being roof
+  where most of its points are building points over 2.5 m); layers where neighbouring cells step
+  by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
+  lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
+  plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
+  with its eaves round it, edge by edge (how far building points at its eave reach out past each
+  edge: the median along it); the others stand on it, traced from the LiDAR and put onto the outline
+  where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
+  left out.
+- `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
+  (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
+  published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
+  rim on flat roofs, and the street look's facade data. `pipeline/tools/massing_triangles.mjs`
+  gives its triangles to the top-view check: footprint IoU 0.90 or more against the LiDAR, and 90%
+  of the cells both cover within 0.5 m (cells of roof that no layer draws are left out of the
+  heights).
+- On the site (`src/app/landmarks.ts`, `MEASURED`) each data file is a landmark named
+  `measured/<id>`. The page's code holds only each file's `place`; the worker loads the shared model
+  and all the data files, one chunk each, the first time one is wanted. A measured massing has one
+  form, in its block's own materials: the map's palette, windows and night on the map, the facades
+  drawn by rule in the walker views. It is drawn where a metre of ground takes 4 pixels or more
+  (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open.
+- `tests/measured.test.ts` checks every data file (closed rings, heights, the limits) and that no
+  building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
+  keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
+  or removed: run it with `--fsModuleCache=false` after the generator has run.
+- Kept as blocks by decision, whatever the LiDAR (each in `measured/exclusions.json` with its
+  reason): places where people live (123, 436, 617 and 838 by their residential floors; 434, whose
+  floor 2 has an Accommodation Reception on the campus map; 450 by its name) and childcare centres
+  (410, 841, and 255, which decision 7 keeps too), both until the maintainer decides (MASSING.md
+  decision 6); Waipapa Marae (251 to 256) and
+  Fale Pasifika (275), until the maintainer has asked the people they belong to (decision 7); and
+  408 UniPress, whose outline the LiDAR shows no roof on (decision 10).
+- Roofs: every roof, flat or sloping, takes its block's roof: the map's roof colour on the map, and
+  the street look's flat roof in the walker views (decision 5). A sloping facet is marked as the
+  builder's roofs are (`MeshBuilder.facet`, `facade.cap`).
+- To make one a landmark: start `<name>/` as for any landmark, with the massing's numbers as its
+  first contract, and delete `measured/buildings/<id>.json` in the same pull request.
 
 ## Stages
 
