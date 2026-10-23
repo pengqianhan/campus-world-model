@@ -12,7 +12,7 @@ import net, { type AddressInfo } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { chromium, expect, test, type Browser, type Page } from "@playwright/test";
-import { ANSWER_WAIT_MS, PACE_MS, isSignIn, politeLaunch, politePage, type PoliteRow } from "../scripts/research/polite.mjs";
+import { ANSWER_WAIT_MS, PACE_MS, ROBOTS_MAX_BYTES, isSignIn, politeLaunch, politePage, type PoliteRow } from "../scripts/research/polite.mjs";
 
 type Answer = (res: http.ServerResponse, req: http.IncomingMessage) => void;
 interface Hit {
@@ -625,6 +625,33 @@ test.describe("research browser", () => {
       expect(robots.get(other.base)).toMatchObject({ url: `${other.base}/robots.txt`, status: 200, rules: [{ path: "/x" }] });
     } finally {
       await Promise.all([site.stop(), other.stop()]);
+    }
+  });
+
+  test("robots.txt: a redirect on within another host is checked against that host's robots.txt, read on the first hop", async () => {
+    const other = await serve(() => ({ "/robots.txt": text("User-agent: *\nDisallow: /private/\n"), "/ok": redirect("/private/x"), "/private/x": text("User-agent: *\nAllow: /\n") }));
+    const site = await serve(() => ({ "/robots.txt": redirect(`${other.base}/ok`), "/start": html("start") }));
+    try {
+      const { log, blocked } = await politePage(browser, { url: `${site.base}/start`, allow: [other.host] });
+      expect(blocked).toBe(`robots: unreachable (redirect to ${other.base}/private/x, robots: Disallow: /private/)`);
+      expect(other.paths()).toEqual(["/robots.txt", "/ok"]);
+      expect(log.find((r) => r.url === `${other.base}/private/x`)).toMatchObject({ type: "robots", from: `${other.base}/ok`, sent: false, reason: "robots: Disallow: /private/" });
+    } finally {
+      await Promise.all([site.stop(), other.stop()]);
+    }
+  });
+
+  test("robots.txt: a file cut at 500 KiB loses its partial last line, so a cut Allow line allows nothing", async () => {
+    const head = "User-agent: *\nDisallow: /\n";
+    const cut = "Allow: /pub";
+    const filler = `#${"x".repeat(ROBOTS_MAX_BYTES - head.length - cut.length - 2)}\n`;
+    const site = await serve(() => ({ "/robots.txt": text(`${head}${filler}Allow: /public-page\n# more\n`) }));
+    try {
+      const { blocked, robots } = await politePage(browser, { url: `${site.base}/publicity` });
+      expect(blocked).toBe("robots: Disallow: /");
+      expect(robots.get(site.base)!.text!.length).toBe(head.length + filler.length);
+    } finally {
+      await site.stop();
     }
   });
 

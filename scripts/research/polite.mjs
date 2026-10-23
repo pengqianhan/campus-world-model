@@ -44,12 +44,13 @@
 // disallows is blocked with the reason "robots: <the rule as written>", and " (User-agent:
 // <token>)" after it when the rule is not of a "*" group. A 404 or another 4xx allows everything.
 // A 401, a 403, a sign-in redirect or a dropped connection closes the host, as above. A 429, a
-// 5xx or no answer in ANSWER_WAIT_MS leaves the whole host alone for the life of the browser,
-// every scheme and port of it ("robots: unreachable (<why>)"). A redirect of robots.txt is
-// followed a hop at a time at the pace, for at most ROBOTS_REDIRECTS hops: within its host at
-// once; to another host only if that host is allowed and not closed, and that host's own
-// robots.txt, asked for first, allows the target. A target that is that host's /robots.txt gives
-// its answer to both. Anything else makes the robots.txt "unreachable". An agent still quotes
+// 5xx or no answer in ANSWER_WAIT_MS leaves the host alone for the life of the browser, every
+// scheme of that host name and port ("robots: unreachable (<why>)"). A redirect of robots.txt is
+// followed a hop at a time at the pace, for at most ROBOTS_REDIRECTS hops, and only to an allowed
+// host. A hop to another origin goes only if that origin's own robots.txt, asked for first,
+// allows it; a target that is that origin's /robots.txt gives its answer to both. A hop within
+// the origin goes unless its rules, if known by then, disallow it. Anything else makes the
+// robots.txt "unreachable". An agent still quotes
 // robots.txt in its report (RECON.md asks for that), but no longer decides by hand which paths to
 // leave alone.
 //
@@ -213,6 +214,8 @@ async function open(browser, state, { url, allow, types, viewport }) {
       const job = { url: hopUrl, from, requestId: undefined, row: undefined, done: false };
       const timer = setTimeout(() => {
         if (job.row) job.row.error = `no answer in ${ANSWER_WAIT_MS / 1000} s`;
+        // The robots page never asked: the hop still gets its row.
+        else log.push({ at: new Date().toISOString(), type: "robots", method: "GET", url: hopUrl, ...(from ? { from } : {}), sent: false, reason: "no request in time" });
         job.finish({ timeout: true });
         robots.page?.goto("about:blank").catch(() => {});
       }, ANSWER_WAIT_MS);
@@ -231,7 +234,8 @@ async function open(browser, state, { url, allow, types, viewport }) {
   /** The robots request, at the request stage: it goes now, as its turn and its pace came before it. */
   const onRobotsRequest = async (e, row) => {
     const job = robots.job;
-    if (!job || job.requestId || row.type !== "document" || row.url !== job.url) return block(e, row, "robots page");
+    // Chromium may write the URL in another form than Node URL does: the host must be the same.
+    if (!job || job.requestId || row.type !== "document" || hostOf(row.url) !== hostOf(job.url)) return block(e, row, "robots page");
     job.requestId = e.requestId;
     robots.ids.add(e.requestId);
     const at = Date.now();
@@ -410,21 +414,32 @@ async function open(browser, state, { url, allow, types, viewport }) {
   }
 }
 
-/** Read at most ROBOTS_MAX_BYTES of the body of a request paused at its response, as UTF-8. Undefined if it cannot be read. */
+/**
+ * Read at most ROBOTS_MAX_BYTES of the body of a request paused at its response, as UTF-8. A body
+ * cut there loses its last, partial line: a cut Allow line would allow more than it says.
+ * Undefined if it cannot be read.
+ */
 async function readBody(cdp, requestId) {
   let stream;
   try {
     ({ stream } = await cdp.send("Fetch.takeResponseBodyAsStream", { requestId }));
     const chunks = [];
     let size = 0;
-    while (size < ROBOTS_MAX_BYTES) {
+    let end = false;
+    while (!end && size < ROBOTS_MAX_BYTES) {
       const { data, base64Encoded, eof } = await cdp.send("IO.read", { handle: stream, size: Math.min(65536, ROBOTS_MAX_BYTES - size) });
       const chunk = Buffer.from(data, base64Encoded ? "base64" : "utf8");
       chunks.push(chunk);
       size += chunk.length;
-      if (eof) break;
+      end = eof;
     }
-    return Buffer.concat(chunks).subarray(0, ROBOTS_MAX_BYTES).toString("utf8");
+    // At the limit: is there more?
+    if (!end) {
+      const more = await cdp.send("IO.read", { handle: stream, size: 1 });
+      end = more.eof && !more.data;
+    }
+    const body = Buffer.concat(chunks).subarray(0, ROBOTS_MAX_BYTES).toString("utf8");
+    return end ? body : body.slice(0, Math.max(body.lastIndexOf("\n"), body.lastIndexOf("\r")) + 1);
   } catch {
     return undefined;
   } finally {
@@ -542,22 +557,27 @@ async function askRobots(ctx, origin, asking) {
       return unreachable(`more than ${ROBOTS_REDIRECTS} redirects`, { status });
     }
     const next = hostOf(target);
-    if (next !== host) {
-      // Another host: only if it is allowed and not closed, and its own robots.txt allows the target.
-      if (!originOf(target) || !hosts.has(next)) {
-        blockedHop("host not allowed");
-        return unreachable(`redirect to a host not allowed: ${next || target}`, { status });
-      }
+    if (!originOf(target) || !hosts.has(next)) {
+      blockedHop("host not allowed");
+      return unreachable(`redirect to a host not allowed: ${next || target}`, { status });
+    }
+    const t = new URL(target);
+    const ownRobots = t.pathname === "/robots.txt" && !t.search;
+    let refused;
+    if (t.origin !== origin) {
+      // Another origin: only if its own robots.txt, asked for first, allows the target.
       const theirs = await robotsOf(ctx, target, asking);
       if (gone()) return undefined;
-      const refused = refusal(state, target) ?? (theirs ? undefined : "robots: not known");
-      if (refused) {
-        blockedHop(refused);
-        return unreachable(`redirect to ${target}, ${refused}`, { status });
-      }
-      // The target is that host's own robots.txt, read just now: its answer is this one's too.
-      const t = new URL(target);
-      if (t.pathname === "/robots.txt" && !t.search) return answer({ ...theirs, url: url0 });
+      refused = refusal(state, target) ?? (theirs ? undefined : "robots: not known");
+      // The target is that origin's own robots.txt, read just now: its answer is this one's too.
+      if (!refused && ownRobots) return answer({ ...theirs, url: url0 });
+    } else if (!ownRobots) {
+      // The same origin: by its rules, if they are known by now.
+      refused = refusal(state, target);
+    }
+    if (refused) {
+      blockedHop(refused);
+      return unreachable(`redirect to ${target}, ${refused}`, { status });
     }
     from = url;
     url = target;

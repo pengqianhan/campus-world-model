@@ -56,7 +56,7 @@ export interface RobotsAnswer {
   text?: string;
   /**
    * Set when the gate leaves the whole origin alone: "closed: 403", "closed: dropped (ConnectionReset)",
-   * or "unreachable (503)", which leaves every origin of the host alone.
+   * or "unreachable (503)", which leaves every scheme of that host name and port alone.
    */
   disallowAll?: string;
 }
