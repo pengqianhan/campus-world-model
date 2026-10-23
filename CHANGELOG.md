@@ -29,6 +29,14 @@ A change to what the site does or shows adds its line here, and the README's
   side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
   block still answers a click and opens on its floors. About now names brick and concrete among the
   landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#80).
+- **Measured massings.** Near the camera, five plain buildings of the City Campus are drawn from
+  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
+  Studio Block 433 and 435 58 Symonds Street.
+  A program measures their layers and roofs (flat, or sloping planes); their walls, storeys and
+  windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
+  The building card and About name them. The other 43 small buildings in the LiDAR keep their
+  blocks, among them every place where people live and every childcare centre, each with its
+  reason (`landmarks/measured/exclusions.json`) (#79).
 
 ## 2026-10-22
 
