@@ -4,9 +4,12 @@ import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
 import { Landmark, type LandmarkRequest } from "../src/scene/landmarks.ts";
 import { Terrain } from "../src/scene/terrain.ts";
-import type { TerrainData } from "../src/shared/types.ts";
+import { massing } from "../src/shared/massing.ts";
+import type { CampusData, TerrainData } from "../src/shared/types.ts";
 // @ts-expect-error plain JavaScript in the landmarks' shared kit
 import { geometryMaterials, makeMaterials } from "../landmarks/kit/materials.js";
+// @ts-expect-error plain JavaScript in a landmark's parts
+import { OUTLINE, TOP } from "../landmarks/old-choral-hall/parts/rest.js";
 
 const host = { loading: () => {}, prepare: async () => {}, ready: () => {} };
 
@@ -158,5 +161,27 @@ describe("the landmark kit", () => {
     expect(Object.keys(stand).sort()).toEqual(Object.keys(drawn).sort());
     for (const [name, m] of Object.entries(drawn)) expect(stand[name]!.userData.metres, name).toBe(m.userData.metres);
     expect(stand.ashlar!.map).toBeNull();
+  });
+});
+
+describe("Old Choral Hall's rest, the map's estimated block (parts/rest.js)", () => {
+  it("stands on the outline the map extrudes for block 104 and reaches the top the map gives that block", () => {
+    const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);
+    const b = campus.buildings.find((x) => x.id === "104")!;
+    const blocks = massing(b, campus.floorHeight);
+    const entry = LANDMARKS.find((l) => l.name === "old-choral-hall")!;
+    const l = new Landmark(entry, host);
+    // The outline: the lowest block's, in the model's frame, to the 0.01 m it is written to.
+    const ring = blocks[0]!.outline[0]![0]!;
+    const want: [number, number][] = [];
+    for (let i = 0; i + 1 < ring.length; i += 2) want.push(l.toModel(ring[i]! / 10, ring[i + 1]! / 10));
+    const outline = OUTLINE as [number, number][];
+    expect(outline.length).toBe(want.length);
+    outline.forEach(([x, z], i) => expect(Math.hypot(x - want[i]![0], z - want[i]![1]), `corner ${i}`).toBeLessThan(0.01));
+    // The top: the block's top on the map (its footing, CampusScene.baseOf, and its blocks' height) over the ground at the door.
+    const top = terrain.footing(b.outline[0]!).base + blocks.at(-1)!.y1 - terrain.height(...(entry.placement.door.map as [number, number]));
+    expect(Math.abs((TOP as number) - top)).toBeLessThan(0.01);
+    l.dispose();
   });
 });

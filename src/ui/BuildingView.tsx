@@ -238,7 +238,13 @@ export function BuildingView() {
             </small>
             {!b.offMap && (
               <small id="height-note" class={landmarkOf(b.id) || measuredOf(b.id) ? "landmark" : undefined}>
-                {landmarkOf(b.id) ? t("building.landmark") : measuredOf(b.id) ? t("building.measured") : t("building.heightNote")}
+                {landmarkOf(b.id)?.placement.part
+                  ? t("building.landmarkPart", { part: landmarkOf(b.id)!.placement.part! })
+                  : landmarkOf(b.id)
+                    ? t("building.landmark")
+                    : measuredOf(b.id)
+                      ? t("building.measured")
+                      : t("building.heightNote")}
               </small>
             )}
           </div>
