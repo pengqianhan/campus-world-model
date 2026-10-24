@@ -13,7 +13,7 @@ short name; Waikato's web domain is `waikato.ac.nz`). Time zone: Pacific/Aucklan
 | Layer | Verdict | What decided it |
 | --- | --- | --- |
 | 1. Footprints and surroundings | needs the maintainer: not checked here | No Overpass request was made (the brief for this recon forbids it). RECON.md calls OpenStreetMap usable everywhere under ODbL. The repository's seven areas are all for the University of Auckland, so the Hamilton and Tauranga campuses each need a new area, fetched by `scripts/fetch-osm.ts` ("Needs the maintainer", 5) |
-| 2. Indoor: buildings, floors, rooms | needs the maintainer | The campus maps page (with an interactive map, by web search only) and the campus map PDFs are on `www.waikato.ac.nz`, which `robots.txt` closes to this reader (`User-agent: anthropic-ai`, `Disallow: /`). None was requested. Open and read: the online timetable gives a room code for each class, such as `L.G.01` or `TC.4.14`: 17 codes under 9 building prefixes in the one paper read. A code names a building prefix, a floor and a room. No source read gives a room outline or a room position |
+| 2. Indoor: buildings, floors, rooms | needs the maintainer | The campus maps page (with an interactive map, by web search only: not confirmed) and the campus map PDFs are on `www.waikato.ac.nz`, which `robots.txt` closes to this reader (`User-agent: anthropic-ai`, `Disallow: /`). None was requested. Open and read: the online timetable gives a room code for each class, such as `L.G.01` or `TC.4.14`: 17 codes under 9 building prefixes in the one paper read. A code names a building prefix, a floor and a room. No source read gives a room outline or a room position |
 | 3. Timetable | needs the maintainer | The online timetable (`timetable.waikato.ac.nz`) is public. Its data API answered two anonymous requests that the app made itself: one paper search (8 offerings) and one paper's activities (23, with day, times, dates, teaching weeks and room codes). Then the research browser closed the timetable host after a dropped request (a font file), and this recon asked nothing more of it or of its API. The terms are on the closed host and were not read. The number of requests for a full build was not counted |
 | 4. Academic calendar | needs the maintainer | Every route found is on `www.waikato.ac.nz` (key dates, teaching and assessment periods, principal dates), closed to this reader by `robots.txt`. None was read. The two timetable answers give some 2026 dates (each offering's start and end, one exam day), but not the calendar |
 | 5. Subjects and courses | needs the maintainer | "Find a paper" and the Calendar's schedule of papers are on `www.waikato.ac.nz` (closed). The "Catalogue of Papers" host, `papers.waikato.ac.nz`, sends its `robots.txt` to `www.waikato.ac.nz` with a 301, so the research browser left that host alone. The timetable API's paper search answered once by paper code; its subject list was not requested |
@@ -62,7 +62,7 @@ them blank. This document names none of them.
   is known, so the room itself would be text, not a shape. The campus map that could place each
   prefix is on the closed host.
 - **Tauranga:** no room code was seen. The campus is one building of five floors, by web search
-  only.
+  only: not confirmed.
 - **Floor and room outlines:** no source read publishes them. Whether the interactive campus map
   holds them is not known: its page was not requested.
 
@@ -81,7 +81,7 @@ Licence for OpenStreetMap: ODbL, credit in About.
 | Route | URL | Answer (2026-10-25) | What it holds |
 | --- | --- | --- | --- |
 | Campus maps page and its interactive map | `https://www.waikato.ac.nz/about/campus/campus-maps/` | not requested: `robots.txt`, `User-agent: anthropic-ai`, `Disallow: /` | Not seen. By web search only, not confirmed: an interactive map with map layers; rooms "referenced by building letter or code, floor number and then the room number" (the search result's words, with the example "S.1.17") |
-| Hamilton campus map PDF | `https://www.waikato.ac.nz/assets/Uploads/About-us/Our-campuses/Campus-maps/Hamilton-campus-map.pdf` (web search) | not requested: the same rule | Not seen. By web search only: it lists building codes |
+| Hamilton campus map PDF | `https://www.waikato.ac.nz/assets/Uploads/About-us/Our-campuses/Campus-maps/Hamilton-campus-map.pdf` (web search) | not requested: the same rule | Not seen. By web search only, not confirmed: it lists building codes |
 | Tauranga locations | `https://waikato.ac.nz/about/campus/campus-maps/tauranga-locations` (web search) | not requested: the bare `waikato.ac.nz` host was not asked | Not seen |
 | Copies on other hosts | a Hamilton map PDF on `calendartest.waikato.ac.nz` and a Tauranga map PDF on `research.waikato.ac.nz` (web search) | not requested | By their web-search addresses, they are files under `/assets/Uploads/`, the closed host's upload path. Reading them from another host would go round that host's `robots.txt` |
 | Room directory: the online timetable | `https://timetable.waikato.ac.nz/COMPX101-26A%20(HAM)`, whose app asked `POST …/api/events` (layer 3) | 200 `application/json; charset=utf-8`, 11,104 bytes | 23 activities, each with `TeachingActivityRooms`, a list of `RoomCode`. 17 distinct codes, for example `L.G.01`, `MSB.1.21`, `R.G.10`, `SUB.1.12C`, `TC.4.14`. One exam activity has no room. Codes only: no building names, no outlines, no positions |
@@ -153,7 +153,7 @@ dependency for LERC-compressed GeoTIFFs, a gate (`PROGRESS.md`, "Ideas still ope
 
 | Host | robots.txt (2026-10-25) | Terms |
 | --- | --- | --- |
-| `www.waikato.ac.nz` | 200, 7,149 bytes, 342 lines, read by `polite.mjs` (which does not record the content type). It begins "# robots.txt for waikato.ac.nz", "# 2026-10-21", "# If you want to make contact", "# - email webmaster@waikato.ac.nz", "# User-agents that do not follow robots.txt may be blocked", and "# Per RFC 9309, crawlers apply only rules from a matching User-agent group;". 66 groups. `User-agent: *`: `Crawl-delay: 10` ("# 10s crawl delay = 8,640 crawls/day") and 47 `Disallow:` lines, among them `/search/`, `/dates/`, `/staff/`, `/__data/assets`, and paper pages of earlier years. Under "# disallowed agents", 61 groups have only `Disallow: /`, one of them `User-agent: anthropic-ai`. Three more groups allow a few paths and disallow the rest. `Sitemap: https://www.waikato.ac.nz/sitemap.xml` | `https://www.waikato.ac.nz/copyright-and-disclaimer/` (linked from the timetable's footer): not requested, `robots.txt`. By web search only, not confirmed: a search result gives its sentence "Copyright in all material residing on servers using the domain name waikato.ac.nz ("University of Waikato servers") is owned by the University of Waikato." The search result also says, in its own words, that printing or redistributing the material needs written permission |
+| `www.waikato.ac.nz` | 200, 7,149 bytes, 342 lines, read by `polite.mjs` (which does not record the content type). It begins "# robots.txt for waikato.ac.nz", "# 2026-10-21", "# If you want to make contact", "# - email webmaster@waikato.ac.nz", "# User-agents that do not follow robots.txt may be blocked", and "# Per RFC 9309, crawlers apply only rules from a matching User-agent group;". 66 groups by the count made when it was read; 65 are described here (the saved file was deleted with the other answers, so the 66th cannot be named). `User-agent: *`: `Crawl-delay: 10` ("# 10s crawl delay = 8,640 crawls/day") and 47 `Disallow:` lines, among them `/search/`, `/dates/`, `/staff/`, `/__data/assets`, and paper pages of earlier years. Under "# disallowed agents", 61 groups have only `Disallow: /`, one of them `User-agent: anthropic-ai`. Three more groups allow a few paths and disallow the rest. `Sitemap: https://www.waikato.ac.nz/sitemap.xml` | `https://www.waikato.ac.nz/copyright-and-disclaimer/` (linked from the timetable's footer): not requested, `robots.txt`. By web search only, not confirmed: a search result gives its sentence "Copyright in all material residing on servers using the domain name waikato.ac.nz ("University of Waikato servers") is owned by the University of Waikato." The search result also says, in its own words, that printing or redistributing the material needs written permission |
 | `timetable.waikato.ac.nz` | 404: every path allowed | No terms page on the host; its footer links the copyright page above |
 | `uow-func-net-stdntenrol-timetblmngmt-aue-prod.azurewebsites.net` (the timetable's data API, on Microsoft Azure) | 404: every path allowed | None found |
 | `papers.waikato.ac.nz` | 301 to `www.waikato.ac.nz`, not followed: host left alone | — |
@@ -177,7 +177,7 @@ unread and, by web search, restrictive, this recon kept no raw data: counts and 
    map's data (buildings and rooms, with outlines or points), with credit and not for profit. A
    port of Waikato waits on that answer. Only Waikato can give it.
 2. **Terms not read.** The copyright and disclaimer page is on the closed host. By web search only,
-   it asks for written permission to redistribute. No layer of Waikato's own data can be called
+   not confirmed, it asks for written permission to redistribute. No layer of Waikato's own data can be called
    usable before it is read.
 3. **The online timetable closed on a dropped request.** At 22:13:48 UTC on 2026-10-24
    (11:13 on 2026-10-25 in New Zealand) a font file of the timetable app ended with the network
@@ -188,7 +188,7 @@ unread and, by web search, restrictive, this recon kept no raw data: counts and 
    (`elearn.waikato.ac.nz`), the timetable's MyTimetable and staff view (sign-in authority on
    `api.svc.waikato.ac.nz`), and, by web search only, the Paper Outlines site. None was requested.
 5. **Overpass for two new areas.** Run `scripts/fetch-osm.ts` for the Hamilton campus (Hillcrest)
-   and the Tauranga campus (Durham Street). Not requested here, by the brief.
+   and the Tauranga campus (Durham Street; both places by web search only, not confirmed). Not requested here, by the brief.
 6. **Ground heights.** Run `scripts/fetch-terrain.ts` over both campuses and read the tiles' source
    header. Find a Hamilton 1 m DEM, and read the capture areas and licences of the Hamilton (2019)
    and Bay of Plenty (2019-2022) surveys.
