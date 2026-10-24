@@ -13,19 +13,19 @@ short name; Lincoln's web domain is `lincoln.ac.nz`). Time zone: Pacific/Aucklan
 | Layer | Verdict | What decided it |
 | --- | --- | --- |
 | 1. Footprints and surroundings | needs the maintainer: not checked here | No Overpass request was made (the brief for this recon forbids it). RECON.md calls OpenStreetMap usable everywhere under ODbL. The repository's seven areas are all for the University of Auckland, so the Lincoln campus needs a new area, fetched by `scripts/fetch-osm.ts` ("Needs the maintainer", 6) |
-| 2. Indoor: buildings, floors, rooms | needs the maintainer | The campus map page and the campus map PDFs are on `www.lincoln.ac.nz`, which `robots.txt` closes to this reader (`User-agent: ClaudeBot`, `User-agent: anthropic-ai` and `User-agent: Claude-Web`, each with `Disallow: /`). None was requested. The Living Heritage host, which by web search keeps older campus maps, answered its `robots.txt` with 403 and was left alone. The timetable has a "Locations" view, but it opens only by a form post, which this recon did not send. The room booking app on the timetable host redirects to a sign-in. No source read gives a room code, a room outline or a room position |
+| 2. Indoor: buildings, floors, rooms | needs the maintainer | The campus map page and the campus map PDFs are on `www.lincoln.ac.nz` (their addresses by web search only: not confirmed), which `robots.txt` closes to this reader (`User-agent: ClaudeBot`, `User-agent: anthropic-ai` and `User-agent: Claude-Web`, each with `Disallow: /`). None was requested. The Living Heritage host, which by web search only, not confirmed, keeps older campus maps, answered its `robots.txt` with 403 and was left alone. The timetable has a "Locations" view, but it opens only by a form post, which this recon did not send. The room booking app on the timetable host redirects to a sign-in. No source read gives a room code, a room outline or a room position |
 | 3. Timetable | needs the maintainer | The Lincoln Timetable Viewer (`splus.lincoln.ac.nz/timetable/2026/`) is public: no sign-in, `robots.txt` 404. Its form lists 575 course offerings of 2026. A class's day, time and room come only after the form is posted ("View Timetable"), and this recon sent no form. The terms are on the closed host and were not read. Then the room booking app's sign-in redirect closed the host |
 | 4. Academic calendar | needs the maintainer | The key-dates pages are on `www.lincoln.ac.nz` (closed). None was read. The timetable form gives the teaching weeks of Semester 1, Semester 2 and the January and November summer schools of 2026, as weeks with the date of each Monday. That is a partial calendar, not the key dates |
 | 5. Subjects and courses | needs the maintainer | The course search is on `www.lincoln.ac.nz` (closed). The timetable form lists 575 offerings of 465 course codes under 45 subject prefixes, each offering with its teaching period, but no titles. The terms are not read |
 | 6. Ground heights | needs the maintainer: not checked here | No layer-6 route was run. By web search only, not confirmed: LINZ lists "Canterbury - Selwyn LiDAR 1m DEM (2023)", and the open data catalogue has a 2015 DEM of the Christchurch and Selwyn survey (`catalogue.data.govt.nz/dataset/canterbury-christchurch-and-selwyn-lidar-1m-dem-20152`). Whether either covers the campus was not checked. The AWS Terrain Tiles were not tried ("Needs the maintainer", 7) |
 
 One door decides most of this. Lincoln's main host, `www.lincoln.ac.nz`, holds its campus map, key
-dates, course pages and legal page. Its `robots.txt` has the groups `User-agent: ClaudeBot`,
+dates, course pages and legal page (their addresses by web search only: not confirmed). Its `robots.txt` has the groups `User-agent: ClaudeBot`,
 `User-agent: anthropic-ai` and `User-agent: Claude-Web`, each with `Disallow: /`, in a section that
 the file calls "Cloudflare Managed content". The research browser reads a group whose token is one
 of Anthropic's agents as its own, and it blocked every path on the host. This recon sent that host
 one request, its `robots.txt`, and nothing else. The timetable is on another host,
-`splus.lincoln.ac.nz`, and answered openly. Its form lists every course offering of 2026, but the
+`splus.lincoln.ac.nz`, and answered openly. Its form lists 575 course offerings of 2026 (whether that is every one was not checked), but the
 classes come only by a form post. So no layer is usable now. A port of Lincoln needs Lincoln's
 answer first ("Needs the maintainer", 1).
 
@@ -82,7 +82,7 @@ Licence for OpenStreetMap: ODbL, credit in About.
 | --- | --- | --- | --- |
 | Campus map page | `https://www.lincoln.ac.nz/life-at-lincoln/campus-map/map/` (web search) | not requested: `robots.txt`, `User-agent: ClaudeBot`, `Disallow: /` | Not seen. By web search only, not confirmed: it lists buildings and facilities by name; a search result did not show whether the map is interactive |
 | Campus map PDFs | `https://www.lincoln.ac.nz/assets/LIN4419-Campus-Map-Update_Feb25-WEB.pdf` and `https://www.lincoln.ac.nz/assets/campus-map-update-june-25.pdf` (web search) | not requested: the same rule | Not seen. By web search only, not confirmed: buildings with grid references such as "C5", with accommodation, car parks, cafes, lecture rooms and sports grounds |
-| A copy on another host | `https://kiwinet.org.nz/files/Events/Lincoln-University-Campus-Map.pdf` (web search) | not requested | A copy of a file of the closed host. Reading it would go round that host's `robots.txt` |
+| A copy on another host | `https://kiwinet.org.nz/files/Events/Lincoln-University-Campus-Map.pdf` (web search) | not requested | By web search only, not confirmed: a copy of a file of the closed host. Reading it would go round that host's `robots.txt` |
 | Older campus maps | `https://livingheritage.lincoln.ac.nz/nodes/view/10768` ("Maps and Plans", web search) | its `robots.txt` answered 403; `polite.mjs` closed the host, and the page was not requested | Not seen. By web search only, not confirmed: campus maps of 2014, 2018 and later years |
 | Room directory: the timetable's "Locations" view | `https://splus.lincoln.ac.nz/timetable/2026/` | the view opens by `__doPostBack('LinkBtn_locations','')`, a post of the page's form: not sent | Not seen. By the tab's name, a list of teaching spaces |
 | Room booking | `https://splus.lincoln.ac.nz/WRBEven/` (from the host's start page, below) | 302 to `/WRBEven/Login.aspx?ReturnUrl=%2fWRBEven%2fbook.aspx`; `polite.mjs` blocked that hop and closed the host ("closed: sign-in redirect") | Not seen: a sign-in |
@@ -135,7 +135,7 @@ only. The guide says these codes "may look slightly different than in the websit
 
 | Route | URL | Answer (2026-10-25) | What it holds |
 | --- | --- | --- | --- |
-| AWS Terrain Tiles (the repository's own route) | not requested | — | This recon asked only Lincoln's hosts. `scripts/fetch-terrain.ts` over the campus would show the tiles' source header |
+| AWS Terrain Tiles (the repository's own route) | not requested | — | This recon asked only Lincoln's hosts, besides five searches of GitHub's API (see layer 3). `scripts/fetch-terrain.ts` over the campus would show the tiles' source header |
 | LINZ elevation catalogue | not requested | — | By web search only, not confirmed: "Canterbury - Selwyn LiDAR 1m DEM (2023)" (named on LINZ's page about crediting elevation data; captured between 24 March and 4 May 2023, by a search result), and a 2015 DEM of the Christchurch and Selwyn survey (`catalogue.data.govt.nz/dataset/canterbury-christchurch-and-selwyn-lidar-1m-dem-20152`) |
 
 Not checked: whether these capture areas hold the campus; their licences; two known heights on the
