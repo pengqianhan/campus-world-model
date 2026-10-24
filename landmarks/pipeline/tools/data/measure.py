@@ -45,9 +45,37 @@ F = cfg["frame"]
 B = P[(P[:, 3] == 6) & (P[:, 2] > G + F["min_above"])]
 if "near_outline" in F:  # only this building's points, where another building stands in the crop box
     B = B[common.near_outline(cfg, B[:, :2], F["near_outline"])]
-c = B[B[:, 2] > G + F["tower_above"], :2].mean(0)
+if "tower_radius" in F:  # only the tallest part: the points within tower_radius m (in plan) of the highest
+    T = B[B[:, 2] > G + F["tower_above"]]
+    c = T[np.linalg.norm(T[:, :2] - T[np.argmax(T[:, 2]), :2], axis=1) < F["tower_radius"], :2].mean(0)
+else:
+    c = B[B[:, 2] > G + F["tower_above"], :2].mean(0)
 S = B[(B[:, 2] < G + F["spine_below"]) & (np.linalg.norm(B[:, :2] - c, axis=1) < F["spine_radius"])]
 w, v = np.linalg.eigh(np.cov((S[:, :2] - c).T)); ax = v[:, np.argmax(w)]
+
+
+def walls_axis(xy, near):
+    """The bearing of most of the building's wall length, seen from above in its points (a 0.5 m mask's
+    edges, mod 90 deg), as the unit vector of the two square to each other that lies nearest `near`.
+    For a building of wings at different angles, whose principal axis falls between them."""
+    from scipy import ndimage
+    lo = xy.min(0) - 3
+    ij = ((xy - lo) / 0.5).astype(int)
+    m = np.zeros(ij.max(0) + 7, bool); m[ij[:, 0], ij[:, 1]] = True
+    m = ndimage.gaussian_filter(ndimage.binary_closing(m, iterations=2).astype(float), 1.0)
+    ge, gn = ndimage.sobel(m, 0), ndimage.sobel(m, 1)                 # toward east and north
+    mag = np.hypot(ge, gn); keep = mag > 0.2 * mag.max()
+    a, wt = np.arctan2(ge, gn)[keep] * 4, mag[keep]                      # 4 x the bearing: mod 90 deg
+    h, edges = np.histogram(np.degrees(a) % 360, bins=72, range=(0, 360), weights=wt)
+    peak = np.radians(edges[np.argmax(np.convolve(np.r_[h[-2:], h, h[:2]], np.ones(5), "valid"))] + 2.5)
+    near_peak = np.cos(a - peak) > np.cos(np.radians(30))                # within 7.5 deg of it
+    b = np.angle(np.sum(wt[near_peak] * np.exp(1j * a[near_peak]))) / 4
+    cands = [np.array([np.sin(b + k * np.pi / 2), np.cos(b + k * np.pi / 2)]) for k in range(2)]
+    return max(cands, key=lambda u: abs(u @ near))
+
+
+if F.get("axis_from") == "walls":
+    ax = walls_axis(B[:, :2], ax)
 if ax[1] < 0: ax = -ax
 nrm = np.array([-ax[1], ax[0]])
 # turn both, so that z stays x turned 90 deg (x to the right as seen from the street) on either side
