@@ -142,7 +142,7 @@ Transcribe the key-dates page by hand into `data/academic-calendar.json` only af
 
 | Route | URL | Answer (2026-10-25) | What it holds |
 | --- | --- | --- | --- |
-| AWS Terrain Tiles (the repository's own route) | not requested | — | This recon asked only Waikato's hosts and its timetable API. `scripts/fetch-terrain.ts` over each campus would show the tiles' source header |
+| AWS Terrain Tiles (the repository's own route) | not requested | — | This recon asked only Waikato's hosts and its timetable API, besides three searches of GitHub's API (see layer 3). `scripts/fetch-terrain.ts` over each campus would show the tiles' source header |
 | LINZ elevation catalogue | not requested | — | By web search only, not confirmed: "Waikato - Hamilton LiDAR 1m DSM (2019)" (a surface model, captured in 2019) and "Bay of Plenty LiDAR 1m DEM (2019-2022)" (captured from 27 October 2019 to 24 October 2022; Tauranga in its area) |
 
 Not checked: a Hamilton DEM; whether these capture areas hold both campuses; their licences; two
