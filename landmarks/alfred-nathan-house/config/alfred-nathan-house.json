@@ -1,0 +1,77 @@
+{
+ "name": "alfred-nathan-house",
+ "building": {
+  "id": "103",
+  "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, topview) it covers 98.7% of 103's block and under 0.5% of any other block within 80 m (105, 105S, 109 and 119 among them).",
+  "title": "Alfred Nathan House, University of Auckland",
+  "note": "outline: building 103's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[-0.8, 159.8], [-1.5, 160.0], [-1.1, 161.3], [-6.5, 163.2], [-6.2, 164.0], [-6.6, 164.1], [-7.2, 165.6], [-6.7, 167.1], [-7.4, 169.2], [-6.9, 171.4], [-6.2, 172.4], [-4.4, 173.6], [-3.9, 175.0], [-2.6, 175.8], [-2.1, 175.6], [-1.8, 176.4], [0.7, 175.6], [1.7, 176.0], [3.2, 175.5], [3.6, 174.5], [33.6, 164.0], [33.3, 163.1], [34.3, 162.7], [34.6, 163.6], [42.4, 160.9], [41.1, 160.2], [37.2, 149.2], [37.8, 147.9], [30.1, 150.6], [30.4, 151.5], [29.4, 151.8], [29.0, 151.0], [5.2, 159.3], [4.7, 157.8]]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 45.75,
+ "door": {
+  "x": 0.3, "z": 31.0,
+  "note": "view frame: the foot of the house's front steps, on the porch's centre line (parts/house.js, MEASURED.house.porch); the LiDAR ground on the path there is 45.72-45.78 m, so ground is 45.75 and the model's y is 0 there; place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3604"],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802"],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 103's outline (the General Library, 109, stands 5-8 m to the south-south-west): centre = mean x/y of points higher than tower_above m: the four-storey block's low roof, 13.3-16.5 m up (the two-storey house at its west end, 8.7-11.5 m, is left out; a tree's crown over the house's north corner, classed as building, is not, and pulls the centre about 1 m west); axis = the bearing of most of the walls seen from above (axis_from walls), turned 90 deg (axis_across: the building is 50 m long and only its west end, the house's front, faces a street), pointing north-north-east; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
+  "min_above": 0.35,
+  "tower_above": 11.75,
+  "spine_below": 16.75,
+  "spine_radius": 35,
+  "near_outline": 2.0,
+  "street_side": "west",
+  "axis_from": "walls",
+  "axis_across": true,
+  "expected": {
+   "centre": [23.90779036, 161.16266480],
+   "axis": [0.34185767, 0.93975174],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 5,
+  "pano_ids_note": "the five Google panoramas that show the building whole or nearly (2026-10-22): three on Princes Street (2024-07, 48-49 m from the centre, 18-20 m from the house's front) see the house's front with the four-storey block behind it, one of them through a tree; two on the campus path east of it (2025-05, 33 and 48 m) see the block's east end, the second also its south-south-west side. Of the 53 panoramas within 120 m, the 13 Google ones within 70 m were looked at in a low-resolution probe (zoom 3, 88 tiles, bought through the ledger): of the other eight, one 27 m east stands 5 m from the east wall (its upper floors leave the picture), two on Princes Street see the house only past a bus or through trees, and five see the General Library or trees in front of it. User-contributed panoramas are not used.",
+  "pano_ids": ["vZGerxft16XkEqwkq4yjrQ", "RHEqLFnj3di8OWt6FfHkzg", "rA70HqrT1rLs_9BPOa1eHw", "fF8qpg3HX5EKEJL3GdXL_w", "51j5uFdrPwCxjQgoWwhFAw"],
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 8, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "upper", "aim_y": 14, "hfov": 40, "width": 1200, "height": 900},
+   {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "light": {"exposure": 0.74,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the Clock Tower's, whose front faces the same way (289 deg), with the exposure lowered so that the house's white paint, in soft shade in the three photographs from Princes Street (2024-07, a hazy winter day), comes near their luma (house regions p50 138-155; 180 at 1.0)"},
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.1,
+  "min_gain_note": "0.1, not 0.01: the one panorama the search would correct (fF8q: IoU 0.657 to 0.740 on 2026-10-22) goes to the edges of its bounds (camera 1 m higher, 2 deg more pitch), which moves the model's top further below the photograph's (out/refine/fF8q*_outline.jpg). Its rows taken onto the east face with the Street View camera give the frame's top 14.5 m and the path -2.35 m, a span within 0.2 m of the LiDAR's (13.3 to -3.35): that camera stands about 1.1 m too high, and the search, scoring the silhouette against the library and trees round it, moves it the other way. So every view keeps its Street View camera.",
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "the LiDAR ground on the front path at the foot of the house's steps, 45.72-45.78 m (z 30-33 on the centre line); Princes Street is 45.6-45.8. The site falls away behind: 43.5 m along the long sides at the house's back (z 12), 42.4 at the block's east end and 41.2 at its north-north-east corner. The frame thresholds are above this ground (2.25 m lower than with the first, provisional 43.5, so the frame is the same)."
+}
