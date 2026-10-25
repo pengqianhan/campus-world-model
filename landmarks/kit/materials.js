@@ -158,6 +158,27 @@ function painted(color, roughness, space) {
 }
 
 /**
+ * Painted metal cladding with vertical standing seams every `pitch` m along the face (Alfred Nathan
+ * House's block). The seams are drawn by the shader, not as geometry, and fade out where a seam's
+ * spacing comes under about three pixels, so that a face seen from afar does not shimmer.
+ */
+function seamed(color, roughness, pitch, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness });
+  m.userData.metres = 2;
+  return hook(m, "seamed-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    diffuseColor.rgb *= ${PAINT_TONE};
+    float u = (abs(N.x) > abs(N.z) ? P.z : P.x) / ${pitch.toFixed(3)};
+    float w = fwidth(u);
+    float d = abs(fract(u + 0.5) - 0.5);                       // to the nearest seam, in seam spacings
+    float line = 1.0 - smoothstep(0.035, 0.035 + w, d);
+    float fade = (1.0 - smoothstep(0.15, 0.35, w)) * (1.0 - abs(N.y));
+    diffuseColor.rgb *= 1.0 - 0.28 * line * fade;
+  }`, {}, undefined, space);
+}
+
+/**
  * A pale painted roof, smooth, with the paint's faint unevenness. Its hips and ridges are not drawn
  * darker: the kit's faces are flat and share no corners, so a shader cannot find where two meet.
  */
@@ -230,6 +251,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
     // modern cladding (Alfred Nathan House's block): smooth mid-grey panels and fins
     panel: painted(0x8f9396, 0.5, space),
+    // the same cladding with its standing seams, 0.45 m apart (the long sides in 51j5's photograph)
+    panelSeam: seamed(0x8f9396, 0.5, 0.45, space),
     // dark red painted doors (Alfred Nathan House's front and balcony doors)
     doorRed: painted(0x4a1512, 0.45, space),
   };

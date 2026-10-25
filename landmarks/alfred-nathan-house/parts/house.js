@@ -31,9 +31,42 @@ function onFace(b, a, c, t0, t1, y0, y1, o0, o1, material) {
   b.add(g, material);
 }
 
-/** A window on the face a -> c, centred at t of its length, w wide, y0 to y1: glass set into a white surround. */
-function faceWindow(b, a, c, t, w, y0, y1) {
+/** A plan shape (in the face's own x, from its centre, and y) extruded o0 to o1 m out from the face a -> c
+ * at t of its length. */
+function faceShape(b, a, c, t, shape, o0, o1, material) {
+  const dx = c[0] - a[0], dz = c[1] - a[1];
+  const g = new THREE.ExtrudeGeometry(shape, { depth: o1 - o0, bevelEnabled: false, curveSegments: 4 });
+  g.translate(0, 0, o0);
+  g.rotateY(-Math.atan2(dz, dx));
+  g.translate(a[0] + dx * t, 0, a[1] + dz * t);
+  b.add(g, material);
+}
+
+/** The outline of an opening x0..x1, y0..y1 whose head's corners are rounded to radius r. */
+function roundHead(path, x0, x1, y0, y1, r) {
+  path.moveTo(x0, y0); path.lineTo(x1, y0); path.lineTo(x1, y1 - r);
+  path.absarc(x1 - r, y1 - r, r, 0, Math.PI / 2, false);
+  path.lineTo(x0 + r, y1);
+  path.absarc(x0 + r, y1 - r, r, Math.PI / 2, Math.PI, false);
+  path.lineTo(x0, y0);
+  return path;
+}
+
+/** A window on the face a -> c, centred at t of its length, w wide, y0 to y1: glass set into a white
+ * surround. With `round`, the head's corners are rounded (the ground floor's windows in vZGe's and
+ * RHEq's photographs: square heads with quarter-round corners, about a fifth of the width across). */
+function faceWindow(b, a, c, t, w, y0, y1, round = false) {
   const L = Math.hypot(c[0] - a[0], c[1] - a[1]), h = w / 2 / L, f = 0.12 / L;
+  if (round) {
+    const r = Math.min(0.3, w * 0.22), F = 0.12, x = w / 2;
+    faceShape(b, a, c, t, roundHead(new THREE.Shape(), -x, x, y0, y1, r), 0, 0.03, "glassPale");
+    const frame = roundHead(new THREE.Shape(), -x - F, x + F, y0 - 0.12, y1 + F, r + F);
+    frame.holes.push(roundHead(new THREE.Path(), -x, x, y0, y1, r));
+    faceShape(b, a, c, t, frame, 0, 0.1, "paint");
+    onFace(b, a, c, t - h - f, t + h + f, y1 + F, y1 + F + 0.15, 0, 0.12, "paint");
+    onFace(b, a, c, t - h - f, t + h + f, y0 - 0.15, y0, 0, 0.12, "paint");
+    return;
+  }
   onFace(b, a, c, t - h, t + h, y0, y1, 0, 0.03, "glassPale");
   onFace(b, a, c, t - h - f, t - h, y0 - 0.12, y1 + 0.2, 0, 0.1, "paint");
   onFace(b, a, c, t + h, t + h + f, y0 - 0.12, y1 + 0.2, 0, 0.1, "paint");
@@ -77,8 +110,10 @@ export function house(b) {
   // the walls and the roof
   b.box(bx0, bx1, FOOT.house, H.roof, bz0, bz1, "paint");
   b.box(fx0, fx1, FOOT.house, H.roof, fz0, fz1, "paint");
-  b.box(bx0 + 0.3, bx1 - 0.3, H.roof, H.roof + 0.05, bz0 + 0.3, bz1, "roofPale");
-  b.box(fx0 + 0.3, fx1 - 0.3, H.roof, H.roof + 0.05, fz0, fz1 - 0.3, "roofPale");
+  // its flat roof, dark grey in the 2023 aerial (median luma 76 at the LiDAR's roof points, sRGB 57 77
+  // 118), behind the parapet and seen from no street: the kit's dark roof
+  b.box(bx0 + 0.3, bx1 - 0.3, H.roof, H.roof + 0.05, bz0 + 0.3, bz1, "roof");
+  b.box(fx0 + 0.3, fx1 - 0.3, H.roof, H.roof + 0.05, fz0, fz1 - 0.3, "roof");
   // the cornice round the front and sides, the parapet on the front with its pedestals
   const c = 0.3, cy = H.roof - 0.25;
   b.add(boxesGeometry([
@@ -119,7 +154,7 @@ export function house(b) {
       const a = bay[i], e = bay[i + 1], front = i === 1;
       onFace(b, a, e, -0.04, 1.04, P.top - 0.15, P.top + 0.1, 0, 0.1, "paint");
       onFace(b, a, e, -0.04, 1.04, H.bayTop - 0.45, H.bayTop - 0.05, 0, 0.18, "paint");
-      for (const [y0, y1] of [W.ground, W.upper]) faceWindow(b, a, e, 0.5, front ? 1.25 : 0.7, y0, y1);
+      for (const [y0, y1] of [W.ground, W.upper]) faceWindow(b, a, e, 0.5, front ? 1.25 : 0.7, y0, y1, y0 === W.ground[0]);
     }
   }
   // the porch: its floor up steps from the path, the front door, three openings under a beam
@@ -155,6 +190,6 @@ export function house(b) {
   // the sides: plain, two windows a floor on the left side's front part (rA70's view, through a
   // tree), one small window high on the right side (RHEq's)
   const L0 = [fx0, fz0], L1 = [fx0, fz1]; // outward (-x) to the left of L0 -> L1
-  for (const [y0, y1] of [W.ground, W.upper]) for (const t of [0.25, 0.7]) faceWindow(b, L0, L1, t, 1.0, y0, y1);
+  for (const [y0, y1] of [W.ground, W.upper]) for (const t of [0.25, 0.7]) faceWindow(b, L0, L1, t, 1.0, y0, y1, y0 === W.ground[0]);
   faceWindow(b, [fx1, fz1], [fx1, fz0], 0.65, 0.6, W.upper[0] + 0.3, W.upper[1]);
 }

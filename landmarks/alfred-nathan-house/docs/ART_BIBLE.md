@@ -11,7 +11,8 @@ shows is drawn plainly at the LiDAR's sizes.
   one colour, the shadows of its mouldings doing the drawing.
 - **The front**: two canted bays of two storeys, one each side, each with a tall window in its front
   face and a narrower one in each angled side on both floors, the windows in moulded surrounds with
-  shouldered (round-cornered) heads on the ground floor; a moulded string course between the floors;
+  shouldered heads on the ground floor (square, their corners rounded to a quarter circle about a
+  fifth of the width across); a moulded string course between the floors;
   the bays' tops level with the balcony's entablature.
 - **Between the bays**: the porch, up about eight steps from the front path, behind three openings
   (a wide round arch in the middle, a narrower one each side) on columns with leafy capitals; a dark
@@ -26,8 +27,9 @@ shows is drawn plainly at the LiDAR's sizes.
   gate at the steps, a small garden.
 
 ## The block (from the campus path to the east)
-- **The long side toward the library**: grey metal cladding with standing seams close together,
-  no windows where the photographs see it, a step in its top near the far end.
+- **The long side toward the library**: grey metal cladding with standing seams close together
+  (about 0.45 m apart in 51j5's upper view), no windows where the photographs see it, a step in its
+  top near the far end (the plant room).
 - **The east end**: a deep grey frame (sides about 0.7 m wide, a thinner top) round three bays of
   glazing split by two slender grey fins; three storeys, each standing on a pale band of slats that
   bows out a little between the fins; the glazing behind a veil of thin vertical rods, dark glass
@@ -35,7 +37,9 @@ shows is drawn plainly at the LiDAR's sizes.
 - **The lowest storey** stands back under the east end: white walls, glass doors to the left and a
   map board to the right, slender round columns at the corners, a wide paved landing and steps down
   to the path.
-- The roof, from above only (the 2023 LINZ aerial): grey metal, its hips meeting at a plant room.
+- The roof, from above only (the 2023 LINZ aerial): grey metal with seams down its slopes (median
+  sRGB 141 148 165 at the LiDAR's roof points), its hips meeting at a plant room. The house's flat
+  roof behind its parapet is darker grey (luma about 76).
 
 ## The light (match the photographs)
 - Princes Street (2024-07): a winter day with a pale hazy sky, no sun on the front; the house's front is in soft

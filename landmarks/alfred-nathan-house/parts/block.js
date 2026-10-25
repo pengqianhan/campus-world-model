@@ -20,19 +20,15 @@ export const LEVELS = [0.8, 5.2, 9.0];
 const BAND = 1.15, GLAZE_TOP = 12.55, SOFFIT = 0.15, LANDING = -2.1;
 const RECESS = 1.8;                         // how far the lowest storey stands back under the east end
 const FRAME = { side: 0.7, out: 0.45 };     // the east end's grey frame
-const SEAM = 0.9;                           // the standing seams of the long sides' cladding (the photographs: closer; 0.9 m keeps them from shimmering far off)
 
 export function block(b) {
   const [x0, x1] = B.x, [z0, z1] = B.z, E = B.eave, g = B.eastGround;
   // the walls: over the recess from its soffit, elsewhere from the foot
-  b.box(x0, x1, SOFFIT, E, z0, z1, "panel");
-  b.box(x0, x1, FOOT.block, SOFFIT, z0 + RECESS, z1, "panel");
-  // standing seams on both long sides (thin ribs), up to the eaves
-  const seams = [];
-  for (let z = z0 + 0.3; z < z1; z += SEAM) {
-    seams.push([x0 - 0.05, x0, SOFFIT, E - 0.3, z - 0.03, z + 0.03], [x1, x1 + 0.05, SOFFIT, E - 0.3, z - 0.03, z + 0.03]);
-  }
-  b.add(boxesGeometry(seams), "panel");
+  // in the seamed cladding: standing seams 0.45 m apart (51j5's upper view: about twice as close as
+  // round 0's 0.9 m ribs), drawn by the material's shader, which fades them out where they would
+  // shimmer, instead of as ribs of geometry
+  b.box(x0, x1, SOFFIT, E, z0, z1, "panelSeam");
+  b.box(x0, x1, FOOT.block, SOFFIT, z0 + RECESS, z1, "panelSeam");
   // the east end: the frame, the two fins, and the three storeys of bands and veiled glazing
   const fz = z0 - FRAME.out, ix0 = x0 + FRAME.side, ix1 = x1 - FRAME.side;
   b.add(boxesGeometry([
@@ -64,7 +60,9 @@ export function block(b) {
   const [rx0, rx1] = B.roofX, [rz0, rz1] = B.roofZ;
   b.add(boxesGeometry([[rx0, rx1, E - 0.12, E, rz0, rz0 + 0.12], [rx0, rx1, E - 0.12, E, rz1 - 0.12, rz1],
     [rx0, rx0 + 0.12, E - 0.12, E, rz0, rz1], [rx1 - 0.12, rx1, E - 0.12, E, rz0, rz1]]), "panel");
-  hipRoof(b, B.roofX, B.roofZ, E, B.slope, "roofPale");
+  // grey metal, as the walls (the 2023 aerial: the roof's median sRGB 141 148 165, luma 148, at the
+  // LiDAR's roof points; panel is 143 147 150)
+  hipRoof(b, B.roofX, B.roofZ, E, B.slope, "panel");
   const P = B.plant;
   b.box(P.x[0], P.x[1], E, P.top, P.z[0], P.z[1], "panel");
 }

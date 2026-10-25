@@ -42,6 +42,11 @@ sampled from them into the model.
   so in your report with the numbers; do not edit `common.js`.
 
 ## References
+- Cameras: every view keeps its Street View camera but the two campus-path panoramas', which
+  `refine.fixed` in the config corrects on evidence from the east frame's own outline (fF8q 1.31 m
+  lower, 51j5 pitched 4.38° down; the reasons are there). Do not let a search score the silhouette
+  against other buildings: the photographs' solid holds the General Library and the Clock Tower's
+  ranges.
 - Five Google panoramas: three on Princes Street (2024-07, 48-49 m from the centre, 18-20 m from the
   house's front): `vZGe…` (straight in front), `RHEq…` (to the right) and `rA70…` (to the left,
   through a tree); two on the campus path east of the block (2025-05): `fF8q…` (33 m, 13 m from the
@@ -73,13 +78,18 @@ sampled from them into the model.
   defaults and leaves the other landmarks' viewer pictures (`?quality=low`, `?mask=1`) identical.
 - The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name. Names for
   this building: `paint` (the house's white walls, trim, posts; the block's lowest storey),
-  `panel` (the block's grey cladding and fins: added to the kit for this building), `glass` (the
-  block's glazing), `glassPale` (the house's sashes), `roofPale` (the flat and hipped roofs), `roof` (the slate over the bays), `dressed` (steps and
-  the porch's floor), `doorRed` (the house's two dark red doors: added to the kit for this building).
+  `panel` (the block's grey frame, fins and plant room, and its hipped roof: grey metal in the
+  aerial; added to the kit for this building), `panelSeam` (the block's long walls: `panel` with
+  standing seams 0.45 m apart drawn by its shader, which fades them out under about three pixels a
+  seam; added in round 1), `glass` (the block's glazing), `glassPale` (the house's sashes),
+  `roofPale` (the top of the balcony's entablature), `roof` (the slate over the bays, and the
+  house's flat roof: dark grey in the aerial), `dressed` (steps and the porch's floor), `doorRed`
+  (the house's two dark red doors: added to the kit for this building).
 
 ## Budget (tier 1: the site runs in a browser, phones too)
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (merged by material). Build time of a part
-  ≤ ~300 ms on this machine (the console logs it).
+  ≤ ~300 ms on this machine (the console logs it). Round 1: 9,582 triangles in 9 draw calls, the
+  block in 4 ms and the house in 12 ms.
 - Generated textures ≤ 2048², and as few as possible; reuse the kit's where they fit.
 - Street View: ≤ 2,000 tiles for this building (726 bought).
 

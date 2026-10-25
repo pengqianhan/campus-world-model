@@ -301,7 +301,10 @@ boundary:
 
 A correction is applied only when the photo's sky is well labelled round the model's silhouette
 (≥ 20 % photo sky and ≤ 50 % photo solid next to it) and it raises the IoU by ≥ 0.01. Backlit views
-with hazy white sky, views mostly of trees, and back views keep their Street View camera.
+with hazy white sky, views mostly of trees, and back views keep their Street View camera. A
+panorama listed in `refine.fixed` (`{<panoId>: {delta: [dx, dy, dz, yaw°, pitch°], reason}}`) is
+not searched: its correction, measured on evidence the search cannot weigh (other buildings fill
+its photographs' solid), is applied as given, and `reason` says what it was measured from.
 `views_refined.json` holds every view, with `refine: {from, delta, applied, iou_before, iou_after}`.
 
 ### Metrics

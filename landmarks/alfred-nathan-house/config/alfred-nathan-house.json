@@ -71,7 +71,11 @@
   "min_gain": 0.1,
   "min_gain_note": "0.1, not 0.01: the one panorama the search would correct (fF8q: IoU 0.657 to 0.740 on 2026-10-22) goes to the edges of its bounds (camera 1 m higher, 2 deg more pitch), which moves the model's top further below the photograph's (out/refine/fF8q*_outline.jpg). Its rows taken onto the east face with the Street View camera give the frame's top 14.5 m and the path -2.35 m, a span within 0.2 m of the LiDAR's (13.3 to -3.35): that camera stands about 1.1 m too high, and the search, scoring the silhouette against the library and trees round it, moves it the other way. So every view keeps its Street View camera.",
   "min_sky": 0.2,
-  "max_solid": 0.5
+  "max_solid": 0.5,
+  "fixed": {
+   "fF8qpg3HX5EKEJL3GdXL_w": {"delta": [0, -1.31, 0, 0, 0], "reason": "2026-10-25: fitted to the east frame's own outline against the sky in the wide view's mask, nothing of any other building (its top edge at 5 columns, its two outer sides at 11 rows): with the Street View camera the frame's top stands 35-55 px low (rms 25.8 px); the camera 1.31 m lower fits it to rms 5.9 px, a pitch alone to 11.3 px. As round 0 read it from the face's rows (about 1.1 m)."},
+   "51j5uFdrPwCxjQgoWwhFAw": {"delta": [0, 0, 0, 0, -4.38], "reason": "2026-10-25: fitted the same way to the east frame's top (6 columns) and its right side (6 rows) in the wide view's mask: with the Street View camera the top stands 61-65 px low (rms 45 px); a pitch 4.38 deg down fits it to rms 2.0 px, a height alone would need the camera 2.97 m lower (rms 5.4 px). The Clock Tower's top (the LiDAR's 30 highest points, 91 m away) stands 80 px above where the Street View camera puts it, as much as the frame 28 m away: a pitch, not a height."}
+  }
  },
  "ground_note": "the LiDAR ground on the front path at the foot of the house's steps, 45.72-45.78 m (z 30-33 on the centre line); Princes Street is 45.6-45.8. The site falls away behind: 43.5 m along the long sides at the house's back (z 12), 42.4 at the block's east end and 41.2 at its north-north-east corner. The frame thresholds are above this ground (2.25 m lower than with the first, provisional 43.5, so the frame is the same)."
 }
