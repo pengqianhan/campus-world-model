@@ -12,7 +12,7 @@ const FASCIA = 0.42; // depth of the white fascia round the flat roofs
 
 /** A flat roof slab over [x0, x1] x [z0, z1] at height `top`: the roof, its fascia and the dark line. */
 function flatRoof(b, x0, x1, z0, z1, top) {
-  b.box(x0, x1, top - 0.06, top - 0.02, z0, z1, "roofPale");
+  b.box(x0, x1, top - 0.06, top - 0.02, z0, z1, "roofGreen");
   const f = [], e = 0.06;
   f.push([x0 - e, x1 + e, top - FASCIA, top - 0.02, z1, z1 + e], [x0 - e, x1 + e, top - FASCIA, top - 0.02, z0 - e, z0]);
   f.push([x0 - e, x0, top - FASCIA, top - 0.02, z0, z1], [x1, x1 + e, top - FASCIA, top - 0.02, z0, z1]);
@@ -40,7 +40,7 @@ export function hall(b) {
   // the middle room, rising to the gable
   b.box(mid.x[0], mid.x[1], FOOT, R.eave - 0.15, mid.z[0], mid.z[1], "paint");
   b.box(R.x[0], R.x[1], R.eave - 0.3, R.eave, R.z[0], R.z[1], "paint");
-  gable(b, R.x[0], R.x[1], R.z[0], R.z[1], R.eave, R.ridge, R.ridgeZ, "roofPale");
+  gable(b, R.x[0], R.x[1], R.z[0], R.z[1], R.eave, R.ridge, R.ridgeZ, "roofGreen");
   // the flat roofs: over the near end, the walk-ways and the far end (a little lower)
   flatRoof(b, near.x[0], mid.x[0], near.z[0], near.z[1], H.top);
   for (const [z0, z1] of H.walks.z) flatRoof(b, mid.x[0], mid.x[1], z0, z1, H.top);

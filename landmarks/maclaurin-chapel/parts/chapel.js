@@ -70,9 +70,9 @@ export function chapel(b) {
   const R = a / COS30;
   b.box(-0.09, 0.09, W.sill, W.top, R - 0.2, R + 0.02, "paint");
   // the roof: a low pyramid, a dark edge round it (the thin dark line over the walls), ribs on the hips
-  hex(b, C.roof, 0, C.eave, C.apex, "roofPale");
+  hex(b, C.roof, 0, C.eave, C.apex, "roofGreen");
   hex(b, C.roof + 0.03, C.roof + 0.03, C.eave - 0.18, C.eave + 0.02, "iron");
-  for (const [x, z] of hexCorners(C.roof)) beam(b, [x, C.eave + 0.05, z], [0, C.apex + 0.05, 0], 0.12, 0.08, "roofPale");
+  for (const [x, z] of hexCorners(C.roof)) beam(b, [x, C.eave + 0.05, z], [0, C.apex + 0.05, 0], 0.12, 0.08, "roofGreen");
   // a flat ceiling under the eaves' overhang, so the walls' top is closed
   hex(b, C.roof, C.roof, C.eave - 0.2, C.eave - 0.18, "paint");
 }

@@ -174,7 +174,7 @@ needs:
   `src/i18n/locales/*.json`), which name their materials ("such as stone, painted timber, glass
   and slate"): change them if the new building is of another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
-  (it lists `roof`, `roofPale`, `glass`, `glassPale`, `iron` and `void`) but that is a roof, a pane
+  (it lists `roof`, `roofPale`, `roofGreen`, `glass`, `glassPale`, `iron` and `void`) but that is a roof, a pane
   or an opening, its part there. Every other material is drawn as wall in the light form, so on
   the map a roof in a new material takes the wall colour until it is listed;
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
