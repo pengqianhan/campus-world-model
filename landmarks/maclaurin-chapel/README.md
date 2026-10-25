@@ -6,7 +6,8 @@ Street (October 2026). The kit it is built with, the pipeline, the viewer and ho
 shared by every landmark: [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=maclaurin-chapel&view=orbit`
-  with the repository root served on port 8765. It is not on the site yet.
+  with the repository root served on port 8765. The site draws it in place of block 107 (below, "On
+  the site").
 - Run its pipeline: `landmarks/pipeline/run.sh maclaurin-chapel [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
@@ -130,6 +131,41 @@ Photographs do exist, and over the 9 refined views the mean is 0.548, under 0.65
 is 27-33 off its photograph. Whether this reading may stand is the maintainer's decision.
 The footprint IoU fell from 0.902 because the small room (13 m²) is drawn where the LiDAR classes its
 roof vegetation: the LiDAR's own footprint leaves it out.
+
+## On the site (October 2026)
+
+Round 1's model, unchanged, with `"site": true` in the config; `place` wrote it into
+`placement.json`. The site draws it near the camera in place of block 107 and of no other block.
+
+- **The blocks it stands in place of.** From above on a 0.5 m grid, the model covers 98.1% of block
+  107 (`run.sh maclaurin-chapel topview`, in the view frame) and 98.4% of it in the map's frame
+  (through `placement.json`). The only other block whose centre is within 80 m, 123 (Lodge), it
+  covers not at all. So `building.also` is empty.
+- **The door** is the foot of the entrance steps (x 7.2, z 10.0), where the LiDAR ground is 43.5 m
+  (the ground points within 1 m of it: p10/p50/p90 -0.05/+0.03/+0.23 m from `ground`).
+- **The footing.** The site stands the model on its own drawn ground (the 8 m DEM) at the door. Under
+  the footprint that ground lies -0.18 to +0.05 m from the door's. The walls, the steps and the
+  porch go down to y = -0.70 (`FOOT`), so the lowest points of each material that reaches the ground
+  are below the drawn ground: the walls by 0.52 to 0.75 m and the steps by 0.67 to 0.70 m. The small
+  room's timber door stands on y = 0, 0.10 m above the drawn ground (`tests/landmarks.test.ts`
+  allows 0.25 m).
+- **What the LiDAR gives** (every height within 0.1 m of it): the chapel's eaves (8.95 m against
+  8.94 m, the median of its points 6.6 to 7.1 m from the centre), its roof (10.21 m against 10.22 m,
+  1.3 m from the apex), the spire's cross (21.1 m against 21.05 m, the highest point), the bay's
+  eaves and ridge (7.1 and 7.8 m against the lowest points, 7.04 to 7.2 m and 7.77 to 7.81 m), the
+  hall's flat roofs (3.37 m against 3.38 to 3.39 m; the far end's 3.25 m against 3.25 m), its middle
+  room's ridge (5.0 m against 5.03 m) and the small room's roof (3.40 m). The plan is the chapel's
+  hexagon fitted to its roof's edge, and building 107's floor outline where a tree hides the walls.
+  The building card says "Drawn in detail, to sizes measured by LiDAR", and no part of the model is
+  estimated, so the config gives no `part`.
+- **What is plain, because no source shows it** (see "Limits"): the small room beyond the bay, the
+  colour of the bay's and the room's roofs (pale), the hall's skylights (not drawn), and the faces
+  away from Princes Street (plain white walls).
+- **Its forms.** On the map, and in the walker views of the basic tier, it has the map's colours: its
+  roofs (`roofGreen`, `roofPale`) take the roof colour, its glass the glass colour, and the rest the
+  wall colour. In the walker views of the full tier it has its own materials. Its steps and its spire
+  are in the kit's dressed stone (`dressed`, `shade`), so its full form asks the worker for the stone
+  textures, as the Clock Tower's does.
 
 ## Limits
 
