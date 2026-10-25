@@ -56,7 +56,7 @@ stage_refs() {
     # Only ALLOW_FETCH=1 buys tiles: not 0, not any other value.
     py "$T/streetview_collect.py" --config "$CONFIG" $([[ "${ALLOW_FETCH:-}" == 1 ]] && echo --allow-fetch)
   fi
-  py "$T/sky_mask.py"
+  py "$T/sky_mask.py" --config "$CONFIG"
 }
 stage_refine() { echo "== refine"; server; CONFIG=$CONFIG node "$T/refine_cameras.mjs" --config "$CONFIG"; }
 stage_compare() { echo "== compare"; server; CONFIG=$CONFIG node "$T/compare.mjs" --out "$OUT" ${QUERY:+--query "$QUERY"}; }
