@@ -13,7 +13,7 @@ on 18 May 2024 with the north-east blocks scaffolded and wrapped, and the Grafto
 in panoramas of 2022-09 taken before the works and of 2024-10 after them, and the LiDAR measured them
 unwrapped. So that range is drawn in detail (`southwest`). **Everything else is the campus map's
 estimated block** (`rest`), by the maintainer's choice of 2026-10-23: block 104's outline from
-`public/data/campus.json` less the range's side, flat-topped at the map's block top, plain walls.
+`public/data/uoa/campus.json` less the range's side, flat-topped at the map's block top, plain walls.
 Nothing measured from the LiDAR or seen in a photograph outside the range goes into `rest`. Round 1
 drew the rest at the LiDAR's sizes (`parts/massing.js`, in the history at 83c449d); it is not drawn,
 because those sizes are partly the scaffolds'. How to draw the whole building after the works is the

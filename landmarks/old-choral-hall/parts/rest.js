@@ -5,7 +5,7 @@
 // photographs. A later round replaces this file.
 //
 // - The outline: the one the map extrudes for block 104 (src/shared/massing.ts: floor G's own outline in
-//   public/data/campus.json, which floor 1 stacks on; not the building's `outline`, which differs by a notch
+//   public/data/uoa/campus.json, which floor 1 stacks on; not the building's `outline`, which differs by a notch
 //   of about 2 m2 at the back), taken into the view frame as the site's Landmark.toModel does with
 //   placement.json (centre 105.904, 88.723; rotationY 0.798867; scale 1.000086), to 0.01 m.
 //   tests/landmarks.test.ts checks OUTLINE and TOP against campus.json and the terrain.

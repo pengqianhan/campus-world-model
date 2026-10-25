@@ -5,10 +5,10 @@ The MIT License in LICENSE covers the source code in this repository only. It do
 data. The files under public/data/ and data/ are derived from third-party sources and remain under
 their terms:
 
-- data/raw/osm/, public/data/context.json and public/data/context/: (c) OpenStreetMap
-  contributors, under the Open Database License 1.0.
-- data/raw/terrain/ and public/data/terrain/: New Zealand terrain data (c) Land Information New
-  Zealand and the New Zealand Government, under CC BY 3.0 NZ.
+- data/raw/osm/, public/data/<school>/context.json and public/data/<school>/context/:
+  (c) OpenStreetMap contributors, under the Open Database License 1.0.
+- data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land
+  Information New Zealand and the New Zealand Government, under CC BY 3.0 NZ.
 - What the site takes from the University of Auckland's public campus map and Calendar
   (buildings, floors, rooms, room types, key dates) remains the University of Auckland's copyright.
 - The sizes measured for the landmarks in landmarks/ (each landmark's config/<name>.json and

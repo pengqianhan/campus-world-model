@@ -85,7 +85,7 @@ Verified 2026-10-13 against https://pengqianhan.github.io/campus-world-model/ at
 | 7 | About: unofficial notice, sources with links and snapshot dates, OSM attribution, limitations | Met | e2e "7." |
 | 8 | All text from locale files; `?lang=`; a new language is one new file | Met | e2e "8."; `tests/i18n.test.ts` |
 | 9 | Repo pushed, CI green on `main`, README covers running, refreshing data, adding a language | Met | latest runs on `main`: build, e2e, deploy all success |
-| 10 | Coverage numbers in the final report | See "Coverage" | `public/data/meta.json` |
+| 10 | Coverage numbers in the final report | See "Coverage" | `public/data/uoa/meta.json` |
 
 ## Coverage (snapshot 2026-10-13)
 
@@ -103,7 +103,7 @@ Verified 2026-10-13 against https://pengqianhan.github.io/campus-world-model/ at
 ## Done (with evidence)
 
 As recorded on 2026-10-13. The counts below are of that day; today's are in the README and in
-`public/data/meta.json`, and what was done since is in `CHANGELOG.md`.
+`public/data/uoa/meta.json`, and what was done since is in `CHANGELOG.md`.
 
 - Local toolchain: Vite 8 + TypeScript 7 + Preact 11 + three 0.186 + Vitest 5 + Playwright 1.64.
 - GitHub repo `pengqianhan/campus-world-model` (public), Pages enabled with `build_type=workflow`,
@@ -160,10 +160,18 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
 **Decisions:**
 - Name and make selectable only the learning-space types (lecture theatres, teaching spaces,
   computer labs, laboratories, study spaces, library, student hubs). Other searchable rooms go into
-  `rooms-index.json` as code + floor + one point.
+  `rooms-index.json` as code + floor + one point. For another school, the named types are the ones
+  its own source calls teaching or study spaces, listed in its descriptor: for Victoria the five
+  classes of the ITS room report (FFTS, STR, CETS, LT, FLS); for Canterbury the room labels that its
+  map lists under 'Lecture theatres' and 'Teaching rooms', less the 27 whose own type or label says
+  office, reception, research lab, lab store or staff workshop, which are left out with the meeting
+  rooms (41 points), and less the three 'Education Childcare' rooms in the Ilam Early Learning
+  Centre, which stay blank; the five rooms of '47 Creyke Road Meeting rooms' wait until it is known
+  whether they are in the postgraduate village (uc.md). Other rooms typed 'Workshop' are teaching
+  rooms and stay named.
 - Floor plans, since 2026-10-13 (the user chose this after comparing with the Tsinghua map, whose
   floors look complete): every other polygon on a floor of an on-map building is published as a bare
-  shape in `public/data/plans/<building>.json`, with no code or name, and cannot be selected.
+  shape in `public/data/uoa/plans/<building>.json`, with no code or name, and cannot be selected.
   That includes 2,086 rooms the source hides from its search (`status != 3`, mostly offices):
   drawn, never named. Left out, with `noPlan` on the floor and a note on screen: every floor holding
   student accommodation (139 floors) and the four childcare centres (255, 410, 511 and 841; matched by
@@ -189,8 +197,17 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   the room card. Only searchable rooms are in that index, so no hidden room gets a code this way.
 - Room codes are `<building>-<room>`; the true floor comes from the map. Inference from the room
   number (agrees with the map for >85% of rooms, see `tests/roomcode.test.ts`) is only the fallback
-  for unknown codes and is labelled "inferred" in the UI.
-- Building height = (levels at or above index 0) × 3.6 m. Not surveyed; said so in About.
+  for unknown codes and is labelled "inferred" in the UI. For a school in the Rooms by code form,
+  the floor comes only from the room number by the school's own published rule, or from a level
+  heading in the source. A floor from the room number is labelled 'inferred from the room number,
+  by <school>'s rule' on screen; a floor from a level heading is labelled 'inferred from a level
+  heading in <source>: "<heading>"'. A code that the rule cannot read keeps no floor.
+- Building height = (levels at or above index 0) × 3.6 m. Not surveyed; said so in About. A
+  school's building from OpenStreetMap takes its `height` tag; else its `building:levels` × 3.6 m,
+  the storey the windows are drawn at (`campus.floorHeight`), so that it shows as many storeys as it
+  has levels; else 6.5 m, or 10 m over 900 m², the defaults of the surrounding buildings
+  (`buildContext` in `scripts/build-data.ts`). `heightSource` says which, and the building card
+  says so.
 - Building shape in the campus view, since 2026-10-13: the floors at or above entry level are
   stacked, each with the campus map's outline for that floor (`src/shared/massing.ts`), where it
   used to be the footprint raised to the full height. 91 of the 139 buildings on the map get more
@@ -317,6 +334,27 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     times, as on a phone), the page usable 1.3 s later (6.8 s slowed), and frames 24 to 42% slower
     on SwiftShader. "Only the walker views change" (the street look) does not hold for these
     buildings.
+  - **A school whose campus map cannot be used.** Its buildings come from OpenStreetMap alone,
+    picked by a rule on their tags in its descriptor (for AUT, its `operator` and `ref` tags). The
+    building card names the source and says how the height was found. Floors and rooms stay absent
+    until a usable indoor source exists.
+  - **A school with a room list and no outlines.** Its buildings, their outlines and their heights
+    come from OpenStreetMap, as for a school whose campus map cannot be used. The school's own
+    sources give the names and the rooms. A building code or name joins an OpenStreetMap building
+    only where the school's own map point stands inside that footprint, or where the OpenStreetMap
+    building carries the code as its `ref`. A room joins a building by the building part of its
+    code, or, where the source lists rooms under a map point (Canterbury), through that point. A
+    teaching or study room whose code names no building the source lists (for Victoria, up to 13
+    of the 186, whose prefix "Locate a room" does not list) goes to the room exclusions with that
+    reason; a room of any other type is left out before this step, so its code is never published.
+    A room whose building has no footprint is located to its campus and says so. The building
+    stands as one block at its OpenStreetMap height, and no floor is drawn. The building card lists
+    the rooms by floor, and each floor says where it came from: "inferred from the room number, by
+    <school>'s rule", or "inferred from a level heading in <source>: '<heading>'". A room whose
+    floor cannot be read is listed under "floor not known". Only the room types that the school's
+    source calls teaching or study spaces are named; every other room is left out, with no code and
+    no name. Class times located only to a campus (Victoria's lecture times) appear in search with
+    their campus and "room needs permission", and never on the map.
 - **A pull request says how it was made (the user, 2026-10-15).** The model as the tool names it,
   the harness with its version and the thinking effort, in "How it was made" on the pull-request
   form, which CI checks is filled in (`scripts/check-pr-form.ts`, `.github/workflows/pr-form.yml`;
@@ -405,7 +443,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   `src/shared` are used by both the pipeline and the app.
 - **Ports:** dev server 5273, preview 4273 (`vite.config.ts`). Port 5173 on this machine belongs to
   another project of the user's; never touch that process.
-- **Vite `base` is `/campus-world-model/`** (override with `BASE_PATH`).
+- **Vite `base` is `/campus-world-model/` for the University of Auckland and `/<id>/` for any other
+  school** (`SCHOOL`; override with `BASE_PATH`).
 - **The repository was renamed on 2026-10-13** from `UoA-world-model` to `campus-world-model`, to
   match the domain and because it is meant to hold several schools. GitHub redirects the old
   repository address. The old GitHub Pages address, `pengqianhan.github.io/UoA-world-model/`, does
@@ -416,24 +455,32 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   `campus-world-model.pages.dev`), published by the `deploy-cloudflare` CI job (repository variable
   `CLOUDFLARE_PROJECT`, secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`). Cloudflare
   because the user planned advertising at the time, which GitHub Pages' terms do not suit.
+  GitHub Pages carries the University of Auckland only. Every other school is on Cloudflare Pages
+  alone.
 - **A preview for each of the user's own branches (the user, 2026-10-17).** The `deploy-preview`
   CI job publishes a pull request from a branch of this repository to the same Pages project as a
-  branch preview (`<branch>.campus-world-model.pages.dev/uoa/`) once build and e2e pass, so the
+  branch preview (`<branch>.campus-world-model.pages.dev/<id>/`) once build and e2e pass, so the
   user can look at a branch online often without merging it. Chosen over `wrangler login` on the
   user's machine, which would keep a Cloudflare credential wider than Pages there and needs a
   build and deploy by hand each time. Pull requests from forks get no preview, by the user's
   choice: GitHub gives them no secrets, and serving them would mean a second workflow run on
-  `workflow_run` that deploys a fork's build with the token, for little use today.
+  `workflow_run` that deploys a fork's build with the token, for little use today. A preview holds
+  only the schools on `main`'s list, so a school is not on the site before the maintainer has
+  merged it.
 - **No advertising (the user, 2026-10-14).** The plan above is dropped: the site is a
   non-commercial open-source project. The University's copyright page
   (<https://www.auckland.ac.nz/en/copyright.html>) asks for written permission before any
   commercial use of its material, so if advertising is ever wanted the University is asked first.
+  Before any advertising, every hosted school whose material the site uses on non-commercial terms
+  (Victoria, if it goes live) is asked too, as the University of Auckland would be.
 - **One neutral address, one path per school.** The user plans to add other New Zealand universities
   and registered `campusworldmodel.com` with Cloudflare on 2026-10-13 (expires 2027-10-13,
   auto-renew off), with each school under its own path: `/uoa/` now, a school picker at the root
   later (today the root redirects to `/uoa/`, `cloudflare/_redirects`). Path names are each school's
-  own short name, not its city: AUT is in Auckland too. Holding several schools in this one
-  repository is a refactor that has not started. `www.campusworldmodel.com` is not set up.
+  own short name, not its city: AUT is in Auckland too. Several schools share this repository as
+  `docs/schools/DESIGN.md` sets out: one build per school (`SCHOOL`, `BASE_PATH=/<id>/`), each
+  school's published data in `public/data/<id>/`, and a school picker at the root from the second
+  school on. `www.campusworldmodel.com` is not set up.
 - **Other worlds (the user, 2026-10-14).** The site names the Tsinghua World Model
   (`tsinghua-world-model.pages.dev`, an independent student project) as its inspiration, in About
   and in the README, and offers it on the campus view under "Other worlds". Following that link
@@ -450,7 +497,9 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   the area either covers (`STACK_OVERLAP` in `scripts/build-data.ts`), measured against the lowest
   floor of the run so that a slow drift up a tower still shows. The pipeline marks them
   (`Floor.stackWith`); inside a building each floor keeps its own outline. On the snapshot of
-  2026-10-13 this takes the 139 buildings on the map from 471 blocks to 303.
+  2026-10-13 this takes the 139 buildings on the map from 471 blocks to 303. A school's building
+  from OpenStreetMap is drawn by the same rules, as one block on its OpenStreetMap outline, with its
+  storeys at 3.6 m.
 - **All network fetching goes through `scripts/lib/snapshot.ts`** (cache-first, ≥1.1 s between
   requests, honest User-Agent). Never fetch a URL that already has a snapshot unless `--refresh`.
   Since 2026-10-21 this covers the landmark pipeline too (the user chose this over an exception in

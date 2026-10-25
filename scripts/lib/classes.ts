@@ -1,4 +1,4 @@
-// Turns raw Classes API records into the published timetable (public/data/schedule.json).
+// Turns raw Classes API records into the published timetable (public/data/uoa/schedule.json).
 //
 // The record shape follows the University's published OpenAPI document for "Classes Api V2"
 // (developer.auckland.ac.nz/prd/documentation/api-classes-v2): a class has `meetingPatterns`,

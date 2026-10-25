@@ -84,7 +84,7 @@ building is the maintainer's to decide later. So the model is two parts:
   sizes.
 - **`rest`** (`parts/rest.js`): the rest of building 104 as the campus map draws it. Its footprint is
   the outline the map extrudes for block 104 (`src/shared/massing.ts`: floor G's own outline in
-  `public/data/campus.json`, which floor 1 stacks on), taken into the view frame through
+  `public/data/uoa/campus.json`, which floor 1 stacks on), taken into the view frame through
   `placement.json`, less the part on the range's side of the range's inner wall
   (x' ≤ −13.0 in the range's frame: the range and its corner pavilion stand wholly there, and the
   map's outline runs 3.0 to 3.7 m beyond the range's face toward Symonds Street). Its top is flat and

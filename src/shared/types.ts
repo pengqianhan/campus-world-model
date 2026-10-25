@@ -29,7 +29,7 @@ export interface Campus {
   onMap: boolean;
   /**
    * The area of the map whose surroundings it stands in, when that is not the central one:
-   * public/data/context/<area>.json.
+   * public/data/<school>/context/<area>.json.
    */
   area?: string;
   /** Centre of the campus buildings in the local frame, metres. */
@@ -132,7 +132,7 @@ export interface SpaceType {
 /**
  * The rest of a building's floors: every other space the campus map draws, as a shape with the
  * campus map's type for it and no code or name. One file per building,
- * public/data/plans/<building id>.json.
+ * public/data/<school>/plans/<building id>.json.
  */
 export interface FloorPlans {
   version: 2;
@@ -283,7 +283,7 @@ export interface Schedule {
 
 /**
  * The height of the ground over one area of the map, on a square grid in the local frame:
- * public/data/terrain/<area>.json. From the LINZ 8 m DEM as the AWS Terrain Tiles carry it.
+ * public/data/<school>/terrain/<area>.json. From the LINZ 8 m DEM as the AWS Terrain Tiles carry it.
  */
 export interface TerrainData {
   version: 1;

@@ -100,7 +100,7 @@ A landmark is measured in one frame and shown in another.
 
   It writes `data/<name>_frame.json` and warns when the frame moves from `frame.expected` in the
   config. The model, the cameras and the placement use `frame.expected`.
-- **The map's frame**, in which the site draws everything (`public/data/campus.json`): metres east
+- **The map's frame**, in which the site draws everything (`public/data/uoa/campus.json`): metres east
   and north of the same origin through an equirectangular projection (`makeProjector` in
   `src/shared/geo.ts`), true north. It is not NZTM. At the Clock Tower the two frames differ by
   4.2 m and 1.06°, so a number in one frame is not a place in the other.

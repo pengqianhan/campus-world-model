@@ -30,7 +30,7 @@ the generator makes.
   into `data/raw/landmarks/lidar/` (see `landmarks/README.md`, "Fetching", once PR #67 is
   merged). They cover local x -759 to 1161 m and y -692 to 748 m: the whole City campus.
   The generator reads them from disk. It fetches nothing.
-- **The building's outline** from `public/data/campus.json`, taken from the map's frame to local
+- **The building's outline** from `public/data/uoa/campus.json`, taken from the map's frame to local
   NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`). The outline chooses the points:
   building points (class 6) inside it, or within 1 m of it for the eaves.
 - **The ground**: the LiDAR's ground points (class 2) within 5 m outside the outline.
@@ -271,7 +271,7 @@ A building moves out of tier 3 when the maintainer plans a landmark for it.
 
 Measured on 2026-10-22 from the cached tiles with a throwaway script, by the steps above (see "How
 the numbers were measured"). Heights are above the reference ground: the median of the ground
-points within 5 m outside the outline. "Today" is the block in `public/data/campus.json`.
+points within 5 m outside the outline. "Today" is the block in `public/data/uoa/campus.json`.
 
 | | 216 Mona | 113 Building 113 | 409 Security |
 | --- | --- | --- | --- |
