@@ -50,7 +50,7 @@ def _metres_per_degree(o):
 
 def map_projector(cfg):
     """The map's frame: metres east and north of the campus origin through the equirectangular
-    projection of src/shared/geo.ts (makeProjector), true north, as public/data/campus.json. Returns a
+    projection of src/shared/geo.ts (makeProjector), true north, as public/data/uoa/campus.json. Returns a
     function from local NZTM metres (the landmark's frame) to map metres."""
     from pyproj import Transformer
     o = cfg["origin"]
@@ -80,10 +80,10 @@ def map_to_local(cfg):
 
 def also_outlines(cfg):
     """The outlines (map metres) of the campus map's buildings in building.also, from the main project's
-    public/data/campus.json (decimetres there)."""
+    public/data/uoa/campus.json (decimetres there)."""
     also = set(cfg["building"].get("also", []))
     if not also: return []
-    c = json.load(open(os.path.join(ROOT, "..", "..", "public", "data", "campus.json"), encoding="utf-8"))
+    c = json.load(open(os.path.join(ROOT, "..", "..", "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     return [[[r[i] / 10, r[i + 1] / 10] for i in range(0, len(r), 2)] for b in c["buildings"] if b["id"] in also for r in b["outline"][:1]]
 
 

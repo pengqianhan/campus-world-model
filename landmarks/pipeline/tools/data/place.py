@@ -1,7 +1,7 @@
 """Data stage 4: where the landmark stands on the campus map, written to placement.json beside its config.
 The model is drawn in its view frame (x along the facade, y up from the ground at the door, z toward
 the street), which stands in the LiDAR frame: NZTM metres minus the NZTM of the campus origin, grid
-north. The map (public/data/campus.json) uses metres east and north of the same origin through an
+north. The map (public/data/uoa/campus.json) uses metres east and north of the same origin through an
 equirectangular projection, true north. The two frames differ: at the Clock Tower by 4.2 m and 1.06 deg.
 So this stage takes the frame's centre and axes through longitude and latitude to the map, and the
 site needs only placement.json.

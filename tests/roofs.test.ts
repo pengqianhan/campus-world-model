@@ -88,7 +88,7 @@ describe("roof shapes", () => {
 });
 
 describe("published surroundings", () => {
-  const ctx = JSON.parse(fs.readFileSync("public/data/context.json", "utf8")) as ContextData;
+  const ctx = JSON.parse(fs.readFileSync("public/data/uoa/context.json", "utf8")) as ContextData;
 
   it("give every building and part walls with a height, and every roof a rise", () => {
     for (const b of ctx.buildings) {

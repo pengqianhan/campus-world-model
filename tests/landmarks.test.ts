@@ -115,7 +115,7 @@ describe("each landmark on the site's ground", () => {
   it("stands at its door with each material's lowest points nowhere more than 0.25 m above the drawn ground", async () => {
     // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the
     // models are measured to; ordinary blocks get a footing for it (terrain.ts), a landmark its walls.
-    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);
+    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/uoa/terrain/central.json", "utf8")) as TerrainData]);
     for (const entry of LANDMARKS) {
       const l = new Landmark(entry, host);
       l.stand(terrain.height(...(entry.placement.door.map as [number, number])));
@@ -166,8 +166,8 @@ describe("the landmark kit", () => {
 
 describe("Old Choral Hall's rest, the map's estimated block (parts/rest.js)", () => {
   it("stands on the outline the map extrudes for block 104 and reaches the top the map gives that block", () => {
-    const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
-    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/terrain/central.json", "utf8")) as TerrainData]);
+    const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
+    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/uoa/terrain/central.json", "utf8")) as TerrainData]);
     const b = campus.buildings.find((x) => x.id === "104")!;
     const blocks = massing(b, campus.floorHeight);
     const entry = LANDMARKS.find((l) => l.name === "old-choral-hall")!;

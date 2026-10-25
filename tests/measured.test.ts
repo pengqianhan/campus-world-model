@@ -36,7 +36,7 @@ interface Data {
 const DIR = "landmarks/measured/buildings";
 const FILES = fs.readdirSync(DIR).filter((f) => f.endsWith(".json"));
 const DATA = FILES.map((f) => ({ file: f, data: JSON.parse(fs.readFileSync(`${DIR}/${f}`, "utf8")) as Data }));
-const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
 const byId = new Map(campus.buildings.map((b) => [b.id, b]));
 const exclusions = JSON.parse(fs.readFileSync("landmarks/measured/exclusions.json", "utf8")).buildings as Record<string, unknown>;
 

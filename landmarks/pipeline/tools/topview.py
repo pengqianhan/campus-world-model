@@ -3,12 +3,12 @@ silhouette, and of every landmark's sizes). Reads $OUT/triangles.bin (written by
 triangles in the view frame) and the data stage's points; both are drawn as heightmaps on a 0.5 m grid in
 the view frame of the config's frame.expected (as place.py), the LiDAR's from the points of this building
 and of those in building.also only (inside their outlines or within frame.near_outline m of them,
-default 3; the outlines of building.also from public/data/campus.json).
+default 3; the outlines of building.also from public/data/uoa/campus.json).
 Writes $OUT/metrics.json, metrics.md and topview.png (LiDAR | model | difference).
   - footprint IoU: cells higher than 2.5 m in the model against those in the LiDAR (gaps between LiDAR
     points closed);
   - height: model minus LiDAR on the cells both cover, and the highest point of each.
-  - blocks: for each block of public/data/campus.json whose centre is within 80 m, the share of its
+  - blocks: for each block of public/data/uoa/campus.json whose centre is within 80 m, the share of its
     cells under the model's footprint (what building.also lists: the blocks it covers by half or more).
   python -I ../pipeline/tools/topview.py [--config config/<name>.json] [--out out/topview]
 """
@@ -85,7 +85,7 @@ r = {
 from matplotlib.path import Path
 to_local, to_map = common.map_to_local(cfg), common.map_projector(cfg)
 cm_x, cm_z = to_map(*centre)
-campus = json.load(open(os.path.join(common.ROOT, "..", "..", "public", "data", "campus.json"), encoding="utf-8"))
+campus = json.load(open(os.path.join(common.ROOT, "..", "..", "public", "data", "uoa", "campus.json"), encoding="utf-8"))
 r["blocks"] = []
 for bld in campus["buildings"]:
     if np.hypot(bld["center"][0] - cm_x, bld["center"][1] - cm_z) > 80: continue
