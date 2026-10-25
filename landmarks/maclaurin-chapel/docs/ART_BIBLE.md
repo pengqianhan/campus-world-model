@@ -18,13 +18,17 @@ says only what they and the aerial show. What none of them shows is drawn plainl
   up toward the corner with the line of the eaves. The rest of each face is blank wall.
 - **The spire**: a slender square shaft, grey (weathered concrete or paint), rising from the roof's
   apex and tapering only a little, under a short pointed cap, with a small thin cross on its tip.
-- **The bay's height**: the LiDAR puts its top at 7.1-7.2 m where it sees it, near the street; in
-  34Yw's upper view it stands about half a metre higher against the chapel. The model keeps 7.5 m
-  (the LiDAR's median over the bay) until a closer look settles it.
 - **The bay** on the chapel's far side (to the left as seen from the street): a lower block of the same
-  white walls with a level top, a dark timber door or window at its foot.
+  white walls under a low gable along its length (round 1, from the LiDAR: eaves 7.1 m, ridge 7.8 m).
+  From the street its near slope shows as a thin band above the eave, so its top in the photographs
+  is the ridge.
+- **The small room** beyond the bay, toward the street: low, white, flat-roofed (3.4 m), rounded in
+  plan as the floor outline is, a dark timber door at its foot facing the street. A tree hides it
+  from above and from the street: it is drawn plainly.
 - The roof, seen from above only (the 2023 LINZ aerial): six triangular faces of light green
-  corrugated metal, the corrugations running down each face, a narrow rib along each hip.
+  corrugated metal, the corrugations running down each face, a narrow rib along each hip. Drawn in
+  `roofGreen` (round 1), the sunlit faces' colour in the aerial (median sRGB 170 181 172) a little
+  greener, as the shaded faces show it.
 
 ## The hall
 - Low and white, with flat roofs edged by deep plain white fascias, and a thin dark line where the
@@ -33,7 +37,7 @@ says only what they and the aerial show. What none of them shows is drawn plainl
   with a narrow dark timber fascia, glass doors, and a few steps down to the path.
 - Along the street side of the middle, an open walk-way under the flat roof, on slender white posts,
   with glazed walls behind; the far end has a band of white-framed windows. The roofs are green
-  corrugated metal from above, the far end's with a row of pale skylights.
+  corrugated metal from above (`roofGreen`), the far end's with a row of pale skylights (not drawn).
 
 ## The light (match the photographs)
 - Taken in July 2024 on a winter morning: the sun low in the north-east, behind the building as seen
@@ -41,7 +45,9 @@ says only what they and the aerial show. What none of them shows is drawn plainl
   walls a cool pale grey-cream under the sky, with little contrast between the faces; the glass reads
   dark, with pale reflections of the sky.
 - Measure, don't guess: compare the luminance of the blank walls and of the window between a strip's
-  reference and its render (crop the same region of both).
+  reference and its render (crop the same region of both). Round 1: exposure 0.65 puts the building
+  region's luma median at 143-152 drawn against 132-154 in the photographs (JYSz's, toward the sun,
+  111-117).
 
 ## Around it (not part of the model)
 - Large trees on every side, in front of every photograph; a low hedge and shrubs along the path, a

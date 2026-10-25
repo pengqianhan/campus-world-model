@@ -18,8 +18,12 @@ from them into the model.
     the hall (+x); walls about 6.0 m from the centre to the middle of a side, up to eaves at 8.95 m,
     level all round; a low hexagonal pyramid roof, about 15°, to 10.55 m; and on its apex a slender
     spire, under 0.5 m wide, its tip at about 19.85 m and a cross on it to 21.1 m, 0.9 m wide;
-  - **a bay** against the chapel's far side (x ≈ -9.9 to -5.9, z ≈ -3.5 to 3.1), 7.0–7.6 m high where
-    the LiDAR sees it (7.1–7.7 m); a tree's crown hides the rest;
+  - **a bay** against the chapel's far side (x ≈ -9.9 to -5.9, z ≈ -3.5 to 3.1) under a low gable along
+    x: eaves 7.1 m on both sides, ridge 7.8 m along z ≈ -0.2 (the lowest points in each half metre
+    across it; the same under the tree over its far half, where the LiDAR classes them vegetation);
+  - **a small room** beyond the bay and a link to the bay's street corner (x ≈ -12.4 to -7.9, z ≈ 0.9
+    to 5.7, building 107's floor outline): under a tree, classed vegetation, but with a level roof at
+    3.40 m (3.29–3.53, 67 points);
   - **the hall** (x ≈ 6 to 28.3, z ≈ -7.4 to 8.7): two end rooms and walk-ways along the middle under
     one flat roof at 3.37 m (3.25 m over the far end), which reaches 2.2–2.4 m beyond the middle room's walls (ground points
     under it: open walk-ways); the middle room (x ≈ 9 to 22.3, z ≈ -5.1 to 5.9) rises to a very low
@@ -38,6 +42,11 @@ from them into the model.
   +0.06 m from the door's under the footprint.
 
 ## References
+- Sky masks: bare branches stand in front of the sky in every photograph, so the masks close what is
+  narrower than 0.8° first (`sky_mask.branches_deg` 0.4 in the config; `../pipeline/tools/sky_mask.py`).
+  The cameras of dtDw, dsLb and PC_4 are refined; 34Yw's and JYSz's are Street View's (too little
+  sky round the silhouette). The wide views score low whatever the model: the masks count the trees'
+  pale bark as solid. Judge shape in the upper and door views.
 - Five Google panoramas on Princes Street (2024-07, a winter morning), 32–41 m in front of the street
   side: `refs/streetview/dtDw…`, `dsLb…`, `PC_4…`, `34Yw…`, `JYSz…`, each with `*_wide.jpg`,
   `*_upper.jpg` (the chapel and its spire) and `*_door.jpg`. `dsLb…` and `34Yw…` are the clearest;
@@ -71,10 +80,10 @@ from them into the model.
 - The `Builder` (`../kit/gothic.js`) merges everything into one mesh per material name; a name the
   kit does not have makes the part fail: ask the lead. Names for this building, all the kit's own:
   `paint` (the white rendered walls, the window's frames, the hall's fascias and posts), `glass`,
-  `roofPale` (the roofs: the aerial shows them light green, which the kit has no material for yet:
-  a green metal roof is for a later round, as an option of the kit), `iron` (the dark line at the
-  roofs' edges, the cross), `shade` (the spire's grey), `timber` (the doors and the entrance's
-  fascia) and `dressed` (the entrance steps).
+  `roofGreen` (the light green corrugated roofs the aerial shows: the chapel's and the hall's; round 1
+  added it to the kit), `roofPale` (the roofs no photograph shows: the bay's and the small room's),
+  `iron` (the dark line at the roofs' edges, the cross), `shade` (the spire's grey), `timber` (the
+  doors and the entrance's fascia) and `dressed` (the entrance steps).
 
 ## Budget (tier 1: the site runs in a browser, phones too)
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (merged by material). Build time of a part

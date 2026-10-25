@@ -31,11 +31,12 @@ export function beam(b, p, q, w, h, material) {
   b.add(g, material);
 }
 
-/** A gable roof along x over [x0, x1] x [z0, z1]: eaves at `eave` on z0 and z1, ridge at `ridge` on z = rz. */
-export function gable(b, x0, x1, z0, z1, eave, ridge, rz, material) {
+/** A gable roof along x over [x0, x1] x [z0, z1]: eaves at `eave` on z0 and z1, ridge at `ridge` on z = rz;
+ * with `ends` false, its two slopes only. */
+export function gable(b, x0, x1, z0, z1, eave, ridge, rz, material, ends = true) {
   const P = (x, y, z) => [x, y, z];
   const a0 = P(x0, eave, z0), a1 = P(x1, eave, z0), r0 = P(x0, ridge, rz), r1 = P(x1, ridge, rz), c0 = P(x0, eave, z1), c1 = P(x1, eave, z1);
-  const tris = [a0, r0, r1, a0, r1, a1, c0, c1, r1, c0, r1, r0, a0, c0, r0, a1, r1, c1];
+  const tris = [a0, r0, r1, a0, r1, a1, c0, c1, r1, c0, r1, r0, ...(ends ? [a0, c0, r0, a1, r1, c1] : [])];
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(tris.flat(), 3));
   b.add(g, material);

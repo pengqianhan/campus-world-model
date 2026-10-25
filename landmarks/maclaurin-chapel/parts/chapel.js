@@ -5,7 +5,7 @@
 import * as THREE from "three";
 import { boxesGeometry, hash } from "../../kit/gothic.js";
 import { MEASURED as M, FOOT } from "./common.js";
-import { hex, hexCorners, beam, COS30 } from "./shapes.js";
+import { hex, hexCorners, beam, gable, COS30 } from "./shapes.js";
 
 const T = 0.3; // wall thickness
 
@@ -95,13 +95,35 @@ export function spire(b) {
 }
 
 export function bay(b) {
-  const { x, z, top, door } = M.bay;
-  b.box(x[0], x[1], FOOT, top - 0.02, z[0], z[1], "paint");
-  // a flat roof, its edge a dark line (as the chapel's and the hall's)
-  b.box(x[0], x[1], top - 0.04, top, z[0], z[1], "roofPale");
-  const e = 0.05;
-  b.add(boxesGeometry([[x[0] - e, x[1], top - 0.15, top + 0.02, z[1], z[1] + e], [x[0] - e, x[1], top - 0.15, top + 0.02, z[0] - e, z[0]],
-    [x[0] - e, x[0], top - 0.15, top + 0.02, z[0], z[1]]]), "iron");
-  // a dark timber door at its foot on the street side
-  b.box(door[0], door[1], 0, door[2], z[1], z[1] + 0.03, "timber");
+  const { x, z, eave, ridge, ridgeZ } = M.bay;
+  b.box(x[0], x[1], FOOT, eave, z[0], z[1], "paint");
+  // a low gable along x: its far end a white gable wall, the roof over it with a small overhang (no
+  // photograph shows its colour: pale, as round 0 drew it) and a dark line along its eaves
+  gable(b, x[0], x[1], z[0], z[1], eave, ridge, ridgeZ, "paint");
+  const o = 0.1, k = (ridge - eave) / (ridgeZ - z[0]), lo = eave + 0.03 - o * k;
+  gable(b, x[0] - 0.05, x[1], z[0] - o, z[1] + o, lo, ridge + 0.03, ridgeZ, "roofPale", false);
+  b.add(boxesGeometry([[x[0] - 0.05, x[1], lo - 0.12, lo + 0.01, z[1] + o - 0.04, z[1] + o],
+    [x[0] - 0.05, x[1], lo - 0.12, lo + 0.01, z[0] - o, z[0] - o + 0.04]]), "iron");
+}
+
+/** The small room beyond the bay: white walls on the floor outline's points (straight between them) and
+ * a flat roof at the height of the level surface the LiDAR finds under the tree there. */
+export function room(b) {
+  const { outline, top } = M.room;
+  const shape = new THREE.Shape(outline.map(([x, z]) => new THREE.Vector2(x, -z)));
+  const prism = (y0, y1, material) => {
+    const g = new THREE.ExtrudeGeometry(shape, { depth: y1 - y0, bevelEnabled: false });
+    g.rotateX(-Math.PI / 2);
+    g.translate(0, y0, 0);
+    b.add(g, material);
+  };
+  prism(FOOT, top - 0.04, "paint");
+  prism(top - 0.04, top, "roofPale");
+  // the dark timber door the photographs show at the foot of the bay's far end: on the face toward the street
+  const { face: [[ax, az], [bx, bz]], width, height } = M.room.door;
+  const len = Math.hypot(bx - ax, bz - az), ux = (bx - ax) / len, uz = (bz - az) / len;
+  const g = new THREE.BoxGeometry(width, height, 0.03);
+  g.rotateY(Math.atan2(-uz, ux));
+  g.translate((ax + bx) / 2 + uz * 0.015, height / 2, (az + bz) / 2 - ux * 0.015);
+  b.add(g, "timber");
 }

@@ -27,10 +27,19 @@ export const MEASURED = {
   window: { width: [2.75, 3.9], columns: [6, 8], sill: 0.5, top: 8.8, step: 0.12, frame: 0.12, depth: 0.28, pane: [0.8, 1.5] },
   // The needle is about 0.5 m square at the roof and 0.2 m under its short pointed cap (34Yw's upper view).
   spire: { tip: 19.85, top: 21.1, base: 0.5, neck: 0.2, cap: 0.35, cross: 0.7 },
-  // A bay against the chapel's far side (-x), 7.1-7.7 m high where the LiDAR sees it (x > -8.4); beyond,
-  // a tree's crown hides it, and its end is the floor outline's (x -9.9). A dark timber door at its foot
-  // on the street side, near its far end (the photographs).
-  bay: { x: [-9.9, -5.9], z: [-3.5, 3.1], top: 7.5, door: [-9.4, -8.4, 2.2] },
+  // A bay against the chapel's far side (-x), its end the floor outline's (x -9.9). Its roof is a low
+  // gable along x (round 1): across z the lowest points in each half metre run 7.04-7.2 m at both eaves
+  // and 7.7-7.8 m at z -0.5 to 0, both where the LiDAR classes them building (x > -8.4) and, the same,
+  // where a tree's crown over it has them classed vegetation (x < -8.4). A dark timber door at its foot
+  // on the street side, near its far end (the photographs), is on the room's face toward the street (below).
+  bay: { x: [-9.9, -5.9], z: [-3.5, 3.1], eave: 7.1, ridge: 7.8, ridgeZ: -0.2 },
+  // The small room beyond the bay, and its link to the bay's street corner: no photograph shows it and
+  // the LiDAR classes it vegetation (a tree stands over it), but under the crown it finds a level surface
+  // at 3.29-3.53 m (p5-p95, median 3.40; 67 points) over the room's floor outline and nowhere else. The
+  // walls stand on building 107's floor outline (campus.json) taken into this frame, straight between
+  // its points: rounded in plan, as the outline is.
+  room: { outline: [[-7.89, 3.05], [-8.36, 4.8], [-9.84, 5.72], [-11.61, 5.16], [-12.38, 3.52], [-11.82, 1.75], [-9.99, 0.91]], top: 3.4,
+    door: { face: [[-8.36, 4.8], [-9.84, 5.72]], width: 1.0, height: 2.2 } },
   // The hall behind the chapel (+x), its long axis along x. Its two end rooms and the walk-ways along its
   // middle have one flat roof at 3.37 m (3.25 m over the far end); the middle room's walls rise to a very
   // low gable (eaves 4.55 m on both sides, ridge 5.0 m along z = 0.4). The flat roof reaches z -7.3 and

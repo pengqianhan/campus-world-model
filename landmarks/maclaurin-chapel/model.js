@@ -3,13 +3,14 @@
 // one broken part never stops the others. `only` (the viewer's ?only=chapel,hall) builds just those
 // parts. Every landmark's model.js exports build(materials, only), which returns a Group.
 import { Builder } from "../kit/gothic.js";
-import { chapel, spire, bay } from "./parts/chapel.js";
+import { chapel, spire, bay, room } from "./parts/chapel.js";
 import { hall } from "./parts/hall.js";
 
 const PARTS = {
   chapel: (b) => chapel(b),
   spire: (b) => spire(b),
   bay: (b) => bay(b),
+  room: (b) => room(b),
   hall: (b) => hall(b),
 };
 
