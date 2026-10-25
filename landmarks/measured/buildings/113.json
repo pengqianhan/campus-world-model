@@ -1,5 +1,5 @@
 {
- "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north of the campus origin, true north, as public/data/campus.json. Heights in metres above ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model stands on the map's ground (place.door).",
+ "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model stands on the map's ground (place.door).",
  "place": {
   "building": "113",
   "centre": [99, 162.9],
