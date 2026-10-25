@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { codeKey, findRoomCode, floorCandidates, inferFloor, matchFloor, parseRoomCode, roomKey } from "../src/shared/roomcode.ts";
 import type { CampusData } from "../src/shared/types.ts";
 
-const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
 const known = new Set(campus.buildings.map((b) => b.id));
 
 describe("parseRoomCode", () => {

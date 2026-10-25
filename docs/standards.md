@@ -24,8 +24,9 @@ The report is answered when the reporter's own link shows the right thing on the
 2. **Siblings.** A fault found in one building, room code, campus or screen size is looked for in
    the others, and the change says how many places or records it touched.
 3. **Data through the pipeline.** A change to `public/data/` comes from `npm run data:build`. Give
-   the `coverage` block of `public/data/meta.json` before and after, and account for every count
-   that fell. Only the maintainer holds the campus map's snapshots: a contributor's change that
+   the `coverage` block of each rebuilt school's `public/data/<school>/meta.json` (for the
+   University of Auckland, `public/data/uoa/meta.json`) before and after, and account for every
+   count that fell. Only the maintainer holds the campus map's snapshots: a contributor's change that
    needs a rebuild says so in its first line, leaves `public/data/` alone, and the maintainer
    rebuilds it and gives the counts.
 4. **Real use.** Look at the built site. `npm run e2e` saves screenshots to `e2e/screenshots/`; open

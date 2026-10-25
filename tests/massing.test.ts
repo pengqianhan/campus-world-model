@@ -4,7 +4,7 @@ import { decodeRing, overlap, pointInRing, ringArea, type Ring } from "../src/sh
 import { massing, roofRims, withoutStrips, type MassingBlock, type RimSegment } from "../src/shared/massing.ts";
 import type { Building, CampusData, FlatRing, Floor } from "../src/shared/types.ts";
 
-const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
 const H = campus.floorHeight;
 
 const square = (size: number): FlatRing => [0, 0, size, 0, size, size, 0, size];

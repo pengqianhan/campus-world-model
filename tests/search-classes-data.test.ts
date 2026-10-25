@@ -7,7 +7,7 @@ import { buildIndex, compact, fold, search } from "../src/shared/search.ts";
 import { Terrain } from "../src/scene/terrain.ts";
 import type { CampusData, ContextData, FloorPlans, Meta, RoomIndex, Schedule, Subject, TerrainData } from "../src/shared/types.ts";
 
-const read = <T>(name: string) => JSON.parse(fs.readFileSync(`public/data/${name}`, "utf8")) as T;
+const read = <T>(name: string) => JSON.parse(fs.readFileSync(`public/data/uoa/${name}`, "utf8")) as T;
 const campus = read<CampusData>("campus.json");
 const roomIndex = read<RoomIndex>("rooms-index.json");
 const subjects = read<Subject[]>("subjects.json");
@@ -212,8 +212,8 @@ describe("the ground under the map", () => {
 });
 
 describe("published floor plans", () => {
-  const files = fs.readdirSync("public/data/plans");
-  const plans = files.map((f) => JSON.parse(fs.readFileSync(`public/data/plans/${f}`, "utf8")) as FloorPlans);
+  const files = fs.readdirSync("public/data/uoa/plans");
+  const plans = files.map((f) => JSON.parse(fs.readFileSync(`public/data/uoa/plans/${f}`, "utf8")) as FloorPlans);
   const buildings = new Map(campus.buildings.map((b) => [b.id, b]));
 
   it("have one file for each building that counts plan shapes, and the counts agree", () => {

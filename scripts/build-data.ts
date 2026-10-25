@@ -1,7 +1,10 @@
-// Builds the published data files in public/data from the raw snapshots in data/raw.
+// Builds the published data files in public/data/<school>/ from the raw snapshots in data/raw.
 // Never touches the network: run the fetch-*.ts scripts first (they are cache-first).
 //
 //   npx tsx scripts/build-data.ts
+//
+// SCHOOL picks the school (docs/schools/DESIGN.md). Only the University of Auckland, uoa, is built
+// here so far, and it is the default.
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -57,7 +60,10 @@ import { buildSchedule, loadClassSnapshots } from "./lib/classes.ts";
 import { hasSnapshot, manifest, readSnapshot } from "./lib/snapshot.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const OUT = path.join(ROOT, "public", "data");
+const SCHOOL = process.env.SCHOOL || "uoa";
+// Every source below is the University of Auckland's: never write them as another school's data.
+if (SCHOOL !== "uoa") throw new Error(`build-data.ts builds the University of Auckland's data only (SCHOOL=uoa), not SCHOOL=${SCHOOL}`);
+const OUT = path.join(ROOT, "public", "data", SCHOOL);
 
 /** Origin of the local metric frame: roughly the middle of the City Campus. */
 const ORIGIN = { lat: -36.8523, lon: 174.7691 };

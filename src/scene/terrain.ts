@@ -1,4 +1,4 @@
-// The ground under the map: heights from the published grids (public/data/terrain/<area>.json),
+// The ground under the map: heights from the published grids (public/data/<school>/terrain/<area>.json),
 // sampled between grid points, and a mesh for each grid with skirts down to the sea plane.
 import { BufferAttribute, BufferGeometry } from "three";
 import type { FlatRing, TerrainData } from "../shared/types.ts";
