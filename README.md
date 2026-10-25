@@ -235,6 +235,11 @@ the 9 views whose cameras could be corrected), and from above its outline covers
 IoU of 0.88. The small room beyond its bay, under a tree in the LiDAR and in every photograph, is
 drawn plainly.
 
+| | |
+| --- | --- |
+| ![Maclaurin Chapel from Princes Street, drawn from code](docs/landmarks/maclaurin-chapel-front.jpg) | ![Maclaurin Chapel and its hall from above the street, drawn from code](docs/landmarks/maclaurin-chapel-above.jpg) |
+| ![Maclaurin Chapel on the map, drawn from code in the map's colours](docs/landmarks/maclaurin-chapel-map.jpg) | ![Maclaurin Chapel from the lawn by Princes Street, through the walker's eyes](docs/landmarks/maclaurin-chapel-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; Maclaurin Chapel in place of
 107) when the camera comes near: on
