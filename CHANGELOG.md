@@ -23,8 +23,9 @@ A change to what the site does or shows adds its line here, and the README's
   roof and slender spire, the bay beside it and the hall behind it, every height measured from the
   LINZ 2024 LiDAR. On the map it has the map's colours; from a walker's height on a computer with a
   graphics card, its own white walls, glass and light green metal roof. The small room beyond the
-  bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the faces that the Street
-  View photographs from Princes Street do not show. A click still opens its floors (#PR).
+  bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the
+  faces that the Street View photographs from Princes Street do not show. A click still opens its
+  floors (#PR).
 
 ## 2026-10-23
 

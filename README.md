@@ -227,7 +227,7 @@ of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
 | ![Old Government House from its lawn, the garden front, drawn from code](docs/landmarks/old-government-house-front.jpg) | ![The south-east end and the garden front, drawn from code](docs/landmarks/old-government-house-end.jpg) |
 | ![Old Government House on the map, drawn from code in the map's colours](docs/landmarks/old-government-house-map.jpg) | ![Old Government House from its lawn, through the walker's eyes](docs/landmarks/old-government-house-eyes.jpg) |
 
-The third is Maclaurin Chapel (107) on Princes Street: a white hexagonal chapel with a great window
+Another is Maclaurin Chapel (107) on Princes Street: a white hexagonal chapel with a great window
 round its street corner, a low green roof and a slender spire, and a low hall behind it. Every height
 comes from the LiDAR, within 0.1 m. Five Street View panoramas see its street side, through bare
 winter trees; against them the model's silhouette has a mean IoU of 0.45 over 15 views (0.55 over
