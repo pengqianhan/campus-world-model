@@ -51,7 +51,14 @@ async function serve(pages: (port: number) => Record<string, Answer>) {
     base: `http://127.0.0.1:${port}`,
     host: `127.0.0.1:${port}`,
     other: `http://localhost:${port}`,
-    stop: () => new Promise((done) => server.close(done)),
+    // close() ends idle keep-alive connections itself, but waits with no time limit for a connection
+    // a browser opened and sent nothing on (a plain browser preconnects), or whose answer is not
+    // finished; the browser is closed only after stop().
+    stop: () =>
+      new Promise((done) => {
+        server.close(done);
+        server.closeAllConnections();
+      }),
   };
 }
 
@@ -840,6 +847,9 @@ test.describe("research browser", () => {
 // A limit, pinned: in a browser that politeLaunch() did not start (Playwright's default headless
 // shell), speculation rules prefetch past the gate, to any host, even a closed one.
 test("research browser: in a plain browser, speculation rules still prefetch outside the gate (a known limit)", async () => {
+  // It takes 4 to 18 s. On CI it has hung to the 3-minute limit, twice in a row on one run, which
+  // pushed the e2e job past its 20 minutes; a hang now costs one minute a try.
+  test.setTimeout(60_000);
   const browser = await chromium.launch();
   try {
     const seen = await speculate(browser, "a list in the page");
@@ -847,7 +857,11 @@ test("research browser: in a plain browser, speculation rules still prefetch out
     expect(seen.outside).toContain("/not-allowed");
     expect(seen.shut).toContain("/closed-host");
   } finally {
-    await browser.close();
+    // Closing this browser has not returned at times: in one trace every check had passed and
+    // "Close browser" never ended, after its DevTools connection had already gone. Playwright
+    // force-kills the browser 30 s into close(); whether the process is gone after that is not known.
+    const closed = await Promise.race([browser.close().then(() => true), new Promise<false>((done) => setTimeout(() => done(false), 10_000))]);
+    if (!closed) console.warn("polite.spec: the plain browser did not close within 10 s");
   }
 });
 

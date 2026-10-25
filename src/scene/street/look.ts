@@ -111,21 +111,39 @@ export class StreetLook {
   }
 
   /**
-   * In a walker view, resolves once a frame has been drawn with the look in place (render): the
-   * sky's environment is set in that frame, and shaders made before it are not the ones its frames
-   * draw with. Undefined on the map; resolved on leaving the walker view too.
+   * In a walker view, resolves once two frames have been drawn with the look in place (render): the
+   * sky's environment is set in the first, and shaders made before it are not the ones its frames
+   * draw with; the second, which makes the scene's shaders again with that environment, is the
+   * heaviest after it, and shaders made beside it make it longer still (a landmark's full form, made
+   * as soon as the walker view opens). If no second frame comes within a second of the first (a view
+   * that stands still is drawn once), it resolves then. Undefined on the map; resolved on leaving the
+   * walker view too.
    */
   get loaded(): Promise<void> | undefined {
     if (!this.on) return undefined;
     if (this.drawn) return Promise.resolve();
     return new Promise((resolve) => this.whenDrawn.push(resolve));
   }
-  /** Whether a frame has been drawn with the look in place since the walker view opened. */
+  /** Whether two frames have been drawn with the look in place since the walker view opened (loaded). */
   private drawn = false;
+  /** The frames drawn with the look in place since the walker view opened, until it is drawn. */
+  private looks = 0;
+  private lookTimer?: ReturnType<typeof setTimeout>;
   private whenDrawn: (() => void)[] = [];
   private settleDrawn(drawn: boolean): void {
     this.drawn = drawn;
+    this.looks = 0;
+    clearTimeout(this.lookTimer);
+    this.lookTimer = undefined;
     for (const resolve of this.whenDrawn.splice(0)) resolve();
+  }
+  /** Counts a frame drawn with the look in place (loaded). */
+  private lookDrawn(): void {
+    if (++this.looks >= 2) this.settleDrawn(true);
+    else
+      this.lookTimer ??= setTimeout(() => {
+        if (this.on && !this.drawn) this.settleDrawn(true);
+      }, 1000);
   }
 
   /**
@@ -218,7 +236,7 @@ export class StreetLook {
     // not the map's sky: the edges of leaves (trees.ts) let it through here and there.
     this.renderer.setClearColor(this.fog.color);
     this.renderer.render(this.scene, this.camera);
-    if (kit && !this.drawn) this.settleDrawn(true);
+    if (kit && !this.drawn) this.lookDrawn();
     this.govern();
   }
 
