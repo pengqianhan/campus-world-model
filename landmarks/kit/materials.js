@@ -257,8 +257,13 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
     roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
-    // brick (Old Choral Hall): a shader hook, no textures
+    // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
+    render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
+    roofGrey: roofPale(0x7a8088, space),                // mid-grey metal roofs (the 2023 aerial: about 110-150 luma)
+    // plain walls for a part drawn as the campus map's estimated block, not as seen (Old Choral Hall's rest):
+    // no texture and no shader, so that it claims no surface; the map's wall colour for a teaching building by day
+    plain: Object.assign(new THREE.MeshStandardMaterial({ color: 0xfaf1dc, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // the General Library: shader hooks, no textures (the paint's own shader, so nothing new to make)
     grey: painted(0x8e9194, 0.75, space),               // mid-grey cladding and piers
   };

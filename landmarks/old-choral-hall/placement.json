@@ -1,0 +1,27 @@
+{
+ "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place of the blocks of `building` and of the buildings in `also`.",
+ "site": true,
+ "building": "104",
+ "also": [],
+ "centre": [
+  105.904,
+  88.723
+ ],
+ "bearing": {
+  "x": 44.228,
+  "z": 134.229
+ },
+ "rotationY": 0.798867,
+ "scale": 1.000086,
+ "door": {
+  "model": [
+   1.5,
+   22.6
+  ],
+  "map": [
+   123.146,
+   74.033
+  ]
+ },
+ "part": "Its range on Symonds Street"
+}

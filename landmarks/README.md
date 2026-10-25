@@ -120,6 +120,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `rotationY` | radians about the scene's y axis (x east, y up, z south) that turn the model onto the map |
 | `scale` | map metres per model metre (1.0001 at the Clock Tower: leave it out) |
 | `door` | the point whose ground is the model's y = 0, in the view frame (`model`) and on the map (`map`) |
+| `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
 a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
@@ -177,9 +178,9 @@ needs:
   `src/i18n/locales/*.json`), which name their materials ("such as stone, painted timber, glass
   and slate"): change them if the new building is of another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
-  (it lists `roof`, `roofPale`, `glass`, `glassPale`, `iron` and `void`) but that is a roof, a pane
-  or an opening, its part there. Every other material is drawn as wall in the light form, so on
-  the map a roof in a new material takes the wall colour until it is listed;
+  (it lists `roof`, `roofPale`, `roofGrey`, `glass`, `glassPale`, `iron` and `void`) but that is a
+  roof, a pane or an opening, its part there. Every other material is drawn as wall in the light
+  form, so on the map a roof in a new material takes the wall colour until it is listed;
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
   estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
@@ -280,7 +281,12 @@ it again from the snapshots, with the free calls (createSession, panoIds, metada
 cached; a fresh clone has no `metadata.json` and goes online, and so does a run with `ALLOW_FETCH=1`. The panoramas are the ones listed in the config's
 `streetview.pano_ids` (without that list, those within `radius_m` of the building). Each panorama
 gives the views the config's `streetview.views` names (for the Clock Tower: `wide`, the whole front,
-hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it.
+hfov 95°; `tower`, 30°; `door`, 45°); camera 2.5 m above the LiDAR ground under it. A
+panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels wide at zoom 5, some
+13,312, and those have fewer columns of tiles at every zoom. A panorama whose recorded camera is off
+by more than the refinement can find may have its camera set in the config
+(`streetview.camera_fixes`: panorama id to `[x, z]` in the view frame, with a note saying how it was
+found): its views are cut from the panorama as before, and drawn from there looking the same way.
 
 ### Camera refinement
 
