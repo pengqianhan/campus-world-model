@@ -52,6 +52,7 @@
     "roomIndexed": "Position from the campus map; shown as a pin",
     "roomInferredFloor": "Not on the campus map. Floor {floor} is inferred from the room number.",
     "roomBuildingOnly": "Not on the campus map. Only the building is known.",
+    "roomBlankFloor": "Its number points to a floor where people live or children are cared for: this site does not place unnamed rooms there, so only the building is shown.",
     "subjectMeta": "{faculty}",
     "subjectNoTimetable": "Class times and rooms for this subject are not available: the timetable is not public.",
     "subjectCourses_one": "{count} course with scheduled classes",
@@ -106,7 +107,8 @@
       "indexed": "Position from the official campus map · shown as a pin",
       "indexedOutline": "Position and outline from the official campus map · outline simplified · marked with a pin",
       "floor": "Floor inferred from the room number · position within the floor unknown",
-      "building": "Only the building is known"
+      "building": "Only the building is known",
+      "blank": "Its number points to a floor where people live or children are cared for: this site does not place unnamed rooms there, so only the building is shown."
     },
     "classesNow": "Scheduled now",
     "classesAt": "Scheduled at {time}",
@@ -271,7 +273,7 @@
     "osm": "Map context © OpenStreetMap contributors, available under the Open Database License.",
     "osmLink": "OpenStreetMap copyright and licence",
     "landmarksTitle": "Buildings drawn in detail",
-    "landmarks": "Drawn in detail from code: {buildings}. Their sizes come from the Auckland Part 1 LiDAR point cloud of 2024, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and Land Information New Zealand. It is licensed by Regional Software Holdings Limited for re-use under the Creative Commons Attribution 4.0 International licence. AI agents drew their details and compared them with Google Street View photographs, which are not published here; where trees hide a building from the photographs, its shape was checked against the LiDAR from above. Where every source shows a building during building works, only the part that the photographs show as it stands is drawn in detail, and the rest keeps the map's estimated block. On the map they take the map's colours when you come near them. From a walker's height they are drawn in their own materials, such as stone, brick, painted render and timber, glass and slate, on a computer with a graphics card, and in the map's colours on phones and on computers without one. A click on them still opens their floors.",
+    "landmarks": "Drawn in detail from code: {buildings}. Their sizes come from the Auckland Part 1 LiDAR point cloud of 2024, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and Land Information New Zealand. It is licensed by Regional Software Holdings Limited for re-use under the Creative Commons Attribution 4.0 International licence. AI agents drew their details and compared them with Google Street View photographs, which are not published here; where trees hide a building from the photographs, its shape was checked against the LiDAR from above, and what no photograph shows is drawn plainly or after the parts that are shown. Where every source shows a building during building works, only the part that the photographs show as it stands is drawn in detail, and the rest keeps the map's estimated block. On the map they take the map's colours when you come near them. From a walker's height they are drawn in their own materials, such as stone, brick, concrete, painted render and timber, glass and slate, on a computer with a graphics card, and in the map's colours on phones and on computers without one. A click on them still opens their floors.",
     "measured": "Measured by LiDAR and drawn by rule: {buildings}. Their heights and roofs come from the same LiDAR, measured by a program, and they stand in place of their blocks when you come near them. Their walls, storeys and windows are drawn by rule, not from photographs. A click on them still opens their floors. The heights of all other buildings, and of the part of a building under works that keeps its block, are estimated from their floors.",
     "landmarksLink": "How they are drawn (source code)",
     "landmarksLidar": "The LiDAR point cloud",

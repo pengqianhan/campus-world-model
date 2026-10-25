@@ -30,6 +30,17 @@ A change to what the site does or shows adds its line here, and the README's
   among the landmarks' materials, and says that a building under works is drawn in detail only
   where the photographs show it as it stands (#88).
 
+- **The General Library drawn in detail.** Near the General Library (building 109) the map now
+  draws it from code, to sizes measured from the LiDAR survey: the tower slab with its ribbon
+  windows floor by floor, the core and stair tower, the podium with its screens of white fins under
+  a crown of folded hoods, the brick plinth on Alfred Street, the grey piers of the south-east end,
+  and the glass canopy. On the map it has the map's colours. From a walker's height it is drawn in
+  white concrete, brick, grey and glass on a computer with a graphics card, and in the map's colours
+  on phones and on computers without one. It was checked against the LiDAR from above and against
+  twelve Street View panoramas, which see its front, its two ends and its back wing's north-east
+  side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
+  block still answers a click and opens on its floors. About now names brick and concrete among the
+  landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#80).
 - **Measured massings.** Near the camera, five plain buildings of the City Campus are drawn from
   the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
   Studio Block 433 and 435 58 Symonds Street.
@@ -38,6 +49,15 @@ A change to what the site does or shows adds its line here, and the README's
   The building card and About name them. The other 43 small buildings in the LiDAR keep their
   blocks, among them every place where people live and every childcare centre, each with its
   reason (`landmarks/measured/exclusions.json`) (#79).
+
+### Fixed
+
+- **Rooms on blank floors could be found in the search.** Floors where people live and childcare
+  centres are left blank, but 95 codes of unnamed rooms on them were still in the search and put a
+  pin on the blank floor: 59 on floors where people live, in 12 buildings, and 36 in the four childcare
+  centres. The data build now leaves them out of the search, and a code typed for such a floor is
+  placed in its building only, with no pin and no floor, and the search and the room card say why
+  (#84).
 
 ## 2026-10-22
 

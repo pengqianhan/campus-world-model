@@ -189,9 +189,6 @@ function glassPale(space) {
   }`, {}, undefined, space);
 }
 
-/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
-export const STONE = ["ashlar", "smooth", "dressed", "shade"];
-
 /**
  * Red brick (Old Choral Hall): courses 0.086 m high (a 76 mm brick and its 10 mm joint), bricks 0.23 m
  * long, each course set half a brick along from the one below, on every wall whatever way it faces.
@@ -220,6 +217,9 @@ function brick(space) {
     diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.6), wall);
   }`, {}, undefined, space);
 }
+
+/** The materials drawn with makeTextures()'s textures: a model with none of them needs no textures. */
+export const STONE = ["ashlar", "smooth", "dressed", "shade"];
 
 /**
  * The stone textures the materials are drawn with. They take about a second to make at "high", so
@@ -264,6 +264,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     // plain walls for a part drawn as the campus map's estimated block, not as seen (Old Choral Hall's rest):
     // no texture and no shader, so that it claims no surface; the map's wall colour for a teaching building by day
     plain: Object.assign(new THREE.MeshStandardMaterial({ color: 0xfaf1dc, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
+    // the General Library: shader hooks, no textures (the paint's own shader, so nothing new to make)
+    grey: painted(0x8e9194, 0.75, space),               // mid-grey cladding and piers
   };
   return m;
 }

@@ -92,8 +92,8 @@ Verified 2026-10-13 against https://pengqianhan.github.io/campus-world-model/ at
 - Courses with timetable data: **0**. Scheduled classes: **0**. Share located to building / floor /
   room: **not applicable** (nothing to locate).
 - What is covered instead: 194 buildings, all on the 3D map; 786 learning spaces with outlines, every
-  one tied to a building and a floor from the official campus map; 4,668 further rooms locatable as a
-  point on their floor; 14,862 other spaces drawn on their floors, each with the campus map's type
+  one tied to a building and a floor from the official campus map; 4,573 further rooms locatable as a
+  point on their floor; 14,840 other spaces drawn on their floors, each with the campus map's type
   for it; 251 subject codes; the 2026 academic calendar.
 - What the campus map itself leaves out, of the 794 floors on the 3D map: 98 floors with no shape at
   all (`noPlan: "unmapped"`; 73 of them in halls of residence the source maps as a bare building),
@@ -166,11 +166,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   shape in `public/data/plans/<building>.json`, with no code or name, and cannot be selected.
   That includes 2,086 rooms the source hides from its search (`status != 3`, mostly offices):
   drawn, never named. Left out, with `noPlan` on the floor and a note on screen: every floor holding
-  student accommodation (139 floors) and the three childcare centres (255, 410, 511; matched by
+  student accommodation (139 floors) and the four childcare centres (255, 410, 511 and 841; matched by
   name, the source has no room type for them). Also left out: single parking bays, the source's
   "Void 2.0 test" records, shapes under 2 m², and three shapes that lie over a named room. On
   2026-10-13, 14,508 shapes on 490 floors of 108 buildings, 1,027 KB in all, loaded one building at
-  a time; 14,862 since every campus was added (README).
+  a time; 14,840 since every campus was added and 841's floor was left blank (README). The codes of
+  the unnamed rooms on those floors are left out of the search too (since 2026-10-23).
 - Space types on the floor plans, since 2026-10-14 (the user chose this after asking why floors 6 to
   11 of building 405, all offices and research labs, showed only grey shapes): each shape carries
   the source's own type text, sorted by `SPACE_KINDS` in `build-data.ts` into seven groups that
