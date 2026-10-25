@@ -19,6 +19,8 @@ const glArgs = software
 // runs in the second half without being listed here. Measured on CI (2026-10-26), the two take
 // about as long. Without E2E_HALF, every spec runs.
 const FIRST_HALF = /[\\/](site|sky|travel|mobile)\.spec\.ts$/;
+// The phone's spec, matched as FIRST_HALF matches it, so that no other file can run in both halves.
+const MOBILE = /[\\/]mobile\.spec\.ts$/;
 const half = process.env.E2E_HALF || undefined;
 if (half !== undefined && half !== "1" && half !== "2") throw new Error(`E2E_HALF is "1" or "2", not "${half}"`);
 const secondHalf = half === "2" ? [FIRST_HALF] : [];
@@ -42,14 +44,14 @@ export default defineConfig({
     {
       name: "desktop",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
-      testIgnore: [/mobile\.spec\.ts/, ...secondHalf],
+      testIgnore: [MOBILE, ...secondHalf],
       ...(half === "1" ? { testMatch: FIRST_HALF } : {}),
     },
     {
       name: "mobile",
       // Software rendering gets a 1x screen; on the real GPU the phone's own pixel density is used.
       use: { ...devices["Pixel 7"], viewport: { width: 390, height: 844 }, ...(software ? { deviceScaleFactor: 1 } : {}) },
-      testMatch: /mobile\.spec\.ts/,
+      testMatch: MOBILE,
       testIgnore: secondHalf,
     },
   ],
