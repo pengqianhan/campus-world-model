@@ -1,0 +1,263 @@
+{
+ "name": "general-library",
+ "site": true,
+ "building": {
+  "id": "109",
+  "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-22 from the model's footprint (cells above 2.5 m, 0.5 m grid, run.sh topview) it covers 93.9% of 109's block and under 0.5% of the other two blocks within 80 m (103 and 322).",
+  "title": "General Library, University of Auckland",
+  "note": "outline: building 109's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    -1.4,
+    156.6
+   ],
+   [
+    27.8,
+    132.9
+   ],
+   [
+    37.0,
+    144.4
+   ],
+   [
+    57.1,
+    128.5
+   ],
+   [
+    49.2,
+    118.5
+   ],
+   [
+    60.1,
+    109.8
+   ],
+   [
+    59.3,
+    108.8
+   ],
+   [
+    59.7,
+    108.4
+   ],
+   [
+    53.2,
+    100.4
+   ],
+   [
+    52.8,
+    100.7
+   ],
+   [
+    50.6,
+    98.0
+   ],
+   [
+    50.9,
+    97.8
+   ],
+   [
+    50.5,
+    97.3
+   ],
+   [
+    50.2,
+    97.5
+   ],
+   [
+    45.9,
+    92.1
+   ],
+   [
+    46.1,
+    91.9
+   ],
+   [
+    40.3,
+    85.1
+   ],
+   [
+    22.1,
+    99.3
+   ],
+   [
+    14.3,
+    89.8
+   ],
+   [
+    11.2,
+    92.3
+   ],
+   [
+    10.3,
+    91.2
+   ],
+   [
+    4.9,
+    95.6
+   ],
+   [
+    11.3,
+    103.4
+   ],
+   [
+    9.9,
+    104.5
+   ],
+   [
+    5.1,
+    98.5
+   ],
+   [
+    -27.9,
+    124.6
+   ],
+   [
+    -16.3,
+    139.6
+   ],
+   [
+    -17.3,
+    140.5
+   ],
+   [
+    -15.4,
+    142.8
+   ],
+   [
+    -14.5,
+    142.0
+   ],
+   [
+    -14.1,
+    142.4
+   ],
+   [
+    -6.0,
+    152.5
+   ],
+   [
+    -5.8,
+    152.3
+   ],
+   [
+    -2.4,
+    156.5
+   ],
+   [
+    -1.9,
+    156.0
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 41.5,
+ "door": {
+  "x": 30.0,
+  "z": -7.0,
+  "note": "view frame: the foot of the main entrance in the south-east end, toward its back corner (bsR6's wide view, 2025-05: the doors under the name board, about 7 m behind the slab's back face line seen from the street side); the LiDAR ground on the footway there is 41.45-41.55 m, so ground is 41.5 and the model's y is 0 there; place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 109's outline: centre = mean x/y of points higher than tower_above m: the roof of the tower slab and the plant room on it; axis = the bearing of most of the walls seen from above (axis_from walls), the one of the two square to each other nearest the principal axis of the points from min_above to spine_below m within spine_radius m of the centre, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: south-west, to Alfred Street.",
+  "min_above": 5.5,
+  "tower_above": 26.5,
+  "spine_below": 42.5,
+  "spine_radius": 40,
+  "near_outline": 3,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    24.55041097,
+    109.30094868
+   ],
+   "axis": [
+    -0.74513034,
+    0.66691887
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 14,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 26,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 4,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ],
+  "pano_ids_note": "the twelve Google panoramas pinned on 2026-10-22, each showing the building: six on Alfred Street in front of the south-west face (2022-09: B4NW, MMME, w8_f, CHbl, v7l7, vbVX, 25-37 m from the slab's centre), three at the south-east end and its corner (2025-05: bsR6, 3HyL, xKYw), two behind on the north-east (2025-05: Zvdo, fF8q) and one on Princes Street off the north-west end (2024-07: Qaci). Of the 63 panoramas within 120 m, 50 are Google's and 13 user-contributed (left out). The 26 Google panoramas within 75 m were looked at in a low-resolution probe (zoom 3, 148 tiles, 126 of them bought): 22 show the building; of the others, vbf9 and ln-V see trees, BzLX a bus and nAxE trees and Old Choral Hall. Left out though they show it: Ac3I (beside bsR6, the same view), -JHj and uM18 (close to the back's lower walls), dyTf and u2Aj (Alfred Street further west, through trees), FgM3 and e8T_ (further east), EX9b (behind, beside fF8q), S1Vu and B-1T (Princes Street, beside Qaci). 1,650 zoom-5 tiles were bought for the twelve: 1,776 for this building with the probe.",
+  "pano_ids": [
+   "B4NWsmtaqPytHES8a8nnjA",
+   "MMMEj9i294M-nxdvFHOM-A",
+   "w8_fQCH2DIW-5_2w7C3Pzw",
+   "CHblo7U0lQ5bnbqXfdqEkw",
+   "v7l7BhygLfc2z7Z-favnyg",
+   "vbVXwtIBekjUWlwb8-S7mQ",
+   "bsR6qOzSgXNuI8eMwRUAVg",
+   "3HyLPn3-_MX4kbEUbwPC0w",
+   "xKYw4GYJuvaMThjKjm-nNg",
+   "ZvdomzJWrKnxW-ziEUyaTw",
+   "fF8qpg3HX5EKEJL3GdXL_w",
+   "QacisP0AACBENqfbIBW1Tw"
+  ]
+ },
+ "light": {
+  "exposure": 0.8,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the twelve panoramas are of spring (2022-09) and autumn (2025-05) days, the street faces mostly in soft light; exposure 0.8 brings the white concrete nearer the photographs' (round 0: building region luma p50, photographs 142, render 178 at 1.0)"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 6,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "provisional: the LiDAR ground on the footway at the main entrance, in the middle of the south-east end (41.45 to 41.55 m at x 30.5 to 32, z -8; the site falls about 5 m from Princes Street on the west, 45.6 m, to 40.6 m at the north-east corner, and Alfred Street in front of the south-west face is 43.3 to 44.8 m); the frame's thresholds are above this ground (2.5 m more than with the first, provisional 44.0, so the frame is the same); set at the door once the references show it"
+}
