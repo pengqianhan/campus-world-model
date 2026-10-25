@@ -1566,6 +1566,7 @@ select optgroup {
 
 .precision-floor,
 .precision-building,
+.precision-blank,
 .precision-indexed {
   border: 1px dashed rgba(255, 213, 145, 0.5);
   background: rgba(255, 180, 84, 0.08);

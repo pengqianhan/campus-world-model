@@ -283,6 +283,11 @@ describe("published floor plans", () => {
     }
     // an early childhood education centre that the source names by its initials
     expect(campus.buildings.find((b) => b.id === "841")?.floors.every((f) => f.noPlan === "childcare")).toBe(true);
+    // and blank in the search too: no unnamed room on such a floor can be found and pinned
+    for (const [id, i, why] of blank) {
+      if (why === "unmapped") continue;
+      expect((roomIndex[id] ?? []).some(([, f]) => f === i), `${id} floor ${i} in the search`).toBe(false);
+    }
   });
   it("mark the floors the campus map leaves bare, and only those", () => {
     const byBuilding = new Map(plans.map((p) => [p.building, p]));
@@ -345,6 +350,7 @@ describe("Classes API records -> schedule (synthetic fixture, shaped like the pu
       meetingPatterns: [
         { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "14:00", endTime: "15:00", daysOfWeek: "Fri", location: "104-G53" },
         { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "15:00", endTime: "16:00", daysOfWeek: "Fri", location: "303-999" },
+        { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "17:00", endTime: "18:00", daysOfWeek: "Fri", location: "410-101" },
         { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "16:00", endTime: "17:00", daysOfWeek: "Fri", location: "Online" },
         { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "", endTime: "", daysOfWeek: "Fri", location: "303-G23" },
         { startDate: "2026-07-20", endDate: "2026-10-23", startTime: "09:00", endTime: "10:00", daysOfWeek: "Fri", location: "" },
@@ -368,6 +374,9 @@ describe("Classes API records -> schedule (synthetic fixture, shaped like the pu
     expect(byText("104-G53")).toMatchObject({ precision: "room", building: "104" });
     // Unknown room in a known building: floor inferred from the number and flagged as such.
     expect(byText("303-999")).toMatchObject({ precision: "floor", building: "303", floorInferred: true });
+    // A room in a childcare centre: no floor, not even an inferred one.
+    expect(byText("410-101")).toMatchObject({ precision: "building", building: "410" });
+    expect(byText("410-101").floor).toBeUndefined();
   });
   it("records what it could not use, with reasons, instead of dropping it silently", () => {
     const reasons = schedule.exclusions.map((e) => e.reason);
@@ -376,7 +385,7 @@ describe("Classes API records -> schedule (synthetic fixture, shaped like the pu
     expect(reasons.some((r) => r.includes("no location"))).toBe(true);
     expect(reasons.some((r) => r.includes("no meeting pattern"))).toBe(true);
     expect(reasons.some((r) => r.includes("cancelled"))).toBe(true);
-    expect(schedule.sessions.length + schedule.exclusions.length).toBe(4 + 2 + 5);
+    expect(schedule.sessions.length + schedule.exclusions.length).toBe(4 + 3 + 5);
   });
   it("parses the field formats it might meet", () => {
     expect(parseDays("MoWeFr")).toEqual([1, 3, 5]);

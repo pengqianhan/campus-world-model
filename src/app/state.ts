@@ -25,6 +25,8 @@ export interface Marker {
   /** [east, north] in metres, when the campus map knows the room. */
   at?: [number, number];
   precision: "indexed" | "floor" | "building";
+  /** The code's floor is one this site leaves blank, so the code is placed in its building only. */
+  blank?: "residential" | "childcare";
 }
 
 export const data = signal<AppData | null>(null);
@@ -224,8 +226,11 @@ export async function resolveRoom(text: string): Promise<{ room?: string; marker
     // The index is optional; fall through to inference.
   }
   const floor = inferFloor(b.floors, parsed.room);
-  if (floor) return { marker: { code: parsed.code, building: b.id, floor: floor.i, precision: "floor" } };
-  return { marker: { code: parsed.code, building: b.id, precision: "building" } };
+  // A floor where people live or children are cared for is blank: no pin on it, not even an
+  // inferred one.
+  const blank = floor?.noPlan === "residential" || floor?.noPlan === "childcare" ? floor.noPlan : undefined;
+  if (floor && !blank) return { marker: { code: parsed.code, building: b.id, floor: floor.i, precision: "floor" } };
+  return { marker: { code: parsed.code, building: b.id, precision: "building", ...(blank ? { blank } : {}) } };
 }
 
 // ---------------------------------------------------------------------------------------------

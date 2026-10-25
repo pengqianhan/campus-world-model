@@ -184,7 +184,7 @@ function RoomCard({ d, b }: { d: AppData; b: Building }) {
   // A room found by its code stands on a shape of the floor plan: the room as the campus map draws it.
   const plan = plansLoaded.value.get(b.id);
   const shape = !room && plan && m?.at && m.floor !== undefined ? planShapeAt(plan, m.floor, m.at) : undefined;
-  const precision = room ? "room" : shape ? "indexedOutline" : (m?.precision ?? "building");
+  const precision = room ? "room" : shape ? "indexedOutline" : m?.blank ? "blank" : (m?.precision ?? "building");
   return (
     <section class="room-card" aria-live="polite" id="room-card">
       <header>
