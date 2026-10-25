@@ -69,7 +69,7 @@
   "scale": 0.25,
   "prior": 0.01,
   "min_gain": 0.1,
-  "min_gain_note": "0.1, not 0.01: the one panorama the search would correct (fF8q: IoU 0.657 to 0.740 on 2026-10-22) goes to the edges of its bounds (camera 1 m higher, 2 deg more pitch), which moves the model's top further below the photograph's (out/refine/fF8q*_outline.jpg). Its rows taken onto the east face with the Street View camera give the frame's top 14.5 m and the path -2.35 m, a span within 0.2 m of the LiDAR's (13.3 to -3.35): that camera stands about 1.1 m too high, and the search, scoring the silhouette against the library and trees round it, moves it the other way. So every view keeps its Street View camera.",
+  "min_gain_note": "0.1, not 0.01: the one panorama the search would correct (fF8q: IoU 0.657 to 0.740 on 2026-10-22) goes to the edges of its bounds (camera 1 m higher, 2 deg more pitch), which moves the model's top further below the photograph's (out/refine/fF8q*_outline.jpg). Its rows taken onto the east face with the Street View camera give the frame's top 14.5 m and the path -2.35 m, a span within 0.2 m of the LiDAR's (13.3 to -3.35): that camera stands about 1.1 m too high, and the search, scoring the silhouette against the library and trees round it, moves it the other way. So the search corrects no camera; fF8q's and 51j5's are corrected by hand in `fixed` below, each fitted to the east frame's own outline against the sky.",
   "min_sky": 0.2,
   "max_solid": 0.5,
   "fixed": {
