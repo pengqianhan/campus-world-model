@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   graphics card, its own white walls, glass and light green metal roof. The small room beyond the
   bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the
   faces that the Street View photographs from Princes Street do not show. A click still opens its
-  floors (#PR).
+  floors (#92).
 
 ## 2026-10-23
 
