@@ -163,9 +163,10 @@ Round 1's model, unchanged, with `"site": true` in the config; `place` wrote it 
   away from Princes Street (plain white walls).
 - **Its forms.** On the map, and in the walker views of the basic tier, it has the map's colours: its
   roofs (`roofGreen`, `roofPale`) take the roof colour, its glass and its iron trim (the eaves bands
-  and the spire's cross) the colour of openings, and the rest the wall colour. In the walker views of the full tier it has its own materials. Its steps and its spire
-  are in the kit's dressed stone (`dressed`, `shade`), so its full form asks the worker for the stone
-  textures, as the Clock Tower's does.
+  and the spire's cross) the colour of openings, and the rest the wall colour. In the walker views of
+  the full tier it has its own materials. Its steps and its spire are in the kit's dressed stone
+  (`dressed`, `shade`), so its full form asks the worker for the stone textures, as the Clock
+  Tower's does.
 
 ## Limits
 
