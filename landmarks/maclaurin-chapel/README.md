@@ -71,7 +71,7 @@ the bay and the small rounded room beyond it that a tree hides (the floor outlin
 - **The photographs, made usable.** `sky_mask.py` has an option, `sky_mask.branches_deg` in the
   config (0.4 here): each photograph is classified again after a grey closing with a disc of 0.4°,
   so that bare branches, twigs and wires in front of the sky count as sky. Sky in a view: 0-17%
-  before, 6-49% after. The other landmarks do not use it, and their masks are byte for byte as
+  before, 6.4-56.3% after. The other landmarks do not use it, and their masks are byte for byte as
   before. Three of the five cameras are now refined (dtDw, dsLb, PC_4: 20-25% photo sky round the
   silhouette, against 0-1% in round 0); 34Yw (15%) and JYSz (7%, toward the sun) keep Street View's.
 - **The roofs.** A new kit material, `roofGreen` (light green corrugated metal, shader only), on the
@@ -95,7 +95,11 @@ the bay and the small rounded room beyond it that a tree hides (the floor outlin
   toward the street.
 - **The light**: exposure 0.65 (was 0.78): see the numbers below.
 
-Numbers (round 0 -> round 1; `run.sh maclaurin-chapel refine compare topview`):
+Numbers (round 0 -> round 1; `run.sh maclaurin-chapel refine compare topview`). The rise in the
+silhouette comes from the new masks and the refined cameras, not from the model: round 0's model
+against round 1's masks and cameras scores 0.452 (`out/r1/compare-a/metrics.md`), and round 1's
+model against round 0's masks 0.227. The model's own changes this round (the bay's gable, the small
+room, the green roofs, the light) leave the silhouette where it was.
 
 | | round 0 | round 1 |
 | --- | ---: | ---: |
@@ -120,8 +124,10 @@ the sun, and its camera darkened the building).
 0.45: the five wide views and JYSz's upper and door. In the wide views the building is a
 small part of the picture, and the trees in front of it are most of it: the masks count their pale
 bark and lit leaves as solid (61,000 of dsLb wide's pixels are photo solid outside the model, 598 are
-model on photo sky). The masks still cannot be trusted there, so this round reads criterion 2 as for
+model on photo sky). The masks still cannot be trusted there, so this round proposes reading criterion 2 as for
 a building with no usable reference: the top view's outline IoU against the LiDAR, 0.883 (≥ 0.80).
+Photographs do exist, and over the 9 refined views the mean is 0.548, under 0.65; JYSz's brightness
+is 27-33 off its photograph. Whether this reading may stand is the maintainer's decision.
 The footprint IoU fell from 0.902 because the small room (13 m²) is drawn where the LiDAR classes its
 roof vegetation: the LiDAR's own footprint leaves it out.
 

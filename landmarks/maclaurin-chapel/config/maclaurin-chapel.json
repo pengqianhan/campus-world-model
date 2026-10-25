@@ -59,7 +59,7 @@
   ]
  },
  "sky_mask": {"branches_deg": 0.4,
-  "note": "tools/sky_mask.py: bare winter branches stand in front of the sky in every photograph, so without this most of the sky round the chapel counts as solid (0-17% sky in a view). Closing what is narrower than 0.8 deg (6 px in a wide view, 10-12 in the others) gives 6-49% sky; the white walls stay ignore or solid. At 0.6 deg the shaded white wall in dtDw's door view turns to sky, so 0.4 it is."},
+  "note": "tools/sky_mask.py: bare winter branches stand in front of the sky in every photograph, so without this most of the sky round the chapel counts as solid (0-17% sky in a view). Closing with a disc of 0.4 deg radius (6 px in a wide view, 10-12 in the others; what is narrower than about 0.8 deg goes) gives 6.4-56.3% sky; the white walls stay ignore or solid. At 0.6 deg the shaded white wall in dtDw's door view turns to sky, so 0.4 it is."},
  "light": {"sunaz": 40, "sunel": 20, "exposure": 0.65,
   "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the five panoramas were taken on a July (winter) morning with the sun low in the north-east, behind the building as seen from Princes Street (it flares in JYSz's wide view, at about bearing 40 deg): so the street faces are in open shade; exposure 0.78 brought the plain white face of dsLb's upper view to the photograph's luma (154; 180 at 1.0), but with the masks of round 1 the building region's median, wall, frames and glass together, is 133-154 in the photographs (112-118 in JYSz's, toward the sun) and 158-166 drawn: 0.65 brings the drawn median to that of the photographs, within 12 in every view but JYSz's"},
  "refine": {
