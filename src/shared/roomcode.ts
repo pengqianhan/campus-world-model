@@ -1,9 +1,16 @@
-// University of Auckland room codes look like "<building>-<room>": 303-G23, 260-098, 105S-039.
-// The building part is three digits with an optional wing letter. The room part usually starts
-// with the floor: a letter for ground/basement levels (G, B, SB, LG) or the leading digit(s).
+// Room codes look like "<building>-<room>": 303-G23, 260-098, 105S-039 at the University of
+// Auckland. The school's descriptor holds its grammar (`roomCode` in src/schools/<id>/school.ts):
+// the building number, an optional wing letter, the room part, the letters that name a floor, and
+// the floor names that mean the same level. The parser here is shared, and each function that reads
+// the grammar takes the descriptor as its first argument. The room part usually starts with the
+// floor: a letter for ground/basement levels (G, B, SB, LG) or the leading digit(s).
 //
 // The campus map gives the true floor for every room it knows. The inference in this file is the
 // fallback for codes the map does not know, and its results are labelled "inferred" in the UI.
+import type { RoomCodeGrammar, School } from "./school.ts";
+
+/** The part of a descriptor this file reads. */
+export type RoomCodeSchool = Pick<School, "roomCode">;
 
 export interface ParsedRoomCode {
   building: string;
@@ -12,9 +19,38 @@ export interface ParsedRoomCode {
   code: string;
 }
 
-const ROOM_PART = /^[A-Z]{0,3}\d{1,4}[A-Z0-9]{0,3}$/;
-/** Letters that start a room part because they name a floor, so "303G23" is 303 + G23, not 303G + 23. */
-const FLOOR_LETTERS = new Set(["G", "B", "M", "L", "P"]);
+interface Patterns {
+  /** A whole room part. */
+  roomPart: RegExp;
+  /** A building part and a room part with a separator between them. */
+  separated: RegExp;
+  /** A building number, a wing letter or none, and the rest, with no separator. */
+  joined: RegExp;
+  /** A code inside longer text. It is global, so each search makes a copy of its own. */
+  inText: RegExp;
+  floorLetters: ReadonlySet<string>;
+}
+
+const patternCache = new WeakMap<RoomCodeGrammar, Patterns>();
+
+/** The regular expressions of a school's grammar, made once for each descriptor. */
+function patterns(grammar: RoomCodeGrammar): Patterns {
+  let p = patternCache.get(grammar);
+  if (!p) {
+    const b = grammar.building.source;
+    const w = grammar.wing.source;
+    const r = grammar.room.source;
+    p = {
+      roomPart: new RegExp(`^(?:${r})$`),
+      separated: new RegExp(`^(${b}(?:${w})?)\\s*[-._/\\s]\\s*([A-Z0-9][A-Z0-9.\\s]*)$`),
+      joined: new RegExp(`^(${b})((?:${w})?)([A-Z0-9]+)$`),
+      inText: new RegExp(`(${b}(?:${w})?)\\s*[-._/]\\s*(${r})\\b`, "g"),
+      floorLetters: new Set(grammar.floorLetters),
+    };
+    patternCache.set(grammar, p);
+  }
+  return p;
+}
 
 function normalise(text: string): string {
   return text
@@ -27,19 +63,20 @@ function normalise(text: string): string {
  * Parses free text such as "303-G23", "303 g23", "303.G23" or "303G23".
  * `knownBuildings` (building ids) resolves the wing-letter ambiguity in unseparated input.
  */
-export function parseRoomCode(text: string, knownBuildings?: ReadonlySet<string>): ParsedRoomCode | null {
+export function parseRoomCode(school: RoomCodeSchool, text: string, knownBuildings?: ReadonlySet<string>): ParsedRoomCode | null {
+  const p = patterns(school.roomCode);
   const t = normalise(text);
   if (!t) return null;
 
-  const sep = /^(\d{3}[A-Z]?)\s*[-._/\s]\s*([A-Z0-9][A-Z0-9.\s]*)$/.exec(t);
+  const sep = p.separated.exec(t);
   if (sep) {
     const building = sep[1]!;
     const room = sep[2]!.replace(/[\s.]/g, "");
-    if (!ROOM_PART.test(room)) return null;
+    if (!p.roomPart.test(room)) return null;
     return { building, room, code: `${building}-${room}` };
   }
 
-  const joined = /^(\d{3})([A-Z]?)([A-Z0-9]+)$/.exec(t);
+  const joined = p.joined.exec(t);
   if (!joined) return null;
   const digits = joined[1]!;
   const letter = joined[2]!;
@@ -50,27 +87,27 @@ export function parseRoomCode(text: string, knownBuildings?: ReadonlySet<string>
     const plain: [string, string] = [digits, letter + rest];
     const wingKnown = knownBuildings?.has(wing[0]) ?? false;
     const plainKnown = knownBuildings?.has(plain[0]) ?? false;
-    if (wingKnown && !FLOOR_LETTERS.has(letter)) candidates.push(wing, plain);
+    if (wingKnown && !p.floorLetters.has(letter)) candidates.push(wing, plain);
     else if (plainKnown || !wingKnown) candidates.push(plain, wing);
     else candidates.push(wing, plain);
   } else {
     candidates.push([digits, rest]);
   }
   for (const [building, room] of candidates) {
-    if (ROOM_PART.test(room)) return { building, room, code: `${building}-${room}` };
+    if (p.roomPart.test(room)) return { building, room, code: `${building}-${room}` };
   }
   return null;
 }
 
 /** Finds the first room-code-looking token inside longer text, e.g. a timetable location field. */
-export function findRoomCode(text: string, knownBuildings?: ReadonlySet<string>): ParsedRoomCode | null {
+export function findRoomCode(school: RoomCodeSchool, text: string, knownBuildings?: ReadonlySet<string>): ParsedRoomCode | null {
   const t = normalise(text);
-  const re = /(\d{3}[A-Z]?)\s*[-._/]\s*([A-Z]{0,3}\d{1,4}[A-Z0-9]{0,3})\b/g;
+  const re = new RegExp(patterns(school.roomCode).inText);
   for (let m = re.exec(t); m; m = re.exec(t)) {
-    const parsed = parseRoomCode(`${m[1]}-${m[2]}`, knownBuildings);
+    const parsed = parseRoomCode(school, `${m[1]}-${m[2]}`, knownBuildings);
     if (parsed && (!knownBuildings || knownBuildings.has(parsed.building))) return parsed;
   }
-  const whole = parseRoomCode(t, knownBuildings);
+  const whole = parseRoomCode(school, t, knownBuildings);
   return whole;
 }
 
@@ -92,25 +129,17 @@ export function floorCandidates(room: string): string[] {
   return out;
 }
 
-/** Floor names that mean the same level in different buildings' numbering styles. */
-const EQUIVALENT: string[][] = [
-  ["G", "0"],
-  ["B", "B1", "-1"],
-  ["SB", "B2", "-2"],
-  ["LG", "M-1"],
-];
-
 export interface FloorLike {
   i: number;
   name: string;
 }
 
-/** Matches a floor-name token against a building's floors, allowing the equivalences above. */
-export function matchFloor<T extends FloorLike>(floors: readonly T[], token: string): T | null {
+/** Matches a floor-name token against a building's floors, allowing the school's equivalent floor names. */
+export function matchFloor<T extends FloorLike>(school: RoomCodeSchool, floors: readonly T[], token: string): T | null {
   const want = token.toUpperCase();
   const exact = floors.find((f) => f.name.toUpperCase() === want);
   if (exact) return exact;
-  for (const group of EQUIVALENT) {
+  for (const group of school.roomCode.equivalentFloors) {
     if (!group.includes(want)) continue;
     for (const alt of group) {
       const f = floors.find((x) => x.name.toUpperCase() === alt);
@@ -121,9 +150,9 @@ export function matchFloor<T extends FloorLike>(floors: readonly T[], token: str
 }
 
 /** Infers the floor of a room from its number alone. Returns null when nothing plausible matches. */
-export function inferFloor<T extends FloorLike>(floors: readonly T[], room: string): T | null {
+export function inferFloor<T extends FloorLike>(school: RoomCodeSchool, floors: readonly T[], room: string): T | null {
   for (const token of floorCandidates(room)) {
-    const f = matchFloor(floors, token);
+    const f = matchFloor(school, floors, token);
     if (f) return f;
   }
   return null;

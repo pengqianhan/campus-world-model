@@ -3,6 +3,8 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 import preact from "@preact/preset-vite";
 import type { Plugin, ResolvedConfig } from "vite";
+import type { Words } from "./src/shared/school.ts";
+import { lookupWords, overlayWords } from "./src/shared/words.ts";
 
 // The school whose data a build carries (docs/schools/DESIGN.md, section 3). Each school's published
 // data is in public/data/<id>/, and the site reads it at <base>data/<file>. The University of
@@ -11,6 +13,10 @@ import type { Plugin, ResolvedConfig } from "vite";
 const SCHOOL = process.env.SCHOOL || "uoa";
 if (!/^[a-z][a-z0-9-]*$/.test(SCHOOL)) throw new Error(`SCHOOL is a school's id in lower case, such as uoa, not "${SCHOOL}"`);
 const outDir = SCHOOL === "uoa" ? "dist" : `dist-${SCHOOL}`;
+// The school's descriptor, which the app imports as `@school` (DESIGN.md, section 5). The type check
+// (tsconfig.json) points the alias at the University of Auckland's.
+const descriptor = path.resolve(import.meta.dirname, "src", "schools", SCHOOL, "school.ts");
+if (!fs.existsSync(descriptor)) throw new Error(`no descriptor for SCHOOL=${SCHOOL} at ${descriptor}`);
 
 // The University of Auckland is served from https://pengqianhan.github.io/campus-world-model/, so
 // every asset URL of its build is prefixed with the repository name; any other school's default is
@@ -40,6 +46,20 @@ function schoolData(): Plugin {
         next();
       });
     },
+    // The page's head and its noscript text in the school's words: index.html names each text by its
+    // key, {{app.documentTitle}}, from src/i18n/locales/en.json with the school's overlay laid over it.
+    transformIndexHtml: {
+      order: "pre",
+      handler(html) {
+        const read = (file: string) => (fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, "utf8")) as Words) : undefined);
+        const words = overlayWords(read(path.join(config.root, "src", "i18n", "locales", "en.json"))!, read(path.join(config.root, "src", "schools", SCHOOL, "locales", "en.json")));
+        return html.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key: string) => {
+          const text = lookupWords(words, key);
+          if (text === undefined) throw new Error(`index.html names "${key}", which is not in the school's words`);
+          return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        });
+      },
+    },
     writeBundle() {
       const out = path.resolve(config.root, config.build.outDir);
       fs.cpSync(config.publicDir, out, { recursive: true, filter: (src) => path.resolve(src) !== path.resolve(dataDir()) });
@@ -50,6 +70,7 @@ function schoolData(): Plugin {
 
 export default defineConfig({
   base,
+  resolve: { alias: { "@school": descriptor } },
   plugins: [preact(), schoolData()],
   // Fixed, uncommon ports so the dev server, the preview server and the e2e tests agree,
   // and so they do not collide with other projects using Vite's default 5173.

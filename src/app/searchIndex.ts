@@ -1,4 +1,5 @@
 // What the search box can find, and how a query is turned into results.
+import { school } from "@school";
 import { codeKey, parseRoomCode } from "../shared/roomcode.ts";
 import { buildIndex, compact, fold, search, type IndexedEntry, type SearchEntry } from "../shared/search.ts";
 import type { Building, Campus, Course, Room, Subject } from "../shared/types.ts";
@@ -75,7 +76,7 @@ export function runSearch(d: AppData, query: string, limit = 40): SearchResults 
 
   // A room code that has no published outline: resolve it against the campus map's room index.
   let pendingRoom: SearchResults["pendingRoom"];
-  const parsed = parseRoomCode(query, d.buildingIds);
+  const parsed = parseRoomCode(school, query, d.buildingIds);
   if (parsed && d.buildingById.has(parsed.building) && !d.roomByKey.has(codeKey(parsed.code))) {
     pendingRoom = resolveRoom(query).then((r) => (r?.marker ? { type: "marker", marker: r.marker } : undefined));
   }

@@ -1,16 +1,17 @@
-// Where the sun stands over the City Campus at a given Auckland date and time, and how dark it is.
+// Where the sun stands over a school at a given Auckland date and time, and how dark it is. The place
+// is the school's descriptor's `sun` (the City Campus for the University of Auckland), passed in.
 // The sun's position uses NOAA's published solar-position equations (after Meeus), good to well
 // under a degree for any year this site will see; that is far closer than the scene can show.
+import type { School } from "./school.ts";
 import { aucklandInstant } from "./time.ts";
 
-/** The City Campus, where the sun is computed for every campus on the map. */
-const LAT = -36.8523;
-const LON = 174.7691;
+/** The part of a descriptor this file reads: where the sun is computed for every campus on its map. */
+export type SunSchool = Pick<School, "sun">;
 
 const RAD = Math.PI / 180;
 
 /** Sun direction at an instant: azimuth clockwise from north and elevation above the horizon, degrees. */
-export function sunPosition(instant: Date, lat = LAT, lon = LON): { azimuth: number; elevation: number } {
+export function sunPosition(instant: Date, lat: number, lon: number): { azimuth: number; elevation: number } {
   const jd = instant.getTime() / 86400000 + 2440587.5;
   const t = (jd - 2451545) / 36525;
   const l0 = (((280.46646 + t * (36000.76983 + t * 0.0003032)) % 360) + 360) % 360;
@@ -45,16 +46,16 @@ export function sunPosition(instant: Date, lat = LAT, lon = LON): { azimuth: num
   return { azimuth, elevation };
 }
 
-/** The sun over the City Campus when Auckland clocks show this date and time. */
-export function sunAt(date: string, minutes: number): { azimuth: number; elevation: number } {
-  return sunPosition(aucklandInstant(date, minutes));
+/** The sun over the school when Auckland clocks show this date and time. */
+export function sunAt(school: SunSchool, date: string, minutes: number): { azimuth: number; elevation: number } {
+  return sunPosition(aucklandInstant(date, minutes), school.sun.lat, school.sun.lon);
 }
 
 /**
  * 0 in full daylight, 1 at night. The change runs from the sun 6° above the horizon to 8° below,
  * so it is half done at sunrise and sunset and over by the end of nautical twilight.
  */
-export function nightAmount(date: string, minutes: number): number {
-  const k = Math.max(0, Math.min(1, (6 - sunAt(date, minutes).elevation) / 14));
+export function nightAmount(school: SunSchool, date: string, minutes: number): number {
+  const k = Math.max(0, Math.min(1, (6 - sunAt(school, date, minutes).elevation) / 14));
   return k * k * (3 - 2 * k);
 }

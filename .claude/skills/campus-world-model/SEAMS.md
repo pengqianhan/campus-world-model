@@ -6,8 +6,9 @@ what the grep cannot tell you.
 
 ## Data seams (step 3)
 
-**Geography.** `ORIGIN` in `scripts/build-data.ts` and the areas in `scripts/lib/areas.ts`: `CENTRAL`
-round the main campus, and one small box (`REMOTE`) for each campus or outlying building away
+**Geography.** `origin` and `areas` in the school's descriptor, `src/schools/<id>/school.ts`, which
+`ORIGIN` in `scripts/build-data.ts` and `scripts/lib/areas.ts` read: `central`
+round the main campus, and one small box (`remote`) for each campus or outlying building away
 from it. Every published coordinate is metres east and north of the origin, so put it at the
 centre of the main campus. `fetch-osm.ts` snapshots each area's surroundings; `build-data.ts`
 writes `context.json` for the central area and `context/<area>.json` for each other one, and marks
@@ -69,7 +70,8 @@ answer 504 for an hour: `fetch-osm.ts` goes round all of them three times, a min
 snapshot already on disk is never fetched again. The sea is not drawn; OpenStreetMap's coastline is
 a line, and a campus on the shore stands on land to the edge of its area.
 
-**Room codes.** `src/shared/roomcode.ts`, `CODE_RE` in `build-data.ts`, `tests/roomcode.test.ts`.
+**Room codes.** The grammar in the descriptor's `roomCode`, the parser in `src/shared/roomcode.ts`
+(it takes the descriptor as its first argument), `CODE_RE` in `build-data.ts`, `tests/roomcode.test.ts`.
 Auckland's grammar is `<building>-<room>` with the floor in the room's first character. Derive the new
 grammar from real codes in the snapshot and write the tests from them. Where the indoor layer gives
 true floors, measure how often inference from the code agrees and record the figure. Inference is
@@ -83,10 +85,10 @@ skipped hour, the repeated hour, a class on each side of the change. A zone with
 gets one test asserting the constant offset.
 
 **Sun, weather and seasons.** `src/shared/daylight.ts` computes the sun's position from NOAA's
-equations for `LAT` and `LON`, the main campus: change the two constants. `tests/daylight.test.ts`
+equations for the descriptor's `sun`, the main campus: change its two numbers. `tests/daylight.test.ts`
 checks it against Auckland's own solstice noon heights and published sunrise and sunset times, and
-a daylight-saving date; rewrite each from the new city's published times. `src/ui/weather.ts`
-carries the coordinates and the zone in its URL (Open-Meteo, worldwide, no key). The months in
+a daylight-saving date; rewrite each from the new city's published times. The descriptor's `weather`
+(`WEATHER_URL` in `src/ui/weather.ts`) carries the coordinates and the zone in its URL (Open-Meteo, worldwide, no key). The months in
 `deciduousColour` in `CampusScene.ts` are the southern hemisphere's: autumn in April and May, bare
 from June to August; shift them by six months in the north.
 
@@ -106,8 +108,9 @@ is `/<repository name>/`. A wrong base works locally and returns 404 for every a
 URL.
 
 **Names and words.** `package.json` (then `npm install`, which refreshes the lock file),
-`index.html`, `src/i18n/locales/en.json`, `REPO` in `src/app/links.ts`, `USER_AGENT` in
-`scripts/lib/snapshot.ts`. `CAMPUS_SPAN` in `src/ui/SceneHost.tsx` is the camera framing in metres
+`index.html` (its head and `noscript` text name `app.*` keys of `en.json`, which `vite.config.ts` fills
+in), `src/i18n/locales/en.json`, `REPO` in `src/app/links.ts`, `USER_AGENT` in
+`scripts/lib/snapshot.ts`. The descriptor's `campusSpan` (`CAMPUS_SPAN` in `src/ui/SceneHost.tsx`) is the camera framing in metres
 for each central campus id; a campus in an area of its own is framed from its buildings. The site's name shares the phone's top bar with four buttons, and
 `e2e/mobile.spec.ts` measures the fit down to a 360 px screen: a name longer than "UoA World Model"
 needs a shorter form there. In `en.json`, the strings that explain an absent layer state Auckland's

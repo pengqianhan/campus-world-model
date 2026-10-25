@@ -6,6 +6,7 @@ import { batch, effect, signal } from "@preact/signals";
 import type { CampusScene, WalkerView } from "../scene/CampusScene.ts";
 import { MAX_SPEED, WALK_SPEED, type WalkResult } from "../scene/walkers.ts";
 import type { Pt } from "../shared/geo.ts";
+import { school } from "@school";
 import { parseRoomCode } from "../shared/roomcode.ts";
 import { formatMinutes } from "../shared/time.ts";
 import { bearing, compass, describeBuilding, look, relative, type Look } from "../shared/walkerLook.ts";
@@ -226,7 +227,7 @@ function resolveTarget(target: string, from: Pt): { building?: Building; at?: Pt
   if (xy) return { at: [Number(xy[1]), Number(xy[2])], label: `${xy[1]} m east, ${xy[2]} m north` };
   const byId = d.buildingById.get(t.toUpperCase());
   if (byId && !byId.offMap) return { building: byId, label: `${byId.id} ${buildingName(byId)}` };
-  const room = parseRoomCode(t, d.buildingIds);
+  const room = parseRoomCode(school, t, d.buildingIds);
   if (room) {
     const b = d.buildingById.get(room.building);
     if (b && !b.offMap) return { building: b, room: room.code, label: `${room.code}, in ${b.id} ${buildingName(b)}` };
