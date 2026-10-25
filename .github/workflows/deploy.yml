@@ -35,10 +35,17 @@ jobs:
         with:
           path: dist
 
-  e2e:
+  # The end-to-end tests in two halves at once, on two machines: the specs playwright.config.ts
+  # names in FIRST_HALF, and every other one (#53).
+  e2e-half:
+    name: e2e, half ${{ matrix.half }}
     runs-on: ubuntu-latest
-    # On a slow runner the tests alone took over 20 minutes on 2026-10-23, and the browser install up to 12 more (#53).
+    # On a slow runner the whole suite took over 20 minutes on 2026-10-23, and the browser install up to 12 more (#53).
     timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        half: [1, 2]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -50,15 +57,30 @@ jobs:
       - run: npm run build
       - name: End-to-end tests against the production build (software WebGL)
         run: npm run e2e
+        env:
+          E2E_HALF: ${{ matrix.half }}
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: e2e-screenshots
+          name: e2e-screenshots-${{ matrix.half }}
           path: |
             e2e/screenshots
             test-results
           retention-days: 7
           if-no-files-found: ignore
+
+  # The check that main's branch protection requires is named e2e: it passes only when both halves
+  # passed. It runs even when they failed or were cancelled (always(), not !cancelled()), because a
+  # skipped required check would count as passed.
+  e2e:
+    if: always()
+    needs: e2e-half
+    runs-on: ubuntu-latest
+    steps:
+      - name: Both halves passed
+        run: test "$RESULT" = success
+        env:
+          RESULT: ${{ needs.e2e-half.result }}
 
   deploy:
     if: github.ref == 'refs/heads/main'
