@@ -4,11 +4,6 @@ import { defineConfig } from "vitest/config";
 import preact from "@preact/preset-vite";
 import type { Plugin, ResolvedConfig } from "vite";
 
-// The site is served from https://pengqianhan.github.io/campus-world-model/ so every
-// asset URL has to be prefixed with the repository name. Override with BASE_PATH=/
-// when hosting at a domain root.
-const base = process.env.BASE_PATH ?? "/campus-world-model/";
-
 // The school whose data a build carries (docs/schools/DESIGN.md, section 3). Each school's published
 // data is in public/data/<id>/, and the site reads it at <base>data/<file>. The University of
 // Auckland, uoa, is the default and builds into dist/; any other school builds into dist-<id>/, so
@@ -16,6 +11,11 @@ const base = process.env.BASE_PATH ?? "/campus-world-model/";
 const SCHOOL = process.env.SCHOOL || "uoa";
 if (!/^[a-z][a-z0-9-]*$/.test(SCHOOL)) throw new Error(`SCHOOL is a school's id in lower case, such as uoa, not "${SCHOOL}"`);
 const outDir = SCHOOL === "uoa" ? "dist" : `dist-${SCHOOL}`;
+
+// The University of Auckland is served from https://pengqianhan.github.io/campus-world-model/, so
+// every asset URL of its build is prefixed with the repository name; any other school's default is
+// /<id>/ (PROGRESS.md, "Decisions"). Override with BASE_PATH=/ when hosting at a domain root.
+const base = process.env.BASE_PATH ?? (SCHOOL === "uoa" ? "/campus-world-model/" : `/${SCHOOL}/`);
 
 /**
  * Puts one school's data at data/: public/data/<SCHOOL>/ is served and built as <base>data/.
