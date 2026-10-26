@@ -494,7 +494,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   their own; floors that are alike drawn as one block; a rim and firmer edges on roofs; storeys and
   windows on the walls; fuller trees and ground. All five draw by rule from the campus-map outlines
   already in use, and none adds a data source. Floors are alike when their outlines share 95% of
-  the area either covers (`STACK_OVERLAP` in `scripts/build-data.ts`), measured against the lowest
+  the area either covers (`STACK_OVERLAP` in `scripts/schools/uoa/mapsindoors.ts`), measured against the lowest
   floor of the run so that a slow drift up a tower still shows. The pipeline marks them
   (`Floor.stackWith`); inside a building each floor keeps its own outline. On the snapshot of
   2026-10-13 this takes the 139 buildings on the map from 471 blocks to 303. A school's building
