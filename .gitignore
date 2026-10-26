@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# Every other school builds into dist-<id>/ (vite.config.ts).
+dist-*/
 .vite/
 *.log
 .DS_Store
