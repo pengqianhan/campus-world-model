@@ -68,7 +68,7 @@ resume from `PROGRESS.md`, and delete it after the final report.
    with a precision or an exclusion with a reason, and the two counts add up to the meetings in the
    snapshot; `npm run typecheck && npm test` pass with every assertion that names an Auckland place
    or count rewritten from the new data (SEAMS.md, "Tests"); and the coverage block of
-   `public/data/meta.json` is copied into `PROGRESS.md`.
+   `public/data/uoa/meta.json` is copied into `PROGRESS.md`.
 
 4. **Identity.** Make the repo the new school's along the identity seams in [SEAMS.md](SEAMS.md).
    Done when `git grep -il -e auckland -e uoa -- . ':!.claude'` lists only the files that carry the

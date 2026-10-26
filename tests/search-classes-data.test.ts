@@ -2,12 +2,13 @@ import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { REMOTE } from "../scripts/lib/areas.ts";
 import { buildSchedule, parseDate, parseDays, parseTime, type RawClass } from "../scripts/lib/classes.ts";
+import { school as uoa } from "../src/schools/uoa/school.ts";
 import { decodeRing, makeProjector, pointInRing, shareInside } from "../src/shared/geo.ts";
 import { buildIndex, compact, fold, search } from "../src/shared/search.ts";
 import { Terrain } from "../src/scene/terrain.ts";
 import type { CampusData, ContextData, FloorPlans, Meta, RoomIndex, Schedule, Subject, TerrainData } from "../src/shared/types.ts";
 
-const read = <T>(name: string) => JSON.parse(fs.readFileSync(`public/data/${name}`, "utf8")) as T;
+const read = <T>(name: string) => JSON.parse(fs.readFileSync(`public/data/uoa/${name}`, "utf8")) as T;
 const campus = read<CampusData>("campus.json");
 const roomIndex = read<RoomIndex>("rooms-index.json");
 const subjects = read<Subject[]>("subjects.json");
@@ -212,8 +213,8 @@ describe("the ground under the map", () => {
 });
 
 describe("published floor plans", () => {
-  const files = fs.readdirSync("public/data/plans");
-  const plans = files.map((f) => JSON.parse(fs.readFileSync(`public/data/plans/${f}`, "utf8")) as FloorPlans);
+  const files = fs.readdirSync("public/data/uoa/plans");
+  const plans = files.map((f) => JSON.parse(fs.readFileSync(`public/data/uoa/plans/${f}`, "utf8")) as FloorPlans);
   const buildings = new Map(campus.buildings.map((b) => [b.id, b]));
 
   it("have one file for each building that counts plan shapes, and the counts agree", () => {
@@ -359,7 +360,7 @@ describe("Classes API records -> schedule (synthetic fixture, shaped like the pu
     { subject: "TESTSUBJ", catalogNbr: "102", classDescr: "No Times", term: "1265", meetingPatterns: [] },
     { subject: "TESTSUBJ", catalogNbr: "103", classDescr: "Cancelled", term: "1265", classStatus: "X", meetingPatterns: [{ daysOfWeek: "mon" }] },
   ];
-  const { schedule } = buildSchedule(fixture, campus, roomIndex, "2026-10-13");
+  const { schedule } = buildSchedule(uoa, fixture, campus, roomIndex, "2026-10-13");
 
   it("expands meeting patterns into one session per weekday and keeps the source text", () => {
     const lec = schedule.sessions.filter((s) => s.component === "LEC");

@@ -1,4 +1,4 @@
-// Turns raw Classes API records into the published timetable (public/data/schedule.json).
+// Turns raw Classes API records into the published timetable (public/data/uoa/schedule.json).
 //
 // The record shape follows the University's published OpenAPI document for "Classes Api V2"
 // (developer.auckland.ac.nz/prd/documentation/api-classes-v2): a class has `meetingPatterns`,
@@ -10,7 +10,7 @@
 // Teacher names are never read or published.
 import fs from "node:fs";
 import path from "node:path";
-import { codeKey, findRoomCode, inferFloor } from "../../src/shared/roomcode.ts";
+import { codeKey, findRoomCode, inferFloor, type RoomCodeSchool } from "../../src/shared/roomcode.ts";
 import { isoDate, parseIsoDate, parseTimeOfDay } from "../../src/shared/time.ts";
 import type { CampusData, Course, Exclusion, RoomIndex, Schedule, Session } from "../../src/shared/types.ts";
 import { RAW_DIR } from "./snapshot.ts";
@@ -94,6 +94,7 @@ export interface ScheduleStats {
 }
 
 export function buildSchedule(
+  school: RoomCodeSchool,
   classes: readonly RawClass[],
   campus: CampusData,
   roomIndex: RoomIndex,
@@ -167,7 +168,7 @@ export function buildSchedule(
         exclude(sourceText, "no location given (possibly online or to be advised)");
         continue;
       }
-      const parsed = findRoomCode(sourceText, buildingIds);
+      const parsed = findRoomCode(school, sourceText, buildingIds);
       const building = parsed ? buildings.get(parsed.building) : undefined;
       if (!parsed || !building) {
         exclude(sourceText, "location is not a room code in a known building");
@@ -191,7 +192,7 @@ export function buildSchedule(
         located.floor = inIndex.floor;
         located.precision = "room";
       } else {
-        const floor = inferFloor(building.floors, parsed.room);
+        const floor = inferFloor(school, building.floors, parsed.room);
         // A floor where people live or children are cared for takes no class, not even an inferred one.
         if (floor && floor.noPlan !== "residential" && floor.noPlan !== "childcare") {
           located.floor = floor.i;

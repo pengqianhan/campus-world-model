@@ -1,7 +1,7 @@
 """Data stage 4: where the landmark stands on the campus map, written to placement.json beside its config.
 The model is drawn in its view frame (x along the facade, y up from the ground at the door, z toward
 the street), which stands in the LiDAR frame: NZTM metres minus the NZTM of the campus origin, grid
-north. The map (public/data/campus.json) uses metres east and north of the same origin through an
+north. The map (public/data/uoa/campus.json) uses metres east and north of the same origin through an
 equirectangular projection, true north. The two frames differ: at the Clock Tower by 4.2 m and 1.06 deg.
 So this stage takes the frame's centre and axes through longitude and latitude to the map, and the
 site needs only placement.json.
@@ -47,7 +47,7 @@ r3 = lambda v: round(v, 3)
 placement = {
     "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py "
             "from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, "
-            "true north, as public/data/campus.json. In three.js (scene x east, y up, z south), put the model "
+            "true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model "
             "at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place "
             "of the blocks of `building` and of the buildings in `also`.",
     "site": site,

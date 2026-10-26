@@ -1,17 +1,20 @@
 // Interface text. Every string shown to the user comes from a locale file in src/i18n/locales.
 // Adding a language means adding one JSON file there (copy en.json, translate the values, set
 // _meta.name); it is picked up automatically and offered in the language menu and via ?lang=.
+// The school's own words (its descriptor's `words`, src/schools/<id>/locales/) are laid over
+// them; the University of Auckland has none, so its words are these files as they are.
 import { signal } from "@preact/signals";
+import { school } from "@school";
+import type { Words as Dict } from "../shared/school.ts";
 import type { LocalizedText } from "../shared/types.ts";
-
-type Dict = { [key: string]: string | Dict };
+import { lookupWords, overlayWords } from "../shared/words.ts";
 
 const modules = import.meta.glob<{ default: Dict }>("../i18n/locales/*.json", { eager: true });
 
 export const locales: Record<string, Dict> = {};
 for (const [path, mod] of Object.entries(modules)) {
   const code = /([^/]+)\.json$/.exec(path)?.[1];
-  if (code) locales[code] = mod.default;
+  if (code) locales[code] = overlayWords(mod.default, school.words[code]);
 }
 
 export const DEFAULT_LANG = "en";
@@ -30,14 +33,7 @@ export function setLang(code: string | null | undefined): void {
   document.documentElement.dir = String((locales[next]?._meta as Dict | undefined)?.dir ?? "ltr");
 }
 
-function lookup(dict: Dict | undefined, key: string): string | undefined {
-  let node: string | Dict | undefined = dict;
-  for (const part of key.split(".")) {
-    if (typeof node !== "object" || node === null) return undefined;
-    node = node[part];
-  }
-  return typeof node === "string" ? node : undefined;
-}
+const lookup = lookupWords;
 
 export type Params = Record<string, string | number>;
 

@@ -3,12 +3,18 @@
 // building. A landmark joins the site by its own folder alone: the site finds every
 // landmarks/<name>/placement.json that says `site: true` (its config's `site`, written there by
 // place.py), and the worker loads landmarks/<name>/model.js by the same name (landmarkWorker.ts).
+// A landmark is drawn only on its own school's site: a placement without `school` is the University
+// of Auckland's (docs/schools/DESIGN.md, section 5).
+import { school } from "@school";
+
 const placements = import.meta.glob<Placement>("../../landmarks/*/placement.json", { eager: true, import: "default" });
 
 /** Where a landmark stands on the map, as landmarks/pipeline/tools/data/place.py writes it. */
 export interface Placement {
   /** Whether the site draws it: its config's `site`. */
   site?: boolean;
+  /** The school whose building it draws, by its id; "uoa" when it is not given. */
+  school?: string;
   /** The University building it draws. */
   building: string;
   /** Other buildings of the campus map whose blocks it draws too: the Clock Tower's south range is 105S. */
@@ -40,12 +46,14 @@ export interface LandmarkEntry {
 
 /** The landmarks on the site, by the name of their folder. */
 export const LANDMARKS: LandmarkEntry[] = Object.entries(placements)
-  .filter(([, placement]) => placement.site === true)
+  .filter(([, placement]) => placement.site === true && (placement.school ?? "uoa") === school.id)
   .map(([path, placement]) => ({ name: path.split("/").at(-2)!, placement }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
 /** Where a measured massing stands, as landmarks/pipeline/tools/massing.py writes it in its data file's `place`. */
 interface MeasuredPlace {
+  /** The school whose building it draws, by its id; "uoa" when it is not given. */
+  school?: string;
   building: string;
   /** Map metres east and north: the building's centre on the campus map, the model's x = z = 0. */
   centre: number[];
@@ -59,6 +67,7 @@ const measuredPlaces = import.meta.glob<MeasuredPlace>("../../landmarks/measured
 
 /** The measured massings on the site, by building. Each stands in place of its building's block as a landmark does. */
 export const MEASURED: LandmarkEntry[] = Object.values(measuredPlaces)
+  .filter((place) => (place.school ?? "uoa") === school.id)
   .map(({ building, centre, door }) => ({
     name: `measured/${building}`,
     measured: true as const,

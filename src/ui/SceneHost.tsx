@@ -1,5 +1,6 @@
 // Mounts the three.js scene and keeps it in step with the application state.
 import { effect } from "@preact/signals";
+import { school } from "@school";
 import { useEffect, useRef } from "preact/hooks";
 import { loadContext, loadPlans, loadTerrain, mergeContexts } from "../app/data.ts";
 import { lang, pick, t } from "../app/i18n.ts";
@@ -30,8 +31,8 @@ import type { Building, ContextData, TerrainData } from "../shared/types.ts";
 import { buildingTitle } from "./common.tsx";
 import { weather } from "./weather.ts";
 
-/** Approximate width in metres to show for each central campus. */
-const CAMPUS_SPAN: Record<string, number> = { city: 1250, grafton: 520, newmarket: 620 };
+/** Approximate width in metres to show for each central campus (the school's descriptor). */
+const CAMPUS_SPAN: Readonly<Record<string, number>> = school.campusSpan;
 
 /** Width to show for a campus away from the centre: its buildings with room round them. */
 function campusSpan(buildings: Building[]): number {

@@ -9,6 +9,8 @@
     "tagline": "Unofficial",
     "documentTitle": "UoA World Model (unofficial student project)",
     "description": "Unofficial student-made 3D map of University of Auckland buildings and teaching rooms. Not affiliated with the University of Auckland.",
+    "ogDescription": "Find which building and floor a University of Auckland room is in, on a 3D model of the campus. Unofficial; not affiliated with the University.",
+    "noscript": "UoA World Model is an unofficial 3D map of University of Auckland buildings and teaching rooms. It needs JavaScript and WebGL to run. It is not affiliated with the University of Auckland.",
     "loading": "Loading the campus…",
     "loadError": "The campus data could not be loaded. Check your connection and reload the page.",
     "noWebgl": "This browser could not start WebGL, so the 3D map is not shown. Search and room details still work.",

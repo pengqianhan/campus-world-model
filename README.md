@@ -123,7 +123,7 @@ Other commands:
 | `npm run preview` | Serve `dist/` at http://localhost:4273/campus-world-model/ |
 | `npm run e2e` | Playwright tests against the preview build: run `npm run build` first, and `npx playwright install chromium` once (on Linux, `npx playwright install --with-deps chromium`) |
 | `npm run data:fetch` | Download any data snapshot that is not cached yet (maintainer; see below) |
-| `npm run data:build` | Rebuild `public/data/*.json` from the cached snapshots (maintainer; see below) |
+| `npm run data:build` | Rebuild `public/data/uoa/*.json` from the cached snapshots (maintainer; see below) |
 
 The end-to-end tests draw with WebGL. On Windows they use the real GPU; on macOS and Linux they use
 the SwiftShader software renderer, as CI does, with CI's longer timeouts and two workers. That is
@@ -308,7 +308,7 @@ Data is fetched once, cached as raw snapshots under `data/raw/`, and every later
 
 The campus map's snapshots are not in the repository (see below), so a fresh clone cannot run
 `npm run data:build`, and a contributor does not fetch new ones: that would ask the University's map
-for data the project already holds, and give a `public/data/` that differs from the published one.
+for data the project already holds, and give a `public/data/uoa/` that differs from the published one.
 The maintainer rebuilds the data. A pull request that needs a rebuild changes the pipeline's code and
 says so in its first line (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
@@ -318,11 +318,11 @@ npx tsx scripts/fetch-mapsindoors.ts --refresh   # re-download the campus map (4
 npx tsx scripts/fetch-osm.ts --refresh           # re-download OpenStreetMap context (1 request per area, 7)
 npx tsx scripts/fetch-terrain.ts --refresh       # re-download the elevation tiles (29 at zoom 14)
 npx tsx scripts/fetch-calendar.ts --refresh      # re-download the Calendar pages (3 requests)
-npm run data:build                               # rebuild public/data from the snapshots
+npm run data:build                               # rebuild public/data/uoa from the snapshots
 npm test                                         # the data consistency tests must still pass
 ```
 
-Then commit `public/data/`, `data/sources.json` and, if refreshed, `data/raw/osm/` and
+Then commit `public/data/uoa/`, `data/sources.json` and, if refreshed, `data/raw/osm/` and
 `data/raw/terrain/`.
 
 Rules the fetch scripts follow, and that any new one should too (`scripts/lib/snapshot.ts` enforces
@@ -355,7 +355,7 @@ requires credentials that only someone with a University account can obtain, so 
    npm test && npm run build
    ```
 
-3. Commit `public/data/` and push. Rooms then show what is timetabled at the selected time, buildings
+3. Commit `public/data/uoa/` and push. Rooms then show what is timetabled at the selected time, buildings
    show a count of classes in progress, and courses become searchable.
 
 > [!WARNING]
@@ -409,7 +409,7 @@ and the checks it passes are written for people and for coding agents alike, in
 scripts/            data pipeline (Node + TypeScript, run with tsx)
   lib/snapshot.ts     polite, cache-first fetcher
   fetch-*.ts          one script per source
-  build-data.ts       snapshots -> public/data/*.json
+  build-data.ts       snapshots -> public/data/uoa/*.json
   check-pr-form.ts    CI: a pull request says how it was made
   walker/             the walker's controller, CLI and MCP server (npm run walker), and the
                       script that makes its figure
@@ -417,7 +417,7 @@ data/
   sources.json        provenance of every snapshot
   academic-calendar.json   hand-transcribed key dates
   raw/                snapshots (gitignored except OpenStreetMap and the elevation tiles)
-public/data/        published data: campus, context, rooms-index, subjects, calendar, schedule, meta,
+public/data/uoa/    published data: campus, context, rooms-index, subjects, calendar, schedule, meta,
                     and plans/ with one floor-plan file per building
 public/models/      the walker's figure (CC0)
 src/shared/         pure logic shared by pipeline and app: geometry, room codes, Auckland time,
@@ -443,15 +443,15 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | Source | Used for | Terms |
 | --- | --- | --- |
 | [University of Auckland campus maps](https://maps.auckland.ac.nz/) (the public map, served by MapsIndoors) | Buildings, floors, room codes, room types and positions | © University of Auckland. Only derived facts are published here: learning spaces with their names and simplified outlines; other searchable rooms as a code, floor and point; every other space as a simplified outline with the map's type for it and no code or name. Floors with student accommodation, childcare centres and single parking bays are left out, and a room the map marks as not searchable is never named. |
-| [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/context.json` are under the same licence. |
+| [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
-| [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/terrain/` are under the same terms. |
+| [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
 | [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street and Maclaurin Chapel (107), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/` and `landmarks/maclaurin-chapel/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall and Maclaurin Chapel were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
-Snapshot dates are shown in the site's About panel and recorded in `public/data/meta.json`.
+Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.

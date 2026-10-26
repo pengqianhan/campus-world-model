@@ -3,6 +3,7 @@
 // query string, so copying the address bar reproduces the view exactly.
 import { batch, computed, effect, signal } from "@preact/signals";
 import { nextTeachingDay, representativeTeachingDate, termStatus } from "../shared/calendar.ts";
+import { school } from "@school";
 import { nightAmount, sunAt } from "../shared/daylight.ts";
 import type { SceneWeather } from "../scene/CampusScene.ts";
 import { weather, type Weather } from "../ui/weather.ts";
@@ -87,7 +88,7 @@ export const busyBuildings = computed(() => {
 export const night = computed(() => {
   if (lightMode.value === "day") return 0;
   if (lightMode.value === "night") return 1;
-  return nightAmount(shown.value.date, shown.value.minutes);
+  return nightAmount(school, shown.value.date, shown.value.minutes);
 });
 
 /**
@@ -95,7 +96,7 @@ export const night = computed(() => {
  * there is no real sun to draw, so none is given and the scene keeps its own afternoon light.
  */
 export const sun = computed(() => {
-  const s = sunAt(shown.value.date, shown.value.minutes);
+  const s = sunAt(school, shown.value.date, shown.value.minutes);
   return lightMode.value === "day" && s.elevation < 0 ? undefined : s;
 });
 
@@ -213,7 +214,7 @@ export function openMarker(m: Marker): void {
 export async function resolveRoom(text: string): Promise<{ room?: string; marker?: Marker } | undefined> {
   const d = data.value;
   if (!d) return undefined;
-  const parsed = parseRoomCode(text, d.buildingIds);
+  const parsed = parseRoomCode(school, text, d.buildingIds);
   if (!parsed) return undefined;
   const b = d.buildingById.get(parsed.building);
   if (!b) return undefined;
@@ -225,7 +226,7 @@ export async function resolveRoom(text: string): Promise<{ room?: string; marker
   } catch {
     // The index is optional; fall through to inference.
   }
-  const floor = inferFloor(b.floors, parsed.room);
+  const floor = inferFloor(school, b.floors, parsed.room);
   // A floor where people live or children are cared for is blank: no pin on it, not even an
   // inferred one.
   const blank = floor?.noPlan === "residential" || floor?.noPlan === "childcare" ? floor.noPlan : undefined;
@@ -292,7 +293,7 @@ export function readUrl(d: AppData): void {
     openRoom(room.code);
     return;
   }
-  const parsed = roomParam ? parseRoomCode(roomParam, d.buildingIds) : null;
+  const parsed = roomParam ? parseRoomCode(school, roomParam, d.buildingIds) : null;
   const b = d.buildingById.get((buildingParam ?? parsed?.building ?? "").toUpperCase());
   if (!b) return;
   openBuilding(b.id, floorParam ? floorByName(b, floorParam) : undefined);

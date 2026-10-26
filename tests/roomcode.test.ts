@@ -1,49 +1,50 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { codeKey, findRoomCode, floorCandidates, inferFloor, matchFloor, parseRoomCode, roomKey } from "../src/shared/roomcode.ts";
+import { school as uoa } from "../src/schools/uoa/school.ts";
 import type { CampusData } from "../src/shared/types.ts";
 
-const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
 const known = new Set(campus.buildings.map((b) => b.id));
 
 describe("parseRoomCode", () => {
   it("parses the canonical form", () => {
-    expect(parseRoomCode("303-G23")).toEqual({ building: "303", room: "G23", code: "303-G23" });
-    expect(parseRoomCode("260-098")?.code).toBe("260-098");
-    expect(parseRoomCode("105S-039")?.building).toBe("105S");
+    expect(parseRoomCode(uoa, "303-G23")).toEqual({ building: "303", room: "G23", code: "303-G23" });
+    expect(parseRoomCode(uoa, "260-098")?.code).toBe("260-098");
+    expect(parseRoomCode(uoa, "105S-039")?.building).toBe("105S");
   });
 
   it("tolerates case, spaces, dots and typographic dashes", () => {
-    expect(parseRoomCode(" 303 g23 ")?.code).toBe("303-G23");
-    expect(parseRoomCode("303.G23")?.code).toBe("303-G23");
-    expect(parseRoomCode("303–G23")?.code).toBe("303-G23");
-    expect(parseRoomCode("405 - 460")?.code).toBe("405-460");
+    expect(parseRoomCode(uoa, " 303 g23 ")?.code).toBe("303-G23");
+    expect(parseRoomCode(uoa, "303.G23")?.code).toBe("303-G23");
+    expect(parseRoomCode(uoa, "303–G23")?.code).toBe("303-G23");
+    expect(parseRoomCode(uoa, "405 - 460")?.code).toBe("405-460");
   });
 
   it("splits unseparated input using the known buildings", () => {
-    expect(parseRoomCode("303G23", known)?.code).toBe("303-G23");
-    expect(parseRoomCode("421W301", known)?.code).toBe("421W-301");
-    expect(parseRoomCode("303S279", known)?.code).toBe("303S-279");
-    expect(parseRoomCode("109B10", known)?.code).toBe("109-B10");
-    expect(parseRoomCode("260098", known)?.code).toBe("260-098");
+    expect(parseRoomCode(uoa, "303G23", known)?.code).toBe("303-G23");
+    expect(parseRoomCode(uoa, "421W301", known)?.code).toBe("421W-301");
+    expect(parseRoomCode(uoa, "303S279", known)?.code).toBe("303S-279");
+    expect(parseRoomCode(uoa, "109B10", known)?.code).toBe("109-B10");
+    expect(parseRoomCode(uoa, "260098", known)?.code).toBe("260-098");
   });
 
   it("rejects things that are not room codes", () => {
-    expect(parseRoomCode("COMPSCI 101")).toBeNull();
-    expect(parseRoomCode("General Library")).toBeNull();
-    expect(parseRoomCode("")).toBeNull();
-    expect(parseRoomCode("303")).toBeNull();
+    expect(parseRoomCode(uoa, "COMPSCI 101")).toBeNull();
+    expect(parseRoomCode(uoa, "General Library")).toBeNull();
+    expect(parseRoomCode(uoa, "")).toBeNull();
+    expect(parseRoomCode(uoa, "303")).toBeNull();
   });
 });
 
 describe("findRoomCode", () => {
   it("finds a code inside a longer location string", () => {
-    expect(findRoomCode("City Campus, 303-G23 (Lecture Theatre)", known)?.code).toBe("303-G23");
-    expect(findRoomCode("Room 260-098", known)?.code).toBe("260-098");
+    expect(findRoomCode(uoa, "City Campus, 303-G23 (Lecture Theatre)", known)?.code).toBe("303-G23");
+    expect(findRoomCode(uoa, "Room 260-098", known)?.code).toBe("260-098");
   });
   it("returns null when there is no code", () => {
-    expect(findRoomCode("Online", known)).toBeNull();
-    expect(findRoomCode("To be advised", known)).toBeNull();
+    expect(findRoomCode(uoa, "Online", known)).toBeNull();
+    expect(findRoomCode(uoa, "To be advised", known)).toBeNull();
   });
 });
 
@@ -63,9 +64,9 @@ describe("floor inference", () => {
       { i: 0, name: "0" },
       { i: 10, name: "1" },
     ];
-    expect(matchFloor(floors, "G")?.i).toBe(0);
-    expect(matchFloor(floors, "B")?.i).toBe(-10);
-    expect(matchFloor(floors, "7")).toBeNull();
+    expect(matchFloor(uoa, floors, "G")?.i).toBe(0);
+    expect(matchFloor(uoa, floors, "B")?.i).toBe(-10);
+    expect(matchFloor(uoa, floors, "7")).toBeNull();
   });
 
   it("agrees with the campus map for the well-known theatres", () => {
@@ -73,7 +74,7 @@ describe("floor inference", () => {
       const room = campus.rooms.find((r) => r.code === code);
       expect(room, code).toBeDefined();
       const building = campus.buildings.find((b) => b.id === room!.b)!;
-      expect(inferFloor(building.floors, code.split("-")[1]!)?.i, code).toBe(room!.f);
+      expect(inferFloor(uoa, building.floors, code.split("-")[1]!)?.i, code).toBe(room!.f);
     }
   });
 
@@ -81,7 +82,7 @@ describe("floor inference", () => {
     let agree = 0;
     for (const r of campus.rooms) {
       const building = campus.buildings.find((b) => b.id === r.b)!;
-      if (inferFloor(building.floors, r.code.slice(r.b.length + 1))?.i === r.f) agree++;
+      if (inferFloor(uoa, building.floors, r.code.slice(r.b.length + 1))?.i === r.f) agree++;
     }
     // The rule is only a fallback; this guards against it silently getting worse.
     expect(agree / campus.rooms.length).toBeGreaterThan(0.85);

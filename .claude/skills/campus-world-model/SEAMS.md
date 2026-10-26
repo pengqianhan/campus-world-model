@@ -6,8 +6,9 @@ what the grep cannot tell you.
 
 ## Data seams (step 3)
 
-**Geography.** `ORIGIN` in `scripts/build-data.ts` and the areas in `scripts/lib/areas.ts`: `CENTRAL`
-round the main campus, and one small box (`REMOTE`) for each campus or outlying building away
+**Geography.** `origin` and `areas` in the school's descriptor, `src/schools/<id>/school.ts`, which
+`ORIGIN` in `scripts/build-data.ts` and `scripts/lib/areas.ts` read: `central`
+round the main campus, and one small box (`remote`) for each campus or outlying building away
 from it. Every published coordinate is metres east and north of the origin, so put it at the
 centre of the main campus. `fetch-osm.ts` snapshots each area's surroundings; `build-data.ts`
 writes `context.json` for the central area and `context/<area>.json` for each other one, and marks
@@ -49,7 +50,7 @@ neighbouring floors share 99% or more. Print the same counts for the new source 
 `src/shared/geo.ts`) and put the value in the gap between walls traced twice and real setbacks. A
 floor outline that misses its own building is replaced by the footprint
 (`MIN_FOOTPRINT_SHARE`): this catches a source's slips and carries over unchanged. Every space that
-is not a named room becomes a shape in `public/data/plans/<building>.json`, with the source's type
+is not a named room becomes a shape in `public/data/uoa/plans/<building>.json`, with the source's type
 for it and no code or name. Which floors stay blank is spelled in Auckland's words:
 `PLAN_RESIDENTIAL_TYPES` holds the room types that mean someone lives there,
 `PLAN_CHILDCARE_BUILDINGS` is a pattern on building names because the source has no type for
@@ -69,7 +70,8 @@ answer 504 for an hour: `fetch-osm.ts` goes round all of them three times, a min
 snapshot already on disk is never fetched again. The sea is not drawn; OpenStreetMap's coastline is
 a line, and a campus on the shore stands on land to the edge of its area.
 
-**Room codes.** `src/shared/roomcode.ts`, `CODE_RE` in `build-data.ts`, `tests/roomcode.test.ts`.
+**Room codes.** The grammar in the descriptor's `roomCode`, the parser in `src/shared/roomcode.ts`
+(it takes the descriptor as its first argument), `CODE_RE` in `build-data.ts`, `tests/roomcode.test.ts`.
 Auckland's grammar is `<building>-<room>` with the floor in the room's first character. Derive the new
 grammar from real codes in the snapshot and write the tests from them. Where the indoor layer gives
 true floors, measure how often inference from the code agrees and record the figure. Inference is
@@ -83,10 +85,10 @@ skipped hour, the repeated hour, a class on each side of the change. A zone with
 gets one test asserting the constant offset.
 
 **Sun, weather and seasons.** `src/shared/daylight.ts` computes the sun's position from NOAA's
-equations for `LAT` and `LON`, the main campus: change the two constants. `tests/daylight.test.ts`
+equations for the descriptor's `sun`, the main campus: change its two numbers. `tests/daylight.test.ts`
 checks it against Auckland's own solstice noon heights and published sunrise and sunset times, and
-a daylight-saving date; rewrite each from the new city's published times. `src/ui/weather.ts`
-carries the coordinates and the zone in its URL (Open-Meteo, worldwide, no key). The months in
+a daylight-saving date; rewrite each from the new city's published times. The descriptor's `weather`
+(`WEATHER_URL` in `src/ui/weather.ts`) carries the coordinates and the zone in its URL (Open-Meteo, worldwide, no key). The months in
 `deciduousColour` in `CampusScene.ts` are the southern hemisphere's: autumn in April and May, bare
 from June to August; shift them by six months in the north.
 
@@ -106,8 +108,9 @@ is `/<repository name>/`. A wrong base works locally and returns 404 for every a
 URL.
 
 **Names and words.** `package.json` (then `npm install`, which refreshes the lock file),
-`index.html`, `src/i18n/locales/en.json`, `REPO` in `src/app/links.ts`, `USER_AGENT` in
-`scripts/lib/snapshot.ts`. `CAMPUS_SPAN` in `src/ui/SceneHost.tsx` is the camera framing in metres
+`index.html` (its head and `noscript` text name `app.*` keys of `en.json`, which `vite.config.ts` fills
+in), `src/i18n/locales/en.json`, `REPO` in `src/app/links.ts`, `USER_AGENT` in
+`scripts/lib/snapshot.ts`. The descriptor's `campusSpan` (`CAMPUS_SPAN` in `src/ui/SceneHost.tsx`) is the camera framing in metres
 for each central campus id; a campus in an area of its own is framed from its buildings. The site's name shares the phone's top bar with four buttons, and
 `e2e/mobile.spec.ts` measures the fit down to a 360 px screen: a name longer than "UoA World Model"
 needs a shorter form there. In `en.json`, the strings that explain an absent layer state Auckland's
@@ -131,8 +134,12 @@ and counts the distance from this campus to that one, so each entry carries its 
 coordinates. Keep the Tsinghua World Model, where the idea comes from, and add UoA World Model,
 which this is a port of.
 
-**Auckland's data.** `public/data/*`, `data/raw/osm/`, `data/raw/terrain/`, `data/sources.json` and
-`docs/*.jpg` are regenerated by the pipeline and the screenshots, never edited by hand.
+**Auckland's data.** `public/data/uoa/*`, `data/raw/osm/`, `data/raw/terrain/`, `data/sources.json` and
+`docs/*.jpg` are regenerated by the pipeline and the screenshots, never edited by hand. A port in a
+repository of its own holds one school and can keep the folder's name, `uoa`, which `SCHOOL`'s
+default picks in `vite.config.ts` and `scripts/build-data.ts` and `SCHOOL: uoa` in
+`.github/workflows/deploy.yml`. Renaming it is a change to all three at once, and to the output
+folder and `base` that `vite.config.ts` gives a school other than `uoa` (`dist-<id>/`, `/<id>/`).
 
 **Credit.** `LICENSE` keeps its existing copyright line and gains yours. The site is a port of UoA
 World Model, which was inspired by the Tsinghua World Model, and says so with a link to each in

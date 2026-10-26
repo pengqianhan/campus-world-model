@@ -16,6 +16,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "paths": { "@school": ["./src/schools/uoa/school.ts"] },
     "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"]
   },

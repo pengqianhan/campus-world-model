@@ -2,7 +2,7 @@
 at the heights the LINZ 2024 LiDAR measures, drawn by landmarks/measured/model.js.
 
 Reads the eight LiDAR tiles that the landmark pipeline already keeps in data/raw/landmarks/lidar/ (it
-fetches nothing) and public/data/campus.json. For each tier-3 building in the tiles (MASSING.md, "Which
+fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles (MASSING.md, "Which
 buildings") it measures the ground, the roof and its layers and roof forms, builds the model with
 model.js (massing_triangles.mjs) and checks it from above against the LiDAR. It writes
   landmarks/measured/buildings/<id>.json   each building that passes every limit (MASSING.md, decision 3)
@@ -18,7 +18,7 @@ from collections import deque
 import numpy as np
 
 ROOT = os.getcwd()
-if not os.path.exists(os.path.join(ROOT, "public", "data", "campus.json")):
+if not os.path.exists(os.path.join(ROOT, "public", "data", "uoa", "campus.json")):
     sys.exit("run from the repository root")
 OUT = os.path.join(ROOT, "landmarks", "measured")
 WORK = os.path.join(OUT, "out")     # gitignored (landmarks/.gitignore)
@@ -214,7 +214,7 @@ def bounding_angle(ring):
 
 def projector(origin):
     """NZTM to map metres: through longitude and latitude to the equirectangular frame of
-    makeProjector in src/shared/geo.ts, true north, as public/data/campus.json."""
+    makeProjector in src/shared/geo.ts, true north, as public/data/uoa/campus.json."""
     from pyproj import Transformer
     phi = math.radians(origin["lat"])
     m_lon = 111412.84 * math.cos(phi) - 93.5 * math.cos(3 * phi)
@@ -589,7 +589,7 @@ def measure(b, P, others, campus_origin):
     data = {
         "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
                 "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
-                "of the campus origin, true north, as public/data/campus.json. Heights in metres above "
+                "of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above "
                 "ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model "
                 "stands on the map's ground (place.door).",
         "place": {"building": b["id"], "centre": centre, "door": [round(float(door[0]), 2), round(float(door[1]), 2)]},
@@ -748,7 +748,7 @@ def compact(data):
 # ---- the batch --------------------------------------------------------------------------------------------
 
 def main():
-    campus = json.load(open(os.path.join(ROOT, "public", "data", "campus.json"), encoding="utf-8"))
+    campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     origin = campus["origin"]
     to_map, to_grid = projector(origin)
     bounds = []

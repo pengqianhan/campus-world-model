@@ -2,6 +2,7 @@
 // temperature in the top bar, and the sky, light and rain in the scene. If the request fails the
 // weather is simply not shown, and the scene keeps a clear day.
 import { signal } from "@preact/signals";
+import { school } from "@school";
 
 export interface Weather {
   temperature: number;
@@ -33,9 +34,8 @@ function kindOf(code: number): Weather["kind"] {
   return "cloudy";
 }
 
-export const WEATHER_URL =
-  "https://api.open-meteo.com/v1/forecast?latitude=-36.8523&longitude=174.7691" +
-  "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland";
+/** The school's weather address (its descriptor's `weather`). */
+export const WEATHER_URL = school.weather;
 
 export async function loadWeather(): Promise<void> {
   try {

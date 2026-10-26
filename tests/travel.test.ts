@@ -31,7 +31,7 @@ describe("other worlds", () => {
     expect(WORLDS).toContain(INSPIRED_BY);
   });
   it("Beijing is a little over ten thousand kilometres from the City Campus", () => {
-    const campus = JSON.parse(fs.readFileSync("public/data/campus.json", "utf8")) as CampusData;
+    const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
     const km = greatCircleKm(campus.origin, INSPIRED_BY);
     expect(km).toBeGreaterThan(10_380);
     expect(km).toBeLessThan(10_460);

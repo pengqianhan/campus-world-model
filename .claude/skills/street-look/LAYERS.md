@@ -30,7 +30,7 @@ just under a lit window by night, so that only lights bloom. A walker view keeps
 colours by night and makes the night with its light; the map's night keeps its own colours.
 
 **Auckland in it.** Nothing of the city's, except through seams the porting skill already names:
-the sun from `daylight.ts` (`LAT`, `LON`), the weather from `weather.ts`, and the palette's
+the sun from `daylight.ts` (the descriptor's `sun`), the weather from `weather.ts`, and the palette's
 `DAY` and `NIGHT` sun azimuth and elevation, which stand in for the sun when it is below the
 horizon in a forced day and place the moon by night. The haze density is set so that the map's
 edge is hidden by day and no more (`tests/street.test.ts`); a context box much larger or smaller
