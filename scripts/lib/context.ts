@@ -26,7 +26,7 @@ interface OsmNodeRef {
   lat: number;
   lon: number;
 }
-interface OsmElement {
+export interface OsmElement {
   type: "node" | "way" | "relation";
   id: number;
   lat?: number;
@@ -172,7 +172,7 @@ function clipLine(line: Pt[], box: AreaBox, margin: number): Pt[][] {
 }
 
 /** Outer rings of a way or multipolygon relation. Unclosed member ways are stitched end to end. */
-function outerRings(e: OsmElement, project: MapFrame["project"]): Ring[] {
+export function outerRings(e: OsmElement, project: MapFrame["project"]): Ring[] {
   const toPts = (g: OsmNodeRef[]) => g.map((n) => project(n.lon, n.lat));
   if (e.type === "way" && e.geometry) {
     const pts = toPts(e.geometry);

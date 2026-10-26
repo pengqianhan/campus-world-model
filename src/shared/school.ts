@@ -3,6 +3,7 @@
 // vite.config.ts points at the school being built; the pipeline loads it by its path
 // (scripts/lib/school.ts). Modules shared by both (src/shared/) take it as an argument and never
 // import `@school`.
+import type { Layer, LayerVerdict } from "./types.ts";
 
 /** Interface words, by key, as in src/i18n/locales/<lang>.json. */
 export type Words = { [key: string]: string | Words };
@@ -30,6 +31,35 @@ export interface RoomCodeGrammar {
   equivalentFloors: readonly (readonly string[])[];
 }
 
+/**
+ * A test on an OpenStreetMap element's tags. It holds when every key's value matches its pattern;
+ * a key given as null holds when the element does not carry that tag.
+ */
+export type TagTest = Readonly<Record<string, RegExp | null>>;
+
+/**
+ * How the osm-buildings campus adapter (scripts/lib/osm-buildings.ts) picks a school's buildings
+ * from the OpenStreetMap snapshot of its central area: a rule written in the source's tags, never
+ * a list of elements typed by hand (docs/schools/DESIGN.md, section 10, risk 8).
+ */
+export interface OsmBuildingRule {
+  /** The campus the buildings belong to. */
+  campus: { id: string; name: string };
+  /**
+   * An element is considered when it is a building or a building part and one of these holds for
+   * its tags. Every other element is surroundings, which buildContext draws.
+   */
+  candidates: readonly TagTest[];
+  /**
+   * Steps in order. The first whose test holds decides: `take` puts the element on the campus, and
+   * otherwise it goes to the exclusions with the step's reason. A candidate that no step decides is
+   * left out too.
+   */
+  steps: readonly { when: TagTest; take: boolean; reason: string }[];
+  /** What the OpenStreetMap source line in About says it provides. */
+  provides: string;
+}
+
 export interface School {
   /** The school's id: its folder in src/schools/ and public/data/, and its path on the site. */
   id: string;
@@ -49,4 +79,14 @@ export interface School {
    * the University of Auckland, whose words are src/i18n/locales/ itself.
    */
   words: Readonly<Record<string, Words>>;
+  /**
+   * Its buildings from OpenStreetMap, by a rule on their tags (the Buildings form). Absent for a
+   * school whose own campus map gives its buildings: the University of Auckland's.
+   */
+  osmBuildings?: OsmBuildingRule;
+  /**
+   * Each layer's verdict, from the school's research report (docs/schools/<id>.md); the pipeline
+   * writes it into meta.json. Absent for the University of Auckland, whose meta.json has none.
+   */
+  layers?: Partial<Record<Layer, LayerVerdict>>;
 }
