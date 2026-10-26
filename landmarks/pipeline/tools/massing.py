@@ -589,7 +589,7 @@ def measure(b, P, others, campus_origin):
     data = {
         "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
                 "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
-                "of the campus origin, true north, as public/data/campus.json. Heights in metres above "
+                "of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above "
                 "ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model "
                 "stands on the map's ground (place.door).",
         "place": {"building": b["id"], "centre": centre, "door": [round(float(door[0]), 2), round(float(door[1]), 2)]},

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { REMOTE } from "../scripts/lib/areas.ts";
 import { buildSchedule, parseDate, parseDays, parseTime, type RawClass } from "../scripts/lib/classes.ts";
+import { school as uoa } from "../src/schools/uoa/school.ts";
 import { decodeRing, makeProjector, pointInRing, shareInside } from "../src/shared/geo.ts";
 import { buildIndex, compact, fold, search } from "../src/shared/search.ts";
 import { Terrain } from "../src/scene/terrain.ts";
@@ -359,7 +360,7 @@ describe("Classes API records -> schedule (synthetic fixture, shaped like the pu
     { subject: "TESTSUBJ", catalogNbr: "102", classDescr: "No Times", term: "1265", meetingPatterns: [] },
     { subject: "TESTSUBJ", catalogNbr: "103", classDescr: "Cancelled", term: "1265", classStatus: "X", meetingPatterns: [{ daysOfWeek: "mon" }] },
   ];
-  const { schedule } = buildSchedule(fixture, campus, roomIndex, "2026-10-13");
+  const { schedule } = buildSchedule(uoa, fixture, campus, roomIndex, "2026-10-13");
 
   it("expands meeting patterns into one session per weekday and keeps the source text", () => {
     const lec = schedule.sessions.filter((s) => s.component === "LEC");

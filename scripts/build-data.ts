@@ -58,15 +58,15 @@ import { decodePng, type Image } from "./lib/png.ts";
 import { TERRAIN_ZOOM, globalPixel, terrainBox, terrainFile, terrarium, tilesFor } from "./lib/terrain.ts";
 import { buildSchedule, loadClassSnapshots } from "./lib/classes.ts";
 import { hasSnapshot, manifest, readSnapshot } from "./lib/snapshot.ts";
+import { SCHOOL, school } from "./lib/school.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const SCHOOL = process.env.SCHOOL || "uoa";
 // Every source below is the University of Auckland's: never write them as another school's data.
 if (SCHOOL !== "uoa") throw new Error(`build-data.ts builds the University of Auckland's data only (SCHOOL=uoa), not SCHOOL=${SCHOOL}`);
 const OUT = path.join(ROOT, "public", "data", SCHOOL);
 
-/** Origin of the local metric frame: roughly the middle of the City Campus. */
-const ORIGIN = { lat: -36.8523, lon: 174.7691 };
+/** Origin of the local metric frame: roughly the middle of the City Campus (the school's descriptor). */
+const ORIGIN = school.origin;
 /** Display convention for stacking floors; the source has no heights. */
 const FLOOR_HEIGHT = 3.6;
 /** A floor outline with less of its area than this over its own building belongs to another one. */
@@ -1170,7 +1170,7 @@ const subjects = buildSubjects();
 const calendar = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "academic-calendar.json"), "utf8")) as AcademicCalendar;
 
 const classSnapshots = loadClassSnapshots();
-const { schedule, stats: scheduleStats } = buildSchedule(classSnapshots, campus, index, snapshotDate("uoa-classes"));
+const { schedule, stats: scheduleStats } = buildSchedule(school, classSnapshots, campus, index, snapshotDate("uoa-classes"));
 
 const count = (p: Schedule["sessions"][number]["precision"]) => schedule.sessions.filter((s) => s.precision === p).length;
 const coverage: Coverage = {
