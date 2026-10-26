@@ -289,7 +289,7 @@ export function buildContext(
     h: number;
     /** Height the walls start at; 0 for a building that stands on the ground. */
     b: number;
-    /** A bridge between buildings (`man_made=bridge` or `building=bridge`). */
+    /** A bridge between buildings (`man_made=bridge`, `building=bridge`, or a `bridge` tag). */
     bridge: boolean;
     /** True when `h` is the building's tagged height, which includes its roof. */
     tagged: boolean;
