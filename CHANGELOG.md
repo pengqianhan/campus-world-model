@@ -36,7 +36,7 @@ A change to what the site does or shows adds its line here, and the README's
   tags give no base stay in the data, marked as bridges, and are not drawn or walked round, AUT's
   skybridge among them: a gap, not a guess. In the map's first view the Customhouse tower now
   starts 13.2 m up and AUT's skybridge is gone; near Grafton a bridge at the hospital is gone.
-  Every other building keeps its look (#PR).
+  Every other building keeps its look (#100).
 
 ## 2026-10-26
 
