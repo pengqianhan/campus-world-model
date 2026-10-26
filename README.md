@@ -142,14 +142,26 @@ The site is static. A merge into `main` runs `.github/workflows/deploy.yml`, whi
 the unit and end-to-end tests, builds, and publishes to GitHub Pages only if all of that passed. The
 Vite `base` is `/campus-world-model/`; set `BASE_PATH=/` to host at a domain root.
 
-The same workflow publishes a second copy to Cloudflare Pages under `/uoa/`, with the files in
-`cloudflare/` at the site root. That job runs only when the repository variable `CLOUDFLARE_PROJECT`
-names a Pages project and the secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set, so
-a fork deploys to GitHub Pages alone until it has them.
+The schools that the site holds are listed in `.github/schools.json`; today it holds only `uoa`, the
+University of Auckland (see [docs/schools/DESIGN.md](docs/schools/DESIGN.md)). The `build` job
+builds the University of Auckland into `dist/`, the GitHub Pages copy, and each other school on the
+list with `SCHOOL=<id>` into `dist-<id>/`. Each other school also gets an end-to-end job of its own,
+`e2e, <id>`, which runs only `e2e/schools/common.spec.ts` and `e2e/schools/<id>/`
+(`SCHOOL=<id> npm run e2e` does the same on your machine, after `SCHOOL=<id> npm run build`). The
+`schools` check passes when each of them passed, or when the list holds no other school.
+
+The same workflow publishes a second copy to Cloudflare Pages, with each school on the list under
+its own path (`/uoa/`, `/<id>/`) and the files in `cloudflare/` at the site root. It waits for
+`build`, `e2e` and `schools`, so one school that fails holds back every school's Cloudflare copy.
+That job runs only when the repository variable `CLOUDFLARE_PROJECT` names a Pages project and the
+secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set, so a fork deploys to GitHub
+Pages alone until it has them. Only the steps that run `wrangler` get the two secrets.
 
 A pull request from a branch of this repository also gets a preview on the same Pages project, at
 `https://<branch>.<project>.pages.dev/uoa/`, once its checks pass; the pull request's "View
-deployment" opens it, and each push updates it. A pull request from a fork gets no preview, because
+deployment" opens it, and each push updates it. A preview holds only the schools on `main`'s list,
+built from the branch's code: a school that a branch adds is not online before the merge, and if
+`main`'s list cannot be read, the preview fails. A pull request from a fork gets no preview, because
 GitHub gives it no secrets.
 
 ## Walk the campus
@@ -411,6 +423,7 @@ scripts/            data pipeline (Node + TypeScript, run with tsx)
   fetch-*.ts          one script per source
   build-data.ts       snapshots -> public/data/uoa/*.json
   check-pr-form.ts    CI: a pull request says how it was made
+  school-list.ts      CI: reads and checks .github/schools.json, the schools the site holds
   walker/             the walker's controller, CLI and MCP server (npm run walker), and the
                       script that makes its figure
 data/

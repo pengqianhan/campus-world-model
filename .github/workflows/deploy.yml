@@ -27,7 +27,16 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      # The University of Auckland, into dist/: the GitHub Pages copy, as before the list of schools.
       - run: npm run build
+      # Every other school on .github/schools.json, each into dist-<id>/ (vite.config.ts), never into
+      # dist/. school-list.ts stops the job on a bad list or a bad id.
+      - name: Build each other school on the list
+        run: |
+          others=$(node scripts/school-list.ts .github/schools.json --others)
+          for id in $others; do
+            SCHOOL="$id" npx vite build
+          done
       - name: Report bundle size
         run: du -sh dist && find dist -type f -printf '%s %p\n' | sort -nr | head -20
       - uses: actions/upload-pages-artifact@v5
@@ -82,6 +91,80 @@ jobs:
         env:
           RESULT: ${{ needs.e2e-half.result }}
 
+  # The schools on .github/schools.json other than the University of Auckland, as a JSON array for
+  # the e2e-schools matrix. school-list.ts checks each id before it goes out.
+  list-schools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      others: ${{ steps.list.outputs.others }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - id: list
+        run: |
+          others=$(node scripts/school-list.ts .github/schools.json --others --json)
+          echo "others=$others" >> "$GITHUB_OUTPUT"
+
+  # The end-to-end tests of each other school, one job a school, in parallel with the University of
+  # Auckland's (docs/schools/DESIGN.md, section 8): its own build at /<id>/, with only
+  # e2e/schools/common.spec.ts and e2e/schools/<id>/ (playwright.config.ts). A matrix with no values
+  # fails a workflow, so the job is skipped while the list holds no other school.
+  e2e-schools:
+    name: e2e, ${{ matrix.school }}
+    needs: list-schools
+    if: needs.list-schools.outputs.others != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        school: ${{ fromJSON(needs.list-schools.outputs.others) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build the school
+        run: npm run build
+        env:
+          SCHOOL: ${{ matrix.school }}
+      - name: End-to-end tests against the school's production build (software WebGL)
+        run: npm run e2e
+        env:
+          SCHOOL: ${{ matrix.school }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: e2e-screenshots-${{ matrix.school }}
+          path: |
+            e2e/screenshots
+            test-results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # One check for every school other than the University of Auckland, however many the list holds.
+  # It passes only when the list was read and the e2e of each school passed, or was skipped because
+  # the list holds no other school. It runs with always(), as e2e does, because a skipped required
+  # check would count as passed.
+  schools:
+    if: always()
+    needs: [list-schools, e2e-schools]
+    runs-on: ubuntu-latest
+    steps:
+      - name: The list was read and every school passed
+        run: |
+          test "$LIST" = success
+          test "$E2E" = success || test "$E2E" = skipped
+        env:
+          LIST: ${{ needs.list-schools.result }}
+          E2E: ${{ needs.e2e-schools.result }}
+
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: [build, e2e]
@@ -96,85 +179,137 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v5
 
-  # Second copy of the site on Cloudflare Pages, where each school lives under its own path
-  # (/uoa/). Skipped until the repository variable CLOUDFLARE_PROJECT names the Pages project;
-  # the two secrets hold an API token with the "Cloudflare Pages: Edit" permission and the
-  # account id.
+  # Second copy of the site on Cloudflare Pages, where each school on .github/schools.json lives
+  # under its own path (/uoa/, /<id>/). Skipped until the repository variable CLOUDFLARE_PROJECT
+  # names the Pages project; the two secrets hold an API token with the "Cloudflare Pages: Edit"
+  # permission and the account id. Only the wrangler steps get them: npm ci and the builds run
+  # without them.
   deploy-cloudflare:
-    if: github.ref == 'refs/heads/main' && vars.CLOUDFLARE_PROJECT != ''
-    needs: [build, e2e]
+    # Each needed result is checked by name, with !cancelled() in place of the implicit success():
+    # that would also ask every job before these to have passed, and e2e-schools is skipped while
+    # the list holds no other school. So a school that fails holds back every school's deploy.
+    if: >-
+      !cancelled() &&
+      needs.build.result == 'success' && needs.e2e.result == 'success' && needs.schools.result == 'success' &&
+      github.ref == 'refs/heads/main' && vars.CLOUDFLARE_PROJECT != ''
+    needs: [build, e2e, schools]
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       PROJECT: ${{ vars.CLOUDFLARE_PROJECT }}
-      SCHOOL: uoa
     steps:
       - uses: actions/checkout@v7
+        with:
+          # No GitHub token is left in .git/config for the build code to read.
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Build for the school's path and lay out the site root
+      # Each school on the list, built for its own path: the University of Auckland with
+      # BASE_PATH=/uoa/ into dist/, any other school into dist-<id>/ (vite.config.ts). Then the
+      # files in cloudflare/ at the site root. school-list.ts stops the job on a bad list or id.
+      - name: Build each school on the list for its path and lay out the site root
+        env:
+          LIST: .github/schools.json
         run: |
-          BASE_PATH="/$SCHOOL/" npm run build
+          schools=$(node scripts/school-list.ts "$LIST")
           mkdir site
-          mv dist "site/$SCHOOL"
+          for id in $schools; do
+            if [ "$id" = uoa ]; then out=dist; else out="dist-$id"; fi
+            SCHOOL="$id" BASE_PATH="/$id/" npm run build
+            mv "$out" "site/$id"
+          done
           cp cloudflare/_headers cloudflare/_redirects site/
       - name: Create the Pages project on the first run
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main || true
       - name: Publish to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx --yes wrangler@4 pages deploy site --project-name "$PROJECT" --branch main
 
   # A preview of each pull request from a branch of this repository, on the same Cloudflare Pages
   # project at <branch>.<project>.pages.dev, once the same checks as main have passed; the pull
   # request's "View deployment" opens it. Production stays main's. A fork's pull request is given
-  # no secrets, so it is skipped.
+  # no secrets, so it is skipped. A preview holds only the schools on main's list.
   deploy-preview:
+    # As in deploy-cloudflare, each needed result is checked by name.
     if: >-
+      !cancelled() &&
+      needs.build.result == 'success' && needs.e2e.result == 'success' && needs.schools.result == 'success' &&
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       vars.CLOUDFLARE_PROJECT != ''
-    needs: [build, e2e]
+    needs: [build, e2e, schools]
     runs-on: ubuntu-latest
     environment:
       name: preview
       url: ${{ steps.publish.outputs.url }}
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       PROJECT: ${{ vars.CLOUDFLARE_PROJECT }}
-      SCHOOL: uoa
       # The branch name goes in through the environment, never into the text of a script.
       BRANCH: ${{ github.head_ref }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          # No GitHub token is left in .git/config for the build code to read; main is public.
+          persist-credentials: false
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Build for the school's path and lay out the site root
+      # The schools come from main's list, whatever branch the pull request is based on, so a school
+      # is on the site only once the maintainer has merged it (docs/schools/DESIGN.md, decision 13).
+      # The checkout holds the merge commit alone, so main is fetched to read its list. If that
+      # fails, the job stops before it builds any school. It never reads the branch's own list.
+      - name: Read main's list of schools
+        env:
+          LIST_FROM: refs/heads/main
+          LIST: ${{ runner.temp }}/main-schools.json
         run: |
-          BASE_PATH="/$SCHOOL/" npm run build
+          git fetch --no-tags --depth=1 origin "$LIST_FROM"
+          git show FETCH_HEAD:.github/schools.json > "$LIST"
+          node scripts/school-list.ts "$LIST"
+      - name: Build each school on main's list for its path and lay out the site root
+        id: layout
+        env:
+          LIST: ${{ runner.temp }}/main-schools.json
+        run: |
+          schools=$(node scripts/school-list.ts "$LIST")
           mkdir site
-          mv dist "site/$SCHOOL"
+          for id in $schools; do
+            if [ "$id" = uoa ]; then out=dist; else out="dist-$id"; fi
+            SCHOOL="$id" BASE_PATH="/$id/" npm run build
+            mv "$out" "site/$id"
+          done
           cp cloudflare/_headers cloudflare/_redirects site/
+          echo "schools=$(echo $schools)" >> "$GITHUB_OUTPUT"
       # Wrangler writes what it published to WRANGLER_OUTPUT_FILE_PATH, one JSON record a line; the
       # "pages-deploy-detailed" record has the branch's address (alias) and this deployment's (url).
+      # "View deployment" opens the first school on the list; the summary gives each one.
       - name: Publish the branch as a preview
         id: publish
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
+          SCHOOLS: ${{ steps.layout.outputs.schools }}
         run: |
           npx --yes wrangler@4 pages deploy site --project-name "$PROJECT" --branch "$BRANCH" --commit-hash "$HEAD_SHA"
-          url=$(node -e '
+          site=$(node -e '
             const records = require("fs").readFileSync(process.env.WRANGLER_OUTPUT_FILE_PATH, "utf8")
               .split("\n").filter(Boolean).map((line) => JSON.parse(line));
             const deploy = records.findLast((r) => r.type === "pages-deploy-detailed");
-            console.log(`${(deploy.alias || deploy.url).replace(/\/$/, "")}/${process.env.SCHOOL}/`);
+            console.log((deploy.alias || deploy.url).replace(/\/$/, ""));
           ')
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "Preview of \`$BRANCH\`: $url" >> "$GITHUB_STEP_SUMMARY"
+          set -- $SCHOOLS
+          echo "url=$site/$1/" >> "$GITHUB_OUTPUT"
+          for id in $SCHOOLS; do
+            echo "Preview of \`$BRANCH\`: $site/$id/" >> "$GITHUB_STEP_SUMMARY"
+          done
