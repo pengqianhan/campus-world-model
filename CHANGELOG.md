@@ -28,6 +28,11 @@ A change to what the site does or shows adds its line here, and the README's
   written agreement with MazeMap). The status strip, the time panel, the card and About say so in
   AUT's own words. Unofficial, with the project's own colours; nothing is taken from AUT (#97).
 
+### Fixed
+
+- **Search on Tai Tokerau and Ardmore** no longer lists buildings under "Buildings with the most
+  learning spaces": neither campus has any, so the list is empty again, as it was before #97 (#98).
+
 ## 2026-10-25
 
 ### Added
