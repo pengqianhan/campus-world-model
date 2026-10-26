@@ -92,7 +92,7 @@ one page per class.
 
 The official key-dates page or PDF: terms, teaching weeks, breaks, exam periods and public holidays
 for the current and the next year. Snapshot it, then transcribe it by hand into
-`data/academic-calendar.json` with the source URL and the date checked.
+`data/<id>/academic-calendar.json` with the source URL and the date checked.
 
 ### 5. Subjects and courses
 

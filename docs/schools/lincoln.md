@@ -117,7 +117,7 @@ choice, so one post can ask for several courses. How many posts a full build nee
 | Key dates | `https://www.lincoln.ac.nz/study/key-dates/` (web search) | not requested: `robots.txt` | Not seen |
 | The timetable's teaching weeks | `https://splus.lincoln.ac.nz/timetable/2026/` (layer 3) | read | The named periods of `lbWeeks`, by week number: "Semester 1" weeks 8 to 13 and 17 to 22; "Semester 2" weeks 29 to 34 and 37 to 42; "January Summer School" weeks 2 to 6; "November Summer School" and "Full Summer School" weeks 46 to 50. By the week labels: week 8 is "w/c 16 Feb 2026", week 13 "w/c 23 Mar 2026", week 17 "w/c 20 Apr 2026", week 22 "w/c 25 May 2026", week 29 "w/c 13 Jul 2026", week 34 "w/c 17 Aug 2026", week 37 "w/c 07 Sep 2026", week 42 "w/c 12 Oct 2026", week 46 "w/c 09 Nov 2026" and week 50 "w/c 07 Dec 2026". These are teaching weeks, not the key dates: no exams, no holidays |
 
-Transcribe the key-dates page by hand into `data/academic-calendar.json` only after Lincoln agrees
+Transcribe the key-dates page by hand into `data/<id>/academic-calendar.json` only after Lincoln agrees
 ("Needs the maintainer", 1).
 
 ## Layer 5: subjects and courses

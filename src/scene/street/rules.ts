@@ -149,7 +149,7 @@ export const STYLES: readonly StyleSpec[] = [
 export const FLAT_ROOFS = [0x5e5f60, 0x6e6c68, 0x4f5153, 0x7a7873];
 export const PITCHED_ROOFS = [0x3b3d3f, 0x4b4f52, 0x55504a, 0x5c3f36, 0x46524a, 0x2f3134];
 
-/** Metres a storey of a surrounding building is drawn: what the pipeline takes a level of OpenStreetMap's to be (OSM_LEVEL in scripts/build-data.ts). */
+/** Metres a storey of a surrounding building is drawn: what the pipeline takes a level of OpenStreetMap's to be (OSM_LEVEL in scripts/lib/context.ts). */
 export const CITY_STOREY = 3.3;
 /** Metres of parapet over the top storey of a flat roof: the pipeline adds a metre to a height worked out from levels. */
 export const PARAPET = 1;

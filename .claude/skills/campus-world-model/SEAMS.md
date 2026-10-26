@@ -7,21 +7,22 @@ what the grep cannot tell you.
 ## Data seams (step 3)
 
 **Geography.** `origin` and `areas` in the school's descriptor, `src/schools/<id>/school.ts`, which
-`ORIGIN` in `scripts/build-data.ts` and `scripts/lib/areas.ts` read: `central`
-round the main campus, and one small box (`remote`) for each campus or outlying building away
-from it. Every published coordinate is metres east and north of the origin, so put it at the
-centre of the main campus. `fetch-osm.ts` snapshots each area's surroundings; `build-data.ts`
+`scripts/build-data.ts` (through `mapFrame` in `scripts/lib/map-frame.ts`) and
+`scripts/lib/areas.ts` read: `central` round the main campus, and one small box (`remote`) for
+each campus or outlying building away from it. Every published coordinate is metres east and north
+of the origin, so put it at the centre of the main campus. `fetch-osm.ts` snapshots each area's surroundings; `build-data.ts`
 writes `context.json` for the central area and `context/<area>.json` for each other one, and marks
 a building or campus outside the central box with its `area`, which the app loads when that campus
 or building is shown. A building in no area is published with `offMap: true`. The central box sets
 how much city surrounds the main campus and the size of `context.json`: Auckland's box, 1.7 km wide
 and 2.8 km tall, gives 612 KB. Budget: the whole deploy under 50 MB, the first load a few MB.
-`CAMPUS_IDS` names the campuses.
+`CAMPUS_IDS` in the campus adapter names the campuses, by the source's venue names.
 
-**Sources.** `scripts/fetch-mapsindoors.ts`, `fetch-calendar.ts`, `fetch-classes.ts`;
-`scripts/lib/classes.ts`; in `build-data.ts` the `Mi*` types, `buildCampus`, `buildSubjects` and the
-`sources` list. Write one fetch script per usable source in their place and chain them in the
-`data:fetch` script of `package.json`. `LEARNING_TYPES` maps the source's room types onto `RoomKind`
+**Sources.** `scripts/schools/uoa/`: `fetch-mapsindoors.ts`, `fetch-calendar.ts`, `fetch-classes.ts`;
+the campus adapter `mapsindoors.ts` (the `Mi*` types and `buildCampus`) and `subjects.ts`
+(`buildSubjects`); `scripts/lib/classes.ts`; the `sources` list in `build-data.ts`. Write one
+fetch script per usable source in `scripts/schools/<id>/` and chain them in the `data:fetch` script
+of `package.json`. `LEARNING_TYPES` maps the source's room types onto `RoomKind`
 and decides which rooms are named and selectable; `INDEX_EXCLUDED_TYPES` decides which stay out of
 search. The `sources` list is what About shows: name, link, licence line, snapshot date. Every
 request goes through `snapshot()` in `scripts/lib/snapshot.ts`, which paces, names the project and
@@ -33,9 +34,10 @@ Tiles (terrarium PNGs, no key) under every area at zoom 14, decoded with Node's 
 `x-amz-meta-x-imagery-sources` header names it, and the Tilezen "joerd" attribution document gives
 its licence and the credit to show. Auckland's is the LINZ 8 m DEM, CC BY 3.0 NZ, committed under
 `data/raw/terrain/`; check that the new country's licence allows that too. Sample one tile at zoom
-14 and 15 near the campus and keep the zoom at which the finer one adds nothing. `buildTerrain`
-writes a 10 m grid per area (`terrain/<area>.json`) and clamps pits where land meets sea
-(`TERRAIN_FLOOR`); `TERRAIN_MARGIN` is how far past an area the ground reaches. In the scene a
+14 and 15 near the campus and keep the zoom at which the finer one adds nothing.
+`buildTerrain` (`scripts/lib/terrain.ts`) writes a 10 m grid per area (`terrain/<area>.json`) and
+clamps pits where land meets sea (`TERRAIN_FLOOR`); `TERRAIN_MARGIN` is how far past an area the
+ground reaches. In the scene a
 building stands at the ground under its middle, no more than `FOOTING` (4 m, `src/scene/terrain.ts`)
 above its lowest corner, with a footing below. The credit goes in the `sources` list and in
 `attribution.short` in `en.json`.
@@ -61,9 +63,9 @@ check what the new source's toilet types are named before mapping them (Auckland
 always an accessible toilet, which only the names show). List the new source's room types with
 their counts, and its building names, and find its words for each of the five.
 
-**Surroundings.** `buildContext` draws what the OpenStreetMap snapshot of an area holds: building
-parts with their heights, six roof shapes, a tower at its full height when it is mapped in parts,
-and trees, with those tagged `leaf_cycle=deciduous` kept apart for the seasons. It carries over
+**Surroundings.** `buildContext` (`scripts/lib/context.ts`) draws what the OpenStreetMap snapshot of
+an area holds: building parts with their heights, six roof shapes, a tower at its full height when
+it is mapped in parts, and trees, with those tagged `leaf_cycle=deciduous` kept apart for the seasons. It carries over
 unchanged. A campus building has one source: where the indoor layer gives it a footprint,
 OpenStreetMap's copy and its parts are dropped (`insideUni`). The public Overpass instances can
 answer 504 for an hour: `fetch-osm.ts` goes round all of them three times, a minute apart, and a
@@ -71,7 +73,7 @@ snapshot already on disk is never fetched again. The sea is not drawn; OpenStree
 a line, and a campus on the shore stands on land to the edge of its area.
 
 **Room codes.** The grammar in the descriptor's `roomCode`, the parser in `src/shared/roomcode.ts`
-(it takes the descriptor as its first argument), `CODE_RE` in `build-data.ts`, `tests/roomcode.test.ts`.
+(it takes the descriptor as its first argument), `CODE_RE` in the campus adapter, `tests/roomcode.test.ts`.
 Auckland's grammar is `<building>-<room>` with the floor in the room's first character. Derive the new
 grammar from real codes in the snapshot and write the tests from them. Where the indoor layer gives
 true floors, measure how often inference from the code agrees and record the figure. Inference is
@@ -98,8 +100,8 @@ become clock times through the official period table, which is a source to snaps
 becomes one session per unbroken run of weeks. `TermDates.kind` and the term codes are Auckland's;
 rename them to the new school's terms.
 
-**Calendar.** `data/academic-calendar.json`, read by `src/shared/calendar.ts` for teaching weeks,
-breaks, exams and the default Preview date.
+**Calendar.** `data/uoa/academic-calendar.json` (`data/<id>/` for each school), read by
+`src/shared/calendar.ts` for teaching weeks, breaks, exams and the default Preview date.
 
 ## Identity seams (step 4)
 

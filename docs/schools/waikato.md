@@ -125,7 +125,7 @@ would ask `events` once for each paper offering. How many offerings there are, a
 | Teaching dates on the intranet | a SharePoint page, linked from the timetable app ("Academic Teaching Weeks can be reviewed here", markup removed) | not requested: an intranet | — |
 | The timetable's own dates | the two API answers in layer 3 | read | Offering dates: `COMPX101-26A (HAM)` from 2026-03-02 to 2026-06-28, `COMPX101-26B (HAM)` from 2026-07-13 to 2026-11-08; one exam on 2026-06-22; teaching weeks in `WeekInYear`. These agree with the web-search dates above but are not a calendar |
 
-Transcribe the key-dates page by hand into `data/academic-calendar.json` only after Waikato agrees
+Transcribe the key-dates page by hand into `data/<id>/academic-calendar.json` only after Waikato agrees
 ("Needs the maintainer", 1).
 
 ## Layer 5: subjects and courses

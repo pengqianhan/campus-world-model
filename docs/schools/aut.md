@@ -140,7 +140,7 @@ code gives the building and the level (AUT's rule), and the room stays a code.
 | Calendar sections | `https://www.aut.ac.nz/about/auts-leadership/official-aut-publications/read-by-section-academic-calendar` links `./?a=119658` (Academic Dates) | page 200; the `?a=` links not requested | `robots.txt` disallows `/*?a=*`, so the PDFs were used instead |
 
 Business masters and MBA programmes have their own dates (linked from the key-dates page; not
-read). Transcribe by hand into `data/academic-calendar.json`, as for Auckland.
+read). Transcribe by hand into `data/<id>/academic-calendar.json`, as for Auckland.
 
 ## Layer 5: subjects and courses
 
