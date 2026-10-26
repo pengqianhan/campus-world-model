@@ -23,7 +23,7 @@ A change to what the site does or shows adds its line here, and the README's
   site shows, the date of its campus snapshot and a link to its map. It says that the project is
   unofficial and not affiliated with any of these universities, and it runs no script and no
   WebGL. Before, the root sent every visitor to /uoa/. An address that is not on the site now gets
-  "No page at this address", with the same list, and status 404 (#PR).
+  "No page at this address", with the same list, and status 404 (#99).
 
 ## 2026-10-26
 
