@@ -224,6 +224,13 @@ jobs:
             mv "$out" "site/$id"
           done
           cp cloudflare/_headers cloudflare/_redirects site/
+      # The site root: index.html, the school picker, and 404.html, the page every unknown path
+      # gets, both static, from the list, each school's site/<id>/data/meta.json and the picker.*
+      # words (docs/schools/DESIGN.md, section 7). It stops the job if a school was not laid out.
+      - name: Write the school picker and the 404 page at the site root
+        env:
+          LIST: .github/schools.json
+        run: node scripts/build-root.ts "$LIST" site
       - name: Create the Pages project on the first run
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -293,6 +300,11 @@ jobs:
           done
           cp cloudflare/_headers cloudflare/_redirects site/
           echo "schools=$(echo $schools)" >> "$GITHUB_OUTPUT"
+      # The site root as in deploy-cloudflare, for the schools on main's list.
+      - name: Write the school picker and the 404 page at the site root
+        env:
+          LIST: ${{ runner.temp }}/main-schools.json
+        run: node scripts/build-root.ts "$LIST" site
       # Wrangler writes what it published to WRANGLER_OUTPUT_FILE_PATH, one JSON record a line; the
       # "pages-deploy-detailed" record has the branch's address (alias) and this deployment's (url).
       # "View deployment" opens the first school on the list; the summary gives each one.

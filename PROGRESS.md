@@ -498,8 +498,9 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   (Victoria, if it goes live) is asked too, as the University of Auckland would be.
 - **One neutral address, one path per school.** The user plans to add other New Zealand universities
   and registered `campusworldmodel.com` with Cloudflare on 2026-10-13 (expires 2027-10-13,
-  auto-renew off), with each school under its own path: `/uoa/` now, a school picker at the root
-  later (today the root redirects to `/uoa/`, `cloudflare/_redirects`). Path names are each school's
+  auto-renew off), with each school under its own path: `/uoa/` and `/aut/` now, and a school
+  picker at the root (`scripts/build-root.ts`; until the second school the root redirected to
+  `/uoa/`). Path names are each school's
   own short name, not its city: AUT is in Auckland too. Several schools share this repository as
   `docs/schools/DESIGN.md` sets out: one build per school (`SCHOOL`, `BASE_PATH=/<id>/`), each
   school's published data in `public/data/<id>/`, and a school picker at the root from the second

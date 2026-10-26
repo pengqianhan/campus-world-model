@@ -24,6 +24,26 @@ if (!fs.existsSync(descriptor)) throw new Error(`no descriptor for SCHOOL=${SCHO
 const base = process.env.BASE_PATH ?? (SCHOOL === "uoa" ? "/campus-world-model/" : `/${SCHOOL}/`);
 
 /**
+ * Leaves the school picker's words, picker.* in src/i18n/locales/, out of the app. They are for
+ * scripts/build-root.ts, which writes the static page at the Cloudflare site's root
+ * (docs/schools/DESIGN.md, section 7); no school's app shows them, so its bundle stays as it was.
+ */
+function pickerWordsOut(): Plugin {
+  const locale = /[\\/]src[\\/]i18n[\\/]locales[\\/][^\\/]+\.json$/;
+  return {
+    name: "picker-words-out",
+    enforce: "pre",
+    transform(code, id) {
+      if (!locale.test(id.split("?")[0]!)) return null;
+      const words = JSON.parse(code) as Words;
+      if (!("picker" in words)) return null;
+      delete words.picker;
+      return { code: JSON.stringify(words), map: null };
+    },
+  };
+}
+
+/**
  * Puts one school's data at data/: public/data/<SCHOOL>/ is served and built as <base>data/.
  * Vite's own copy of public/ is off (build.copyPublicDir: false), so this copies the rest of
  * public/ itself, after the bundle is written, into the build's own output folder.
@@ -71,7 +91,7 @@ function schoolData(): Plugin {
 export default defineConfig({
   base,
   resolve: { alias: { "@school": descriptor } },
-  plugins: [preact(), schoolData()],
+  plugins: [pickerWordsOut(), preact(), schoolData()],
   // Fixed, uncommon ports so the dev server, the preview server and the e2e tests agree,
   // and so they do not collide with other projects using Vite's default 5173.
   server: { port: 5273, strictPort: true },

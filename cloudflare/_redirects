@@ -1,4 +1,3 @@
 # Copied to the root of the Cloudflare Pages site by the deploy-cloudflare job.
-# Each school lives under its own path. Until there is a page for choosing a school,
-# the root sends visitors to the only one; temporary (302) so browsers do not remember it.
-/ /uoa/ 302
+# Each school lives under its own path. The root is the school picker, index.html, and an unknown
+# path gets 404.html, both written by scripts/build-root.ts; so there is no redirect here.

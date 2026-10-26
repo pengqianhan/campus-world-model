@@ -44,20 +44,15 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-27:** [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
+  site, each with its city, how much of it the site shows and the date of its campus snapshot; it
+  no longer sends every visitor to /uoa/.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
 - **2026-10-25:** near Maclaurin Chapel the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and from a walker's height in white walls, glass, a light
   green metal roof and a slender spire. A click still opens its floors.
-- **2026-10-23:** near the General Library the map draws it in detail, in white concrete and brick
-  from a walker's height; five plain buildings of the City Campus (113, 114, 409, 433 and 435)
-  are drawn near the camera as measured massings: their heights and roofs from the LiDAR, their
-  walls and windows by rule; near Old Choral Hall the map draws its range on Symonds Street in
-  detail, in red brick and cream render from a walker's height, and the rest of the building,
-  under building works, keeps the map's estimated block; the unnamed rooms on floors where people
-  live and in childcare centres can no longer be found in the search, as their floors were
-  already blank.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -147,8 +142,9 @@ the unit and end-to-end tests, builds, and publishes to GitHub Pages only if the
 Auckland's build and tests passed (the Cloudflare copy waits for every school's, below). The
 Vite `base` is `/campus-world-model/`; set `BASE_PATH=/` to host at a domain root.
 
-The schools that the site holds are listed in `.github/schools.json`; today it holds only `uoa`, the
-University of Auckland (see [docs/schools/DESIGN.md](docs/schools/DESIGN.md)). The `build` job
+The schools that the site holds are listed in `.github/schools.json`; today it holds `uoa`, the
+University of Auckland, and `aut`, Auckland University of Technology (see
+[docs/schools/DESIGN.md](docs/schools/DESIGN.md)). The `build` job
 builds the University of Auckland into `dist/`, the GitHub Pages copy, and each other school on the
 list with `SCHOOL=<id>` into `dist-<id>/`. Each other school also gets an end-to-end job of its own,
 `e2e, <id>`, which runs only `e2e/schools/common.spec.ts` and `e2e/schools/<id>/`
@@ -162,8 +158,15 @@ That job runs only when the repository variable `CLOUDFLARE_PROJECT` names a Pag
 secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set, so a fork deploys to GitHub
 Pages alone until it has them. Only the steps that run `wrangler` get the two secrets.
 
+The root of the Cloudflare site is the school picker, `index.html`, and an unknown path gets
+`404.html` with status 404. After the schools are laid out in `site/`, `scripts/build-root.ts`
+writes both: static pages with no script, which list each school on the list with its name, its
+city, its form and the date of its campus snapshot, from its `meta.json` and the `picker.*` words
+of `src/i18n/locales/en.json`. To make them on your machine after the same layout:
+`node scripts/build-root.ts .github/schools.json site`. The root does not redirect.
+
 A pull request from a branch of this repository also gets a preview on the same Pages project, at
-`https://<branch>.<project>.pages.dev/uoa/`, once its checks pass; the pull request's "View
+`https://<branch>.<project>.pages.dev/uoa/` (the picker at `/`), once its checks pass; the pull request's "View
 deployment" opens it, and each push updates it. A preview holds only the schools on `main`'s list,
 built from the branch's code: a school that a branch adds is not online before the merge, and if
 `main`'s list cannot be read, the preview fails. A pull request from a fork gets no preview, because

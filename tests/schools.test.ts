@@ -81,9 +81,11 @@ describe("the school's words", () => {
     // Shared by every school: the time zone is named after Auckland (every university in New
     // Zealand keeps Pacific/Auckland time), and the landmarks' LiDAR survey is Auckland's; the
     // landmarks line shows only where a school has landmarks.
+    // The picker at the site's root names each school under its own id, picker.schools.<id>, and no
+    // school's app shows those words (tests/picker.test.ts).
     const shared = new Set(["time.nowHelp", "time.auckland", "about.landmarks"]);
     const names = /University of Auckland|\bUoA\b|Auckland|the University\b|City Campus|303-G23/;
-    const missing = wordKeys(en).filter((key) => names.test(lookupWords(en, key)!) && !shared.has(key) && !named.has(key));
+    const missing = wordKeys(en).filter((key) => names.test(lookupWords(en, key)!) && !shared.has(key) && !named.has(key) && !key.startsWith("picker.schools."));
     expect(missing).toEqual([]);
   });
 
