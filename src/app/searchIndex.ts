@@ -87,8 +87,12 @@ export function runSearch(d: AppData, query: string, limit = 40): SearchResults 
 /** Buildings to offer before anything is typed. */
 export function browseBuildings(d: AppData, campus: string, limit = 12): Building[] {
   const here = d.campus.buildings.filter((b) => !b.offMap && (b.campus === campus || !d.campusById.get(campus)?.onMap));
-  const teaching = here.filter((b) => b.roomCount > 0).sort((a, b) => b.roomCount - a.roomCount);
-  // A school with no rooms (the Buildings form): its buildings by code.
-  if (teaching.length === 0) return here.sort((a, b) => (a.ref ?? a.id).localeCompare(b.ref ?? b.id, "en", { numeric: true })).slice(0, limit);
-  return teaching.slice(0, limit);
+  // A school whose data says it has no floors and rooms (the Buildings form): its buildings by code.
+  // A campus of a school with rooms that has none of its own (Tai Tokerau, Ardmore) offers none.
+  const indoor = d.meta.layers?.indoor;
+  if (indoor && indoor !== "usable") return here.sort((a, b) => (a.ref ?? a.id).localeCompare(b.ref ?? b.id, "en", { numeric: true })).slice(0, limit);
+  return here
+    .filter((b) => b.roomCount > 0)
+    .sort((a, b) => b.roomCount - a.roomCount)
+    .slice(0, limit);
 }
