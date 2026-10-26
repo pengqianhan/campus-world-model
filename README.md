@@ -300,13 +300,13 @@ The maintainer rebuilds the data. A pull request that needs a rebuild changes th
 says so in its first line (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 ```bash
-npm run data:fetch                               # fetches only what is missing
-npx tsx scripts/fetch-mapsindoors.ts --refresh   # re-download the campus map (4 requests)
-npx tsx scripts/fetch-osm.ts --refresh           # re-download OpenStreetMap context (1 request per area, 7)
-npx tsx scripts/fetch-terrain.ts --refresh       # re-download the elevation tiles (29 at zoom 14)
-npx tsx scripts/fetch-calendar.ts --refresh      # re-download the Calendar pages (3 requests)
-npm run data:build                               # rebuild public/data/uoa from the snapshots
-npm test                                         # the data consistency tests must still pass
+npm run data:fetch                                          # fetches only what is missing
+npx tsx scripts/schools/uoa/fetch-mapsindoors.ts --refresh  # re-download the campus map (4 requests)
+npx tsx scripts/fetch-osm.ts --refresh                      # re-download OpenStreetMap context (1 request per area, 7)
+npx tsx scripts/fetch-terrain.ts --refresh                  # re-download the elevation tiles (29 at zoom 14)
+npx tsx scripts/schools/uoa/fetch-calendar.ts --refresh     # re-download the Calendar pages (3 requests)
+npm run data:build                                          # rebuild public/data/uoa from the snapshots
+npm test                                                    # the data consistency tests must still pass
 ```
 
 Then commit `public/data/uoa/`, `data/sources.json` and, if refreshed, `data/raw/osm/` and
@@ -318,7 +318,7 @@ cached; an honest User-Agent that links to this repository. Raw snapshots of Uni
 of the repository (`data/raw/` is gitignored); OpenStreetMap data and the LINZ elevation tiles are
 openly licensed and are committed.
 
-When a new academic year starts, `data/academic-calendar.json` has to be re-transcribed by hand from
+When a new academic year starts, `data/uoa/academic-calendar.json` has to be re-transcribed by hand from
 the University Calendar's key-dates page (the source URL is in the file).
 
 ## Adding the class timetable
@@ -337,7 +337,7 @@ requires credentials that only someone with a University account can obtain, so 
 2. Fetch and rebuild, with the key in the environment (never in a file that gets committed):
 
    ```bash
-   UOA_API_KEY=... npx tsx scripts/fetch-classes.ts
+   UOA_API_KEY=... npx tsx scripts/schools/uoa/fetch-classes.ts
    npm run data:build
    npm test && npm run build
    ```
@@ -346,7 +346,7 @@ requires credentials that only someone with a University account can obtain, so 
    show a count of classes in progress, and courses become searchable.
 
 > [!WARNING]
-> `scripts/fetch-classes.ts` was written from the published OpenAPI document and has **not** been run
+> `scripts/schools/uoa/fetch-classes.ts` was written from the published OpenAPI document and has **not** been run
 > against the live API (the project was built without a key), so the key header (`apikey`, which the
 > API document does not spell out) or the paging parameters may need a small adjustment on first use.
 > The part that turns API records into the published timetable (`scripts/lib/classes.ts`) is
@@ -395,14 +395,18 @@ and the checks it passes are written for people and for coding agents alike, in
 ```text
 scripts/            data pipeline (Node + TypeScript, run with tsx)
   lib/snapshot.ts     polite, cache-first fetcher
-  fetch-*.ts          one script per source
+  lib/context.ts      the surroundings of each area, from OpenStreetMap (every school)
+  lib/terrain.ts      the ground under each area, from the elevation tiles (every school)
+  fetch-osm.ts, fetch-terrain.ts   the shared fetches, over the school's areas
+  schools/uoa/        the University of Auckland's own fetch scripts (campus map, Calendar,
+                      classes), its campus adapter (mapsindoors.ts) and its subject list
   build-data.ts       snapshots -> public/data/uoa/*.json
   check-pr-form.ts    CI: a pull request says how it was made
   walker/             the walker's controller, CLI and MCP server (npm run walker), and the
                       script that makes its figure
 data/
   sources.json        provenance of every snapshot
-  academic-calendar.json   hand-transcribed key dates
+  uoa/academic-calendar.json   hand-transcribed key dates
   raw/                snapshots (gitignored except OpenStreetMap and the elevation tiles)
 public/data/uoa/    published data: campus, context, rooms-index, subjects, calendar, schedule, meta,
                     and plans/ with one floor-plan file per building

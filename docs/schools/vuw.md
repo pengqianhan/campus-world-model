@@ -152,7 +152,7 @@ stays unknown. Rooms have no outlines.
 | Wall calendar | `…/__data/assets/pdf_file/0004/1991083/wall-calendar.pdf` (found by web search on a mirror host) | not requested: same path, and the mirror host is not VUW's own | A web search summary says it covers 2024 to early 2026 |
 
 If `/__data/` is cleared: one request for the 2026 Calendar PDF, then transcribe the dates by hand
-into `data/academic-calendar.json`, as for Auckland.
+into `data/<id>/academic-calendar.json`, as for Auckland.
 
 ## Layer 5: subjects and courses
 

@@ -166,7 +166,7 @@ source, not guessed. The floor stays unknown except where layer 2 gives a
 | Key University Dates 2027 PDF | `…/Key%20University%20Dates%202027.pdf.coredownload.pdf` | 200 `application/pdf`, 255,755 bytes, 2 pages, made 2026-08-25 | The whole of 2027 |
 | Exam periods | the exam page of layer 3 | 200 | "Mid-Year Examination Period: Monday 8 June to Saturday 20 June inclusive"; "End-of-Year Examination Period: Tuesday 27 October to Saturday 7 November inclusive" (2026) |
 
-If UC agrees: two PDFs, transcribed by hand into `data/academic-calendar.json`, as for Auckland.
+If UC agrees: two PDFs, transcribed by hand into `data/<id>/academic-calendar.json`, as for Auckland.
 
 ## Layer 5: subjects and courses
 

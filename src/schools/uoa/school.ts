@@ -9,7 +9,7 @@ const remote = (id: string, bbox: SceneArea["bbox"]): SceneArea => ({ id, bbox, 
 
 export const school: School = {
   id: "uoa",
-  /** Roughly the middle of the City Campus (ORIGIN of scripts/build-data.ts). */
+  /** Roughly the middle of the City Campus (the origin of the pipeline's local frame, scripts/lib/map-frame.ts). */
   origin: { lat: -36.8523, lon: 174.7691 },
   /** The City Campus, where the sun is computed for every campus on the map (LAT and LON of src/shared/daylight.ts). */
   sun: { lat: -36.8523, lon: 174.7691 },

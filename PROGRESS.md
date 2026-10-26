@@ -182,7 +182,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   the unnamed rooms on those floors are left out of the search too (since 2026-10-23).
 - Space types on the floor plans, since 2026-10-14 (the user chose this after asking why floors 6 to
   11 of building 405, all offices and research labs, showed only grey shapes): each shape carries
-  the source's own type text, sorted by `SPACE_KINDS` in `build-data.ts` into seven groups that
+  the source's own type text, sorted by `SPACE_KINDS` in `scripts/schools/uoa/mapsindoors.ts` into seven groups that
   tint its floor (office 3,332, other lab 790, toilet or shower 1,155, stairs or lift 1,791,
   service or amenity 262, learning space not listed 7, other area 7,171). Pointing at a shape, or
   tapping it, shows the group and the type in the source's words; the legend lists the groups on
@@ -191,7 +191,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   "General Facility": it does not say what those hold, so neither does the site.
 - Signs and pinned outlines, since 2026-10-15 (the user asked for every remaining item that has a
   public source): stairs, lifts, toilets, accessible toilets and showers carry a sign on the floor
-  plan (`SPACE_ICONS` in `build-data.ts`; every "Accessible" shape in the snapshot is named as a
+  plan (`SPACE_ICONS` in `scripts/schools/uoa/mapsindoors.ts`; every "Accessible" shape in the snapshot is named as a
   toilet). Signs give way to room labels and cannot be clicked. A room found by its code in the
   source's search is pinned, and the shape it stands on is outlined and tinted, with its type on
   the room card. Only searchable rooms are in that index, so no hidden room gets a code this way.
@@ -206,7 +206,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   school's building from OpenStreetMap takes its `height` tag; else its `building:levels` × 3.6 m,
   the storey the windows are drawn at (`campus.floorHeight`), so that it shows as many storeys as it
   has levels; else 6.5 m, or 10 m over 900 m², the defaults of the surrounding buildings
-  (`buildContext` in `scripts/build-data.ts`). `heightSource` says which, and the building card
+  (`buildContext` in `scripts/lib/context.ts`). `heightSource` says which, and the building card
   says so.
 - Building shape in the campus view, since 2026-10-13: the floors at or above entry level are
   stacked, each with the campus map's outline for that floor (`src/shared/massing.ts`), where it
@@ -221,7 +221,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
 
 ### Other sources
 
-- Academic calendar: hand-transcribed into `data/academic-calendar.json` from the official 2026
+- Academic calendar: hand-transcribed into `data/uoa/academic-calendar.json` from the official 2026
   key-dates PDF (snapshot `data/raw/uoa-calendar/2026-key-dates.pdf`). 2027 only had start dates.
 - Subject list: parsed from the Calendar's "course codes by faculty" page (251 subjects).
 - Campuses away from the centre, since 2026-10-15 (the user asked for every remaining item that has
@@ -262,7 +262,7 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   `scripts/fetch-terrain.ts` takes the zoom-14 tiles of the AWS Open Data "Terrain Tiles" under
   every area (29 tiles, 2 MB, committed: over New Zealand they hold the LINZ 8 m DEM of 2012, CC BY
   3.0 NZ). Zoom 15 adds nothing there (within 0.1 m); zoom 16 does not exist. `buildTerrain` in
-  `build-data.ts` samples them on a 10 m grid over each area plus 700 m (central) or 500 m of margin
+  `scripts/lib/terrain.ts` samples them on a 10 m grid over each area plus 700 m (central) or 500 m of margin
   and writes `terrain/<area>.json` (heights in decimetres as base64 Int16; 346 KB central, 90-135 KB
   each other area), clamping single-pixel pits where land meets sea (-1,421 m in Hobson Bay) to -2 m.
   The PNGs are decoded with Node's zlib (`scripts/lib/png.ts`), so no dependency is added. In the

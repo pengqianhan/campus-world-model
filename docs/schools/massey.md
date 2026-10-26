@@ -138,7 +138,7 @@ building and, where the key gives one, a floor.
 | The Calendar | `https://www.massey.ac.nz/about/university-calendar-and-regulations/massey-university-calendar/` (200, 51,514 bytes) and `https://www.massey.ac.nz/documents/2278/2027-Massey-University-Calendar.pdf` | 200 `application/pdf`, 5,872,844 bytes, 436 pages | "Diary of Key Dates" for 2027, month by month. Editions from 2017 to 2027 are linked |
 | Old address | `https://massey.ac.nz/massey/learning/programme-course/semester-dates.cfm` (web search) | not requested | — |
 
-Transcribe the key-dates page by hand into `data/academic-calendar.json`, as for Auckland.
+Transcribe the key-dates page by hand into `data/<id>/academic-calendar.json`, as for Auckland.
 
 ## Layer 5: subjects and courses
 
