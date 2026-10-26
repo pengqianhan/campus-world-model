@@ -53,14 +53,14 @@ export const school: School = {
         reason: "A building part (building:part), not a building. The campus takes whole buildings only; the part stays in the surroundings.",
       },
       {
+        when: { building: /^no$/ },
+        take: false,
+        reason: "A building part (building:part), not a building. The campus takes whole buildings only; the part stays in the surroundings.",
+      },
+      {
         when: { building: /^ruins$/ },
         take: false,
         reason: "OpenStreetMap maps it as a ruin (building=ruins), not as a building in use. It stays in the surroundings, with no name.",
-      },
-      {
-        when: { building: /^apartments$/ },
-        take: false,
-        reason: "A block of flats (building=apartments): homes are not named. It stays in the surroundings, with no name.",
       },
       {
         when: { man_made: /^bridge$/ },
@@ -77,6 +77,11 @@ export const school: School = {
         when: { ref: CODE, operator: null, building: /^university$/ },
         take: true,
         reason: "A building code (ref) and building=university, with no operator tag: no other operator is named.",
+      },
+      {
+        when: { operator: /^AUT$/ },
+        take: false,
+        reason: "operator=AUT, but its ref is not one of AUT's building codes (W and a letter). It stays in the surroundings.",
       },
       {
         when: { operator: /./ },

@@ -110,10 +110,17 @@ describe("the rule on OpenStreetMap's tags", () => {
     // A hall of residence with a building code stays a building; it has no floors to blank.
     expect(take({ building: "dormitory", operator: "AUT", ref: "WQ" })).toBe(true);
     expect(take({ building: "ruins", operator: "AUT", ref: "WW" })).toBe(false);
-    expect(take({ building: "apartments", operator: "AUT" })).toBe(false);
+    // Homes are treated as the hall is: a block of flats with an AUT building code would be taken;
+    // the flats at 47 Saint Paul Street carry none, so they stay out for that, and say so.
+    expect(decide(rule, { building: "apartments", operator: "AUT" })?.reason).toMatch(/^No building code/);
+    expect(take({ building: "apartments", operator: "AUT", ref: "WX" })).toBe(true);
     expect(take({ building: "university", operator: "AUT", man_made: "bridge" })).toBe(false);
     expect(take({ building: "university", operator: "Wilson Parking", ref: "WO" })).toBe(false);
     expect(take({ "building:part": "yes", ref: "WT" })).toBe(false);
+    // A part tagged building=no is a part too, whatever step would come later.
+    expect(decide(rule, { building: "no", "building:part": "yes", operator: "AUT", ref: "WT" })?.reason).toMatch(/^A building part/);
+    // operator=AUT with a code that is not AUT's: left out, and not as "another operator".
+    expect(decide(rule, { building: "university", operator: "AUT", ref: "W1" })?.reason).toMatch(/^operator=AUT, but/);
     // Not a candidate: another school's building, or a building with no tag the rule names.
     expect(decide(rule, { building: "university", ref: "303" })).toBeUndefined();
     expect(decide(rule, { building: "yes" })).toBeUndefined();
