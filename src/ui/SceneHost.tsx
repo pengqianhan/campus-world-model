@@ -28,7 +28,7 @@ import { bindWalkerScene } from "../app/walker.ts";
 import { CampusScene } from "../scene/CampusScene.ts";
 import { Terrain } from "../scene/terrain.ts";
 import type { Building, ContextData, TerrainData } from "../shared/types.ts";
-import { buildingTitle } from "./common.tsx";
+import { buildingCode, buildingTitle } from "./common.tsx";
 import { weather } from "./weather.ts";
 
 /** Approximate width in metres to show for each central campus (the school's descriptor). */
@@ -62,9 +62,9 @@ export function SceneHost() {
       scene = new CampusScene(stage.current!, labels.current!, {
         lite,
         buildingLabel: (b) => ({
-          text: b.id,
+          text: buildingCode(b),
           sub: lite && b.roomCount < 12 ? undefined : buildingTitle(b) || undefined,
-          title: `${t("building.number", { id: b.id })}${buildingTitle(b) ? ` · ${buildingTitle(b)}` : ""}`,
+          title: `${t("building.number", { id: buildingCode(b) })}${buildingTitle(b) ? ` · ${buildingTitle(b)}` : ""}`,
         }),
         roomLabel: (r) => ({
           text: r.code.slice(r.b.length + 1),

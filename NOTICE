@@ -7,6 +7,9 @@ their terms:
 
 - data/raw/osm/, public/data/<school>/context.json and public/data/<school>/context/:
   (c) OpenStreetMap contributors, under the Open Database License 1.0.
+- public/data/aut/campus.json: Auckland University of Technology's buildings, taken from
+  OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database License 1.0. It holds
+  nothing of Auckland University of Technology's own material.
 - data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land
   Information New Zealand and the New Zealand Government, under CC BY 3.0 NZ.
 - What the site takes from the University of Auckland's public campus map and Calendar

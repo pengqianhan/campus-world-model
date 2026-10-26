@@ -1,8 +1,8 @@
 // Page layout and the pieces that are always present.
 import { effect, signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
-import { pick, t, tn } from "../app/i18n.ts";
-import { Icon, campusName } from "./common.tsx";
+import { intlLocale, pick, t, tn } from "../app/i18n.ts";
+import { Icon, absentLayers, campusName, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
 import { AboutPanel } from "./AboutPanel.tsx";
 import { BuildingView } from "./BuildingView.tsx";
@@ -44,6 +44,12 @@ function StatusStrip() {
   const count = sessionsNow.value.length;
   // Campuses in areas of their own, away from the centre.
   const remote = d.campus.campuses.filter((c) => c.onMap && c.area);
+  // The layers the school's data says are absent, one line for each kind of verdict; About says why.
+  const absent = absentLayers(d);
+  const list = new Intl.ListFormat(intlLocale(), { type: "conjunction" });
+  const absentLines = (["needs-permission", "not-published"] as const)
+    .map((verdict) => ({ verdict, layers: absent.filter((a) => a.verdict === verdict).map((a) => t(`status.layer.${a.layer}`)) }))
+    .filter((g) => g.layers.length > 0);
   return (
     <>
       {!open && (
@@ -81,7 +87,16 @@ function StatusStrip() {
             <Icon name="chevronDown" />
           </button>
         </div>
-        {!d.schedule.available ? (
+        {absentLines.length > 0 ? (
+          <p class="status-detail" id="status-absent">
+            {absentLines.map((g) => (
+              <span data-verdict={g.verdict}>{t(`status.absent.${g.verdict}`, { layers: list.format(g.layers) })} </span>
+            ))}
+            <button type="button" class="link" onClick={() => (panel.value = "about")}>
+              {t("status.why")}
+            </button>
+          </p>
+        ) : !d.schedule.available ? (
           <p class="status-detail">
             {t("status.noTimetable")}{" "}
             <button type="button" class="link" onClick={() => (panel.value = "about")}>
@@ -102,7 +117,7 @@ function StatusStrip() {
             {tn("status.classes", count)} · {tn("status.buildings", busyBuildings.value.size)}
           </p>
         )}
-        <p class="status-hint">{t("status.hintCampus")}</p>
+        <p class="status-hint">{noIndoor(d) ? t("status.hintBuildings") : t("status.hintCampus")}</p>
         <div class="campus-tabs" role="group" aria-label={t("campus.label")}>
           {d.campus.campuses
             .filter((c) => c.onMap && !c.area)

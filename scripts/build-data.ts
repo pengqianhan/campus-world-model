@@ -3,13 +3,14 @@
 //
 //   npx tsx scripts/build-data.ts
 //
-// SCHOOL picks the school (docs/schools/DESIGN.md). Only the University of Auckland, uoa, is built
-// here so far, and it is the default. The build runs the five steps of the design's section 4:
+// SCHOOL picks the school (docs/schools/DESIGN.md); the University of Auckland, uoa, is the
+// default. A school in the Buildings form (its descriptor has `osmBuildings`, such as aut) is built
+// too. The build runs the five steps of the design's section 4:
 //   1. the school's campus adapter makes the campus, the room index and the floor plans;
 //   2. buildContext (scripts/lib/context.ts) draws the surroundings of each area;
 //   3. buildTerrain (scripts/lib/terrain.ts) makes the ground under each area;
-//   4. the school's subjects, calendar and timetable;
-//   5. meta.json takes the school's sources and coverage, and every file goes to public/data/<school>/.
+//   4. the school's subjects, calendar and timetable, or their empty forms;
+//   5. meta.json takes the school's sources, coverage and layers, and every file goes to public/data/<school>/.
 import fs from "node:fs";
 import path from "node:path";
 import type { AcademicCalendar, Coverage, Meta, Schedule, SourceInfo } from "../src/shared/types.ts";
@@ -17,6 +18,7 @@ import { AREAS, CENTRAL } from "./lib/areas.ts";
 import { buildSchedule, loadClassSnapshots } from "./lib/classes.ts";
 import { buildContext } from "./lib/context.ts";
 import { mapFrame } from "./lib/map-frame.ts";
+import { buildOsmCampus } from "./lib/osm-buildings.ts";
 import { hasSnapshot, manifest } from "./lib/snapshot.ts";
 import { sharedFilesOf, snapshotDate as snapshotDateOf } from "./lib/snapshot-date.ts";
 import { buildTerrain } from "./lib/terrain.ts";
@@ -25,9 +27,13 @@ import { buildCampus } from "./schools/uoa/mapsindoors.ts";
 import { buildSubjects } from "./schools/uoa/subjects.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-// The campus adapter, the subjects and every source below are the University of Auckland's: never
-// write them as another school's data.
-if (SCHOOL !== "uoa") throw new Error(`build-data.ts builds the University of Auckland's data only (SCHOOL=uoa), not SCHOOL=${SCHOOL}`);
+/**
+ * The Buildings form's rule, for a school whose campus comes from OpenStreetMap. Without it, the
+ * campus adapter, the subjects, the timetable and the sources below are the University of
+ * Auckland's: never write them as another school's data.
+ */
+const osmForm = school.osmBuildings;
+if (SCHOOL !== "uoa" && !osmForm) throw new Error(`build-data.ts builds the University of Auckland and schools in the Buildings form, not SCHOOL=${SCHOOL}`);
 const OUT = path.join(ROOT, "public", "data", SCHOOL);
 
 /**
@@ -53,8 +59,9 @@ function write(name: string, value: unknown): number {
   return text.length;
 }
 
-// 1. The campus, from the school's campus adapter.
-const { data: campus, index, plans, stats: campusStats } = buildCampus(frame);
+// 1. The campus, from the school's campus adapter: OpenStreetMap by the school's rule in the
+// Buildings form, else the University of Auckland's campus map.
+const { data: campus, index, plans, stats: campusStats } = osmForm ? buildOsmCampus(osmForm, frame) : buildCampus(frame);
 // 2. One file of surroundings per area: the central one loads with the map, the others when a
 // campus or building in them is shown.
 const contexts = frame.boxes.map((box) => ({ area: box.area, ...buildContext(campus, box, frame) }));
@@ -62,12 +69,16 @@ const contextStats = Object.assign({}, ...contexts.map((c) => c.stats)) as Recor
 // 3. The ground under each area, where its elevation tiles have been taken.
 const terrains = frame.boxes.map((box) => ({ area: box.area, ...buildTerrain(box.area, frame) }));
 Object.assign(contextStats, ...terrains.map((t) => t.stats));
-// 4. Subjects, the calendar and the timetable.
-const subjects = buildSubjects();
+// 4. Subjects, the calendar and the timetable. A school in the Buildings form has none of its own
+// yet: its subjects and timetable are written empty, and its hand-made calendar file says
+// `available: false` with no dates.
+const subjects = osmForm ? [] : buildSubjects();
 const calendar = JSON.parse(fs.readFileSync(path.join(ROOT, "data", SCHOOL, "academic-calendar.json"), "utf8")) as AcademicCalendar;
 
-const classSnapshots = loadClassSnapshots();
-const { schedule, stats: scheduleStats } = buildSchedule(school, classSnapshots, campus, index, snapshotDate("uoa-classes"));
+const emptySchedule: Schedule = { version: 1, generatedAt: campus.generatedAt, available: false, terms: [], courses: [], sessions: [], exclusions: [] };
+const { schedule, stats: scheduleStats }: { schedule: Schedule; stats: object } = osmForm
+  ? { schedule: emptySchedule, stats: {} }
+  : buildSchedule(school, loadClassSnapshots(), campus, index, snapshotDate("uoa-classes"));
 
 // 5. The coverage, the sources About shows, and every file to public/data/<school>/.
 const count = (p: Schedule["sessions"][number]["precision"]) => schedule.sessions.filter((s) => s.precision === p).length;
@@ -84,34 +95,38 @@ const coverage: Coverage = {
   sessionsLocatedToFloor: count("floor"),
   sessionsLocatedToBuilding: count("building"),
   sessionsExcluded: schedule.exclusions.length,
+  ...(campus.buildingExclusions ? { buildingsExcluded: campus.buildingExclusions.length } : {}),
 };
 
-const sources: SourceInfo[] = [
-  {
-    id: "mapsindoors",
-    name: "University of Auckland campus maps (maps.auckland.ac.nz)",
-    url: "https://maps.auckland.ac.nz/",
-    licence: "© University of Auckland. Public campus map; building, floor and room positions derived from it, outlines simplified.",
-    snapshotDate: snapshotDate("mapsindoors"),
-    provides: "Buildings, floors, room codes, room types and room positions",
-  },
-  {
-    id: "osm",
-    name: "OpenStreetMap",
-    url: "https://www.openstreetmap.org/copyright",
-    licence: "© OpenStreetMap contributors, Open Database License (ODbL) 1.0",
-    snapshotDate: snapshotDate("osm"),
-    provides: "Surrounding buildings, streets, paths, parks and trees",
-  },
-  {
-    id: "uoa-calendar",
-    name: "University of Auckland Calendar 2026 (key dates and course codes)",
-    url: "https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html",
-    licence: "© University of Auckland. Dates and subject codes are quoted as facts with a link to the source.",
-    snapshotDate: snapshotDate("uoa-calendar"),
-    provides: "Semester dates, breaks, holidays and the list of subject codes",
-  },
-];
+const osmSource: SourceInfo = {
+  id: "osm",
+  name: "OpenStreetMap",
+  url: "https://www.openstreetmap.org/copyright",
+  licence: "© OpenStreetMap contributors, Open Database License (ODbL) 1.0",
+  snapshotDate: snapshotDate("osm"),
+  provides: osmForm ? osmForm.provides : "Surrounding buildings, streets, paths, parks and trees",
+};
+const sources: SourceInfo[] = osmForm
+  ? [osmSource]
+  : [
+      {
+        id: "mapsindoors",
+        name: "University of Auckland campus maps (maps.auckland.ac.nz)",
+        url: "https://maps.auckland.ac.nz/",
+        licence: "© University of Auckland. Public campus map; building, floor and room positions derived from it, outlines simplified.",
+        snapshotDate: snapshotDate("mapsindoors"),
+        provides: "Buildings, floors, room codes, room types and room positions",
+      },
+      osmSource,
+      {
+        id: "uoa-calendar",
+        name: "University of Auckland Calendar 2026 (key dates and course codes)",
+        url: "https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html",
+        licence: "© University of Auckland. Dates and subject codes are quoted as facts with a link to the source.",
+        snapshotDate: snapshotDate("uoa-calendar"),
+        provides: "Semester dates, breaks, holidays and the list of subject codes",
+      },
+    ];
 if (terrains.some((t) => t.data)) {
   sources.push({
     id: "terrain",
@@ -134,7 +149,7 @@ if (schedule.available) {
   });
 }
 
-const meta: Meta = { version: 1, generatedAt: campus.generatedAt, sources, coverage };
+const meta: Meta = { version: 1, generatedAt: campus.generatedAt, sources, coverage, ...(school.layers ? { layers: school.layers } : {}) };
 
 // One file per building, so opening a building loads only its own floors. The folder is rebuilt
 // whole: a building that lost its plan must not keep an old file.

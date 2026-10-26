@@ -23,13 +23,15 @@ import { groundLevel } from "../shared/massing.ts";
 import { sessionsOnDate } from "../shared/schedule.ts";
 import { formatMinutes } from "../shared/time.ts";
 import type { Building, Floor, Session, SpaceKind } from "../shared/types.ts";
-import { buildingTitle, campusName, componentName, sessionTimes } from "./common.tsx";
+import { buildingCode, buildingTitle, campusName, componentName, noIndoor, sessionTimes } from "./common.tsx";
 import { notTeachingReason } from "./TimePanel.tsx";
 
 /** The groups of unnamed spaces, in the order the legend lists them. */
 const SPACE_KINDS: SpaceKind[] = ["office", "lab", "learning", "amenity", "toilet", "stairs", "other"];
 
 function FloorList({ d, b }: { d: AppData; b: Building }) {
+  // A building from a source with no floors (the Buildings form) has no list.
+  if (b.floors.length === 0) return null;
   const rooms = d.roomsByBuilding.get(b.id) ?? [];
   const counts = new Map<number, number>();
   for (const r of rooms) counts.set(r.f, (counts.get(r.f) ?? 0) + 1);
@@ -106,6 +108,13 @@ function FloorList({ d, b }: { d: AppData; b: Building }) {
       )}
     </nav>
   );
+}
+
+/** How a building's height was found, in words: from its campus map's floors, or from OpenStreetMap. */
+function heightFrom(d: AppData, b: Building): string {
+  const storey = d.campus.floorHeight;
+  if (b.heightSource === "floor-count") return t("building.heightNote");
+  return t(`building.heightFrom.${b.heightSource}`, { height: b.height, levels: Math.round(b.height / storey), storey });
 }
 
 /** How much of a floor the campus map lets this site draw, when it is not the whole floor. */
@@ -231,10 +240,13 @@ export function BuildingView() {
         <RoomCard d={d} b={b} />
         <div class="building-bar" id="building-bar">
           <div class="building-id">
-            <b>{b.id}</b>
-            <span class="building-name">{title || t("building.number", { id: b.id })}</span>
+            <b>{buildingCode(b)}</b>
+            <span class="building-name">{title || t("building.number", { id: buildingCode(b) })}</span>
             <small>
-              {campusName(d, b.campus)} · {tn("building.floors", b.floors.length)} · {tn("building.rooms", rooms.length)}
+              {campusName(d, b.campus)} ·{" "}
+              {b.floors.length === 0 && !b.offMap
+                ? t("building.height", { height: b.height })
+                : `${tn("building.floors", b.floors.length)} · ${tn("building.rooms", rooms.length)}`}
             </small>
             {!b.offMap && (
               <small id="height-note" class={landmarkOf(b.id) || measuredOf(b.id) ? "landmark" : undefined}>
@@ -244,7 +256,14 @@ export function BuildingView() {
                     ? t("building.landmark")
                     : measuredOf(b.id)
                       ? t("building.measured")
-                      : t("building.heightNote")}
+                      : heightFrom(d, b)}
+              </small>
+            )}
+            {b.osm && (
+              <small id="building-source">
+                <a href={`https://www.openstreetmap.org/${b.osm}`} target="_blank" rel="noopener noreferrer">
+                  {t("building.fromOsm")}
+                </a>
               </small>
             )}
           </div>
@@ -273,6 +292,10 @@ export function BuildingView() {
                 ))}
               </select>
             </label>
+          ) : noIndoor(d) ? (
+            <p class="bar-note" id="no-indoor-note">
+              {t("about.limits.rooms")}
+            </p>
           ) : (
             <p class="bar-note">{t("building.noRooms")}</p>
           )}

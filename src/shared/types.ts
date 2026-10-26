@@ -72,10 +72,26 @@ export interface Building {
   outline: FlatRing[];
   center: [number, number];
   floors: Floor[];
-  /** Estimated massing height in metres, from the number of levels at or above entry level. */
+  /**
+   * Massing height in metres. From a campus map: estimated from the number of levels at or above
+   * entry level. From OpenStreetMap: its `height` tag, its `building:levels`, or a default.
+   */
   height: number;
-  /** How `height` was obtained. Nothing here is surveyed. */
-  heightSource: "floor-count";
+  /**
+   * How `height` was obtained. Nothing here is surveyed.
+   * - "floor-count": the campus map's levels at or above entry level, at `floorHeight` each.
+   * - "osm-height": OpenStreetMap's `height` tag.
+   * - "osm-levels": OpenStreetMap's `building:levels`, at `floorHeight` each.
+   * - "estimated": no height or levels in the source; the default of the surrounding buildings.
+   */
+  heightSource: "floor-count" | "osm-height" | "osm-levels" | "estimated";
+  /** The OpenStreetMap element a building from OpenStreetMap is traced to, e.g. "way/104475936". */
+  osm?: string;
+  /**
+   * The building's code as OpenStreetMap tags it (`ref`), for a building from OpenStreetMap. It is
+   * also the building's `id`, except where two buildings carry the same code.
+   */
+  ref?: string;
   /** Number of published learning spaces in this building. */
   roomCount: number;
   /** Number of shapes in this building's floor-plan file. Absent when there is no file. */
@@ -114,6 +130,45 @@ export interface CampusData {
   campuses: Campus[];
   buildings: Building[];
   rooms: Room[];
+  /** Rooms without a shape, from a room list (the Rooms by code form). */
+  listedRooms?: ListedRoom[];
+  /** Teaching or study rooms of a room list that could not be placed. */
+  roomExclusions?: RoomExclusion[];
+  /** Buildings that the school's rule on OpenStreetMap's tags considered and left out, each with its reason. */
+  buildingExclusions?: BuildingExclusion[];
+}
+
+/** A room from a room list: a code and no outline. */
+export interface ListedRoom {
+  code: string;
+  /** Building id, when the code's building has a footprint. */
+  b?: string;
+  /** Campus id, when the room is located to its campus only. */
+  campus?: string;
+  /** Floor name, or null when it cannot be read. */
+  floor: string | null;
+  /** Where the floor came from: the room number by the school's rule, or a level heading in the source. */
+  floorFrom?: "code" | "heading";
+  kind: RoomKind;
+  /** Room type exactly as in the source data. */
+  sourceType: string;
+}
+
+/** A teaching or study room of a room list that could not be placed. */
+export interface RoomExclusion {
+  code: string;
+  /** The room's row as the source gives it. */
+  sourceText: string;
+  reason: string;
+}
+
+/** A building that the school's rule considered and left out. */
+export interface BuildingExclusion {
+  /** The OpenStreetMap element, e.g. "way/154109393". */
+  osm: string;
+  /** The tags that the rule read, as OpenStreetMap gives them: "building=ruins; name=WW Building; ...". */
+  sourceText: string;
+  reason: string;
 }
 
 /** The group a space that is not named is drawn in, by its type on the campus map. */
@@ -217,13 +272,28 @@ export interface Coverage {
   sessionsLocatedToFloor: number;
   sessionsLocatedToBuilding: number;
   sessionsExcluded: number;
+  /** Teaching or study rooms of a room list that could not be placed (CampusData.roomExclusions). */
+  roomsExcluded?: number;
+  /** Buildings that the school's rule left out (CampusData.buildingExclusions). */
+  buildingsExcluded?: number;
 }
+
+/** The layers of a school's data, as its research report names them (docs/schools/<id>.md). */
+export type Layer = "buildings" | "indoor" | "timetable" | "calendar" | "subjects" | "terrain";
+
+/**
+ * A layer's verdict: "usable"; "needs-permission" where the school publishes the layer and its
+ * terms or robots.txt hold it back; "not-published" where no source has it.
+ */
+export type LayerVerdict = "usable" | "needs-permission" | "not-published";
 
 export interface Meta {
   version: 1;
   generatedAt: string;
   sources: SourceInfo[];
   coverage: Coverage;
+  /** Each layer's verdict, which About and the status strip turn into the school's own words. */
+  layers?: Partial<Record<Layer, LayerVerdict>>;
 }
 
 export type SessionPrecision = "room" | "floor" | "building" | "campus" | "none";
@@ -320,6 +390,11 @@ export interface TermDates {
 }
 
 export interface AcademicCalendar {
+  /**
+   * False for a school without usable dates. Such a file keeps every other field, with
+   * `holidays: []` and `terms: []`, because src/shared/calendar.ts reads both.
+   */
+  available?: false;
   timezone: "Pacific/Auckland";
   source: { name: string; url: string; checked: string };
   notes: string[];
