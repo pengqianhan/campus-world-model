@@ -117,7 +117,9 @@ jobs:
     needs: list-schools
     if: needs.list-schools.outputs.others != '[]'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # The browser install alone has taken up to 12 minutes (e2e-half above), so the job has e2e-half's
+    # limit and the tests their own 10 minutes: a slow runner must not hold back every school's deploy.
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
@@ -135,6 +137,7 @@ jobs:
         env:
           SCHOOL: ${{ matrix.school }}
       - name: End-to-end tests against the school's production build (software WebGL)
+        timeout-minutes: 10
         run: npm run e2e
         env:
           SCHOOL: ${{ matrix.school }}

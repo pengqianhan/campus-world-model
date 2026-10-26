@@ -139,7 +139,8 @@ In Windows PowerShell, set the variable first: `$env:E2E_BASE_URL = "https://…
 same goes for every `NAME=value command` line in this README.
 
 The site is static. A merge into `main` runs `.github/workflows/deploy.yml`, which type-checks, runs
-the unit and end-to-end tests, builds, and publishes to GitHub Pages only if all of that passed. The
+the unit and end-to-end tests, builds, and publishes to GitHub Pages only if the University of
+Auckland's build and tests passed (the Cloudflare copy waits for every school's, below). The
 Vite `base` is `/campus-world-model/`; set `BASE_PATH=/` to host at a domain root.
 
 The schools that the site holds are listed in `.github/schools.json`; today it holds only `uoa`, the
