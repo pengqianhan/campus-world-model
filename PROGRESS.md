@@ -267,7 +267,11 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   `height` and `min_height`, and `roof:shape` on 212 buildings and parts, drawn as six simplified
   shapes (`MeshBuilder.roof`). A tower mapped in parts is drawn at its full height (the Sky Tower,
   328 m); a tower that is one outline is still cut to a 24 m podium. The 45 parts inside University
-  footprints are dropped: University buildings take their shape from the campus map.
+  footprints are dropped: University buildings take their shape from the campus map. Since
+  2026-10-27 a whole building takes its base from `min_height` or `building:min_level` (or the
+  spelling `building:min_levels`) as a part does, and a bridge (`man_made=bridge`,
+  `building=bridge`) whose tags give no base is left out (`context.buildings.bridgeWithoutBase`, 4
+  in the central snapshot) rather than drawn as a block across the street.
 - Weather: Open-Meteo, fetched by the visitor's browser, on load and each half hour; optional.
   Since 2026-10-15 the same request also asks for cloud cover, precipitation and wind, and in Now
   mode (with the light left on automatic) the scene draws them: cloud greys the sky, softens the

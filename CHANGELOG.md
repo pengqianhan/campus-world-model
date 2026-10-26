@@ -25,6 +25,20 @@ A change to what the site does or shows adds its line here, and the README's
   WebGL. Before, the root sent every visitor to /uoa/. An address that is not on the site now gets
   "No page at this address", with the same list, and status 404 (#99).
 
+### Fixed
+
+- **Bridges between buildings no longer stand on the street.** The surroundings drew every
+  OpenStreetMap building from the ground up, so a bridge between two buildings was a solid block
+  across the street under it, 4.3 to 17.5 m high. A building now starts at the height its tags
+  give (`min_height`, else `building:min_level` storeys of 3.3 m), as a part of a building already
+  did. Near the University of Auckland, 6 bridges and 3 other buildings now stand on that base with
+  the ground open under them; AUT's map has one more, the University's Overbridge. 4 bridges whose
+  tags give no base are left out, AUT's skybridge among them: a gap, not a guess. In the map's
+  first view the Customhouse tower now starts 13.2 m up and AUT's skybridge is gone; near Grafton
+  a bridge at the hospital is gone. The surrounding buildings drawn after the first bridge that is
+  left out take a new shade from the same range, as happens whenever a building leaves the
+  surroundings (#PR).
+
 ## 2026-10-26
 
 ### Added

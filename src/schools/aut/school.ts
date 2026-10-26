@@ -65,7 +65,8 @@ export const school: School = {
       {
         when: { man_made: /^bridge$/ },
         take: false,
-        reason: "A bridge between buildings (man_made=bridge), not a building that stands on the ground. It stays in the surroundings.",
+        reason:
+          "A bridge between buildings (man_made=bridge), not a building that stands on the ground. The surroundings draw it from the height it starts at (min_height or building:min_level), and leave it out where its tags give none.",
       },
       {
         when: { ref: null },

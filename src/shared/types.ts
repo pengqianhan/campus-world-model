@@ -222,7 +222,10 @@ export interface ContextBuilding {
   p: FlatRing;
   /** Height of the top of the walls, metres above the ground. */
   h: number;
-  /** Height the walls start at, for a part that sits on top of another. Absent when it is the ground. */
+  /**
+   * Height the walls start at, for a part that sits on top of another or a building that starts
+   * above the ground, such as a bridge between two others. Absent when it is the ground.
+   */
   b?: number;
   roof?: ContextRoof;
 }
