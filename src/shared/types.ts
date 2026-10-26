@@ -228,7 +228,16 @@ export interface ContextBuilding {
    */
   b?: number;
   roof?: ContextRoof;
+  /**
+   * OpenStreetMap maps it as a bridge between buildings (`man_made=bridge` or `building=bridge`).
+   * A bridge without `b` has no height it starts at in its tags: it keeps its place in the list
+   * and is not drawn, walked round or stood on (`drawnContext`).
+   */
+  bridge?: true;
 }
+
+/** Whether a surrounding building is drawn: every one but a bridge whose base is not known. */
+export const drawnContext = (b: ContextBuilding): boolean => !b.bridge || !!b.b;
 
 export interface ContextData {
   version: 1;

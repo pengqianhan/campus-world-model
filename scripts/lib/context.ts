@@ -289,6 +289,8 @@ export function buildContext(
     h: number;
     /** Height the walls start at; 0 for a building that stands on the ground. */
     b: number;
+    /** A bridge between buildings (`man_made=bridge` or `building=bridge`). */
+    bridge: boolean;
     /** True when `h` is the building's tagged height, which includes its roof. */
     tagged: boolean;
     tower: boolean;
@@ -327,13 +329,12 @@ export function buildContext(
           continue;
         }
         // A building that starts above the ground (a bridge between two others, storeys over a
-        // passage) stands on the base its tags give, as a part does. A bridge with no base in its
-        // tags is left out: a block on the street under it would be worse than a gap.
+        // passage) stands on the base its tags give, as a part does. A bridge is marked as one. A
+        // bridge with no base in its tags keeps its place in the list but is not drawn: a block on
+        // the street under it would be worse than a gap (ContextBuilding.bridge).
         const base = Math.max(0, baseOf(t) ?? 0);
-        if (isBridge(t) && base === 0) {
-          bump("context.buildings.bridgeWithoutBase");
-          continue;
-        }
+        const bridge = isBridge(t);
+        if (bridge && base === 0) bump("context.buildings.bridgeWithoutBase.notDrawn");
         const tagged = height(t.height);
         const levels = num(t["building:levels"]);
         let h = tagged ?? (levels !== undefined ? levelsTop(levels, base) + 1 : undefined);
@@ -351,7 +352,7 @@ export function buildContext(
           if (tagged === undefined && levels !== undefined && levels * OSM_LEVEL <= base) bump("context.buildings.raised.levelsFromBase");
           if (h < base + 0.3) h = base + 0.3;
         }
-        outlines.push({ ring, box: bbox(ring), area, tags: t, h, b: base, tagged: tagged !== undefined && !tower, tower, parts: [], partArea: 0 });
+        outlines.push({ ring, box: bbox(ring), area, tags: t, h, b: base, bridge, tagged: tagged !== undefined && !tower, tower, parts: [], partArea: 0 });
       }
       continue;
     }
@@ -448,13 +449,13 @@ export function buildContext(
       // Parts cover only some of the outline: it stays as the base they stand on, no higher
       // than the lowest part that starts at the ground.
       const lowest = Math.min(...o.parts.filter((p) => !p.b).map((p) => p.h));
-      out.buildings.push({ p: encodeRing(o.ring), ...walls(Math.min(o.h, lowest), o.b) });
+      out.buildings.push({ p: encodeRing(o.ring), ...walls(Math.min(o.h, lowest), o.b), ...(o.bridge ? { bridge: true as const } : {}) });
       bump("context.buildings.underParts");
       continue;
     }
     const roof = o.tower ? undefined : roofOf(o.tags, o.ring, bump);
     const top = roof && o.tagged ? Math.max(o.h - roof.h, 2) : o.h;
-    out.buildings.push({ p: encodeRing(o.ring), ...walls(top, o.b), ...(roof ? { roof } : {}) });
+    out.buildings.push({ p: encodeRing(o.ring), ...walls(top, o.b), ...(roof ? { roof } : {}), ...(o.bridge ? { bridge: true as const } : {}) });
   }
 
   // Largest areas first so small pitches and gardens draw on top of the parks that contain them.

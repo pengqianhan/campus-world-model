@@ -1,10 +1,10 @@
 // The surroundings from hand-written OpenStreetMap tags (scripts/lib/context.ts): a building that
-// starts above the ground stands on its base, and a bridge with no base is left out.
+// starts above the ground stands on its base, and a bridge with no base keeps its place undrawn.
 import { describe, expect, it } from "vitest";
 import { buildContext, type OsmElement } from "../scripts/lib/context.ts";
 import { mapFrame } from "../scripts/lib/map-frame.ts";
 import { decodeRing, makeUnprojector, ringCentroid } from "../src/shared/geo.ts";
-import type { CampusData, ContextBuilding } from "../src/shared/types.ts";
+import { drawnContext, type CampusData, type ContextBuilding } from "../src/shared/types.ts";
 
 const origin = { lat: -36.85, lon: 174.77 };
 const area = { id: "test", bbox: [-36.852, 174.767, -36.848, 174.773] as const, osm: "none.json" };
@@ -50,11 +50,11 @@ describe("surrounding buildings that start above the ground", () => {
   const { data, stats } = buildContext(campus, frame.boxes[0]!, frame, { elements });
 
   it("raise a bridge to its min_height", () => {
-    expect(at(data.buildings, 0)).toMatchObject({ b: 11, h: 13 });
+    expect(at(data.buildings, 0)).toMatchObject({ b: 11, h: 13, bridge: true });
   });
   it("raise a bridge to building:min_level storeys of 3.3 m, as a part", () => {
     // 4 storeys up; 5 levels from the ground are 16.5 m, and 1 m for the roof.
-    expect(at(data.buildings, 40)).toMatchObject({ b: 13.2, h: 17.5 });
+    expect(at(data.buildings, 40)).toMatchObject({ b: 13.2, h: 17.5, bridge: true });
   });
   it("stand levels on the base when they do not reach above it", () => {
     // 3 storeys up, then 2 storeys of its own and 1 m for the roof.
@@ -63,16 +63,18 @@ describe("surrounding buildings that start above the ground", () => {
   });
   it("read building:min_levels as building:min_level", () => {
     expect(at(data.buildings, 120)).toMatchObject({ b: 6.6, h: 10.9 });
-  });
-  it("leave out a bridge with no base, and count it", () => {
-    expect(at(data.buildings, 160)).toBeUndefined();
-    expect(at(data.buildings, 200)).toBeUndefined();
-    expect(stats["context.buildings.bridgeWithoutBase"]).toBe(2);
     expect(stats["context.buildings.raised"]).toBe(4);
+  });
+  it("keep a bridge with no base in its place, marked, not drawn, and counted", () => {
+    // In the order of the snapshot, so the shade the map gives each building by its place stays.
+    expect(data.buildings.map((b) => Math.round(ringCentroid(decodeRing(b.p))[0] - 6))).toEqual([0, 40, 80, 120, 160, 200, 240, 280]);
+    expect(data.buildings[4]).toEqual({ p: expect.any(Array), h: 6.5, bridge: true });
+    expect(data.buildings[5]).toEqual({ p: expect.any(Array), h: 7.6, bridge: true });
+    expect(data.buildings.map(drawnContext)).toEqual([true, true, true, true, false, false, true, true]);
+    expect(stats["context.buildings.bridgeWithoutBase.notDrawn"]).toBe(2);
   });
   it("leave an ordinary building on the ground, as before", () => {
     expect(at(data.buildings, 240)).toEqual({ p: expect.any(Array), h: 10.9 });
     expect(at(data.buildings, 280)).toEqual({ p: expect.any(Array), h: 6.5 });
-    expect(data.buildings).toHaveLength(6);
   });
 });
