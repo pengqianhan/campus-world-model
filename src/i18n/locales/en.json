@@ -388,5 +388,34 @@
     "down": "Downstairs",
     "wander": "Let it wander",
     "wanderStop": "Stop wandering"
+  },
+  "picker": {
+    "documentTitle": "Campus World Model (unofficial student project)",
+    "description": "Unofficial student-made 3D maps of university campuses in New Zealand. Not affiliated with any of these universities.",
+    "heading": "Campus World Model",
+    "lead": "Unofficial 3D maps of university campuses in New Zealand. Choose a school.",
+    "notice": "An unofficial student project. Not affiliated with any of these universities.",
+    "listLabel": "Schools",
+    "form": {
+      "floors": "Buildings, floors and rooms",
+      "roomCodes": "Buildings and room codes",
+      "buildings": "Buildings only"
+    },
+    "snapshot": "Campus snapshot: {date}",
+    "notFound": {
+      "documentTitle": "No page at this address · Campus World Model (unofficial student project)",
+      "heading": "No page at this address",
+      "lead": "This address is not on the site. Choose a school."
+    },
+    "schools": {
+      "uoa": {
+        "name": "University of Auckland",
+        "city": "Auckland"
+      },
+      "aut": {
+        "name": "Auckland University of Technology",
+        "city": "Auckland"
+      }
+    }
   }
 }
