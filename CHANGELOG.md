@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   element. Floors, rooms, class times, semester dates and the course list are not shown: AUT
   publishes them, and the site shows them only with AUT's permission (its floor plans need a
   written agreement with MazeMap). The status strip, the time panel, the card and About say so in
-  AUT's own words. Unofficial, with the project's own colours; nothing is taken from AUT (#TBD).
+  AUT's own words. Unofficial, with the project's own colours; nothing is taken from AUT (#97).
 
 ## 2026-10-25
 
