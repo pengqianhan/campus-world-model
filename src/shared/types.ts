@@ -229,7 +229,7 @@ export interface ContextBuilding {
   b?: number;
   roof?: ContextRoof;
   /**
-   * OpenStreetMap maps it as a bridge between buildings (`man_made=bridge` or `building=bridge`).
+   * OpenStreetMap maps it as a bridge between buildings (`man_made=bridge`, `building=bridge` or a `bridge` tag).
    * A bridge without `b` has no height it starts at in its tags: it keeps its place in the list
    * and is not drawn, walked round or stood on (`drawnContext`).
    */

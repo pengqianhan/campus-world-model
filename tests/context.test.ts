@@ -46,6 +46,10 @@ describe("surrounding buildings that start above the ground", () => {
     // Ordinary buildings, by levels and by default.
     way(240, { building: "yes", "building:levels": "3" }),
     way(280, { building: "yes" }),
+    // A bridge marked only by its bridge tag (way/873328783, "Helicopter Access", at the hospital).
+    way(-120, { building: "hospital", bridge: "yes", layer: "1" }),
+    // A bridge whose base is too small to publish: the ground, so a bridge with no base.
+    way(-80, { building: "yes", man_made: "bridge", min_height: "0.04" }),
   ];
   const { data, stats } = buildContext(campus, frame.boxes[0]!, frame, { elements });
 
@@ -67,11 +71,14 @@ describe("surrounding buildings that start above the ground", () => {
   });
   it("keep a bridge with no base in its place, marked, not drawn, and counted", () => {
     // In the order of the snapshot, so the shade the map gives each building by its place stays.
-    expect(data.buildings.map((b) => Math.round(ringCentroid(decodeRing(b.p))[0] - 6))).toEqual([0, 40, 80, 120, 160, 200, 240, 280]);
+    expect(data.buildings.map((b) => Math.round(ringCentroid(decodeRing(b.p))[0] - 6))).toEqual([0, 40, 80, 120, 160, 200, 240, 280, -120, -80]);
     expect(data.buildings[4]).toEqual({ p: expect.any(Array), h: 6.5, bridge: true });
     expect(data.buildings[5]).toEqual({ p: expect.any(Array), h: 7.6, bridge: true });
-    expect(data.buildings.map(drawnContext)).toEqual([true, true, true, true, false, false, true, true]);
-    expect(stats["context.buildings.bridgeWithoutBase.notDrawn"]).toBe(2);
+    expect(data.buildings[8]).toEqual({ p: expect.any(Array), h: 6.5, bridge: true });
+    expect(data.buildings[9]).toEqual({ p: expect.any(Array), h: 6.5, bridge: true });
+    expect(data.buildings.map(drawnContext)).toEqual([true, true, true, true, false, false, true, true, false, false]);
+    expect(stats["context.buildings.bridgeWithoutBase.notDrawn"]).toBe(4);
+    expect(stats["context.buildings.raised"]).toBe(4);
   });
   it("leave an ordinary building on the ground, as before", () => {
     expect(at(data.buildings, 240)).toEqual({ p: expect.any(Array), h: 10.9 });

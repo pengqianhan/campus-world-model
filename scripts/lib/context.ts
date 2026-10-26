@@ -121,8 +121,8 @@ function walls(top: number, base: number): Pick<ContextBuilding, "h" | "b"> {
   return base > 0 ? { h: round1(Math.max(top, base + 0.3)), b: round1(base) } : { h: round1(top) };
 }
 
-/** A bridge between buildings, mapped as a building. */
-const isBridge = (t: Record<string, string>) => t.man_made === "bridge" || t.building === "bridge";
+/** A bridge between buildings, mapped as a building (`man_made=bridge`, `building=bridge`, or a `bridge` tag). */
+const isBridge = (t: Record<string, string>) => t.man_made === "bridge" || t.building === "bridge" || (t.bridge !== undefined && t.bridge !== "no");
 
 /** A bearing in degrees from a number or a compass point. */
 function bearing(s: string | undefined): number | undefined {
@@ -332,7 +332,8 @@ export function buildContext(
         // passage) stands on the base its tags give, as a part does. A bridge is marked as one. A
         // bridge with no base in its tags keeps its place in the list but is not drawn: a block on
         // the street under it would be worse than a gap (ContextBuilding.bridge).
-        const base = Math.max(0, baseOf(t) ?? 0);
+        // Rounded as it is published, so that a base too small to show is the ground here too.
+        const base = round1(Math.max(0, baseOf(t) ?? 0));
         const bridge = isBridge(t);
         if (bridge && base === 0) bump("context.buildings.bridgeWithoutBase.notDrawn");
         const tagged = height(t.height);
