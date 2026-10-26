@@ -3,7 +3,7 @@
 // round. The walker is made up; the panel says so, and that doors are not mapped.
 import { useEffect, useRef, useState } from "preact/hooks";
 import { t } from "../app/i18n.ts";
-import { selBuilding } from "../app/state.ts";
+import { data, selBuilding } from "../app/state.ts";
 import { ENTER_REACH, MY_WALKER, run, setView, steerByHand, stopWalking, walkerOn, walkerStatus, walkerView, wanderingNow } from "../app/walker.ts";
 import { Icon } from "./common.tsx";
 import { isLite } from "./SceneHost.tsx";
@@ -192,7 +192,8 @@ export function WalkerPanel() {
           {t("walker.exit")}
         </button>
       </>
-    ) : status?.nearId && (status.nearMetres ?? Infinity) <= ENTER_REACH ? (
+    ) : status?.nearId && (status.nearMetres ?? Infinity) <= ENTER_REACH && (data.value?.buildingById.get(status.nearId)?.floors.length ?? 0) > 0 ? (
+      // A building with no floors (the Buildings form) has nothing inside to stand on.
       <button type="button" id="walker-enter" onClick={() => act("enter", {})}>
         {t("walker.enter", { place: status.nearId })}
       </button>
