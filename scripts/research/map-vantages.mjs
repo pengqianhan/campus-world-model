@@ -8,7 +8,8 @@
 //   node scripts/research/map-vantages.mjs diff <folder a> <folder b>
 //
 // The site address ends with the base, for example http://localhost:4273/campus-world-model/.
-// `shoot` asks only that address. `diff` prints, for each vantage, the pixels that differ and the
+// `shoot` asks only that address: every request to another origin, such as the app's own call for
+// the weather (Open-Meteo), is aborted, and Preview's sky does not use the weather. `diff` prints, for each vantage, the pixels that differ and the
 // largest difference in any channel, out of 255, and exits 1 when any pixel differs. A difference
 // that comes and goes between runs of the same build is issue #51 of UoA World Model: on
 // 2026-10-26 vantage 4 differed so on the GPU, by at most 4/255; a steady one is a change.
@@ -51,6 +52,8 @@ async function shoot(site, folder, gl = "gpu") {
   try {
     for (const v of VANTAGES) {
       const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+      const origin = new URL(site).origin;
+      await page.route("**/*", (route) => (new URL(route.request().url()).origin === origin ? route.continue() : route.abort()));
       await page.goto(new URL(v.query, site).href);
       await settle(page);
       if (v.leave) {

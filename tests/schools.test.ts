@@ -101,6 +101,26 @@ describe("the school's words", () => {
     }
   });
 
+  it("replace only the keys SCHOOL_KEYS names", () => {
+    const allowed = new Set(schoolKeys());
+    for (const { school } of schools) {
+      for (const [lang, words] of Object.entries(school.words)) {
+        for (const key of wordKeys(words)) expect(allowed.has(key), `${school.id} (${lang}): ${key}`).toBe(true);
+      }
+    }
+  });
+
+  it("are the files the page's head is filled from, src/schools/<id>/locales/", () => {
+    for (const { folder, school } of schools) {
+      const dir = path.join("src", "schools", folder, "locales");
+      const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
+      expect(Object.keys(school.words).sort(), school.id).toEqual(files.map((f) => f.replace(/\.json$/, "")).sort());
+      for (const f of files) {
+        expect(school.words[f.replace(/\.json$/, "")], `${school.id}: ${f}`).toEqual(JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")));
+      }
+    }
+  });
+
   it("give every text that index.html names", () => {
     const html = fs.readFileSync("index.html", "utf8");
     const keys = [...html.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map((m) => m[1]!);
