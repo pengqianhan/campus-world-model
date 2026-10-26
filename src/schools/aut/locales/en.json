@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "AUT World Model",
+    "tagline": "Unofficial map",
+    "documentTitle": "AUT World Model (unofficial student project)",
+    "description": "Unofficial student-made 3D map of the buildings of Auckland University of Technology's City Campus. Not affiliated with Auckland University of Technology.",
+    "ogDescription": "See the buildings of AUT's City Campus on a 3D model of central Auckland, drawn from OpenStreetMap. Unofficial; not affiliated with Auckland University of Technology.",
+    "noscript": "AUT World Model is an unofficial 3D map of the buildings of Auckland University of Technology's City Campus. It needs JavaScript and WebGL to run. It is not affiliated with Auckland University of Technology.",
+    "loading": "Loading the City Campus…",
+    "loadError": "The map data could not be loaded. Check your connection and reload the page.",
+    "noWebgl": "This browser could not start WebGL, so the 3D map is not shown. Search for buildings still works.",
+    "skipToSearch": "Skip to building search",
+    "sceneLabel": "3D map of AUT's City Campus. Drag to rotate, scroll or pinch to zoom, right-drag or two fingers to move."
+  },
+  "about": {
+    "unofficial": "AUT World Model is made by a student for students. It is not affiliated with, endorsed by or maintained by Auckland University of Technology, and it uses no AUT logos or branding. It shows AUT's buildings only, from OpenStreetMap. For anything that matters, check AUT's own campus maps and your own timetable.",
+    "limits": {
+      "timetable": "No class times. AUT publishes its class times on its public course pages, but its copyright page allows its material to be used only for private research and study, and asks for permission for any other use. The site shows them only with AUT's permission. Nothing here is made up to fill the gap.",
+      "timetableLoaded": "Class times come from a snapshot of AUT's course pages taken on {date}. Rooms and times change during the semester; your own timetable is the authority.",
+      "scheduled": "A timetabled class is not the same as an occupied room. Classes are cancelled, moved and held online, and rooms are used for things that are not on the timetable.",
+      "heights": "Each of AUT's buildings is one block on its OpenStreetMap outline, with no floors. Its height comes from OpenStreetMap: its height tag where it has one; else its number of levels, {height} m each; else 6.5 m, or 10 m for a building over 900 m², the defaults of the surrounding buildings. The building card says which. None of these heights is surveyed, and most of AUT's buildings have no height and no levels in OpenStreetMap, so they stand at a default. The windows and the rim round each roof are drawn by rule and say nothing about the real walls and roofs. The ground's heights come from Land Information New Zealand's 8 m elevation model of 2012, which is drawn from contours: it is smooth bare ground, with sharp peaks a few metres low and the reclaimed waterfront a few metres high. A building stands on the ground under its middle; on a slope its uphill side goes into the hill and a footing fills the gap below the other side.",
+      "rooms": "No floors and no rooms. AUT's floor plans are in MazeMap's map, whose terms allow their use only under a written agreement with MazeMap, with AUT's consent. AUT's room codes are in its class times, which the site shows only with AUT's permission. So each building is one block, and nothing inside it is drawn.",
+      "campuses": "Only the City Campus is modelled. It shares one stretch of central Auckland with the University of Auckland, whose buildings are drawn here as surroundings like any other. AUT's North and South campuses each need an OpenStreetMap snapshot of their own, which has not been taken. The Millennium Campus and the Ōtautahi satellite campus are not modelled.",
+      "context": "Surrounding buildings, streets and trees come from OpenStreetMap. Where it maps a building in parts or gives a roof a shape, those are drawn, the roof in a simplified form. Where a height is not mapped, a default is used. In the walker views every building, AUT's and the rest, is drawn with storeys from its height, windows, and walls of plaster, brick, concrete, stone, glass or weatherboard chosen by rule from where it stands; none of it says what a real building looks like, and there are no doors, since none are mapped. The ground there is drawn by rule as well, on the streets, paths, railways, parks and ponds OpenStreetMap maps: asphalt with white lines, kerbs, paving slabs, steps, sleepers and rails, lawns and water, and grass and bare earth elsewhere. Its widths, lines and kerbs say nothing about the real ones, and there are no crossings, arrows or signs, since none are mapped. A tree standing alone is where OpenStreetMap maps it; its size and shape are drawn by rule, and in the walker views so are its leaves, its bark and the way it sways in a light breeze, the same every day; none of it says what kind of tree it is. Trees OpenStreetMap tags as deciduous turn in April and May, stand bare from June to August and come into leaf in September and October; the rest are drawn evergreen. Trees inside woodland areas are scattered for decoration.",
+      "walker": "The walker is a made-up figure, not a person: it stands for nobody, and nothing about where it goes leaves your browser. Its walks are planned round the buildings on the map and along OpenStreetMap's paths and streets, off motorways except over footbridges. Doors and entrances are not mapped, so a walk to a building ends beside its nearest wall, and it passes gates, fences and kerbs the map does not have. Its body is the \"Animated Human\" model by Quaternius, given to the public domain (CC0); its stance, trainers, hair, mouth, backpack and umbrella are drawn here by rule, in colours that are none of AUT's. Where a building or a tree hides it, its shape shows through. An agent can steer it on your own computer through the scripts in the source code.",
+      "calendar": "No semester dates. AUT publishes its semester dates, but its copyright page allows its material to be used only for private research and study, and asks for permission for any other use. The site shows them only with AUT's permission, so the time panel moves the sun and the light only.",
+      "daylight": "The sun stands where it does over AUT's City Campus at the date and time shown, from NOAA's published solar-position equations; below 10° above the horizon it is drawn at 10°, so that shadows stay on the map. Night falls as the sun goes from 6° above the horizon to 8° below. In Now mode the cloud, rain and fog follow Open-Meteo's current weather for AUT's City Campus, and the falling rain is drawn by rule; Preview shows a clear sky, because past and future weather are not known here."
+    },
+    "privacy": "The site has no accounts and sets no cookies. It holds no names of people. Only the copy at campusworldmodel.com is counted: there Cloudflare, which serves the site, counts page views and visits with its Web Analytics. It stores nothing in your browser and does not record which building you look at; a content blocker may stop it. If the weather line is shown, your browser asks Open-Meteo for the current weather at AUT's City Campus; nothing about you is sent beyond that request. A walk with the walker stays in your browser: where it goes, what it says and what it wears are not sent anywhere."
+  },
+  "attribution": {
+    "short": "© OpenStreetMap · Terrain: LINZ CC BY"
+  },
+  "room": {
+    "noTimetableWhy": "AUT's class times are shown only with AUT's permission, so this site cannot say what is scheduled here. See About for details."
+  },
+  "search": {
+    "placeholder": "Building name or code (WG)…",
+    "hint": "Type a building's name or its code, for example WG or Sir Paul Reeves Building. Rooms and courses are not shown: see About.",
+    "noResultsHint": "Building codes on the City Campus are W and a letter, such as WA or WG. Building names work with or without macrons."
+  },
+  "weather": {
+    "label": "Weather at AUT's City Campus"
+  },
+  "travel": {
+    "go": "Travel to {name}. This leaves AUT World Model.",
+    "leaving": "Leaving AUT's City Campus",
+    "stay": "Stay at AUT's City Campus"
+  }
+}
