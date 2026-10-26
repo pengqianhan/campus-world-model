@@ -65,7 +65,7 @@ beside an open one sinks to a flat tint (`setAway`).
 
 **Auckland in it.** The University's storey is the data's `floorHeight` and its bay the map's
 `WINDOW_BAY` (half of it on a curtain wall); keep `CITY_STOREY` in step with what the pipeline
-takes an OpenStreetMap level to be (`OSM_LEVEL` in `build-data.ts`). The styles and their weights
+takes an OpenStreetMap level to be (`OSM_LEVEL` in `scripts/lib/context.ts`). The styles and their weights
 are an Auckland mix: plaster, concrete and stone for the University, weatherboard on low pitched
 city houses, glass on the tall. Re-weight `facadeStyle` and the colour lists in `STYLES` for the
 new city's walls (a brick city, a rendered one, a stone one), with colours of your own and none the

@@ -133,7 +133,7 @@ which the room list would put on a building and a floor.
 | Week maps for 2026 and 2027 | `https://www.otago.ac.nz/__data/assets/pdf_file/0030/314994/2026-2027-Timetable-Services-Week-Maps.pdf` (web search) | not requested (403 host) | Not seen |
 
 If Otago agrees and lets the project read `www.otago.ac.nz`: the week-maps PDF, transcribed by hand into
-`data/academic-calendar.json`, as for Auckland.
+`data/<id>/academic-calendar.json`, as for Auckland.
 
 ## Layer 5: subjects and courses
 

@@ -12,8 +12,9 @@ in this room now". A **port** makes it another school's.
 
 The **contract** is `src/shared/types.ts`, the shape of every file under `public/data/`. Everything
 downstream of it carries over: scene, interface, URL state, tests. Everything upstream is rebuilt for
-the new school: sources, `scripts/fetch-*.ts`, `scripts/build-data.ts`. What the school publishes
-without a login decides how much of the contract can be filled, so recon comes before code.
+the new school: sources, `scripts/schools/<id>/` (its fetch scripts and campus adapter),
+`scripts/build-data.ts`. What the school publishes without a login decides how much of the contract
+can be filled, so recon comes before code.
 
 ## Rules of a port
 

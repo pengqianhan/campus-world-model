@@ -40,7 +40,7 @@ export interface RawClass {
   meetingPatterns?: RawMeetingPattern[] | null;
 }
 
-/** Reads every page saved by scripts/fetch-classes.ts. Returns [] when there is no snapshot. */
+/** Reads every page saved by scripts/schools/uoa/fetch-classes.ts. Returns [] when there is no snapshot. */
 export function loadClassSnapshots(): RawClass[] {
   const dir = path.join(RAW_DIR, "uoa-classes");
   if (!fs.existsSync(dir)) return [];

@@ -14,9 +14,9 @@
 // page is fetched once, at most one request per second.
 import fs from "node:fs";
 import path from "node:path";
-import { aucklandWallTime } from "../src/shared/time.ts";
-import type { AcademicCalendar } from "../src/shared/types.ts";
-import { snapshot, USER_AGENT } from "./lib/snapshot.ts";
+import { aucklandWallTime } from "../../../src/shared/time.ts";
+import type { AcademicCalendar } from "../../../src/shared/types.ts";
+import { snapshot, USER_AGENT } from "../../lib/snapshot.ts";
 
 const BASE = "https://apis.auckland.ac.nz/classes/v2";
 const PAGE_SIZE = 500;
@@ -42,7 +42,7 @@ async function authHeaders(): Promise<Record<string, string>> {
 
 /** Terms whose teaching has not finished yet, or failing that the most recent one. */
 function defaultTerms(): string[] {
-  const cal = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "..", "data", "academic-calendar.json"), "utf8")) as AcademicCalendar;
+  const cal = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "..", "..", "..", "data", "uoa", "academic-calendar.json"), "utf8")) as AcademicCalendar;
   const today = aucklandWallTime().date;
   const current = cal.terms.filter((t) => t.end >= today).map((t) => t.code);
   if (current.length) return current;

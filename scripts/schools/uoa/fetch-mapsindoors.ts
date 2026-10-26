@@ -1,7 +1,7 @@
 // Snapshot the University's public campus map dataset (maps.auckland.ac.nz, served by MapsIndoors).
 // These are the same anonymous requests the public map page makes. Raw responses stay in
 // data/raw/mapsindoors (gitignored); only derived room/building facts are published.
-import { snapshot } from "./lib/snapshot.ts";
+import { snapshot } from "../../lib/snapshot.ts";
 
 const refresh = process.argv.includes("--refresh");
 const base = "https://api.mapsindoors.com";
