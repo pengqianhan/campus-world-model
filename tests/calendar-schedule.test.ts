@@ -5,7 +5,7 @@ import { nextSession, runsAt, runsOnDate, sessionsAt, sessionsOnDate } from "../
 import { isoWeekday } from "../src/shared/time.ts";
 import type { AcademicCalendar, Session } from "../src/shared/types.ts";
 
-const cal = JSON.parse(fs.readFileSync("data/academic-calendar.json", "utf8")) as AcademicCalendar;
+const cal = JSON.parse(fs.readFileSync("data/uoa/academic-calendar.json", "utf8")) as AcademicCalendar;
 const s2 = cal.terms.find((t) => t.code === "1265")!;
 
 describe("the transcribed 2026 calendar is internally consistent", () => {

@@ -1,7 +1,7 @@
 // Snapshot the official University Calendar pages we transcribe by hand or parse:
-//  - the key dates PDF (semester dates, breaks, holidays) -> data/academic-calendar.json (hand-checked)
+//  - the key dates PDF (semester dates, breaks, holidays) -> data/uoa/academic-calendar.json (hand-checked)
 //  - the "course codes by faculty" page -> subject list
-import { snapshot } from "./lib/snapshot.ts";
+import { snapshot } from "../../lib/snapshot.ts";
 
 const refresh = process.argv.includes("--refresh");
 const base =
