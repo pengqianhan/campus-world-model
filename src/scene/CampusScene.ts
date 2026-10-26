@@ -1280,7 +1280,8 @@ export class CampusScene {
     for (const [id, mesh] of this.buildingMeshes) {
       const b = this.buildings.get(id)!;
       const [walls, roof] = mesh.userData.mapMaterial as [MeshLambertMaterial, MeshLambertMaterial];
-      const hovered = this.hovered?.type === "building" && this.hovered.id === id;
+      // An open building with no floors stays a block, so it takes the hover's tint to show it is open.
+      const hovered = (this.hovered?.type === "building" && this.hovered.id === id) || (id === this.selection.building && b.floors.length === 0);
       // While a building is open its neighbours are flat footprints: tone them towards the ground
       // so the open floor stands out.
       const tone = (colour: number) => {
@@ -1949,6 +1950,15 @@ export class CampusScene {
    */
   private floorFrame(b: Building, floor: Floor): { centre: Vector3; zoom: number } {
     const y = this.floorY(b, floor.i);
+    return this.outlineFrame(this.floorOutline(b, floor.i), y, [y, y + SLAB + CUT_WALL]);
+  }
+
+  /**
+   * Where to look and how far to zoom so that outlines (polygons of rings, decimetres), stood
+   * between the heights given, fill the share of the screen that the panels leave free; the centre
+   * is moved along the line of sight to height `y`.
+   */
+  private outlineFrame(polys: FlatRing[][], y: number, heights: number[]): { centre: Vector3; zoom: number } {
     this.camera.updateMatrixWorld();
     const right = new Vector3().setFromMatrixColumn(this.camera.matrixWorld, 0);
     const up = new Vector3().setFromMatrixColumn(this.camera.matrixWorld, 1);
@@ -1956,9 +1966,9 @@ export class CampusScene {
     const across = [Infinity, -Infinity];
     const down = [Infinity, -Infinity];
     const v = new Vector3();
-    for (const [outer] of this.floorOutline(b, floor.i)) {
+    for (const [outer] of polys) {
       for (let i = 0; outer && i + 1 < outer.length; i += 2) {
-        for (const h of [y, y + SLAB + CUT_WALL]) {
+        for (const h of heights) {
           v.set(outer[i]! / 10, h, -outer[i + 1]! / 10);
           const a = v.dot(right);
           const d = v.dot(up);
@@ -1984,7 +1994,16 @@ export class CampusScene {
 
   private frameSelection(animate: boolean): void {
     const cur = this.currentFloor();
-    if (!cur) return;
+    if (!cur) {
+      // A building with no floors (a school in the Buildings form) is framed as its block.
+      const b = this.selection.building ? this.buildings.get(this.selection.building) : undefined;
+      if (b && !b.offMap && b.floors.length === 0) {
+        const base = this.baseOf(b);
+        const { centre, zoom } = this.outlineFrame([b.outline], base, [base, base + b.height]);
+        this.flyTo(centre, zoom, animate);
+      }
+      return;
+    }
     const { b, floor } = cur;
     const y = this.floorY(b, floor.i);
     const { centre, zoom: floorZoom } = this.floorFrame(b, floor);

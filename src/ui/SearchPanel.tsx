@@ -22,7 +22,7 @@ import { representativeTeachingDate } from "../shared/calendar.ts";
 import { runsOnDate } from "../shared/schedule.ts";
 import { addDays, mondayOf } from "../shared/time.ts";
 import type { Session } from "../shared/types.ts";
-import { Icon, IconButton, buildingTitle, campusName, componentName, sessionDates, sessionDay, sessionTimes } from "./common.tsx";
+import { Icon, IconButton, buildingCode, buildingTitle, noIndoor, campusName, componentName, sessionDates, sessionDay, sessionTimes } from "./common.tsx";
 
 /** Query text survives closing and reopening the panel. */
 let lastQuery = "";
@@ -120,8 +120,8 @@ function Result({ d, item, active, onHover }: { d: AppData; item: SearchItem; ac
     case "building": {
       const b = item.building;
       kind = t("search.kind.building");
-      code = b.id;
-      title = buildingTitle(b) || t("building.number", { id: b.id });
+      code = buildingCode(b);
+      title = buildingTitle(b) || t("building.number", { id: buildingCode(b) });
       const campus = campusName(d, b.campus);
       meta = b.roomCount ? tn("search.buildingMeta", b.roomCount, { campus }) : t("search.buildingMetaNone", { campus });
       if (b.offMap) note = t("campus.notOnMap");
@@ -245,6 +245,7 @@ export function SearchPanel() {
   if (!d) return null;
   const items = results ? (extra ? [extra, ...results.items] : results.items) : [];
   const browse = browseBuildings(d, selCampus.value);
+  const title = noIndoor(d) ? t("search.titleBuildings") : t("search.title");
 
   const onKey = (e: KeyboardEvent) => {
     if (e.key === "ArrowDown") {
@@ -260,9 +261,9 @@ export function SearchPanel() {
   };
 
   return (
-    <aside class="panel search-panel" role="search" aria-label={t("search.title")}>
+    <aside class="panel search-panel" role="search" aria-label={title}>
       <div class="panel-head">
-        <h2>{t("search.title")}</h2>
+        <h2>{title}</h2>
         <IconButton icon="close" label={t("nav.close")} class="ghost" onClick={() => (panel.value = "none")} />
       </div>
       <label class="search-field">
@@ -276,7 +277,7 @@ export function SearchPanel() {
           spellcheck={false}
           enterkeyhint="search"
           placeholder={t("search.placeholder")}
-          aria-label={t("search.title")}
+          aria-label={title}
           value={query}
           onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
           onKeyDown={onKey}
@@ -287,7 +288,7 @@ export function SearchPanel() {
           <>
             <p class="hint">{t("search.hint")}</p>
             {!d.schedule.available && <p class="hint warn">{t("room.noTimetableWhy")}</p>}
-            <h3 class="list-title">{t("search.browseTitle")}</h3>
+            <h3 class="list-title">{noIndoor(d) ? t("search.browseBuildings") : t("search.browseTitle")}</h3>
             <ul class="results">
               {browse.map((b) => (
                 <Result d={d} item={{ type: "building", building: b }} active={false} onHover={() => {}} />

@@ -3,7 +3,7 @@ import { formatDate, pick, t } from "../app/i18n.ts";
 import { REPO } from "../app/links.ts";
 import { data, goHome, panel, selBuilding, shown, status, timeMode, type PanelId } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
-import { Icon, IconButton } from "./common.tsx";
+import { Icon, IconButton, noCalendar } from "./common.tsx";
 import { weather } from "./weather.ts";
 
 export function toggle(id: PanelId): void {
@@ -14,6 +14,8 @@ export function toggle(id: PanelId): void {
 export function statusLine(): string {
   const s = status.value;
   if (!s) return "";
+  // A school whose data has no semester dates has no place in the year to give.
+  if (data.value && noCalendar(data.value)) return t("time.noCalendar");
   if (s.holiday) return t("time.holiday", { name: pick(s.holiday) });
   const term = pick(s.term?.name);
   switch (s.phase) {

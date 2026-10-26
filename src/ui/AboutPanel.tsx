@@ -5,7 +5,7 @@ import { LANDMARKS, MEASURED, landmarkBuildings } from "../app/landmarks.ts";
 import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../app/links.ts";
 import { data, panel } from "../app/state.ts";
 import { aucklandWallTime } from "../shared/time.ts";
-import { IconButton, Section, buildingTitle } from "./common.tsx";
+import { IconButton, Section, absentLayers, buildingTitle, noIndoor } from "./common.tsx";
 import { WorldLink } from "./Travel.tsx";
 
 const longDate: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" };
@@ -27,6 +27,9 @@ export function AboutPanel() {
         return [id, b && buildingTitle(b)].filter(Boolean).join(" ");
       }),
     );
+  // The layers the school's data says are absent (Meta.layers); the University of Auckland gives none.
+  const absent = new Set(absentLayers(d).map((a) => a.layer));
+  const buildingsOnly = noIndoor(d);
   const detailed = named(LANDMARKS.flatMap(landmarkBuildings));
   const measured = named(MEASURED.flatMap(landmarkBuildings));
 
@@ -46,10 +49,10 @@ export function AboutPanel() {
           </div>
 
           <Section title={t("about.whatTitle")}>
-            <p>{available ? t("about.what") : t("about.whatNoTimetable")}</p>
+            <p>{buildingsOnly ? t("about.whatBuildings") : available ? t("about.what") : t("about.whatNoTimetable")}</p>
           </Section>
           <Section title={t("about.howTitle")}>
-            <p>{t("about.how")}</p>
+            <p>{buildingsOnly ? t("about.howBuildings") : t("about.how")}</p>
           </Section>
 
           <Section title={t("about.sourcesTitle")}>
@@ -80,23 +83,25 @@ export function AboutPanel() {
             </p>
           </Section>
 
-          <Section title={t("about.landmarksTitle")}>
-            <p id="landmarks">{t("about.landmarks", { buildings: detailed })}</p>
-            {MEASURED.length > 0 && <p id="measured">{t("about.measured", { buildings: measured })}</p>}
-            <p id="landmark-links">
-              <a href={LANDMARK_LIDAR} target="_blank" rel="noopener noreferrer">
-                {t("about.landmarksLidar")}
-              </a>
-              {" · "}
-              <a href={LINZ_ELEVATION_CREDIT} target="_blank" rel="noopener noreferrer">
-                {t("about.landmarksCredit")}
-              </a>
-              {" · "}
-              <a href={`${REPO}/tree/main/landmarks`} target="_blank" rel="noopener noreferrer">
-                {t("about.landmarksLink")}
-              </a>
-            </p>
-          </Section>
+          {LANDMARKS.length + MEASURED.length > 0 && (
+            <Section title={t("about.landmarksTitle")}>
+              <p id="landmarks">{t("about.landmarks", { buildings: detailed })}</p>
+              {MEASURED.length > 0 && <p id="measured">{t("about.measured", { buildings: measured })}</p>}
+              <p id="landmark-links">
+                <a href={LANDMARK_LIDAR} target="_blank" rel="noopener noreferrer">
+                  {t("about.landmarksLidar")}
+                </a>
+                {" · "}
+                <a href={LINZ_ELEVATION_CREDIT} target="_blank" rel="noopener noreferrer">
+                  {t("about.landmarksCredit")}
+                </a>
+                {" · "}
+                <a href={`${REPO}/tree/main/landmarks`} target="_blank" rel="noopener noreferrer">
+                  {t("about.landmarksLink")}
+                </a>
+              </p>
+            </Section>
+          )}
 
           <Section title={t("about.coverageTitle")}>
             <table class="coverage" id="coverage">
@@ -109,30 +114,46 @@ export function AboutPanel() {
                   <th>{t("about.coverage.buildingsOnMap")}</th>
                   <td>{n(c.buildingsOnMap)}</td>
                 </tr>
-                <tr>
-                  <th>{t("about.coverage.rooms")}</th>
-                  <td>{n(c.rooms)}</td>
-                </tr>
-                <tr>
-                  <th>{t("about.coverage.indexedRooms")}</th>
-                  <td>{n(c.indexedRooms)}</td>
-                </tr>
-                <tr>
-                  <th>{t("about.coverage.planShapes")}</th>
-                  <td>{n(c.planShapes)}</td>
-                </tr>
-                <tr>
-                  <th>{t("about.coverage.subjects")}</th>
-                  <td>{n(c.subjects)}</td>
-                </tr>
-                <tr>
-                  <th>{t("about.coverage.courses")}</th>
-                  <td>{n(c.courses)}</td>
-                </tr>
-                <tr>
-                  <th>{t("about.coverage.sessions")}</th>
-                  <td>{n(c.sessions)}</td>
-                </tr>
+                {c.buildingsExcluded !== undefined && (
+                  <tr class="sub">
+                    <th>{t("about.coverage.buildingsExcluded")}</th>
+                    <td>{n(c.buildingsExcluded)}</td>
+                  </tr>
+                )}
+                {!absent.has("indoor") && (
+                  <>
+                    <tr>
+                      <th>{t("about.coverage.rooms")}</th>
+                      <td>{n(c.rooms)}</td>
+                    </tr>
+                    <tr>
+                      <th>{t("about.coverage.indexedRooms")}</th>
+                      <td>{n(c.indexedRooms)}</td>
+                    </tr>
+                    <tr>
+                      <th>{t("about.coverage.planShapes")}</th>
+                      <td>{n(c.planShapes)}</td>
+                    </tr>
+                  </>
+                )}
+                {!absent.has("subjects") && (
+                  <tr>
+                    <th>{t("about.coverage.subjects")}</th>
+                    <td>{n(c.subjects)}</td>
+                  </tr>
+                )}
+                {!absent.has("timetable") && (
+                  <>
+                    <tr>
+                      <th>{t("about.coverage.courses")}</th>
+                      <td>{n(c.courses)}</td>
+                    </tr>
+                    <tr>
+                      <th>{t("about.coverage.sessions")}</th>
+                      <td>{n(c.sessions)}</td>
+                    </tr>
+                  </>
+                )}
                 {available && (
                   <>
                     <tr class="sub">
@@ -168,18 +189,19 @@ export function AboutPanel() {
 
           <Section title={t("about.limitsTitle")}>
             <ul class="limits" id="limitations">
-              <li>
+              <li data-layer={absent.has("timetable") ? "timetable" : undefined}>
                 {available
                   ? t("about.limits.timetableLoaded", { date: formatDate(d.schedule.snapshotDate ?? "", longDate) })
                   : t("about.limits.timetable")}
               </li>
-              <li>{t("about.limits.scheduled")}</li>
-              <li>{t("about.limits.rooms")}</li>
+              {!absent.has("timetable") && <li>{t("about.limits.scheduled")}</li>}
+              <li data-layer={absent.has("indoor") ? "indoor" : undefined}>{t("about.limits.rooms")}</li>
               <li>{t("about.limits.heights", { height: d.campus.floorHeight })}</li>
               <li>{t("about.limits.campuses")}</li>
               <li>{t("about.limits.context")}</li>
               <li id="walker-limits">{t("about.limits.walker")}</li>
-              <li>{t("about.limits.calendar")}</li>
+              <li data-layer={absent.has("calendar") ? "calendar" : undefined}>{t("about.limits.calendar")}</li>
+              {absent.has("subjects") && <li data-layer="subjects">{t("about.limits.subjects")}</li>}
               <li>{t("about.limits.daylight")}</li>
             </ul>
           </Section>

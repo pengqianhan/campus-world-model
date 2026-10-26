@@ -17,7 +17,7 @@ import {
 } from "../app/state.ts";
 import { representativeTeachingDate } from "../shared/calendar.ts";
 import { WEEKDAY_KEYS, addDays, formatMinutes, mondayOf, parseIsoDate, parseTimeOfDay } from "../shared/time.ts";
-import { IconButton } from "./common.tsx";
+import { IconButton, noCalendar } from "./common.tsx";
 import { statusLine } from "./TopBar.tsx";
 
 /** Why no classes run at the shown moment, in words. Empty string when classes can run. */
@@ -25,6 +25,8 @@ export function notTeachingReason(): string {
   const s = status.value;
   const d = data.value;
   if (!s || !d) return "";
+  // With no semester dates there is no term, break or teaching day to name.
+  if (noCalendar(d)) return "";
   const term = pick(s.term?.name);
   if (s.holiday) return t("time.notTeachingWhy.holiday", { name: pick(s.holiday) });
   if (s.phase === "break") {
@@ -68,10 +70,13 @@ export function TimePanel() {
   const setDate = (date: string) => {
     if (parseIsoDate(date)) previewDate.value = date;
   };
-  const range = d.calendar.terms.reduce(
-    (acc, term) => ({ min: term.start < acc.min ? term.start : acc.min, max: term.end > acc.max ? term.end : acc.max }),
-    { min: "9999-12-31", max: "0000-01-01" },
-  );
+  // With no terms any date can be picked: the sun and the light are known for every day.
+  const range = d.calendar.terms.length
+    ? d.calendar.terms.reduce(
+        (acc, term) => ({ min: term.start < acc.min ? term.start : acc.min, max: term.end > acc.max ? term.end : acc.max }),
+        { min: "9999-12-31", max: "0000-01-01" },
+      )
+    : undefined;
 
   return (
     <div class="panel time-panel" role="dialog" aria-label={t("nav.time")}>
@@ -98,7 +103,13 @@ export function TimePanel() {
         </p>
         <p class="status-line">{statusLine()}</p>
         {reason && <p class="hint warn">{reason}</p>}
-        {!d.schedule.available && <p class="hint">{t("time.timetableMissing")}</p>}
+        {noCalendar(d) ? (
+          <p class="hint" id="no-calendar-note">
+            {t("about.limits.calendar")}
+          </p>
+        ) : (
+          !d.schedule.available && <p class="hint">{t("time.timetableMissing")}</p>
+        )}
         {d.schedule.available && !reason && sessionsNow.value.length === 0 && <p class="hint warn">{t("time.notTeaching")}</p>}
         {reason && (
           <button type="button" class="btn wide" id="preview-teaching-day" onClick={previewTeachingDay}>
@@ -114,8 +125,8 @@ export function TimePanel() {
                 id="preview-date"
                 type="date"
                 value={previewDate.value}
-                min={range.min}
-                max={range.max}
+                min={range?.min}
+                max={range?.max}
                 onInput={(e) => setDate((e.target as HTMLInputElement).value)}
               />
             </label>

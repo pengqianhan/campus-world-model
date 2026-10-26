@@ -25,7 +25,8 @@ function indexFor(d: AppData) {
   for (const building of d.campus.buildings) {
     entries.push({
       item: { type: "building", building },
-      code: building.id,
+      // A building from OpenStreetMap is found by its code (`ref`), which two buildings can share.
+      code: building.ref ?? building.id,
       text: [...Object.values(building.name), building.sourceText],
       // Buildings outrank their own rooms for a bare number such as "303".
       boost: 40 + Math.min(20, building.roomCount),
@@ -85,8 +86,9 @@ export function runSearch(d: AppData, query: string, limit = 40): SearchResults 
 
 /** Buildings to offer before anything is typed. */
 export function browseBuildings(d: AppData, campus: string, limit = 12): Building[] {
-  return d.campus.buildings
-    .filter((b) => b.roomCount > 0 && !b.offMap && (b.campus === campus || !d.campusById.get(campus)?.onMap))
-    .sort((a, b) => b.roomCount - a.roomCount)
-    .slice(0, limit);
+  const here = d.campus.buildings.filter((b) => !b.offMap && (b.campus === campus || !d.campusById.get(campus)?.onMap));
+  const teaching = here.filter((b) => b.roomCount > 0).sort((a, b) => b.roomCount - a.roomCount);
+  // A school with no rooms (the Buildings form): its buildings by code.
+  if (teaching.length === 0) return here.sort((a, b) => (a.ref ?? a.id).localeCompare(b.ref ?? b.id, "en", { numeric: true })).slice(0, limit);
+  return teaching.slice(0, limit);
 }
