@@ -60,8 +60,8 @@ function StatusStrip() {
           ref={show}
           aria-expanded="false"
           aria-controls="status-strip"
-          aria-label={t("status.show", { campus: campusName(d, selCampus.value) })}
-          title={t("status.show", { campus: campusName(d, selCampus.value) })}
+          aria-label={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
+          title={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
           onClick={() => (stripOpen.value = true)}
         >
           <Icon name="pin" size={16} />

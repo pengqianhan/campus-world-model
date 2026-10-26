@@ -339,6 +339,7 @@
       "subjects": "the course list"
     },
     "show": "{campus}: the term, other campuses, a walk and other worlds",
+    "showBuildings": "{campus}: what the site shows of it, a walk and other worlds",
     "hide": "Hide the campus panel"
   },
   "travel": {

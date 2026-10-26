@@ -473,14 +473,14 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
-**AUT World Model** (`/aut/`) uses two of these sources and nothing of AUT's own. OpenStreetMap
+**AUT World Model** (`/aut/`) uses four of these sources and nothing of AUT's own. OpenStreetMap
 gives AUT's City Campus buildings, picked by their `operator` and `ref` tags, with their names,
 codes, outlines and, where tagged, heights, and the city round them; `public/data/aut/campus.json`
 and `context.json` are derived from the same committed snapshot as the University's and are under
 the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/aut/terrain/`), under CC BY 3.0
-NZ. Open-Meteo gives the weather at the City Campus. AUT's rooms, class times, semester dates and
-course list wait for AUT's permission, and its floor plans for a written agreement with MazeMap:
-see [docs/schools/aut.md](docs/schools/aut.md).
+NZ. Open-Meteo gives the weather at the City Campus, and Quaternius's figure is the walker's body.
+AUT's rooms, class times, semester dates and course list wait for AUT's permission, and its floor
+plans for a written agreement with MazeMap: see [docs/schools/aut.md](docs/schools/aut.md).
 
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json` and
 `public/data/aut/meta.json`.
