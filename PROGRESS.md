@@ -100,6 +100,29 @@ Verified 2026-10-13 against https://pengqianhan.github.io/campus-world-model/ at
   and 35 where its shapes cover under 30% of the floor (`partialPlan`; plant levels, mezzanines,
   split-level landings). The floor list marks both and the building bar says so.
 
+## Schools
+
+Several schools share this repository as `docs/schools/DESIGN.md` sets out: one build for each, at
+`/<id>/`, each school's published data in `public/data/<id>/`, and its research in
+`docs/schools/<id>.md`. The deploy publishes the schools on `.github/schools.json`.
+
+| School | Path | Form (DESIGN.md, section 2) | Coverage (`public/data/<id>/meta.json`) |
+| --- | --- | --- | --- |
+| University of Auckland | `/uoa/` | Floor plans, from its campus map | 194 buildings, all on the map; 786 learning spaces with outlines; 4,573 more rooms located as points; 14,840 other spaces; 251 subject codes; 0 classes (see "Coverage") |
+| Auckland University of Technology (AUT) | `/aut/` | Buildings: the City Campus from OpenStreetMap, picked by its `operator` and `ref` tags, on the LINZ ground | 18 buildings, all on the map; 5 more left out by the tag rule, each with its reason (`buildingExclusions`); heights: 0 from a `height` tag, 3 from `building:levels`, 15 estimated; 0 rooms, subjects and classes |
+
+AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
+
+1. AUT's permission for its class times, semester dates and course list: one request covers the
+   three. Until it is asked, the site does not say that it has asked.
+2. A written agreement with MazeMap, with AUT's consent, for AUT's floors and rooms.
+3. An Overpass fetch for the North and South campuses: a new request, so a gate.
+4. Brand colours: on 2026-10-26 no brand colours published by AUT were found on its public site
+   (no brand page at five likely addresses, none linked from its home page, and `robots.txt`
+   disallows its stylesheets). Its home page's two logos are white and slate blue `#536972`, far
+   from the accent `#ffb454` (CIEDE2000 29.1 and 46.3). If AUT publishes brand colours, compare
+   them again (DESIGN.md, section 6).
+
 ## Done (with evidence)
 
 As recorded on 2026-10-13. The counts below are of that day; today's are in the README and in

@@ -16,6 +16,15 @@ the new school: sources, `scripts/schools/<id>/` (its fetch scripts and campus a
 `scripts/build-data.ts`. What the school publishes without a login decides how much of the contract
 can be filled, so recon comes before code.
 
+## A school added to this repository
+
+A school can also join this site at `/<id>/` instead of a repository of its own, as AUT did. That
+port follows [docs/schools/DESIGN.md](../../../docs/schools/DESIGN.md): recon (step 2), the pipeline
+(step 3) as the school's descriptor, overlay, adapter and `public/data/<id>/`, identity (step 4) and
+acceptance (step 6) as `e2e/schools/`, with DESIGN.md section 9's B3 step in place of step 5, and
+`PROGRESS.md`'s "Schools" section in place of a handover of its own. Its pull request goes to this
+repository's `main` and is a gate, since it adds the school to `.github/schools.json`.
+
 ## Rules of a port
 
 The "Rules" section of [AGENTS.md](../../../AGENTS.md) binds a port as it binds this site; read it

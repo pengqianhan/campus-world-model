@@ -7,6 +7,9 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 **Live site: https://campusworldmodel.com/uoa/**<br>
 (also at https://pengqianhan.github.io/campus-world-model/)
 
+Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
+University of Technology's City Campus, at https://campusworldmodel.com/aut/
+
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
 
@@ -17,7 +20,8 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 
 > [!NOTE]
 > It is not affiliated with, endorsed by or maintained by the University of Auckland, and uses no
-> University logos or branding.
+> University logos or branding. AUT World Model is not affiliated with, endorsed by or maintained by
+> Auckland University of Technology, and uses no AUT logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -40,6 +44,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
+  AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
+  found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
 - **2026-10-25:** near Maclaurin Chapel the map draws it in detail, from code and to its measured
   sizes: in the map's colours on the map, and from a walker's height in white walls, glass, a light
   green metal roof and a slender spire. A click still opens its floors.
@@ -51,9 +58,6 @@ It is built to answer two questions a student actually has:
   under building works, keeps the map's estimated block; the unnamed rooms on floors where people
   live and in childcare centres can no longer be found in the search, as their floors were
   already blank.
-- **2026-10-22:** near Old Government House the map draws it in detail, in painted timber from a
-  walker's height; the floor of Nicholls Lane ECE, an early childhood centre, is left blank, as every
-  childcare centre's is; Firefox 93 to 113 show the Clock Tower as blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -469,7 +473,17 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
-Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`.
+**AUT World Model** (`/aut/`) uses two of these sources and nothing of AUT's own. OpenStreetMap
+gives AUT's City Campus buildings, picked by their `operator` and `ref` tags, with their names,
+codes, outlines and, where tagged, heights, and the city round them; `public/data/aut/campus.json`
+and `context.json` are derived from the same committed snapshot as the University's and are under
+the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/aut/terrain/`), under CC BY 3.0
+NZ. Open-Meteo gives the weather at the City Campus. AUT's rooms, class times, semester dates and
+course list wait for AUT's permission, and its floor plans for a written agreement with MazeMap:
+see [docs/schools/aut.md](docs/schools/aut.md).
+
+Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json` and
+`public/data/aut/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.

@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-26
+
+### Added
+
+- **AUT World Model, at /aut/.** A second school on the site: the City Campus of Auckland
+  University of Technology, in 3D on the LINZ ground among the city's buildings. Its 18 buildings
+  come from OpenStreetMap, picked by their `operator` and `ref` tags, each one block at its
+  OpenStreetMap height, else at a default, and labelled by its code and name. A building's card
+  gives its code, name and height, says how the height was found, and links to its OpenStreetMap
+  element. Floors, rooms, class times, semester dates and the course list are not shown: AUT
+  publishes them, and the site shows them only with AUT's permission (its floor plans need a
+  written agreement with MazeMap). The status strip, the time panel, the card and About say so in
+  AUT's own words. Unofficial, with the project's own colours; nothing is taken from AUT (#TBD).
+
 ## 2026-10-25
 
 ### Added
