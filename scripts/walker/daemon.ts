@@ -22,7 +22,11 @@ const option = (name: string) => {
 };
 const headless = argv.includes("--headless");
 const port = Number(option("--port")) || DEFAULT_PORT;
-const LOCAL = "http://localhost:5273/campus-world-model/";
+// The dev server serves the school that SCHOOL names, as vite.config.ts does: the University of
+// Auckland (unset or uoa) at /campus-world-model/, any other school at /<id>/.
+const SCHOOL = process.env.SCHOOL || "uoa";
+if (!/^[a-z][a-z0-9-]*$/.test(SCHOOL)) throw new Error(`SCHOOL is a school's id in lower case, such as uoa, not "${SCHOOL}"`);
+const LOCAL = `http://localhost:5273/${SCHOOL === "uoa" ? "campus-world-model" : SCHOOL}/`;
 
 function log(line: string): void {
   console.log(`${new Date().toISOString()} ${line}`);
