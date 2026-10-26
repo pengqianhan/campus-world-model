@@ -1,0 +1,79 @@
+{
+ "name": "maclaurin-chapel",
+ "site": true,
+ "building": {
+  "id": "107",
+  "also": [],
+  "also_note": "no other building of the campus map: measured 2026-10-25 on round 1's model from its footprint on a 0.5 m grid, it covers 98.1% of 107's block (run.sh topview, cells above 2.5 m, in the view frame) and 98.4% of it in the map's frame through placement.json (any face over a cell's centre); the only other block whose centre is within 80 m, 123 (Lodge), 0%.",
+  "title": "Maclaurin Chapel, University of Auckland",
+  "note": "outline: building 107's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [[78.3, 382.0], [79.4, 383.5], [81.2, 383.7], [82.7, 382.6], [82.9, 380.6], [87.1, 379.1], [85.9, 375.8], [87.0, 372.3], [86.7, 371.7], [87.2, 371.5], [87.2, 369.4], [87.6, 369.3], [87.3, 368.6], [86.9, 368.8], [86.7, 368.1], [86.3, 368.3], [85.6, 367.2], [85.1, 367.4], [84.9, 366.8], [82.0, 364.5], [86.1, 363.0], [84.9, 359.8], [82.5, 360.7], [77.8, 348.0], [80.2, 347.2], [78.2, 341.7], [63.3, 347.1], [65.3, 352.6], [67.7, 351.7], [72.3, 364.4], [69.9, 365.3], [71.1, 368.4], [75.3, 366.9], [74.5, 370.4], [74.7, 371.1], [74.3, 371.2], [74.4, 372.5], [74.0, 372.7], [74.3, 373.3], [73.9, 373.5], [74.7, 374.7], [75.2, 374.5], [76.0, 375.6], [76.3, 375.5], [76.5, 376.0], [79.4, 378.2], [79.7, 378.1], [80.2, 379.3], [78.7, 380.3]]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 43.5,
+ "door": {
+  "x": 7.2, "z": 10.0,
+  "note": "view frame: the foot of the steps up to the glazed entrance between the chapel and the hall, on the street side (dsLbToS1nQd0 wide view); the LiDAR ground on the path there is 43.49-43.53 m, so ground is 43.5 and the model's y is 0 there (checked 2026-10-25: ground points within 1 m of it, p10/p50/p90 -0.05/+0.03/+0.23 m); place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": ["3604"],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": ["1802"],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 107's outline (2.5: the hall's flat roof reaches 1.5-1.7 m beyond the outline, which follows its walls, over a walk along each long side): centre = mean x/y of points higher than tower_above m and within tower_radius m (in plan) of the highest of them: the top of the chapel's low pyramid roof and the slender spire on it (a tree's crown over the south-west corner of the hall, 9 to 19 m up, is classed as building, so without tower_radius it pulls the centre 13.6 m away); axis = the bearing of most of the walls seen from above (axis_from walls: the hall is nearly square and the chapel is many-sided, so their principal axis, 11.0 deg, is 8.8 deg off the hall's walls), the one of the two square to each other nearest the principal axis, pointing north-ish as street_side is west; toStreet = the axis turned 90 deg toward street_side: west-north-west, to Princes Street.",
+  "min_above": 2.6,
+  "tower_above": 9.7,
+  "tower_radius": 4,
+  "spine_below": 6.1,
+  "spine_radius": 35,
+  "near_outline": 2.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [87.40185904, 369.25269226],
+   "axis": [0.33910033, 0.94075021],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 5,
+  "pano_ids_note": "the five Google panoramas that show the building (2024-07, on Princes Street 32-41 m from the chapel, in front of its street side; 2026-10-22). Of the 50 Google panoramas within 120 m, the 19 within 70 m were looked at in a low-resolution probe (zoom 3, 118 tiles, 110 of them bought): these five show the chapel and the hall, a sixth on the same row (2YsL7HxV6pA9, 40 m) only the tree in front of it, and the 13 others (Princes Street further off, Waterloo Quadrant 2026-04) trees, at most the spire's tip. User-contributed panoramas are not used.",
+  "pano_ids": ["dtDwTiTGcX_MOJOSUpp_oA", "dsLbToS1nQd0mgvmZekNaA", "PC_4joH8Z4OrGCcAXq8vbw", "34Yw_KHRhh1xME3OCc8gVw", "JYSzWEjct6NbmvBDb5PjVA"],
+  "radius_m": 120,
+  "camera_height_m": 2.5,
+  "views": [
+   {"name": "wide", "aim_y": 7, "hfov": 95, "width": 1600, "height": 1067},
+   {"name": "upper", "aim_y": 13, "hfov": 40, "width": 1200, "height": 900},
+   {"name": "door", "aim_y": 3, "hfov": 45, "width": 1200, "height": 900}
+  ]
+ },
+ "sky_mask": {"branches_deg": 0.4,
+  "note": "tools/sky_mask.py: bare winter branches stand in front of the sky in every photograph, so without this most of the sky round the chapel counts as solid (0-17% sky in a view). Closing with a disc of 0.4 deg radius (6 px in a wide view, 10-12 in the others; what is narrower than about 0.8 deg goes) gives 6.4-56.3% sky; the white walls stay ignore or solid. At 0.6 deg the shaded white wall in dtDw's door view turns to sky, so 0.4 it is."},
+ "light": {"sunaz": 40, "sunel": 20, "exposure": 0.65,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the five panoramas were taken on a July (winter) morning with the sun low in the north-east, behind the building as seen from Princes Street (it flares in JYSz's wide view, at about bearing 40 deg): so the street faces are in open shade; exposure 0.78 brought the plain white face of dsLb's upper view to the photograph's luma (154; 180 at 1.0), but with the masks of round 1 the building region's median, wall, frames and glass together, is 133-154 in the photographs (112-118 in JYSz's, toward the sun) and 158-166 drawn: 0.65 brings the drawn median to that of the photographs, within 12 in every view but JYSz's"},
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "ground_note": "the LiDAR ground on the path at the foot of the entrance steps (43.49-43.53 m); the street side runs from 43.5 there to 43.8 at either end of the building, and the back falls to 42.9; frame thresholds are above this ground (0.1 m higher than with the first, provisional 43.6, so the frame is the same)"
+}

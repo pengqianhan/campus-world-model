@@ -4,15 +4,22 @@ where it touches clear-blue sky. Trees (green, orange leaves, dark trunks), dark
 'ignore': they are neither model nor sky. Everything else (cream stone, lit or in shade) is 'solid'.
 Output: refs/streetview/masks/<view>.png, 0 = sky, 128 = ignore, 255 = solid. Skips masks newer than
 their photo unless --force.
-  python -I ../pipeline/tools/sky_mask.py [--force] [--debug out/dir] [file ...]
+Option (config "sky_mask", left out: none): "branches_deg": r. Bare winter branches in front of the sky
+make it rough, so most of it fails the smoothness test and counts as solid. With r, the photograph is
+also classified a second time after a grey closing of each channel with a disc of r degrees (in pixels:
+r x the view's height / its vfov, from views.json), which gives what is darker than its surroundings and
+narrower than 2r (branches, twigs, wires; a thin spire too) the colour round it; what that second pass
+finds as sky is sky. Without the option the masks are made as before, byte for byte.
+  python -I ../pipeline/tools/sky_mask.py [--config config/<name>.json] [--force] [--debug out/dir] [file ...]
 """
-import argparse, glob, os, sys
+import argparse, glob, json, os, sys
 import numpy as np
 from PIL import Image
 from scipy import ndimage as ndi
 
 ROOT = os.getcwd()  # the landmark's folder: every stage runs there
 SV = os.path.join(ROOT, "refs", "streetview")
+CONFIG = os.environ.get("CONFIG") or os.path.join("config", os.path.basename(ROOT) + ".json")
 
 
 def classify(rgb):
@@ -40,18 +47,40 @@ def classify(rgb):
     return out
 
 
+def close_branches(rgb, r):
+    """Grey closing of each channel with a disc of radius r pixels: what is darker than its surroundings and
+    narrower than 2r takes the colour round it."""
+    y, x = np.ogrid[-r:r + 1, -r:r + 1]
+    disc = x * x + y * y <= r * r
+    return np.stack([ndi.grey_closing(rgb[..., k], footprint=disc) for k in range(3)], -1)
+
+
+def mask(rgb, branches_px=0):
+    out = classify(rgb)
+    if branches_px > 0:
+        out[classify(close_branches(rgb, branches_px)) == 0] = 0
+    return out
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("files", nargs="*"); ap.add_argument("--force", action="store_true"); ap.add_argument("--debug")
+    ap.add_argument("--config", default=CONFIG)
     a = ap.parse_args()
+    opt = (json.load(open(a.config, encoding="utf-8")) if os.path.exists(a.config) else {}).get("sky_mask", {})
+    deg = opt.get("branches_deg", 0)
+    views = {v["file"]: v for v in json.load(open(os.path.join(SV, "views.json")))} if deg else {}
     files = a.files or sorted(glob.glob(os.path.join(SV, "*_*.jpg")))
     os.makedirs(os.path.join(SV, "masks"), exist_ok=True)
     n = 0
     for f in files:
         o = os.path.join(SV, "masks", os.path.basename(f).replace(".jpg", ".png"))
         if not a.force and os.path.exists(o) and os.path.getmtime(o) > os.path.getmtime(f): continue
-        rgb = np.asarray(Image.open(f).convert("RGB")); m = classify(rgb); Image.fromarray(m).save(o); n += 1
+        rgb = np.asarray(Image.open(f).convert("RGB"))
+        v = views.get(os.path.basename(f))
+        m = mask(rgb, round(deg * v["height"] / v["vfov"]) if v else 0); Image.fromarray(m).save(o); n += 1
         if a.debug:
             os.makedirs(a.debug, exist_ok=True)
             vis = rgb.copy(); vis[m == 0] = (vis[m == 0] * 0.3 + np.array([0, 0, 255]) * 0.7).astype(np.uint8); vis[m == 128] = (vis[m == 128] * 0.4 + np.array([255, 0, 255]) * 0.6).astype(np.uint8)
             Image.fromarray(vis).save(os.path.join(a.debug, os.path.basename(f)), quality=80)
-    print(f"sky masks: {n} written, {len(files) - n} up to date, in {os.path.relpath(os.path.join(SV, 'masks'), ROOT)}")
+    print(f"sky masks: {n} written, {len(files) - n} up to date, in {os.path.relpath(os.path.join(SV, 'masks'), ROOT)}"
+          + (f" (branches closed, {deg} deg)" if deg else ""))

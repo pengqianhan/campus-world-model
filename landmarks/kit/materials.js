@@ -172,6 +172,25 @@ function roofPale(color, space) {
 }
 
 /**
+ * A light green corrugated metal roof (Maclaurin Chapel), painted: its ribs run down the slope, 76 mm
+ * apart (across x on a flat face), drawn only where they are wider than a pixel, their average further
+ * off. Shader only, no texture.
+ */
+function roofGreen(color, space) {
+  const m = new THREE.MeshStandardMaterial({ color, roughness: 0.7 });
+  m.userData.metres = 2;
+  return hook(m, "roofGreen-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float l = length(N.xz);
+    vec2 t = l > 0.05 ? vec2(-N.z, N.x) / l : vec2(1.0, 0.0);      // level, across the slope
+    float s = dot(P.xz, t) / 0.076, w = fwidth(s);
+    float rib = 0.95 + 0.07 * (0.5 + 0.5 * cos(6.2831853 * s));
+    diffuseColor.rgb *= mix(rib, 0.985, smoothstep(0.35, 0.7, w)) * (0.975 + 0.05 * wfbm(P * 0.3));
+  }`, {}, undefined, space);
+}
+
+/**
  * Old sash glazing (Old Government House): the photographs show its panes grey-blue and light, full of
  * the bright hazy sky, not dark. So twice the sky is reflected that `glass` reflects, a little blurred
  * by the old glass's waviness, over rooms behind lighter than `glass`'s (measured: a window of hRE5's
@@ -257,6 +276,7 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     paint: painted(0xf2f0ea, 0.5, space),               // white: glazing bars, balusters, chimney caps
     roofPale: roofPale(0xebe8e1, space),                // light grey roof (the photographs blow it near white)
     glassPale: glassPale(space),                        // sash glazing, light with the sky it reflects
+    roofGreen: roofGreen(0xa4b8a2, space),              // light green corrugated metal (the 2023 aerial)
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
     render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices

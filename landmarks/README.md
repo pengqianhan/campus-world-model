@@ -175,12 +175,12 @@ needs:
 - a line in `CHANGELOG.md` and a few words in the README's "What's new": a new landmark changes
   what the site shows (`docs/standards.md`, check 6);
 - a check of About's fixed words for the landmarks (`about.landmarks` in
-  `src/i18n/locales/*.json`), which name their materials ("such as stone, painted timber, glass
-  and slate"): change them if the new building is of another;
+  `src/i18n/locales/*.json`), which name their materials ("such as stone, brick, concrete, painted
+  render and timber, glass, slate and metal"): change them if the new building is of another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
-  (it lists `roof`, `roofPale`, `roofGrey`, `glass`, `glassPale`, `iron` and `void`) but that is a
-  roof, a pane or an opening, its part there. Every other material is drawn as wall in the light
-  form, so on the map a roof in a new material takes the wall colour until it is listed;
+  (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `glass`, `glassPale`, `iron` and `void`)
+  but that is a roof, a pane or an opening, its part there. Every other material is drawn as wall
+  in the light form, so on the map a roof in a new material takes the wall colour until it is listed;
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
   estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
@@ -251,7 +251,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | | `tools/data/heightmap.py` | points, LINZ aerial (whole public tiles, fetched once into `data/raw/landmarks/`) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
 | place | `tools/data/place.py` | config `frame.expected`, `door`, `building`, `site` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
-| | `tools/sky_mask.py` | the reference views | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
+| | `tools/sky_mask.py` | the reference views, config `sky_mask` | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
 | compare | `tools/compare.mjs` | the viewer, `views_refined.json` (else `views.json`) | `$OUT/<view>.png`, `<view>_strip.jpg` (reference, render, overlay), `labels/`, `views_used.json`, then metrics |
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
@@ -299,6 +299,10 @@ boundary:
   ground, black sky), which imports the landmark's `model.js` directly;
 - the photo's sky is segmented by colour and smoothness (clear blue, plus pale sky that joins it);
   trees, orange leaves, dark trunks and glass, and blue that does not reach the sky are *ignored*;
+  where bare winter branches stand in front of the sky, the config's `sky_mask.branches_deg` (r)
+  classifies each photograph again after a grey closing with a disc of r degrees, which gives what
+  is darker than its surroundings and narrower than 2r the colour round it, and adds the sky it finds
+  (Maclaurin Chapel: 0.4); without it the masks are as before, byte for byte;
 - score = IoU of model-above-cut vs photo-solid over pixels that are neither ignored nor below the
   cut, pooled over the panorama's views, minus a small prior on the size of the correction;
 - compass search from five starts at quarter resolution (~500 renders per panorama).

@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-25
+
+### Added
+
+- **Maclaurin Chapel drawn in detail.** Near the camera the map draws Maclaurin Chapel (107) from
+  code in place of its block: the white hexagonal chapel with its great corner window, its low green
+  roof and slender spire, the bay beside it and the hall behind it, every height measured from the
+  LINZ 2024 LiDAR. On the map it has the map's colours; from a walker's height on a computer with a
+  graphics card, its own white walls, glass and light green metal roof. The small room beyond the
+  bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the
+  faces that the Street View photographs from Princes Street do not show. A click still opens its
+  floors (#92).
+
 ## 2026-10-23
 
 ### Added
