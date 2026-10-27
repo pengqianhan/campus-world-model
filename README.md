@@ -53,8 +53,8 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-10-28:** on Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower
-  of about ten storeys with a cream band at each floor, a slot of windows up its corner, balconies down
-  one side, a red tile canopy over its entrance and the ramp to it from the street.
+  with a cream band at each floor, a slot of windows up its corner, balconies down one side, a red tile
+  canopy over its entrance and the ramp to it from the street.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -347,8 +347,8 @@ far end, which no photograph shows, are drawn plainly.
 | ![9 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/nine-eden-crescent-front.jpg) | ![9 Eden Crescent from above the street, drawn from code](docs/landmarks/nine-eden-crescent-above.jpg) |
 | ![9 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/nine-eden-crescent-map.jpg) | ![9 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/nine-eden-crescent-eyes.jpg) |
 
-The eighth is the Fisher Building (804), a tan brick tower of about ten storeys on Waterloo Quadrant,
-its higher half a shaft over its south-west side. A cream band runs round it at each floor, where the
+The eighth is the Fisher Building (804), a tan brick tower on Waterloo Quadrant, its higher half a
+shaft over its south-west side. A cream band runs round it at each floor, where the
 LiDAR's wall returns peak every 2.875 m; a slot of windows framed in white runs up the shaft's corner;
 down its north-west side stand balconies with dark louvres; a red tile canopy covers its entrance, and a
 ramp runs to it from the street over a car park. Every height comes from the LiDAR, within 0.15 m. Two

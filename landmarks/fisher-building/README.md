@@ -1,7 +1,7 @@
 # Landmark: the Fisher Building, drawn from code
 
 The Fisher Building (building 804 of the University of Auckland's campus map, 18 Waterloo Quadrant), a
-tan brick tower of about ten storeys in the city centre, drawn in three.js from code alone and sized by the
+tan brick tower in the city centre, drawn in three.js from code alone and sized by the
 LINZ 2024 LiDAR, checked against two Street View photographs from Waterloo Quadrant (October 2026). The
 kit it is built with, the pipeline, the viewer and how to run them are shared by every landmark:
 [`../README.md`](../README.md).

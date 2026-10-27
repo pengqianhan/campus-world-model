@@ -19,8 +19,8 @@ A change to what the site does or shows adds its line here, and the README's
 ### Added
 
 - **The Fisher Building drawn in detail.** Near the camera the map draws the Fisher Building (804)
-  from code in place of its block: a tan brick tower of about ten storeys on Waterloo Quadrant, its
-  higher half a shaft over its south-west side, a cream band at each floor, a slot of windows framed in
+  from code in place of its block: a tan brick tower on Waterloo Quadrant, its higher half a shaft
+  over its south-west side, a cream band at each floor, a slot of windows framed in
   white up the shaft's corner, balconies with dark louvres down its north-west side, a red tile canopy
   over its entrance and the ramp to it from the street. Every height is measured from the LINZ 2024
   LiDAR, and the slot, the bands, the canopy and the ramp in two Street View photographs of it. On the
