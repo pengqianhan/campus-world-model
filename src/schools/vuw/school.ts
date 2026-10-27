@@ -20,7 +20,9 @@ const VUW = /^Victoria University of Wellington$/;
 
 /** Why the Malaghan Institute, on the Kelburn campus and tagged building=university, is not shown as VUW's. */
 const MALAGHAN =
-  "The Malaghan Institute of Medical Research, by its name and its wikidata tag an independent research institute, not a part of VUW, although it stands on the campus and is tagged building=university. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.";
+  "The Malaghan Institute of Medical Research: by its name an institute of its own, not a part of VUW, although it stands on the campus and is tagged building=university. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.";
+/** The same, where the element also carries a wikidata tag: it is kept in the record, and the item it names was not looked up. */
+const MALAGHAN_TAGGED = `${MALAGHAN} It carries a wikidata tag, kept in this record; the item was not looked up.`;
 
 /**
  * OpenStreetMap's `building` values for a building people live or stay in (its "Accommodation"
@@ -130,10 +132,10 @@ export const school: School = {
         reason: "No name to call it by: OpenStreetMap gives VUW's buildings no building code (ref), and this one no name. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
       },
       {
-        // The reason cites its wikidata tag: reading the tag here keeps it in the record's original text.
+        // Reading its wikidata tag here keeps the tag in the record's original text.
         when: { name: /^Malaghan Institute/, wikidata: /./ },
         take: false,
-        reason: MALAGHAN,
+        reason: MALAGHAN_TAGGED,
       },
       { when: { name: /^Malaghan Institute/ }, take: false, reason: MALAGHAN },
       { when: { operator: VUW }, take: true, reason: "operator=Victoria University of Wellington, and a name." },
