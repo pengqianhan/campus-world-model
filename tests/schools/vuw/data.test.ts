@@ -1,6 +1,6 @@
-// VUW's published data (docs/schools/DESIGN.md, section 8): its Kelburn Campus in the Buildings
-// form, from the committed OpenStreetMap snapshot by the rule in its descriptor, and nothing of
-// VUW's own.
+// VUW's published data (docs/schools/DESIGN.md, section 8): its Kelburn, Pipitea and Te Aro
+// campuses in the Buildings form, from the committed OpenStreetMap snapshots of its three areas by
+// the rule in its descriptor, and nothing of VUW's own.
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { pointInRing, ringArea, type Ring } from "../../../src/shared/geo.ts";
@@ -18,8 +18,22 @@ interface Element {
   id: number;
   tags?: Record<string, string>;
 }
-const snapshot = JSON.parse(fs.readFileSync(`data/raw/${school.areas.central.osm}`, "utf8")) as { elements: Element[] };
-const elements = new Map(snapshot.elements.map((e) => [`${e.type}/${e.id}`, e]));
+/** Every element of the three areas' snapshots, with the area whose snapshot holds it. */
+const areas = [school.areas.central, ...school.areas.remote];
+const elements = new Map<string, Element>();
+const areaOf = new Map<string, string>();
+for (const area of areas) {
+  const snapshot = JSON.parse(fs.readFileSync(`data/raw/${area.osm}`, "utf8")) as { elements: Element[] };
+  for (const e of snapshot.elements) {
+    const osm = `${e.type}/${e.id}`;
+    if (elements.has(osm)) continue;
+    elements.set(osm, e);
+    areaOf.set(osm, area.id);
+  }
+}
+
+/** Places where people live, and childcare: OpenStreetMap's tags for them. */
+const isBlank = (tags: Record<string, string>) => /^(dormitory|residential|house|apartments)$/.test(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
 
 const ring = (flat: number[]): Ring => {
   const r: Ring = [];
@@ -28,15 +42,37 @@ const ring = (flat: number[]): Ring => {
 };
 
 describe("VUW's buildings", () => {
-  it("are drawn in the frame of the descriptor's origin, all on the map", () => {
+  it("are drawn in the frame of the descriptor's origin, all on the map, each campus with its own", () => {
     expect(campus.origin).toEqual(school.origin);
     expect(campus.floorHeight).toBe(3.6);
     expect(campus.campuses.map((c) => c.id)).toEqual(rule.campuses.map((c) => c.id));
-    expect(campus.campuses[0]!.buildingCount).toBe(campus.buildings.length);
+    for (const c of campus.campuses) {
+      const own = rule.campuses.find((r) => r.id === c.id)!;
+      expect(c.name.en, c.id).toBe(own.name);
+      expect(c.buildingCount, c.id).toBe(campus.buildings.filter((b) => b.campus === c.id).length);
+      expect(c.onMap, c.id).toBe(true);
+      // A remote campus names its area, as the other schools' do; the central one none.
+      expect(c.area, c.id).toBe(own.area === school.areas.central.id ? undefined : own.area);
+    }
     expect(campus.buildings.filter((b) => b.offMap).map((b) => b.id)).toEqual([]);
   });
 
-  it("each trace to an element of the committed snapshot that the rule takes, named as OpenStreetMap names it", () => {
+  it("each stand on the campus of the area whose snapshot holds it", () => {
+    for (const b of campus.buildings) {
+      const area = areaOf.get(b.osm!)!;
+      expect(b.campus, b.id).toBe(rule.campuses.find((c) => c.area === area)!.id);
+      expect(b.area, b.id).toBe(area === school.areas.central.id ? undefined : area);
+    }
+    const names = (id: string) => campus.buildings.filter((b) => b.campus === id).map((b) => b.name.en).sort();
+    expect(names("kelburn")).toHaveLength(52);
+    // Pipitea: Government Buildings and Rutherford House (docs/schools/vuw.md, "Campuses"), each
+    // holding points of VUW's own Pipitea page, and the Law School's lecture theatres beside them.
+    expect(names("pipitea")).toEqual(["Law School Lecture Theatres", "Old Government Buildings", "Rutherford House"]);
+    // Te Aro: 139 Vivian Street, which holds the page's "Te Aro Campus" and "Library" points.
+    expect(names("te-aro")).toEqual(["Faculty of Architecture & Design"]);
+  });
+
+  it("each trace to an element of the committed snapshots that the rule takes, named as OpenStreetMap names it", () => {
     expect(campus.buildings.length).toBeGreaterThan(0);
     for (const b of campus.buildings) {
       const e = elements.get(b.osm!);
@@ -81,12 +117,30 @@ describe("VUW's buildings", () => {
   it("leave homes and childcare to the surroundings, with no name anywhere in the published data", () => {
     const published = fs.readdirSync("public/data/vuw", { recursive: true, withFileTypes: true }).filter((f) => f.isFile());
     const text = published.map((f) => fs.readFileSync(`${f.parentPath}/${f.name}`, "utf8")).join("\n");
-    const blank = [...elements.values()].filter((e) => /^(dormitory|residential|house|apartments)$/.test(e.tags?.building ?? "") || /^(childcare|kindergarten)$/.test(e.tags?.amenity ?? ""));
+    const blank = [...elements.entries()].filter(([, e]) => isBlank(e.tags ?? {}));
     expect(blank.length).toBeGreaterThan(0);
-    for (const e of blank) {
-      expect(decide(rule, e.tags ?? {}), `${e.type}/${e.id}`).toBeUndefined();
+    for (const [osm, e] of blank) {
+      expect(decide(rule, e.tags ?? {}), osm).toBeUndefined();
+      expect(text, osm).not.toContain(osm);
       if (e.tags?.name) expect(text, e.tags.name).not.toContain(e.tags.name);
     }
+    // Te Aro's box holds two homes that carry VUW's operator tag, a hall of residence and a block
+    // of flats: a home is never a candidate, whatever its operator.
+    for (const osm of ["way/256790623", "way/1082249353"]) {
+      const tags = elements.get(osm)!.tags ?? {};
+      expect(tags.operator, osm).toBe("Victoria University of Wellington");
+      expect(isBlank(tags), osm).toBe(true);
+    }
+  });
+
+  it("leave out the Te Aro buildings vuw.md names that OpenStreetMap does not tag as VUW's", () => {
+    // Te Auaha (65 Dixon Street), operated by Whitireia, WelTec and Te Pūkenga by its tags, and NEC
+    // House (40 Taranaki Street), an office building: neither is a candidate, so both stay in the
+    // surroundings. Wigan Street's building is building=university with no name, so it is left out.
+    expect(elements.get("way/430288873")?.tags?.name).toBe("Te Auaha");
+    expect(elements.get("way/190554680")?.tags?.name).toBe("NEC House");
+    for (const osm of ["way/430288873", "way/190554680"]) expect(decide(rule, elements.get(osm)!.tags ?? {}), osm).toBeUndefined();
+    expect(campus.buildingExclusions?.find((x) => x.osm === "way/752299347")?.reason).toMatch(/^No name/);
   });
 
   it("stand at the height the rule gives, with its source, and have no floors or rooms", () => {
@@ -114,8 +168,8 @@ describe("the rule on OpenStreetMap's tags", () => {
   it("takes a named building by VUW's operator tag, or by building=university with no operator", () => {
     expect(take({ building: "university", name: "Rankine Brown", operator: "Victoria University of Wellington" })).toBe(true);
     expect(take({ building: "university", name: "Hunter Building" })).toBe(true);
-    // The operator tag alone makes a candidate, whatever the building tag says.
-    expect(take({ building: "yes", name: "A hall", operator: "Victoria University of Wellington" })).toBe(true);
+    // The operator tag alone makes a candidate, whatever the building tag says, unless it is a home.
+    expect(take({ building: "yes", name: "A lecture block", operator: "Victoria University of Wellington" })).toBe(true);
   });
 
   it("leaves out what it cannot name or that does not stand on the ground as VUW's", () => {
@@ -125,14 +179,19 @@ describe("the rule on OpenStreetMap's tags", () => {
     expect(take({ building: "ruins", name: "A ruin", operator: "Victoria University of Wellington" })).toBe(false);
     expect(decide(rule, { building: "university", name: "Victoria Rescue NZ-RT7", operator: "National Emergency Management Agency" })?.reason).toMatch(/^Its operator tag names another operator/);
     expect(decide(rule, { "building:part": "yes", operator: "Victoria University of Wellington" })?.reason).toMatch(/^A building part/);
+    expect(decide(rule, { building: "no", "building:part": "yes", operator: "Victoria University of Wellington" })?.reason).toMatch(/^A building part/);
     // Childcare stays blank, even if it were ever tagged as the University's.
     expect(decide(rule, { building: "university", amenity: "childcare", name: "A childcare centre" })?.reason).toMatch(/^A childcare centre/);
   });
 
-  it("does not consider buildings that carry neither tag", () => {
+  it("does not consider homes, whatever their operator, or buildings that carry neither tag", () => {
+    for (const building of ["dormitory", "apartments", "residential", "house"]) {
+      expect(decide(rule, { building, name: "A home", operator: "Victoria University of Wellington" }), building).toBeUndefined();
+    }
     expect(decide(rule, { building: "school", name: "Old Kirk Building" })).toBeUndefined();
     expect(decide(rule, { building: "dormitory", name: "A hall of residence" })).toBeUndefined();
     expect(decide(rule, { building: "yes", amenity: "childcare", name: "A childcare centre" })).toBeUndefined();
+    expect(decide(rule, { building: "yes", amenity: "arts_centre", name: "Te Auaha", operator: "Whitireia/Weltec/Te Pūkenga" })).toBeUndefined();
   });
 });
 
@@ -158,5 +217,12 @@ describe("VUW's absent layers", () => {
       expect(s.url, s.id).not.toMatch(/wgtn\.ac\.nz|vuw\.ac\.nz|victoria\.ac\.nz/);
     }
     expect(meta.coverage).toMatchObject({ buildings: campus.buildings.length, rooms: 0, indexedRooms: 0, subjects: 0, sessions: 0 });
+  });
+
+  it("give each remote campus its own surroundings and ground", () => {
+    for (const area of school.areas.remote) {
+      expect(fs.existsSync(`public/data/vuw/context/${area.id}.json`), area.id).toBe(true);
+      expect(fs.existsSync(`public/data/vuw/terrain/${area.id}.json`), area.id).toBe(true);
+    }
   });
 });

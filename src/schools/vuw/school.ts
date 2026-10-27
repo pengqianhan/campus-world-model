@@ -1,7 +1,8 @@
 // Te Herenga Waka—Victoria University of Wellington's descriptor (docs/schools/DESIGN.md,
-// section 5): data only. VUW is in the Buildings form (DESIGN.md, section 2): its Kelburn Campus
-// buildings come from OpenStreetMap by a rule on their tags, on the LINZ ground. Its room list,
-// class times, dates and course list are not shown (docs/schools/vuw.md, "Verdicts").
+// section 5): data only. VUW is in the Buildings form (DESIGN.md, section 2): the buildings of its
+// Kelburn, Pipitea and Te Aro campuses come from OpenStreetMap by a rule on their tags, on the LINZ
+// ground. Its room list, class times, dates and course list are not shown (docs/schools/vuw.md,
+// "Verdicts").
 import type { SceneArea, School } from "../../shared/school.ts";
 import en from "./locales/en.json";
 
@@ -16,6 +17,14 @@ const KELBURN: SceneArea = { id: "central", bbox: [-41.2937, 174.7638, -41.2838,
 
 /** The operator tag OpenStreetMap gives VUW's buildings. */
 const VUW = /^Victoria University of Wellington$/;
+
+/**
+ * A `building` value other than a home's: OpenStreetMap's types for a building people live in
+ * (apartments, dormitory, residential, house) never match. Floors where people live stay blank
+ * (AGENTS.md, "Places, not people"), so a home is never one of VUW's campus buildings, whatever
+ * its operator: it stays in the surroundings with no name, as Kelburn's halls of residence do.
+ */
+const NOT_HOME = /^(?!(?:apartments|dormitory|residential|house)$)/;
 
 /**
  * Matches nothing. VUW's room list is not used in the Buildings form, so no room code is read: the
@@ -35,7 +44,11 @@ export const school: School = {
   weather:
     "https://api.open-meteo.com/v1/forecast?latitude=-41.2897&longitude=174.7682" +
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
-  /** The Kelburn Campus buildings span about 430 m east to west and 610 m north to south. */
+  /**
+   * The Kelburn Campus buildings span about 430 m east to west and 610 m north to south. Pipitea
+   * and Te Aro are framed by their own buildings' extent, as the remote campuses of the other
+   * schools are.
+   */
   campusSpan: { kelburn: 600 },
   /**
    * Pipitea and Te Aro (docs/schools/vuw.md, "Campuses"), each in an area of its own, as the
@@ -60,16 +73,23 @@ export const school: School = {
   words: { en },
   /**
    * The rule on OpenStreetMap's tags that picks VUW's buildings ("A school whose campus map cannot
-   * be used" in PROGRESS.md, "Decisions"). OpenStreetMap gives none of them a `ref`: 7 carry
-   * `operator=Victoria University of Wellington`, and the rest `building=university` with no
-   * operator, in a box where VUW is the only university. So a building is taken by its operator,
-   * or by `building=university` with no other operator named, and by its name, which is what it
-   * is called on the map. The pull request that built it lists every building it takes and every
-   * one it leaves out.
+   * be used" in PROGRESS.md, "Decisions"). OpenStreetMap gives none of them a `ref`. On Kelburn 7
+   * carry `operator=Victoria University of Wellington`, and the rest `building=university` with no
+   * operator; Pipitea's 3 and Te Aro's 2 are all `building=university` with no operator; in each of
+   * the three boxes VUW is the only university. So a building is taken by its operator, or by
+   * `building=university` with no other operator named, and by its name, which is what it is called
+   * on the map. A home is never considered (NOT_HOME): Te Aro's box holds two that carry VUW's
+   * operator tag, a hall of residence and a block of flats. A building's campus is the area it
+   * stands in, named as VUW's own campus pages name it. The pull requests that built it list every
+   * building it takes and every one it leaves out.
    */
   osmBuildings: {
-    campuses: [{ id: "kelburn", name: "Kelburn Campus", area: "central" }],
-    candidates: [{ operator: VUW }, { building: /^university$/ }],
+    campuses: [
+      { id: "kelburn", name: "Kelburn Campus", area: "central" },
+      { id: "pipitea", name: "Pipitea Campus", area: "pipitea" },
+      { id: "te-aro", name: "Te Aro Campus", area: "te-aro" },
+    ],
+    candidates: [{ operator: VUW, building: NOT_HOME }, { operator: VUW, building: null }, { building: /^university$/ }],
     steps: [
       { when: { building: null }, take: false, reason: PART },
       { when: { building: /^no$/ }, take: false, reason: PART },
@@ -110,7 +130,7 @@ export const school: School = {
       {
         when: { building: /^university$/, operator: null },
         take: true,
-        reason: "building=university with no operator tag, and a name: VUW is the only university in the Kelburn box, and no other operator is named.",
+        reason: "building=university with no operator tag, and a name: VUW is the only university in each of its three campus boxes, and no other operator is named.",
       },
       {
         when: { operator: /./ },
@@ -119,7 +139,7 @@ export const school: School = {
       },
     ],
     provides:
-      "VUW's Kelburn Campus buildings, picked by their operator and building tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
+      "VUW's Kelburn, Pipitea and Te Aro Campus buildings, picked by their operator and building tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
   },
   /** docs/schools/vuw.md, "Verdicts". */
   layers: {
