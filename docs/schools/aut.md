@@ -3,7 +3,7 @@
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what AUT publishes without
 a sign-in, and on what terms. No fetch script and no data file came with it. Since #97 the
-City Campus is on the site in the Buildings form, from OpenStreetMap, and since #PR the North and
+City Campus is on the site in the Buildings form, from OpenStreetMap, and since #103 the North and
 South campuses too ("North and South on the site", below); the rest of this report is the recon as
 it was done.
 

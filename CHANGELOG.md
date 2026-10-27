@@ -36,7 +36,7 @@ A change to what the site does or shows adds its line here, and the README's
   whole name, and labelled by it; every South Campus building, and AY and AZ on the North Campus,
   has the code only as its name. North's AE Building is not shown as one of AUT's buildings:
   OpenStreetMap draws it as 15 separate outlines, which stand among the surroundings. AUT now
-  shows 41 buildings, and About says which campuses are modelled (#PR).
+  shows 41 buildings, and About says which campuses are modelled (#103).
 
 ### Changed
 
