@@ -59,7 +59,7 @@ It is built to answer two questions a student actually has:
   from OpenStreetMap, chosen from "Other campuses" in the campus list and labelled by their AUT
   codes. Near the Clock Tower the map draws its East Wing in detail: rock-faced stone, two gabled
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
-  trimester dates, not semester dates.
+  trimester dates, not semester dates. The root page names each school in te reo Māori too.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.

@@ -74,10 +74,14 @@ describe("the school picker at the site's root", () => {
 
   it("names each school with its full name, its city, its form, its campus snapshot and its site", () => {
     const uoa = schoolLine(schools.find((s) => s.id === "uoa")!, shared);
-    expect(uoa).toMatchObject({ site: "UoA World Model", name: "University of Auckland", city: "Auckland", form: "Buildings, floors and rooms" });
+    expect(uoa).toMatchObject({ site: "UoA World Model", name: "University of Auckland", reo: "Waipapa Taumata Rau", city: "Auckland", form: "Buildings, floors and rooms" });
     expect(uoa.snapshot).toBe(`Campus snapshot: ${new Intl.DateTimeFormat("en-NZ", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${meta("uoa").sources[0]!.snapshotDate}T00:00:00Z`))}`);
     const aut = schools.find((s) => s.id === "aut");
-    if (aut) expect(schoolLine(aut, shared)).toMatchObject({ site: "AUT World Model", name: "Auckland University of Technology", form: "Buildings only" });
+    if (aut) expect(schoolLine(aut, shared)).toMatchObject({ site: "AUT World Model", name: "Auckland University of Technology", reo: "Te Wānanga Aronui o Tāmaki Makau Rau", form: "Buildings only" });
+    const vuw = schools.find((s) => s.id === "vuw");
+    if (vuw) expect(schoolLine(vuw, shared)).toMatchObject({ name: "Victoria University of Wellington", reo: "Te Herenga Waka" });
+    // each school's name in te reo Māori stands under its English name, marked as te reo Māori
+    expect(pages.index).toContain('<p class="reo" lang="mi">Waipapa Taumata Rau</p>');
     expect(pages.index).toContain("<h1>Campus World Model</h1>");
     expect(pages.notFound).toContain("<h1>No page at this address</h1>");
   });
@@ -94,6 +98,7 @@ describe("the school picker at the site's root", () => {
     const evil = '<script>alert("x")</script> & \'';
     const words = JSON.parse(JSON.stringify(shared)) as { picker: { schools: Record<string, { name: string }> }; app: { title: string } };
     words.picker.schools.uoa!.name = evil;
+    (words.picker.schools.uoa as { reo?: string }).reo = evil;
     const html = pickerPages([{ id: "uoa", words: { ...shared, app: { title: evil } }, meta: meta("uoa") }], words as unknown as Words).index;
     expect(html).not.toContain("<script");
     expect(html).toContain(escapeHtml(evil));

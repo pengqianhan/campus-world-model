@@ -48,6 +48,11 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Changed
 
+- **Each school's name in te reo Māori on the site's root page.** Under its English name, each
+  school on the list now has its name in te reo Māori, as its own home page gives it: Waipapa
+  Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT) and Te
+  Herenga Waka (VUW), marked as te reo Māori for screen readers. VUW's line, which gave its two
+  names as one, now gives them as the others do (#PR).
 - **The site's root lists the schools.** https://campusworldmodel.com/ is now a page of its own,
   in the project's colours: for each school on the site, its name, its city, how much of it the
   site shows, the date of its campus snapshot and a link to its map. It says that the project is
