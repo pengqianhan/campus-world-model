@@ -63,4 +63,13 @@ export const MEASURED = {
   // (0.25 m) are estimated. Where it runs on under the trees to its end on the street (the "18") is not
   // drawn.
   deck: { x: [15.0, 18.5], z: [-8.5, -3.4], top: 5.9, parapet: 6.8 },
+  // The ramp's white parapet along the street, over the dark car park, as MGAo's door view shows it
+  // through the fitted camera: its top edge (rows 220-310 at columns 100-1190) placed at the LiDAR's
+  // parapet height, 6.8 m (the low returns' p90; the LiDAR also has returns at about 6 m at (22, -11 to
+  // -12), on this line), its lower edge at 5.26 m (row 372 at column 500). It ends at the "18".
+  ramp: {
+    line: [[25.84, -6.59], [24.75, -8.08], [23.39, -9.54], [22.93, -10.0], [23.62, -11.76], [24.81, -13.06],
+      [26.98, -15.61], [27.22, -16.14]],
+    top: 6.8, bottom: 5.26,
+  },
 };
