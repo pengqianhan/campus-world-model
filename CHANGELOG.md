@@ -14,7 +14,7 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-10-27
+## 2026-10-28
 
 ### Added
 
@@ -27,6 +27,25 @@ A change to what the site does or shows adds its line here, and the README's
   other buildings of the queue in the LiDAR keep their blocks, every place where people live among
   them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
   (`landmarks/measured/exclusions.json`) (#108).
+
+## 2026-10-27
+
+### Added
+
+- **Otago World Model, at /otago/.** Another school on the site: the University of Otago | Ōtākou
+  Whakaihu Waka, in 3D on the LINZ ground among the streets and buildings round it. The Dunedin
+  campus has 94 buildings; "Other campuses" in the campus list takes the map to the Christchurch
+  campus round Christchurch Hospital, where three buildings are tagged as Otago's. The 97 buildings
+  come from OpenStreetMap, picked by their `operator` and `building=university` tags and their
+  names, each one block at its OpenStreetMap height (21 from their number of levels), else at a
+  default, and labelled by name. Otago Polytechnic's buildings, the students' association's, the
+  School of Medicine on Christchurch Hospital's grounds (no tag the site reads says whose it is)
+  and those with no name are left out, each with its reason. The Wellington and Invercargill
+  campuses are not shown: OpenStreetMap names no university building at either and gives none
+  Otago as its operator. Rooms, class times, semester dates and the paper list are not shown, and
+  the status strip, the time panel, the card and About say why in Otago's own case. Residential
+  colleges and childcare centres stay unnamed. Unofficial, with the project's own colours; nothing
+  is taken from Otago (#111).
 - **VUW's Pipitea and Te Aro campuses.** /vuw/ adds two campuses to Kelburn, each chosen from
   "Other campuses" in the campus list and standing in its own patch of Wellington from
   OpenStreetMap, on the LINZ ground. Pipitea has three buildings: Old Government Buildings,
