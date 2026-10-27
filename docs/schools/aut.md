@@ -2,8 +2,9 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what AUT publishes without
-a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data file
-comes with it.
+a sign-in, and on what terms. No fetch script and no data file came with it. Since #97 the
+City Campus is on the site in the Buildings form, from OpenStreetMap; this report is the recon as it
+was done.
 
 Path name if the school is added: `/aut/` ("Decisions" in `PROGRESS.md`: each school's own short
 name). Time zone: Pacific/Auckland.

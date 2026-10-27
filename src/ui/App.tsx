@@ -2,7 +2,7 @@
 import { effect, signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import { intlLocale, pick, t, tn } from "../app/i18n.ts";
-import { Icon, absentLayers, campusName, noIndoor } from "./common.tsx";
+import { Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
 import { AboutPanel } from "./AboutPanel.tsx";
 import { BuildingView } from "./BuildingView.tsx";
@@ -117,7 +117,7 @@ function StatusStrip() {
             {tn("status.classes", count)} · {tn("status.buildings", busyBuildings.value.size)}
           </p>
         )}
-        <p class="status-hint">{noIndoor(d) ? t("status.hintBuildings") : t("status.hintCampus")}</p>
+        <p class="status-hint">{noIndoor(d) ? t(noCodes(d) ? "status.hintBuildingsNames" : "status.hintBuildings") : t("status.hintCampus")}</p>
         <div class="campus-tabs" role="group" aria-label={t("campus.label")}>
           {d.campus.campuses
             .filter((c) => c.onMap && !c.area)

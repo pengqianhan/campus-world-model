@@ -110,6 +110,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | --- | --- | --- | --- |
 | University of Auckland | `/uoa/` | Floor plans, from its campus map | 194 buildings, all on the map; 786 learning spaces with outlines; 4,573 more rooms located as points; 14,840 other spaces; 251 subject codes; 0 classes (see "Coverage") |
 | Auckland University of Technology (AUT) | `/aut/` | Buildings: the City Campus from OpenStreetMap, picked by its `operator` and `ref` tags, on the LINZ ground | 18 buildings, all on the map; 5 more left out by the tag rule, each with its reason (`buildingExclusions`); heights: 0 from a `height` tag, 3 from `building:levels`, 15 estimated; 0 rooms, subjects and classes |
+| Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn Campus from OpenStreetMap, picked by its `operator` and `building=university` tags and a name, on the LINZ ground | 52 buildings, all on the map; 29 more left out by the tag rule, each with its reason (25 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 43 from `building:levels`, 9 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -122,6 +123,24 @@ AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is th
    disallows its stylesheets). Its home page's two logos are white and slate blue `#536972`, far
    from the accent `#ffb454` (CIEDE2000 29.1 and 46.3). If AUT publishes brand colours, compare
    them again (DESIGN.md, section 6).
+
+VUW's open items, from `docs/schools/vuw.md`, "Needs the maintainer" (each is the maintainer's to do):
+
+1. The Academic Timetable spreadsheets under `/tools`, which `robots.txt` disallows: ask VUW, or
+   decide that two linked downloads are not what that line is for. With them, classes are located
+   to a room code.
+2. What `/__data/.*` in VUW's `robots.txt` covers: the key dates and the 2026 Calendar PDF are under
+   it.
+3. VUW's copyright condition, "accurately and without modifications": decide whether the site may
+   show the room list (the Rooms by code form) and the course list on that reading, or ask VUW.
+   Until then both are absent, and the site says so.
+4. Pipitea and Te Aro: one Overpass area each.
+5. Brand colours: on 2026-10-27 VUW's home page sets `--green-brand: #115737` and `--green-light:
+   #669787` in its own styles, with `#0d4c38` and `#fce500` in a heading; `/brand` and
+   `/about/brand` answer 404. All are far from the accent `#ffb454` (CIEDE2000 57.0, 38.3, 60.8,
+   21.0) and from the University buildings' tones; the nearest tones of the palette are the night
+   map's trees, pitches and grass (`#2a5c40` 3.4 and `#244a33` 3.9 from VUW's greens), which every
+   school shares.
 
 ## Done (with evidence)
 
@@ -261,6 +280,11 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   public Overpass instances answered 504 or nothing for most of an hour on 2026-10-15; the fetch now
   times out after 240 s (`scripts/lib/snapshot.ts`) and goes round all three instances up to three
   times, a minute apart.
+- VUW's Kelburn Campus, since 2026-10-27 (the maintainer let the loop fetch it): one Overpass
+  snapshot, `data/raw/osm/context-vuw-kelburn.json` (committed, ODbL; 2,073 elements), of the box
+  round VUW's own 24 map points and the buildings its tag rule takes, with 150 m of margin, and the
+  six terrain tiles under it. A school's own snapshot carries its id first
+  (`docs/schools/DESIGN.md`, section 3).
 - Context: OpenStreetMap via one Overpass query (`data/raw/osm/context.json`, committed, ODbL).
   Since 2026-10-13 the pipeline also uses what that snapshot already held and had ignored: the
   `building:part` ways (341 drawn; they replace 20 outlines and stand on 74 others) with their

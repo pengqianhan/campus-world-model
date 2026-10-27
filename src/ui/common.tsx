@@ -3,7 +3,7 @@ import type { ComponentChildren } from "preact";
 import { formatDate, has, pick, t } from "../app/i18n.ts";
 import type { AppData } from "../app/data.ts";
 import { formatMinutes, weekdayKey } from "../shared/time.ts";
-import type { Building, Layer, LayerVerdict, Session } from "../shared/types.ts";
+import { buildingCode, type Building, type Layer, type LayerVerdict, type Session } from "../shared/types.ts";
 
 const paths: Record<string, string> = {
   search: "M10.5 3a7.5 7.5 0 1 0 4.55 13.46l4.24 4.25 1.42-1.42-4.25-4.24A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z",
@@ -58,13 +58,8 @@ export function buildingTitle(b: Building): string {
   return /^Building \d/.test(name) ? "" : name;
 }
 
-/**
- * The code a building is known by: its OpenStreetMap `ref` for a building from OpenStreetMap,
- * which two buildings can share (their ids then add the element), else its id.
- */
-export function buildingCode(b: Building): string {
-  return b.ref ?? b.id;
-}
+/** The code a building is known by (`buildingCode` in shared/types.ts, where the walker reads it too). */
+export { buildingCode };
 
 /** The layers in the order the site names them when they are absent. */
 const ABSENT_ORDER: Layer[] = ["indoor", "timetable", "calendar", "subjects"];
@@ -79,6 +74,14 @@ export function absentLayers(d: AppData): { layer: Layer; verdict: Exclude<Layer
     const verdict = layers[layer];
     return verdict && verdict !== "usable" ? [{ layer, verdict }] : [];
   });
+}
+
+/**
+ * True when none of the school's buildings has a code (buildingCode): its buildings come from
+ * OpenStreetMap with no ref, as VUW's do, so the site names them by their names alone.
+ */
+export function noCodes(d: AppData): boolean {
+  return d.campus.buildings.length > 0 && d.campus.buildings.every((b) => !buildingCode(b));
 }
 
 /** True when the school's data says it has no floors and rooms to show: the Buildings form. */

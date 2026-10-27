@@ -2,8 +2,9 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what VUW publishes without
-a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data file
-comes with it.
+a sign-in, and on what terms. No fetch script and no data file came with it. Since #101 the
+Kelburn Campus is on the site in the Buildings form, from OpenStreetMap; this report is the recon as it
+was done.
 
 Path name if the school is added: `/vuw/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; the University's mail domain is `vuw.ac.nz`, its web domain `wgtn.ac.nz`). Time zone:

@@ -116,13 +116,15 @@ export function buildOsmCampus(
   }
 
   // The building's id is its code (`ref`); where two buildings carry the same code, each takes
-  // the code and its OpenStreetMap id, so that no code is made up and both can be told apart.
+  // the code and its OpenStreetMap id, so that no code is made up and both can be told apart. A
+  // building with no code takes its element (WAY-26127574), in capitals, as the app reads an id
+  // from an address in capitals (src/app/state.ts).
   const refCount = new Map<string, number>();
   for (const { tags } of taken) refCount.set(tags.ref ?? "", (refCount.get(tags.ref ?? "") ?? 0) + 1);
 
   const buildings: Building[] = taken.map(({ e, tags, outline }) => {
     const ref = tags.ref;
-    const id = ref && refCount.get(ref) === 1 ? ref : `${ref ?? e.type}-${e.id}`;
+    const id = ref && refCount.get(ref) === 1 ? ref : `${ref ?? e.type.toUpperCase()}-${e.id}`;
     const center = ringCentroid(outline[0]!);
     const name = tags.name ?? ref ?? id;
     const h = osmHeight(tags, ringArea(outline[0]!));
