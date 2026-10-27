@@ -9,17 +9,19 @@
 export const FOOT = -1.0;
 
 export const MEASURED = {
-  // The main range: two storeys of rock-faced stone under a red tile roof, hipped at both ends. Ridge
-  // 9.2-9.6 m (p5-p95) along z 1.5 to 3.5; eaves about 7.3 m (8.0 m over the front wall between the
-  // pavilions, 7.0 m at the back). Its front wall stands back between the pavilions (z 8.2).
-  range: { x: [-19.9, 17.0], z: [-4.4, 8.2], eave: 7.3, ridge: 9.5, ridgeZ: 1.9, floor: 3.6 },
-  // The two pavilions on the lawn side, each a gable toward the lawn: walls to 7.4 m at the corners, the
-  // gable's apex 8.3-8.6 m, a low roof along z behind it (8.0-8.15 m on its ridge).
+  // The main range: two storeys of rock-faced stone. Its red tile roof covers the front of it: the ridge at
+  // 9.5 m along z 3.0 from x -17 to 17 (the 90th percentile in each metre: 9.3-9.7), its slopes falling
+  // about 0.5 m a metre to 7.2 m at the front wall (z 8.2) and to 7.3 m at z -1.6; hipped only in the
+  // last metre or so at each end (8.9 m at x -18). Behind it, over the back of the range (z -4.4 to -1.6), a
+  // flat roof at 6.6-7.4 m (7.0). Its front wall stands back between the pavilions (z 8.2).
+  range: { x: [-19.9, 17.0], z: [-4.4, 8.2], eave: 7.2, ridge: 9.5, ridgeZ: 3.0, back: -1.6, hip: 0.8, flat: 7.0, floor: 3.6 },
+  // The two pavilions on the lawn side, each a gable toward the lawn: walls to 7.0-7.4 m at the sides, the
+  // gable's apex 8.5-8.6 m, a low roof along z behind it (8.3 m on its ridge, the 90th percentile).
   pavilions: [
     { x: [-17.7, -7.4], z: [8.2, 13.05] },
     { x: [6.7, 17.0], z: [8.2, 13.05] },
   ],
-  pavilion: { eave: 7.4, apex: 8.5, ridge: 8.1 },
+  pavilion: { eave: 7.2, apex: 8.55, ridge: 8.3 },
   // The stair tower in the middle of the front: a plain block 0.8 m proud of the wall, flat-topped at
   // 10.3-10.4 m, its body running back into the range to about z 6.
   tower: { x: [-3.1, 2.3], z: [6.0, 9.0], top: 10.35 },
