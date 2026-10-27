@@ -27,9 +27,24 @@ export const MEASURED = {
   // where something joins it; the campus outline says -9.1 to 9.1). From above (run.sh topview) the
   // footprint IoU against the LiDAR goes from 0.800 to 0.906, block 801 under the model 93.8% to 99.6%.
   // A flat roof at 14.0 m (the median in every 2 m along it, 13.9-14.1), its parapet to 14.2 m. Along
-  // the south-east side (z -9.4 to about -6.8) the top storey slopes back: 10.5 m at z -9 to 12.9 m at
-  // z -7 (medians of each 2 m).
-  block: { x: [-18.3, 21.3], z: [-9.4, 10.9], roof: 14.0, parapet: 14.2, slope: { z: [-9.4, -6.8], low: 10.5 } },
+  // the south-east side the top storey stands back behind a terrace (round 2, medians in 0.5 m bands
+  // across the side, in four lengths of it; round 1 read medians of 2 m bands as a slope from 10.5 m to the
+  // roof): the terrace's roof at 10.45 m (10.44-10.48) from the side wall (z -9.4) to z -6.4, where the top
+  // storey's wall rises to the roof (12.5-12.9 in the band z -6.5 to -6.0, 13.9 beyond it; at -6.0 in the
+  // last 7 m, x 14 to 21); along its edge (z -9.5 to -9.0) a parapet, 11.05-11.3 m: 11.1.
+  block: { x: [-18.3, 21.3], z: [-9.4, 10.9], roof: 14.0, parapet: 14.2, terrace: { z: [-9.4, -6.4], y: 10.45, parapet: 11.1 } },
+  // On the roof (round 2), from the LiDAR's building points above 14.9 m inside the block, in 0.5 m cells;
+  // no photograph shows them (the street end's top hides them from the street): a plant room at x 2.2 to
+  // 8.2, z 5.1 to 10.6, 15.6 m (median), with a taller part at x 8.2 to 11.2, z 5.1 to 10.1, 16.6 m (the
+  // building's highest point, 16.69 m); two low units, x -14.3 to -11.3, z 3.6 to 6.1, 15.0 m, and x 3.2
+  // to 8.7, z -6.9 to -3.4, 15.05 m. The points at 19.6 m along z 10.1 to 11.1 from x 12.7 to 21.7 are the
+  // wall of the taller building next door, not this one's.
+  plant: [
+    { x: [2.2, 8.2], z: [5.1, 10.6], y: 15.6 },
+    { x: [8.2, 11.2], z: [5.1, 10.1], y: 16.6 },
+    { x: [-14.3, -11.3], z: [3.6, 6.1], y: 15.0 },
+    { x: [3.2, 8.7], z: [-6.9, -3.4], y: 15.05 },
+  ],
   // The street end (x -18.3), z -9.6 to 10.9: the LiDAR's building points within a metre of it (x -18.5
   // to -17.5) run from z -9.6 to +10.9, the white end that every photograph shows. Its top: the LiDAR's
   // highest points along it are 14.7-14.9 m from z -5.5 to the north-west edge, and fall to 12.8 m at its

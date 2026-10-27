@@ -114,7 +114,22 @@
     "width": 1200,
     "height": 900
    }
-  ]
+  ],
+  "camera_fixes_note": "the three panoramas of 2024-08 record their cameras about 1 m to the right of where the LiDAR puts the street end, as seen from the street (round 1, 2026-10-27, parts/common.js): v8ia's camera fitted to its wide view's own edges (the end's two side edges at rows 50 and 150, columns 360 and 1490, on the LiDAR's edges of the end at z -9.6 and +10.9; the two piers' feet, rows 772-780, on the street at -0.75 m) is 0.32 m nearer and 1.06 m to the left (residuals 0.08 m or less); the same fit to the street end's drawn openings (bays, window bands, vehicle way) moves mdk1's 0.87 m and MH15's 1.39 m to the left (rms 10 and 8 px over 12 and 9 points). All three the same way, from one drive: an offset between Street View's positions and the LiDAR, not a model's error. Their views are cut from the panoramas as before; only the camera they are drawn from moves",
+  "camera_fixes": {
+   "v8ia-KiFy8InsSKu-68fcg": [
+    -30.38,
+    -2.71
+   ],
+   "mdk1IFK9FpXz58gtNvcvow": [
+    -31.29,
+    7.48
+   ],
+   "MH15gD4Eo-K2ekDNdhtQiQ": [
+    -29.99,
+    -13.25
+   ]
+  }
  },
  "light": {
   "sunaz": 305,
@@ -126,8 +141,8 @@
    0.24
   ],
   "groundshade": 0.6,
-  "exposure": 1.3,
-  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins). The three panoramas (2024-08) show the street end, which faces north-east (bearing 44.5 deg), with no shadow cast on it by its piers, its top storey or its canopy, and sunlit patches on the street in front: the end is in open shade, so the sun was behind it, past bearing 314.5 deg, which in August is after about 14:30 NZST; 305 deg and 25 deg up is about 15:00, inferred, not read from the photographs. Without this block the sun is the Clock Tower's July morning, low in the north-east and full on this end (round 0: building region luma p50 239 drawn, 141 in the photographs, p90 245 against 244). A sunlit street below the horizon (ground, groundshade, as Old Government House's) and exposure 1.3 bring the shaded white cladding to p90 233 against 241-254 in the photographs; at 0.8 it was 170. The median is then 158 drawn against 139: the kit's glass draws at luma 15-40, where the photographs' glass, reflecting the sunlit buildings across the street, is 90-130."
+  "exposure": 2.2,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins). The three panoramas (2024-08) show the street end, which faces north-east (bearing 44.5 deg), with no shadow cast on it by its piers, its top storey or its canopy, and sunlit patches on the street in front: the end is in open shade, so the sun was behind it, past bearing 314.5 deg, which in August is after about 14:30 NZST; 305 deg and 25 deg up is about 15:00, inferred, not read from the photographs. Without this block the sun is the Clock Tower's July morning, low in the north-east and full on this end. A sunlit street below the horizon (ground, groundshade, as Old Government House's) lights the shaded end from below. The camera exposed for the shade, so the white cladding is near white in every photograph: with sky_mask.pale_tint keeping it in the building region, the region's luma median is 237-253 in the photographs (248 on the mean of the nine views). Exposure 2.2 (round 2) brings the drawn median to 241-242, within 11 of every view's and 6 on the mean; at 1.3 (round 1) it was 230-233, 16 below on the mean, and at 1.7 237-239, four views more than 12 below. The panes are the kit's glassPale (round 2): the photographs' glass reflects the sunlit buildings across the street (luma 90-130), where the kit's glass drew 15-40."
  },
  "refine": {
   "position_m": 3,
@@ -137,9 +152,12 @@
   "min_height_m": 4,
   "scale": 0.25,
   "prior": 0.01,
-  "min_gain": 0.2,
   "min_sky": 0.2,
   "max_solid": 0.5,
-  "note": "min_gain 0.2 (else 0.01) keeps every panorama at its Street View camera. The sky masks take this building's shaded white cladding for pale sky (mdk1's wide view: the top storey's face and the left pier), so mdk1's search ran to its bounds on three of five axes (dy +1.0, dz -3.0, pitch +2.0) and moved the end's south-east corner from 30-37 px off the photograph to 68-82 px off. v8ia's (13% sky round the silhouette) and MH15's (12%) are not applied either way: their searches (dx +1.9, dz +0.4 and +2.6) disagree with a fit to the street end's own openings by 1.5-4 m, pulled by the white neighbours the masks count as solid. That fit is in parts/common.js; min_sky stays 0.2, and the masks are as tools/sky_mask.py makes them (no branches_deg: there are no bare branches)."
+  "note": "refine corrects no camera from where streetview.camera_fixes puts them (round 2, 2026-10-27). With the cladding solid in the masks (sky_mask.pale_tint) the sky round each silhouette is 5-27% and the solid 53-71%, the white neighbours either side and the tower behind standing next to it, so the reliability test (min_sky 0.2, max_solid 0.5) applies no search; the searches ran to their bounds (dx +2.1 to +3.0 m, dy +0.6 to +1.0 m), pulled toward those neighbours. min_gain is the default again (round 1 set 0.2 while the masks took the cladding for sky)."
+ },
+ "sky_mask": {
+  "pale_tint": 8,
+  "note": "tools/sky_mask.py: the street end's white cladding is in open shade and the camera exposed for it, so it is as white as a hazy sky (R = G = B 233-254, blue minus red -4 to +2 in every box measured) and the masks took it for pale sky wherever it touches the top of a view (35-56% of the model's own pixels in the door views, 48% in mdk1's wide view). With pale_tint 8 the pale sky must be tinted blue (the sky's pale blue here is 18-21 above red): 0-4% of the model's pixels are then sky in every view; the sky's own clipped white over the raked corner in mdk1's wide view goes to solid with the cladding. 4 to 16 give 0-5% too."
  }
 }

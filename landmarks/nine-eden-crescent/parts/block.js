@@ -1,5 +1,5 @@
-// The block (parts/common.js MEASURED): four storeys of white cladding under a flat roof, the top storey
-// sloping back along the south-east side. The street end (-x) as the three panoramas from Eden Crescent show
+// The block (parts/common.js MEASURED): four storeys of white cladding under a flat roof with plant on it,
+// the top storey standing back behind a terrace along the south-east side. The street end (-x) as the three panoramas from Eden Crescent show
 // it, every size measured in round 1 (parts/common.js, "street"): a white top storey whose face comes down
 // over three bays set back between two white piers, its corner raked on the south-east; in the bays a
 // band of glazing on each of the two storeys below it, the right bay's lower one taller; downstairs a
@@ -7,30 +7,34 @@
 // stand against their neighbours and the far end faces a slope behind: no photograph shows them, so they
 // are plain white walls.
 import { MEASURED as M, FOOT } from "./common.js";
-import { wall, facing, tris } from "./shapes.js";
+import { wall, facing } from "./shapes.js";
 
 const T = 0.35; // the street end's thickness
 const STREET = -0.75; // the street at the end's foot (the LiDAR: -0.72), where the vehicle way opens
 
 export function block(b) {
-  const B = M.block, S = M.street, [s0, s1] = B.slope.z;
-  // the body behind the street end, up to the roof, and the lower part along the sloping side; below the
+  const B = M.block, S = M.street, R = B.terrace, [s0, s1] = R.z;
+  // the body behind the street end, up to the roof, and the lower part along the terrace side; below the
   // top storey it starts D behind the end's face, so that the bays' openings look into rooms and the vehicle
-  // way into its dark passage, closed at its two sides
+  // way into its dark passage, closed at its two sides. Each roof is a grey slab on its walls' top, the
+  // walls stopping under it, so that no two faces lie in one plane.
   const D = S.recess + T + 1.25, top = S.bayTop;
-  b.box(B.x[0] + T, B.x[1], top, B.roof, s1, B.z[1], "paint");
+  b.box(B.x[0] + T, B.x[1], top, B.roof - 0.1, s1, B.z[1], "paint");
   b.box(B.x[0] + D, B.x[1], FOOT, top, s1, B.z[1], "paint");
-  b.box(B.x[0] + T, B.x[1], top, B.slope.low, B.z[0], s1, "paint");
-  b.box(B.x[0] + D, B.x[1], FOOT, top, B.z[0], s1, "paint");
+  b.box(B.x[0] + T, B.x[1], top, R.y - 0.1, s0, s1, "paint");
+  b.box(B.x[0] + D, B.x[1], FOOT, top, s0, s1, "paint");
   b.box(B.x[0] + T, B.x[0] + D, FOOT, top, B.z[1] - 0.3, B.z[1], "paint");
-  b.box(B.x[0] + T, B.x[0] + D, FOOT, top, B.z[0], B.z[0] + 0.3, "paint");
-  // the sloping side of the top storey: one plane from its low edge up to the roof, facing up and out
-  const a0 = [B.x[0] + T, B.slope.low, s0], a1 = [B.x[1], B.slope.low, s0], r0 = [B.x[0] + T, B.roof, s1], r1 = [B.x[1], B.roof, s1];
-  tris(b, [[a0, r1, a1], [a0, r0, r1]], "roofGrey");
+  b.box(B.x[0] + T, B.x[0] + D, FOOT, top, s0, s0 + 0.3, "paint");
+  // the terrace along the south-east side, its parapet on the edge, and the top storey's wall behind it
+  // (the face of the box above, at z = s1)
+  b.box(B.x[0] + T, B.x[1], R.y - 0.1, R.y, s0 + 0.25, s1, "roofGrey");
+  b.box(B.x[0] + T, B.x[1], R.y - 0.1, R.parapet, s0, s0 + 0.25, "paint");
   // the flat roof and its parapet
-  b.box(B.x[0] + T, B.x[1], B.roof - 0.1, B.roof, s1, B.z[1], "roofGrey");
-  b.box(B.x[0] + T, B.x[1], B.roof, B.parapet, B.z[1] - 0.25, B.z[1], "paint");
-  b.box(B.x[1] - 0.25, B.x[1], B.roof, B.parapet, s1, B.z[1], "paint");
+  b.box(B.x[0] + T, B.x[1] - 0.25, B.roof - 0.1, B.roof, s1, B.z[1] - 0.25, "roofGrey");
+  b.box(B.x[0] + T, B.x[1], B.roof - 0.1, B.parapet, B.z[1] - 0.25, B.z[1], "paint");
+  b.box(B.x[1] - 0.25, B.x[1], B.roof - 0.1, B.parapet, s1, B.z[1] - 0.25, "paint");
+  // the plant on the roof, plain grey boxes at the LiDAR's sizes
+  for (const p of M.plant) b.box(p.x[0], p.x[1], B.roof - 0.1, p.y, p.z[0], p.z[1], "roofGrey");
   // the street end, facing -x: in that turned frame x runs along +z (to the right as seen from the street)
   // and the end's face is at z = F
   facing(b, "-x", 0, 0, () => {

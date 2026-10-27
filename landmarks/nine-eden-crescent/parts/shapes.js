@@ -35,7 +35,7 @@ export function tris(b, list, material) {
 function ribbon(b, w, front) {
   const { x, y, w: W, h, reveal = 0.15, frame = 0.06, bay = 1.3 } = w;
   const zf = front - reveal, zg = zf - 0.02, list = [];
-  b.box(x - W / 2, x + W / 2, y, y + h, zg - 0.01, zg, "glass");
+  b.box(x - W / 2, x + W / 2, y, y + h, zg - 0.01, zg, "glassPale");
   list.push([x - W / 2, x - W / 2 + frame, y, y + h, zf - 0.05, zf], [x + W / 2 - frame, x + W / 2, y, y + h, zf - 0.05, zf]);
   list.push([x - W / 2, x + W / 2, y, y + frame, zf - 0.05, zf], [x - W / 2, x + W / 2, y + h - frame, y + h, zf - 0.05, zf]);
   const n = Math.max(1, Math.round(W / bay));
