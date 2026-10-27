@@ -189,7 +189,7 @@ export const school: School = {
       {
         when: { name: null },
         take: false,
-        reason: `No name to call it by: OpenStreetMap gives Massey's buildings no building code (ref), and this one no name tag (the house name of an address is not read as a name). ${SURROUNDINGS}`,
+        reason: `No name to call it by: it has no name tag and no building code (ref) (the house name of an address is not read as a name). ${SURROUNDINGS}`,
       },
       { when: { operator: MASSEY }, take: true, reason: "operator=Massey University, and a name." },
       {
@@ -221,15 +221,18 @@ export const school: School = {
       },
     ],
     provides:
-      "Massey's buildings on its Manawatū, Auckland and Wellington campuses, picked by their operator, building and name tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
+      "Massey's buildings on its Manawatū, Auckland and Wellington campuses, picked by their operator, building, name and address tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
   },
   /** docs/schools/massey.md, "Verdicts". */
   layers: {
     buildings: "usable",
     indoor: "needs-permission",
     timetable: "needs-permission",
-    calendar: "usable",
-    subjects: "usable",
+    // Massey's key dates and course list are open for non-commercial reuse (massey.md, layers 4 and 5),
+    // but the site does not read them: a new source is the maintainer's decision (a gate), so they are
+    // absent, and About says why. The app reads "usable" as shown.
+    calendar: "needs-permission",
+    subjects: "needs-permission",
     terrain: "usable",
   },
 };

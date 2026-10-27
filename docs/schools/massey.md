@@ -21,7 +21,8 @@ address of a campus), and Singapore (a partner's campus abroad, outside LINZ's g
 **Massey's own host.** The research browser (`scripts/research/polite.mjs`, documents only) asked
 `www.massey.ac.nz` for its `robots.txt` and then its home page, once, on 2026-10-28 at 01:18
 (New Zealand time), for the school's name and the brand-colour check (DESIGN.md, section 6): two
-requests, since `polite.mjs` asks for a host's `robots.txt` before anything else. The page
+requests by `polite.mjs`'s design, which asks for a host's `robots.txt` before anything else (the
+reader's own count and log of what it sent were not kept, so the number is the design's, not read). The page
 answered (its status was not kept; no host was closed), and the browser blocked what it would have
 loaded (its stylesheets and images on `d2ub1k1pknil0e.cloudfront.net`, its scripts, and its icons).
 The reader that called it failed to save the page (its output folder did not exist), and no second
@@ -113,8 +114,11 @@ the Wellington map PDF this report read names a "K block", but no tag of theirs 
 Riddet Institute (two buildings, `website=https://www.riddet.ac.nz/`) and the Riddet Complex are
 taken by `building=university`; no tag of theirs names another body, as the Malaghan Institute's
 did at VUW. (3) The Massey Islamic Centre (`building=university`, `amenity=place_of_worship`) is
-taken by its tags; its contact tags (an email address and a phone number among them) are not read,
-and are published nowhere. (4) "Collinson Village" and three buildings named "2", "3" and "4" beside it are
+taken by its tags; its contact tags (an email address, a phone number, and a Facebook page named
+MasseyMuslimSociety, a student society's, which appears to run it) are not read and are not in the
+site's data (they are in the committed raw snapshot, as such tags are in the other schools'). Whether
+a student society's centre is Massey's is the kind of judgement the Otago students' association's
+buildings were (#111). (4) "Collinson Village" and three buildings named "2", "3" and "4" beside it are
 taken by `building=university`; their names do not say what they are. (5) Many of Massey's own
 buildings carry no tag that says Massey (`building=yes` or `office` with no operator): the Sir
 Geoffrey Peren Building, the Old Registry Building, the Refectory, the Geography Building and the
@@ -133,11 +137,14 @@ among them); the Wellington box 763 (16 named). The childcare centres (3 tagged 
 candidates. None of their names is in the published data; a test checks this.
 
 **The ground.** 24 tiles, 20 of them new: 9 under Manawatū, all naming LINZ's model
-(`nzlinz/lds-tile-kl`); 9 under Auckland, all naming `nzlinz/lds-tile-ek`, the 4 south-west of the
-campus with SRTM (`srtm/S37E174`) too and one of those with GMTED2010 as well; and 2 under
+(`nzlinz/lds-tile-kl`); 9 under Auckland, all naming `nzlinz/lds-tile-ek`, 4 of them with SRTM
+(`srtm/S37E174`) too and one of those with GMTED2010 as well, among them the tile under all eight
+Auckland buildings (`14/16142/9991`): which part of a tile each source gives is not recorded; and 2 under
 Wellington (`nzlinz/lds-tile-mk`). The other 4 under Wellington were already committed for VUW, and
 `docs/schools/vuw.md` logs the headers of 3 of them (`lds-tile-mk`, one with SRTM and GMTED over
-the harbour); they were not asked for again. So the shared terrain line in About holds for them.
+the harbour); they were not asked for again. About's terrain source names SRTM, GMTED2010 and
+ETOPO1 "at the coast"; at Albany SRTM is in the tile under the buildings too, and whether it gives
+any of the ground under them is not shown (a judgement for the maintainer, in the pull request).
 
 **A question for the maintainer: the key dates.** This report's layer 4 found Massey's key-dates page
 open, with Massey's licence for non-commercial reuse. Reading it is a fetch of a new source, a gate,

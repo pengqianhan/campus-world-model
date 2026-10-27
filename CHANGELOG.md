@@ -23,7 +23,8 @@ A change to what the site does or shows adds its line here, and the README's
   campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes
   the map to the Auckland campus at Albany and the Wellington campus at Mount Cook, 8 buildings
   each. The 55 buildings come from OpenStreetMap, picked by their `operator`,
-  `building=university` and `amenity=university` tags or a name that says Massey, each one block at
+  `building=university` and `amenity=university` tags, or a name or an address that says Massey,
+  each one block at
   its OpenStreetMap height (14 from their number of levels), else at a default, and labelled by
   name (the Sir Neil Waters Lecture Theatres by their code, SNW). Halls of residence and childcare
   centres stay unnamed among the surroundings; buildings with no name, and one whose own tags ask

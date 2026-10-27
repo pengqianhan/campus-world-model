@@ -573,7 +573,8 @@ project's first request to it; its class times answer only on its own network: s
 
 **Massey World Model** (`/massey/`) uses the same four sources and nothing of Massey University's
 own. OpenStreetMap gives the buildings of the Manawatū, Auckland and Wellington campuses, picked by
-their `operator`, `building=university` and `amenity=university` tags or a name that says Massey,
+their `operator`, `building=university` and `amenity=university` tags, or a name or an address that
+says Massey,
 with their names, outlines and, where tagged, heights, and the streets round them, from the
 snapshots of its three areas (`data/raw/osm/context-massey-manawatu.json`, `context-massey-auckland.json`
 and `context-massey-wellington.json`); `public/data/massey/campus.json`, `context.json` and
