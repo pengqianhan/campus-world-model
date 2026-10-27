@@ -286,6 +286,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     plain: Object.assign(new THREE.MeshStandardMaterial({ color: 0xfaf1dc, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
     // the General Library: shader hooks, no textures (the paint's own shader, so nothing new to make)
     grey: painted(0x8e9194, 0.75, space),               // mid-grey cladding and piers
+    // the Clock Tower East Wing: the pale roof's shader, no textures
+    roofTile: roofPale(0xa04a3a, space),                // red clay tiles (the 2023 aerial and the photographs)
   };
   return m;
 }
