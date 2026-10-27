@@ -92,8 +92,9 @@ does not read, so it stands at the 10 m default, labelled "estimated", and its p
 over it.
 
 **Te Aro: 1 building.** 139 Vivian Street, which OpenStreetMap names "Faculty of Architecture &
-Design" (`way/752299350`, `building=university`, 3 levels) and which holds the page's "Te Aro
-Campus" and "Library" points. Of the other buildings this recon names for Te Aro: the building on
+Design" (`way/752299350`, `building=university`, 3 levels) with no address: it holds the page's
+"Te Aro Campus" and "Library" points, and stands between 143 and 115 Vivian Street, the nearest
+numbers OpenStreetMap gives on either side. Of the other buildings this recon names for Te Aro: the building on
 Wigan Street behind it (`way/752299347`, `building=university`, 7 levels) has no name, so it is
 left out with that reason, as Kelburn's 25 unnamed are; Te Auaha (`way/430288873`, `building=yes`,
 `amenity=arts_centre`, `operator=Whitireia/Weltec/Te Pūkenga`) and NEC House (`way/190554680`,
