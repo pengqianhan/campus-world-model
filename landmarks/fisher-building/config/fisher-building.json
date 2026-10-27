@@ -262,6 +262,14 @@
    }
   ]
  },
+ "light": {
+  "sunaz": 300,
+  "sunel": 32,
+  "sun": 2.5,
+  "env": 3.6,
+  "exposure": 0.62,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins). The two panoramas are of April 2026 (autumn), partly cloudy. In MGAo's tower view the shaft's face left of the slot (facing bearing 248 deg) is brighter than the face right of it (bearing 222 deg), luma 131-133 against 112-114, so the sun stood west of both, toward the north-west: 300 deg and 32 deg up is mid-afternoon in April (about 35 deg at 14:00 and 27 deg at 15:00, solar time), inferred, not read from the photographs, as is everything here but the side. The sun is soft (2.5, the viewer's default 8) and the sky strong (3.6): the drawn faces then differ by 19, as the photograph's do (21 at sun 4 with sky 3.6, 26 at the default sun); exposure 0.62 puts the building's median within 8 of the photographs in W9y5's four views and MGAo's tower view (the faces 9 above the photograph's), and leaves MGAo's upper and door views 18 and 20 below, where the photographs show the ramp's white parapet that the model does not draw. Without this block the sun is the Clock Tower's July morning, low in the north-east, and every face the photographs show was in shade (round 1: the drawn median luma 104 against 131)."
+ },
  "refine": {
   "position_m": 3,
   "height_m": 1,

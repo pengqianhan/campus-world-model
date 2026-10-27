@@ -21,4 +21,6 @@ aerial show. What none of them shows is drawn plainly at the LiDAR's sizes.
 
 ## Light
 - The photographs are of a bright, partly cloudy day in April 2026 (autumn), the tower lit from the
-  north-west; trees in front, half bare.
+  north-west; trees in front, half bare. The shaft's face left of the slot is brighter than the face
+  right of it (luma 131-133 against 112-114 in MGAo's tower view): the sun stood west of both
+  (`light` in the config).

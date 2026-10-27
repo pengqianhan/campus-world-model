@@ -6,7 +6,7 @@ import { Builder } from "../kit/gothic.js";
 import { tower, shaft, floorBands } from "./parts/tower.js";
 import { wing } from "./parts/wing.js";
 import { slot } from "./parts/slot.js";
-import { canopy, deck, ramp } from "./parts/entrance.js";
+import { canopy, deck } from "./parts/entrance.js";
 
 const PARTS = {
   tower: (b) => tower(b),
@@ -16,13 +16,17 @@ const PARTS = {
   slot: (b) => slot(b),
   canopy: (b) => canopy(b),
   deck: (b) => deck(b),
-  ramp: (b) => ramp(b),
+  // parts/entrance.js's ramp (the white parapet along the street) is measured but not built: drawn with a
+  // fixed lower edge it stood far too tall at its near end, 9 m from MGAo's camera, and widened the model's
+  // screen box over the street and the trees (IoU in the box 0.853 -> 0.678 in MGAo's tower view). Its
+  // lower edge follows the ramp down to the street, which the photographs show only in part.
+  ramp: null,
 };
 
 export function build(materials, only) {
   const b = new Builder(materials);
   for (const [name, part] of Object.entries(PARTS)) {
-    if (only && !only.includes(name)) continue;
+    if (!part || (only && !only.includes(name))) continue;
     const t0 = performance.now();
     try { part(b); console.log(`part ${name}: ${(performance.now() - t0).toFixed(0)} ms`); }
     catch (e) { console.error(`part ${name} failed: ${e.stack}`); b.matrix = null; }
