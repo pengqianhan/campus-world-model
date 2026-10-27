@@ -3,8 +3,9 @@
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what VUW publishes without
 a sign-in, and on what terms. No fetch script and no data file came with it. Since #101 the
-Kelburn Campus is on the site in the Buildings form, from OpenStreetMap; this report is the recon as it
-was done.
+Kelburn Campus is on the site in the Buildings form, from OpenStreetMap, and since #PR the Pipitea
+and Te Aro campuses too (see "The three campuses on the site"); the rest of this report is the
+recon as it was done.
 
 Path name if the school is added: `/vuw/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; the University's mail domain is `vuw.ac.nz`, its web domain `wgtn.ac.nz`). Time zone:
@@ -53,6 +54,56 @@ Places to leave blank: the specialist-facilities page names University Kids Well
 "provides daycare to the families of staff and students"; the Kelburn campus map PDF has legend
 symbols for an "Early childhood centre" and for "Student hall of residence". The halls and the
 childcare centre were not located in this recon.
+
+## The three campuses on the site (2026-10-27)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each of Kelburn
+(#101), Pipitea and Te Aro (#PR) through `scripts/fetch-osm.ts`. No request went to VUW: the boxes
+come from the points on VUW's own campus pages as this recon saved them on 2026-10-22, 7 on
+Pipitea and 4 on Te Aro (points, names and coordinates as the pages give them):
+
+| Campus | Points on its page | Box (south, west, north, east) | Snapshot |
+| --- | --- | --- | --- |
+| Pipitea | Government Buildings—Law Faculty (-41.279564, 174.778131), Rutherford House (-41.278802, 174.7789), Law Library (-41.27975, 174.777766), Commerce Library (-41.278802, 174.779095), Bus station (-41.278488, 174.778871), Railway station (-41.279314, 174.780223), Bus stop to Kelburn Campus (-41.278776, 174.77852) | -41.2812, 174.7759, -41.2771, 174.7821: the points with 150 m of margin, rounded outwards, as Kelburn's first box was | `osm/context-vuw-pipitea.json`, 1,192 elements, Overpass base 2026-10-27 05:35:50 UTC |
+| Te Aro | Te Aro Campus (-41.295538, 174.775647), Library (-41.295651, 174.775904), Bus stop to Kelburn Campus (-41.293592, 174.776334), Bus stop from Kelburn Campus (-41.293382, 174.776301) | -41.2971, 174.7738, -41.29, 174.78: the points' box (-41.2971, 174.7738, -41.292, 174.7782) widened north and east, because its first snapshot (795 elements) held only the lowest numbers of Dixon Street and Taranaki Street at its north edge, and Te Auaha (65 Dixon Street) and NEC House (40 Taranaki Street) lay beyond it | `osm/context-vuw-te-aro.json`, 1,558 elements, Overpass base 2026-10-27 05:37:51 UTC; the first snapshot was replaced |
+
+The terrain tiles under both areas were already committed with Kelburn's (zoom 14, x 16145 and
+16146, y 10257 to 10259), so `scripts/fetch-terrain.ts` sent no request. The ground built from them
+reaches -1 m at its lowest on both campuses (Pipitea's tile meets the harbour; the build keeps no
+height under -2 m), and 161 m and 120 m at its highest.
+
+**The rule** is Kelburn's (`src/schools/vuw/school.ts`): a building with a name and
+`operator=Victoria University of Wellington`, or `building=university` with no operator. In each
+of the three boxes VUW is the only university. One change: a home is never a candidate, whatever
+its operator. Te Aro's box holds two homes tagged with VUW's operator, a hall of residence on
+Willis Street (`way/256790623`, `building=dormitory`) and a block of 78 flats on Haining Street
+(`way/1082249353`, `building=apartments`); the rule as it stood would have put both on the map by
+name. Floors where people live stay blank, and VUW's own test since #101 keeps every home's name out
+of the published data, so both stand in the surroundings with no name, as Kelburn's halls do.
+Kelburn's records do not change: no home in its box carries VUW's operator.
+
+**Pipitea: 3 buildings.** Old Government Buildings (`way/25636378`, 4 levels), which holds the
+page's "Government Buildings—Law Faculty" and "Law Library" points; Rutherford House
+(`way/1159101734`), which holds "Rutherford House" and "Commerce Library"; and the Law School
+Lecture Theatres beside the first (`way/25636381`, 1 level). All three are `building=university`
+with a name and no operator. Rutherford House's outline carries no height or levels: OpenStreetMap
+gives its storeys on 13 parts, up to 14 levels in its tower, which the height rule ("Decisions")
+does not read, so it stands at the 10 m default, labelled "estimated", and its parts are not drawn
+over it.
+
+**Te Aro: 1 building.** 139 Vivian Street, which OpenStreetMap names "Faculty of Architecture &
+Design" (`way/752299350`, `building=university`, 3 levels) and which holds the page's "Te Aro
+Campus" and "Library" points. Of the other buildings this recon names for Te Aro: the building on
+Wigan Street behind it (`way/752299347`, `building=university`, 7 levels) has no name, so it is
+left out with that reason, as Kelburn's 25 unnamed are; Te Auaha (`way/430288873`, `building=yes`,
+`amenity=arts_centre`, `operator=Whitireia/Weltec/Te Pūkenga`) and NEC House (`way/190554680`,
+`building=commercial`, no operator) are not tagged as VUW's, so they are not candidates and stand in
+the surroundings. A building shared with or run by another body is not shown as VUW's unless its
+tags say so (the Malaghan Institute, #101).
+
+**Left out: 30 in all** (Kelburn's 29 and Wigan Street's). Coverage: 56 buildings, all on the map
+(Kelburn 52, Pipitea 3, Te Aro 1); heights 46 from `building:levels`, 10 estimated, 0 from a
+`height` tag.
 
 ## What the site can do
 
@@ -234,7 +285,9 @@ read literally they match only paths that start `/__data/.`. This recon took the
    Publish, which the same message can ask for.
 5. **Overpass for Wellington.** Run `scripts/fetch-osm.ts` for new areas over Kelburn, Pipitea and
    Te Aro (and Miramar, Gracefield, Island Bay and Newtown if wanted), as for Auckland. Not
-   requested here, for the reasons in AUT's recon.
+   requested here, for the reasons in AUT's recon. Done for Kelburn (#101), Pipitea and Te Aro
+   (#PR) on 2026-10-27, on the maintainer's word; Miramar, Gracefield, Island Bay and Newtown are
+   not fetched.
 6. **The LINZ attribution page** (`www.linz.govt.nz`) answered 403 to a headless browser in AUT's
    recon. Read it in your own browser to confirm the credit wording for "Wellington City LiDAR 1m
    DEM (2025)", whose licensor is Wellington City Council.

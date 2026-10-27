@@ -10,8 +10,8 @@ their terms:
 - public/data/aut/campus.json: Auckland University of Technology's buildings, taken from
   OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database License 1.0. It holds
   nothing of Auckland University of Technology's own material.
-- public/data/vuw/campus.json: the Kelburn Campus buildings of Te Herenga Waka-Victoria University
-  of Wellington, taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database
+- public/data/vuw/campus.json: the Kelburn, Pipitea and Te Aro Campus buildings of Te Herenga
+  Waka-Victoria University of Wellington, taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database
   License 1.0. It holds nothing of Victoria University of Wellington's own material.
 - data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land
   Information New Zealand and the New Zealand Government, under CC BY 3.0 NZ.
