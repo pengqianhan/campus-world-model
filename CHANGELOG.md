@@ -20,8 +20,8 @@ A change to what the site does or shows adds its line here, and the README's
 
 - **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
   Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
-  streets. Its 53 buildings come from OpenStreetMap, picked by their `operator` and
-  `building=university` tags and their names, each one block at its OpenStreetMap height (44 from
+  streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and
+  `building=university` tags and their names, each one block at its OpenStreetMap height (43 from
   their number of levels), else at a default, and labelled by name: OpenStreetMap gives none of
   them a code. A building's card gives its name and height, says how the height was found, and
   links to its OpenStreetMap element. Rooms, class times, trimester dates and the course list are

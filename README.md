@@ -48,7 +48,7 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-27:** a third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 53 buildings
+- **2026-10-27:** a third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
   of VUW's Kelburn Campus from OpenStreetMap, each with its name and height and how the height was
   found; its rooms, class times, dates and course list are not shown, and the site says why.
   [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the

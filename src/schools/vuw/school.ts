@@ -70,18 +70,24 @@ export const school: School = {
         when: { man_made: /^bridge$/ },
         take: false,
         reason:
-          "A bridge between buildings (man_made=bridge), not a building that stands on the ground. It stays in the surroundings as a bridge, drawn from the height it starts at (min_height or building:min_level); where its tags give none, it is not drawn.",
+          "A bridge between buildings (man_made=bridge), not a building that stands on the ground. The surroundings keep it as a bridge, drawn from the height it starts at (min_height or building:min_level) unless it overlaps one of VUW's buildings on the map; where its tags give no height, it is not drawn.",
       },
       {
         when: { "building:min_level": /./ },
         take: false,
         reason:
-          "It starts above the ground (building:min_level): a bridge or storeys over a passage, not a building that stands on the ground. It stays in the surroundings, drawn from the height it starts at.",
+          "It starts above the ground (building:min_level): a bridge or storeys over a passage, not a building that stands on the ground. The surroundings draw it from the height it starts at, unless it overlaps one of VUW's buildings on the map.",
       },
       {
         when: { name: null },
         take: false,
-        reason: "No name to call it by: OpenStreetMap gives VUW's buildings no building code (ref), and this one no name. It stays in the surroundings.",
+        reason: "No name to call it by: OpenStreetMap gives VUW's buildings no building code (ref), and this one no name. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
+      },
+      {
+        when: { name: /^Malaghan Institute/ },
+        take: false,
+        reason:
+          "The Malaghan Institute of Medical Research, by its name and its wikidata tag an independent research institute, not a part of VUW, although it stands on the campus and is tagged building=university. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
       },
       { when: { operator: VUW }, take: true, reason: "operator=Victoria University of Wellington, and a name." },
       {
@@ -92,7 +98,7 @@ export const school: School = {
       {
         when: { operator: /./ },
         take: false,
-        reason: "Its operator tag names another operator, not VUW. It stays in the surroundings.",
+        reason: "Its operator tag names another operator, not VUW. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
       },
     ],
     provides:
