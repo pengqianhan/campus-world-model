@@ -1,0 +1,196 @@
+{
+ "name": "clock-tower-east-wing",
+ "site": false,
+ "building": {
+  "id": "119",
+  "also": [],
+  "title": "The Clock Tower East Wing, University of Auckland",
+  "note": "outline: building 119's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    51,
+    199.4
+   ],
+   [
+    58,
+    192.9
+   ],
+   [
+    59.5,
+    194.5
+   ],
+   [
+    62.9,
+    191.3
+   ],
+   [
+    63.2,
+    191
+   ],
+   [
+    61.8,
+    189.2
+   ],
+   [
+    68.8,
+    182.6
+   ],
+   [
+    70.5,
+    184.2
+   ],
+   [
+    73.9,
+    181.1
+   ],
+   [
+    72.4,
+    179.4
+   ],
+   [
+    77.8,
+    174.2
+   ],
+   [
+    66,
+    161.6
+   ],
+   [
+    58.4,
+    168.5
+   ],
+   [
+    61.7,
+    172
+   ],
+   [
+    58.5,
+    175.1
+   ],
+   [
+    57.9,
+    174.5
+   ],
+   [
+    54,
+    178.2
+   ],
+   [
+    54.5,
+    178.8
+   ],
+   [
+    51.4,
+    181.7
+   ],
+   [
+    48.1,
+    178.2
+   ],
+   [
+    40.6,
+    185.2
+   ],
+   [
+    48.8,
+    194
+   ]
+  ],
+  "outline_note": "building 119's outline from campus.json without its north-west tail (four points: the low link to the Clock Tower, under trees), so that the Clock Tower's own points and the trees over the link do not count as this building's; the model still draws the link."
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 40,
+ "door": {
+  "x": -0.4,
+  "z": 9,
+  "note": "view frame: the foot of the stair tower's face toward the car park, where the LiDAR ground is 40.0 m (-0.06 to +0.08 within a metre of it), so ground is 40.0 and the model's y is 0 there. The photographs show no doorway in that face: this point only sets where the model meets the map's ground; place.py puts it on the map"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) within near_outline m of building 119's outline without its north-west tail (building.outline_note): centre = mean x/y of points higher than tower_above m (the ridges of the range and the tops of the towers); axis = the bearing of most of the walls seen from above (axis_from walls: -45.44 deg; the principal axis of the points between min_above and spine_below m within spine_radius m, -44.18 deg, is 1.3 deg from it), pointing north-west as street_side is west; toStreet = the axis turned 90 deg toward street_side: south-west, to the lawn and the car park.",
+  "min_above": 3,
+  "tower_above": 9,
+  "spine_below": 9,
+  "spine_radius": 40,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    65.7939715,
+    181.36386605
+   ],
+   "axis": [
+    -0.71256515,
+    0.70160595
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 4,
+  "pano_ids_note": "the four Google panoramas within 80 m on the lawn side (2025-05, 28 to 62 m away, a walk across the campus). Left out: three Google panoramas on Princes Street (2024-07, 80 to 97 m, behind the Clock Tower South Wing) and two user-contributed ones (not Google's; the loop uses Google's own only).",
+  "pano_ids": [
+   "EX9bpguQ8sqJNRHzW1bGYg",
+   "fF8qpg3HX5EKEJL3GdXL_w",
+   "51j5uFdrPwCxjQgoWwhFAw",
+   "-JHjlDamgiNBcNHlHHMARQ"
+  ],
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}

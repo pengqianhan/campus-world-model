@@ -4,7 +4,7 @@
     {
       "file": "landmarks/aerial/auckland-central_2023_0.06m/BA32_2000_1802.tiff",
       "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_1802.tiff",
-      "fetchedAt": "2026-10-21T11:52:18.604Z",
+      "fetchedAt": "2026-10-27T00:24:26.900Z",
       "bytes": 481927218,
       "sha256": "1b21460fa0db2afd353e50b5f1aae5a9b6bc1c53bb862de7a16498e44e13c209",
       "source": "linz-aerial"
@@ -116,7 +116,7 @@
     {
       "file": "landmarks/streetview/metadata/-JHjlDamgiNBcNHlHHMARQ.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=-JHjlDamgiNBcNHlHHMARQ",
-      "fetchedAt": "2026-10-21T18:13:54.957Z",
+      "fetchedAt": "2026-10-27T00:26:08.673Z",
       "bytes": 1908,
       "sha256": "e0a9ec10e03e74983092de05d1e2c1032eb80cded54524e552782062177fb5f3",
       "source": "streetview"
@@ -252,9 +252,9 @@
     {
       "file": "landmarks/streetview/metadata/51j5uFdrPwCxjQgoWwhFAw.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=51j5uFdrPwCxjQgoWwhFAw",
-      "fetchedAt": "2026-10-21T18:14:01.470Z",
-      "bytes": 1912,
-      "sha256": "680a0651a9f46f6f534ebc1d728a83d4f3e484d41a03a04a65931910c7b90cab",
+      "fetchedAt": "2026-10-27T00:26:09.538Z",
+      "bytes": 2036,
+      "sha256": "64f9e308431a659b7096bcfd900607a97450d0c1ec0782da54ce73cf899498af",
       "source": "streetview"
     },
     {
@@ -484,9 +484,9 @@
     {
       "file": "landmarks/streetview/metadata/BzLXhduiOSVWLFibK5oF_w.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=BzLXhduiOSVWLFibK5oF_w",
-      "fetchedAt": "2026-10-21T22:04:21.072Z",
-      "bytes": 1542,
-      "sha256": "94e231bd669b5457e6fdfc5a79032006921c04f53af95277a652bfc3abbbf3fb",
+      "fetchedAt": "2026-10-27T00:26:10.666Z",
+      "bytes": 2115,
+      "sha256": "917aef26dd166e2fb05895c36f88162acc2bea00a202c1de762a61eb5d757cd6",
       "source": "streetview"
     },
     {
@@ -644,9 +644,9 @@
     {
       "file": "landmarks/streetview/metadata/CAoSFkNJSE0wb2dLRUlDQWdJQ0U3NmlBSWc..json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=CAoSFkNJSE0wb2dLRUlDQWdJQ0U3NmlBSWc.",
-      "fetchedAt": "2026-10-21T18:14:11.335Z",
-      "bytes": 1133,
-      "sha256": "2a60877f84a36fa5cdaed2948c5044d624a5b80e8af07a0928eaf4f8039c78e6",
+      "fetchedAt": "2026-10-27T00:26:11.804Z",
+      "bytes": 1453,
+      "sha256": "872644a0003afd84e9c9a0a7360fc7ebf946d423a0c52e05b54ef1a14cb77b79",
       "source": "streetview"
     },
     {
@@ -708,7 +708,7 @@
     {
       "file": "landmarks/streetview/metadata/CAoSFkNJSE0wb2dLRUlDQWdJREUwSnlYTnc..json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=CAoSFkNJSE0wb2dLRUlDQWdJREUwSnlYTnc.",
-      "fetchedAt": "2026-10-21T14:42:17.637Z",
+      "fetchedAt": "2026-10-27T00:26:12.891Z",
       "bytes": 1681,
       "sha256": "7ecab9f03ea1d285ea13fb48f21b14dd8856f905fde0a94a9382ebc40d125441",
       "source": "streetview"
@@ -780,9 +780,9 @@
     {
       "file": "landmarks/streetview/metadata/cjspQ80RX9ETC35IlSTDAg.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=cjspQ80RX9ETC35IlSTDAg",
-      "fetchedAt": "2026-10-21T11:53:24.580Z",
-      "bytes": 2189,
-      "sha256": "73488fa0c462a664a96ab38dc8f82162b892c42901d8df35e547c4cfa7b21314",
+      "fetchedAt": "2026-10-27T00:26:15.131Z",
+      "bytes": 2058,
+      "sha256": "1f2d6a13f65f69540d9abdacbb6b85001185a8684e22a0398b57a0415aa1381e",
       "source": "streetview"
     },
     {
@@ -876,7 +876,7 @@
     {
       "file": "landmarks/streetview/metadata/EX9bpguQ8sqJNRHzW1bGYg.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=EX9bpguQ8sqJNRHzW1bGYg",
-      "fetchedAt": "2026-10-21T11:53:20.145Z",
+      "fetchedAt": "2026-10-27T00:26:13.955Z",
       "bytes": 1754,
       "sha256": "4d6efbb46e5b03a9e81450589cdc03e1c1c353b1014744045a6e14348b422da0",
       "source": "streetview"
@@ -892,7 +892,7 @@
     {
       "file": "landmarks/streetview/metadata/fF8qpg3HX5EKEJL3GdXL_w.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=fF8qpg3HX5EKEJL3GdXL_w",
-      "fetchedAt": "2026-10-21T18:14:35.710Z",
+      "fetchedAt": "2026-10-27T00:26:16.202Z",
       "bytes": 1913,
       "sha256": "424569afe61604fdce24b1eab0f65dda2fceed825e5cbd338d89338bef6b6b88",
       "source": "streetview"
@@ -1396,9 +1396,9 @@
     {
       "file": "landmarks/streetview/metadata/vZGerxft16XkEqwkq4yjrQ.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=vZGerxft16XkEqwkq4yjrQ",
-      "fetchedAt": "2026-10-21T18:14:46.749Z",
-      "bytes": 1910,
-      "sha256": "86b6e6785d53cc2b6e1423e5b7856f4ee07a802a1301e07a393d3e74fb256592",
+      "fetchedAt": "2026-10-27T00:26:17.333Z",
+      "bytes": 2120,
+      "sha256": "4263e1a4ed6b39d7122e4aa04e11bc153c476957d1bf8ab7669b41e1282baee6",
       "source": "streetview"
     },
     {
@@ -1578,6 +1578,14 @@
       "source": "streetview"
     },
     {
+      "file": "landmarks/streetview/panoIds/75052bc68c17bb36.json",
+      "url": "https://tile.googleapis.com/v1/streetview/panoIds?session=<session>",
+      "fetchedAt": "2026-10-27T00:26:06.986Z",
+      "bytes": 980,
+      "sha256": "8d0c4436de434de5c94632beaa9e5c0d74d8d282f9b86e61ed8ca535e31b9bed",
+      "source": "streetview"
+    },
+    {
       "file": "landmarks/streetview/panoIds/9277339cd960307b.json",
       "url": "https://tile.googleapis.com/v1/streetview/panoIds?session=<session>",
       "fetchedAt": "2026-10-21T18:13:51.781Z",
@@ -1604,19 +1612,19 @@
     {
       "file": "landmarks/streetview/session.json",
       "url": "https://tile.googleapis.com/v1/createSession",
-      "fetchedAt": "2026-10-21T11:51:23.934Z",
+      "fetchedAt": "2026-10-27T00:26:06.536Z",
       "bytes": 202,
-      "sha256": "29044bf042149aaa3e936af1658d4f4c6f95b76dcbaa3147ea49563f3b5cab0c",
+      "sha256": "2298a84922e99443ea89b867f0562ac30ebb4d5dd98a1783125e8c4c5a583b66",
       "source": "streetview"
     },
     {
       "file": "landmarks/streetview/tiles/-JHjlDamgiNBcNHlHHMARQ",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=-JHjlDamgiNBcNHlHHMARQ",
-      "fetchedAt": "2026-10-21T22:40:12.572Z",
-      "bytes": 825578,
-      "sha256": "8a26d562680be51358816dc9ab6eb4fd92fafb242e95b7bb0855429bf20ec64c",
+      "fetchedAt": "2026-10-27T00:38:07.416Z",
+      "bytes": 2972914,
+      "sha256": "7d0c84587e1750de389e4d3b2e638ec55effe980558cc6474bcbd5dd1b771158",
       "source": "streetview",
-      "count": 14
+      "count": 143
     },
     {
       "file": "landmarks/streetview/tiles/-qoaDrDmyudQuqbj-i64tQ",
@@ -1738,11 +1746,11 @@
     {
       "file": "landmarks/streetview/tiles/51j5uFdrPwCxjQgoWwhFAw",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=51j5uFdrPwCxjQgoWwhFAw",
-      "fetchedAt": "2026-10-21T18:16:04.834Z",
-      "bytes": 387840,
-      "sha256": "80e1a5f2a3512b397c81acd50b15a0e13cc44ad7b0b2ded4dd5501982babb41d",
+      "fetchedAt": "2026-10-27T00:35:29.152Z",
+      "bytes": 3949956,
+      "sha256": "28e85400d2288ed5cef3e243986e80ea7858320e57dba1d023896854786d40d1",
       "source": "streetview",
-      "count": 6
+      "count": 143
     },
     {
       "file": "landmarks/streetview/tiles/5w8kaFoBkWuw-AG_aMQiDg",
@@ -2017,11 +2025,11 @@
     {
       "file": "landmarks/streetview/tiles/EX9bpguQ8sqJNRHzW1bGYg",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=EX9bpguQ8sqJNRHzW1bGYg",
-      "fetchedAt": "2026-10-21T22:41:12.276Z",
-      "bytes": 2412058,
-      "sha256": "1061861463e3292e4ba5083bd613f111631813d0f379d9a48a6f765df44a74d9",
+      "fetchedAt": "2026-10-27T00:30:12.755Z",
+      "bytes": 3095296,
+      "sha256": "28184911f364db98056a3ecb7e35c512d9f43280c964c6ce0dbb2c81163a5140",
       "source": "streetview",
-      "count": 58
+      "count": 143
     },
     {
       "file": "landmarks/streetview/tiles/fEN9HNIQ0QFGPqRXjAQuYg",
@@ -2035,11 +2043,11 @@
     {
       "file": "landmarks/streetview/tiles/fF8qpg3HX5EKEJL3GdXL_w",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=fF8qpg3HX5EKEJL3GdXL_w",
-      "fetchedAt": "2026-10-21T23:11:23.488Z",
-      "bytes": 5311281,
-      "sha256": "35d6185bb06047c2e65a192ba3451e624458c144a10a992ef43550d65573a945",
+      "fetchedAt": "2026-10-27T00:32:50.844Z",
+      "bytes": 3782184,
+      "sha256": "c76f054c38191a9046c99e8850323a3a863dfb7ecbeec066108a0a3aafd46f08",
       "source": "streetview",
-      "count": 230
+      "count": 143
     },
     {
       "file": "landmarks/streetview/tiles/FgM3kuG9_JhiSGzF_ie17g",
