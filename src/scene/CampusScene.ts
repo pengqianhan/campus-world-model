@@ -43,6 +43,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { Building, CampusData, ContextData, FlatRing, Floor, FloorPlans, Room, SpaceKind, SpaceType } from "../shared/types.ts";
+import { drawnContext } from "../shared/types.ts";
 import { decodeRing, interiorPoint, pointInRing } from "../shared/geo.ts";
 import { groundLevel, massing, roofRims, withoutStrips } from "../shared/massing.ts";
 import { MeshBuilder, drape, levelSlope, ringsBounds, type FacadeSpec } from "./geometry.ts";
@@ -858,6 +859,9 @@ export class CampusScene {
       const bases: number[] = [];
       for (const b of ctx.buildings) {
         const shade = 0.93 + rand() * 0.1;
+        // A bridge whose base is not known is not drawn. It takes its shade all the same, so the
+        // buildings after it keep theirs.
+        if (!drawnContext(b)) continue;
         const foot = terrain ? terrain.footing(b.p) : { base: 0, low: 0 };
         const g = foot.base;
         const start = mb.vertexCount;

@@ -222,10 +222,22 @@ export interface ContextBuilding {
   p: FlatRing;
   /** Height of the top of the walls, metres above the ground. */
   h: number;
-  /** Height the walls start at, for a part that sits on top of another. Absent when it is the ground. */
+  /**
+   * Height the walls start at, for a part that sits on top of another or a building that starts
+   * above the ground, such as a bridge between two others. Absent when it is the ground.
+   */
   b?: number;
   roof?: ContextRoof;
+  /**
+   * OpenStreetMap maps it as a bridge between buildings (`man_made=bridge`, `building=bridge` or a `bridge` tag).
+   * A bridge without `b` has no height it starts at in its tags: it keeps its place in the list
+   * and is not drawn, walked round or stood on (`drawnContext`).
+   */
+  bridge?: true;
 }
+
+/** Whether a surrounding building is drawn: every one but a bridge whose base is not known. */
+export const drawnContext = (b: ContextBuilding): boolean => !b.bridge || !!b.b;
 
 export interface ContextData {
   version: 1;

@@ -4,6 +4,7 @@
 import { bbox, decodeRing, pointInRing, type Pt, type Ring } from "./geo.ts";
 import { massing } from "./massing.ts";
 import type { Building, ContextData, RoadClass } from "./types.ts";
+import { drawnContext } from "./types.ts";
 import {
   WALK_COST,
   blockPolygon,
@@ -101,8 +102,9 @@ export class WalkMap {
     this.walls = [...this.obstacles];
     if (!context) return;
     for (const cb of context.buildings) {
-      // A part that starts above the ground (an overhang, a bridge) is walked under.
-      if (cb.b) continue;
+      // A part that starts above the ground (an overhang, a bridge) is walked under, and a bridge
+      // whose base is not known is not drawn, so it is no wall.
+      if (cb.b || !drawnContext(cb)) continue;
       const shape = shapeOf([decodeRing(cb.p)]);
       this.obstacles.push(shape);
       this.walls.push(shape);

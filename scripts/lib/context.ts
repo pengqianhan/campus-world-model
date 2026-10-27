@@ -96,6 +96,34 @@ function height(s: string | undefined): number | undefined {
   return n !== undefined && n > 0 ? n : undefined;
 }
 
+/**
+ * The height the walls of a building or a part start at, metres above the ground: `min_height`,
+ * else `building:min_level` storeys. Some mappers write `building:min_levels`, which is read the
+ * same way. Undefined when the tags give neither.
+ */
+export function baseOf(t: Record<string, string>): number | undefined {
+  const minLevel = num(t["building:min_level"]) ?? num(t["building:min_levels"]);
+  return num(t.min_height) ?? (minLevel !== undefined ? minLevel * OSM_LEVEL : undefined);
+}
+
+/**
+ * The top of the walls from `building:levels`, metres above the ground. Simple 3D Buildings counts
+ * the levels from the ground, so they reach above the base. Where they do not (a bridge tagged
+ * `building:levels=1` and `building:min_level=3`), the mapper counted them from the base, and they
+ * stand on it.
+ */
+function levelsTop(levels: number, base: number): number {
+  return levels * OSM_LEVEL > base ? levels * OSM_LEVEL : base + levels * OSM_LEVEL;
+}
+
+/** The top and the base of a building's walls as published: a base of 0 is the ground and is left out. */
+function walls(top: number, base: number): Pick<ContextBuilding, "h" | "b"> {
+  return base > 0 ? { h: round1(Math.max(top, base + 0.3)), b: round1(base) } : { h: round1(top) };
+}
+
+/** A bridge between buildings, mapped as a building (`man_made=bridge`, `building=bridge`, or a `bridge` tag). */
+const isBridge = (t: Record<string, string>) => t.man_made === "bridge" || t.building === "bridge" || (t.bridge !== undefined && t.bridge !== "no");
+
 /** A bearing in degrees from a number or a compass point. */
 function bearing(s: string | undefined): number | undefined {
   const i = COMPASS.indexOf((s ?? "").toUpperCase());
@@ -212,11 +240,18 @@ export function outerRings(e: OsmElement, project: MapFrame["project"]): Ring[] 
   return rings.filter((r) => r.length >= 3);
 }
 
-/** The surroundings of one area of the map, from its OpenStreetMap snapshot. */
-export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame): { data: ContextData; stats: Record<string, number> } {
+/**
+ * The surroundings of one area of the map, from its OpenStreetMap snapshot. `osm` is the snapshot
+ * already read, for a test; by default it is read from the area's file.
+ */
+export function buildContext(
+  campus: CampusData,
+  box: AreaBox,
+  frame: MapFrame,
+  osm: { elements: OsmElement[] } = readJson<{ elements: OsmElement[] }>(box.area.osm),
+): { data: ContextData; stats: Record<string, number> } {
   const { project } = frame;
   const inScene = (p: Pt, margin = 0) => inBox(box, p, margin);
-  const osm = readJson<{ elements: OsmElement[] }>(box.area.osm);
   const stats: Record<string, number> = {};
   // The central area's counts keep their old names; others are prefixed with the area.
   const prefix = box.area === frame.central ? "" : `${box.area.id}.`;
@@ -252,6 +287,10 @@ export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame):
     tags: Record<string, string>;
     /** Height from the tags, a default, or a tower's podium. */
     h: number;
+    /** Height the walls start at; 0 for a building that stands on the ground. */
+    b: number;
+    /** A bridge between buildings (`man_made=bridge`, `building=bridge`, or a `bridge` tag). */
+    bridge: boolean;
     /** True when `h` is the building's tagged height, which includes its roof. */
     tagged: boolean;
     tower: boolean;
@@ -289,9 +328,17 @@ export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame):
           bump("context.buildings.droppedAsUniversity");
           continue;
         }
+        // A building that starts above the ground (a bridge between two others, storeys over a
+        // passage) stands on the base its tags give, as a part does. A bridge is marked as one. A
+        // bridge with no base in its tags keeps its place in the list but is not drawn: a block on
+        // the street under it would be worse than a gap (ContextBuilding.bridge).
+        // Rounded as it is published, so that a base too small to show is the ground here too.
+        const base = round1(Math.max(0, baseOf(t) ?? 0));
+        const bridge = isBridge(t);
+        if (bridge && base === 0) bump("context.buildings.bridgeWithoutBase.notDrawn");
         const tagged = height(t.height);
         const levels = num(t["building:levels"]);
-        let h = tagged ?? (levels !== undefined ? levels * OSM_LEVEL + 1 : undefined);
+        let h = tagged ?? (levels !== undefined ? levelsTop(levels, base) + 1 : undefined);
         if (h === undefined) {
           h = t.building === "roof" || t.building === "carport" || t.building === "shed" ? 3 : area > 900 ? 10 : 6.5;
           bump("context.buildings.defaultHeight");
@@ -301,7 +348,12 @@ export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame):
         // that is mapped in parts is drawn from its parts instead, further down.
         const tower = h > 200 || t.man_made === "tower" || t.building === "tower";
         if (tower) h = Math.min(h, 24);
-        outlines.push({ ring, box: bbox(ring), area, tags: t, h, tagged: tagged !== undefined && !tower, tower, parts: [], partArea: 0 });
+        if (base > 0) {
+          bump("context.buildings.raised");
+          if (tagged === undefined && levels !== undefined && levels * OSM_LEVEL <= base) bump("context.buildings.raised.levelsFromBase");
+          if (h < base + 0.3) h = base + 0.3;
+        }
+        outlines.push({ ring, box: bbox(ring), area, tags: t, h, b: base, bridge, tagged: tagged !== undefined && !tower, tower, parts: [], partArea: 0 });
       }
       continue;
     }
@@ -366,14 +418,13 @@ export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame):
       const roof = roofOf(t, ring, bump);
       const tagged = height(t.height);
       const levels = num(t["building:levels"]);
+      let base = baseOf(t) ?? 0;
       // A tagged height includes the roof; levels do not.
-      let top = tagged !== undefined ? tagged - (roof?.h ?? 0) : levels !== undefined ? levels * OSM_LEVEL : undefined;
+      let top = tagged !== undefined ? tagged - (roof?.h ?? 0) : levels !== undefined ? levelsTop(levels, base) : undefined;
       if (top === undefined) {
         top = holder && !holder.tower ? holder.h : 6.5;
         bump("context.parts.heightFromBuilding");
       }
-      const minLevel = num(t["building:min_level"]);
-      let base = num(t.min_height) ?? (minLevel !== undefined ? minLevel * OSM_LEVEL : 0);
       // A part tagged as a roof is a canopy: a thin slab at its height.
       if (t["building:part"] === "roof") base = Math.max(base, top - 0.4);
       if (top < base + 0.3) top = base + 0.3;
@@ -399,13 +450,13 @@ export function buildContext(campus: CampusData, box: AreaBox, frame: MapFrame):
       // Parts cover only some of the outline: it stays as the base they stand on, no higher
       // than the lowest part that starts at the ground.
       const lowest = Math.min(...o.parts.filter((p) => !p.b).map((p) => p.h));
-      out.buildings.push({ p: encodeRing(o.ring), h: round1(Math.min(o.h, lowest)) });
+      out.buildings.push({ p: encodeRing(o.ring), ...walls(Math.min(o.h, lowest), o.b), ...(o.bridge ? { bridge: true as const } : {}) });
       bump("context.buildings.underParts");
       continue;
     }
     const roof = o.tower ? undefined : roofOf(o.tags, o.ring, bump);
     const top = roof && o.tagged ? Math.max(o.h - roof.h, 2) : o.h;
-    out.buildings.push({ p: encodeRing(o.ring), h: round1(top), ...(roof ? { roof } : {}) });
+    out.buildings.push({ p: encodeRing(o.ring), ...walls(top, o.b), ...(roof ? { roof } : {}), ...(o.bridge ? { bridge: true as const } : {}) });
   }
 
   // Largest areas first so small pitches and gardens draw on top of the parks that contain them.

@@ -46,7 +46,8 @@ It is built to answer two questions a student actually has:
 
 - **2026-10-27:** [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
   site, each with its city, how much of it the site shows and the date of its campus snapshot; it
-  no longer sends every visitor to /uoa/.
+  no longer sends every visitor to /uoa/. Bridges between the surrounding buildings span the street
+  at their mapped height instead of standing on it; five with no mapped height are not drawn.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.

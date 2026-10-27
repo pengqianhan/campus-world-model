@@ -118,6 +118,8 @@ describe("the walking map", () => {
       { p: encodeRing(square(60, -20, 80, 50)), h: 10 },
       // A part that starts 6 m up, like a bridge between two buildings, is walked under.
       { p: encodeRing(square(40, 10, 100, 20)), h: 12, b: 6 },
+      // A bridge whose base is not known is not drawn, so it is no wall either.
+      { p: encodeRing(square(84, -5, 96, 5)), h: 6.5, bridge: true },
     ],
     roads: [],
     areas: [{ k: "water", p: encodeRing(square(60, 60, 200, 200)) }],
@@ -141,6 +143,7 @@ describe("the walking map", () => {
     expect(map.wallAlong([50, 5], [30, 5])).toBeCloseTo(0.5);
     // The surrounding building at 60-80 is a wall too; the bridge, 6 m up, is not.
     expect(map.wallAlong([50, 15], [70, 15])).toBeCloseTo(0.5);
+    expect(map.wallAlong([82, 0], [98, 0])).toBeUndefined();
     // Water and open ground are no wall.
     expect(map.wallAlong([50, 55], [50, 90])).toBeUndefined();
   });
