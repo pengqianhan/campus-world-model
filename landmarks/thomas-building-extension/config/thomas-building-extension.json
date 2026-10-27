@@ -1,0 +1,174 @@
+{
+ "name": "thomas-building-extension",
+ "site": false,
+ "building": {
+  "id": "110N",
+  "also": [],
+  "title": "Thomas Building Extension, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    236.5,
+    219.7
+   ],
+   [
+    238.8,
+    217.1
+   ],
+   [
+    240.7,
+    213.3
+   ],
+   [
+    241.2,
+    209.5
+   ],
+   [
+    240.9,
+    206.3
+   ],
+   [
+    238.8,
+    201.0
+   ],
+   [
+    234.6,
+    193.3
+   ],
+   [
+    230.6,
+    187.3
+   ],
+   [
+    230.8,
+    187.1
+   ],
+   [
+    226.1,
+    181.3
+   ],
+   [
+    217.2,
+    189.7
+   ],
+   [
+    212.8,
+    185.1
+   ],
+   [
+    198.3,
+    199.8
+   ],
+   [
+    198.1,
+    200.1
+   ],
+   [
+    201.8,
+    203.5
+   ],
+   [
+    196.6,
+    208.4
+   ],
+   [
+    199.1,
+    211.0
+   ],
+   [
+    200.2,
+    210.0
+   ],
+   [
+    212.4,
+    222.8
+   ],
+   [
+    230.1,
+    224.5
+   ],
+   [
+    230.1,
+    224.0
+   ],
+   [
+    231.8,
+    224.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 34.6,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 10.0,
+  "spine_below": 10.0,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}

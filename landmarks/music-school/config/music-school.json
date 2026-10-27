@@ -1,0 +1,258 @@
+{
+ "name": "music-school",
+ "site": false,
+ "building": {
+  "id": "250",
+  "also": [],
+  "title": "Music School, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    249.7,
+    124.2
+   ],
+   [
+    245.2,
+    128.8
+   ],
+   [
+    245.5,
+    129.1
+   ],
+   [
+    243.4,
+    131.3
+   ],
+   [
+    241.0,
+    129.0
+   ],
+   [
+    236.4,
+    133.7
+   ],
+   [
+    235.9,
+    133.1
+   ],
+   [
+    234.8,
+    133.2
+   ],
+   [
+    232.7,
+    134.3
+   ],
+   [
+    231.5,
+    136.3
+   ],
+   [
+    231.4,
+    137.5
+   ],
+   [
+    231.6,
+    138.7
+   ],
+   [
+    232.7,
+    140.5
+   ],
+   [
+    232.1,
+    141.1
+   ],
+   [
+    236.6,
+    145.6
+   ],
+   [
+    236.5,
+    147.8
+   ],
+   [
+    237.1,
+    150.0
+   ],
+   [
+    238.1,
+    152.0
+   ],
+   [
+    239.7,
+    153.7
+   ],
+   [
+    251.8,
+    160.2
+   ],
+   [
+    257.4,
+    165.5
+   ],
+   [
+    258.6,
+    164.3
+   ],
+   [
+    259.9,
+    165.6
+   ],
+   [
+    272.6,
+    152.8
+   ],
+   [
+    271.3,
+    151.5
+   ],
+   [
+    276.7,
+    146.1
+   ],
+   [
+    277.3,
+    145.2
+   ],
+   [
+    277.5,
+    143.4
+   ],
+   [
+    279.0,
+    143.4
+   ],
+   [
+    285.6,
+    136.8
+   ],
+   [
+    282.2,
+    128.8
+   ],
+   [
+    281.3,
+    129.0
+   ],
+   [
+    280.5,
+    127.0
+   ],
+   [
+    276.6,
+    123.1
+   ],
+   [
+    272.9,
+    123.1
+   ],
+   [
+    271.6,
+    121.8
+   ],
+   [
+    273.4,
+    120.1
+   ],
+   [
+    261.0,
+    114.4
+   ],
+   [
+    258.2,
+    117.3
+   ],
+   [
+    257.2,
+    116.3
+   ],
+   [
+    254.4,
+    119.1
+   ],
+   [
+    253.5,
+    118.2
+   ],
+   [
+    248.6,
+    123.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 32.7,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 5.8,
+  "spine_below": 5.8,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}

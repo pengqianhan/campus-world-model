@@ -1,0 +1,178 @@
+{
+ "name": "kenneth-myers-centre",
+ "site": false,
+ "building": {
+  "id": "820",
+  "also": [],
+  "title": "Kenneth Myers Centre, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    43.3,
+    611.5
+   ],
+   [
+    43.7,
+    610.2
+   ],
+   [
+    45.1,
+    610.6
+   ],
+   [
+    44.4,
+    613.2
+   ],
+   [
+    46.5,
+    614.4
+   ],
+   [
+    49.8,
+    609.1
+   ],
+   [
+    45.8,
+    608.0
+   ],
+   [
+    45.1,
+    610.5
+   ],
+   [
+    29.5,
+    606.4
+   ],
+   [
+    30.2,
+    603.8
+   ],
+   [
+    28.5,
+    603.3
+   ],
+   [
+    25.0,
+    602.4
+   ],
+   [
+    24.3,
+    605.1
+   ],
+   [
+    9.7,
+    601.3
+   ],
+   [
+    5.5,
+    617.1
+   ],
+   [
+    1.0,
+    616.0
+   ],
+   [
+    -2.5,
+    624.9
+   ],
+   [
+    -4.0,
+    630.5
+   ],
+   [
+    -0.7,
+    631.4
+   ],
+   [
+    2.2,
+    620.2
+   ],
+   [
+    4.5,
+    620.8
+   ],
+   [
+    3.5,
+    624.8
+   ],
+   [
+    37.4,
+    633.7
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 25.5,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 8.0,
+  "spine_below": 8.0,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls"
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}
