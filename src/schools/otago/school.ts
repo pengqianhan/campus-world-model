@@ -51,8 +51,12 @@ export const school: School = {
   weather:
     "https://api.open-meteo.com/v1/forecast?latitude=-45.8661&longitude=170.5167" +
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
-  /** The Dunedin campus buildings span about 1,460 m east to west and 870 m north to south. */
-  campusSpan: { dunedin: 1450 },
+  /**
+   * The Dunedin campus buildings span about 1,460 m east to west and 870 m north to south. The
+   * opening view frames 900 m round the campus's centre, where most of them stand, so that their
+   * labels have room: 41 of the 94 show at 1440 x 900, against 27 with the whole extent framed.
+   */
+  campusSpan: { dunedin: 900 },
   /**
    * Christchurch, in an area of its own, as the other schools' campuses away from the centre are
    * (docs/schools/otago.md, "Campuses"; "On the site" says how its box was placed). The recon gives
