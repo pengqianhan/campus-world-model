@@ -428,6 +428,10 @@
       "otago": {
         "name": "University of Otago | Ōtākou Whakaihu Waka",
         "city": "Dunedin and Christchurch"
+      },
+      "waikato": {
+        "name": "The University of Waikato",
+        "city": "Hamilton"
       }
     }
   }
