@@ -346,6 +346,15 @@ all views and the mean IoU, IoU in the box and sky in the box over the corrected
 (`iou_mean_corrected`, `iou_box_mean_corrected`, `sky_in_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
 the IoU in the box.
 
+A neighbour that stands between the cameras and the landmark (another landmark already drawn from
+code) can be named in the config's `compare.occluders` (landmark folder names): the label pass
+(`viewer/mask.js`) draws it in blue, moved from its own frame into this one through the map's east
+and north and its ground, depth-tested with the model, and the pixels where it hides the model, or
+stands where the model is not, count in neither the IoU, the IoU in the box, the sky in the box nor
+the luma: there the photograph shows the neighbour. The refine stage's search counts them out too.
+Without the option the labels are as before, and so are the IoU, the box and the region the luma is
+read in (15 Eden Crescent: 9 Eden Crescent).
+
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in
 `building.also` (inside their outlines, from `campus.json` for `also`, or within `frame.near_outline`

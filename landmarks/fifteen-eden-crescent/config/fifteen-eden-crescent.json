@@ -215,5 +215,11 @@
   "x": -24.6,
   "z": -2.9,
   "note": "view frame: the point whose ground is the model's y = 0. Eden Crescent's footpath lies 0.55-1.06 m below the frame's ground along the whole street face (the LiDAR's ground returns at z 12.6-14), so no street door's foot is at y = 0 (doors A and C, parts/body.js, step down to it at -0.95). The ground rises along the lane at the south-east end to the frame's ground at the back; the door is the foot of the plan's south-east tip on that lane, 0.4 m out from the plan's tip (x -24.2 to -24.0 at z -2.2 to -3.5), where the LiDAR ground is -0.11 m (-0.16 to -0.06 within a metre), as 801's door is the foot of a corner. place.py puts it on the map"
+ },
+ "compare": {
+  "occluders": [
+   "nine-eden-crescent"
+  ],
+  "note": "9 Eden Crescent (801, on the site since #107) stands between the street and this building's north-west end in the three photographs of 2024-08, most in mdk1's (61% of its wide view's region). The compare draws 801's model as an occluder (viewer/mask.js), and the pixels where it hides this building count in neither the IoU nor the luma: they show 801. Round 3: mdk1 wide's luma median 236 against 249 drawn (12.3, the only view past 12); with 801 left out, 241 against 243 (2.4), every view within 9.4; IoU in the box 0.715 to 0.702 over the 9 corrected views."
  }
 }

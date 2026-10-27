@@ -72,20 +72,23 @@ them and measures the openings and the doors again:
   drawn, as its red frame and glass would not reach the ground; the panel stands there.
 
 Against the photographs (`run.sh fifteen-eden-crescent compare`), round 3, every camera set by
-`camera_fixes`: silhouette IoU inside the model's own screen box (the likeness limits are read there,
-maintainer, 2026-10-27) 0.579, 0.768 and 0.998 over `MH15…`'s wide, upper and door views, 0.580, 0.644
-and 0.821 over `v8ia…`'s and 0.679, 0.692 and 0.673 over `mdk1…`'s, mean 0.715 (round 2: 0.690); over
-the whole frame 0.554. That passes tier 1's limit (0.65), but here too the IoU in the box tells little:
-3.7% of the boxes' counted pixels are sky on the mean (`sky_in_box`, 0-24% in each view), so a plain
-block filling each box would score 0.963, more than the model in every view. The likeness rests on the
-heights and the top view below, and on the strips. The building's luma median 242-249 in the renders,
-236-252 in the photographs: within 12 in eight views; in `mdk1…`'s wide view 249 against 236. There 59%
-of the model's region is its north-west end, which 801 stands in front of in the photograph (801's white
-cladding and dark glass: 235 there, against 249 drawn, which the inferred sun lights); over the rest of
-the region the medians are 242 and 242. From above (`run.sh
-fifteen-eden-crescent topview`): footprint IoU 0.865 against the LiDAR, 90% of cells within 0.5 m of its
-height (round 2: 69%), the model 0.05 m below it at the median, 99.9% of block 802 under the model. The
-model is 4,176 triangles in 9 meshes, one a material.
+`camera_fixes`, and 9 Eden Crescent (801) drawn as an occluder (`compare.occluders`,
+landmarks/README.md): it stands between the street and this building's north-west end in all three
+photographs, and where it hides the model the photograph shows 801, so those pixels count in neither
+the IoU nor the luma. Silhouette IoU inside the model's own screen box (the likeness limits are read
+there, maintainer, 2026-10-27) 0.579, 0.768 and 0.998 over `MH15…`'s wide, upper and door views,
+0.538, 0.641 and 0.816 over `v8ia…`'s and 0.637, 0.689 and 0.650 over `mdk1…`'s, mean 0.702 (without
+the occluder 0.715; round 2: 0.690); over the whole frame 0.530. That passes tier 1's limit (0.65),
+but here too the IoU in the box tells little: 3.6% of the boxes' counted pixels are sky on the mean
+(`sky_in_box`, 0-24% in each view), so a plain block filling each box would score more than the model
+in every view. The likeness rests on the heights and the top view below, and on the strips. The
+building's luma median, drawn against photographed, is within 12 in every view (the largest gap 9.4,
+in `MH15…`'s wide view; in `mdk1…`'s wide view 243 against 241). Without the occluder, `mdk1…`'s wide
+view was 249 against 236 (12.3): 801 hides 61% of the model's region there, and the photograph shows
+801's white cladding and dark glass in that part. From above (`run.sh fifteen-eden-crescent topview`):
+footprint IoU 0.865 against the LiDAR, 90% of cells within 0.5 m of its height (round 2: 69%), the
+model 0.05 m below it at the median, 99.9% of block 802 under the model. The model is 4,176 triangles
+in 9 meshes, one a material.
 
 ## Heights against the LiDAR
 
