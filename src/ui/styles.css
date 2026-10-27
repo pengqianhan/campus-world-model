@@ -159,6 +159,12 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
+/* A label with no code holds the whole name in <b>: a long one ends in an ellipsis inside the pill. */
+.lbl b:only-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .lbl span {
   overflow: hidden;
   font-weight: 500;

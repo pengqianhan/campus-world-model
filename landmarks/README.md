@@ -309,6 +309,12 @@ boundary:
   classifies each photograph again after a grey closing with a disc of r degrees, which gives what
   is darker than its surroundings and narrower than 2r the colour round it, and adds the sky it finds
   (Maclaurin Chapel: 0.4); without it the masks are as before, byte for byte;
+- pale and hazy sky are pale, smooth and grey or bluish, and so is a white wall that the camera took
+  as white as a hazy sky (a white building in open shade, exposed for the shade): where such a wall
+  touches the top of the view or sky that does, it is taken for sky. The config's
+  `sky_mask.pale_tint` (t, 0–255) keeps as pale or hazy sky only what is tinted blue, its blue above
+  its red by t or more: clear and pale blue sky stay sky, white walls and the sky's own clipped white
+  go to solid (9 Eden Crescent: 8); without it the masks are as before, byte for byte;
 - score = IoU of model-above-cut vs photo-solid over pixels that are neither ignored nor below the
   cut, pooled over the panorama's views, minus a small prior on the size of the correction;
 - compass search from five starts at quarter resolution (~500 renders per panorama).
@@ -323,6 +329,22 @@ with hazy white sky, views mostly of trees, and back views keep their Street Vie
 Per view: silhouette IoU (as above) and, inside the building region (model building ∩ photo
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
+
+Beside them, the **IoU in the box** (`iou_box`): the same silhouette IoU counted only inside the
+model's own screen box (`box`), the smallest rectangle of the view that holds every pixel of the
+model, above the cut or below it. What the photograph shows outside that rectangle, a neighbour, a
+tree, a tower behind, does not count; what it shows inside does. The box is the model's own, so a model
+drawn too narrow or too low does not lose there: what it leaves out at its edges falls outside the box.
+The top view below and the heights against the LiDAR measure the model's size. One more number says how
+much the IoU in the box can tell: the share of the box's counted pixels (those above the cut and the
+ground, as the IoU counts them) that the photograph shows as sky (`sky_in_box`). A plain block filling the
+box scores 1 minus that share there, so where the box holds little sky any model that fills it scores
+high, and a drawn model that does not beat the plain block shows no likeness by this number: look at the
+strips. Each view also says whether its camera was **corrected** (`corrected`:
+refined, or set by `streetview.camera_fixes`), and the summary gives the mean IoU in the box over
+all views and the mean IoU, IoU in the box and sky in the box over the corrected views
+(`iou_mean_corrected`, `iou_box_mean_corrected`, `sky_in_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
+the IoU in the box.
 
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in

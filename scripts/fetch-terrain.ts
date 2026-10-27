@@ -1,7 +1,9 @@
 // Snapshot the elevation tiles under every area the map draws (scripts/lib/areas.ts), from the
 // AWS Open Data "Terrain Tiles" (https://registry.opendata.aws/terrain-tiles/, no key, no account).
 // Over New Zealand they hold the LINZ 8 m DEM (Crown copyright, CC BY 3.0 NZ), so these
-// snapshots are committed. About 25 tiles of 50-90 KB at zoom 14.
+// snapshots are committed. About 25 tiles of 50-90 KB at zoom 14. Each tile fetched logs the
+// sources its maker names for it (the x-amz-meta-x-imagery-sources header), so that the terrain
+// line in About can be kept true for each school's tiles (docs/schools/DESIGN.md, section 6).
 import { AREAS } from "./lib/areas.ts";
 import { snapshot } from "./lib/snapshot.ts";
 import { TERRAIN_URL, TERRAIN_ZOOM, terrainBox, terrainFile, tilesFor } from "./lib/terrain.ts";
@@ -14,7 +16,13 @@ for (const area of AREAS) {
     const file = terrainFile(TERRAIN_ZOOM, x, y);
     if (seen.has(file)) continue;
     seen.add(file);
-    await snapshot({ source: "terrain", file, url: TERRAIN_URL(TERRAIN_ZOOM, x, y), refresh });
+    await snapshot({
+      source: "terrain",
+      file,
+      url: TERRAIN_URL(TERRAIN_ZOOM, x, y),
+      refresh,
+      onResponse: (r) => console.log(`${file}: ${r.status}, x-amz-meta-x-imagery-sources: ${r.headers.get("x-amz-meta-x-imagery-sources") ?? "(none)"}`),
+    });
   }
   console.log(area.id, tiles.length, "tiles");
 }
