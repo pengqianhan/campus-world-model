@@ -28,6 +28,9 @@ export const MEASURED = {
     plan: [[9.04, -11.64], [4.2, -9.5], [1.8, -6.5], [-0.8, -6.5], [-2.0, -5.2], [-4.0, 0.2], [-0.8, 4.5],
       [5.2, 4.0], [8.2, 0.0], [9.2, 0.5], [11.8, -0.5], [14.3, -4.2], [12.49, -8.48]],
     top: 36.9,
+    // a parapet round its roof (round 2): 83 of the 84 returns above 37.6 m lie within 1 m of this
+    // outline, their median 37.95 m (the roof inside it 36.99 m); 0.25 m thick, estimated
+    parapet: 37.95,
   },
   // Storeys: a white band at every floor (the photographs). The building's returns within 2 m of its
   // walls peak at 8.6, 11.5, 14.5, 17.4, 20.3, 23.1, 26.0, 28.9 and 31.6 m (0.25 m bins; their

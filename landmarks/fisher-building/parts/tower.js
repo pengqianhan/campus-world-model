@@ -5,7 +5,7 @@
 // 0.15 m high, the brick core set back behind the wing's balconies, which stand inside the outline. The
 // entrance and its ramp are a later round's.
 import { MEASURED as M, FOOT } from "./common.js";
-import { prism, roof, bands, inset } from "./shapes.js";
+import { prism, roof, bands, inset, edgeBox } from "./shapes.js";
 
 export function tower(b) {
   // the brick core: the outline with the wing's faces set back by the balconies' depth (parts/wing.js)
@@ -16,6 +16,8 @@ export function tower(b) {
 export function shaft(b) {
   prism(b, M.shaft.plan, M.tower.top, M.shaft.top, "brickTan");
   roof(b, M.shaft.plan, M.shaft.top, 0.3, "roofGrey");
+  // its parapet, standing on the walls' line, inside the outline
+  for (let i = 0; i < M.shaft.plan.length; i++) edgeBox(b, M.shaft.plan, i, 0, 1, -0.25, 0, M.shaft.top, M.shaft.parapet, "brickTan");
 }
 
 /** The floor bands, cream as MGAo's photograph shows them (round 1 drew them white): on the tower to its
