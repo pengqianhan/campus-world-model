@@ -416,6 +416,10 @@
       "aut": {
         "name": "Auckland University of Technology",
         "city": "Auckland"
+      },
+      "vuw": {
+        "name": "Te Herenga Waka—Victoria University of Wellington",
+        "city": "Wellington"
       }
     }
   }
