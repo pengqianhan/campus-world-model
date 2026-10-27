@@ -2,7 +2,7 @@
 
 Recon for a possible port, done on 2026-10-23 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Massey publishes
-without a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #114 the
 Manawatū, Auckland and Wellington campuses are on the site in the Buildings form, from
 OpenStreetMap ("On the site", below). The rest of this report is the recon as it was done.
 

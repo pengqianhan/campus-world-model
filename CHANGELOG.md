@@ -31,7 +31,7 @@ A change to what the site does or shows adds its line here, and the README's
   whether it is a police college, are left out, each with its reason. Many of Massey's own buildings
   that OpenStreetMap tags as plain buildings, and the research institutes beside the Manawatū
   campus, stand among the surroundings. Its rooms, class times, dates and course list are not
-  shown, and About says why for each (#PR).
+  shown, and About says why for each (#114).
 
 ## 2026-10-27
 
