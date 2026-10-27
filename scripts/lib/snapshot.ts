@@ -88,6 +88,8 @@ export interface FetchOptions {
   onSend?: (at: Date) => void;
   /** "error": a redirect fails instead of being followed to a host nobody checked. Default "follow". */
   redirect?: RequestRedirect;
+  /** Called with the answer's status and headers when it comes, before its body is read: to log a header. */
+  onResponse?: (answer: { status: number; headers: Headers }) => void;
 }
 
 /** A response other than 2xx, with its status. */
@@ -118,6 +120,7 @@ export async function snapshot(opts: FetchOptions): Promise<Buffer> {
       // A server that never answers is a failure like any other, not a wait without end.
       signal: AbortSignal.timeout(opts.timeoutMs ?? TIMEOUT_MS),
     });
+    opts.onResponse?.({ status: res.status, headers: res.headers });
     buf = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
   } catch (e) {
     // The error of a failed fetch can quote the URL: give the logged one only.

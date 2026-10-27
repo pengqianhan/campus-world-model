@@ -427,6 +427,10 @@
         "name": "Victoria University of Wellington",
         "reo": "Te Herenga Waka",
         "city": "Wellington"
+      },
+      "otago": {
+        "name": "University of Otago | Ōtākou Whakaihu Waka",
+        "city": "Dunedin and Christchurch"
       }
     }
   }

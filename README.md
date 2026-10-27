@@ -8,9 +8,11 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 (also at https://pengqianhan.github.io/campus-world-model/)
 
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
-University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; and **VUW World
+University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; **VUW World
 Model**, an **unofficial** 3D map of the buildings of the Kelburn, Pipitea and Te Aro campuses of Te
-Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/
+Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/; and **Otago
+World Model**, an **unofficial** 3D map of the buildings of the University of Otago's Dunedin and
+Christchurch campuses, at https://campusworldmodel.com/otago/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -25,7 +27,9 @@ Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.co
 > University logos or branding. AUT World Model is not affiliated with, endorsed by or maintained by
 > Auckland University of Technology, and uses no AUT logo; its colours are the project's own. VUW
 > World Model is not affiliated with, endorsed by or maintained by Te Herenga Waka—Victoria
-> University of Wellington, and uses no VUW logo; its colours are the project's own.
+> University of Wellington, and uses no VUW logo; its colours are the project's own. Otago World
+> Model is not affiliated with, endorsed by or maintained by the University of Otago | Ōtākou
+> Whakaihu Waka, and uses no Otago logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -48,7 +52,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-27:** a third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
+- **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
+  of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
+  name and height and how the height was found; its rooms, class times, dates and paper list are
+  not shown, and the site says why. A third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
   of VUW's Kelburn Campus from OpenStreetMap, each with its name and height and how the height was
   found; its rooms, class times, dates and course list are not shown, and the site says why. Its
   Pipitea and Te Aro campuses followed the same day: four more buildings, chosen from "Other
@@ -548,8 +555,20 @@ body. VUW's room list and course list wait
 for the maintainer's reading of VUW's copyright terms, and its class times and key dates sit in
 parts of its site that its `robots.txt` disallows: see [docs/schools/vuw.md](docs/schools/vuw.md).
 
+**Otago World Model** (`/otago/`) uses the same four sources and nothing of the University of
+Otago's own. OpenStreetMap gives the buildings of the Dunedin and Christchurch campuses, picked by
+their `operator` and `building=university` tags, with their names, outlines and, where tagged,
+heights, and the streets round them, from the snapshots of its two areas
+(`data/raw/osm/context-otago-dunedin.json` and `context-otago-christchurch.json`);
+`public/data/otago/campus.json`, `context.json` and `context/` are under the ODbL. The LINZ 8 m
+elevation model gives the ground (`public/data/otago/terrain/`), under CC BY 3.0 NZ. Open-Meteo
+gives the weather at the Dunedin campus, and Quaternius's figure is the walker's body. Otago's
+campus map, room list, key dates and paper pages are on its main website, which refused the
+project's first request to it; its class times answer only on its own network: see
+[docs/schools/otago.md](docs/schools/otago.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
-`public/data/aut/meta.json` and `public/data/vuw/meta.json`.
+`public/data/aut/meta.json`, `public/data/vuw/meta.json` and `public/data/otago/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.
