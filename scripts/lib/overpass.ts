@@ -3,11 +3,13 @@
 // an instance that refuses the query (401, 403) or sends it elsewhere (a redirect, which is not followed)
 // is recorded at once in data/raw/overpass-closed.txt (gitignored, in the checkout that ran the fetch, as
 // landmark-fetch.ts's closed.txt is), and is not asked again until a person deletes its line; so is one
-// that drops the connection (resets it, closes it or refuses it), once another instance answers after it
-// with a status, a redirect or a body. Not a verdict, and asked again in the next round: a busy instance
-// (5xx, 429, or no answer in time, a connection not made in time included) and one this machine could not
-// reach (its name not resolved, no route to it), which is how a network failing on this side shows. One
-// that answers another 4xx is left for the rest of that area's requests. A fault of ours stops the run with
+// that drops the connection (refuses it, resets it or closes it: the errors that show the host's answer),
+// once another instance answers after it with a status, a redirect or a body. Not a verdict, and asked
+// again in the next round: a busy instance (5xx, 429, or no answer in time, a connection not made in time
+// included), and any other failure, which does not show the host's answer: a name not resolved, no route
+// to it, an error on this machine (no local port, a firewall, a certificate it does not trust), which is
+// how a network failing on this side shows. One that answers another 4xx is left for the rest of that
+// area's requests. A fault of ours stops the run with
 // its error, since every instance would answer the same: an answer of 400 (the query is wrong) or a
 // failure on this machine after the answer came (a file that cannot be written); either is an answer, so
 // a drop before it is recorded first. What this cannot tell apart: a reset or a close made on this side
@@ -26,14 +28,12 @@ export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable"
  * Sorts a failed request by its error. `url` is the instance's: snapshot.ts words every failure of the
  * request itself as "<url> -> <name>: <message> (<cause>)", so an error without that prefix happened on
  * this machine after the answer came (writing the snapshot down). Of the request's own failures, a timeout
- * (the request's or the connection's) is busy; a name that does not resolve or a network with no route is
- * this machine not reaching the host ("offline"); a redirect, not followed, is a refusal; and the rest are
- * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake. A name
- * tried at several addresses comes with each attempt's error (`attempts`, snapshot.ts). Two kinds say
- * nothing of the host: an attempt Node cut short after 250 ms (ETIMEDOUT; it does so to every attempt but
- * the last) and an address this machine has no route to. Any other attempt is the host answering at that
- * address, and makes the failure a drop; failing that, it is busy if the last attempt timed out (Node does
- * not cut the last short), and offline if none was reached.
+ * (the request's or the connection's) is busy; a redirect, not followed, is a refusal; the errors that show
+ * the host's answer (a refused connection, a reset, a socket the other side closed) are a drop; and any
+ * other ("offline") does not show it: a name not resolved, no route, an error on this machine. A name tried
+ * at several addresses comes with each attempt's error (`attempts`, snapshot.ts): it is a drop if the host
+ * answered so at any address; failing that, busy if the last attempt timed out (Node cuts every attempt but
+ * the last short after 250 ms, so only the last one's timeout is the host's silence), else offline.
  */
 export function failure(url: string, e: unknown): Failure {
   if (e instanceof HttpError) {
@@ -47,20 +47,20 @@ export function failure(url: string, e: unknown): Failure {
   const attempts = (e as { attempts?: unknown }).attempts;
   if (Array.isArray(attempts) && attempts.length) {
     const told = attempts.map(String);
-    if (told.some((a) => !TIMEOUT.test(a) && !UNREACHED.test(a))) return "dropped";
+    if (told.some((a) => DROPPED.test(a))) return "dropped";
     return TIMEOUT.test(told.at(-1)!) ? "busy" : "offline";
   }
   const said = m.slice(url.length + 4);
   if (TIMEOUT.test(said)) return "busy";
-  if (UNREACHED.test(said)) return "offline";
   if (/redirect/i.test(said)) return "refused";
-  return "dropped";
+  if (DROPPED.test(said)) return "dropped";
+  return "offline";
 }
 
 /** No answer in time: the request's own timeout, or a connection not made in time. */
 const TIMEOUT = /^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/;
-/** The host not reached from this machine: its name not resolved, or no route to it. */
-const UNREACHED = /\b(ENOTFOUND|EAI_AGAIN|EAI_FAIL|EAI_NODATA|ENETUNREACH|ENETDOWN|EHOSTUNREACH|EADDRNOTAVAIL)\b/;
+/** The host's answer that drops the connection: it refused it, reset it or closed the socket. */
+const DROPPED = /\b(ECONNREFUSED|ECONNRESET|EPIPE)\b|other side closed|socket hang up|socket disconnected/;
 
 export interface OverpassDeps {
   /** The area's snapshot if it is on disk (and not to be refreshed). */
@@ -134,8 +134,8 @@ export async function askOverpass(endpoints: string[], d: OverpassDeps, rounds =
   }
   const notes: string[] = [];
   if (offline.size) {
-    const unreached = [...offline].map(([u, r]) => `${u} could not be reached from this machine (${r})`);
-    notes.push(`${unreached.join("; ")}: is this machine online?`);
+    const unreached = [...offline].map(([u, r]) => `${u} failed with no answer that shows the host's (${r})`);
+    notes.push(`${unreached.join("; ")}: is this machine online, or something on it in the way?`);
   }
   const unheard = [...dropped].filter(([u]) => !shut.has(u)).map(([u, r]) => `${u} dropped the connection (${r})`);
   if (unheard.length) {

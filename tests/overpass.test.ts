@@ -50,6 +50,10 @@ const connectTimeout = (url: string) =>
 const noDns = (url: string) => new Error(`${url} -> TypeError: fetch failed (getaddrinfo EAI_AGAIN ${host(url)})`);
 const notFound = (url: string) => new Error(`${url} -> TypeError: fetch failed (getaddrinfo ENOTFOUND ${host(url)})`);
 const noRoute = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect ENETUNREACH 192.0.2.1:443)`);
+// an error on this machine, or one that does not show the host's answer
+const noPort = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect ENOBUFS 192.0.2.1:443 - Local (0.0.0.0:0))`);
+const firewall = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect EACCES 192.0.2.1:443 - Local (0.0.0.0:0))`);
+const untrusted = (url: string) => new Error(`${url} -> TypeError: fetch failed (self-signed certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)`);
 // a failure on this machine after the answer came: snapshot.ts writes the file outside its request
 const diskFull = () => new Error("ENOSPC: no space left on device, write 'osm/context.json.part'");
 
@@ -99,7 +103,7 @@ describe("Overpass instances", () => {
 
   it("never record an instance this machine could not reach, and ask it again: the network may be this machine's", async () => {
     const f = fake([noDns(A), notFound(B), noRoute(C), noDns(A), noDns(B), noDns(C), noDns(A), noDns(B), noDns(C)]);
-    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/could not be reached from this machine .*: is this machine online\?/);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/failed with no answer that shows the host's .*: is this machine online, or something on it in the way\?/);
     expect(f.asked).toEqual([A, B, C, A, B, C, A, B, C]);
     expect(f.closed).toEqual([]);
     // a host not reached is no answer: a drop before it stays unrecorded
@@ -207,6 +211,7 @@ describe("Overpass instances", () => {
     const tried = (...messages: string[]) => fetchError(new TypeError("fetch failed", { cause: new AggregateError(messages.map((m) => new Error(m)), "") }), A, A);
     const cut = "connect ETIMEDOUT ::ffff:192.0.2.1:443", refused = "connect ECONNREFUSED 192.0.2.1:443";
     const noRoute6 = "connect ENETUNREACH 2001:db8::1:443 - Local (:::0)", noRoute4 = "connect ENETUNREACH 192.0.2.1:443";
+    const noPort = "connect ENOBUFS 192.0.2.1:443 - Local (0.0.0.0:0)", blocked = "IP(192.0.2.1) is blocked by net.BlockList";
     const each = tried(cut, refused);
     expect(String(each)).toBe(`Error: ${A} -> TypeError: fetch failed (${cut}; ${refused})`);
     expect(each.attempts).toEqual([cut, refused]);
@@ -218,6 +223,9 @@ describe("Overpass instances", () => {
     // no address reached, or none answered: this machine, or busy if the last, which Node does not cut short, timed out
     expect(failure(A, tried(noRoute6, noRoute4))).toBe("offline");
     expect(failure(A, tried(cut, noRoute6))).toBe("offline");
+    // an attempt that failed on this machine for another reason is not the host's answer either
+    expect(failure(A, tried(noPort, noRoute6))).toBe("offline");
+    expect(failure(A, tried(blocked, blocked))).toBe("offline");
     expect(failure(A, tried(noRoute6, "connect ETIMEDOUT 192.0.2.1:443"))).toBe("busy");
     // one address: the cause's own message, as before, and no attempts
     const one = fetchError(new TypeError("fetch failed", { cause: new Error("other side closed") }), A, A);
@@ -241,6 +249,7 @@ describe("Overpass instances", () => {
       const err = await snapshot({ source: "osm", file, url, logUrl: A }).catch((e: Error) => e);
       expect(String(err)).toBe(`Error: ${A} -> TypeError: fetch failed for ${A} (connect ECONNREFUSED 192.0.2.1:443; connect ENETUNREACH 2001:db8::1:443 (${A}))`);
       expect(String(err)).not.toContain("secret");
+      expect(JSON.stringify((err as { attempts?: string[] }).attempts)).not.toContain("secret");
       expect(failure(A, err)).toBe("dropped");
       expect(fs.existsSync(path.join(RAW_DIR, file))).toBe(false);
     });
@@ -255,7 +264,8 @@ describe("Overpass instances", () => {
     expect(failure(A, connectTimeout(A))).toBe("busy");
     expect(failure(A, redirected(A))).toBe("refused");
     for (const drop of [dropped(A), closedSocket(A), refusedTcp(A)]) expect(failure(A, drop)).toBe("dropped");
-    for (const gone of [noDns(A), notFound(A), noRoute(A)]) expect(failure(A, gone)).toBe("offline");
+    for (const gone of [noDns(A), notFound(A), noRoute(A), noPort(A), firewall(A), untrusted(A)]) expect(failure(A, gone)).toBe("offline");
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (Client network socket disconnected before secure TLS connection was established)`))).toBe("dropped");
     expect(failure(A, diskFull())).toBe("ours");
   });
 });

@@ -9,7 +9,8 @@ Everything in this folder is gitignored except `osm/` (OpenStreetMap data, ODbL)
 it elsewhere (a redirect) or dropped the connection (a reset, a close, a refused connection) where
 another instance answered after it (`scripts/lib/overpass.ts`): closed is a verdict, so
 `scripts/fetch-osm.ts` does not ask it again until a person deletes its line. A snapshot already here is
-read with no request, whatever the record says. Never recorded: a busy instance, a timeout, a host this
-machine could not reach (a name not resolved, no route: the network may be ours), a drop that no answer
+read with no request, whatever the record says. Never recorded: a busy instance, a timeout, a failure
+whose error does not show the host's answer (a name not resolved, no route, an error on this machine such
+as a firewall or a certificate it does not trust: the network may be ours), a drop that no answer
 follows, and a fault of ours (a query answered 400, a file that cannot be written), which stops the run.
 A reset made on this side (by a local firewall, say) can still close an instance: delete its line then.
