@@ -28,6 +28,14 @@ export const SCHOOL_KEYS: readonly string[] = [
   "travel.stay",
 ];
 
+/**
+ * The keys that name a school's teaching periods where its dates are not shown: the status line
+ * and the strip say "semester dates". A school that teaches in semesters, as the University of
+ * Auckland and AUT do, keeps them; a school that teaches in trimesters, as VUW does, replaces them.
+ * tests/schools.test.ts checks that each school's words give its teaching periods one name.
+ */
+export const TERM_KEYS: readonly string[] = ["time.noCalendar", "status.layer.calendar"];
+
 /** A copy of `base` with every string of `overlay` in its place; keys only in `overlay` are added. */
 export function overlayWords(base: Words, overlay: Words | undefined): Words {
   if (!overlay) return base;

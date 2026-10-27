@@ -40,8 +40,16 @@
     "hint": "Type a building's name, for example Hunter Building or Rankine Brown. Rooms and courses are not shown: see About.",
     "noResultsHint": "VUW's buildings are found by the names OpenStreetMap gives them; a few are named by their street and number, such as KP10 or FT81. Building names work with or without macrons."
   },
+  "time": {
+    "noCalendar": "No trimester dates are shown"
+  },
   "weather": {
     "label": "Weather at VUW's Kelburn Campus"
+  },
+  "status": {
+    "layer": {
+      "calendar": "trimester dates"
+    }
   },
   "travel": {
     "go": "Travel to {name}. This leaves VUW World Model.",

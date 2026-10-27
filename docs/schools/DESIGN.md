@@ -336,9 +336,13 @@ descriptor and checks its fields.
 
 **Words.** `src/i18n/locales/en.json` keeps every key and text it has: they are the University of
 Auckland's words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
-school, its campus map or its verdicts: 35 of today's 292 keys, among them `app.*`,
+school, its campus map or its verdicts: 35 of the 292 keys when this was written (33 of 342 on 2026-10-27), among them `app.*`,
 `about.unofficial`, `about.limits.*`, `attribution.short`, `room.noTimetableWhy`, `travel.leaving`
 and `travel.stay`. A unit test makes every school other than `uoa` override each of these keys.
+Two more keys, `TERM_KEYS` in `src/shared/words.ts`, name the school's teaching periods where its
+dates are not shown ("semester dates"): a school that teaches in trimesters, as VUW does, replaces
+them, and a school that teaches in semesters keeps them. A unit test checks that each school's words
+call its teaching periods by one name only.
 For `uoa` there is no overlay, so the dictionary is today's. `index.html` takes its `<title>`,
 `og:title`, meta description, `og:description` and `noscript` text from the school's words through
 the same Vite plugin. Two of those texts are not in `en.json` today (the `og:description` and the
