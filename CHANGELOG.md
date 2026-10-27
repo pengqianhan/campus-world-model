@@ -28,6 +28,15 @@ A change to what the site does or shows adds its line here, and the README's
   walker's height on a computer with a graphics card, its own white paint, glass, timber and red
   frames. Its back and ends, which no photograph shows, are drawn plainly. A click still opens its
   floors (#PR).
+- **Four more measured massings.** Near the camera, Building 240, 103 Alfred Nathan House, 305
+  Science Centre and 619 67 Symonds Street are drawn from the LINZ 2024 LiDAR in place of their
+  blocks, as the five plain buildings already are: their layers and roofs measured, their walls,
+  storeys and windows drawn by rule. Building 240's two hip roofs are measured now, as the program
+  stands roofs that meet in a valley on a plinth at their eaves. The other three are buildings that
+  the landmark queue means to draw in detail one day; each stands in until its landmark comes. The
+  other buildings of the queue in the LiDAR keep their blocks, every place where people live among
+  them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
+  (`landmarks/measured/exclusions.json`) (#108).
 
 ## 2026-10-27
 
