@@ -3,13 +3,16 @@
 // an instance that refuses the query (401, 403) or sends it elsewhere (a redirect, which is not followed)
 // is recorded at once in data/raw/overpass-closed.txt (gitignored, in the checkout that ran the fetch, as
 // landmark-fetch.ts's closed.txt is), and is not asked again until a person deletes its line; so is one
-// that drops the connection, once another instance answers after it (with a status, a redirect or a
-// body; a timeout is no answer), which shows the fault is not this machine's network. A busy instance
-// (5xx, 429, or no answer in time) is asked again in the next round, and one that answers another 4xx is
-// left for the rest of that area's requests. A fault of ours is never an instance's verdict and stops the
-// run with its error, since every instance would answer the same: an answer of 400 (the query is wrong)
-// or a failure on this machine (a file that cannot be written). Nor is a drop that no answer follows: the
-// network that failed may be this machine's.
+// that drops the connection (resets it, closes it or refuses it), once another instance answers after it
+// with a status, a redirect or a body. Not a verdict, and asked again in the next round: a busy instance
+// (5xx, 429, or no answer in time, a connection not made in time included) and one this machine could not
+// reach (its name not resolved, no route to it), which is how a network failing on this side shows. One
+// that answers another 4xx is left for the rest of that area's requests. A fault of ours stops the run with
+// its error, since every instance would answer the same: an answer of 400 (the query is wrong) or a
+// failure on this machine after the answer came (a file that cannot be written); either is an answer, so
+// a drop before it is recorded first. What this cannot tell apart: a reset or a close made on this side
+// (by a local firewall, say) that another instance's answer follows is recorded as the host's; delete its
+// line then.
 import fs from "node:fs";
 import path from "node:path";
 import { HttpError, RAW_DIR } from "./snapshot.ts";
@@ -17,12 +20,15 @@ import { HttpError, RAW_DIR } from "./snapshot.ts";
 export const CLOSED_FILE = path.join(RAW_DIR, "overpass-closed.txt");
 
 /** What a failed request to an instance says about it. */
-export type Failure = "refused" | "dropped" | "busy" | "unavailable" | "ours";
+export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable" | "ours";
 
 /**
  * Sorts a failed request by its error. `url` is the instance's: snapshot.ts words every failure of the
  * request itself as "<url> -> <name>: <message> (<cause>)", so an error without that prefix happened on
- * this machine after the answer came (writing the snapshot down).
+ * this machine after the answer came (writing the snapshot down). Of the request's own failures, a timeout
+ * (the request's or the connection's) is busy; a name that does not resolve or a network with no route is
+ * this machine not reaching the host ("offline"); a redirect, not followed, is a refusal; and the rest are
+ * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake.
  */
 export function failure(url: string, e: unknown): Failure {
   if (e instanceof HttpError) {
@@ -33,8 +39,10 @@ export function failure(url: string, e: unknown): Failure {
   }
   const m = e instanceof Error ? e.message : String(e);
   if (!m.startsWith(`${url} -> `)) return "ours";
-  if (/ -> TimeoutError\b/.test(m)) return "busy";
-  if (/redirect/i.test(m)) return "refused";
+  const said = m.slice(url.length + 4);
+  if (/^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/.test(said)) return "busy";
+  if (/\b(ENOTFOUND|EAI_AGAIN|EAI_FAIL|EAI_NODATA|ENETUNREACH|ENETDOWN|EHOSTUNREACH|EADDRNOTAVAIL)\b/.test(said)) return "offline";
+  if (/redirect/i.test(said)) return "refused";
   return "dropped";
 }
 
@@ -68,8 +76,9 @@ export async function askOverpass(endpoints: string[], d: OverpassDeps, rounds =
   const shut = d.closed();
   const left = new Set<string>();
   const dropped = new Map<string, string>();
-  // An answer from an instance makes every drop before it another instance's verdict: this machine
-  // reaches Overpass. A dropped instance is not asked again in this call, so no answer is its own.
+  const offline = new Map<string, string>();
+  // An answer from an instance makes every drop before it the dropped instance's verdict. A dropped
+  // instance is not asked again in this call, so no answer is its own.
   const answered = (from: string) => {
     for (const [u, r] of dropped) {
       if (u === from || shut.has(u)) continue;
@@ -89,25 +98,35 @@ export async function askOverpass(endpoints: string[], d: OverpassDeps, rounds =
       } catch (e) {
         d.warn(String(e));
         const kind = failure(url, e);
-        if (kind === "ours") throw e;
+        offline.delete(url);
+        if (kind === "ours") {
+          // a 400 is an answer, and so is one this machine could not write down
+          answered(url);
+          throw e;
+        }
         if (kind === "refused") {
           shut.set(url, why(url, e));
           d.close(url, why(url, e));
         } else if (kind === "unavailable") left.add(url);
         else if (kind === "dropped") dropped.set(url, why(url, e));
-        // a status or a redirect is an answer; a timeout, busy with no status, is not
+        else if (kind === "offline") offline.set(url, why(url, e));
+        // a status or a redirect is an answer; a timeout, or a host this machine did not reach, is not
         if (e instanceof HttpError || kind === "refused") answered(url);
         await d.wait(5000);
       }
     }
   }
-  const unheard = [...dropped].filter(([u]) => !shut.has(u)).map(([u, r]) => `${u} dropped the connection (${r})`);
-  const closedNow = endpoints.filter((u) => shut.has(u)).map((u) => `${u} is closed (${shut.get(u)})`);
   const notes: string[] = [];
+  if (offline.size) {
+    const unreached = [...offline].map(([u, r]) => `${u} could not be reached from this machine (${r})`);
+    notes.push(`${unreached.join("; ")}: is this machine online?`);
+  }
+  const unheard = [...dropped].filter(([u]) => !shut.has(u)).map(([u, r]) => `${u} dropped the connection (${r})`);
   if (unheard.length) {
     const none = unheard.length > 1 ? "none of them is" : "it is not";
-    notes.push(`${unheard.join("; ")}, and no other instance answered after, so ${none} recorded as closed: is this machine online?`);
+    notes.push(`${unheard.join("; ")}, and no other instance answered after, so ${none} recorded as closed`);
   }
+  const closedNow = endpoints.filter((u) => shut.has(u)).map((u) => `${u} is closed (${shut.get(u)})`);
   if (closedNow.length) {
     notes.push(`${closedNow.join("; ")}; delete its line in ${path.relative(process.cwd(), CLOSED_FILE)} to ask it again`);
   }

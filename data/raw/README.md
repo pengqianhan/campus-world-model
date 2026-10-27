@@ -6,8 +6,10 @@ Everything in this folder is gitignored except `osm/` (OpenStreetMap data, ODbL)
 `../sources.json` records the URL, fetch time, size and sha256 of every snapshot.
 
 `overpass-closed.txt` (gitignored) records each Overpass instance that refused a query (401, 403), sent
-it elsewhere (a redirect) or dropped the connection where another instance answered after it, with a
-status, a redirect or a body (`scripts/lib/overpass.ts`): closed is a verdict, so `scripts/fetch-osm.ts`
-does not ask it again until a person deletes its line. A snapshot already here is read with no request,
-whatever the record says; a fault of ours (a query answered 400, a file that cannot be written) stops
-the run and is never recorded, and nor is a drop that no answer follows (the network may be ours).
+it elsewhere (a redirect) or dropped the connection (a reset, a close, a refused connection) where
+another instance answered after it (`scripts/lib/overpass.ts`): closed is a verdict, so
+`scripts/fetch-osm.ts` does not ask it again until a person deletes its line. A snapshot already here is
+read with no request, whatever the record says. Never recorded: a busy instance, a timeout, a host this
+machine could not reach (a name not resolved, no route: the network may be ours), a drop that no answer
+follows, and a fault of ours (a query answered 400, a file that cannot be written), which stops the run.
+A reset made on this side (by a local firewall, say) can still close an instance: delete its line then.

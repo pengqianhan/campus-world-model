@@ -28,9 +28,9 @@ out body geom qt;
 `;
 
 // Public Overpass instances, tried in order; the main one is often busy and answers 504. A busy one is
-// asked again; one that refuses or redirects the query, or drops the connection where another instance
-// answers after it, is recorded once and left alone, and a snapshot on disk is read with no request
-// (scripts/lib/overpass.ts).
+// asked again, and so is one this machine could not reach; one that refuses or redirects the query, or
+// drops the connection where another instance answers after it, is recorded once and left alone, and a
+// snapshot on disk is read with no request (scripts/lib/overpass.ts).
 const ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.private.coffee/api/interpreter",
