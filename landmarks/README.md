@@ -288,7 +288,11 @@ panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels w
 13,312, and those have fewer columns of tiles at every zoom. A panorama whose recorded camera is off
 by more than the refinement can find may have its camera set in the config
 (`streetview.camera_fixes`: panorama id to `[x, z]` in the view frame, with a note saying how it was
-found): its views are cut from the panorama as before, and drawn from there looking the same way.
+found): its views are cut from the panorama as before, and drawn from there looking the same way. A
+third number, `[x, z, pitch]`, also turns the camera drawn from by `pitch` degrees, up or (negative)
+down from the cut's pitch: the cut does not apply a panorama's own tilt and roll, and where the car
+stood on a cross-slope its photographs look up or down by up to the roll (the Fisher Building's MGAo…,
+roll -4.16°: 5.6° lower). Without it nothing changes.
 
 ### Camera refinement
 

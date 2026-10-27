@@ -56,9 +56,9 @@ nothing is traced or sampled from them into the model.
 - `MGAo…`'s `tower` view (aimed at 19 m, 60° wide) shows the brick faces from the ramp up: it is the
   reference. `W9y5…` is mostly leaves.
 - `MGAo…`'s camera is set by `streetview.camera_fixes` (round 2): fitted to its tower view's floor
-  bands and corners against the LiDAR's, 2.8 m nearer the tower than recorded. Its note says how, and
-  why a camera at the recorded place whose photograph is pitched 3.9° by the panorama's roll fits as
-  well. `W9y5…`'s is not fitted (no edge shows through the leaves).
+  bands, corners and the canopy's edge against the LiDAR's, 1.8 m from the recorded camera, its
+  photograph looking 5.56° lower than its cut says (the panorama's roll, which the cut does not
+  apply). Its note says how. `W9y5…`'s is not fitted (no edge shows through the leaves).
 - Not used: six panoramas that are not Google's (user-contributed).
 - No photograph shows the north or east faces: draw them plainly at the LiDAR's sizes.
 
