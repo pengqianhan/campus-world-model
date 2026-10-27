@@ -21,7 +21,7 @@ A change to what the site does or shows adds its line here, and the README's
 - **Otago World Model, at /otago/.** Another school on the site: the University of Otago | Ōtākou
   Whakaihu Waka, in 3D on the LINZ ground among the streets and buildings round it. The Dunedin
   campus has 94 buildings; "Other campuses" in the campus list takes the map to the Christchurch
-  campus, where three buildings by Christchurch Hospital are tagged as Otago's. The 97 buildings
+  campus round Christchurch Hospital, where three buildings are tagged as Otago's. The 97 buildings
   come from OpenStreetMap, picked by their `operator` and `building=university` tags and their
   names, each one block at its OpenStreetMap height (21 from their number of levels), else at a
   default, and labelled by name. Otago Polytechnic's buildings, the students' association's, the

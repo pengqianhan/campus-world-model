@@ -53,23 +53,23 @@ streets after it.
   50 m from it. The rule's last step would take K1 and K2 by `building=university` with no
   operator, but in this box that tag does not single out Otago: the one building named for a
   university is Massey's, with no operator either. The hospital's buildings are
-  `building=hospital`, with no university tag. So
-  Wellington is not on the site (Real or absent): its area was taken out again, and its snapshot
-  deleted with its record before the commit; no terrain tile was fetched under it.
+  `building=hospital`, with no university tag. So Wellington is not on the site (Real or absent):
+  its area was taken out again, and its snapshot deleted with its record before the commit; no
+  terrain tile was fetched under it.
 - **Invercargill**: the address is 100 Nelson Street, Georgetown. With no street layout of
   Invercargill to hand, the box was drawn wide round Georgetown and the hospital south-east of the
   city centre, to be narrowed by what it held: `[-46.442, 168.34, -46.415, 168.382]`, 3.0 km by
   3.2 km. Nelson Street runs through it from north to south (168.3668 E, from 46.4178 to 46.4323 S),
   and the hospital stands in it as "Kew Hospital" (`building=hospital`). 9,632,920 bytes, 11,875
-  elements (8,996 buildings), `overpass-api.de`, base 2026-10-27 08:59 UTC; **7 requests** in the
+  elements (8,996 buildings), `overpass-api.de`, base 2026-10-27 08:59 UTC; **6 requests** in the
   script's three rounds: `overpass-api.de` answered 502 twice, `overpass.kumi.systems` 502 once,
-  two waited 240 s with no answer (`overpass.kumi.systems`, `overpass.private.coffee`), one
-  connection to `overpass.private.coffee` failed before a request was sent, and the seventh was
-  answered. **No building there traces to Otago by its tags**: the box holds no
-  `building=university`, no building with Otago's operator tag, and no name that says Otago, and no
-  building carries the address 100 Nelson Street. So Invercargill is not on the site (Real or
-  absent): its area was taken out again, and its snapshot deleted with its record before the
-  commit; no terrain tile was fetched under it, and the box was not narrowed.
+  two waited 240 s with no answer (`overpass.kumi.systems`, `overpass.private.coffee`), and the
+  sixth, to `overpass-api.de`, was answered; one more connection, to `overpass.private.coffee`,
+  failed before a request was sent. **No building there traces to Otago by its tags**: the box
+  holds no `building=university`, no building with Otago's operator tag, and no name that says
+  Otago, and no building carries the address 100 Nelson Street. So Invercargill is not on the site
+  (Real or absent): its area was taken out again, and its snapshot deleted with its record before
+  the commit; no terrain tile was fetched under it, and the box was not narrowed.
 
 **What could be Otago's, by its tags.** In the Dunedin box 2 buildings carry
 `operator=University of Otago` (Student Health, `amenity=doctors`, and the Hocken Collections,
