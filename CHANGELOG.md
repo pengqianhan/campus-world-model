@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-28
+
+### Added
+
+- **The Fisher Building drawn in detail.** Near the camera the map draws the Fisher Building (804)
+  from code in place of its block: a tan brick tower of about ten storeys on Waterloo Quadrant, its
+  higher half a shaft over its south-west side, a cream band at each floor, a slot of windows framed in
+  white up the shaft's corner, balconies with dark louvres down its north-west side, a red tile canopy
+  over its entrance and the ramp to it from the street. Every height is measured from the LINZ 2024
+  LiDAR, and the slot, the bands, the canopy and the ramp in two Street View photographs of it. On the
+  map it has the map's colours; from a walker's height on a computer with a graphics card, its own tan
+  brick, render, glass and red clay tiles. Its north-east and east faces, which no photograph shows,
+  are drawn plainly. A click still opens its floors (#PR).
+
 ## 2026-10-27
 
 ### Added
