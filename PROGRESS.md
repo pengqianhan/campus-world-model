@@ -110,7 +110,8 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | --- | --- | --- | --- |
 | University of Auckland | `/uoa/` | Floor plans, from its campus map | 194 buildings, all on the map; 786 learning spaces with outlines; 4,573 more rooms located as points; 14,840 other spaces; 251 subject codes; 0 classes (see "Coverage") |
 | Auckland University of Technology (AUT) | `/aut/` | Buildings: the City, North and South campuses from OpenStreetMap, picked by the `operator` tag and AUT's building code (a campus letter and a building letter) in `ref` or as the whole `name`, each on the campus of the area it stands in, on the LINZ ground | 41 buildings, all on the map (City 18, North 15, South 8); 6 more left out, each with its reason (`buildingExclusions`; North's AE Building is 15 separate rings); heights: 0 from a `height` tag, 4 from `building:levels`, 37 estimated; 0 rooms, subjects and classes |
-| Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn Campus from OpenStreetMap, picked by its `operator` and `building=university` tags and a name, on the LINZ ground | 52 buildings, all on the map; 29 more left out by the tag rule, each with its reason (25 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 43 from `building:levels`, 9 estimated; 0 rooms, subjects and classes |
+| Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn, Pipitea and Te Aro campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, each on the campus of the area it stands in, on the LINZ ground | 56 buildings, all on the map (Kelburn 52, Pipitea 3, Te Aro 1); 30 more left out by the tag rule, each with its reason (26 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 46 from `building:levels`, 10 estimated; 0 rooms, subjects and classes |
+| University of Otago \| Ōtākou Whakaihu Waka (Otago) | `/otago/` | Buildings: the Dunedin and Christchurch campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, and never a hospital building, the students' association's or the ones the Polytechnic's tags place among its own, each on the campus of the area it stands in, on the LINZ ground. Wellington and Invercargill are not shown: OpenStreetMap names no university building at either and gives none Otago as its operator (`docs/schools/otago.md`, "On the site") | 97 buildings, all on the map (Dunedin 94, Christchurch 3); 72 more left out by the tag rule, each with its reason (51 with no name, 15 with Otago Polytechnic's operator, one of them holding a childcare centre, a childcare centre by its name, 2 of the students' association's, B Block and Poho, and the School of Medicine on Christchurch Hospital's grounds, whose wikidata tag is left for a person to check); heights: 0 from a `height` tag, 21 from `building:levels`, 76 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -135,13 +136,31 @@ VUW's open items, from `docs/schools/vuw.md`, "Needs the maintainer" (each is th
 3. VUW's copyright condition, "accurately and without modifications": decide whether the site may
    show the room list (the Rooms by code form) and the course list on that reading, or ask VUW.
    Until then both are absent, and the site says so.
-4. Pipitea and Te Aro: one Overpass area each.
+4. Done on 2026-10-27: the Pipitea and Te Aro campuses are on the site, from one Overpass area
+   each, which the maintainer let the loop fetch (`docs/schools/vuw.md`, "The three campuses on the
+   site"). Rutherford House stands at the 10 m default: OpenStreetMap gives its storeys only on its
+   parts, which the height rule in "Decisions" does not read.
 5. Brand colours: on 2026-10-27 VUW's home page sets `--green-brand: #115737` and `--green-light:
    #669787` in its own styles, with `#0d4c38` and `#fce500` in a heading; `/brand` and
    `/about/brand` answer 404. All are far from the accent `#ffb454` (CIEDE2000 57.0, 38.3, 60.8,
    21.0) and from the University buildings' tones; the nearest tones of the palette are the night
    map's trees, pitches and grass (`#2a5c40` 3.4 and `#244a33` 3.9 from VUW's greens), which every
    school shares.
+
+Otago's open items, from `docs/schools/otago.md`, "Needs the maintainer" (each is the maintainer's
+to do):
+
+1. `www.otago.ac.nz` answered 403 to the recon's first request and is closed for this project: its
+   campus map, room list, key dates, paper pages and terms stay unread. Reading its `robots.txt` and
+   disclaimer in your own browser, and Otago's permission and access, are items 1 and 2 there.
+2. The Web Timetable Viewer answers only on Otago's network or VPN (item 3 there).
+3. Brand colours: not checked, since the site answered 403 (DESIGN.md, section 6); the accent and
+   tones are the project's own, taken from no school.
+4. Done on 2026-10-27: Dunedin and Christchurch are on the site, from one Overpass area each, which
+   the maintainer let the loop fetch; Wellington and Invercargill were fetched and are not on the
+   site, since OpenStreetMap names no university building at either and gives none Otago as its
+   operator (`docs/schools/otago.md`, "On
+   the site").
 
 ## Done (with evidence)
 
@@ -660,9 +679,3 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
    too. Of these, 434 and 436 pass the top-view check in the first batch
    (`landmarks/measured/exclusions.json` has their numbers).
-6. **Make `schools` a required check on `main` (branch protection, decision 7 of
-   `docs/schools/DESIGN.md`).** Since M4, the `schools` job stands for the end-to-end tests of every
-   school on `.github/schools.json` but the University of Auckland. Only `build`, `e2e` and
-   `how-it-was-made` are required today, so until you add `schools` a pull request could be merged
-   with another school's tests failing. It does not matter while the list holds only `uoa`; add it
-   before the first other school.

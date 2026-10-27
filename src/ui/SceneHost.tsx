@@ -100,7 +100,7 @@ export function SceneHost() {
     const showCampus = (animate: boolean) => {
       const d = data.value;
       const c = d?.campusById.get(selCampus.peek());
-      if (c?.onMap) scene.showCampus(c.center, CAMPUS_SPAN[c.id] ?? campusSpan(d!.campus.buildings.filter((b) => b.campus === c.id && !b.offMap)), animate);
+      if (c?.onMap) scene.showCampus(c.center, CAMPUS_SPAN[c.id] ?? campusSpan(d!.campus.buildings.filter((b) => b.campus === c.id && !b.offMap)), animate, !!c.area);
     };
 
     // The ground and surroundings of every area shown so far, the central one first. The ground
