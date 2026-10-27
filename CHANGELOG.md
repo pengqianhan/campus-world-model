@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   links to its OpenStreetMap element. Rooms, class times, trimester dates and the course list are
   not shown, and the status strip, the time panel, the card and About say why in VUW's own case.
   Halls of residence and the childcare centre stay unnamed. Unofficial, with the project's own
-  colours; nothing is taken from VUW (#TBD).
+  colours; nothing is taken from VUW (#101).
 
 ### Changed
 
