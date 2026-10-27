@@ -53,7 +53,7 @@ A change to what the site does or shows adds its line here, and the README's
   LINZ 2024 LiDAR, and the street end's openings from three Street View photographs of it. On the map
   it has the map's colours; from a walker's height on a computer with a graphics card, its own white
   paint, glass and aluminium. Its long sides and far end, which no photograph shows, are drawn
-  plainly. A click still opens its floors (#PR).
+  plainly. A click still opens its floors (#107).
 
 ### Changed
 
