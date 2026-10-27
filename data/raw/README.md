@@ -13,4 +13,5 @@ read with no request, whatever the record says. Never recorded: a busy instance,
 whose error does not show the host's answer (a name not resolved, no route, an error on this machine such
 as a firewall or a certificate it does not trust: the network may be ours), a drop that no answer
 follows, and a fault of ours (a query answered 400, a file that cannot be written), which stops the run.
-A reset made on this side (by a local firewall, say) can still close an instance: delete its line then.
+A refusal, a reset or a close made on this side (by a local firewall, say) can still close an instance:
+delete its line then.

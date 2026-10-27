@@ -12,7 +12,7 @@
 // area's requests. A fault of ours stops the run with
 // its error, since every instance would answer the same: an answer of 400 (the query is wrong) or a
 // failure on this machine after the answer came (a file that cannot be written); either is an answer, so
-// a drop before it is recorded first. What this cannot tell apart: a reset or a close made on this side
+// a drop before it is recorded first. What this cannot tell apart: a refusal, a reset or a close made on this side
 // (by a local firewall, say) that another instance's answer follows is recorded as the host's; delete its
 // line then.
 import fs from "node:fs";
