@@ -349,15 +349,15 @@ far end, which no photograph shows, are drawn plainly.
 
 The eighth is its neighbour, 15 Eden Crescent (802), a long white building of two storeys along the
 street. Its windows sit deep in square openings, in two rows with red frames, over a base of
-brownish-grey tiles; a band of windows runs under the canopy at its top, and near its north-west end a
-door with steps and a louvre stand among them. Its roof slopes up from the street face and from the back
+brownish-grey tiles; a band of windows runs under the canopy at its top, and near its north-west end
+two doors with steps and a louvre stand among them. Its roof slopes up from the street face and from the back
 to a top storey down the middle, under a curved roof. Every height comes from the LiDAR, within 0.1 m;
-the openings and the door are measured in a Street View photograph through its camera. Counted inside
+the openings and the doors are measured in a Street View photograph through its camera. Counted inside
 the rectangle the model fills on the screen, the model's silhouette has an IoU of 0.58 to 1.00 over the
 nine views of three panoramas, though there those rectangles hold so little sky that a plain block
 filling them would score higher; from above its outline covers the LiDAR's with an IoU of 0.87, and on
 90% of the cells both cover it is within 0.5 m of the LiDAR's height. Its back and ends, which no photograph shows, are drawn
-plainly; a red fire door and a glazed case on its street face are measured and not drawn.
+plainly; a glazed case on its street face is measured and not drawn.
 
 | | |
 | --- | --- |
@@ -655,9 +655,9 @@ If you represent the University and would like something changed or removed, ple
   the likeness counted inside them shows little. Its heights come from the LiDAR. What no photograph
   shows is drawn plainly: its back, its ends and the walls of its top storey, and its roofs are grey.
   The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
-  and a red fire door and a red-framed glazed case near its north-west end are measured and not drawn:
-  they stand on a street a metre below the building's ground, where the map's ground is lower still.
-  Its panels are drawn without their joints, its base's tiles in a dark timber.
+  and a red-framed glazed case near its north-west end is measured and not drawn: it stands on a street
+  a metre below the building's ground, where the map's ground is lower still. Its panels are drawn
+  without their joints, its base's tiles and its two red-brown doors in a dark timber.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the

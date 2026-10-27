@@ -12,8 +12,8 @@ shows is drawn plainly at the LiDAR's sizes.
   red-orange.
 - **The base**: brownish-grey tiles from the footpath to about 1 m above it, a band of white tiles over
   them, a terracotta band at the sills. Near the north-west end: a red fire door with steps under a tall
-  window, a louvre over a small green hood with a red-framed glazed case under it, and a greyish-brown
-  door with a glazed panel and steps.
+  window, a louvre over a small green hood with a red-framed glazed case under it, and a red-brown door
+  of boards with a glazed panel and steps.
 - **Under the canopy**, along the street face's top and set back in its shade: a band of dark windows
   with red mullions. The top storey, under a curved roof, stands back behind the sloping roof and is not
   seen from the street.

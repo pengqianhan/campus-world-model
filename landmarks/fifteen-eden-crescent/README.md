@@ -61,12 +61,15 @@ them and measures the openings and the doors again:
   downstairs; round 2 had measured only the red the far jamb leaves in view. South-east of 14 m along
   the face the windows keep the measured spacing (estimated): the wide view shows a window in every bay
   there, but at that slant its camera places none better than the spacing does.
-- **The north-west end of the street face.** A door with a glazed panel and steps, a louvre over a small
-  green hood, a tall window over the red fire door and a band of windows under the canopy, each sized
-  through the camera. The red fire door and the red-framed glazed case under the hood (a sprinkler
-  inlet's) are measured and not drawn: the street lies 0.95 m below the frame's ground, and the site's
-  ground 1.3 m below it there, so their red and glass would come down below y = 0 without reaching the
-  ground, which `tests/landmarks.test.ts` checks for every material that does. The panels stand there.
+- **The north-west end of the street face.** Two red-brown fire doors with their steps, one with a
+  glazed panel and one under a glazed light, a louvre over a small green hood, a tall window over the
+  second door and a band of windows under the canopy, each sized through the camera. The street lies
+  0.95 m below the frame's ground, and the site's ground 1.3 m below it there, so whatever comes down
+  below y = 0 there without reaching the ground would stand 0.6-0.9 m above it, which
+  `tests/landmarks.test.ts` refuses for every material that comes down to y = 0. The doors' leaves are
+  drawn in the kit's dark timber, the base's material, which reaches the ground and whose colour is near
+  their red-brown. The red-framed glazed case under the hood (a sprinkler inlet's) is measured and not
+  drawn, as its red frame and glass would not reach the ground; the panel stands there.
 
 Against the photographs (`run.sh fifteen-eden-crescent compare`), round 3, every camera set by
 `camera_fixes`: silhouette IoU inside the model's own screen box (the likeness limits are read there,
@@ -79,10 +82,10 @@ heights and the top view below, and on the strips. The building's luma median 24
 236-252 in the photographs: within 12 in eight views; in `mdk1…`'s wide view 249 against 236. There 59%
 of the model's region is its north-west end, which 801 stands in front of in the photograph (801's white
 cladding and dark glass: 235 there, against 249 drawn, which the inferred sun lights); over the rest of
-the region the medians are 242 and 243. From above (`run.sh
+the region the medians are 242 and 242. From above (`run.sh
 fifteen-eden-crescent topview`): footprint IoU 0.865 against the LiDAR, 90% of cells within 0.5 m of its
 height (round 2: 69%), the model 0.05 m below it at the median, 99.9% of block 802 under the model. The
-model is 4,008 triangles in 9 meshes, one a material.
+model is 4,176 triangles in 9 meshes, one a material.
 
 ## Heights against the LiDAR
 
@@ -111,7 +114,8 @@ footpath lies 0.55 to 1.06 m below it along the street face, and the walls go do
   roof and the two storeys' roofs are grey, their colour not seen in any photograph.
 - The street face's panels are drawn as smooth paint, without their joints, and the base's tiles in the
   kit's dark timber, whose brightness is nearest the tiles'.
-- The red fire door and the sprinkler inlet's case are measured and not drawn (above).
+- The sprinkler inlet's glazed case is measured and not drawn, and the doors' red-brown leaves are drawn
+  in the kit's dark timber (above).
 - At the south-east end the LiDAR has the top storey's back half lower than its curved roof: a well
   about 6.5 m long and 3.5 m wide (x -22 to -15.5, z -4 to -0.5) whose floor is at 6.5 m, with a unit at
   8.1 m in it, and a strip at 9.1-9.2 m beyond it (z -6 to -4.5). It is drawn as the rest of the roof:

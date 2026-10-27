@@ -21,10 +21,10 @@ A change to what the site does or shows adds its line here, and the README's
 - **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
   9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
-  brownish-grey tiles, a band of windows under the canopy at its top and, near its north-west end, a
-  door with steps and a louvre; its roof slopes up from the street and from the back to a top storey
+  brownish-grey tiles, a band of windows under the canopy at its top and, near its north-west end, two
+  doors with steps and a louvre; its roof slopes up from the street and from the back to a top storey
   under a curved roof. Every height is measured from the LINZ 2024 LiDAR, and the street face's
-  openings and door from a Street View photograph of it. On the map it has the map's colours; from a
+  openings and doors from a Street View photograph of it. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own white paint, glass, timber and red
   frames. Its back and ends, which no photograph shows, are drawn plainly. A click still opens its
   floors (#PR).

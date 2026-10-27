@@ -69,23 +69,25 @@ const FOOTPATH = -0.95;
 /**
  * The openings of the ground floor at the north-west end (round 3), in MH15's wide view through its camera,
  * s along the edge and y up; each opening's sides and head on the panels' face:
- * - A, a door: s 6.27-7.31, its threshold at -0.15, its head at 2.34; its leaf (greyish brown, about 132,
- *   122, 119, drawn in the kit's dark timber, as the base) to 2.25, with a glazed panel at s 6.44-6.88,
- *   y 0.74-2.07; steps down to the footpath;
+ * - A, a red-brown fire door of boards (about 135, 80, 71 in the door view): s 6.27-7.31, its threshold at
+ *   -0.15, its head at 2.34; its leaf to 2.25, with a glazed panel at s 6.44-6.88, y 0.74-2.07; steps down
+ *   to the footpath;
  * - B: a louvre in an opening like a window's, s 4.37-5.46 (4.4-5.47 here), y 1.07 to 2.26, over a small
  *   green hood (0.76-1.07); under the hood a red-framed glazed case (a sprinkler inlet's, its words say),
  *   s 4.47-5.54, y -0.45 to 0.75: its foot half a metre above the footpath and 1.2 m tall, so not a door;
  * - C, a red fire door (about 140, 75, 68): s 2.75-3.70, its threshold at -0.3, its leaf to 1.59 and a
  *   glazed light over it to the head at 2.18; three steps down to the footpath, their foot 0.4-1.1 m out
  *   from the edge.
- * The case and door C are not drawn: the street lies 0.95 m below the frame's ground, and the site's ground
- * (the 8 m elevation model) 1.3 m below it there, so a red leaf or frame reaching below y = 0 here would
- * stand 0.6-0.9 m above that ground at its own lowest points, which tests/landmarks.test.ts checks for every
- * material that comes down to y = 0, at the material's own lowest points (the walls, the base's dark tiles,
- * whose material door A's leaf shares, and the steps reach the ground; the red and the glass here would
- * not); the panels stand there as before.
+ * The street lies 0.95 m below the frame's ground, and the site's ground (the 8 m elevation model) 1.3 m
+ * below it there, so whatever comes down below y = 0 here without reaching the ground stands 0.6-0.9 m above
+ * that ground at its lowest points, which tests/landmarks.test.ts refuses for every material that comes
+ * down to y = 0, at the material's own lowest points. The two doors' leaves are drawn in the kit's dark
+ * timber, the base's material, which reaches the ground there and whose colour (about 115-155, 77-111,
+ * 48-75 across its grain) is near their red-brown; in the kit's red they would fail it. The case is not
+ * drawn: its red frame and its glass would; the panel stands there as before, under the hood.
  */
 const OPEN = {
+  C: { s: [2.75, 3.7], foot: -0.3, leaf: 1.59, head: 2.18 },
   B: { s: [4.4, 5.47], louvre: [1.07, 2.26], hood: [0.76, 1.07] },
   A: { s: [6.27, 7.31], foot: -0.15, head: 2.34, leaf: 2.25, pane: { s: [6.44, 6.88], y: [0.74, 2.07] } },
 };
@@ -151,10 +153,10 @@ export function body(b) {
     edgeBox(b, plan, i, -0.01, 1.01, 0.0, 0.04, FOOT, BASE.tiles, "timber");
     edgeBox(b, plan, i, -0.01, 1.01, 0.0, 0.05, BASE.tiles, BASE.white, "paint");
   }
-  // on the street face they stand out with the panels, with a terracotta band at the sills, round door A
-  // (open to its steps)
+  // on the street face they stand out with the panels, with a terracotta band at the sills, round the doors
+  // (open to their steps)
   let from = -0.01 * LEN;
-  for (const [h0, h1] of [OPEN.A.s]) {
+  for (const [h0, h1] of [OPEN.C.s, OPEN.A.s]) {
     face(b, from, h0, 0.0, DEEP, FOOT, BASE.tiles, "timber");
     face(b, from, h0, 0.0, DEEP + 0.01, BASE.tiles, BASE.white, "paint");
     face(b, from, h0, 0.0, DEEP + 0.04, BASE.white, BASE.sill, "render");
@@ -163,8 +165,8 @@ export function body(b) {
   face(b, from, 1.01 * LEN, 0.0, DEEP, FOOT, BASE.tiles, "timber");
   face(b, from, 1.01 * LEN, 0.0, DEEP + 0.01, BASE.tiles, BASE.white, "paint");
   face(b, from, 1.01 * LEN, 0.0, DEEP + 0.04, BASE.white, BASE.sill, "render");
-  // the steps up to door A, grey: a landing in the opening at the threshold, two steps out to STEPS_OUT
-  for (const [d, s] of [[OPEN.A, OPEN.A.s]]) {
+  // the steps up to the doors, grey: a landing in the opening at the threshold, two steps out to STEPS_OUT
+  for (const [d, s] of [[OPEN.C, OPEN.C.s], [OPEN.A, OPEN.A.s]]) {
     const rise = (d.foot - FOOTPATH) / 3, w = 0.1;
     face(b, s[0] - w, s[1] + w, 0.0, DEEP, FOOT, d.foot, "grey");
     face(b, s[0] - w, s[1] + w, DEEP, DEEP + (STEPS_OUT - DEEP) / 2, FOOT, d.foot - rise, "grey");
@@ -176,13 +178,14 @@ export function body(b) {
 
 /** The street face's white panels, standing out round the windows and doors: bands between the rows, piers between the openings. */
 export function panels(b) {
-  const B = OPEN.B, A = OPEN.A;
+  const C = OPEN.C, B = OPEN.B, A = OPEN.A;
   const tall = [TALL.s];
-  // the ground floor: piers from the sill band to the band between the rows, round door A's, the louvre's
-  // and the windows' openings; over door A and the louvre, the panel down to their heads; under the louvre,
-  // the panel down from the hood (which fills the opening from 0.76 m to the louvre's sill)
+  // the ground floor: piers from the sill band to the band between the rows, round the doors', the louvre's
+  // and the windows' openings; over the doors and the louvre, the panel down to their heads; under the
+  // louvre, the panel down from the hood (which fills the opening from 0.76 m to the louvre's sill)
   const ground = centres(0).out.map((c) => [c - WINDOWS[0].wide / 2, c + WINDOWS[0].wide / 2]);
-  panelsBetween(b, BASE.sill, ROWS[0][1], [B.s, A.s, ...ground]);
+  panelsBetween(b, BASE.sill, ROWS[0][1], [C.s, B.s, A.s, ...ground]);
+  face(b, C.s[0], C.s[1], 0.0, DEEP, C.head, ROWS[0][1], "paint");
   face(b, B.s[0], B.s[1], 0.0, DEEP, BASE.sill, B.hood[0], "paint");
   face(b, B.s[0], B.s[1], 0.0, DEEP, B.louvre[1], ROWS[0][1], "paint");
   face(b, A.s[0], A.s[1], 0.0, DEEP, A.head, ROWS[0][1], "paint");
@@ -213,12 +216,16 @@ export function windows(b) {
     for (const c of centres(row).out) window(b, c - half, c + half, y0, y1);
   });
   window(b, TALL.s[0], TALL.s[1], TALL.y[0], TALL.y[1]);
+  // C: the leaf, and the glazed light over it in a red frame
+  const C = OPEN.C;
+  face(b, C.s[0], C.s[1], -0.02, 0.04, C.foot, C.leaf, "timber");
+  window(b, C.s[0], C.s[1], C.leaf + 0.08, C.head);
   // B: the louvre's dark blades and the green hood under it
   const B = OPEN.B;
   face(b, B.s[0], B.s[1], -0.05, 0.0, B.louvre[0], B.louvre[1], "iron");
   for (let y = B.louvre[0] + 0.06; y < B.louvre[1] - 0.04; y += 0.12) face(b, B.s[0], B.s[1], -0.05, 0.03, y, y + 0.03, "roofGrey");
   face(b, B.s[0] - 0.03, B.s[1] + 0.03, 0.0, DEEP + 0.08, B.hood[0], B.hood[1], "roofGreen");
-  // A: the leaf with its glazed panel, under a red head
+  // A: the leaf with its glazed panel, under a red head (the leaf's material: OPEN)
   const A = OPEN.A, p = A.pane;
   face(b, A.s[0], p.s[0], -0.02, 0.04, A.foot, A.leaf, "timber");
   face(b, p.s[1], A.s[1], -0.02, 0.04, A.foot, A.leaf, "timber");
