@@ -15,7 +15,7 @@
 // line then.
 import fs from "node:fs";
 import path from "node:path";
-import { HttpError, RAW_DIR } from "./snapshot.ts";
+import { EARLIER_ATTEMPTS, HttpError, RAW_DIR } from "./snapshot.ts";
 
 export const CLOSED_FILE = path.join(RAW_DIR, "overpass-closed.txt");
 
@@ -29,8 +29,9 @@ export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable"
  * (the request's or the connection's) is busy; a name that does not resolve or a network with no route is
  * this machine not reaching the host ("offline"); a redirect, not followed, is a refusal; and the rest are
  * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake. A name
- * tried at several addresses fails with every attempt's error, which snapshot.ts gives one after another:
- * it is busy if any timed out, else offline if any did not reach the host, else as the rest are.
+ * tried at several addresses is sorted by its last attempt, which snapshot.ts gives first: Node cuts the
+ * others short after 250 ms (ETIMEDOUT) or passes on from an address this machine has no route to, so
+ * theirs say nothing of the host.
  */
 export function failure(url: string, e: unknown): Failure {
   if (e instanceof HttpError) {
@@ -41,7 +42,7 @@ export function failure(url: string, e: unknown): Failure {
   }
   const m = e instanceof Error ? e.message : String(e);
   if (!m.startsWith(`${url} -> `)) return "ours";
-  const said = m.slice(url.length + 4);
+  const said = m.slice(url.length + 4).split(`; ${EARLIER_ATTEMPTS}`)[0]!;
   if (/^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/.test(said)) return "busy";
   if (/\b(ENOTFOUND|EAI_AGAIN|EAI_FAIL|EAI_NODATA|ENETUNREACH|ENETDOWN|EHOSTUNREACH|EADDRNOTAVAIL)\b/.test(said)) return "offline";
   if (/redirect/i.test(said)) return "refused";

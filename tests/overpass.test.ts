@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { askOverpass, failure, type OverpassDeps } from "../scripts/lib/overpass.ts";
-import { HttpError, fetchFailure } from "../scripts/lib/snapshot.ts";
+import fs from "node:fs";
+import path from "node:path";
+import { HttpError, RAW_DIR, fetchFailure, snapshot } from "../scripts/lib/snapshot.ts";
 
 const A = "https://a.example/api/interpreter";
 const B = "https://b.example/api/interpreter";
@@ -199,17 +201,42 @@ describe("Overpass instances", () => {
     await expect(askOverpass([A, B], f.d)).rejects.toThrow(/no Overpass instance answered; .*a\.example.* is closed \(HTTP 403\); delete its line in .*overpass-closed\.txt/);
   });
 
-  it("word every address's failure when a name has several, so that it is sorted by what failed", () => {
-    // Node tries each of a name's addresses in turn and gathers the attempts' errors, with no message of its own
+  it("sort a name with several addresses by its last attempt, which says what the host did", () => {
+    // Node tries each of a name's addresses in turn and gathers the attempts' errors, with no message of its own;
+    // it cuts every attempt but the last short after 250 ms (ETIMEDOUT), whatever the host would have done
     const tried = (...messages: string[]) => new TypeError("fetch failed", { cause: new AggregateError(messages.map((m) => new Error(m)), "") });
     const said = (e: Error) => new Error(`${A} -> ${fetchFailure(e)}`);
-    const unreached = tried("connect ENETUNREACH 192.0.2.1:443", "connect ENETUNREACH 2001:db8::1:443");
-    expect(fetchFailure(unreached)).toBe("TypeError: fetch failed (connect ENETUNREACH 192.0.2.1:443; connect ENETUNREACH 2001:db8::1:443)");
-    expect(failure(A, said(unreached))).toBe("offline");
-    expect(failure(A, said(tried("connect ETIMEDOUT 192.0.2.1:443", "connect ECONNREFUSED 2001:db8::1:443")))).toBe("busy");
+    const refusedAtEach = tried("connect ETIMEDOUT ::ffff:192.0.2.1:443", "connect ECONNREFUSED 192.0.2.1:443");
+    expect(fetchFailure(refusedAtEach)).toBe("TypeError: fetch failed (connect ECONNREFUSED 192.0.2.1:443; earlier attempts: connect ETIMEDOUT ::ffff:192.0.2.1:443)");
+    expect(failure(A, said(refusedAtEach))).toBe("dropped");
+    // no route for IPv6 here, refused over IPv4: the host refused
+    expect(failure(A, said(tried("connect ENETUNREACH 2001:db8::1:443", "connect ECONNREFUSED 192.0.2.1:443")))).toBe("dropped");
     expect(failure(A, said(tried("connect ECONNREFUSED 192.0.2.1:443", "connect ECONNREFUSED 2001:db8::1:443")))).toBe("dropped");
+    // no route at any address: this machine; the last attempt timed out: busy, whatever came before it
+    expect(failure(A, said(tried("connect ENETUNREACH 2001:db8::1:443", "connect ENETUNREACH 192.0.2.1:443")))).toBe("offline");
+    expect(failure(A, said(tried("connect ENETUNREACH 2001:db8::1:443", "connect ETIMEDOUT 192.0.2.1:443")))).toBe("busy");
     // one address: the cause's own message, as before
     expect(fetchFailure(new TypeError("fetch failed", { cause: new Error("other side closed") }))).toBe("TypeError: fetch failed (other side closed)");
+  });
+
+  describe("snapshot()'s own words for a failed request", () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("give the last attempt first and the logged URL only, and write nothing", async () => {
+      const file = "osm/never-written-by-the-overpass-test.json";
+      vi.stubGlobal("fetch", async () => {
+        throw new TypeError("fetch failed", {
+          cause: new AggregateError([new Error("connect ETIMEDOUT ::ffff:192.0.2.1:443"), new Error("connect ECONNREFUSED 192.0.2.1:443")], ""),
+        });
+      });
+      const url = "https://a.example/api/interpreter?secret=1";
+      const err = await snapshot({ source: "osm", file, url, logUrl: A }).catch((e: Error) => e);
+      expect(String(err)).toBe(`Error: ${A} -> TypeError: fetch failed (connect ECONNREFUSED 192.0.2.1:443; earlier attempts: connect ETIMEDOUT ::ffff:192.0.2.1:443)`);
+      expect(failure(A, err)).toBe("dropped");
+      expect(fs.existsSync(path.join(RAW_DIR, file))).toBe(false);
+    });
   });
 
   it("tell a refusal, a drop, a busy answer, a host not reached and our own fault apart", () => {
