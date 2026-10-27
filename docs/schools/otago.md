@@ -2,11 +2,137 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Otago publishes
-without a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data
-file comes with it.
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the
+Dunedin and Christchurch campuses are on the site in the Buildings form, from OpenStreetMap ("On
+the site", below); Wellington and Invercargill are not. The rest of this report is the recon as it
+was done.
 
 Path name if the school is added: `/otago/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; Otago's web domain is `otago.ac.nz`). Time zone: Pacific/Auckland.
+
+## On the site (2026-10-27)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each campus that this
+report gives an address for (Dunedin, Christchurch, Wellington and Invercargill) through
+`scripts/fetch-osm.ts`, and the terrain tiles under the two kept through `scripts/fetch-terrain.ts`.
+No request went to any Otago host: `www.otago.ac.nz` answered 403 to this report's first request,
+so it is closed for this project ("Closed is a verdict"). For the same reason no brand-colour check
+was made (DESIGN.md, section 6): the site's accent and tones are the project's own, taken from no
+school. The name used is this report's, "University of Otago | Ōtākou Whakaihu Waka". Not part of
+this step: the Auckland Centre (an office floor in a city building), the Wellington Liaison Office
+(an office) and the Queenstown sites being set up.
+
+**How each box was set.** This report gives addresses and no map points, so each box was drawn from
+the address before the fetch, without asking any host, and checked against the snapshot's own
+streets after it.
+
+- **Dunedin** (`central`): round the streets of the addresses above in North Dunedin (362 Leith
+  Street; the corner of Albany and Cumberland Streets; 145 Union Street East), wide on every side:
+  `[-45.875, 170.503, -45.858, 170.5265]`, 1.9 km north to south and 1.8 km east to west. Leith,
+  Albany, Cumberland, Castle and Great King Streets and Union Street East all run through the
+  snapshot. `osm/context-otago-dunedin.json`: 6,565,134 bytes, 9,048 elements (3,090 building ways
+  and 10 relations), from `overpass-api.de`, OpenStreetMap base 2026-10-27 08:44 UTC; **1 request**.
+  The 94 buildings the rule takes lie 51 m (the Sargood Centre, at Logan Park) to 897 m inside the
+  box's edges, and span 1,457 m east to west and 866 m north to south; the origin, the sun and the
+  weather are at their middle (-45.8661, 170.5167).
+- **Christchurch**: the address is 2 Riccarton Avenue, Christchurch Hospital's. The University of
+  Canterbury's committed Arts Centre snapshot (`osm/context-uc-arts-centre.json`, #110) holds
+  Otago's Department of General Practice at 14 Gloucester Street (`operator=University of Otago`)
+  and the hospital's School of Medicine, so the box was drawn round the hospital and those two:
+  `[-43.5372, 172.6215, -43.5275, 172.632]`, 1.1 km by 0.85 km. Riccarton Avenue, Hagley Avenue,
+  Oxford Terrace and Gloucester Street run through it. `osm/context-otago-christchurch.json`:
+  1,912,367 bytes, 1,966 elements, `overpass-api.de`, base 2026-10-27 08:44 UTC; **1 request**.
+  Otago's 3 buildings lie 245 to 277 m inside its edges.
+- **Wellington**: the address is 23A Mein Street, Newtown, by Wellington Hospital. The box was drawn
+  round the hospital and Mein Street: `[-41.3125, 174.7735, -41.3035, 174.7845]`, 1.0 km by
+  0.9 km. Mein Street runs through the snapshot from Riddiford Street east. 2,384,487 bytes, 2,655
+  elements, `overpass-api.de`, base 2026-10-27 08:45 UTC; **1 request**. **No building there traces
+  to Otago by its tags.** The box holds 19 `building=university`, none with an operator tag and none
+  whose name says Otago: 16 have no name (5 of them stand about 60 to 100 m north of Mein Street,
+  on the hospital's side), and the three named are "Massey University Block 7" and "K1" and "K2",
+  50 m from it. The hospital's buildings are `building=hospital`, with no university tag. So
+  Wellington is not on the site (Real or absent): its area was taken out again, and its snapshot
+  deleted with its record before the commit; no terrain tile was fetched under it.
+- **Invercargill**: the address is 100 Nelson Street, Georgetown. With no street layout of
+  Invercargill to hand, the box was drawn wide round Georgetown and the hospital south-east of the
+  city centre, to be narrowed by what it held: `[-46.442, 168.34, -46.415, 168.382]`, 3.0 km by
+  3.2 km. Nelson Street runs through it from north to south (168.3668 E, from 46.4178 to 46.4323 S),
+  and the hospital stands in it as "Kew Hospital" (`building=hospital`). 9,632,920 bytes, 11,875
+  elements (8,996 buildings), `overpass-api.de`, base 2026-10-27 08:59 UTC; **7 requests** in the
+  script's three rounds: `overpass-api.de` answered 502 twice, `overpass.kumi.systems` 502 once,
+  two waited 240 s with no answer (`overpass.kumi.systems`, `overpass.private.coffee`), one
+  connection to `overpass.private.coffee` failed before a request was sent, and the seventh was
+  answered. **No building there traces to Otago by its tags**: the box holds no
+  `building=university`, no building with Otago's operator tag, and no name that says Otago, and no
+  building carries the address 100 Nelson Street. So Invercargill is not on the site (Real or
+  absent): its area was taken out again, and its snapshot deleted with its record before the
+  commit; no terrain tile was fetched under it, and the box was not narrowed.
+
+**What could be Otago's, by its tags.** In the Dunedin box 2 buildings carry
+`operator=University of Otago` (Student Health, `amenity=doctors`, and the Hocken Collections,
+`amenity=library`), 147 carry `building=university` with no operator (50 of them with no name), and
+15 carry `building=university` with `operator=Otago Polytechnic`, the one other tertiary school
+there. No building in it has `amenity=university`. In the Christchurch box 2 carry Otago's operator
+(Terrace House and the Department of General Practice) and 2 `building=university` with no operator
+(the "University of Otago - Wai Ora Building" and one with no name); the School of Medicine is
+`building=hospital` with `amenity=university` and no operator. Neither snapshot holds an
+`amenity=university` area: `fetch-osm.ts` asks Overpass for buildings, streets, paths, parks and
+trees, not for campus outlines.
+
+**The rule** (`src/schools/otago/school.ts`), as VUW's and UC's: a building is taken by Otago's
+`operator` tag, or by `building=university` with no other operator named, and by its name; a home is
+never considered, whatever its operator. A building with `amenity=university` is a candidate too,
+so that the School of Medicine is considered and its verdict recorded. Steps added for what Otago's
+boxes hold, each before the step that would take it:
+
+- a childcare centre by its name or its description, not only by `amenity`: a `building=university`
+  named "Childcare Centre", and the Polytechnic's I Block ("Polykids Childcare Centre");
+- `building=hospital` with no Otago operator: the School of Medicine on Christchurch Hospital's
+  grounds. Its tags name no operator, and `amenity=university` with that name does not say which
+  university's it is; a building of another body is shown as Otago's only where its own tags say so,
+  as for the Malaghan Institute at VUW (#101);
+- the Otago University Students' Association's two buildings, by their names: a body of its own;
+- "B Block" (`building=university`, no operator): named in Otago Polytechnic's lettered series on
+  Forth Street, whose A, D, F, G, H, I, L, N, O, P, S and T Blocks all carry the Polytechnic's
+  operator tag;
+- "Poho" (`building=university`, no operator): no tag says whose it is, and it stands between the
+  Polytechnic's A Block and B Block.
+
+**Taken: 97.** Dunedin 94: 2 by Otago's operator, 92 by `building=university`. Christchurch 3:
+Terrace House and the Department of General Practice by Otago's operator, and the Wai Ora Building
+by `building=university`, its name naming Otago. Heights: 21 from `building:levels`, 76 at a
+default (20 at 10 m, 56 at 6.5 m), none from `height`. Tallest: the Richardson Building and the
+Otago Business School 39.6 m (11 levels), the Microbiology Building 32.4 m, Science 2 and the Wai
+Ora Building 28.8 m. **Left out: 72**, each with its reason: 51 with no name (Dunedin 50,
+Christchurch 1), 14 with the Polytechnic's operator, the Polytechnic's I Block (a childcare centre,
+by its description), the Childcare Centre, B Block, Poho, the students' association's 2, and the
+School of Medicine.
+
+**Judgements for review.** (1) B Block and Poho are left out on the Polytechnic's tags round them;
+if they are Otago's, two steps come out. (2) Eight buildings off Union Street East are taken by
+`building=university` with no operator, though their names do not say whose they are and they stand
+near the Polytechnic's buildings: the Administration Block, Auditorium, Teaching Wing, Tower Block,
+Education and Resource Centre, Dunedin Study Building, Drama Centre and Theatre, and Te Korokoro 2.
+Beside them, the names of the "University of Otago College of Education Gymnasium" and the
+"University of Otago School of Performing Arts" (`alt_name=Te Korokoro 1`) say Otago. (3) Te Roopu
+Maori, the University Staff Club and the Pacific Islands Centre are taken by their tags; their names
+do not say whether a group of the University's or a body of its own uses them. (4) "Thomson
+Residence (Former)" is taken: by its name, nobody lives there now. (5) The Sargood Centre at Logan
+Park and University Plaza by the stadium are taken by `building=university`. (6) A dormitory 420 m
+north of the Richardson Building carries the same name (`way/493742022`); it is not a candidate and
+stays blank, and the name the site shows is the University building's.
+
+**Left blank.** The Dunedin box holds 684 homes by their `building` value (166 of them named, 91
+dormitories among them, the residential colleges' buildings with them) and one
+`building=kindergarten`; the Christchurch box holds 50 homes (3 named). None is a candidate, and
+none of their names is in the published data except where a building the rule takes carries the
+same name (6, above); a test checks this.
+
+**The ground.** 13 tiles, 9 under Dunedin and 4 under Christchurch. Each tile's
+`x-amz-meta-x-imagery-sources` header was logged as it came (`scripts/fetch-terrain.ts`, de7942b
+from #110): every Dunedin tile names LINZ's model (`nzlinz/lds-tile-tf`, with `lds-tile-uf` in 3),
+and 5 of them mix in SRTM and GMTED2010 at the harbour, one of those ETOPO1 too; the 4 Christchurch
+tiles name `nzlinz/lds-tile-ph` only. So the shared terrain line in About holds for them.
 
 ## Verdicts
 
