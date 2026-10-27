@@ -198,11 +198,14 @@ A measured massing (`MASSING.md`) is a plain building drawn by a program from th
 agent and no photograph. All of them share one model and have a data file each:
 
 - `pipeline/tools/massing.py` measures every tier-3 building of the City campus that the eight
-  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), from the repository root:
-  `$PY -I landmarks/pipeline/tools/massing.py [ids]`. It writes `measured/buildings/<id>.json` for
-  each that passes the limits, and `measured/exclusions.json` for each that keeps its block, with
-  its reason. Its top views (LiDAR | model | difference) and a table go to `measured/out/`, which
-  is not committed.
+  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), and, as stand-ins until
+  their landmarks come, the buildings of tiers 1 and 2 there that the site does not draw as
+  landmarks (it reads the placements; `SOON` holds those in progress on other branches), from the
+  repository root: `$PY -I landmarks/pipeline/tools/massing.py [--tier3] [ids]`. It writes
+  `measured/buildings/<id>.json` for each that passes the limits, and `measured/exclusions.json` for
+  each that keeps its block, with its reason; a run over every building also drops the data file of
+  one it no longer measures. Its top views (LiDAR | model | difference) and a table go to
+  `measured/out/`, which is not committed.
 - How it measures: the ground round the outline; roof cells (a 0.5 m heightmap, a cell being roof
   where most of its points are building points over 2.5 m); layers where neighbouring cells step
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
@@ -230,7 +233,8 @@ agent and no photograph. All of them share one model and have a data file each:
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
   or removed: run it with `--fsModuleCache=false` after the generator has run.
 - Kept as blocks by decision, whatever the LiDAR (each in `measured/exclusions.json` with its
-  reason): places where people live (123, 436, 617 and 838 by their residential floors; 434, whose
+  reason): places where people live (123, 436, 617 and 838, and of tiers 1 and 2 440, 441, 442,
+  614, 616, 818, 831 and 833, by their residential floors; 434, whose
   floor 2 has an Accommodation Reception on the campus map; 450 by its name) and childcare centres
   (410, 841, and 255, which decision 7 keeps too), both until the maintainer decides (MASSING.md
   decision 6); Waipapa Marae (251 to 256) and

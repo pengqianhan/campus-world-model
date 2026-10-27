@@ -106,6 +106,9 @@ when:
 - the building is under the ground (an underpass), where the LiDAR sees the street above it;
 - ground points lie under the roof in most of its cells (a bridge or a canopy, open below; see
   decision 8);
+- its outline on the campus map crosses itself (since the second round: the lowest layer stands on
+  the outline, and such an outline has no inside to draw; 810 1-11 Short Street and 311 Student
+  Commons Blocks A-D);
 - the model fails the top-view check below.
 
 ### How it is checked
@@ -236,6 +239,19 @@ puts the others in two tiers, and the generator leaves them to it:
 Every other City campus building is the generator's (tier 3): 48 of them lie in the eight tiles.
 A building moves out of tier 3 when the maintainer plans a landmark for it.
 
+**Stand-ins for tiers 1 and 2 (2026-10-27, for the maintainer to confirm).** Since the second
+round the generator also measures the buildings of tiers 1 and 2 that have no landmark yet, through
+the same limits, so that they are drawn to their measured heights until their landmarks come. It
+leaves out every building that the site draws as a landmark (it reads each
+`landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109 and
+119) and the landmarks in progress on their own branches (`SOON` in the generator: 801). Making one
+a landmark deletes its data file in the same pull request; a run over every building also drops the
+data file of a building that has become a landmark. 45 buildings of tiers 1 and 2 lie in the tiles.
+Places where people live keep their blocks here too (decision 6): 440, 441, 442, 614, 616, 818, 831
+and 833 by their residential floors. `--tier3` measures tier 3 alone, as the first round did; if
+the maintainer does not want the stand-ins, a run with it removes their data files and their
+entries in `exclusions.json`.
+
 ## Places, not people
 
 - **Where people live and childcare centres.** An exterior shell is not a floor: it shows no room,
@@ -246,9 +262,10 @@ A building moves out of tier 3 when the maintainer plans a landmark for it.
   "Which buildings") that is 123 Lodge, 436 University Hall Apartments, 617 7 City Road and 838
   Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo and 410 Symonds Street
   Early Childhood Centre (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
-  833 of tiers 1 and 2 also have residential floors. The generator does not draw them, but
-  decision 6 bears on them too: 102 Old Government House (residential floors 10 and 20) is drawn
-  as a landmark, outside and in detail (#75).
+  833 of tiers 1 and 2 also have residential floors. Since the generator measures tiers 1 and 2 as
+  stand-ins (see "Which buildings"), it keeps the blocks of 440 to 833 by the same rule, each in
+  `exclusions.json` with its reason; decision 6 bears on 102 too: Old Government House
+  (residential floors 10 and 20) is drawn as a landmark, outside and in detail (#75).
   **841 Nicholls Lane ECE** is a childcare centre by its name. Before PR #69 the data build's test
   (`PLAN_CHILDCARE_BUILDINGS` in `scripts/build-data.ts`) did not match "ECE"; since it was merged,
   841's floor is blank and caught by its `noPlan` mark like the others.
@@ -318,6 +335,42 @@ The same measurement leaves these as blocks:
 | 331 Southern Underpass | 225.9 m² | 35.5 m² (16%), all from the tall buildings beside it | 72% | under the ground |
 | 129 Overbridge | 26.1 m² | 17.8 m² (67%) | 27% | below the cover limit. Its top is 10.8 to 11.2 m above the road, and ground is seen under 17 of its 28 1 m cells: open below (decision 8) |
 | 408 UniPress | 190.8 m² | 0 m² | 95% | ground is seen in 187 1 m cells under the trees, so the 2024 LiDAR shows no roof there. The campus map may be out of date or the outline misplaced: a question for the maintainer, not for the generator |
+
+### The second round (2026-10-27)
+
+Why the 13 tier-3 buildings that fail the top-view check fail, from their top views
+(`measured/out/<id>.png`):
+
+- **Roofs of several ridges** (132, 212, 215, 216, 219, 225, 226, 240, 322). The model draws each
+  layer's roof as the lowest of its planes. That fits one ridge (a mono-pitch, a gable, a hip), but
+  not two hips side by side, a cross-gable or gables in a row: where they meet in valleys, the lowest
+  plane cuts the others down. And when the lowest layer is a small piece (a porch roof, a flat strip)
+  that covers less than half of the outline, a larger sloping layer whose walls would stand lower
+  than that piece is dropped, and the whole building is drawn flat at the small piece's height (219,
+  225, 240).
+- **A raised part taken into the roof round it** (432: a rectangle 1.5 m higher; 423: the lower
+  slopes of its hip roofs, drawn at the flat roof's height).
+- **Footprints that differ from the campus map's outline where the heights agree** (274, 431: IoU
+  0.86 and 0.89 with 94% of cells within 0.5 m).
+- **Trees classed as building** over part of a roof (215, 216, 219, 240): left out of the heights,
+  but counted in the footprint.
+
+Two general changes were tried and not kept, as neither made a building pass: a roof under 5°
+drawn as a mono-pitch where one plane holds it and one height does not (274 falls about 3°), and,
+when the lowest layer is small, a flat plinth at the lowest eave with every layer standing on it.
+The plinth brought 240 to IoU 0.904 with 88% within 0.5 m, 219 from 31% to 78% and 423 from 54% to
+76%. A roof of several ridges needs each group of planes kept to the part of the outline it covers,
+which `measured/model.js` does not draw yet.
+
+The 14 tier-3 buildings with too little roof are not mis-measured: in each the LiDAR sees
+vegetation above the roof, ground, or nothing. 120, 121, 122, 124 and 125 are under tree crowns
+classed as vegetation (60% to 98% of their cells, crowns 11 to 21 m above the ground); 126 and 331
+are underpasses; 129, 136 and 202 are open below; 316 Food Container has no point in 75% of its
+cells and ground in the rest, so it is not there in 2024; 220 Bayreuth (82% roof), 273 Fale - Office
+Building (73%) and 422 Architecture Acoustics Laboratory (60%) have outlines on the campus map that
+take in open ground, which the LiDAR sees in 11%, 19% and 26% of their cells. No roof among them is
+hidden by glass alone (122 Glasshouses lies under tree crowns too), and none has crowns classed as
+building over it.
 
 ### How the numbers were measured
 
