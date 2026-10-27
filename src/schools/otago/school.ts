@@ -55,8 +55,11 @@ export const school: School = {
    * The Dunedin campus buildings span about 1,460 m east to west and 870 m north to south. The
    * opening view frames 900 m round the campus's centre, where most of them stand, so that their
    * labels have room: 41 of the 94 show at 1440 x 900, against 27 with the whole extent framed.
+   * Christchurch's three buildings stand 520 m apart from north to south, round a centre at the
+   * southern two; framed by the rule for a campus away from the centre (about 830 m), the northern
+   * one's label sits under the title bar, so its view frames 1,200 m.
    */
-  campusSpan: { dunedin: 900 },
+  campusSpan: { dunedin: 900, christchurch: 1200 },
   /**
    * Christchurch, in an area of its own, as the other schools' campuses away from the centre are
    * (docs/schools/otago.md, "Campuses"; "On the site" says how its box was placed). The recon gives

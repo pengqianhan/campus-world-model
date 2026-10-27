@@ -50,7 +50,10 @@ streets after it.
   to Otago by its tags.** The box holds 19 `building=university`, none with an operator tag and none
   whose name says Otago: 16 have no name (5 of them stand about 60 to 100 m north of Mein Street,
   on the hospital's side), and the three named are "Massey University Block 7" and "K1" and "K2",
-  50 m from it. The hospital's buildings are `building=hospital`, with no university tag. So
+  50 m from it. The rule's last step would take K1 and K2 by `building=university` with no
+  operator, but in this box that tag does not single out Otago: the one building named for a
+  university is Massey's, with no operator either. The hospital's buildings are
+  `building=hospital`, with no university tag. So
   Wellington is not on the site (Real or absent): its area was taken out again, and its snapshot
   deleted with its record before the commit; no terrain tile was fetched under it.
 - **Invercargill**: the address is 100 Nelson Street, Georgetown. With no street layout of
