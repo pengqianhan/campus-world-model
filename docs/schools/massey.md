@@ -152,7 +152,8 @@ any of the ground under them is not shown (a judgement for the maintainer, in th
 **A question for the maintainer: the key dates.** This report's layer 4 found Massey's key-dates page
 open, with Massey's licence for non-commercial reuse. Reading it is a fetch of a new source, a gate,
 so `data/massey/academic-calendar.json` says `available: false`, and About says that the site does
-not read the dates yet. The same holds for the course list (layer 5).
+not take the dates until the project's maintainer decides to add them as a new source. The same holds
+for the course list (layer 5).
 
 ## Verdicts
 

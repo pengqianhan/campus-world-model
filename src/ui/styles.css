@@ -1717,7 +1717,7 @@ select optgroup {
     font-size: 16px;
   }
 
-  /* A long school name (TopBar.tsx) takes the size every name has under 384 px, so it fits the bar. */
+  /* A long school name (TopBar.tsx) is drawn at 14.5 px, the size other names take under 384 px, so it fits the bar. */
   .brand-name.long {
     font-size: 14.5px;
   }
