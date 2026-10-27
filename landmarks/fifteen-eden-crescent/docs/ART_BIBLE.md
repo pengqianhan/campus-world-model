@@ -10,10 +10,13 @@ shows is drawn plainly at the LiDAR's sizes.
   with fine joints.
 - **The windows** are set deep in square openings, one a bay, in two rows; their frames and sills are
   red-orange.
-- **The base**: dark brown tiles to about 1.2 m, a cream tile band over them, red-orange trim; two doors
-  in red frames near the north-west end, a small green-roofed porch between them.
-- **The top storey** stands back from the street face: a band of red-framed windows under a thin, white,
-  projecting flat roof.
+- **The base**: brownish-grey tiles from the footpath to about 1 m above it, a band of white tiles over
+  them, a terracotta band at the sills. Near the north-west end: a red fire door with steps under a tall
+  window, a louvre over a small green hood with a red-framed glazed case under it, and a greyish-brown
+  door with a glazed panel and steps.
+- **Under the canopy**, along the street face's top and set back in its shade: a band of dark windows
+  with red mullions. The top storey, under a curved roof, stands back behind the sloping roof and is not
+  seen from the street.
 - **The north-west end** meets 9 Eden Crescent (801), a taller white building with wide glass bands.
 
 ## Light

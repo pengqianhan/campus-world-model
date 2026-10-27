@@ -52,6 +52,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-28:** on Eden Crescent the map draws 15 Eden Crescent in detail, next to 9 Eden Crescent:
+  a long white two-storey building, its windows deep in square openings in two rows over a base of
+  tiles, under a roof that slopes up to a top storey with a curved roof.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -344,10 +347,27 @@ far end, which no photograph shows, are drawn plainly.
 | ![9 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/nine-eden-crescent-front.jpg) | ![9 Eden Crescent from above the street, drawn from code](docs/landmarks/nine-eden-crescent-above.jpg) |
 | ![9 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/nine-eden-crescent-map.jpg) | ![9 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/nine-eden-crescent-eyes.jpg) |
 
+The eighth is its neighbour, 15 Eden Crescent (802), a long white building of two storeys along the
+street. Its windows sit deep in square openings, in two rows with red frames, over a base of
+brownish-grey tiles; a band of windows runs under the canopy at its top, and near its north-west end a
+door with steps and a louvre stand among them. Its roof slopes up from the street face and from the back
+to a top storey down the middle, under a curved roof. Every height comes from the LiDAR, within 0.1 m;
+the openings and the door are measured in a Street View photograph through its camera. Counted inside
+the rectangle the model fills on the screen, the model's silhouette has an IoU of 0.58 to 1.00 over the
+nine views of three panoramas, though there those rectangles hold so little sky that a plain block
+filling them would score higher; from above its outline covers the LiDAR's with an IoU of 0.87, and on
+90% of the cells both cover it is within 0.5 m of the LiDAR's height. Its back and ends, which no photograph shows, are drawn
+plainly; a red fire door and a glazed case on its street face are measured and not drawn.
+
+| | |
+| --- | --- |
+| ![15 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/fifteen-eden-crescent-front.jpg) | ![15 Eden Crescent from above the street, drawn from code](docs/landmarks/fifteen-eden-crescent-above.jpg) |
+| ![15 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/fifteen-eden-crescent-map.jpg) | ![15 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/fifteen-eden-crescent-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
-in place of 119; 9 Eden Crescent in place of 801) when the camera comes
+in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802) when the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -528,8 +548,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119) and 9 Eden Crescent (801), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/` and `landmarks/nine-eden-crescent/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing and 9 Eden Crescent were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801) and 15 Eden Crescent (802), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/` and `landmarks/fifteen-eden-crescent/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent and 15 Eden Crescent were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -582,8 +602,8 @@ If you represent the University and would like something changed or removed, ple
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
   105S), Old Government House (102), the General Library (109), the range of Old Choral Hall
-  (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119) and 9 Eden
-  Crescent (801) are the exceptions: their models are drawn to
+  (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden
+  Crescent (801) and 15 Eden Crescent (802) are the exceptions: their models are drawn to
   sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
@@ -629,6 +649,15 @@ If you represent the University and would like something changed or removed, ple
   photograph shows is drawn plainly: its long sides, which stand against their neighbours, its far
   end, and the plant on its roof (grey boxes at the LiDAR's sizes). Its white cladding is drawn
   without the panels' joints.
+- **15 Eden Crescent is seen from Eden Crescent only, mostly along its street face.** The same three
+  Street View panoramas see its street face, one of them square enough to measure its openings through
+  its camera, which is set where 9 Eden Crescent's fit puts it; their rectangles hold so little sky that
+  the likeness counted inside them shows little. Its heights come from the LiDAR. What no photograph
+  shows is drawn plainly: its back, its ends and the walls of its top storey, and its roofs are grey.
+  The windows of the street face's south-east half keep the spacing measured at its north-west half,
+  and a red fire door and a red-framed glazed case near its north-west end are measured and not drawn:
+  they stand on a street a metre below the building's ground, where the map's ground is lower still.
+  Its panels are drawn without their joints, its base's tiles in a dark timber.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the

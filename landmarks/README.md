@@ -319,6 +319,10 @@ A correction is applied only when the photo's sky is well labelled round the mod
 (≥ 20 % photo sky and ≤ 50 % photo solid next to it) and it raises the IoU by ≥ 0.01. Backlit views
 with hazy white sky, views mostly of trees, and back views keep their Street View camera.
 `views_refined.json` holds every view, with `refine: {from, delta, applied, iou_before, iou_after}`.
+With `refine.keep_fixes` true in the config, a panorama whose camera `streetview.camera_fixes` sets is
+searched and reported as before but never corrected: its views keep the fixed camera, and the report
+says so (15 Eden Crescent, whose cameras are set where 9 Eden Crescent's fits put them). Without it
+nothing changes.
 
 ### Metrics
 

@@ -12,20 +12,25 @@ model.
   at x = z = 0. `config/fifteen-eden-crescent.json`, `frame`: `street_side` "east" turns the frame to face
   the street (the screening's "west" faced away from it).
 - What the LiDAR shows, in this frame, from building 802's returns within 1 m of its floor outline:
-  - **the building**: building 802's floor outline (x -24.2 to 19.5, z -12.7 to 12.3), two storeys, its
-    flat roof at 7.65 m along the street (median, z 7 to 11) and 7.84 m behind (z -11 to -7);
-  - **the top storey**: a band 12 m wide down the middle (z -6.0 to 6.0, x -20.0 to 17.2), its flat roof
-    at 10.33 m (median; 10.59 at p90);
-  - **the north-west end** (x 17.2 to 19.5) across the whole depth, its roof at 10.72 m (a few returns
-    to 13.7 m: plant);
-  - **the ground**: 0 to +0.1 m on the footpath, -1.0 m behind, -0.5 and -0.1 m at the ends. Walls go
+  - **the building**: building 802's floor outline (x -24.2 to 19.5, z -12.7 to 12.3), two storeys; their
+    roof (round 3) a plane on each side of the top storey, rising from 7.29 m at the street face and
+    7.29-7.49 m at the back to 8.14 and 8.20 m at the top storey's walls, flat at 7.3 m along the street
+    from x 14.5 to the north-west end;
+  - **the top storey**: down the middle, its walls at z -6.0 and 6.0 (round 0), under a curved roof from
+    10.60 m at the crown to 8.81 m at its eaves (z 6.3 and -6.8), from x -21.0 to 18.6; from x 16.0 its
+    crown is cut flat at 9.72 m;
+  - **the north-west end**: the roofs above run to the party wall with 9 Eden Crescent (801); the strip at
+    11.6-11.8 m along it and the returns to 13.7 m by the street are 801's (its terrace parapet and raked
+    corner), not drawn here;
+  - **the ground**: -0.85 to -1.05 m on Eden Crescent's footpath at the street face's foot (-0.55 to -1.06
+    along it), -0.17 to +0.1 m behind the building and along the lane at the south-east end. Walls go
     down to `FOOT` (-1.2 m).
 - `parts/common.js` holds these sizes. It is the lead's: read it, do not edit it; report a size you
   measure and the lead moves it there.
 
 ## Ownership
-- `parts/body.js` (the two storeys, their base and the street face's windows), `parts/top.js` (the top
-  storey and the north-west end), `parts/shapes.js` (shared helpers: one owner per round, named in the
+- `parts/body.js` (the two storeys, their roofs, their base and the street face's windows and doors),
+  `parts/top.js` (the top storey), `parts/shapes.js` (shared helpers: one owner per round, named in the
   brief). `model.js` and `parts/common.js` are the lead's.
 - `landmarks/kit/` is shared by every landmark: add, with defaults, and show the other landmarks'
   pictures unchanged (`?quality=low` and `?mask=1` before and after).
