@@ -37,8 +37,25 @@ export const school: School = {
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
   /** The Kelburn Campus buildings span about 430 m east to west and 610 m north to south. */
   campusSpan: { kelburn: 600 },
-  /** Pipitea and Te Aro need an area each, not fetched yet (docs/schools/vuw.md, "Needs the maintainer", 5). */
-  areas: { central: KELBURN, remote: [] },
+  /**
+   * Pipitea and Te Aro (docs/schools/vuw.md, "Campuses"), each in an area of its own, as the
+   * other schools' campuses away from the centre are: the box round the points on VUW's own page
+   * for that campus (7 on Pipitea, 4 on Te Aro) with 150 m of margin, rounded outwards, as
+   * Kelburn's first box was. Te Aro's first box, [-41.2971, 174.7738, -41.292, 174.7782], held
+   * only the lowest numbers of Dixon Street and Taranaki Street at its north edge, so it was
+   * widened north and east and fetched again to take in Te Auaha (65 Dixon Street) and NEC House
+   * (40 Taranaki Street), which vuw.md names for the campus: they stand 169 m and 188 m inside its
+   * north edge, and NEC House 84 m inside its east edge. Neither is tagged as VUW's (vuw.md, "The
+   * three campuses on the site"). The maintainer let the loop fetch both areas on 2026-10-27.
+   * Their raw snapshots carry the school's id first (DESIGN.md, section 3).
+   */
+  areas: {
+    central: KELBURN,
+    remote: [
+      { id: "pipitea", bbox: [-41.2812, 174.7759, -41.2771, 174.7821], osm: "osm/context-vuw-pipitea.json" },
+      { id: "te-aro", bbox: [-41.2971, 174.7738, -41.29, 174.78], osm: "osm/context-vuw-te-aro.json" },
+    ],
+  },
   roomCode: { building: NONE, wing: NONE, room: NONE, floorLetters: [], equivalentFloors: [] },
   words: { en },
   /**
