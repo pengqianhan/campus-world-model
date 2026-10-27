@@ -4,9 +4,9 @@
 // stand 0.35 m out from the windows, as piers between them and bands between the rows, so that each
 // window sits deep in its opening. The faces no photograph shows are plain. Round 0 (the lead): the
 // massing; round 1 (the lead): the street face's depth and the base's dark tiles; round 2 (the lead):
-// the windows and the base measured in MH15's door, upper and wide views through its camera
-// (streetview.camera_fixes), heights from the footpath at the face's foot, which the LiDAR puts at 0 to
-// +0.1 m (the camera's own height is about a metre out: next round fits it).
+// the windows, the base, the face's top and the canopy measured in MH15's door, upper and wide views
+// through its camera (streetview.camera_fixes), whose height the footpath at the face's foot confirms
+// (-0.9 to -0.96 m through it, -0.97 in the LiDAR), and the canopy's reach and height in the LiDAR.
 import { MEASURED as M, FOOT } from "./common.js";
 import { prism, roof, edgeBox } from "./shapes.js";
 
@@ -17,10 +17,20 @@ const STREET = 1;
 const DEEP = 0.35;
 
 /**
- * The two rows of windows on the street face, from their sills to their heads, measured in MH15's door
- * view at s 8.9 and 13.4 m (the red frames' sill and head, 0.1 m or so either way).
+ * The two rows of windows on the street face, from their sills to their heads: where the white panels
+ * stop and start again down five columns of MH15's door and upper views (s 7 to 13 m), 0.1 m or so
+ * either way.
  */
-const ROWS = [[1.6, 3.45], [5.3, 6.7]];
+const ROWS = [[0.5, 2.5], [4.2, 5.75]];
+
+/** The white panels' top (MH15's upper view: 6.3-6.5 m); above it, under the canopy, the face stands back in shade. */
+const FACE_TOP = 6.45;
+
+/**
+ * The canopy over the street face: the LiDAR's roof returns reach 0.6-0.8 m past the plan's edge
+ * (p97 0.58, max 0.80) at 7.29-7.42 m; its thickness is estimated.
+ */
+const CANOPY = { out: 0.75, y0: 7.2, y1: 7.42 };
 
 /**
  * Each row's windows: their width, the first one's centre along the street edge from its north-west end,
@@ -32,12 +42,13 @@ const ROWS = [[1.6, 3.45], [5.3, 6.7]];
 const WINDOWS = [{ wide: 1.0, first: 9.0, bay: 2.25 }, { wide: 0.95, first: 4.8, bay: 2.15 }];
 
 /**
- * The base: brownish-grey tiles to 1.0 m (about 150, 130, 125 in MH15's door view), drawn in the kit's dark timber, whose
- * brightness is nearest under this light (its grain and warmer hue are not the tiles': a tile material is still to come;
- * the kit's mid-grey draws them at about 185 against the photographs' 134),
- * white tiles to 1.55 m (MH15's door view), a terracotta sill band over them (drawn in the kit's cream render).
+ * The base, in MH15's door view: brownish-grey tiles from the footpath (-1.0 m) to 0.0 (about 150, 130,
+ * 125), drawn in the kit's dark timber, whose brightness is nearest under this light (its grain and
+ * warmer hue are not the tiles': a tile material is still to come; the kit's mid-grey draws them at
+ * about 185 against the photographs' 134); white tiles to 0.25; a terracotta sill band to 0.5, under
+ * the ground floor's windows (drawn in the kit's cream render).
  */
-const BASE = { tiles: 1.0, white: 1.55, sill: 1.62 };
+const BASE = { tiles: 0.0, white: 0.25, sill: 0.5 };
 
 /** The street edge's length and the centres of one row's windows along it. */
 function centres(row) {
@@ -59,13 +70,15 @@ export function body(b) {
     edgeBox(b, M.body.plan, i, -0.01, 1.01, 0.0, out + 0.01, BASE.tiles, BASE.white, "paint");
   }
   edgeBox(b, M.body.plan, STREET, -0.01, 1.01, 0.0, DEEP + 0.04, BASE.white, BASE.sill, "render");
+  // the canopy: a white slab along the street face
+  edgeBox(b, M.body.plan, STREET, -0.01, 1.01, 0.0, CANOPY.out, CANOPY.y0, CANOPY.y1, "paint");
 }
 
 /** The street face's white panels, standing out round the windows: bands between the rows, piers between the windows. */
 export function panels(b) {
   const plan = M.body.plan;
-  // bands: from the sill band to the first row, between the rows, and above the second to the roof
-  const bands = [[BASE.sill, ROWS[0][0] - 0.08], [ROWS[0][1], ROWS[1][0] - 0.08], [ROWS[1][1], M.body.top]];
+  // bands: from the sill band to the first row, between the rows, and above the second to the panels' top
+  const bands = [[BASE.sill, ROWS[0][0] - 0.08], [ROWS[0][1], ROWS[1][0] - 0.08], [ROWS[1][1], FACE_TOP]];
   for (const [y0, y1] of bands) if (y1 > y0) edgeBox(b, plan, STREET, 0, 1, 0.0, DEEP, y0, y1, "paint");
   // piers: from each window's side to the next, within each row (from under its sill frame)
   ROWS.forEach(([y0, y1], row) => {

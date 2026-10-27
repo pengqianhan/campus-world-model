@@ -4,8 +4,9 @@
 // (north-east, toward Eden Crescent); the frame's centre at x = z = 0. Owned by the lead: read, do not
 // edit. Measured 2026-10-27 (baseline, round 0).
 
-// The ground: 0 to +0.1 m on Eden Crescent's footpath, -1.0 m behind the building, -0.5 and -0.1 m at
-// the ends; walls go down to FOOT.
+// The ground (the LiDAR's ground returns, round 2): -0.85 to -1.05 m on Eden Crescent's footpath at the
+// street face's foot, -0.17 to +0.1 m behind the building, -0.16 at the south-east end (round 0 had the
+// footpath and the back the wrong way round); walls go down to FOOT.
 export const FOOT = -1.2;
 
 export const MEASURED = {
