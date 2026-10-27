@@ -3,8 +3,9 @@
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what UC publishes without
 a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the Ilam
-campus is on the site in the Buildings form, from OpenStreetMap ("On the site", below); the rest
-of this report is the recon as it was done.
+and Dovedale campuses and the Arts Centre city location are on the site in the Buildings form, from
+OpenStreetMap ("On the site", below); the rest of this report is the recon as it was done, with the
+notes that pull request added.
 
 Path name if the school is added: `/uc/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; UC's web domain is `canterbury.ac.nz`). Time zone: Pacific/Auckland.
@@ -110,8 +111,9 @@ Recreation Centre and the Warehouse Building 10 m; Ann Ballin 6.5 m), none from 
 **Left out: 14**, each with its reason: 11 with no name (8 `building=university`, and UC's three
 bicycle sheds), the 2 under construction, and the Music Bunker.
 
-**Judgements for review.** Haere-roa (`building=university`, no operator, the website of its own
-venue) is the students' association's building, and is taken by the rule's tags. Putaiao Koiora
+**Judgements for review.** Haere-roa and Ilam Homestead (each `building=university`, no operator,
+and the website of a venue of its own, haereroa.org.nz and ilamhomestead.co.nz) may be run by
+another body; their tags do not say so, and the rule takes them by their tags. Putaiao Koiora
 (`building=university`, `access=no`) is mapped with a note that it closed in about 2020 for
 seismic reasons and is to be replaced; it still stands in OpenStreetMap, so it is taken. "47 Creyke
 Road" and "49 Creyke Road" are `building=university` named by their addresses; this report found

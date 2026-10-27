@@ -160,9 +160,9 @@ UC's open items, from `docs/schools/uc.md`, "Needs the maintainer" (each is the 
    traces a building there to UC.
 4. The LINZ attribution page, for the 1 m DEMs of Christchurch and Nelson, if they are used (a new
    dependency, a gate).
-5. Judgements on the Ilam campus (`docs/schools/uc.md`, "On the site"): Haere-roa, the students'
-   association's building, and Putaiao Koiora, mapped as closed since about 2020, are shown as
-   UC's by their `building=university` tag; "47 Creyke Road" is shown by OpenStreetMap's name for
+5. Judgements on the Ilam campus (`docs/schools/uc.md`, "On the site"): Haere-roa and Ilam
+   Homestead, each with the website of a venue of its own, and Putaiao Koiora, mapped as closed
+   since about 2020, are shown as UC's by their `building=university` tag; "47 Creyke Road" is shown by OpenStreetMap's name for
    it, with no floor or room, although UC's map gives it keywords of a postgraduate village; Alice
    Candy (`building=school`) and the UC Health Centre (`building=yes`) carry neither of the rule's
    tags and are not shown as UC's.
