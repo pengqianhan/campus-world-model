@@ -1,0 +1,227 @@
+{
+ "name": "pembridge-house",
+ "site": false,
+ "building": {
+  "id": "130",
+  "also": [],
+  "title": "Pembridge House, University of Auckland",
+  "note": "outline: building 130's outline from the main project's campus.json, in the map's frame; used only to choose the crop box, to pick the building's own points (frame.near_outline) and to draw on the heightmap figure; the frame comes from the LiDAR.",
+  "outline": [
+   [
+    -34.8,
+    244.8
+   ],
+   [
+    -42.6,
+    247.3
+   ],
+   [
+    -43.3,
+    245.1
+   ],
+   [
+    -52.1,
+    247.9
+   ],
+   [
+    -48.2,
+    260
+   ],
+   [
+    -49.4,
+    260.4
+   ],
+   [
+    -48.1,
+    264.4
+   ],
+   [
+    -40,
+    261.8
+   ],
+   [
+    -39.3,
+    264.1
+   ],
+   [
+    -34.5,
+    262.6
+   ],
+   [
+    -35.2,
+    260.3
+   ],
+   [
+    -32.9,
+    259.5
+   ],
+   [
+    -32.4,
+    260.9
+   ],
+   [
+    -30.9,
+    261.6
+   ],
+   [
+    -27.9,
+    260.6
+   ],
+   [
+    -27.2,
+    259.2
+   ],
+   [
+    -27.6,
+    258
+   ],
+   [
+    -26.8,
+    257.7
+   ],
+   [
+    -27.3,
+    256.2
+   ],
+   [
+    -26.4,
+    255.1
+   ],
+   [
+    -26.9,
+    253.8
+   ],
+   [
+    -28.2,
+    253.4
+   ],
+   [
+    -28.5,
+    252.3
+   ],
+   [
+    -25.2,
+    251.2
+   ],
+   [
+    -26.2,
+    248.1
+   ],
+   [
+    -29.5,
+    249.1
+   ],
+   [
+    -29.9,
+    248
+   ],
+   [
+    -29.1,
+    246.9
+   ],
+   [
+    -29.5,
+    245.6
+   ],
+   [
+    -30.8,
+    245.2
+   ],
+   [
+    -31.3,
+    243.7
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 49,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "first run",
+  "min_above": 3,
+  "tower_above": 8,
+  "spine_below": 8,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    -32.41796082,
+    254.15368542
+   ],
+   "axis": [
+    -0.3156371,
+    -0.94887998
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 5,
+  "pano_ids_note": "first purchase: the three Google panoramas on Princes Street nearest the house (2024-07, 39-47 m, the street side) and the two nearest behind it (2018-04, 30-31 m). Seven others within 80 m: three more of each (Google) and two that are not Google's.",
+  "pano_ids": [
+   "J_Bt71aiKRDI7_5xD-K9sg",
+   "mRa6MXiSze7lJ0EpX7PSnw",
+   "d0Oz7kRxTCo97j5oKxXA0Q",
+   "aOMMiRPRCQ37NotyOfD8Ng",
+   "hyoe8Wjqy3DT8Cy7yS2LCA"
+  ],
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}
