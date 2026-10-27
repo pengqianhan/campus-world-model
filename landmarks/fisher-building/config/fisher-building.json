@@ -1,6 +1,6 @@
 {
  "name": "fisher-building",
- "site": false,
+ "site": true,
  "building": {
   "id": "804",
   "also": [],
@@ -286,5 +286,10 @@
   "min_gain": 0.01,
   "min_sky": 0.2,
   "max_solid": 0.5
+ },
+ "door": {
+  "x": 10.6,
+  "z": 1.2,
+  "note": "view frame: the foot of the tower's west face under the entrance canopy, 0.5 m out from the wall, at the tower's own ground: the LiDAR's ground returns within a metre are 29.29 m (0.07 / 0.19 / 0.28 m p10/p50/p90 from ground; 3 returns, the canopy and the trees hiding the rest; 0.17-0.35 m in the 1 m cells round it), so the model's y is 0 there. The entrance's deck and the ramp up from Waterloo Quadrant stand 5.9 m above it, over the car park (3.0-3.5 m); the ground falls from the door to -3.1 m on the north-east and east, which the walls' foot (FOOT -3.2) reaches. place.py puts it on the map"
  }
 }
