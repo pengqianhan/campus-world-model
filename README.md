@@ -9,8 +9,8 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
 University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; and **VUW World
-Model**, an **unofficial** 3D map of the buildings of the Kelburn Campus of Te Herenga Waka—Victoria
-University of Wellington, at https://campusworldmodel.com/vuw/
+Model**, an **unofficial** 3D map of the buildings of the Kelburn, Pipitea and Te Aro campuses of Te
+Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -50,8 +50,9 @@ It is built to answer two questions a student actually has:
 
 - **2026-10-27:** a third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
   of VUW's Kelburn Campus from OpenStreetMap, each with its name and height and how the height was
-  found; its rooms, class times, dates and course list are not shown, and the site says why.
-  [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
+  found; its rooms, class times, dates and course list are not shown, and the site says why. Its
+  Pipitea and Te Aro campuses followed the same day: four more buildings, chosen from "Other
+  campuses" in the campus list. [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
   site, each with its city, how much of it the site shows and the date of its campus snapshot; it
   no longer sends every visitor to /uoa/. Bridges between the surrounding buildings span the street
   at their mapped height instead of standing on it; five with no mapped height are not drawn.
@@ -66,9 +67,12 @@ It is built to answer two questions a student actually has:
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
-- **2026-10-25:** near Maclaurin Chapel the map draws it in detail, from code and to its measured
-  sizes: in the map's colours on the map, and from a walker's height in white walls, glass, a light
-  green metal roof and a slender spire. A click still opens its floors.
+  Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
+  map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
+  people live and in childcare centres no longer turn up in the search.
+- **2026-10-23:** near Old Government House (building 102) the map draws it in detail, from code
+  and to its measured sizes. Near the camera, five plain buildings of the City Campus are drawn from
+  the LiDAR survey as measured massings, in place of their blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -519,11 +523,12 @@ AUT's rooms, class times, semester dates and course list wait for AUT's permissi
 plans for a written agreement with MazeMap: see [docs/schools/aut.md](docs/schools/aut.md).
 
 **VUW World Model** (`/vuw/`) uses the same four sources and nothing of VUW's own. OpenStreetMap
-gives the Kelburn Campus buildings, picked by their `operator` and `building=university` tags, with
-their names, outlines and, where tagged, heights, and the streets round them, from its own snapshot
-`data/raw/osm/context-vuw-kelburn.json`; `public/data/vuw/campus.json` and `context.json` are under
-the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/vuw/terrain/`), under CC BY
-3.0 NZ. Open-Meteo gives the weather at the Kelburn Campus, and Quaternius's figure is the walker's
+gives the buildings of the Kelburn, Pipitea and Te Aro campuses, picked by their `operator` and
+`building=university` tags, with their names, outlines and, where tagged, heights, and the streets
+round them, from the snapshots of its three areas, `data/raw/osm/context-vuw-kelburn.json`,
+`context-vuw-pipitea.json` and `context-vuw-te-aro.json`; `public/data/vuw/campus.json`,
+`context.json` and `context/` are under the ODbL. The LINZ 8 m elevation model gives the ground
+(`public/data/vuw/terrain/`), under CC BY 3.0 NZ. Open-Meteo gives the weather at the Kelburn Campus, and Quaternius's figure is the walker's
 body. VUW's room list and course list wait
 for the maintainer's reading of VUW's copyright terms, and its class times and key dates sit in
 parts of its site that its `robots.txt` disallows: see [docs/schools/vuw.md](docs/schools/vuw.md).
