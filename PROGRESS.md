@@ -678,4 +678,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    keeps too). You accepted 102 Old Government
    House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
    too. Of these, 434 and 436 pass the top-view check in the first batch
-   (`landmarks/measured/exclusions.json` has their numbers).
+   (`landmarks/measured/exclusions.json` has their numbers). Since the generator measures the
+   buildings of tiers 1 and 2 as stand-ins too (2026-10-27, a gate for you), the same rule keeps the
+   blocks of 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
+   Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University though the campus map marks none of their floors residential; of these 616 55 Symonds Street (IoU 0.904, 90.8% within 0.5 m) and
+   835 and 837 would pass the limits. And one reading: the top-view check leaves the roof cells the
+   generator does not draw to their height out of its share within 0.5 m, and counts those the model
+   stands over as covered in its footprint IoU. Counted in the share, 409 (on the site), 240 and 305
+   would fall below 90% (0.889, 0.719, 0.762); counted as LiDAR only, the footprint IoU of 435 (on the
+   site), 240 and 305 would fall below 0.90 (0.873, 0.689, 0.739). Say which decision 3 means.

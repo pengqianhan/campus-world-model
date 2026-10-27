@@ -52,6 +52,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-28:** four more University buildings are drawn near the camera to their LiDAR-measured
+  heights and roofs: Building 240, and three buildings planned as landmarks, Alfred Nathan House,
+  the Science Centre's 305 and 67 Symonds Street, until their own landmarks come.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -364,9 +367,10 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Five are on the site
-  (`landmarks/measured/`); the other tier-3 buildings keep their blocks, each with its reason in
-  `landmarks/measured/exclusions.json`.
+  measured heights, walls, storeys and windows by the street look's rules. Nine are on the site
+  (`landmarks/measured/`): six plain buildings, and three of the buildings planned as landmarks, which
+  they stand in for until their landmarks come. The other buildings it measures keep their blocks,
+  each with its reason in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
   collect the Street View references, correct their cameras, render and score, and place the model
@@ -585,7 +589,9 @@ If you represent the University and would like something changed or removed, ple
   (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119) and 9 Eden
   Crescent (801) are the exceptions: their models are drawn to
   sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule.
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
+  Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
+  they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
   building during building works: the LiDAR of May 2024 has scaffold decks over its north-east
   blocks, and the newest Street View panoramas show them wrapped. Only the south-west range and its
