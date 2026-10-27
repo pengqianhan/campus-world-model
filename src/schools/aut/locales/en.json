@@ -6,7 +6,7 @@
     "description": "Unofficial student-made 3D map of the buildings of Auckland University of Technology's City, North and South campuses. Not affiliated with Auckland University of Technology.",
     "ogDescription": "See the buildings of AUT's City, North and South campuses in 3D, drawn from OpenStreetMap. Unofficial; not affiliated with Auckland University of Technology.",
     "noscript": "AUT World Model is an unofficial 3D map of the buildings of Auckland University of Technology's City, North and South campuses. It needs JavaScript and WebGL to run. It is not affiliated with Auckland University of Technology.",
-    "loading": "Loading the City Campus…",
+    "loading": "Loading AUT's campuses…",
     "loadError": "The map data could not be loaded. Check your connection and reload the page.",
     "noWebgl": "This browser could not start WebGL, so the 3D map is not shown. Search for buildings still works.",
     "skipToSearch": "Skip to building search",

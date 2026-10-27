@@ -80,9 +80,7 @@ out:** AE on the North Campus, a multipolygon of 15 separate rings, which the si
 one block; its rings stay in the surroundings, unnamed. The "Safety and Security" building on the North Campus (`building=university`, no code)
 is not a candidate, as on the City Campus a building with no code and no `operator=AUT` is not.
 
-**Left blank:** OpenStreetMap tags no childcare centre in the North snapshot, so the Akoranga
-Childcare Centre is not one of the buildings taken; none of the 23 carries a childcare, kindergarten
-or home tag. The recon places the Akoranga Student Village off the campus; it is not among the buildings taken.
+**Left blank:** OpenStreetMap tags no childcare centre in the North snapshot, and none of the 23 new buildings carries a childcare, kindergarten or home tag; which building the Akoranga Childcare Centre (AUT's North Campus page) is in is not known from it. The site shows each building's code, name and height only, with no floors or rooms, as the University of Auckland's childcare buildings keep their names with their floors blank, so nothing of the centre itself is shown. Which building it is waits for the maintainer. The recon places the Akoranga Student Village off the campus; it is not among the buildings taken.
 
 ## What the site can do
 

@@ -490,8 +490,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 **AUT World Model** (`/aut/`) uses four of these sources and nothing of AUT's own. OpenStreetMap
 gives the buildings of AUT's City, North and South campuses, picked by their `operator` tag and
 AUT's building code, with their names, codes, outlines and, where tagged, heights, and the city
-round them; `public/data/aut/campus.json` and `context.json` are derived from the same committed
-snapshot as the University's, and `context/north.json` and `context/south.json` from the snapshots of
+round them; `public/data/aut/campus.json` is derived from the committed snapshots of its three areas (the City
+Campus from the same snapshot as the University's), `context.json` from that one, and `context/north.json` and `context/south.json` from the snapshots of
 those two campuses, all under the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/aut/terrain/`), under CC BY 3.0
 NZ. Open-Meteo gives the weather at the City Campus, and Quaternius's figure is the walker's body.
 AUT's rooms, class times, semester dates and course list wait for AUT's permission, and its floor
