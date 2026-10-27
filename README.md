@@ -654,7 +654,7 @@ If you represent the University and would like something changed or removed, ple
   its camera, which is set where 9 Eden Crescent's fit puts it; their rectangles hold so little sky that
   the likeness counted inside them shows little. Its heights come from the LiDAR. What no photograph
   shows is drawn plainly: its back, its ends and the walls of its top storey, and its roofs are grey.
-  The windows of the street face's south-east half keep the spacing measured at its north-west half,
+  The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
   and a red fire door and a red-framed glazed case near its north-west end are measured and not drawn:
   they stand on a street a metre below the building's ground, where the map's ground is lower still.
   Its panels are drawn without their joints, its base's tiles in a dark timber.

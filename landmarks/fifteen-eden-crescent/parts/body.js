@@ -81,8 +81,9 @@ const FOOTPATH = -0.95;
  * The case and door C are not drawn: the street lies 0.95 m below the frame's ground, and the site's ground
  * (the 8 m elevation model) 1.3 m below it there, so a red leaf or frame reaching below y = 0 here would
  * stand 0.6-0.9 m above that ground at its own lowest points, which tests/landmarks.test.ts checks for every
- * material that comes down to y = 0 (red and glass reach no lower, as the walls, the base's dark tiles and
- * the steps do); the panels stand there as before.
+ * material that comes down to y = 0, at the material's own lowest points (the walls, the base's dark tiles,
+ * whose material door A's leaf shares, and the steps reach the ground; the red and the glass here would
+ * not); the panels stand there as before.
  */
 const OPEN = {
   B: { s: [4.4, 5.47], louvre: [1.07, 2.26], hood: [0.76, 1.07] },
@@ -179,10 +180,10 @@ export function panels(b) {
   const tall = [TALL.s];
   // the ground floor: piers from the sill band to the band between the rows, round door A's, the louvre's
   // and the windows' openings; over door A and the louvre, the panel down to their heads; under the louvre,
-  // the panel round the hood
+  // the panel down from the hood (which fills the opening from 0.76 m to the louvre's sill)
   const ground = centres(0).out.map((c) => [c - WINDOWS[0].wide / 2, c + WINDOWS[0].wide / 2]);
   panelsBetween(b, BASE.sill, ROWS[0][1], [B.s, A.s, ...ground]);
-  face(b, B.s[0], B.s[1], 0.0, DEEP, BASE.sill, B.louvre[0], "paint");
+  face(b, B.s[0], B.s[1], 0.0, DEEP, BASE.sill, B.hood[0], "paint");
   face(b, B.s[0], B.s[1], 0.0, DEEP, B.louvre[1], ROWS[0][1], "paint");
   face(b, A.s[0], A.s[1], 0.0, DEEP, A.head, ROWS[0][1], "paint");
   // the band between the rows, open over the tall window from its sill up

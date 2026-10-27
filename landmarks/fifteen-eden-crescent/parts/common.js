@@ -33,7 +33,10 @@ export const MEASURED = {
   // -5.75, its returns ending at the eaves, z 6.3 (8.89 m) and -6.8 (8.91 m). The roof runs from x -21.0
   // (10.25 m at x -21.0, 9.2 at -21.5), beyond the walls' end at the plan's south-east edge (x -19.0), to
   // the party wall with 9 Eden Crescent (801) at x 18.6. From x 16.0 its crown is cut flat at 9.72 m (the
-  // medians in 0.5 m cells at x 16.0 to 18.0, z -5 to 3.5: 9.7-9.8), its sides falling as before.
+  // medians in 0.5 m cells at x 16.0 to 18.0, z -5 to 3.5: 9.7-9.8), its sides falling as before. Not
+  // drawn: at the south-east end its back half is lower, a well at x -22 to -15.5, z -4 to -0.5, its floor
+  // at 6.5 m with a unit at 8.1 m in it, and a strip at 9.1-9.2 m beyond it (z -6 to -4.5); the curve
+  // runs on over them (estimated).
   top: { x: [-19.0, 18.6], roofX: [-21.0, 18.6], z: [-6.0, 6.0], eaves: [-6.8, 6.3], crown: 10.6, at: -0.25, k: 0.0417, cut: { from: 16.0, y: 9.72 } },
   // What the LiDAR shows at the north-west end (x 17.2 to 20) and leaves to 801: a strip 11.6-11.8 m high
   // along the party line (x 18.5 to 20, z -13 to 11.6; 242 of its returns above 10.9 m inside 801's outline,

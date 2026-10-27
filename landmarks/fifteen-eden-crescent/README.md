@@ -76,9 +76,10 @@ the whole frame 0.554. That passes tier 1's limit (0.65), but here too the IoU i
 3.7% of the boxes' counted pixels are sky on the mean (`sky_in_box`, 0-24% in each view), so a plain
 block filling each box would score 0.963, more than the model in every view. The likeness rests on the
 heights and the top view below, and on the strips. The building's luma median 242-249 in the renders,
-236-252 in the photographs: within 12 in eight views; in `mdk1…`'s wide view 249 against 236, where most
-of the model's region is its north-west end, which 801 stands in front of in the photograph (801's
-white cladding and dark glass) and the inferred sun lights in the render. From above (`run.sh
+236-252 in the photographs: within 12 in eight views; in `mdk1…`'s wide view 249 against 236. There 59%
+of the model's region is its north-west end, which 801 stands in front of in the photograph (801's white
+cladding and dark glass: 235 there, against 249 drawn, which the inferred sun lights); over the rest of
+the region the medians are 242 and 243. From above (`run.sh
 fifteen-eden-crescent topview`): footprint IoU 0.865 against the LiDAR, 90% of cells within 0.5 m of its
 height (round 2: 69%), the model 0.05 m below it at the median, 99.9% of block 802 under the model. The
 model is 4,008 triangles in 9 meshes, one a material.
@@ -111,5 +112,9 @@ footpath lies 0.55 to 1.06 m below it along the street face, and the walls go do
 - The street face's panels are drawn as smooth paint, without their joints, and the base's tiles in the
   kit's dark timber, whose brightness is nearest the tiles'.
 - The red fire door and the sprinkler inlet's case are measured and not drawn (above).
+- At the south-east end the LiDAR has the top storey's back half lower than its curved roof: a well
+  about 6.5 m long and 3.5 m wide (x -22 to -15.5, z -4 to -0.5) whose floor is at 6.5 m, with a unit at
+  8.1 m in it, and a strip at 9.1-9.2 m beyond it (z -6 to -4.5). It is drawn as the rest of the roof:
+  the top view's cells where the model stands highest over the LiDAR are there.
 - The windows south-east of 14 m along the face, and the mullions of the band under the canopy beyond
   the two the photographs show, keep the measured spacing: estimated.
