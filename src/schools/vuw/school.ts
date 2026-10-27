@@ -19,12 +19,16 @@ const KELBURN: SceneArea = { id: "central", bbox: [-41.2937, 174.7638, -41.2838,
 const VUW = /^Victoria University of Wellington$/;
 
 /**
- * A `building` value other than a home's: OpenStreetMap's types for a building people live in
- * (apartments, dormitory, residential, house) never match. Floors where people live stay blank
- * (AGENTS.md, "Places, not people"), so a home is never one of VUW's campus buildings, whatever
- * its operator: it stays in the surroundings with no name, as Kelburn's halls of residence do.
+ * OpenStreetMap's `building` values for a building people live or stay in (its "Accommodation"
+ * types). Floors where people live stay blank (AGENTS.md, "Places, not people"), so a home is never
+ * one of VUW's campus buildings, whatever its operator: it stays in the surroundings with no name, as
+ * Kelburn's halls of residence do.
  */
-const NOT_HOME = /^(?!(?:apartments|dormitory|residential|house)$)/;
+export const HOMES: readonly string[] = ["apartments", "barracks", "bungalow", "cabin", "detached", "annexe", "dormitory", "farm", "ger",
+  "hotel", "house", "houseboat", "residential", "semidetached_house", "static_caravan", "stilt_house", "terrace", "tree_house", "trullo"];
+
+/** A `building` value other than a home's (HOMES). */
+const NOT_HOME = new RegExp(`^(?!(?:${HOMES.join("|")})$)`);
 
 /**
  * Matches nothing. VUW's room list is not used in the Buildings form, so no room code is read: the
@@ -75,8 +79,9 @@ export const school: School = {
    * The rule on OpenStreetMap's tags that picks VUW's buildings ("A school whose campus map cannot
    * be used" in PROGRESS.md, "Decisions"). OpenStreetMap gives none of them a `ref`. On Kelburn 7
    * carry `operator=Victoria University of Wellington`, and the rest `building=university` with no
-   * operator; Pipitea's 3 and Te Aro's 2 are all `building=university` with no operator; in each of
-   * the three boxes VUW is the only university. So a building is taken by its operator, or by
+   * operator; Pipitea's 3 and Te Aro's 2 are all `building=university` with no operator; no other
+   * university has a `building=university` in any of the three boxes (Massey University's hall of
+   * residence in Kelburn's is a dormitory). So a building is taken by its operator, or by
    * `building=university` with no other operator named, and by its name, which is what it is called
    * on the map. A home is never considered (NOT_HOME): Te Aro's box holds two that carry VUW's
    * operator tag, a hall of residence and a block of flats. A building's campus is the area it
@@ -130,7 +135,7 @@ export const school: School = {
       {
         when: { building: /^university$/, operator: null },
         take: true,
-        reason: "building=university with no operator tag, and a name: VUW is the only university in each of its three campus boxes, and no other operator is named.",
+        reason: "building=university with no operator tag, and a name: no other university has a building=university in any of VUW's three campus boxes, and no other operator is named.",
       },
       {
         when: { operator: /./ },

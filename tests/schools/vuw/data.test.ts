@@ -5,7 +5,7 @@ import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { pointInRing, ringArea, type Ring } from "../../../src/shared/geo.ts";
 import type { AcademicCalendar, CampusData, Meta, Schedule } from "../../../src/shared/types.ts";
-import { school } from "../../../src/schools/vuw/school.ts";
+import { HOMES, school } from "../../../src/schools/vuw/school.ts";
 import { DEFAULT_HEIGHT, decide } from "../../../scripts/lib/osm-buildings.ts";
 
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(`public/data/vuw/${file}`, "utf8")) as T;
@@ -33,7 +33,7 @@ for (const area of areas) {
 }
 
 /** Places where people live, and childcare: OpenStreetMap's tags for them. */
-const isBlank = (tags: Record<string, string>) => /^(dormitory|residential|house|apartments)$/.test(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
+const isBlank = (tags: Record<string, string>) => HOMES.includes(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
 
 const ring = (flat: number[]): Ring => {
   const r: Ring = [];
@@ -185,7 +185,7 @@ describe("the rule on OpenStreetMap's tags", () => {
   });
 
   it("does not consider homes, whatever their operator, or buildings that carry neither tag", () => {
-    for (const building of ["dormitory", "apartments", "residential", "house"]) {
+    for (const building of HOMES) {
       expect(decide(rule, { building, name: "A home", operator: "Victoria University of Wellington" }), building).toBeUndefined();
     }
     expect(decide(rule, { building: "school", name: "Old Kirk Building" })).toBeUndefined();

@@ -73,9 +73,10 @@ reaches -1 m at its lowest on both campuses (Pipitea's tile meets the harbour; t
 height under -2 m), and 161 m and 120 m at its highest.
 
 **The rule** is Kelburn's (`src/schools/vuw/school.ts`): a building with a name and
-`operator=Victoria University of Wellington`, or `building=university` with no operator. In each
-of the three boxes VUW is the only university. One change: a home is never a candidate, whatever
-its operator. Te Aro's box holds two homes tagged with VUW's operator, a hall of residence on
+`operator=Victoria University of Wellington`, or `building=university` with no operator. No other
+university has a `building=university` in any of the three boxes (Massey University runs a hall of
+residence in Kelburn's, `way/252037100`, a `dormitory`). One change: a home (any of OpenStreetMap's
+`building` values for a place people live or stay in) is never a candidate, whatever its operator. Te Aro's box holds two homes tagged with VUW's operator, a hall of residence on
 Willis Street (`way/256790623`, `building=dormitory`) and a block of 78 flats on Haining Street
 (`way/1082249353`, `building=apartments`); the rule as it stood would have put both on the map by
 name. Floors where people live stay blank, and VUW's own test since #101 keeps every home's name out

@@ -25,8 +25,8 @@ A change to what the site does or shows adds its line here, and the README's
   OpenStreetMap names the Faculty of Architecture & Design; its unnamed neighbour on Wigan Street,
   and Te Auaha and NEC House, which OpenStreetMap does not tag as VUW's, stand among the
   surroundings. Halls of residence and flats stay unnamed, even where OpenStreetMap names VUW as
-  their operator. Rutherford House stands at a default height, which its card and About say
-  (#PR).
+  their operator. Rutherford House stands at a default height: its card says the height is
+  estimated, and About says why (#PR).
 - **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
   Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
   streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and

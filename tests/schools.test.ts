@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 import type { School, Words } from "../src/shared/school.ts";
 import type { CampusData } from "../src/shared/types.ts";
 import { SCHOOL_KEYS, TERM_KEYS, lookupWords, overlayWords, wordKeys } from "../src/shared/words.ts";
+import { Vector3 } from "three";
+import { ownShadow } from "../src/scene/CampusScene.ts";
 
 const descriptors = import.meta.glob<School>("../src/schools/*/school.ts", { eager: true, import: "school" });
 const schools = Object.entries(descriptors).map(([file, school]) => ({ folder: file.split("/").at(-2)!, school }));
@@ -168,5 +170,20 @@ describe("landmarks", () => {
       const school = json.school ?? json.place?.school ?? "uoa";
       expect(ids.has(school), file).toBe(true);
     }
+  });
+});
+
+describe("each campus's shadow map", () => {
+  const campuses = (id: string) => (JSON.parse(fs.readFileSync(`public/data/${id}/campus.json`, "utf8")) as CampusData).campuses;
+  const centre = (c: { center: [number, number] }) => new Vector3(c.center[0], 0, -c.center[1]);
+
+  it("is the one it was for the University of Auckland and AUT: their campuses in areas of their own are far off", () => {
+    for (const id of ["uoa", "aut"]) {
+      for (const c of campuses(id)) expect(ownShadow(centre(c), !!c.area), `${id} ${c.id}`).toBe(ownShadow(centre(c), false));
+    }
+  });
+
+  it("is its own for VUW's Pipitea and Te Aro, which stand within 2 km of Kelburn in areas of their own", () => {
+    for (const c of campuses("vuw")) expect(ownShadow(centre(c), !!c.area), c.id).toBe(c.id !== "kelburn");
   });
 });
