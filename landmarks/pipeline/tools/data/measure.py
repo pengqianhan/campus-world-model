@@ -119,5 +119,7 @@ for m in range(-30, 31, 5):
 e.save(outputs[4])
 for name, (a0, b0, s0) in {"left pavilion": (-22, -8, 8), "centre bay": (-4, 4, 8), "right pavilion": (8, 22, 8), "tower": (-4, 4, -10)}.items():
     m = (u > a0) & (u < b0) & (s > s0 - 30)
+    if not m.any():  # a building smaller than the Clock Tower has no points in some of these bands
+        continue
     print(f"  {name:15s} height p50 {np.percentile(z[m], 50):5.1f}  p95 {np.percentile(z[m], 95):5.1f}  max {z[m].max():5.1f} m")
 print("measure: wrote " + ", ".join(os.path.relpath(f, common.ROOT) for f in outputs))
