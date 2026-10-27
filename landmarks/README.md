@@ -358,8 +358,9 @@ the IoU in the box.
 
 A neighbour that stands between the cameras and the landmark (another landmark already drawn from
 code) can be named in the config's `compare.occluders` (landmark folder names): the label pass
-(`viewer/mask.js`) draws it in blue, moved from its own frame into this one through the map's east
-and north and its ground, depth-tested with the model, and the pixels where it hides the model, or
+(`viewer/mask.js`) draws it in blue, moved from its own view frame into this one through the two
+configs' `frame.expected` (centre and axis, in NZTM metres from the campus origin, grid north) and their
+`ground`, not through the map's projection, depth-tested with the model, and the pixels where it hides the model, or
 stands where the model is not, count in neither the IoU, the IoU in the box, the sky in the box nor
 the luma: there the photograph shows the neighbour. The refine stage's search counts them out too.
 Without the option the labels are as before, and so are the IoU, the box and the region the luma is

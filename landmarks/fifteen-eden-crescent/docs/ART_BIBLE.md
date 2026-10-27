@@ -20,5 +20,11 @@ shows is drawn plainly at the LiDAR's sizes.
 - **The north-west end** meets 9 Eden Crescent (801), a taller white building with wide glass bands.
 
 ## Light
-- The photographs are of a sunny day in August 2024 (late winter): the street face in the sun, with the
-  street trees' shadows on it; the sky blue with white cloud.
+- The photographs are of a sunny day in August 2024 (late winter), the sky blue with white cloud. In
+  `MH15…`'s the street face is in the sun, the light falling on it at a slant from the north-west: the
+  street tree's shadow lies on the wall and the base beside the tree, and each opening's head throws its
+  shadow across the jamb below it.
+- The viewer's light (the config's `light`, its note) is not read from them: it is 9 Eden Crescent's,
+  inferred, a sun 305° round and 25° up that stands just behind the face's plane, so the viewer draws
+  the face in shade, without the tree's and the heads' shadows (estimated); its exposure is set so that
+  the white paint's brightness matches the photographs'.

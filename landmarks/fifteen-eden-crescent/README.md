@@ -70,25 +70,38 @@ them and measures the openings and the doors again:
   drawn in the kit's dark timber, the base's material, which reaches the ground and whose colour is near
   their red-brown. The red-framed glazed case under the hood (a sprinkler inlet's) is measured and not
   drawn, as its red frame and glass would not reach the ground; the panel stands there.
+- **Where the street face ends (round 3's review).** Its layers ran 0.38 m past both corners of the
+  plan's street edge, and on the site across 801's street end, the canopy 0.6 m proud of it. They now
+  stop at the south-east corner and, at the north-west, 0.5 m short of the plan's corner, where 801's
+  end stands: its model's corner, as the site stands both, is 0.48 m along the edge and 0.13 m in front
+  of it, this LiDAR has 801's returns on the face's line to 0.27 m along it, and `v8ia…`'s photograph
+  through its camera puts 801's pier at 0.6 m. The plan's corner, which campus.json gives both
+  buildings, stands inside 801's end. The canopy starts 1.9 m along the edge, where its LiDAR returns
+  stop (11 a metre over the next 1.6 m, none from there to 801, where the face's top is at 6.2-6.3 m
+  in the LiDAR and 6.47 m through `v8ia…`'s camera); the band of windows starts at its red post, 3.57 to
+  3.68 m along the edge in `MH15…`'s wide view, white wall under the canopy beyond it. The base on the
+  other faces closes each convex corner and runs past none.
 
-Against the photographs (`run.sh fifteen-eden-crescent compare`), round 3, every camera set by
-`camera_fixes`, and 9 Eden Crescent (801) drawn as an occluder (`compare.occluders`,
-landmarks/README.md): it stands between the street and this building's north-west end in all three
-photographs, and where it hides the model the photograph shows 801, so those pixels count in neither
-the IoU nor the luma. Silhouette IoU inside the model's own screen box (the likeness limits are read
-there, maintainer, 2026-10-27) 0.579, 0.768 and 0.998 over `MH15…`'s wide, upper and door views,
-0.538, 0.641 and 0.816 over `v8ia…`'s and 0.637, 0.689 and 0.650 over `mdk1…`'s, mean 0.702 (without
-the occluder 0.715; round 2: 0.690); over the whole frame 0.530. That passes tier 1's limit (0.65),
-but here too the IoU in the box tells little: 3.6% of the boxes' counted pixels are sky on the mean
-(`sky_in_box`, 0-24% in each view), so a plain block filling each box would score more than the model
-in every view. The likeness rests on the heights and the top view below, and on the strips. The
-building's luma median, drawn against photographed, is within 12 in every view (the largest gap 9.4,
-in `MH15…`'s wide view; in `mdk1…`'s wide view 243 against 241). Without the occluder, `mdk1…`'s wide
-view was 249 against 236 (12.3): 801 hides 61% of the model's region there, and the photograph shows
-801's white cladding and dark glass in that part. From above (`run.sh fifteen-eden-crescent topview`):
-footprint IoU 0.865 against the LiDAR, 90% of cells within 0.5 m of its height (round 2: 69%), the
-model 0.05 m below it at the median, 99.9% of block 802 under the model. The model is 4,176 triangles
-in 9 meshes, one a material.
+Against the photographs (`run.sh fifteen-eden-crescent compare`), after round 3's review, every camera
+set by `camera_fixes`, and 9 Eden Crescent (801) drawn as an occluder (`compare.occluders`,
+landmarks/README.md): it stands between the street and this building's north-west end in `v8ia…`'s
+and `mdk1…`'s photographs, where it hides 39%, 8% and 13% of the model's region in `v8ia…`'s wide, upper
+and door views and 65%, 54% and 56% in `mdk1…`'s, and beside it in `MH15…`'s, where it hides none.
+Where it hides the model the photograph shows 801, so those pixels count in neither the IoU nor the
+luma. Silhouette IoU inside the model's own screen box (the likeness limits are read there,
+maintainer, 2026-10-27) 0.602, 0.768 and 0.998 over `MH15…`'s wide, upper and door views, 0.580,
+0.692 and 0.801 over `v8ia…`'s and 0.688, 0.740 and 0.701 over `mdk1…`'s, mean 0.730 (without the
+occluder 0.724; before the review 0.702; round 2: 0.690); over the whole frame 0.514. That passes tier
+1's limit (0.65), but here too the IoU in the box tells little: 2.8% of the boxes' counted pixels are
+sky on the mean (`sky_in_box`, 0-20% in each view), so a plain block filling each box would score more
+than the model in every view. The likeness rests on the heights and the top view below, and on the
+strips. The building's luma median, drawn against photographed, is within 12 in every view (the
+largest gap 9.4, in `MH15…`'s wide view; in `mdk1…`'s wide view 243 against 239). Without the
+occluder, `mdk1…`'s wide view is 249 against 236 (12.3): the photograph shows 801's white cladding and
+dark glass where 801 hides the model. From above (`run.sh fifteen-eden-crescent topview`): footprint
+IoU 0.866 against the LiDAR, 90% of cells within 0.5 m of its height (round 2: 69%), the model 0.05 m
+below it at the median, 99.9% of block 802 under the model. The model is 4,140 triangles in 9 meshes,
+one a material.
 
 ## Heights against the LiDAR
 
@@ -96,9 +109,13 @@ Building points of `data/fifteen-eden-crescent_pts.npy` in the view frame; model
 0.5 m band across the building at x -18 to 15, unless said): the street side's roof by the face (z 11 to
 11.5) 7.34 / 7.34, by the top storey (z 6.5 to 7) 8.03 / 8.01; the back's roof by the back wall (z -12 to
 -11.5) 7.42 / 7.35, by the top storey (z -7 to -6.5) 8.10 / 8.08; the flat roof at the north-west end
-7.3 / 7.1-7.4 (0.5 m cells); the canopy's top 7.42 / 7.34 (z 12 to 12.5); the top storey's crown 10.60 /
-10.59-10.60, its roof at z 5.75 and -5.75 9.10 and 9.34 / 9.09 and 9.32, its eaves 8.81 / 8.89 and 8.91;
-the cut crown at the north-west end 9.72 / 9.71-9.76 (0.5 m cells). Every one within 0.1 m (limit 0.5 m). The building's highest point is the top storey's
+7.3 / 7.1-7.4 (0.5 m cells, but for those by the street face at x 17 to 18.5: Limits); the canopy's top
+7.42 / 7.34 (z 12 to 12.5); the top storey's crown 10.60 / 10.59-10.60, its roof at z 5.75 and -5.75
+9.10 and 9.34 / 9.09 and 9.32, its eaves 8.81 / 8.89 and 8.91; the cut crown at the north-west end 9.72
+/ 9.71-9.76 (0.5 m cells). Every one within 0.1 m (limit 0.5 m). Two parts of the roofs are not
+measured but drawn on from the rest (estimated, Limits): the curved roof over a well at the south-east
+end, 3.5 to 4.1 m above the LiDAR on about 23 m², and the flat roof by the street face at the north-west
+end, about 1 m above it on about 2 m². The building's highest point is the top storey's
 crown, 10.60 m (10.63-10.64 at p90). The LiDAR's highest points inside the block, 13.09 m (p99.9), are
 801's raked corner and terrace parapet along the party line; the storeys of the street face (its rows
 of windows, its base and its doors) come from the photographs, as the LiDAR does not see them.
@@ -121,7 +138,14 @@ footpath lies 0.55 to 1.06 m below it along the street face, and the walls go do
   in the kit's dark timber (above).
 - At the south-east end the LiDAR has the top storey's back half lower than its curved roof: a well
   about 6.5 m long and 3.5 m wide (x -22 to -15.5, z -4 to -0.5) whose floor is at 6.5 m, with a unit at
-  8.1 m in it, and a strip at 9.1-9.2 m beyond it (z -6 to -4.5). It is drawn as the rest of the roof:
-  the top view's cells where the model stands highest over the LiDAR are there.
+  8.1 m in it, and a strip at 9.1-9.2 m beyond it (z -6 to -4.5). It is drawn as the rest of the roof, at
+  10.0-10.6 m, 3.5 to 4.1 m above the LiDAR on about 23 m² (estimated): the top view's cells where the
+  model stands highest over the LiDAR are there.
+- At the north-west end, between the canopy's end and 801, the LiDAR has the roof by the street face
+  lower than the flat roof beside it: the medians of its returns in 0.5 m cells at x 17 to 18.5, z 9.5
+  to 11.6 are 6.15-6.43 m, where the flat roof is drawn on at 7.3 m (estimated), about 1 m above it on
+  about 2 m²; the face's top there, under it, is at 6.45 m, as the panels' elsewhere.
+- The street face's layers stop 0.5 m short of the plan's north-west corner, where 801's end stands
+  (above); between the two, the plan's edge stands inside 801's end on the site.
 - The windows south-east of 14 m along the face, and the mullions of the band under the canopy beyond
   the two the photographs show, keep the measured spacing: estimated.

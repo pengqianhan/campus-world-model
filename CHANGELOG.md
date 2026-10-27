@@ -23,11 +23,12 @@ A change to what the site does or shows adds its line here, and the README's
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
   brownish-grey tiles, a band of windows under the canopy at its top and, near its north-west end, two
   doors with steps and a louvre; its roof slopes up from the street and from the back to a top storey
-  under a curved roof. Every height is measured from the LINZ 2024 LiDAR, and the street face's
-  openings and doors from a Street View photograph of it. On the map it has the map's colours; from a
-  walker's height on a computer with a graphics card, its own white paint, glass, timber and red
-  frames. Its back and ends, which no photograph shows, are drawn plainly. A click still opens its
-  floors (#PR).
+  under a curved roof. Its heights are measured from the LINZ 2024 LiDAR, but for two parts of its
+  roofs, over a well at its south-east end and by the street at its north-west end, which are
+  estimated, and the street face's openings and doors from a Street View photograph of it. On the map
+  it has the map's colours; from a walker's height on a computer with a graphics card, its own white
+  paint, glass, timber and red frames. Its back and ends, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#PR).
 - **Four more measured massings.** Near the camera, Building 240, 103 Alfred Nathan House, 305
   Science Centre and 619 67 Symonds Street are drawn from the LINZ 2024 LiDAR in place of their
   blocks, as the five plain buildings already are: their layers and roofs measured, their walls,

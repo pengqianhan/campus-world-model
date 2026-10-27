@@ -39,8 +39,10 @@ model.traverse((o) => { if (o.isMesh) o.material = label; }); // also parts that
 scene.add(model);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000).rotateX(-Math.PI / 2), groundMat);
 ground.position.y = -0.02; scene.add(ground);
-// compare.occluders: other landmarks, each moved from its own frame into this one through the map's east
-// and north (config frame.expected; x = -axis, z = toStreet, as tools/data/place.py turns it) and its ground
+// compare.occluders: other landmarks, each moved from its own view frame into this one through the two
+// configs' frame.expected (centre and axis: NZTM metres from the campus origin, grid north; x = -axis, z = the
+// axis turned toward street_side, as tools/data/measure.py makes them) and their ground; not through the map's
+// projection, which this page never uses
 function frameOf(cfg) {
   const ax = cfg.frame.expected.axis;
   let ts = [-ax[1], ax[0]];
