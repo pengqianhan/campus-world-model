@@ -14,11 +14,11 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-10-27
+## 2026-10-28
 
 ### Added
 
-- **UC World Model, at /uc/.** A fourth school on the site: the University of Canterbury (Te
+- **UC World Model, at /uc/.** Another school on the site: the University of Canterbury (Te
   Whare Wānanga o Waitaha) in Christchurch, in 3D on the LINZ ground among the houses and streets
   round it. The Ilam campus has 45 buildings; "Other campuses" in the campus list takes the map to
   the Dovedale campus (11 buildings) and to the Arts Centre city location, where only Music &
@@ -30,6 +30,25 @@ A change to what the site does or shows adds its line here, and the README's
   semester dates and the course list are not shown, and the status strip, the time panel, the card
   and About say why in UC's own case. Halls of residence and childcare centres stay unnamed.
   Unofficial, with the project's own colours; nothing is taken from UC (#110).
+
+## 2026-10-27
+
+### Added
+
+- **Otago World Model, at /otago/.** Another school on the site: the University of Otago | Ōtākou
+  Whakaihu Waka, in 3D on the LINZ ground among the streets and buildings round it. The Dunedin
+  campus has 94 buildings; "Other campuses" in the campus list takes the map to the Christchurch
+  campus round Christchurch Hospital, where three buildings are tagged as Otago's. The 97 buildings
+  come from OpenStreetMap, picked by their `operator` and `building=university` tags and their
+  names, each one block at its OpenStreetMap height (21 from their number of levels), else at a
+  default, and labelled by name. Otago Polytechnic's buildings, the students' association's, the
+  School of Medicine on Christchurch Hospital's grounds (no tag the site reads says whose it is)
+  and those with no name are left out, each with its reason. The Wellington and Invercargill
+  campuses are not shown: OpenStreetMap names no university building at either and gives none
+  Otago as its operator. Rooms, class times, semester dates and the paper list are not shown, and
+  the status strip, the time panel, the card and About say why in Otago's own case. Residential
+  colleges and childcare centres stay unnamed. Unofficial, with the project's own colours; nothing
+  is taken from Otago (#111).
 - **VUW's Pipitea and Te Aro campuses.** /vuw/ adds two campuses to Kelburn, each chosen from
   "Other campuses" in the campus list and standing in its own patch of Wellington from
   OpenStreetMap, on the LINZ ground. Pipitea has three buildings: Old Government Buildings,
@@ -66,6 +85,15 @@ A change to what the site does or shows adds its line here, and the README's
   walker's height on a computer with a graphics card, its own stone, glass and red clay tiles. Its
   back, its ends and the low link toward the Clock Tower, which no photograph shows, are drawn
   plainly. A click still opens its floors (#102).
+- **9 Eden Crescent drawn in detail.** Near the camera the map draws 9 Eden Crescent (801) from code
+  in place of its block: a white four-storey building whose street end on Eden Crescent shows a
+  white top storey raked at one corner over three bays between two white piers, bands of windows,
+  a vehicle way, a glazed entrance and a glazed corner under a canopy; along one side the top storey
+  stands back behind a terrace, and plant stands on the flat roof. Every height is measured from the
+  LINZ 2024 LiDAR, and the street end's openings from two Street View photographs of it. On the map
+  it has the map's colours; from a walker's height on a computer with a graphics card, its own white
+  paint, glass and aluminium. Its long sides and far end, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#107).
 
 ### Changed
 

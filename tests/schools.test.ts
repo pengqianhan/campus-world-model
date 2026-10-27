@@ -188,7 +188,7 @@ describe("each campus's shadow map", () => {
   });
 
   it("is its own exactly for the campuses in areas of their own, at every school", () => {
-    for (const id of ["uoa", "aut", "vuw", "uc"]) {
+    for (const id of ["uoa", "aut", "vuw", "otago", "uc"]) {
       for (const c of campuses(id)) expect(ownShadow(centre(c), !!c.area), `${id} ${c.id}`).toBe(!!c.area);
     }
   });
