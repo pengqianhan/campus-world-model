@@ -221,7 +221,7 @@ export const school: School = {
       },
     ],
     provides:
-      "Massey's buildings on its Manawatū, Auckland and Wellington campuses, picked by their operator, building, name and address tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
+      "Massey's buildings on its Manawatū, Auckland and Wellington campuses, picked by their operator, building, amenity, name and address tags: outlines, names, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
   },
   /** docs/schools/massey.md, "Verdicts". */
   layers: {

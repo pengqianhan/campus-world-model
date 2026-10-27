@@ -168,14 +168,15 @@ is the maintainer's to do):
 
 1. Massey's key dates and course list are open, and its copyright page allows non-commercial reuse
    (layers 4 and 5 there), but reading them takes a fetch of a new source, a gate. Until the
-   maintainer decides, both are absent, and the site says that it does not read them yet.
+   maintainer decides, both are absent, and the site says that it does not take them until then.
 2. Massey's room data and class timetable: only Massey can open them (items 1 and 2 there).
-3. Brand colours: not compared. The one request to Massey's home page went out on 2026-10-28, but
-   the reader did not keep its answer, and no second request was made; the accent and tones are
-   the project's own, taken from no school.
-4. The phone's top bar: "Massey World Model" reaches 7 px past a 390 px screen (it fits at 360 px,
-   where the bar's text is smaller). DESIGN.md, section 6, asks a name longer than "UoA World Model"
-   for a shorter form there; that is a change to every school's top bar, or a shorter name.
+3. Brand colours: not compared. Massey's home page (read twice on 2026-10-28, four requests in all)
+   sets none in its own markup, and its stylesheets are on a CDN host the research browser does not
+   ask; whether to ask that host, or a brand page Massey publishes, is the maintainer's. The accent
+   and tones are the project's own, taken from no school.
+4. The phone's top bar: "Massey World Model" reached 7 px past a 390 px screen. Since #114 a name
+   longer than 17 characters is drawn at 14.5 px on phones and 13 px under 384 px, whole; DESIGN.md,
+   section 6, asks such a name for a shorter form there, so the maintainer may prefer one.
 5. Done on 2026-10-28: the Manawatū, Auckland and Wellington campuses are on the site, from one
    Overpass area each, which the maintainer let the loop fetch (`docs/schools/massey.md`, "On the
    site").

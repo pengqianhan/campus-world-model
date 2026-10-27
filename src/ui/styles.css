@@ -1915,6 +1915,11 @@ select optgroup {
     font-size: 14.5px;
   }
 
+  /* A long name (TopBar.tsx) one step smaller again, so that it fits until the source link goes at 344 px. */
+  .brand-name.long {
+    font-size: 13px;
+  }
+
   .topbar .btn {
     padding: 0 8px;
   }

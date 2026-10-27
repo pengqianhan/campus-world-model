@@ -41,7 +41,8 @@ export function TopBar() {
     <header class="topbar">
       <button type="button" class="brand" onClick={() => goHome()} title={t("nav.home")} aria-label={`${t("app.title")} — ${t("nav.home")}`}>
         {/* A name longer than every one that fits a 390 px phone at 16 px (Otago World Model, 17
-            characters) is drawn smaller there (styles.css, .brand-name.long): DESIGN.md, section 6. */}
+            characters) is drawn smaller on phones (styles.css, .brand-name.long). DESIGN.md, section 6,
+            asks such a name for a shorter form there; this keeps it whole instead (a judgement in #114). */}
         <span class={t("app.title").length > 17 ? "brand-name long" : "brand-name"}>{t("app.title")}</span>
         <span class="brand-tag">{t("app.tagline")}</span>
       </button>
