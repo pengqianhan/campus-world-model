@@ -125,10 +125,10 @@ export function ownShadow(centre: Vector3, ownArea: boolean): boolean {
 }
 
 /**
- * The campus whose shadow map is drawn: that of the open building when it has no floors (a school in
- * the Buildings form, whose open building is framed under its campus's map, not one of its own), which
- * need not be the campus last shown (a building opened by search or a link from another campus), and
- * otherwise `shown`, the campus last shown. Centres are in scene coordinates.
+ * The campus whose shadow map is drawn when no floor is open: that of the open building, if one is
+ * open and on the map (a school in the Buildings form frames its buildings, which have no floors, under
+ * their campus's map), which need not be the campus last shown (a building opened by search or a link
+ * from another campus); otherwise `shown`, the campus last shown. Centres are in scene coordinates.
  */
 export function shadowCampus(
   building: Building | undefined,
@@ -1259,8 +1259,10 @@ export class CampusScene {
   }
 
   /**
-   * Fits the shadow map to what is being looked at: the three central campuses in campus view,
-   * or just the open building, where the same texture then gives crisp shadows up close.
+   * Fits the shadow map to what is being looked at: round a walker; just the open building, when it
+   * has floors, where the same texture then gives crisp shadows up close; else the campus of the open
+   * building or the campus shown (shadowCampus), under its own map or the one over the three central
+   * campuses.
    */
   private fitShadow(): void {
     const cur = this.currentFloor();

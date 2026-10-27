@@ -32,10 +32,10 @@ for (const area of areas) {
   }
 }
 
-/** Places where people live, and childcare: OpenStreetMap's tags for them. */
 /** OpenStreetMap's building values for a place people live or stay in (its "Accommodation" types), as the test reads them. */
 const ACCOMMODATION = ["apartments", "barracks", "bungalow", "cabin", "detached", "annexe", "dormitory", "farm", "ger", "hotel", "house",
   "houseboat", "residential", "semidetached_house", "static_caravan", "stilt_house", "terrace", "tree_house", "trullo"];
+/** Places where people live, and childcare: OpenStreetMap's tags for them. */
 const isBlank = (tags: Record<string, string>) => ACCOMMODATION.includes(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
 
 const ring = (flat: number[]): Ring => {
