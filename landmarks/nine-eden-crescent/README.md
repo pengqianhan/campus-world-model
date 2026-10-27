@@ -30,7 +30,7 @@ lower buildings either side stand in the wide views.
 All three panoramas record their cameras about 1 m to the right of where the LiDAR puts the street
 end, the same way: an offset between Street View's positions and the LiDAR. Round 1 fitted `v8ia…`'s
 camera to its photograph's own edges (residuals 0.08 m or less) and the other two to the street end's
-openings (rms 8 and 10 px); `streetview.camera_fixes` puts each camera there. The camera search
+openings (rms 10 and 8 px, `mdk1…`'s and `MH15…`'s); `streetview.camera_fixes` puts each camera there. The camera search
 (`refine`) then corrects none: the neighbours stand next to the silhouette, so too little of it is
 against the sky to trust.
 

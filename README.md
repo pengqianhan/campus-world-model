@@ -600,8 +600,8 @@ If you represent the University and would like something changed or removed, ple
   see the street end; its neighbours either side and a tall tower behind it stand in their wide views,
   so its likeness is counted inside the rectangle the model fills on the screen, which there holds so
   little sky that the number shows little. All three panoramas record their cameras about 1 m from
-  where the LiDAR puts the building; they are set by hand, v8ia's from its photograph's own edges and
-  mdk1's and MH15's from the model's drawn openings. Its heights come from the LiDAR. What no
+  where the LiDAR puts the building; they are set by hand, one from its photograph's own edges and the
+  other two from the model's drawn openings. Its heights come from the LiDAR. What no
   photograph shows is drawn plainly: its long sides, which stand against their neighbours, its far
   end, and the plant on its roof (grey boxes at the LiDAR's sizes). Its white cladding is drawn
   without the panels' joints.
