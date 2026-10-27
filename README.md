@@ -8,9 +8,11 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 (also at https://pengqianhan.github.io/campus-world-model/)
 
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
-University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; and **VUW World
+University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; **VUW World
 Model**, an **unofficial** 3D map of the buildings of the Kelburn Campus of Te Herenga Waka—Victoria
-University of Wellington, at https://campusworldmodel.com/vuw/
+University of Wellington, at https://campusworldmodel.com/vuw/; and **UC World Model**, an
+**unofficial** 3D map of the buildings of the University of Canterbury's Ilam and Dovedale
+campuses and its Arts Centre location, at https://campusworldmodel.com/uc/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -25,7 +27,9 @@ University of Wellington, at https://campusworldmodel.com/vuw/
 > University logos or branding. AUT World Model is not affiliated with, endorsed by or maintained by
 > Auckland University of Technology, and uses no AUT logo; its colours are the project's own. VUW
 > World Model is not affiliated with, endorsed by or maintained by Te Herenga Waka—Victoria
-> University of Wellington, and uses no VUW logo; its colours are the project's own.
+> University of Wellington, and uses no VUW logo; its colours are the project's own. UC World Model
+> is not affiliated with, endorsed by or maintained by the University of Canterbury, and uses no UC
+> logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -48,7 +52,11 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-27:** a third school, at [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
+- **2026-10-27:** a fourth school, at [/uc/](https://campusworldmodel.com/uc/): 57 buildings of
+  the University of Canterbury's Ilam and Dovedale campuses and its Arts Centre location from
+  OpenStreetMap, each with its name and height and how the height was found; its rooms, class
+  times, dates and course list are not shown, and the site says why. A third school, at
+  [/vuw/](https://campusworldmodel.com/vuw/): the 52 buildings
   of VUW's Kelburn Campus from OpenStreetMap, each with its name and height and how the height was
   found; its rooms, class times, dates and course list are not shown, and the site says why.
   [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
@@ -524,8 +532,21 @@ body. VUW's room list and course list wait
 for the maintainer's reading of VUW's copyright terms, and its class times and key dates sit in
 parts of its site that its `robots.txt` disallows: see [docs/schools/vuw.md](docs/schools/vuw.md).
 
+**UC World Model** (`/uc/`) uses the same four sources and nothing of the University of
+Canterbury's own. OpenStreetMap gives the buildings of the Ilam and Dovedale campuses and of the
+Arts Centre city location, picked by their `operator` and `building=university` tags, with their
+names, outlines and, where tagged, heights, and the streets round them, from the snapshots of its
+three areas (`data/raw/osm/context-uc-ilam.json`, `context-uc-dovedale.json` and
+`context-uc-arts-centre.json`); `public/data/uc/campus.json`, `context.json` and `context/` are
+under the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/uc/terrain/`), under
+CC BY 3.0 NZ. Open-Meteo gives the weather at the Ilam campus,
+and Quaternius's figure is the walker's body. UC's copyright page asks for its written permission
+before material on its webpages is copied, which holds back its rooms, key dates and course list,
+and its timetable planner is on a site whose `robots.txt` disallows every automated visitor: see
+[docs/schools/uc.md](docs/schools/uc.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
-`public/data/aut/meta.json` and `public/data/vuw/meta.json`.
+`public/data/aut/meta.json`, `public/data/vuw/meta.json` and `public/data/uc/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.

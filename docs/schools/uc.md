@@ -2,8 +2,9 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what UC publishes without
-a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data file
-comes with it.
+a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the Ilam
+campus is on the site in the Buildings form, from OpenStreetMap ("On the site", below); the rest
+of this report is the recon as it was done.
 
 Path name if the school is added: `/uc/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; UC's web domain is `canterbury.ac.nz`). Time zone: Pacific/Auckland.
@@ -68,6 +69,130 @@ about 2 m from the building point "Te Whare Kohungahunga o Ilam - Ilam Early Lea
 the source puts these rooms in a childcare centre, so they stay blank. One more teaching-class
 point needs a check before its rooms are named: "47 Creyke Road Meeting rooms" (5 labels; its
 keywords say "postgraduate village common room" and "47 Creyke Rd Unit 1" to "Unit 4").
+
+## On the site (2026-10-27)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each campus that
+UC's "Our campuses" names (Ilam, Dovedale, the Arts Centre city location and Nelson) through
+`scripts/fetch-osm.ts`, and the terrain tiles under them through `scripts/fetch-terrain.ts`. No
+request went to UC for them. UC's map points stayed unread: the boxes come from the points this
+report gives, and no name, code or text of UC's map is published.
+
+**Ilam.** This report gives one point for the Ilam campus, the Central Library (Puaka-James Hight,
+-43.5238, 172.5828), so the box was drawn wide on every side before the fetch:
+`[-43.5317, 172.5718, -43.5168, 172.5922]`, 1.6 km a side. `osm/context-uc-ilam.json` holds 6,310
+elements, 2,947 of them buildings (2,938 ways, 9 relations), from `overpass.private.coffee`, whose
+OpenStreetMap base was 2026-05-31 22:37 UTC (the main instance answered 502). The 45 buildings the
+rule takes lie 389 to 499 m inside the box's edges and span 739 m east to west and 863 m north to
+south; the origin, the sun and the weather are at their middle (-43.5242, 172.5814).
+
+**What could be UC's, by its tags.** In the Ilam box, 11 buildings carry
+`operator=University of Canterbury` and 52 carry `building=university`; no building names another
+university or carries another operator with `building=university`. The snapshot holds no
+`amenity=university` area: `fetch-osm.ts` asks Overpass for buildings, streets, paths, parks and
+trees, not for campus outlines. Names: "UC Security" carries UC's operator; "UC Health Centre"
+(`building=yes`, `amenity=doctors`) and "University of Canterbury Musalla" (`building=yes`,
+`amenity=place_of_worship`, with the website of a students' association) carry neither tag; "UC
+Waterway" is `building=house`.
+
+**The rule** (`src/schools/uc/school.ts`), as VUW's: a building is taken by UC's `operator` tag, or
+by `building=university` with no other operator named, and by its name; a home is never considered,
+whatever its operator. Steps for what the Ilam box holds: `building=construction` is left out
+(two of UC's buildings, Takurua and one with no name, are still being built); a `building:min_level`
+of 0 is the ground floor, so Ernest Rutherford stands on the ground; `building:levels=0` (the Music
+Bunker, whose one level is under the ground) is left out, since the campus draws each building as
+a block standing on the ground.
+
+**Taken: 45** on the Ilam campus, 6 by UC's operator (Puaka-James Hight, West, Ernest Rutherford,
+UC Security, the Recreation Centre and the Warehouse Building) and 39 by `building=university`.
+Heights: 40 from `building:levels`, 5 at a default (Lecture Theatre K1, Fine Arts Building 3, the
+Recreation Centre and the Warehouse Building 10 m; Ann Ballin 6.5 m), none from `height`.
+**Left out: 14**, each with its reason: 11 with no name (8 `building=university`, and UC's three
+bicycle sheds), the 2 under construction, and the Music Bunker.
+
+**Judgements for review.** Haere-roa (`building=university`, no operator, the website of its own
+venue) is the students' association's building, and is taken by the rule's tags. Putaiao Koiora
+(`building=university`, `access=no`) is mapped with a note that it closed in about 2020 for
+seismic reasons and is to be replaced; it still stands in OpenStreetMap, so it is taken. "47 Creyke
+Road" and "49 Creyke Road" are `building=university` named by their addresses; this report found
+"47 Creyke Road Meeting rooms" on UC's map with keywords of a postgraduate village (see "Places to
+leave blank"), and the site names the building only, with no floor or room. Alice Candy
+(`building=school`, no operator) and the UC Health Centre carry neither tag, so they stand among
+the surroundings with no name (Real or absent).
+
+**Left blank.** The Ilam box holds 48 buildings tagged `building=dormitory`, Ilam's halls of
+residence among them; the Montana Early Learning Centre (`amenity=childcare`) and four unnamed
+`building=kindergarten`; and "UC Waterway", `building=house`. None is a candidate, and none of
+their names is in the published data (a test checks this).
+
+**Dovedale.** The box is round the Ōtākaro point above (-43.5211, 172.5678), about 200 m to each
+side and 250 m to north and south: `[-43.5234, 172.5653, -43.5189, 172.5703]`, clear of Ilam's
+box. `osm/context-uc-dovedale.json`: 1,130 elements, from `overpass-api.de`, base 2026-10-27 07:24
+UTC. It has 12 `building=university` and no operator on any of them: **11 taken** (Ōtākaro,
+Ōtākaro Annex, Whekī, Jack Mann, Henry Field, Waimairi, Wairakei, Ōrakipaoa, Kōtuku, Kōawa and
+the Collective Cafe, all with `building:levels`), 1 left out with no name. They lie 27 to 166 m
+inside the box; no building with UC's tags crosses its edges, and the streets east of Kōawa,
+27 m from the east edge, are residential (Ilam Park Place, Rutherglen Avenue). The Christchurch
+College of English, "a private language school located on the University of Canterbury campus"
+by its own description, is `building=yes` with its own operator, so it is not a candidate.
+Kōawa (`opening_date=2026`) and the Collective Cafe (`amenity=cafe`) are taken by their tags; both
+are judgements for review.
+
+**The Arts Centre.** This report gives the Arts Centre an address, 3 Hereford Street, and no
+point, so the box is about 600 m a side round the Arts Centre's block on that street:
+`[-43.5345, 172.6239, -43.5291, 172.6313]`. `osm/context-uc-arts-centre.json`: 915 elements, from
+`overpass-api.de`, base 2026-10-27 07:24 UTC. **1 taken**: "Music & Classics"
+(`alt_name=Chemistry Building`, `building=yes`, `operator=University of Canterbury`), whose own
+tags name UC; it lies 245 to 353 m inside the box. **2 left out**: the University of Otago's
+Department of General Practice (`building=university`, `operator=University of Otago`), and one
+`building=university` with no name. The Arts Centre's other buildings, Christ's College's and the
+University of Otago's School of Medicine (`building=hospital`) carry neither of the rule's tags.
+So the campus shows one building, and About says so.
+
+**Nelson: not on the site.** The box `[-41.278, 173.2843, -41.274, 173.2897]` round the "UC Nelson
+Centre" point above held 1,348 elements and no candidate: no building with UC's operator or
+`building=university`. The buildings at the point are NMIT's blocks (`building=school`, one with
+NMIT's website). No building there is traced to UC, so the Nelson campus is not on the site (Real
+or absent): its area was taken out again, and its snapshot and its two terrain tiles were deleted
+with their records in `data/sources.json`.
+
+**Not on the site, and not fetched:** Manawa (a UC building in the city, not a campus "Our
+campuses" names), the Rose Centre for Stroke Recovery and Research (rooms in a medical centre), the
+field stations and UC's other off-campus places ("Campuses", above).
+
+**Ground.** `fetch-terrain.ts` fetched 13 AWS terrain tiles at zoom 14: 9 under Ilam (x 16045 to
+16047, y 10395 to 10397), which cover Dovedale too, 2 more under the Arts Centre (16048/10396 and
+10397) and 2 under Nelson (16078/10257 and 10258), which were deleted with Nelson's area. Each
+tile's `x-amz-meta-x-imagery-sources` header, logged as it came: every Christchurch tile names only
+the LINZ model (`nzlinz/lds-tile-ph.tif`); Nelson's 16078/10258 named `nzlinz/lds-tile-mi.tif`,
+and 16078/10257, over Tasman Bay, mixed it with `srtm/S42E173.tif` and
+`gmted/50S150E_20101117_gmted_mea075.tif`. The terrain line in About (the LINZ 8 m model, with SRTM
+and GMTED at the coast) is true for the tiles kept. The ground runs from 10 to 19 m at Ilam, 14 to
+20 m at Dovedale and 4 to 14 m at the Arts Centre. The LINZ 1 m DEMs are not used: they need a new
+dependency, a gate.
+
+**UC's name and colours.** Through `scripts/research/polite.mjs`, documents only, on
+`www.canterbury.ac.nz` only, after its `robots.txt`, on 2026-10-27 (07:04 to 07:06 UTC): 4
+requests in all, each answered 200. The first browser asked for `robots.txt` (unchanged from the
+recon's reading) and the home page; 13 more requests of that page (its scripts, styles and images,
+and three other hosts) were blocked before they left the machine. A second browser asked for
+`robots.txt` again and the header logo the page names,
+`/content/dam/uoc-restricted/logos/header-logo.svg`, which came as a download, so its body was not
+read. A fifth request would have needed a third `robots.txt` first, over the limit of five, so
+none was sent. UC's home page names itself "University of Canterbury" (its title and its logo's
+label), and its own text calls the University "Te Whare Wānanga o Waitaha" ("studying at Te Whare
+Wānanga o Waitaha"); the site uses both. Its only colours in its own markup are its accessibility
+widget's settings: teal `#477A7E`, navy `#052942`, gold `#FFCF4B` and white. The page links no
+brand page. CIEDE2000 from the accent `#ffb454`: gold 11.3, white 29.0, teal 45.1, navy 73.4. From
+the University buildings' tones (day and night walls, roofs and edges): nearest the white to the
+day walls (8.8 and 9.4), the navy to the night roof `#2f4460` (9.4) and the teal to the night
+walls (18.0 and 18.6); the gold is 9.2 from the night hover `#ffd08a`. The nearest tones of the
+whole palette are the night map's water, ground and road edge (4.3 to 5.8 from the navy), which
+every school shares, and the night lab-room colour `#4b7570` (4.6 from the teal), which `/uc/`
+never draws, having no rooms. The nearest that the accent, the hover or a building tone comes to
+any of UC's colours is 8.8 (the white and the day walls), so UC keeps the project's accent
+(DESIGN.md, decision 5); "Needs the maintainer", 9, has the judgement. The saved answers stayed
+outside the repository and were deleted.
 
 ## What the site could do
 
@@ -232,7 +357,8 @@ one request made before it did).
    "Log in"; it was not requested, and is recorded here once and left alone.
 5. **Overpass for Christchurch and Nelson.** Run `scripts/fetch-osm.ts` for new areas over Ilam
    with Dovedale, the Arts Centre with Manawa, and the Nelson centre, as for Auckland. Not
-   requested here, for the reasons in AUT's recon.
+   requested here, for the reasons in AUT's recon. Done on 2026-10-27, one area for each campus
+   "Our campuses" names; Manawa was not fetched ("On the site").
 6. **The LINZ attribution page** (`www.linz.govt.nz`) answered 403 to a headless browser in AUT's
    recon. Read it in your own browser to confirm the credit wording for the Christchurch
    (2024-2025) DEM, licensor Environment Canterbury, and the Nelson (2025) DEM, licensor Nelson
@@ -245,6 +371,11 @@ one request made before it did).
    but does not read `robots.txt`: each research script parses it itself. This recon's parser read
    `timetable`'s one-line file as having no rules and sent one request before that was fixed. A
    `robots.txt` check inside `polite.mjs`, keeping the strictest reading, would close the gap.
+9. **The night map's colours beside UC's** (added 2026-10-27). UC's home page sets navy `#052942`
+   and gold `#FFCF4B` in its own markup; the night map's ground and water are 4.3 to 5.8 from that
+   navy, and its accent `#ffb454` is 11.3 from that gold ("On the site"). UC keeps the project's
+   accent. Decide whether the night map reads too much like UC's colours; DESIGN.md, decision 5,
+   would then give UC an accent of its own, never a brand colour.
 
 ## Request log
 

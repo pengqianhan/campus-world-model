@@ -111,6 +111,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | University of Auckland | `/uoa/` | Floor plans, from its campus map | 194 buildings, all on the map; 786 learning spaces with outlines; 4,573 more rooms located as points; 14,840 other spaces; 251 subject codes; 0 classes (see "Coverage") |
 | Auckland University of Technology (AUT) | `/aut/` | Buildings: the City, North and South campuses from OpenStreetMap, picked by the `operator` tag and AUT's building code (a campus letter and a building letter) in `ref` or as the whole `name`, each on the campus of the area it stands in, on the LINZ ground | 41 buildings, all on the map (City 18, North 15, South 8); 6 more left out, each with its reason (`buildingExclusions`; North's AE Building is 15 separate rings); heights: 0 from a `height` tag, 4 from `building:levels`, 37 estimated; 0 rooms, subjects and classes |
 | Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn Campus from OpenStreetMap, picked by its `operator` and `building=university` tags and a name, on the LINZ ground | 52 buildings, all on the map; 29 more left out by the tag rule, each with its reason (25 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 43 from `building:levels`, 9 estimated; 0 rooms, subjects and classes |
+| University of Canterbury (UC) | `/uc/` | Buildings: the Ilam and Dovedale campuses and the Arts Centre city location from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, each on the campus of the area it stands in, on the LINZ ground; homes are never considered. Nelson is not shown: OpenStreetMap tags no building there as UC's | 57 buildings, all on the map (Ilam 45, Dovedale 11, the Arts Centre 1); 17 more left out by the tag rule, each with its reason (13 with no name, 2 under construction, 1 with no storey above the ground, and 1 of the University of Otago's at the Arts Centre); heights: 0 from a `height` tag, 52 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -142,6 +143,38 @@ VUW's open items, from `docs/schools/vuw.md`, "Needs the maintainer" (each is th
    21.0) and from the University buildings' tones; the nearest tones of the palette are the night
    map's trees, pitches and grass (`#2a5c40` 3.4 and `#244a33` 3.9 from VUW's greens), which every
    school shares.
+
+UC's open items, from `docs/schools/uc.md`, "Needs the maintainer" (each is the maintainer's to do):
+
+1. UC's written permission: its copyright page forbids copying its web material without "prior,
+   express written permission", which holds back its map points (rooms by building), its key dates
+   and its subject codes, and would hold back any timetable. One request covers them all. Until it
+   is asked, the site does not say that it has asked.
+2. The timetable planner (`timetable.canterbury.ac.nz`), whose `robots.txt` disallows every agent,
+   and the Course Information System, whose `robots.txt` disallows Claude's agents: the same
+   request can ask about both.
+3. Done on 2026-10-27: Ilam, Dovedale and the Arts Centre are on the site, from one Overpass area
+   each, which the maintainer let the loop fetch (`docs/schools/uc.md`, "On the site"). Nelson's
+   area held no building that OpenStreetMap traces to UC: the UC Nelson Centre's point stands among
+   NMIT's blocks, tagged `building=school` with NMIT's website. Nelson waits for a source that
+   traces a building there to UC.
+4. The LINZ attribution page, for the 1 m DEMs of Christchurch and Nelson, if they are used (a new
+   dependency, a gate).
+5. Judgements on the Ilam campus (`docs/schools/uc.md`, "On the site"): Haere-roa, the students'
+   association's building, and Putaiao Koiora, mapped as closed since about 2020, are shown as
+   UC's by their `building=university` tag; "47 Creyke Road" is shown by OpenStreetMap's name for
+   it, with no floor or room, although UC's map gives it keywords of a postgraduate village; Alice
+   Candy (`building=school`) and the UC Health Centre (`building=yes`) carry neither of the rule's
+   tags and are not shown as UC's.
+6. Brand colours: on 2026-10-27 UC's home page sets four colours in its own markup, in its
+   accessibility widget's settings: teal `#477A7E`, navy `#052942`, gold `#FFCF4B` and white. It
+   links no brand page, and its logo (an SVG) was not read. CIEDE2000 from the accent `#ffb454`:
+   gold 11.3, the rest 29.0 to 73.4; the gold is 9.2 from the night hover `#ffd08a`, and the navy
+   9.4 from the night roof tone `#2f4460`. The nearest tones of the palette are the night map's
+   water, ground and road edge (4.3 to 5.8 from the navy), which every school shares, and the night
+   lab-room colour `#4b7570` (4.6 from the teal), which `/uc/` never draws. UC keeps the project's
+   accent. Whether the night map's navy and orange read too much like UC's navy and gold is the
+   maintainer's call. If UC publishes brand colours, compare them again (DESIGN.md, section 6).
 
 ## Done (with evidence)
 
