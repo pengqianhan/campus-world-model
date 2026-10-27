@@ -29,8 +29,9 @@ export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable"
  * request itself as "<url> -> <name>: <message> (<cause>)", so an error without that prefix happened on
  * this machine after the answer came (writing the snapshot down). Of the request's own failures, a timeout
  * (the request's or the connection's) is busy; a redirect, not followed, is a refusal; the errors that show
- * the host's answer (a refused connection, a reset, a socket the other side closed) are a drop; and any
- * other ("offline") does not show it: a name not resolved, no route, an error on this machine. A name tried
+ * the host's answer (a refused connection, a reset, a socket the other side closed, a body cut short) are a
+ * drop; and any other ("offline") does not show it: a name not resolved, no route, an error on this machine,
+ * a TLS alert (this machine's client or a middlebox can send one as well as the host). A name tried
  * at several addresses comes with each attempt's error (`attempts`, snapshot.ts): it is a drop if the host
  * answered so at any address; failing that, busy if the last attempt timed out (Node cuts every attempt but
  * the last short after 250 ms, so only the last one's timeout is the host's silence), else offline.
@@ -52,15 +53,16 @@ export function failure(url: string, e: unknown): Failure {
   }
   const said = m.slice(url.length + 4);
   if (TIMEOUT.test(said)) return "busy";
-  if (/redirect/i.test(said)) return "refused";
+  if (/\bunexpected redirect\b/.test(said)) return "refused";
   if (DROPPED.test(said)) return "dropped";
   return "offline";
 }
 
 /** No answer in time: the request's own timeout, or a connection not made in time. */
 const TIMEOUT = /^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/;
-/** The host's answer that drops the connection: it refused it, reset it or closed the socket. */
-const DROPPED = /\b(ECONNREFUSED|ECONNRESET|EPIPE)\b|other side closed|socket hang up|socket disconnected/;
+/** The host's answer that drops the connection: it refused it, reset it or closed the socket, or cut its body
+ * short (undici's words for that when the answer is not kept alive: the body's length, a chunked body's end). */
+const DROPPED = /\b(ECONNREFUSED|ECONNRESET|EPIPE)\b|other side closed|socket hang up|socket disconnected|Response body length does not match content-length header|Invalid EOF state/;
 
 export interface OverpassDeps {
   /** The area's snapshot if it is on disk (and not to be refreshed). */

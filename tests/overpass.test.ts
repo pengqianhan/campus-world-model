@@ -266,6 +266,12 @@ describe("Overpass instances", () => {
     for (const drop of [dropped(A), closedSocket(A), refusedTcp(A)]) expect(failure(A, drop)).toBe("dropped");
     for (const gone of [noDns(A), notFound(A), noRoute(A), noPort(A), firewall(A), untrusted(A)]) expect(failure(A, gone)).toBe("offline");
     expect(failure(A, new Error(`${A} -> TypeError: fetch failed (Client network socket disconnected before secure TLS connection was established)`))).toBe("dropped");
+    // a body the host cut short when its answer is not kept alive
+    expect(failure(A, new Error(`${A} -> TypeError: terminated (Response body length does not match content-length header)`))).toBe("dropped");
+    expect(failure(A, new Error(`${A} -> TypeError: terminated (Response does not match the HTTP/1.1 protocol (Invalid EOF state))`))).toBe("dropped");
+    // a TLS alert, and a name that holds the word "redirect": neither is the host's verdict
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (ssl/tls alert handshake failure: SSL alert number 40)`))).toBe("offline");
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (getaddrinfo ENOTFOUND overpass.redirect.test)`))).toBe("offline");
     expect(failure(A, diskFull())).toBe("ours");
   });
 });
