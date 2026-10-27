@@ -10,6 +10,12 @@ also classified a second time after a grey closing of each channel with a disc o
 r x the view's height / its vfov, from views.json), which gives what is darker than its surroundings and
 narrower than 2r (branches, twigs, wires; a thin spire too) the colour round it; what that second pass
 finds as sky is sky. Without the option the masks are made as before, byte for byte.
+Option "pale_tint": t (0-255). Pale and hazy sky are found by being pale, smooth and grey or bluish, so
+a white wall that the camera took as white as a hazy sky (a white building in open shade, exposed for
+the shade: R = G = B near 250) passes for sky where it touches the top of the view or sky that does.
+With t, a pale or hazy pixel is sky only where its blue exceeds its red by t or more: clear and pale
+blue sky stay sky; white walls, and the sky's own clipped white, go to solid (9 Eden Crescent: 8).
+Without it the masks are made as before, byte for byte.
   python -I ../pipeline/tools/sky_mask.py [--config config/<name>.json] [--force] [--debug out/dir] [file ...]
 """
 import argparse, glob, json, os, sys
@@ -22,7 +28,7 @@ SV = os.path.join(ROOT, "refs", "streetview")
 CONFIG = os.environ.get("CONFIG") or os.path.join("config", os.path.basename(ROOT) + ".json")
 
 
-def classify(rgb):
+def classify(rgb, pale_tint=0):
     f = rgb.astype(np.float32); r, g, b = f[..., 0], f[..., 1], f[..., 2]
     lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
     mx, mn = f.max(-1), f.min(-1); sat = (mx - mn) / np.maximum(mx, 1)
@@ -31,6 +37,9 @@ def classify(rgb):
     pale = (lum > 175) & (b - r > -4) & (sat < 0.25) & (std < 7)
     s9a = ndi.uniform_filter(lum, 9); s9b = ndi.uniform_filter(lum * lum, 9); std9 = np.sqrt(np.maximum(s9b - s9a * s9a, 0))
     haze = (lum > 200) & (sat < 0.12) & (std9 < 2.5)            # white haze / overexposed sky near the sun
+    if pale_tint:  # config sky_mask.pale_tint: pale and hazy sky only where blue exceeds red by this much
+        tint = b - r >= pale_tint
+        pale &= tint; haze &= tint
     pale |= haze
     cand = blue | pale
     lab, n = ndi.label(cand)
@@ -55,10 +64,10 @@ def close_branches(rgb, r):
     return np.stack([ndi.grey_closing(rgb[..., k], footprint=disc) for k in range(3)], -1)
 
 
-def mask(rgb, branches_px=0):
-    out = classify(rgb)
+def mask(rgb, branches_px=0, pale_tint=0):
+    out = classify(rgb, pale_tint)
     if branches_px > 0:
-        out[classify(close_branches(rgb, branches_px)) == 0] = 0
+        out[classify(close_branches(rgb, branches_px), pale_tint) == 0] = 0
     return out
 
 
@@ -67,8 +76,8 @@ if __name__ == "__main__":
     ap.add_argument("--config", default=CONFIG)
     a = ap.parse_args()
     opt = (json.load(open(a.config, encoding="utf-8")) if os.path.exists(a.config) else {}).get("sky_mask", {})
-    deg = opt.get("branches_deg", 0)
-    views = {v["file"]: v for v in json.load(open(os.path.join(SV, "views.json")))} if deg else {}
+    deg, tint = opt.get("branches_deg", 0), opt.get("pale_tint", 0)
+    views ={v["file"]: v for v in json.load(open(os.path.join(SV, "views.json")))} if deg else {}
     files = a.files or sorted(glob.glob(os.path.join(SV, "*_*.jpg")))
     os.makedirs(os.path.join(SV, "masks"), exist_ok=True)
     n = 0
@@ -77,10 +86,10 @@ if __name__ == "__main__":
         if not a.force and os.path.exists(o) and os.path.getmtime(o) > os.path.getmtime(f): continue
         rgb = np.asarray(Image.open(f).convert("RGB"))
         v = views.get(os.path.basename(f))
-        m = mask(rgb, round(deg * v["height"] / v["vfov"]) if v else 0); Image.fromarray(m).save(o); n += 1
+        m = mask(rgb, round(deg * v["height"] / v["vfov"]) if v else 0, tint); Image.fromarray(m).save(o); n += 1
         if a.debug:
             os.makedirs(a.debug, exist_ok=True)
             vis = rgb.copy(); vis[m == 0] = (vis[m == 0] * 0.3 + np.array([0, 0, 255]) * 0.7).astype(np.uint8); vis[m == 128] = (vis[m == 128] * 0.4 + np.array([255, 0, 255]) * 0.6).astype(np.uint8)
             Image.fromarray(vis).save(os.path.join(a.debug, os.path.basename(f)), quality=80)
     print(f"sky masks: {n} written, {len(files) - n} up to date, in {os.path.relpath(os.path.join(SV, 'masks'), ROOT)}"
-          + (f" (branches closed, {deg} deg)" if deg else ""))
+          + (f" (branches closed, {deg} deg)" if deg else "") + (f" (pale sky tinted blue by {tint} or more)" if tint else ""))
