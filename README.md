@@ -64,9 +64,12 @@ It is built to answer two questions a student actually has:
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
-- **2026-10-25:** near Maclaurin Chapel the map draws it in detail, from code and to its measured
-  sizes: in the map's colours on the map, and from a walker's height in white walls, glass, a light
-  green metal roof and a slender spire. A click still opens its floors.
+  Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
+  map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
+  people live and in childcare centres no longer turn up in the search.
+- **2026-10-23:** near Old Government House (building 102) the map draws it in detail, from code
+  and to its measured sizes. Near the camera, five plain buildings of the City Campus are drawn from
+  the LiDAR survey as measured massings, in place of their blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 

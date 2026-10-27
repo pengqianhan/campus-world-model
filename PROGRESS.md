@@ -663,9 +663,3 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
    too. Of these, 434 and 436 pass the top-view check in the first batch
    (`landmarks/measured/exclusions.json` has their numbers).
-6. **Make `schools` a required check on `main` (branch protection, decision 7 of
-   `docs/schools/DESIGN.md`).** Since M4, the `schools` job stands for the end-to-end tests of every
-   school on `.github/schools.json` but the University of Auckland. Only `build`, `e2e` and
-   `how-it-was-made` are required today, so until you add `schools` a pull request could be merged
-   with another school's tests failing. It does not matter while the list holds only `uoa`; add it
-   before the first other school.
