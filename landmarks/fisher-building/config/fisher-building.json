@@ -220,6 +220,13 @@
    "W9y5hI3w3gMsLp1S8xNmPw"
   ],
   "pano_ids_note": "the two Google panoramas (2026-04, 42-44 m) that the sight-line test over the LiDAR finds seeing most of the west and south faces (MGAo: S 70%, W 67%, SW 54%; W9y5: W 55%); the other 18 Google panoramas within 80 m see under 2% of the faces turned to them, behind trees and neighbours",
+  "camera_fixes_note": "MGAo's camera fitted to its tower view's own edges against the LiDAR's (round 2, 2026-10-27): the floor bands on the shaft's brick faces either side of the slot (20 bands at columns 545-775, rows 66-339, as the floors at 25.88, 28.75, 31.62 and 34.50 m, the heights where the wall returns peak) on the faces' lines fitted to the LiDAR's wall returns (rms 0.03-0.08 m; the west corner at (14.3, -4.2), the slot's corner at (12.49, -8.48)), the brick's left edge (columns 515-517) on the west corner and the slot's middle (column 681) on the slot's corner: the camera 2.76 m east and 0.59 m north of the recorded one, 2.8 m nearer the tower (35.5 m from the frame's centre, 38.3 m recorded); residuals: the bands -23.5 to +14.7 px, the corners -8.4 to +11.7 px, rms 11.7 px over 24 (77 px at the recorded camera, where the bands come a storey low). The fit cannot tell this from a camera at the recorded place (0.6 m off) whose photograph looks 3.9 deg lower than its cut says (rms 11.4 px): the panorama records a roll of -4.16 deg (the car on the street's cross-slope), which tools/streetview_collect.py does not apply when it cuts the views, and the tower view looks 71 deg off the car's heading, where that roll is a pitch of 3.9 deg; camera_fixes holds no pitch. W9y5's camera is not fitted: its views show the tower only in patches through leaves, with no edge or roof corner. Only the camera the views are drawn from moves; they are cut from the panorama as before",
+  "camera_fixes": {
+   "MGAo0rbb0J5NgaeV2uoAKw": [
+    32.42,
+    -14.53
+   ]
+  },
   "max_panos": 12,
   "radius_m": 80,
   "camera_height_m": 2.5,
