@@ -69,12 +69,21 @@ The model covers 97.4% of block 119 and no other block within 80 m by half, so `
 empty. The door is the foot of the stair tower's face toward the car park, where the LiDAR ground is
 40.0 m (-0.06 to +0.08 m within a metre); the photographs show no doorway there, so it only sets where
 the model meets the map's ground. The walls go down to `FOOT`, -1.0 m: the LiDAR ground falls to
--0.86 m behind the range and rises about 3 m under the link.
+-0.86 m behind the range.
+
+The link stands from the range's first floor, 3.6 m, up, over open ground (since 2026-10-28). The
+campus map has it on its upper floor only, with no ground storey under it, as the map's blocks drew
+it; OpenStreetMap has a footway through a building passage under it; and the walk map, made from each
+building's ground storey, lets a walker through. Drawn down to `FOOT` until then, it was solid stone
+on that footway: a walker walked into it, and the view from behind them filled with its plain face.
+The LiDAR's ground rises about 3 m under the link toward the tower, which leaves about 0.6 m under it
+at that end.
 
 ## Limits
 
 - What no photograph shows is plain stone wall: the back, the ends, the two blocks at the back and the
-  link. The grey of the roofs behind the pavilions' gables comes from the aerial.
+  link. The grey of the roofs behind the pavilions' gables comes from the aerial. The open ground
+  under the link comes from the campus map and OpenStreetMap; no photograph shows it either.
 - The east pavilion's gable front is half hidden by the basalt wall in every photograph: the one upper
   and two lower windows that show are as the west pavilion's, and the rest is drawn after it.
 - The windows' glazing patterns (geometric bars, leaded fanlights) are drawn as plain white bars.

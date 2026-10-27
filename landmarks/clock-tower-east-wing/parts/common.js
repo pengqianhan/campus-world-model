@@ -41,6 +41,9 @@ export const MEASURED = {
   // The link toward the Clock Tower (north-west, -x): one storey under trees, a flat roof at 6.5-6.6 m
   // where the LiDAR sees it clear of the trees (x -30 to -24 and -21 to -18; between, crowns classed as
   // building stand over it to 13 m), on ground that rises toward the tower; it runs east to the range's
-  // west wall (x -17.8), where the LiDAR reads 6.6 m too. No photograph shows it.
+  // west wall (x -17.8), where the LiDAR reads 6.6 m too. No photograph shows it. It is drawn from
+  // range.floor up, over open ground: the campus map has it on level 10 only, a block from 3.6 m up over
+  // block 119's base with no ground storey under it, and OpenStreetMap has a footway through a building
+  // passage under it (way 918249408).
   link: { x: [-33.0, -17.8], z: [-4.3, 1.1], top: 6.55 },
 };
