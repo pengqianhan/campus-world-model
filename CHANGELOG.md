@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   the landmark queue means to draw in detail one day; each stands in until its landmark comes. The
   other buildings of the queue in the LiDAR keep their blocks, every place where people live among
   them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
-  (`landmarks/measured/exclusions.json`) (#PR).
+  (`landmarks/measured/exclusions.json`) (#108).
 - **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
   Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
   streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and
