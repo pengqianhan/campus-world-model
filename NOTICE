@@ -13,6 +13,9 @@ their terms:
 - public/data/vuw/campus.json: the Kelburn Campus buildings of Te Herenga Waka-Victoria University
   of Wellington, taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database
   License 1.0. It holds nothing of Victoria University of Wellington's own material.
+- public/data/uc/campus.json: the Ilam campus buildings of the University of Canterbury, taken
+  from OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database License 1.0. It
+  holds nothing of the University of Canterbury's own material.
 - data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land
   Information New Zealand and the New Zealand Government, under CC BY 3.0 NZ.
 - What the site takes from the University of Auckland's public campus map and Calendar

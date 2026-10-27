@@ -1,0 +1,15 @@
+{
+  "available": false,
+  "timezone": "Pacific/Auckland",
+  "source": {
+    "name": "UC key university dates (not shown: UC's copyright page asks for its written permission)",
+    "url": "https://www.canterbury.ac.nz/study/study-support-info/dates-and-timetables/key-university-dates",
+    "checked": "2026-10-22"
+  },
+  "notes": [
+    "No dates are shown. UC publishes its key dates on its key-dates page and in the Key University Dates PDFs for 2026 and 2027, but its copyright page says that material on its webpages may not be copied without its prior, express written permission (docs/schools/uc.md, layer 4).",
+    "Written by hand: there is no snapshot behind this file, and it holds no date of UC's."
+  ],
+  "holidays": [],
+  "terms": []
+}
