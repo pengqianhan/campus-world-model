@@ -3043,6 +3043,22 @@
       "source": "osm"
     },
     {
+      "file": "osm/context-vuw-pipitea.json",
+      "url": "https://overpass-api.de/api/interpreter",
+      "fetchedAt": "2026-10-27T05:36:58.534Z",
+      "bytes": 1033152,
+      "sha256": "98c30174ca33291c67565def98191f774124e676d445c503bb497147eda2d6ab",
+      "source": "osm"
+    },
+    {
+      "file": "osm/context-vuw-te-aro.json",
+      "url": "https://overpass-api.de/api/interpreter",
+      "fetchedAt": "2026-10-27T05:39:52.427Z",
+      "bytes": 1076182,
+      "sha256": "960a2b2af329e5d2e6c762ab94ca561f90ef0955360d769146c785a98e038bb4",
+      "source": "osm"
+    },
+    {
       "file": "osm/context-waiheke.json",
       "url": "https://overpass.private.coffee/api/interpreter",
       "fetchedAt": "2026-10-14T12:12:10.957Z",
