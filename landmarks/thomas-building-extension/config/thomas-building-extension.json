@@ -132,6 +132,11 @@
   "axis_from": "walls"
  },
  "streetview": {
+  "pano_ids": [
+   "oWaFtXI8EGzKeGyT-DYEOA",
+   "MOQAtzmVodKTh6sUUJ8yFw"
+  ],
+  "pano_ids_note": "the two Google panoramas of 2024-08 (35-37 m) that the sight-line test over the LiDAR finds seeing 110N's south-east and south faces whole and 98% of its east face; they see the Thomas Building (110) too",
   "max_panos": 12,
   "radius_m": 80,
   "camera_height_m": 2.5,

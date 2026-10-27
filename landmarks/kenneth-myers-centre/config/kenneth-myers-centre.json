@@ -136,6 +136,10 @@
   "axis_from": "walls"
  },
  "streetview": {
+  "pano_ids": [
+   "0Rjk296LTsGDt_gXXn3yrg"
+  ],
+  "pano_ids_note": "the Google panorama of 2026-04 (32 m) that the sight-line test over the LiDAR finds seeing the Kenneth Myers Centre's east, south-east and south faces whole",
   "max_panos": 12,
   "radius_m": 80,
   "camera_height_m": 2.5,
