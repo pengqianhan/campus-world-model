@@ -57,7 +57,8 @@ SOON = {"801"}
 # Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
 # take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
 # 6 stays at the design's default until the maintainer decides: places where people live (residential
-# floors, and 434 and 450 by hand below) and childcare centres keep their blocks.
+# floors, and by hand below 434, 450 and Carlaw Park's 832 and 834 to 837) and childcare centres keep
+# their blocks.
 KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people "
               "it belongs to (decision 7)" for i in ("251", "252", "253", "254", "255", "256")},
         "275": "Fale Pasifika: culturally significant; its block stays until the maintainer has asked the people "
@@ -67,7 +68,11 @@ KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the 
         "434": "decision 6, a place where people live (the campus map shows an Accommodation Reception on its "
                "floor 2, though its floors are not marked residential): kept until the maintainer decides",
         "450": "decision 6, a place where people live (student housing by its name, though its floor is marked "
-               "unmapped): kept until the maintainer decides"}
+               "unmapped): kept until the maintainer decides",
+        **{i: "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: "
+              "Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though "
+              "the campus map marks none of its floors residential: kept until the maintainer decides"
+           for i in ("832", "834", "835", "836", "837")}}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
 
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
@@ -512,7 +517,7 @@ def measure(b, P, others, campus_origin):
     rough = roof & Cin & ~np.isin(lab, layers)
     if rough.sum() * A >= MIN_PIECE:
         dropped.append({"m2": round(float(rough.sum() * A), 1), "why": "roof cells on no smooth plane, or in pieces under 4 m2: "
-                        "counted as LiDAR only in the top-view check"})
+                        "left out of the top-view check's share within 0.5 m (its footprint IoU still counts them)"})
     if not layers: return rec, None, "no layer of smooth roof of 4 m2 or more"
     layers.sort(key=lambda k: info[k]["low"])
 
@@ -830,7 +835,8 @@ def main():
     todo = [b for b in every if not ask or b["id"] in ask]
     print(f"{len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
     boxes = []
-    # the points round every building the generator may measure, so that one cache serves any run
+    # the points round every building this run measures: a run over every building and one of some of
+    # them share a cache, but a --tier3 run crops round tier 3 alone and rewrites it
     for b in every:
         r = decode(b["outline"][0]); lo = r.min(0) - 12; hi = r.max(0) + 12
         e, n = to_grid([lo[0], hi[0], lo[0], hi[0]], [lo[1], lo[1], hi[1], hi[1]])

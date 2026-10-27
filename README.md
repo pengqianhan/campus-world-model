@@ -59,9 +59,10 @@ It is built to answer two questions a student actually has:
   from OpenStreetMap, chosen from "Other campuses" in the campus list and labelled by their AUT
   codes. Near the Clock Tower the map draws its East Wing in detail: rock-faced stone, two gabled
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
-  trimester dates, not semester dates. Six more University buildings are drawn near the camera to
-  their LiDAR-measured heights and roofs: Building 240, and five buildings planned as landmarks,
-  among them Alfred Nathan House and 67 Symonds Street, until their own landmarks come.
+  trimester dates, not semester dates. Four more University buildings are drawn near the camera to
+  their LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks,
+  Alfred Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks
+  come.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
@@ -337,8 +338,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Eleven are on the site
-  (`landmarks/measured/`): six plain buildings, and five of the buildings planned as landmarks, which
+  measured heights, walls, storeys and windows by the street look's rules. Nine are on the site
+  (`landmarks/measured/`): six plain buildings, and three of the buildings planned as landmarks, which
   they stand in for until their landmarks come. The other buildings it measures keep their blocks,
   each with its reason in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
@@ -546,7 +547,7 @@ If you represent the University and would like something changed or removed, ple
   (104) on Symonds Street, Maclaurin Chapel (107) and the Clock Tower East Wing (119) are the
   exceptions: their models are drawn to
   sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the

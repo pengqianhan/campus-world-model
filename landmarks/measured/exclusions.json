@@ -1951,7 +1951,7 @@
   },
   "832": {
    "name": "Carlaw Park Block 832",
-   "reason": "roof cells cover 57% of the outline (limit 85%)",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
    "measured": {
     "outline_m2": 797.2,
     "ground": {
@@ -1985,7 +1985,7 @@
   },
   "834": {
    "name": "Carlaw Park Block 834",
-   "reason": "roof cells cover 45% of the outline (limit 85%)",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
    "measured": {
     "outline_m2": 776.2,
     "ground": {
@@ -2000,9 +2000,42 @@
     "open_below": 0.123
    }
   },
+  "835": {
+   "name": "Carlaw Park Block 835",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 481.8,
+    "ground": {
+     "p5": 4.07,
+     "p50": 4.24,
+     "p95": 7.46,
+     "zero": 4.08
+    },
+    "roof_inside_m2": 479.2,
+    "cover": 0.997,
+    "vegetation": 0.022,
+    "open_below": 0.183,
+    "not_drawn_m2": 28.0,
+    "check": {
+     "iou": 0.918,
+     "lidar_m2": 534.8,
+     "model_m2": 492.5,
+     "within_0.5m": 0.919,
+     "model_minus_lidar_m": {
+      "p10": -0.42,
+      "p50": -0.01,
+      "p90": 0.26
+     },
+     "highest_m": {
+      "model": 23.07,
+      "lidar": 26.13
+     }
+    }
+   }
+  },
   "836": {
    "name": "Carlaw Park Block 836",
-   "reason": "top-view check: footprint IoU 0.951 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
    "measured": {
     "outline_m2": 600.2,
     "ground": {
@@ -2029,6 +2062,39 @@
      "highest_m": {
       "model": 24.2,
       "lidar": 25.37
+     }
+    }
+   }
+  },
+  "837": {
+   "name": "Carlaw Park Block 837",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 428.6,
+    "ground": {
+     "p5": 4.11,
+     "p50": 4.34,
+     "p95": 7.41,
+     "zero": 4.09
+    },
+    "roof_inside_m2": 425.2,
+    "cover": 0.992,
+    "vegetation": 0.04,
+    "open_below": 0.136,
+    "not_drawn_m2": 7.2,
+    "check": {
+     "iou": 0.922,
+     "lidar_m2": 465.0,
+     "model_m2": 433.5,
+     "within_0.5m": 0.938,
+     "model_minus_lidar_m": {
+      "p10": -0.4,
+      "p50": -0.02,
+      "p90": 0.2
+     },
+     "highest_m": {
+      "model": 27.46,
+      "lidar": 27.85
      }
     }
    }

@@ -307,7 +307,7 @@
  "dropped": [
   {
    "m2": 124.2,
-   "why": "roof cells on no smooth plane, or in pieces under 4 m2: counted as LiDAR only in the top-view check"
+   "why": "roof cells on no smooth plane, or in pieces under 4 m2: left out of the top-view check's share within 0.5 m (its footprint IoU still counts them)"
   }
  ],
  "measured": {
