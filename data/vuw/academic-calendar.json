@@ -1,0 +1,15 @@
+{
+  "available": false,
+  "timezone": "Pacific/Auckland",
+  "source": {
+    "name": "VUW key dates (not shown: robots.txt holds them back)",
+    "url": "https://www.wgtn.ac.nz/students/study/dates",
+    "checked": "2026-10-22"
+  },
+  "notes": [
+    "No dates are shown. VUW's key-dates page draws its dates with a script served from /__data/, and its 2026 Calendar PDF is under /__data/ too; VUW's robots.txt disallows /__data/.* (docs/schools/vuw.md, layer 4). Whether that line covers them is the maintainer's decision.",
+    "Written by hand: there is no snapshot behind this file, and it holds no date of VUW's."
+  ],
+  "holidays": [],
+  "terms": []
+}
