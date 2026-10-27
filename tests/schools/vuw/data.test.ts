@@ -146,6 +146,12 @@ describe("VUW's buildings", () => {
     expect(campus.buildingExclusions?.find((x) => x.osm === "way/752299347")?.reason).toMatch(/^No name/);
   });
 
+  it("keep in the Malaghan Institute's record the wikidata tag its reason cites", () => {
+    const malaghan = campus.buildingExclusions?.find((x) => x.osm === "way/627676675");
+    expect(malaghan?.reason).toMatch(/by its name and its wikidata tag/);
+    expect(malaghan?.sourceText).toContain("wikidata=Q6741044");
+  });
+
   it("stand at the height the rule gives, with its source, and have no floors or rooms", () => {
     for (const b of campus.buildings) {
       const tags = elements.get(b.osm!)!.tags ?? {};

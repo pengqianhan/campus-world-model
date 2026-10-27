@@ -18,6 +18,10 @@ const KELBURN: SceneArea = { id: "central", bbox: [-41.2937, 174.7638, -41.2838,
 /** The operator tag OpenStreetMap gives VUW's buildings. */
 const VUW = /^Victoria University of Wellington$/;
 
+/** Why the Malaghan Institute, on the Kelburn campus and tagged building=university, is not shown as VUW's. */
+const MALAGHAN =
+  "The Malaghan Institute of Medical Research, by its name and its wikidata tag an independent research institute, not a part of VUW, although it stands on the campus and is tagged building=university. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.";
+
 /**
  * OpenStreetMap's `building` values for a building people live or stay in (its "Accommodation"
  * types). Floors where people live stay blank (AGENTS.md, "Places, not people"), so a home is never
@@ -126,11 +130,12 @@ export const school: School = {
         reason: "No name to call it by: OpenStreetMap gives VUW's buildings no building code (ref), and this one no name. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
       },
       {
-        when: { name: /^Malaghan Institute/ },
+        // The reason cites its wikidata tag: reading the tag here keeps it in the record's original text.
+        when: { name: /^Malaghan Institute/, wikidata: /./ },
         take: false,
-        reason:
-          "The Malaghan Institute of Medical Research, by its name and its wikidata tag an independent research institute, not a part of VUW, although it stands on the campus and is tagged building=university. The surroundings draw it as they draw any other building, unless it overlaps one of VUW's buildings on the map or covers less than 12 square metres.",
+        reason: MALAGHAN,
       },
+      { when: { name: /^Malaghan Institute/ }, take: false, reason: MALAGHAN },
       { when: { operator: VUW }, take: true, reason: "operator=Victoria University of Wellington, and a name." },
       {
         when: { building: /^university$/, operator: null },
