@@ -10,9 +10,11 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
 University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; **VUW World
 Model**, an **unofficial** 3D map of the buildings of the Kelburn, Pipitea and Te Aro campuses of Te
-Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/; and **Otago
+Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/; **Otago
 World Model**, an **unofficial** 3D map of the buildings of the University of Otago's Dunedin and
-Christchurch campuses, at https://campusworldmodel.com/otago/
+Christchurch campuses, at https://campusworldmodel.com/otago/; and **Massey World Model**, an
+**unofficial** 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington
+campuses, at https://campusworldmodel.com/massey/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -29,7 +31,9 @@ Christchurch campuses, at https://campusworldmodel.com/otago/
 > World Model is not affiliated with, endorsed by or maintained by Te Herenga Waka—Victoria
 > University of Wellington, and uses no VUW logo; its colours are the project's own. Otago World
 > Model is not affiliated with, endorsed by or maintained by the University of Otago | Ōtākou
-> Whakaihu Waka, and uses no Otago logo; its colours are the project's own.
+> Whakaihu Waka, and uses no Otago logo; its colours are the project's own. Massey World Model is
+> not affiliated with, endorsed by or maintained by Te Kunenga ki Pūrehuroa Massey University, and
+> uses no Massey logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -52,6 +56,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-28:** another school, at [/massey/](https://campusworldmodel.com/massey/): 55 buildings
+  of Massey University's Manawatū, Auckland and Wellington campuses from OpenStreetMap, each with
+  its name and height and how the height was found; its rooms, class times, dates and course list
+  are not shown, and the site says why.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -75,9 +83,6 @@ It is built to answer two questions a student actually has:
   Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
   map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
   people live and in childcare centres no longer turn up in the search.
-- **2026-10-23:** near Old Government House (building 102) the map draws it in detail, from code
-  and to its measured sizes. Near the camera, five plain buildings of the City Campus are drawn from
-  the LiDAR survey as measured massings, in place of their blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -566,8 +571,21 @@ campus map, room list, key dates and paper pages are on its main website, which 
 project's first request to it; its class times answer only on its own network: see
 [docs/schools/otago.md](docs/schools/otago.md).
 
+**Massey World Model** (`/massey/`) uses the same four sources and nothing of Massey University's
+own. OpenStreetMap gives the buildings of the Manawatū, Auckland and Wellington campuses, picked by
+their `operator`, `building=university` and `amenity=university` tags or a name that says Massey,
+with their names, outlines and, where tagged, heights, and the streets round them, from the
+snapshots of its three areas (`data/raw/osm/context-massey-manawatu.json`, `context-massey-auckland.json`
+and `context-massey-wellington.json`); `public/data/massey/campus.json`, `context.json` and
+`context/` are under the ODbL. The LINZ 8 m elevation model gives the ground
+(`public/data/massey/terrain/`), under CC BY 3.0 NZ. Open-Meteo gives the weather at the Manawatū
+campus, and Quaternius's figure is the walker's body. Massey publishes no room outlines the site
+could find, and its class timetable is behind a sign-in; its key dates and course list are open
+for non-commercial use but are not read yet: see [docs/schools/massey.md](docs/schools/massey.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
-`public/data/aut/meta.json`, `public/data/vuw/meta.json` and `public/data/otago/meta.json`.
+`public/data/aut/meta.json`, `public/data/vuw/meta.json`, `public/data/otago/meta.json` and
+`public/data/massey/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.

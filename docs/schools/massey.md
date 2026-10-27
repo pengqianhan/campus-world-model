@@ -2,11 +2,146 @@
 
 Recon for a possible port, done on 2026-10-23 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Massey publishes
-without a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data
-file comes with it.
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the
+Manawatū, Auckland and Wellington campuses are on the site in the Buildings form, from
+OpenStreetMap ("On the site", below). The rest of this report is the recon as it was done.
 
 Path name if the school is added: `/massey/` ("Decisions" in `PROGRESS.md`: each school's own short
 name; Massey's web domain is `massey.ac.nz`). Time zone: Pacific/Auckland.
+
+## On the site (2026-10-28)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each campus that this
+report gives an address for (the Manawatū, Auckland and Wellington campuses) through
+`scripts/fetch-osm.ts`, and the terrain tiles under them through `scripts/fetch-terrain.ts`. Not
+part of this step: the School of Aviation at Palmerston North Airport, the Large Animal Teaching Unit
+on Old West Road and the research farms (this report has venue codes or map files for them, no
+address of a campus), and Singapore (a partner's campus abroad, outside LINZ's ground).
+
+**Massey's own host.** The research browser (`scripts/research/polite.mjs`, documents only) asked
+`www.massey.ac.nz` for its `robots.txt` and then its home page, once, on 2026-10-28 at 01:18
+(New Zealand time), for the school's name and the brand-colour check (DESIGN.md, section 6). The
+page answered, and the browser blocked what it would have loaded (its stylesheets and images on
+`d2ub1k1pknil0e.cloudfront.net`, its scripts, and its icons). The reader that called it failed to
+save the page (its output folder did not exist), and no second request went to the home page, so
+nothing was read from it. The name used is this report's, "Te Kunenga ki Pūrehuroa Massey
+University"; OpenStreetMap's operator tag on the Manawatū library writes it "Massey University / Te
+Kunenga ki Pūrehuroa". The brand colours were not compared: the site's accent and tones are the
+project's own, taken from no school. No stylesheet was asked for, and nothing else went to any
+Massey host.
+
+**How each box was set.** This report gives addresses and no map points, so each box was drawn from
+the address before the fetch, without asking any host, and checked against the snapshot's own
+streets after it.
+
+- **Manawatū** (`central`): "Tennent Drive, Turitea". The builder placed the campus from its own
+  knowledge of Palmerston North, south of the Manawatū River, and drew the box about 1.3 km on every
+  side of that place: `[-40.3967, 175.6022, -40.3733, 175.6328]`, 2.6 km north to south and 2.6 km
+  east to west. Tennent Drive, University Avenue, Library Road, Riddet Road and Orchard Road run
+  through the snapshot. `osm/context-massey-manawatu.json`: 2,881,782 bytes, 2,719 elements (996
+  building ways and 7 relations), from `overpass-api.de`, OpenStreetMap base 2026-10-27 12:13 UTC;
+  **1 request**. The 39 buildings the rule takes lie 499 m (south) to 1,222 m (north) inside the
+  box's edges, and span 908 m east to west and 884 m north to south; the origin, the sun and the
+  weather are at their middle (-40.3882, 175.6200).
+- **Auckland**: "East Precinct, Dairy Flat Highway, SH17, Albany". Placed the same way, by the
+  Albany Expressway south of Albany village, with about 1.4 km on every side, since the precinct's
+  place was the least sure of the three: `[-36.7436, 174.6823, -36.7184, 174.7137]`, 2.8 km by
+  2.8 km. The Albany Expressway, University Avenue, Albany Highway, Dairy Flat Highway and Oteha
+  Valley Road run through it. `osm/context-massey-auckland.json`: 7,610,056 bytes, 8,180 elements
+  (2,957 building ways and 8 relations); **3 requests**: `overpass-api.de` answered 502,
+  `overpass.private.coffee` 504, and `overpass.kumi.systems` answered, with an OpenStreetMap base of
+  2026-07-24 11:04 UTC, three months behind the main instance (the University of Auckland's
+  `context.json` has the same base). The 8 buildings lie 795 m (north) to 1,094 m (west) inside its
+  edges, and span 823 m east to west and 1,071 m north to south: the Design School stands at Albany
+  village, 1 km north-west of the East Precinct.
+- **Wellington**: "Wallace Street, Mount Cook". Otago's builder fetched a box round Mein Street,
+  Newtown, on 2026-10-27, and deleted it (`docs/schools/otago.md`, "On the site"); its copy, kept
+  outside the repository, was read here without a request. It held "Massey University Block 7"
+  (`way/25374045`) at its northern edge, with Wallace Street and Tasman Street running north from
+  it. So the box was drawn round those two streets, north to Buckle Street:
+  `[-41.307, 174.771, -41.297, 174.782]`, 1.1 km by 0.9 km. `osm/context-massey-wellington.json`:
+  2,312,036 bytes, 3,149 elements (1,326 building ways and 4 relations); **2 requests**:
+  `overpass-api.de` answered 502, and `overpass.private.coffee` answered, with an OpenStreetMap base
+  of 2026-07-24 11:04 UTC. The 8 buildings lie 258 m (north) to 334 m (east) inside its edges, and
+  span 315 m east to west and 535 m north to south.
+
+**What could be Massey's, by its tags.** In the three boxes, 2 buildings carry
+`operator=Massey University` (the Manawatū library, as "Massey University / Te Kunenga ki
+Pūrehuroa", and Te Rito at Albany), and 5 halls at Albany carry it too, as `building=dormitory`.
+86 carry `building=university` with no operator (Manawatū 49, Auckland 2, Wellington 35), and none
+with another operator. 2 carry `amenity=university` (the Registry and the Design School). 8 more
+carry none of these, and a tag that says Massey: their name, the house name of their address, or the
+place of their address (`addr:city=Massey University albany`, which Albany's mappers gave six
+buildings). A childcare centre ("Massey Kids' Club", `amenity=childcare`) and a block of flats
+("Massey Apartments", `building=apartments`) also have names that say Massey. No tag in the boxes
+names another university or polytechnic: the schools beside the campuses (Kristin School at Albany,
+Wellington High School and Wellington College at Mount Cook) tag theirs `building=school`. No box
+holds an `amenity=university` area: `fetch-osm.ts` asks Overpass for buildings, streets, paths,
+parks and trees, not for campus outlines.
+
+**The rule** (`src/schools/massey/school.ts`), as VUW's, UC's and Otago's: a building is taken by
+Massey's `operator` tag; by `building=university` or `amenity=university` with no other operator
+named; or by its name, the house name of its address or the place of its address when it says
+Massey; and by its name. A home is never considered, whatever its tags, and nor is a childcare
+centre found only by a name that says Massey, so neither the halls nor the "Massey Kids' Club" is
+named anywhere in the published data. Steps added for what Massey's boxes hold, each before the
+step that would take it:
+
+- a building whose own `fixme` tag asks mappers to check it: Student Central at Albany
+  (`addr:city=Massey University albany`), whose `fixme` reads "can someone confirm whether or not
+  this is the new police college?". The record keeps the tag's words;
+- a kindergarten by its `building` value, beside Otago's childcare steps (no candidate in the boxes
+  is one).
+
+**Taken: 55.** Manawatū 39: the library by Massey's operator, the Registry by `amenity=university`,
+35 by `building=university`, "A Massey University Research Unit" by its name and the Recreation and
+Sports Centre by the house name of its address ("Massey Sports and Recreation Centre"). Auckland 8:
+Te Rito by Massey's operator, the Sir Neil Waters Lecture Theatres (`ref=SNW`, its code on the map)
+and the Innovation Complex by `building=university`, the Design School by `amenity=university`, the
+Business School by its name, and the IIMS building, the Gym and Quadrangle Building B by the place of
+their address. Wellington 8: the Dominion Museum Building, Te Ara Hihiko, Massey University Block 7,
+the Massey University Gym, Te Rau Karamu Marae, K1 and K2 by `building=university`, and the Massey
+University Library by its name. Heights: 14 from `building:levels`, 41 at a default (18 at 10 m, 23
+at 6.5 m), none from `height`. Tallest: Science Towers A to D, 14.4 m (4 levels each), then the
+Dominion Museum Building, Massey University Block 7, the Riddet Institute and the Veterinary Science
+Building ("Vetinerary" in OpenStreetMap's name, kept as written), 10.8 m. **Left out: 43**, each with
+its reason: 42 with no name (Manawatū 14, Wellington 28) and Student Central.
+
+**Judgements for review.** (1) K1 and K2 are taken by `building=university`;
+the Wellington map PDF this report read names a "K block", but no tag of theirs says Massey. (2) The
+Riddet Institute (two buildings, `website=https://www.riddet.ac.nz/`) and the Riddet Complex are
+taken by `building=university`; no tag of theirs names another body, as the Malaghan Institute's
+did at VUW. (3) The Massey Islamic Centre (`building=university`, `amenity=place_of_worship`) is
+taken by its tags; its contact tags (an email address and a phone number among them) are not read,
+and are published nowhere. (4) "Collinson Village" and three buildings named "2", "3" and "4" beside it are
+taken by `building=university`; their names do not say what they are. (5) Many of Massey's own
+buildings carry no tag that says Massey (`building=yes` or `office` with no operator): the Sir
+Geoffrey Peren Building, the Old Registry Building, the Refectory, the Geography Building and the
+Veterinary Teaching Hospital at Manawatū, and the Atrium Building at Albany (`building=school`).
+They stand in the surroundings with no name, as does the Hopkirk Research Institute. (6) Student
+Central is left out on its own `fixme` tag. (7) The Auckland and Wellington snapshots came from
+mirrors whose OpenStreetMap base is 2026-07-24; a refetch from `overpass-api.de` would give a newer
+one, at one more request each.
+
+**Left blank.** The Manawatū box holds 27 homes by their `building` value (21 dormitories; 5
+named, the Mews Apartments among them) and the halls of residence that OpenStreetMap tags
+`building=yes` with a hall's name (Moginie, Walter Dyer, McHardy, Colombo and Fergusson Halls), which
+are not candidates; the Auckland box 188 homes (22 named, the five halls with Massey's operator
+among them); the Wellington box 763 (16 named). The childcare centres (3 tagged in the Manawatū box,
+1 at Albany, 2 at Mount Cook, and 6 `building=kindergarten` at Albany and Mount Cook) are not
+candidates. None of their names is in the published data; a test checks this.
+
+**The ground.** 24 tiles, 20 of them new: 9 under Manawatū, all naming LINZ's model
+(`nzlinz/lds-tile-kl`); 9 under Auckland, all naming `nzlinz/lds-tile-ek`, the 4 south-west of the
+campus with SRTM (`srtm/S37E174`) too and one of those with GMTED2010 as well; and 2 under
+Wellington (`nzlinz/lds-tile-mk`). The other 4 under Wellington were already committed for VUW, and
+`docs/schools/vuw.md` logs the headers of 3 of them (`lds-tile-mk`, one with SRTM and GMTED over
+the harbour); they were not asked for again. So the shared terrain line in About holds for them.
+
+**A question for the maintainer: the key dates.** This report's layer 4 found Massey's key-dates page
+open, with Massey's licence for non-commercial reuse. Reading it is a fetch of a new source, a gate,
+so `data/massey/academic-calendar.json` says `available: false`, and About says that the site does
+not read the dates yet. The same holds for the course list (layer 5).
 
 ## Verdicts
 

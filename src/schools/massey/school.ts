@@ -107,9 +107,9 @@ export const school: School = {
    * `operator=Massey University…` (and 5 halls, which are homes), 86 carry `building=university`
    * with no operator, 2 more carry `amenity=university`, and 8 that carry neither are found only by
    * a tag that says Massey (`name`, `addr:housename`, or `addr:city`); a childcare centre and a block
-   * of flats whose names say Massey are not candidates. No other university or
-   * polytechnic has a building in them; the schools beside the campuses (Kristin School, Albany's
-   * high schools, Wellington High School and Wellington College) tag theirs `building=school`. So a
+   * of flats whose names say Massey are not candidates. No tag in them names
+   * another university or polytechnic; the schools beside the campuses (Kristin School at Albany,
+   * Wellington High School and Wellington College at Mount Cook) tag theirs `building=school`. So a
    * building is taken by Massey's operator tag; by `building=university` or `amenity=university` with
    * no other operator named; or by a tag that says Massey; and by its name, which is what it is
    * called on the map. A home is never considered, and a childcare centre is left out before any step
@@ -201,12 +201,12 @@ export const school: School = {
         when: { building: /^university$/ },
         take: true,
         reason:
-          "building=university with no operator tag, and a name. No other university or polytechnic has a building=university in Massey's three boxes, and no other operator is named.",
+          "building=university with no operator tag, and a name. No tag in Massey's three boxes names another university or polytechnic, and no other operator is named.",
       },
       {
         when: { amenity: /^university$/ },
         take: true,
-        reason: "amenity=university with no operator tag, and a name. No other university or polytechnic stands in Massey's three boxes, and no other operator is named.",
+        reason: "amenity=university with no operator tag, and a name. No tag in Massey's three boxes names another university or polytechnic, and no other operator is named.",
       },
       { when: { name: NAMED_MASSEY }, take: true, reason: "Its name says Massey, and no other operator is named." },
       {
