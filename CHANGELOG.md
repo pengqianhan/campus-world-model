@@ -72,7 +72,7 @@ A change to what the site does or shows adds its line here, and the README's
   among what is not shown, at every school: the words were shared, and a school could not replace
   them. VUW teaches in trimesters, and its About already said so. A school's words can now replace
   these two texts: at /vuw/ they say "No trimester dates are shown" and "trimester dates". The
-  University of Auckland's and AUT's words do not change (#PR).
+  University of Auckland's and AUT's words do not change (#104).
 
 ## 2026-10-26
 
