@@ -4,7 +4,9 @@
 // the page's own address) and its words (src/schools/<id>/locales/en.json).
 import fs from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import type { Words } from "../../src/shared/school.ts";
 import type { Building, CampusData, Layer, Meta } from "../../src/shared/types.ts";
+import { lookupWords, overlayWords } from "../../src/shared/words.ts";
 import { expectRealRender, open, openStrip, params, settle, shot } from "../helpers.ts";
 
 const SCHOOL = process.env.SCHOOL || "uoa";
@@ -15,6 +17,10 @@ const words = JSON.parse(fs.readFileSync(`src/schools/${SCHOOL}/locales/en.json`
   app: { title: string; documentTitle: string };
   about: { unofficial: string; limits: Record<string, string> };
 };
+
+/** Every text as the page shows it: the school's words over the shared ones (src/shared/words.ts). */
+const texts = overlayWords(JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words, words as unknown as Words);
+const text = (key: string) => lookupWords(texts, key)!;
 
 /** The limit in About that says why each layer is absent (src/ui/AboutPanel.tsx). */
 const LIMIT: Partial<Record<Layer, string>> = { indoor: "rooms", timetable: "timetable", calendar: "calendar", subjects: "subjects" };
@@ -104,7 +110,7 @@ test(`${SCHOOL}: each absent layer says why, in About, the status strip and the 
   await openStrip(page);
   const strip = page.locator("#status-absent");
   await expect(strip).toBeVisible();
-  for (const layer of absent) await expect(strip).toContainText(["floors and rooms", "class times", "semester dates", "the course list"][["indoor", "timetable", "calendar", "subjects"].indexOf(layer)]!);
+  for (const layer of absent) await expect(strip).toContainText(text(`status.layer.${layer}`));
   await expect(strip.getByRole("button", { name: "Why?" })).toBeVisible();
 
   await page.getByRole("button", { name: "About", exact: true }).click();
@@ -118,7 +124,7 @@ test(`${SCHOOL}: each absent layer says why, in About, the status strip and the 
   if (absent.includes("calendar")) {
     await page.locator(".topbar .chip").click();
     await expect(page.locator("#no-calendar-note")).toHaveText(words.about.limits.calendar!);
-    await expect(page.locator(".time-panel .status-line")).toHaveText("No semester dates are shown");
+    await expect(page.locator(".time-panel .status-line")).toHaveText(text("time.noCalendar"));
     // No term, break or teaching day is named, and none is offered.
     await expect(page.locator("#preview-teaching-day")).toHaveCount(0);
     await shot(page, `schools-${SCHOOL}-time`);

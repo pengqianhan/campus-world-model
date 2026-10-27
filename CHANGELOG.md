@@ -67,6 +67,12 @@ A change to what the site does or shows adds its line here, and the README's
   skybridge among them: a gap, not a guess. In the map's first view the Customhouse tower now
   starts 13.2 m up and AUT's skybridge is gone; near Grafton two bridges at the hospital are gone.
   Every other building keeps its look (#100).
+- **VUW's status strip and time panel say trimester.** Where no dates are shown, the status strip
+  and the time panel said "No semester dates are shown", and the strip listed "semester dates"
+  among what is not shown, at every school: the words were shared, and a school could not replace
+  them. VUW teaches in trimesters, and its About already said so. A school's words can now replace
+  these two texts: at /vuw/ they say "No trimester dates are shown" and "trimester dates". The
+  University of Auckland's and AUT's words do not change (#PR).
 
 ## 2026-10-26
 
