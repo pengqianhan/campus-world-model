@@ -3,7 +3,7 @@
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what VUW publishes without
 a sign-in, and on what terms. No fetch script and no data file came with it. Since #101 the
-Kelburn Campus is on the site in the Buildings form, from OpenStreetMap, and since #PR the Pipitea
+Kelburn Campus is on the site in the Buildings form, from OpenStreetMap, and since #106 the Pipitea
 and Te Aro campuses too (see "The three campuses on the site"); the rest of this report is the
 recon as it was done.
 
@@ -58,7 +58,7 @@ childcare centre were not located in this recon.
 ## The three campuses on the site (2026-10-27)
 
 On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each of Kelburn
-(#101), Pipitea and Te Aro (#PR) through `scripts/fetch-osm.ts`. No request went to VUW: the boxes
+(#101), Pipitea and Te Aro (#106) through `scripts/fetch-osm.ts`. No request went to VUW: the boxes
 come from the points on VUW's own campus pages as this recon saved them on 2026-10-22, 7 on
 Pipitea and 4 on Te Aro (points, names and coordinates as the pages give them):
 
@@ -288,7 +288,7 @@ read literally they match only paths that start `/__data/.`. This recon took the
 5. **Overpass for Wellington.** Run `scripts/fetch-osm.ts` for new areas over Kelburn, Pipitea and
    Te Aro (and Miramar, Gracefield, Island Bay and Newtown if wanted), as for Auckland. Not
    requested here, for the reasons in AUT's recon. Done for Kelburn (#101), Pipitea and Te Aro
-   (#PR) on 2026-10-27, on the maintainer's word; Miramar, Gracefield, Island Bay and Newtown are
+   (#106) on 2026-10-27, on the maintainer's word; Miramar, Gracefield, Island Bay and Newtown are
    not fetched.
 6. **The LINZ attribution page** (`www.linz.govt.nz`) answered 403 to a headless browser in AUT's
    recon. Read it in your own browser to confirm the credit wording for "Wellington City LiDAR 1m
