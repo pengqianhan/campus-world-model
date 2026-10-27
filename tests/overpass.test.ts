@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { askOverpass, failure, type OverpassDeps } from "../scripts/lib/overpass.ts";
-import { HttpError } from "../scripts/lib/snapshot.ts";
+import { HttpError, fetchFailure } from "../scripts/lib/snapshot.ts";
 
 const A = "https://a.example/api/interpreter";
 const B = "https://b.example/api/interpreter";
@@ -64,11 +64,13 @@ describe("Overpass instances", () => {
     expect(f.asked).toEqual([A, B, C, A]);
     expect(f.closed).toEqual([]);
     expect(f.waits).toContain(60_000);
-    // a connection not made in time is no answer in time
-    const g = fake([connectTimeout(A), "{}"]);
-    await askOverpass([A], g.d);
-    expect(g.asked).toEqual([A, A]);
-    expect(g.closed).toEqual([]);
+    // a connection not made in time is no answer in time, and a request with no answer in time is asked again too
+    for (const late of [connectTimeout(A), timedOut(A)]) {
+      const g = fake([late, "{}"]);
+      await askOverpass([A], g.d);
+      expect(g.asked).toEqual([A, A]);
+      expect(g.closed).toEqual([]);
+    }
   });
 
   it("record a refusal and a redirect at once, and never ask those instances again", async () => {
@@ -98,6 +100,10 @@ describe("Overpass instances", () => {
     await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/could not be reached from this machine .*: is this machine online\?/);
     expect(f.asked).toEqual([A, B, C, A, B, C, A, B, C]);
     expect(f.closed).toEqual([]);
+    // a host not reached is no answer: a drop before it stays unrecorded
+    const h = fake([dropped(A), noDns(B), noDns(B), noDns(B)]);
+    await expect(askOverpass([A, B], h.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(h.closed).toEqual([]);
     // the network fails after a busy answer and comes back before the next round: nothing is recorded
     for (const gone of [noDns, connectTimeout]) {
       const g = fake([status(A, 504), gone(B), gone(C), "{}"]);
@@ -191,6 +197,19 @@ describe("Overpass instances", () => {
   it("fail, naming each closed instance, why and the record to edit, when none answers", async () => {
     const f = fake([status(A, 403), status(B, 504), status(B, 504), status(B, 504)]);
     await expect(askOverpass([A, B], f.d)).rejects.toThrow(/no Overpass instance answered; .*a\.example.* is closed \(HTTP 403\); delete its line in .*overpass-closed\.txt/);
+  });
+
+  it("word every address's failure when a name has several, so that it is sorted by what failed", () => {
+    // Node tries each of a name's addresses in turn and gathers the attempts' errors, with no message of its own
+    const tried = (...messages: string[]) => new TypeError("fetch failed", { cause: new AggregateError(messages.map((m) => new Error(m)), "") });
+    const said = (e: Error) => new Error(`${A} -> ${fetchFailure(e)}`);
+    const unreached = tried("connect ENETUNREACH 192.0.2.1:443", "connect ENETUNREACH 2001:db8::1:443");
+    expect(fetchFailure(unreached)).toBe("TypeError: fetch failed (connect ENETUNREACH 192.0.2.1:443; connect ENETUNREACH 2001:db8::1:443)");
+    expect(failure(A, said(unreached))).toBe("offline");
+    expect(failure(A, said(tried("connect ETIMEDOUT 192.0.2.1:443", "connect ECONNREFUSED 2001:db8::1:443")))).toBe("busy");
+    expect(failure(A, said(tried("connect ECONNREFUSED 192.0.2.1:443", "connect ECONNREFUSED 2001:db8::1:443")))).toBe("dropped");
+    // one address: the cause's own message, as before
+    expect(fetchFailure(new TypeError("fetch failed", { cause: new Error("other side closed") }))).toBe("TypeError: fetch failed (other side closed)");
   });
 
   it("tell a refusal, a drop, a busy answer, a host not reached and our own fault apart", () => {

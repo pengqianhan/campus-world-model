@@ -101,6 +101,19 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * How a failed fetch is worded: its name and message, and its cause's. A connection tried at each of a
+ * name's addresses in turn fails with every attempt's error gathered in an AggregateError, which has no
+ * message of its own: each attempt's is given, so that what failed can still be told (scripts/lib/overpass.ts).
+ */
+export function fetchFailure(e: unknown): string {
+  if (!(e instanceof Error)) return String(e);
+  const c = e.cause;
+  if (!(c instanceof Error)) return `${e.name}: ${e.message}`;
+  const each = c instanceof AggregateError ? (c.errors as unknown[]).map((x) => (x instanceof Error ? x.message : String(x))) : [];
+  return `${e.name}: ${e.message} (${[c.message, ...each].filter(Boolean).join("; ")})`;
+}
+
 /** Returns the snapshot bytes, downloading them only if they are not on disk yet. */
 export async function snapshot(opts: FetchOptions): Promise<Buffer> {
   const abs = path.join(RAW_DIR, opts.file);
@@ -124,8 +137,7 @@ export async function snapshot(opts: FetchOptions): Promise<Buffer> {
     buf = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
   } catch (e) {
     // The error of a failed fetch can quote the URL: give the logged one only.
-    const why = e instanceof Error ? `${e.name}: ${e.message}${e.cause instanceof Error ? ` (${e.cause.message})` : ""}` : String(e);
-    throw new Error(`${logUrl} -> ${why.replaceAll(opts.url, logUrl)}`);
+    throw new Error(`${logUrl} -> ${fetchFailure(e).replaceAll(opts.url, logUrl)}`);
   }
   if (!res.ok) throw new HttpError(`${logUrl} -> HTTP ${res.status}`, res.status);
   fs.mkdirSync(path.dirname(abs), { recursive: true });

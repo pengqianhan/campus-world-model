@@ -28,7 +28,9 @@ export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable"
  * this machine after the answer came (writing the snapshot down). Of the request's own failures, a timeout
  * (the request's or the connection's) is busy; a name that does not resolve or a network with no route is
  * this machine not reaching the host ("offline"); a redirect, not followed, is a refusal; and the rest are
- * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake.
+ * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake. A name
+ * tried at several addresses fails with every attempt's error, which snapshot.ts gives one after another:
+ * it is busy if any timed out, else offline if any did not reach the host, else as the rest are.
  */
 export function failure(url: string, e: unknown): Failure {
   if (e instanceof HttpError) {
