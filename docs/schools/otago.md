@@ -2,7 +2,7 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Otago publishes
-without a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #111 the
 Dunedin and Christchurch campuses are on the site in the Buildings form, from OpenStreetMap ("On
 the site", below); Wellington and Invercargill are not. The rest of this report is the recon as it
 was done.

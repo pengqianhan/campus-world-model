@@ -31,7 +31,7 @@ A change to what the site does or shows adds its line here, and the README's
   Otago as its operator. Rooms, class times, semester dates and the paper list are not shown, and
   the status strip, the time panel, the card and About say why in Otago's own case. Residential
   colleges and childcare centres stay unnamed. Unofficial, with the project's own colours; nothing
-  is taken from Otago (#PR).
+  is taken from Otago (#111).
 - **VUW's Pipitea and Te Aro campuses.** /vuw/ adds two campuses to Kelburn, each chosen from
   "Other campuses" in the campus list and standing in its own patch of Wellington from
   OpenStreetMap, on the LINZ ground. Pipitea has three buildings: Old Government Buildings,
