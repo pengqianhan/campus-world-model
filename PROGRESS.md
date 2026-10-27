@@ -659,7 +659,10 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    keeps too). You accepted 102 Old Government
    House's outside on 2026-10-22 (PR #75), and decision 6 says its answer applies to the landmarks
    too. Of these, 434 and 436 pass the top-view check in the first batch
-   (`landmarks/measured/exclusions.json` has their numbers).
+   (`landmarks/measured/exclusions.json` has their numbers). Since the generator measures the
+   buildings of tiers 1 and 2 as stand-ins too (2026-10-27, a gate for you), the same rule keeps the
+   blocks of 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors; of these only
+   616 55 Symonds Street would pass the limits (IoU 0.904, 90.8% within 0.5 m).
 6. **Make `schools` a required check on `main` (branch protection, decision 7 of
    `docs/schools/DESIGN.md`).** Since M4, the `schools` job stands for the end-to-end tests of every
    school on `.github/schools.json` but the University of Auckland. Only `build`, `e2e` and
