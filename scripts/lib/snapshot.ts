@@ -101,24 +101,25 @@ export class HttpError extends Error {
   }
 }
 
-/** What follows the last attempt's error in a failed fetch's words, before the earlier attempts'. */
-export const EARLIER_ATTEMPTS = "earlier attempts:";
+/** A failed fetch, as snapshot() throws it; `attempts` when its name was tried at several addresses. */
+export type FetchError = Error & { attempts?: string[] };
 
 /**
- * How a failed fetch is worded: its name and message, then its cause's message in brackets. A name with
- * several addresses is tried at each in turn, and the attempts' errors come gathered in an AggregateError
- * with no message of its own. Node cuts every attempt but the last short after 250 ms (ETIMEDOUT) and
- * passes on from an address this machine has no route to, so the last attempt says what the host did:
- * its error comes first, then EARLIER_ATTEMPTS and the others' (scripts/lib/overpass.ts sorts by the first).
+ * The error a failed fetch is thrown as: "<logUrl> -> <name>: <message> (<its cause's message>)", with the
+ * URL as logged wherever it is quoted. A name with several addresses is tried at each in turn, and the
+ * attempts' errors come gathered in an AggregateError with no message of its own: they are given in the
+ * order tried, and kept one by one in `attempts` (scripts/lib/overpass.ts sorts by them).
  */
-export function fetchFailure(e: unknown): string {
-  if (!(e instanceof Error)) return String(e);
+export function fetchError(e: unknown, url: string, logUrl: string): FetchError {
+  const hide = (t: string) => t.replaceAll(url, logUrl);
+  if (!(e instanceof Error)) return new Error(`${logUrl} -> ${hide(String(e))}`);
   const c = e.cause;
-  if (!(c instanceof Error)) return `${e.name}: ${e.message}`;
-  const each = c instanceof AggregateError && Array.isArray(c.errors) ? c.errors.map((x: unknown) => (x instanceof Error ? x.message : String(x))) : [];
-  if (!each.length) return `${e.name}: ${e.message} (${c.message})`;
-  const earlier = each.slice(0, -1);
-  return `${e.name}: ${e.message} (${[each.at(-1), ...(earlier.length ? [`${EARLIER_ATTEMPTS} ${earlier.join("; ")}`] : []), c.message].filter(Boolean).join("; ")})`;
+  if (!(c instanceof Error)) return new Error(`${logUrl} -> ${hide(`${e.name}: ${e.message}`)}`);
+  const attempts = c instanceof AggregateError && Array.isArray(c.errors) && c.errors.length
+    ? c.errors.map((x: unknown) => hide(x instanceof Error ? x.message : String(x)))
+    : undefined;
+  const why = attempts ? [...attempts, ...(c.message ? [hide(c.message)] : [])].join("; ") : hide(c.message);
+  return Object.assign(new Error(`${logUrl} -> ${hide(`${e.name}: ${e.message}`)} (${why})`), attempts ? { attempts } : {});
 }
 
 /** Returns the snapshot bytes, downloading them only if they are not on disk yet. */
@@ -144,7 +145,7 @@ export async function snapshot(opts: FetchOptions): Promise<Buffer> {
     buf = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
   } catch (e) {
     // The error of a failed fetch can quote the URL: give the logged one only.
-    throw new Error(`${logUrl} -> ${fetchFailure(e).replaceAll(opts.url, logUrl)}`);
+    throw fetchError(e, opts.url, logUrl);
   }
   if (!res.ok) throw new HttpError(`${logUrl} -> HTTP ${res.status}`, res.status);
   fs.mkdirSync(path.dirname(abs), { recursive: true });

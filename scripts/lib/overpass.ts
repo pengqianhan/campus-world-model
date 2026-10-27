@@ -15,7 +15,7 @@
 // line then.
 import fs from "node:fs";
 import path from "node:path";
-import { EARLIER_ATTEMPTS, HttpError, RAW_DIR } from "./snapshot.ts";
+import { HttpError, RAW_DIR } from "./snapshot.ts";
 
 export const CLOSED_FILE = path.join(RAW_DIR, "overpass-closed.txt");
 
@@ -29,9 +29,11 @@ export type Failure = "refused" | "dropped" | "busy" | "offline" | "unavailable"
  * (the request's or the connection's) is busy; a name that does not resolve or a network with no route is
  * this machine not reaching the host ("offline"); a redirect, not followed, is a refusal; and the rest are
  * the host dropping the connection: a reset, a close, a refusal to connect, a broken handshake. A name
- * tried at several addresses is sorted by its last attempt, which snapshot.ts gives first: Node cuts the
- * others short after 250 ms (ETIMEDOUT) or passes on from an address this machine has no route to, so
- * theirs say nothing of the host.
+ * tried at several addresses comes with each attempt's error (`attempts`, snapshot.ts). Two kinds say
+ * nothing of the host: an attempt Node cut short after 250 ms (ETIMEDOUT; it does so to every attempt but
+ * the last) and an address this machine has no route to. Any other attempt is the host answering at that
+ * address, and makes the failure a drop; failing that, it is busy if the last attempt timed out (Node does
+ * not cut the last short), and offline if none was reached.
  */
 export function failure(url: string, e: unknown): Failure {
   if (e instanceof HttpError) {
@@ -42,12 +44,23 @@ export function failure(url: string, e: unknown): Failure {
   }
   const m = e instanceof Error ? e.message : String(e);
   if (!m.startsWith(`${url} -> `)) return "ours";
-  const said = m.slice(url.length + 4).split(`; ${EARLIER_ATTEMPTS}`)[0]!;
-  if (/^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/.test(said)) return "busy";
-  if (/\b(ENOTFOUND|EAI_AGAIN|EAI_FAIL|EAI_NODATA|ENETUNREACH|ENETDOWN|EHOSTUNREACH|EADDRNOTAVAIL)\b/.test(said)) return "offline";
+  const attempts = (e as { attempts?: unknown }).attempts;
+  if (Array.isArray(attempts) && attempts.length) {
+    const told = attempts.map(String);
+    if (told.some((a) => !TIMEOUT.test(a) && !UNREACHED.test(a))) return "dropped";
+    return TIMEOUT.test(told.at(-1)!) ? "busy" : "offline";
+  }
+  const said = m.slice(url.length + 4);
+  if (TIMEOUT.test(said)) return "busy";
+  if (UNREACHED.test(said)) return "offline";
   if (/redirect/i.test(said)) return "refused";
   return "dropped";
 }
+
+/** No answer in time: the request's own timeout, or a connection not made in time. */
+const TIMEOUT = /^TimeoutError\b|\bConnect Timeout Error\b|\bETIMEDOUT\b/;
+/** The host not reached from this machine: its name not resolved, or no route to it. */
+const UNREACHED = /\b(ENOTFOUND|EAI_AGAIN|EAI_FAIL|EAI_NODATA|ENETUNREACH|ENETDOWN|EHOSTUNREACH|EADDRNOTAVAIL)\b/;
 
 export interface OverpassDeps {
   /** The area's snapshot if it is on disk (and not to be refreshed). */
