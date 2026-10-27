@@ -3,11 +3,12 @@
 // stops the others. `only` (the viewer's ?only=body,top) builds just those parts. Every landmark's
 // model.js exports build(materials, only), which returns a Group.
 import { Builder } from "../kit/gothic.js";
-import { body, windows } from "./parts/body.js";
+import { body, panels, windows } from "./parts/body.js";
 import { top } from "./parts/top.js";
 
 const PARTS = {
   body: (b) => body(b),
+  panels: (b) => panels(b),
   windows: (b) => windows(b),
   top: (b) => top(b),
 };
