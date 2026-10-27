@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import type { Building, CampusData, Layer, Meta } from "../../src/shared/types.ts";
-import { expectRealRender, open, openStrip, shot } from "../helpers.ts";
+import { expectRealRender, open, openStrip, params, settle, shot } from "../helpers.ts";
 
 const SCHOOL = process.env.SCHOOL || "uoa";
 const DAY = "?light=day&time=preview&date=2026-03-20&t=15:00";
@@ -44,7 +44,9 @@ test(`${SCHOOL}: the page loads at /${SCHOOL}/ and the canvas is a real picture`
 test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");
-  const onMap = campus.buildings.filter((b) => !b.offMap);
+  // The buildings of the central area, which the map opens on; a campus in an area of its own
+  // (`area`) has its own test below.
+  const onMap = campus.buildings.filter((b) => !b.offMap && !b.area);
   // The labels laid out on screen ("on"), by the code (or the name) each shows first.
   const labels = await page.locator(".lbl-building.on").evaluateAll((els) => els.map((el) => el.querySelector("b")?.textContent ?? ""));
   const labelled = onMap.filter((b) => labels.includes(shown(b)));
@@ -52,6 +54,25 @@ test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ pag
   expect(labelled.length, `labelled: ${labelled.map(shown).join(", ")}`).toBeGreaterThan(onMap.length / 2);
   // The tallest buildings stand above the rest, so their labels show.
   for (const b of [...onMap].sort((a, z) => z.height - a.height).slice(0, 3)) expect(labelled.map(shown), `${shown(b)}`).toContain(shown(b));
+});
+
+test(`${SCHOOL}: each campus in an area of its own opens from the campus picker, with its buildings labelled`, async ({ page }) => {
+  await open(page, DAY);
+  const campus = await published<CampusData>(page, "campus.json");
+  const remote = campus.campuses.filter((c) => c.onMap && c.area);
+  test.skip(remote.length === 0, "the school has no campus away from the central area");
+  for (const c of remote) {
+    await openStrip(page);
+    await page.locator("#campus-more").selectOption(c.id);
+    await settle(page);
+    expect(params(page).get("campus")).toBe(c.id);
+    const own = campus.buildings.filter((b) => b.campus === c.id && !b.offMap);
+    const labels = await page.locator(".lbl-building.on").evaluateAll((els) => els.map((el) => el.querySelector("b")?.textContent ?? ""));
+    const labelled = own.filter((b) => labels.includes(shown(b)));
+    expect(labelled.length, `${c.id}, labelled: ${labelled.map(shown).join(", ")}`).toBeGreaterThan(own.length / 2);
+    await expectRealRender(page, 12);
+    await shot(page, `schools-${SCHOOL}-campus-${c.id}`);
+  }
 });
 
 test(`${SCHOOL}: About has the unofficial notice with the school's full name, and every source with its link and snapshot date`, async ({ page }) => {

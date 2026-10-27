@@ -3,8 +3,9 @@
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what AUT publishes without
 a sign-in, and on what terms. No fetch script and no data file came with it. Since #97 the
-City Campus is on the site in the Buildings form, from OpenStreetMap; this report is the recon as it
-was done.
+City Campus is on the site in the Buildings form, from OpenStreetMap, and since #103 the North and
+South campuses too ("North and South on the site", below); the rest of this report is the recon as
+it was done.
 
 Path name if the school is added: `/aut/` ("Decisions" in `PROGRESS.md`: each school's own short
 name). Time zone: Pacific/Auckland.
@@ -43,6 +44,43 @@ Places to leave blank: the North Campus page names the Akoranga Childcare Centre
 Student homes: Te Āhuru Mayoral Drive and the Akoranga Student Village (off the campuses), and the
 WQ building, which the City map calls the "Student Accommodation & Recreation Centre".
 OpenStreetMap tags WQ `building=dormitory` with 15 levels, and MazeMap draws only WQ1 to WQ5.
+
+## North and South on the site (2026-10-27)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each campus through
+`scripts/fetch-osm.ts` (`osm/context-aut-north.json`, 1,176 elements, and
+`osm/context-aut-south.json`, 1,420 elements, both Overpass base 2026-10-27) and the four terrain
+tiles under North. Each box is about 1 km square round the centre of the map on AUT's own page for
+the campus. No request went to AUT.
+
+**South is in its box, and OpenStreetMap maps it.** Its eight buildings lie 196 to 655 m inside
+the box's edges. None carries `ref` or `operator`, and no `amenity=university` element marks the
+campus, so a look for AUT's codes in `ref` finds nothing. The code is the whole `name` instead:
+MA, MB, MC, MD, ME, MG and MH are `building=university`, MF is `building=yes`. That is eight, the
+number MazeMap gives for the campus, all with AUT's campus letter M; the timetable's room MH320
+names one of them. NZMA's Manukau campus next door is `building=college` with its own name, and no
+other building in the three snapshots has a name or `ref` of a campus letter and one letter.
+
+**North** has 14 buildings with AUT's code in `ref` (AA, AB, AE, AF, AG, AH, AJ, AK, AL, AM, AN,
+AO, AP, AS) and none with an `operator` tag. Ten are `building=university`; AF, AG and AH are
+`building=yes`, and AL (`amenity=library`) is `building=civic`. AY and AZ, both `building=yes`,
+carry the code as the whole `name`, as South's do.
+
+**The rule** (`src/schools/aut/school.ts`): a building whose code (a campus letter, W, A or M, and
+a building letter, as AUT's room codes begin) is its `ref`, or its whole `name` where it has no
+`ref`, and that has `operator=AUT` or no operator. `building=university` is no longer asked of a
+coded building with no operator, as #97 asked it of WY, because four of North's carry another
+`building` value; the code alone picks AUT's buildings in all three snapshots and nothing else, and
+the test checks that each one's campus letter matches the campus it stands on. Each building
+belongs to the campus of the area it stands in, named as AUT's campuses page names it: City
+Campus, North Campus, South Campus.
+
+**Taken:** 15 on the North Campus and 8 on the South Campus, 41 with the City Campus's 18. **Left
+out:** AE on the North Campus, a multipolygon of 15 separate rings, which the site cannot draw as
+one block; its rings stay in the surroundings, unnamed. The "Safety and Security" building on the North Campus (`building=university`, no code)
+is not a candidate, as on the City Campus a building with no code and no `operator=AUT` is not.
+
+**Left blank:** OpenStreetMap tags no childcare centre in the North snapshot, and none of the 23 new buildings carries a childcare, kindergarten or home tag; which building the Akoranga Childcare Centre (AUT's North Campus page) is in is not known from it. The site shows each building's code, name and height only, with no floors or rooms, as the University of Auckland's childcare buildings keep their names with their floors blank, so nothing of the centre itself is shown. Which building it is waits for the maintainer. The recon places the Akoranga Student Village off the campus; it is not among the buildings taken.
 
 ## What the site can do
 
@@ -202,7 +240,8 @@ Not checked: two known heights on each campus and pits where land meets sea (REC
 4. **Overpass for North and South.** Run the pipeline's `scripts/fetch-osm.ts` for two new areas.
    Overpass refused the headless browser (406), and its `robots.txt` disallows `/api/`; the
    repository already uses Overpass as an API client, so whether that line binds the pipeline is
-   for you to judge.
+   for you to judge. Done on 2026-10-27: the maintainer let the loop run both fetches ("North and
+   South on the site", above).
 5. **A tool gap in `scripts/research/polite.mjs`.** Playwright routes only the first request of a
    redirect chain, so a redirect hop is neither paced nor logged. Six hops went out this way (see
    below).

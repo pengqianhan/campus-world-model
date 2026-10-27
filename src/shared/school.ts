@@ -39,12 +39,16 @@ export type TagTest = Readonly<Record<string, RegExp | null>>;
 
 /**
  * How the osm-buildings campus adapter (scripts/lib/osm-buildings.ts) picks a school's buildings
- * from the OpenStreetMap snapshot of its central area: a rule written in the source's tags, never
- * a list of elements typed by hand (docs/schools/DESIGN.md, section 10, risk 8).
+ * from the OpenStreetMap snapshots of its areas: a rule written in the source's tags, never a list
+ * of elements typed by hand (docs/schools/DESIGN.md, section 10, risk 8).
  */
 export interface OsmBuildingRule {
-  /** The campus the buildings belong to. */
-  campus: { id: string; name: string };
+  /**
+   * The school's campuses, one for each area of its map that holds one (`area`, an id in its
+   * `areas`), with the name the school's own page gives it. A building belongs to the campus of
+   * the area it stands in.
+   */
+  campuses: readonly { id: string; name: string; area: string }[];
   /**
    * An element is considered when it is a building or a building part and one of these holds for
    * its tags. Every other element is surroundings, which buildContext draws.

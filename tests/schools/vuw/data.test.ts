@@ -31,7 +31,7 @@ describe("VUW's buildings", () => {
   it("are drawn in the frame of the descriptor's origin, all on the map", () => {
     expect(campus.origin).toEqual(school.origin);
     expect(campus.floorHeight).toBe(3.6);
-    expect(campus.campuses.map((c) => c.id)).toEqual([rule.campus.id]);
+    expect(campus.campuses.map((c) => c.id)).toEqual(rule.campuses.map((c) => c.id));
     expect(campus.campuses[0]!.buildingCount).toBe(campus.buildings.length);
     expect(campus.buildings.filter((b) => b.offMap).map((b) => b.id)).toEqual([]);
   });

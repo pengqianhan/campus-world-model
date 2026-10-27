@@ -28,6 +28,15 @@ A change to what the site does or shows adds its line here, and the README's
   not shown, and the status strip, the time panel, the card and About say why in VUW's own case.
   Halls of residence and the childcare centre stay unnamed. Unofficial, with the project's own
   colours; nothing is taken from VUW (#101).
+- **AUT's North and South campuses, at /aut/.** "Other campuses" in the campus list now takes the
+  map to AUT's North Campus on Akoranga Drive, Northcote (15 buildings) and its South Campus on
+  Great South Road, Manukau (8 buildings), each in its own patch of OpenStreetMap surroundings on
+  the LINZ ground, as the University of Auckland's campuses away from the city are. Their buildings are
+  picked by AUT's building code (a campus letter and a building letter) in their `ref` or as their
+  whole name, and labelled by it; every South Campus building, and AY and AZ on the North Campus,
+  has the code only as its name. North's AE Building is not shown as one of AUT's buildings:
+  OpenStreetMap draws it as 15 separate outlines, which stand among the surroundings. AUT now
+  shows 41 buildings, and About says which campuses are modelled (#103).
 
 ### Changed
 

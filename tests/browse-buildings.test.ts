@@ -32,4 +32,16 @@ describe("browseBuildings", () => {
     const codes = list.map((b) => b.ref ?? b.id);
     expect(codes).toEqual([...codes].sort((a, b) => a.localeCompare(b, "en", { numeric: true })));
   });
+
+  it("offers each of AUT's campuses away from the centre its own buildings, by code or by the name that is one", () => {
+    const d = data("aut");
+    for (const [campus, first] of [
+      ["north", ["AA", "AB", "AF", "AG", "AH", "AJ", "AK", "AL", "AM", "AN", "AO", "AP"]],
+      ["south", ["MA", "MB", "MC", "MD", "ME", "MF", "MG", "MH"]],
+    ] as const) {
+      const list = browseBuildings(d, campus);
+      for (const b of list) expect(b.campus, b.id).toBe(campus);
+      expect(list.map((b) => b.ref ?? b.name.en)).toEqual(first);
+    }
+  });
 });

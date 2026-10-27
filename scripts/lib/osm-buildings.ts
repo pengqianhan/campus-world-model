@@ -9,7 +9,7 @@ import { cleanRing, encodeRing, pointInRing, ringArea, ringCentroid, simplifyRin
 import type { OsmBuildingRule, TagTest } from "../../src/shared/school.ts";
 import type { Building, BuildingExclusion, CampusData, FloorPlans, RoomIndex } from "../../src/shared/types.ts";
 import { outerRings, type OsmElement } from "./context.ts";
-import { placeOnMap, type MapFrame } from "./map-frame.ts";
+import { inBox, placeOnMap, type MapFrame } from "./map-frame.ts";
 import { readSnapshot } from "./snapshot.ts";
 
 /**
@@ -83,24 +83,36 @@ function outlineOf(e: OsmElement, project: MapFrame["project"]): Ring[] | undefi
   return [ring, ...holes];
 }
 
-/** The campus of a school in the Buildings form, from the OpenStreetMap snapshot of its central area. */
+/**
+ * The campus of a school in the Buildings form, from the OpenStreetMap snapshot of each area of its
+ * map (`frame.boxes`: the central one and every remote one whose snapshot has been taken). A
+ * building belongs to the campus of the area it stands in: the area its centre lies in, else the
+ * area whose snapshot holds it. An element in two snapshots is read once, from the first.
+ */
 export function buildOsmCampus(
   rule: OsmBuildingRule,
   frame: MapFrame,
 ): { data: CampusData; index: RoomIndex; plans: FloorPlans[]; stats: Record<string, number> } {
-  const osm = JSON.parse(readSnapshot(frame.central.osm).toString("utf8")) as { elements: OsmElement[] };
   const stats: Record<string, number> = {};
   const bump = (k: string, n = 1) => (stats[k] = (stats[k] ?? 0) + n);
   const keys = ruleKeys(rule);
+  const campusOf = new Map(rule.campuses.map((c) => [c.area, c]));
 
-  const taken: { e: OsmElement; tags: Record<string, string>; outline: Ring[] }[] = [];
+  const taken: { e: OsmElement; tags: Record<string, string>; outline: Ring[]; area: string }[] = [];
   const exclusions: BuildingExclusion[] = [];
-  for (const e of osm.elements) {
+  const seen = new Set<string>();
+  const elements = frame.boxes.flatMap((box) => {
+    const osm = JSON.parse(readSnapshot(box.area.osm).toString("utf8")) as { elements: OsmElement[] };
+    return osm.elements.map((e) => ({ e, area: box.area.id }));
+  });
+  for (const { e, area } of elements) {
     const tags = e.tags ?? {};
     const verdict = decide(rule, tags);
     if (!verdict) continue;
-    bump("osmBuildings.candidates");
     const osmId = `${e.type}/${e.id}`;
+    if (seen.has(osmId)) continue;
+    seen.add(osmId);
+    bump("osmBuildings.candidates");
     if (!verdict.take) {
       exclusions.push({ osm: osmId, sourceText: tagText(tags, keys), reason: verdict.reason });
       bump("osmBuildings.excluded");
@@ -108,11 +120,17 @@ export function buildOsmCampus(
     }
     const outline = outlineOf(e, frame.project);
     if (!outline || ringArea(outline[0]!) <= 0) {
-      exclusions.push({ osm: osmId, sourceText: tagText(tags, keys), reason: "Its outline in the snapshot is not one closed ring." });
+      // A multipolygon of several separate outlines (North Campus's AE, 15 rings) says so.
+      const rings = outline ? 1 : outerRings(e, frame.project).length;
+      const reason =
+        rings > 1
+          ? `Its outline in the snapshot is ${rings} separate rings, not one: the campus draws a building as one block on one outline. The rings stay in the surroundings.`
+          : "Its outline in the snapshot is not one closed ring.";
+      exclusions.push({ osm: osmId, sourceText: tagText(tags, keys), reason });
       bump("osmBuildings.excluded");
       continue;
     }
-    taken.push({ e, tags, outline });
+    taken.push({ e, tags, outline, area });
   }
 
   // The building's id is its code (`ref`); where two buildings carry the same code, each takes
@@ -122,16 +140,19 @@ export function buildOsmCampus(
   const refCount = new Map<string, number>();
   for (const { tags } of taken) refCount.set(tags.ref ?? "", (refCount.get(tags.ref ?? "") ?? 0) + 1);
 
-  const buildings: Building[] = taken.map(({ e, tags, outline }) => {
+  const buildings: Building[] = taken.map(({ e, tags, outline, area }) => {
     const ref = tags.ref;
     const id = ref && refCount.get(ref) === 1 ? ref : `${ref ?? e.type.toUpperCase()}-${e.id}`;
     const center = ringCentroid(outline[0]!);
     const name = tags.name ?? ref ?? id;
     const h = osmHeight(tags, ringArea(outline[0]!));
     bump(`osmBuildings.height.${h.heightSource}`);
+    const standsIn = frame.boxes.find((b) => inBox(b, center))?.area.id ?? area;
+    const campus = campusOf.get(standsIn);
+    if (!campus) throw new Error(`${e.type}/${e.id} stands in the area "${standsIn}", which the rule gives no campus`);
     return {
       id,
-      campus: rule.campus.id,
+      campus: campus.id,
       name: { en: name },
       sourceText: name,
       outline: outline.map(encodeRing),
@@ -148,12 +169,19 @@ export function buildOsmCampus(
   exclusions.sort((a, z) => a.osm.localeCompare(z.osm, "en", { numeric: true }));
   stats["osmBuildings.taken"] = buildings.length;
 
-  // The campus centre is the median of its building centres, as for the University of Auckland.
-  const xs = buildings.map((b) => b.center[0]).sort((a, z) => a - z);
-  const ys = buildings.map((b) => b.center[1]).sort((a, z) => a - z);
-  const mid = Math.floor(buildings.length / 2);
-  const center: [number, number] = [round1(xs[mid] ?? 0), round1(ys[mid] ?? 0)];
-  const place = placeOnMap(frame, center);
+  // Each campus's centre is the median of its building centres, as for the University of
+  // Auckland. A campus with no building is left out: no campus is drawn without its buildings.
+  const campuses = rule.campuses.flatMap((c) => {
+    const own = buildings.filter((b) => b.campus === c.id);
+    if (own.length === 0) return [];
+    const xs = own.map((b) => b.center[0]).sort((a, z) => a - z);
+    const ys = own.map((b) => b.center[1]).sort((a, z) => a - z);
+    const mid = Math.floor(own.length / 2);
+    const center: [number, number] = [round1(xs[mid]!), round1(ys[mid]!)];
+    const place = placeOnMap(frame, center);
+    stats[`osmBuildings.taken.${c.id}`] = own.length;
+    return [{ id: c.id, name: { en: c.name }, onMap: !place.offMap, ...(place.area ? { area: place.area } : {}), center, buildingCount: own.length }];
+  });
 
   return {
     data: {
@@ -161,16 +189,7 @@ export function buildOsmCampus(
       generatedAt: new Date().toISOString(),
       origin: frame.origin,
       floorHeight: FLOOR_HEIGHT,
-      campuses: [
-        {
-          id: rule.campus.id,
-          name: { en: rule.campus.name },
-          onMap: !place.offMap,
-          ...(place.area ? { area: place.area } : {}),
-          center,
-          buildingCount: buildings.length,
-        },
-      ],
+      campuses,
       buildings,
       rooms: [],
       buildingExclusions: exclusions,
