@@ -2,14 +2,16 @@
 at the heights the LINZ 2024 LiDAR measures, drawn by landmarks/measured/model.js.
 
 Reads the eight LiDAR tiles that the landmark pipeline already keeps in data/raw/landmarks/lidar/ (it
-fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles (MASSING.md, "Which
-buildings") it measures the ground, the roof and its layers and roof forms, builds the model with
-model.js (massing_triangles.mjs) and checks it from above against the LiDAR. It writes
+fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles, and each of tiers 1
+and 2 that the site does not draw as a landmark yet (MASSING.md, "Which buildings"), it measures the ground,
+the roof and its layers and roof forms, builds the model with model.js (massing_triangles.mjs) and checks it
+from above against the LiDAR. It writes
   landmarks/measured/buildings/<id>.json   each building that passes every limit (MASSING.md, decision 3)
   landmarks/measured/exclusions.json       each that does not, with its reason and its numbers
   landmarks/measured/out/<id>.png, report.md   the top views (LiDAR | model | difference) and a table (not committed)
 Run from the repository root, with the pipeline's Python:
-  $PY -I landmarks/pipeline/tools/massing.py            every tier-3 building in the tiles
+  $PY -I landmarks/pipeline/tools/massing.py            every such building in the tiles
+  $PY -I landmarks/pipeline/tools/massing.py --tier3    tier 3 alone
   $PY -I landmarks/pipeline/tools/massing.py 216 113    these only; the other files are kept
 """
 import json, math, os, re, subprocess, sys
@@ -41,11 +43,16 @@ SLAB = 0.3           # m: the edge of a flat roof that overhangs its walls
 COVER_MIN, VEG_MAX, OPEN_MAX, IOU_MIN, WITHIN_MIN = 0.85, 0.15, 0.5, 0.90, 0.90
 STOREY_MIN, STOREY_MAX = 2.4, 4.5
 
-# The landmark queue's tiers 1 and 2 (MASSING.md, "Which buildings"): the generator leaves them to it.
+# The landmark queue's tiers 1 and 2 (MASSING.md, "Which buildings"). Until its landmark comes, a building of
+# these tiers is measured too, through the same limits (a stand-in: making it a landmark deletes its data
+# file); the buildings that the site draws as landmarks, and those in SOON, are left to the landmarks.
+# `--tier3` measures tier 3 alone, as the generator did before.
 TIER1 = {"102", "103", "104", "105", "105S", "107", "109", "118", "119", "130", "801", "802", "803", "804"}
 TIER2 = {"106", "110", "110N", "201", "206", "207", "250", "260", "301", "302", "303", "303S", "305", "310",
          "311", "315", "401", "402", "405", "421E", "421W", "439", "440", "441", "442", "614", "616", "619",
          "620", "810", "818", "820"} | {str(i) for i in range(831, 838)}
+# Landmarks in progress on their own branches, not yet on the site: the generator leaves them alone too.
+SOON = {"801"}
 # Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
 # take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
 # 6 stays at the design's default until the maintainer decides: places where people live (residential
@@ -479,6 +486,8 @@ def measure(b, P, others, campus_origin):
     if rec["cover"] < COVER_MIN: return rec, None, f"roof cells cover {rec['cover']:.0%} of the outline (limit {COVER_MIN:.0%})"
     if rec["vegetation"] > VEG_MAX: return rec, None, f"vegetation over {rec['vegetation']:.0%} of the outline (limit {VEG_MAX:.0%})"
     if rec["open_below"] > OPEN_MAX: return rec, None, f"ground seen under {rec['open_below']:.0%} of the roof: open below, a bridge or a canopy (decision 8)"
+    # the lowest layer stands on the outline itself: an outline that crosses itself has no inside to draw
+    if any(crosses(r) for r in rings): return rec, None, "its outline on the campus map crosses itself: no inside to draw"
 
     # layers: smooth roof (planes that fit within 0.15 m), split where neighbours step by more than 0.6 m
     fit = cell_planes(roof, H, cx, cy)
@@ -747,6 +756,18 @@ def compact(data):
 
 # ---- the batch --------------------------------------------------------------------------------------------
 
+def landmark_buildings():
+    """The buildings that the site draws as landmarks: `building` and `also` of each landmarks/<name>/placement.json
+    with `site: true` for the University (no `school`, or "uoa"), as src/app/landmarks.ts finds them."""
+    out = set()
+    for name in os.listdir(os.path.join(ROOT, "landmarks")):
+        f = os.path.join(ROOT, "landmarks", name, "placement.json")
+        if not os.path.exists(f): continue
+        p = json.load(open(f, encoding="utf-8"))
+        if p.get("site") is True and p.get("school", "uoa") == "uoa": out |= {p["building"], *p.get("also", [])}
+    return out
+
+
 def main():
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     origin = campus["origin"]
@@ -764,16 +785,27 @@ def main():
         return all(any(x0 <= a <= x1 and y0 <= c <= y1 for x0, y0, x1, y1 in bounds) for a, c in zip(e, n))
     city = [b for b in campus["buildings"] if b["campus"] == "city" and not b.get("offMap") and not b.get("area")]
     tier3 = [b for b in city if b["id"] not in TIER1 | TIER2 and in_tiles(decode(b["outline"][0]))]
-    ask = sys.argv[1:]
-    todo = [b for b in tier3 if not ask or b["id"] in ask]
-    print(f"{len(tier3)} tier-3 buildings in the tiles; measuring {len(todo)}")
+    only3 = "--tier3" in sys.argv[1:]
+    ask = [a for a in sys.argv[1:] if not a.startswith("--")]
+    drawn = landmark_buildings()
+    wider = [] if only3 else [b for b in city if b["id"] in TIER1 | TIER2 and b["id"] not in drawn | SOON
+                              and in_tiles(decode(b["outline"][0]))]
+    every = tier3 + wider
+    todo = [b for b in every if not ask or b["id"] in ask]
+    print(f"{len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
     boxes = []
-    for b in todo:
+    # the points round every building the generator may measure, so that one cache serves any run
+    for b in every:
         r = decode(b["outline"][0]); lo = r.min(0) - 12; hi = r.max(0) + 12
         e, n = to_grid([lo[0], hi[0], lo[0], hi[0]], [lo[1], lo[1], hi[1], hi[1]])
         boxes.append((min(e), min(n), max(e), max(n)))
     P = load_points(boxes, to_map)
     os.makedirs(os.path.join(OUT, "buildings"), exist_ok=True)
+    if not ask:
+        # a run over every building writes the whole set: the data file of a building it no longer measures
+        # (one that has become a landmark) goes
+        for f in os.listdir(os.path.join(OUT, "buildings")):
+            if f.endswith(".json") and f[:-5] not in {b["id"] for b in todo}: os.remove(os.path.join(OUT, "buildings", f))
     exfile = os.path.join(OUT, "exclusions.json")
     ex = json.load(open(exfile, encoding="utf-8"))["buildings"] if os.path.exists(exfile) and ask else {}
     rows = []
@@ -809,8 +841,9 @@ def main():
             c = data["check"]
             print(f"{bid} {name}: drawn, {len(data['layers'])} layer(s) "
                   f"{'/'.join(l['roof'] for l in data['layers'])}, IoU {c['iou']}, within {c['within_0.5m']}")
-    json.dump({"note": "The tier-3 buildings of the City campus in the eight LiDAR tiles that keep their blocks, each with "
-                       "its reason (landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
+    json.dump({"note": "The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and "
+                       "tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason "
+                       "(landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
                "buildings": dict(sorted(ex.items()))}, open(exfile, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
     with open(os.path.join(WORK, "report.md"), "w", encoding="utf-8") as f:
         f.write("| Building | Layers | Roofs | IoU | Within 0.5 m | p10 / p50 / p90 (m) | Highest model / LiDAR (m) |\n|---|---|---|---|---|---|---|\n")
