@@ -33,7 +33,10 @@ for (const area of areas) {
 }
 
 /** Places where people live, and childcare: OpenStreetMap's tags for them. */
-const isBlank = (tags: Record<string, string>) => HOMES.includes(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
+/** OpenStreetMap's building values for a place people live or stay in (its "Accommodation" types), as the test reads them. */
+const ACCOMMODATION = ["apartments", "barracks", "bungalow", "cabin", "detached", "annexe", "dormitory", "farm", "ger", "hotel", "house",
+  "houseboat", "residential", "semidetached_house", "static_caravan", "stilt_house", "terrace", "tree_house", "trullo"];
+const isBlank = (tags: Record<string, string>) => ACCOMMODATION.includes(tags.building ?? "") || /^(childcare|kindergarten)$/.test(tags.amenity ?? "");
 
 const ring = (flat: number[]): Ring => {
   const r: Ring = [];
@@ -185,7 +188,8 @@ describe("the rule on OpenStreetMap's tags", () => {
   });
 
   it("does not consider homes, whatever their operator, or buildings that carry neither tag", () => {
-    for (const building of HOMES) {
+    expect([...HOMES].sort()).toEqual([...ACCOMMODATION].sort());
+    for (const building of ACCOMMODATION) {
       expect(decide(rule, { building, name: "A home", operator: "Victoria University of Wellington" }), building).toBeUndefined();
     }
     expect(decide(rule, { building: "school", name: "Old Kirk Building" })).toBeUndefined();

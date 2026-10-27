@@ -6,7 +6,7 @@ import type { School, Words } from "../src/shared/school.ts";
 import type { CampusData } from "../src/shared/types.ts";
 import { SCHOOL_KEYS, TERM_KEYS, lookupWords, overlayWords, wordKeys } from "../src/shared/words.ts";
 import { Vector3 } from "three";
-import { ownShadow } from "../src/scene/CampusScene.ts";
+import { ownShadow, shadowCampus } from "../src/scene/CampusScene.ts";
 
 const descriptors = import.meta.glob<School>("../src/schools/*/school.ts", { eager: true, import: "school" });
 const schools = Object.entries(descriptors).map(([file, school]) => ({ folder: file.split("/").at(-2)!, school }));
@@ -185,5 +185,29 @@ describe("each campus's shadow map", () => {
 
   it("is its own for VUW's Pipitea and Te Aro, which stand within 2 km of Kelburn in areas of their own", () => {
     for (const c of campuses("vuw")) expect(ownShadow(centre(c), !!c.area), c.id).toBe(c.id !== "kelburn");
+  });
+
+  it("is its own exactly for the campuses in areas of their own, at every school", () => {
+    for (const id of ["uoa", "aut", "vuw"]) {
+      for (const c of campuses(id)) expect(ownShadow(centre(c), !!c.area), `${id} ${c.id}`).toBe(!!c.area);
+    }
+  });
+
+  it("is the open building's campus's when it has no floors, whichever campus was shown last", () => {
+    const data = JSON.parse(fs.readFileSync("public/data/vuw/campus.json", "utf8")) as CampusData;
+    const camp = (id: string) => data.campuses.find((c) => c.id === id)!;
+    const shown = (id: string) => ({ centre: centre(camp(id)), ownArea: !!camp(id).area });
+    const kelburn = data.buildings.find((b) => b.campus === "kelburn" && !b.offMap)!;
+    const pipitea = data.buildings.find((b) => b.campus === "pipitea" && !b.offMap)!;
+    expect(kelburn.floors.length + pipitea.floors.length).toBe(0);
+    // A Kelburn building opened after Pipitea was shown takes the central map; a Pipitea building opened
+    // from Kelburn takes Pipitea's own.
+    const k = shadowCampus(kelburn, data.campuses, shown("pipitea"));
+    expect(ownShadow(k.centre, k.ownArea)).toBe(false);
+    const p = shadowCampus(pipitea, data.campuses, shown("kelburn"));
+    expect(ownShadow(p.centre, p.ownArea)).toBe(true);
+    expect(p.centre.distanceTo(centre(camp("pipitea")))).toBe(0);
+    // With no building open, the campus shown.
+    expect(shadowCampus(undefined, data.campuses, shown("te-aro"))).toEqual(shown("te-aro"));
   });
 });

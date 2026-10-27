@@ -42,7 +42,7 @@ import {
   type MeshStandardMaterial,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import type { Building, CampusData, ContextData, FlatRing, Floor, FloorPlans, Room, SpaceKind, SpaceType } from "../shared/types.ts";
+import type { Building, Campus, CampusData, ContextData, FlatRing, Floor, FloorPlans, Room, SpaceKind, SpaceType } from "../shared/types.ts";
 import { drawnContext } from "../shared/types.ts";
 import { decodeRing, interiorPoint, pointInRing } from "../shared/geo.ts";
 import { groundLevel, massing, roofRims, withoutStrips } from "../shared/massing.ts";
@@ -115,13 +115,28 @@ const CENTRAL_SHADOW = new Vector3(130, 0, 500);
 const JUMP_DISTANCE = 5000;
 
 /**
- * Whether a campus gets a shadow map of its own, a few hundred metres across, in place of the one
+ * Whether a campus gets a shadow map of its own, 1.6 km across round its middle, in place of the one
  * over the three central campuses: when it stands in an area of the map of its own (its own patch of
  * surroundings, which the central map may not reach), or far from the central campuses. `centre` is in
  * scene coordinates.
  */
 export function ownShadow(centre: Vector3, ownArea: boolean): boolean {
   return ownArea || centre.distanceTo(CENTRAL_SHADOW) > JUMP_DISTANCE;
+}
+
+/**
+ * The campus whose shadow map is drawn: that of the open building when it has no floors (a school in
+ * the Buildings form, whose open building is framed under its campus's map, not one of its own), which
+ * need not be the campus last shown (a building opened by search or a link from another campus), and
+ * otherwise `shown`, the campus last shown. Centres are in scene coordinates.
+ */
+export function shadowCampus(
+  building: Building | undefined,
+  campuses: readonly Campus[],
+  shown: { centre: Vector3; ownArea: boolean },
+): { centre: Vector3; ownArea: boolean } {
+  const c = building && !building.offMap ? campuses.find((k) => k.id === building.campus) : undefined;
+  return c?.onMap ? { centre: new Vector3(c.center[0], 0, -c.center[1]), ownArea: !!c.area } : shown;
 }
 
 /** The lowest the sun is drawn, degrees; a real sun lower than this casts shadows off the map. */
@@ -1266,19 +1281,23 @@ export class CampusScene {
       sc.right = half;
       sc.top = half;
       sc.bottom = -half;
-    } else if (ownShadow(this.campusCentre, this.campusOwnArea)) {
-      // A campus in an area of its own: a few hundred metres across at most.
-      this.shadowCentre.copy(this.campusCentre);
-      sc.left = -800;
-      sc.right = 800;
-      sc.top = 800;
-      sc.bottom = -800;
     } else {
-      this.shadowCentre.copy(CENTRAL_SHADOW);
-      sc.left = -1300;
-      sc.right = 1300;
-      sc.top = 1500;
-      sc.bottom = -1500;
+      const b = this.selection.building ? this.buildings.get(this.selection.building) : undefined;
+      const shown = shadowCampus(b, this.campus?.campuses ?? [], { centre: this.campusCentre, ownArea: this.campusOwnArea });
+      if (ownShadow(shown.centre, shown.ownArea)) {
+        // A campus in an area of its own: a few hundred metres across at most.
+        this.shadowCentre.copy(shown.centre);
+        sc.left = -800;
+        sc.right = 800;
+        sc.top = 800;
+        sc.bottom = -800;
+      } else {
+        this.shadowCentre.copy(CENTRAL_SHADOW);
+        sc.left = -1300;
+        sc.right = 1300;
+        sc.top = 1500;
+        sc.bottom = -1500;
+      }
     }
     sc.updateProjectionMatrix();
     this.placeSun();
