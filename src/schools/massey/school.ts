@@ -85,7 +85,7 @@ export const school: School = {
    * The Auckland campus at Albany and the Wellington campus at Mount Cook, each in an area of its own,
    * as the other schools' campuses away from the centre are (docs/schools/massey.md, "Campuses";
    * "On the site" says how each box was placed). The recon gives each an address and no map point.
-   * Auckland's box was drawn wide round the East Precinct on the Albany Expressway, about 1.3 km on
+   * Auckland's box was drawn wide round the East Precinct on the Albany Expressway, about 1.4 km on
    * every side, without asking any host. Wellington's was drawn round Wallace Street and Tasman
    * Street, Mount Cook, from Otago's deleted Mein Street snapshot of 2026-10-27, which held "Massey
    * University Block 7" at its northern edge. The maintainer let the loop fetch them on 2026-10-27.
