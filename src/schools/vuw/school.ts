@@ -51,7 +51,7 @@ export const school: School = {
    * one it leaves out.
    */
   osmBuildings: {
-    campus: { id: "kelburn", name: "Kelburn Campus" },
+    campuses: [{ id: "kelburn", name: "Kelburn Campus", area: "central" }],
     candidates: [{ operator: VUW }, { building: /^university$/ }],
     steps: [
       { when: { building: null }, take: false, reason: PART },
