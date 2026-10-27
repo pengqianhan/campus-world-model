@@ -517,7 +517,8 @@ def measure(b, P, others, campus_origin):
     rough = roof & Cin & ~np.isin(lab, layers)
     if rough.sum() * A >= MIN_PIECE:
         dropped.append({"m2": round(float(rough.sum() * A), 1), "why": "roof cells on no smooth plane, or in pieces under 4 m2: "
-                        "left out of the top-view check's share within 0.5 m (its footprint IoU still counts them)"})
+                        "drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of "
+                        "the top-view check's share within 0.5 m (not_drawn_m2)"})
     if not layers: return rec, None, "no layer of smooth roof of 4 m2 or more"
     layers.sort(key=lambda k: info[k]["low"])
 
@@ -537,9 +538,10 @@ def measure(b, P, others, campus_origin):
             take = near & (off < best)
             best[take] = off[take]; pick[take] = k
         full[loose] = pick
-    # roof that no layer draws: a cell on no smooth plane more than 1 m from every layer's roof there
-    # (a chimney, plant, a tree classed as building), or a piece under 4 m2. The top-view check counts
-    # these cells as LiDAR only (MASSING.md, step 5)
+    # roof that no layer draws to its height: a cell on no smooth plane more than 1 m from every layer's
+    # roof there (a chimney, plant, a tree classed as building). The top-view check leaves these cells out
+    # of its share within 0.5 m, and its footprint IoU counts those the model stands over as covered
+    # (MASSING.md, step 5)
     off = np.full(H.shape, np.inf)
     for k in layers:
         f = info[k]
@@ -835,8 +837,8 @@ def main():
     todo = [b for b in every if not ask or b["id"] in ask]
     print(f"{len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
     boxes = []
-    # the points round every building this run measures: a run over every building and one of some of
-    # them share a cache, but a --tier3 run crops round tier 3 alone and rewrites it
+    # the points round every building of the run's set (`every`), whichever of them it measures: a run of
+    # some ids shares the cache of a full run, but a --tier3 run crops round tier 3 alone and rewrites it
     for b in every:
         r = decode(b["outline"][0]); lo = r.min(0) - 12; hi = r.max(0) + 12
         e, n = to_grid([lo[0], hi[0], lo[0], hi[0]], [lo[1], lo[1], hi[1], hi[1]])

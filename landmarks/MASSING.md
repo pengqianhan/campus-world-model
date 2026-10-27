@@ -58,8 +58,9 @@ the generator makes.
    - **gable**: two opposite downhill sides; the ridge runs between them.
    - **hip**: four downhill sides.
    - Anything else, or a layer whose points do not lie on smooth planes, is **not drawn as a
-     roof**. Its cells are reported, and the top-view check leaves them out of its share of cells within
-     0.5 m (its footprint IoU still counts them, under the lowest layer or the plinth).
+     roof**. Its cells are reported and drawn with the layer nearest them. Those more than 1 m from
+     every layer's roof there (`not_drawn_m2`) are left out of the top-view check's share of cells
+     within 0.5 m, and its footprint IoU counts those the model stands over as covered.
 
    Each layer keeps its eave height (the 10th percentile of its edge cells) and its ridge height
    (the 99th percentile of its cells), and each pitched side its slope.
@@ -262,10 +263,12 @@ entries in `exclusions.json`.
   maintainer decides (decision 6), the generator leaves the block for every building with a floor
   marked `noPlan: "residential"` or `noPlan: "childcare"`, and for every building whose source name
   names a childcare centre. Among the buildings of tier 3 (see "Which buildings") that is 123 Lodge, 436 University Hall Apartments, 617 7 City Road and 838
-  Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo and 410 Symonds Street
-  Early Childhood Centre (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
+  Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo, 410 Symonds Street
+  Early Childhood Centre and 841 Nicholls Lane ECE (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
   833 of tiers 1 and 2 also have residential floors. Since the generator measures tiers 1 and 2 as
-  stand-ins (see "Which buildings"), it keeps the blocks of the eight besides 102 by the same rule, each in
+  stand-ins (see "Which buildings"), it keeps the blocks of the eight besides 102 by the same rule, and
+  by hand Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the
+  University though the campus map marks none of their floors residential, each in
   `exclusions.json` with its reason; decision 6 bears on 102 too: Old Government House
   (residential floors 10 and 20) is drawn as a landmark, outside and in detail (#75).
   **841 Nicholls Lane ECE** is a childcare centre by its name. Before PR #69 the data build's test
@@ -319,8 +322,8 @@ What each would become:
 - **409 Security.** Two flat blocks: 709 m² at 7.7 m (three storeys of 2.6 m) and 174 m² at
   10.1 m (three storeys of 3.4 m), from its three published levels. Today's block is 10.8 m
   everywhere, so most of the roof comes down by 3.1 m. The 44 m² piece that fits no plane is not
-  drawn, and the batch's table flags it: its cells are left out of the top-view check's share within
-  0.5 m.
+  drawn to its height, and the batch's table flags it: its cells are left out of the top-view check's
+  share within 0.5 m.
 
 None of the three has a residential or childcare floor, and none is culturally significant.
 
@@ -343,11 +346,14 @@ The same measurement leaves these as blocks:
 
 The plinth and the 4% faces also bring 251 Tanenuiarangi Meeting House within every limit; decision
 7 keeps its block, as it keeps the rest of Waipapa Marae's and Fale Pasifika's (its numbers are in
-`exclusions.json`). The top-view check leaves the roof cells the generator does not draw out of its
-share within 0.5 m (step 5): a tree classed as building over Building 240, the neighbours' roofs
-over 305's outline. Counted with them, 409 (on the site since the first round), 240 and 305 would
-fall below 90% (0.889, 0.719 and 0.762); whether decision 3's "90% of its cells" counts them is
-the maintainer's to say.
+`exclusions.json`). The top-view check leaves the roof cells the generator does not draw to their
+height (`not_drawn_m2`) out of its share within 0.5 m and counts those the model stands over as
+covered in its footprint IoU (step 5): a tree classed as building over Building 240, the neighbours'
+roofs over 305's outline. Counted in the share, 409 (on the site since the first round), 240 and 305
+would fall below 90% (0.889, 0.719 and 0.762); counted as LiDAR only, covered by the LiDAR and not by
+the model, the footprint IoU of 435 (on the site), 240 and 305 would fall below 0.90 (0.873, 0.689
+and 0.739, by the generator's own measure and check). Which decision 3 means is the maintainer's to
+say.
 
 Why the 13 tier-3 buildings that failed the top-view check in the first round failed, from their
 top views (`measured/out/<id>.png`):
