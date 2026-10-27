@@ -428,6 +428,10 @@
       "otago": {
         "name": "University of Otago | Ōtākou Whakaihu Waka",
         "city": "Dunedin and Christchurch"
+      },
+      "massey": {
+        "name": "Te Kunenga ki Pūrehuroa Massey University",
+        "city": "Palmerston North, Auckland and Wellington"
       }
     }
   }
