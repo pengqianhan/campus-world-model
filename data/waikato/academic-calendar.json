@@ -1,0 +1,15 @@
+{
+  "available": false,
+  "timezone": "Pacific/Auckland",
+  "source": {
+    "name": "Waikato's key university dates (not shown: Waikato's robots.txt closes its site to this project)",
+    "url": "https://www.waikato.ac.nz/study/key-university-dates/",
+    "checked": "2026-10-25"
+  },
+  "notes": [
+    "No dates are shown. Waikato's key dates, its teaching and assessment periods and its principal dates are on www.waikato.ac.nz, whose robots.txt, dated 2026-10-21, has a group for anthropic-ai with \"Disallow: /\". So none of them was requested, and the site does not read them (docs/schools/waikato.md, layer 4). The address above is from a web search.",
+    "Written by hand: there is no snapshot behind this file, and it holds no date of Waikato's."
+  ],
+  "holidays": [],
+  "terms": []
+}
