@@ -29,7 +29,7 @@ A change to what the site does or shows adds its line here, and the README's
   Nelson campus is not shown: OpenStreetMap tags no building there as UC's. Rooms, class times,
   semester dates and the course list are not shown, and the status strip, the time panel, the card
   and About say why in UC's own case. Halls of residence and childcare centres stay unnamed.
-  Unofficial, with the project's own colours; nothing is taken from UC (#PR).
+  Unofficial, with the project's own colours; nothing is taken from UC (#110).
 - **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
   Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
   streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and

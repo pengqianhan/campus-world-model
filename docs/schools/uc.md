@@ -2,7 +2,7 @@
 
 Recon for a possible port, done on 2026-10-22 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what UC publishes without
-a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the Ilam
+a sign-in, and on what terms. No fetch script and no data file came with it. Since #110 the Ilam
 and Dovedale campuses and the Arts Centre city location are on the site in the Buildings form, from
 OpenStreetMap ("On the site", below); the rest of this report is the recon as it was done, with the
 notes that pull request added.
