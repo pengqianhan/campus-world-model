@@ -16,7 +16,8 @@ nothing is traced or sampled from them into the model.
   - **the tower**: an irregular octagon about 27 m across (x -12.5 to 14.5, z -12.0 to 12.0), its flat
     roof at 32.6 m (median); building 804's floor outline in campus.json holds 95% of it;
   - **the shaft**: its south-west half (178 m2) rises to a second flat roof at 36.9 m (median, 37.4 at
-    p90); its south-west faces are the tower's own;
+    p90); its south-west faces are the tower's own; a parapet round its roof to 37.95 m (round 2: 83 of
+    the 84 returns above 37.6 m lie within 1 m of its outline);
   - **the south-west faces** (round 2): lines fitted to the wall returns between 12 and 31.5 m (rms
     0.03-0.17 m) meet at the west corner (14.3, -4.2), the slot's corner (12.49, -8.48) and the south
     corner (9.04, -11.64), where the plan's 0.6 m simplification had cut the corners; the returns stop
