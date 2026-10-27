@@ -38,6 +38,8 @@ const dropped = (url: string) => new Error(`${url} -> TypeError: fetch failed (C
 const reset = (url: string) => new Error(`${url} -> TypeError: fetch failed (other side closed)`);
 const redirected = (url: string) => new Error(`${url} -> TypeError: fetch failed (unexpected redirect)`);
 const timedOut = (url: string) => new Error(`${url} -> TimeoutError: The operation was aborted due to timeout`);
+// the network failing on this machine: every instance looks the same
+const noDns = (url: string) => new Error(`${url} -> TypeError: fetch failed (getaddrinfo EAI_AGAIN ${new URL(url).host})`);
 // a failure on this machine after the answer came: snapshot.ts writes the file outside its request
 const diskFull = () => new Error("ENOSPC: no space left on device, write 'osm/context.json.part'");
 
@@ -80,10 +82,46 @@ describe("Overpass instances", () => {
 
   it("record nothing when no instance could be reached: the fault is this machine's", async () => {
     const f = fake([dropped(A), dropped(B), dropped(C)]);
-    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/no Overpass instance could be reached, so none is recorded as closed/);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/no other instance answered after, so none of them is recorded as closed: is this machine online\?/);
     expect(f.closed).toEqual([]);
     // nothing is asked again after every instance dropped: no minute's wait for a second round
     expect(f.waits).not.toContain(60_000);
+  });
+
+  it("record no drop that no answer follows, though an instance answered before it: a network failing mid-run closes nothing", async () => {
+    // a busy answer, then the network goes: round 1 asks A, B and C, round 2 asks A alone
+    const f = fake([status(A, 504), noDns(B), noDns(C), noDns(A)]);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/none of them is recorded as closed/);
+    expect(f.asked).toEqual([A, B, C, A]);
+    expect(f.closed).toEqual([]);
+    // a timeout is no answer
+    const g = fake([timedOut(A), noDns(B), noDns(C), noDns(A)]);
+    await expect(askOverpass([A, B, C], g.d)).rejects.toThrow(/none of them is recorded as closed/);
+    expect(g.closed).toEqual([]);
+    // one instance, busy and then dropping: no other instance answered after
+    const h = fake([status(A, 504), noDns(A)]);
+    await expect(askOverpass([A], h.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(h.closed).toEqual([]);
+  });
+
+  it("record a drop when another instance answers after it, with a status and not with a timeout", async () => {
+    const f = fake([dropped(A), timedOut(B), status(C, 504), "{}"]);
+    expect((await askOverpass([A, B, C], f.d)).toString()).toBe("{}");
+    // C's 504 came after A's drop; B timed out and is asked again in round 2
+    expect(f.asked).toEqual([A, B, C, B]);
+    expect(f.closed).toEqual([A]);
+    const g = fake([dropped(A), timedOut(B), timedOut(B), timedOut(B)]);
+    await expect(askOverpass([A, B], g.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(g.closed).toEqual([]);
+  });
+
+  it("name the instances closed before, and the record, when the one left drops", async () => {
+    const f = fake([dropped(C)], { closedBefore: [[A, "HTTP 403"], [B, "HTTP 403"]] });
+    const err = await askOverpass([A, B, C], f.d).catch((e: Error) => e);
+    expect(String(err)).toMatch(/c\.example.* dropped the connection .*it is not recorded as closed/);
+    expect(String(err)).toMatch(/a\.example.* is closed \(HTTP 403\); .*b\.example.* is closed \(HTTP 403\); delete its line in .*overpass-closed\.txt/);
+    expect(f.asked).toEqual([C]);
+    expect(f.closed).toEqual([]);
   });
 
   it("stop at once on a fault of ours, recording nothing and asking no other instance", async () => {
@@ -95,7 +133,7 @@ describe("Overpass instances", () => {
     }
   });
 
-  it("leave an instance that answers another 4xx for the rest of the run, without recording it", async () => {
+  it("leave an instance that answers another 4xx for the rest of that area's requests, without recording it", async () => {
     const f = fake([status(A, 404), status(B, 504), "{}"]);
     await askOverpass([A, B], f.d);
     expect(f.asked).toEqual([A, B, B]);

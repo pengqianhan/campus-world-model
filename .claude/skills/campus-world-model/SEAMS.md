@@ -69,9 +69,9 @@ it is mapped in parts, and trees, with those tagged `leaf_cycle=deciduous` kept 
 unchanged. A campus building has one source: where the indoor layer gives it a footprint,
 OpenStreetMap's copy and its parts are dropped (`insideUni`). The public Overpass instances can
 answer 504 for an hour: `fetch-osm.ts` goes round them up to three times, a minute apart, and a
-snapshot already on disk is never fetched again. One that refuses, redirects or drops the connection
-is recorded in `data/raw/overpass-closed.txt` and not asked again (closed is a verdict;
-`scripts/lib/overpass.ts`). The sea is not drawn; OpenStreetMap's coastline is
+snapshot already on disk is never fetched again. One that refuses or redirects the query, or drops the
+connection where another instance answers after it, is recorded in `data/raw/overpass-closed.txt` and
+not asked again (closed is a verdict; `scripts/lib/overpass.ts`). The sea is not drawn; OpenStreetMap's coastline is
 a line, and a campus on the shore stands on land to the edge of its area.
 
 **Room codes.** The grammar in the descriptor's `roomCode`, the parser in `src/shared/roomcode.ts`
