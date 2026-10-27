@@ -36,7 +36,7 @@ export const school: School = {
     "https://api.open-meteo.com/v1/forecast?latitude=-41.2897&longitude=174.7682" +
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
   /** The Kelburn Campus buildings span about 430 m east to west and 610 m north to south. */
-  campusSpan: { kelburn: 800 },
+  campusSpan: { kelburn: 600 },
   /** Pipitea and Te Aro need an area each, not fetched yet (docs/schools/vuw.md, "Needs the maintainer", 5). */
   areas: { central: KELBURN, remote: [] },
   roomCode: { building: NONE, wing: NONE, room: NONE, floorLetters: [], equivalentFloors: [] },

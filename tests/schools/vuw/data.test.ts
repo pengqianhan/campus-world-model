@@ -45,7 +45,7 @@ describe("VUW's buildings", () => {
       expect(decide(rule, tags)?.take, b.id).toBe(true);
       // OpenStreetMap gives none of them a building code, so none is made up: the id names the element.
       expect(b.ref, b.id).toBeUndefined();
-      expect(b.id).toBe(b.osm!.replace("/", "-"));
+      expect(b.id).toBe(b.osm!.replace("/", "-").toUpperCase());
       expect(b.sourceText, b.id).toBe(tags.name);
       expect(b.name.en, b.id).toBe(tags.name);
       // The centre is the outline's centroid. A U-shaped outline's centroid lies in its courtyard,
