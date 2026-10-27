@@ -52,6 +52,7 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-10-28:** the root page names each school in te reo Māori too.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -69,7 +70,6 @@ It is built to answer two questions a student actually has:
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
   trimester dates, not semester dates. On Eden Crescent the map draws 9 Eden Crescent in detail: a
   white four-storey building, its street end of piers, bays and bands of windows over a glazed entrance.
-  The root page names each school in te reo Māori too.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.

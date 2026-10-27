@@ -14,6 +14,16 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-10-28
+
+### Changed
+
+- **Each school's name in te reo Māori on the site's root page.** Under its English name, each
+  school on the list now has its name in te reo Māori, as the school gives it on its own site: Waipapa
+  Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT), Te Herenga
+  Waka (VUW) and Ōtākou Whakaihu Waka (Otago), marked as te reo Māori for screen readers. VUW's and
+  Otago's lines, which gave their two names as one, now give them as the others do (#109).
+
 ## 2026-10-27
 
 ### Added
@@ -80,11 +90,6 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Changed
 
-- **Each school's name in te reo Māori on the site's root page.** Under its English name, each
-  school on the list now has its name in te reo Māori, as the school gives it on its own site: Waipapa
-  Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT) and Te
-  Herenga Waka (VUW), marked as te reo Māori for screen readers. VUW's line, which gave its two
-  names as one, now gives them as the others do (#109).
 - **The site's root lists the schools.** https://campusworldmodel.com/ is now a page of its own,
   in the project's colours: for each school on the site, its name, its city, how much of it the
   site shows, the date of its campus snapshot and a link to its map. It says that the project is
