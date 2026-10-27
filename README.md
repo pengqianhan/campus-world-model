@@ -64,10 +64,11 @@ It is built to answer two questions a student actually has:
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
   Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
-  map draws them in detail, from code and to their measured sizes. Rooms on floors where people live
-  and in childcare centres no longer turn up in the search.
-- **2026-10-23:** near the camera, five plain buildings of the City Campus are drawn from the LiDAR
-  survey as measured massings, in place of their blocks.
+  map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
+  people live and in childcare centres no longer turn up in the search.
+- **2026-10-23:** near Old Government House (building 102) the map draws it in detail, from code
+  and to its measured sizes. Near the camera, five plain buildings of the City Campus are drawn from
+  the LiDAR survey as measured massings, in place of their blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 

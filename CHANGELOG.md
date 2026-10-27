@@ -145,11 +145,6 @@ A change to what the site does or shows adds its line here, and the README's
   blocks, among them every place where people live and every childcare centre, each with its
   reason (`landmarks/measured/exclusions.json`) (#79).
 
-
-## 2026-10-22
-
-### Added
-
 - **Old Government House drawn in detail.** Near Old Government House (building 102) the map now
   draws it from code, to sizes measured from the LiDAR survey: its two storeys and the ranges
   behind, the low hipped roofs on bracketed eaves, the chimneys, the bay, the balconies and the
@@ -160,6 +155,8 @@ A change to what the site does or shows adds its line here, and the README's
   LiDAR from above. Its block still answers a click and opens on its floors, and
   the two floors where people live stay blank. About now says the landmarks are drawn in their own
   materials (#75).
+
+## 2026-10-22
 
 ### Changed
 
