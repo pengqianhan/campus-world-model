@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "Massey World Model",
+    "tagline": "Unofficial map",
+    "documentTitle": "Massey World Model (unofficial student project)",
+    "description": "Unofficial student-made 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington campuses. Not affiliated with Massey University.",
+    "ogDescription": "See the buildings of Massey's Manawatū, Auckland and Wellington campuses on a 3D model of each place, drawn from OpenStreetMap. Unofficial; not affiliated with Massey University.",
+    "noscript": "Massey World Model is an unofficial 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington campuses. It needs JavaScript and WebGL to run. It is not affiliated with Massey University.",
+    "loading": "Loading Massey's campuses…",
+    "loadError": "The map data could not be loaded. Check your connection and reload the page.",
+    "noWebgl": "This browser could not start WebGL, so the 3D map is not shown. Search for buildings still works.",
+    "skipToSearch": "Skip to building search",
+    "sceneLabel": "3D map of Massey's campuses in Palmerston North, Auckland and Wellington. Drag to rotate, scroll or pinch to zoom, right-drag or two fingers to move."
+  },
+  "about": {
+    "unofficial": "Massey World Model is made by a student for students. It is not affiliated with, endorsed by or maintained by Te Kunenga ki Pūrehuroa Massey University, and it uses no Massey logo. Its colours are the project's own, the same for every school. It shows the buildings of Massey's Manawatū, Auckland and Wellington campuses only, from OpenStreetMap. For anything that matters, check Massey's own campus maps and your own timetable.",
+    "limits": {
+      "timetable": "No class times. Massey's class timetable is in its student portal and the Massey Uni app, behind a sign-in, so the site cannot read it. Nothing here is made up to fill the gap.",
+      "timetableLoaded": "Class times come from a snapshot of Massey's timetable taken on {date}. Rooms and times change during the semester; your own timetable is the authority.",
+      "scheduled": "A timetabled class is not the same as an occupied room. Classes are cancelled, moved and held online, and rooms are used for things that are not on the timetable.",
+      "heights": "Each of Massey's buildings is one block on its OpenStreetMap outline, with no floors. Its height comes from OpenStreetMap: its height tag where it has one; else its number of levels, {height} m each; else 6.5 m, or 10 m for a building over 900 m², the defaults of the surrounding buildings. The building card says which. None of these heights is surveyed: most of Massey's buildings have no number of levels in OpenStreetMap and stand at a default, and the rest stand that many storeys high. The windows and the rim round each roof are drawn by rule and say nothing about the real walls and roofs. The ground's heights come from Land Information New Zealand's 8 m elevation model of 2012, which is drawn from contours: it is smooth bare ground, with sharp peaks a few metres low. A building stands on the ground under its middle; on a slope its uphill side goes into the hill and a footing fills the gap below the other side.",
+      "rooms": "No floors and no rooms. Massey publishes no floor or room outlines that the site could find. Its campus maps of Auckland and the Manawatū are files its robots.txt asks robots to leave alone, and its list of venue codes names buildings and floors but gives no outline or position. So each building is one block, and nothing inside it is drawn.",
+      "campuses": "The Manawatū, Auckland and Wellington campuses are modelled, each in its own patch of surroundings. A building is drawn as Massey's only where OpenStreetMap tags it as a university building, or names Massey as its operator or in its name, and gives it a name; any other stands among the surrounding buildings, with no name. So many of Massey's own buildings that OpenStreetMap tags as plain buildings stand there too, as do the research institutes and companies beside the Manawatū campus. Halls of residence and childcare centres stay unnamed among the surroundings. The School of Aviation at Palmerston North Airport, the Large Animal Teaching Unit and the research farms are not modelled, and nor is Singapore, where Massey teaches at a partner's campus.",
+      "context": "Surrounding buildings, streets and trees come from OpenStreetMap. Where it maps a building in parts or gives a roof a shape, those are drawn, the roof in a simplified form. Where a height is not mapped, a default is used. In the walker views every building, Massey's and the rest, is drawn with storeys from its height, windows, and walls of plaster, brick, concrete, stone, glass or weatherboard chosen by rule from where it stands; none of it says what a real building looks like, and there are no doors, since none are mapped. The ground there is drawn by rule as well, on the streets, paths, railways, parks and ponds OpenStreetMap maps: asphalt with white lines, kerbs, paving slabs, steps, sleepers and rails, lawns and water, and grass and bare earth elsewhere. Its widths, lines and kerbs say nothing about the real ones, and there are no crossings, arrows or signs, since none are mapped. A tree standing alone is where OpenStreetMap maps it; its size and shape are drawn by rule, and in the walker views so are its leaves, its bark and the way it sways in a light breeze, the same every day; none of it says what kind of tree it is. Trees OpenStreetMap tags as deciduous turn in April and May, stand bare from June to August and come into leaf in September and October; the rest are drawn evergreen. Trees inside woodland areas are scattered for decoration.",
+      "walker": "The walker is a made-up figure, not a person: it stands for nobody, and nothing about where it goes leaves your browser. Its walks are planned round the buildings on the map and along OpenStreetMap's paths and streets, off motorways except over footbridges. Doors and entrances are not mapped, so a walk to a building ends beside its nearest wall, and it passes gates, fences and kerbs the map does not have. Its body is the \"Animated Human\" model by Quaternius, given to the public domain (CC0); its stance, trainers, hair, mouth, backpack and umbrella are drawn here by rule, in the project's own colours, none taken from Massey. Where a building or a tree hides it, its shape shows through. An agent can steer it on your own computer through the scripts in the source code.",
+      "subjects": "No course list. Massey's Calendar lists its courses, and its copyright page lets them be reused for non-commercial purposes, but the site does not read them yet.",
+      "calendar": "No semester dates. Massey's key-dates page gives its semester dates, and its copyright page lets them be reused for non-commercial purposes, but the site does not read it yet, so the time panel moves the sun and the light only.",
+      "daylight": "The sun stands where it does over Massey's Manawatū campus at the date and time shown, from NOAA's published solar-position equations; below 10° above the horizon it is drawn at 10°, so that shadows stay on the map. Night falls as the sun goes from 6° above the horizon to 8° below. In Now mode the cloud, rain and fog follow Open-Meteo's current weather for Massey's Manawatū campus, and the falling rain is drawn by rule; Preview shows a clear sky, because past and future weather are not known here."
+    },
+    "privacy": "The site has no accounts and sets no cookies. It holds no names of people. Only the copy at campusworldmodel.com is counted: there Cloudflare, which serves the site, counts page views and visits with its Web Analytics. It stores nothing in your browser and does not record which building you look at; a content blocker may stop it. If the weather line is shown, your browser asks Open-Meteo for the current weather at Massey's Manawatū campus; nothing about you is sent beyond that request. A walk with the walker stays in your browser: where it goes, what it says and what it wears are not sent anywhere."
+  },
+  "attribution": {
+    "short": "© OpenStreetMap · Terrain: LINZ CC BY"
+  },
+  "room": {
+    "noTimetableWhy": "Massey's class times are not taken by this site, so it cannot say what is scheduled here. See About for details."
+  },
+  "search": {
+    "placeholder": "Building name (Science Tower A)…",
+    "hint": "Type a building's name, for example Science Tower A or Registry. Rooms and courses are not shown: see About.",
+    "noResultsHint": "Massey's buildings are found by the names OpenStreetMap gives them. Building names work with or without macrons."
+  },
+  "weather": {
+    "label": "Weather at Massey's Manawatū campus"
+  },
+  "travel": {
+    "go": "Travel to {name}. This leaves Massey World Model.",
+    "leaving": "Leaving Massey",
+    "stay": "Stay at Massey"
+  }
+}
