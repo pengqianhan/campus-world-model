@@ -1,0 +1,15 @@
+{
+  "available": false,
+  "timezone": "Pacific/Auckland",
+  "source": {
+    "name": "Otago's semester codes on AskOtago (not shown: Otago's terms could not be read)",
+    "url": "https://ask.otago.ac.nz/knowledgebase/article/KA-10005987/en-us",
+    "checked": "2026-10-22"
+  },
+  "notes": [
+    "No dates are shown. AskOtago's \"Semester codes\" article gives Otago's 2026 teaching periods, but its pages say \"All rights reserved\", and Otago's own statement of what may be reused, its key dates and its week maps are on www.otago.ac.nz, which answered 403 to the recon's first request (docs/schools/otago.md, layer 4).",
+    "Written by hand: there is no snapshot behind this file, and it holds no date of Otago's."
+  ],
+  "holidays": [],
+  "terms": []
+}
