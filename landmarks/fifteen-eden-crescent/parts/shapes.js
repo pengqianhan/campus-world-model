@@ -64,3 +64,44 @@ export function edgeBox(b, plan, i, a, bb, o0, o1, y0, y1, material) {
   g.translate(mx, (y0 + y1) / 2, mz);
   b.add(g, material);
 }
+
+/** The part of the plan where `axis` (0 for x, 1 for z) is at least `value` (keep "above") or at most it
+ * ("below"): the plan clipped by that half-plane, or null when nothing is left. */
+export function clip(plan, axis, value, keep) {
+  const inside = (p) => (keep === "above" ? p[axis] >= value : p[axis] <= value);
+  const out = [];
+  for (let i = 0; i < plan.length; i++) {
+    const a = plan[i], c = plan[(i + 1) % plan.length], ia = inside(a), ic = inside(c);
+    if (ia) out.push(a);
+    if (ia !== ic) {
+      const t = (value - a[axis]) / (c[axis] - a[axis]);
+      out.push([a[0] + (c[0] - a[0]) * t, a[1] + (c[1] - a[1]) * t]);
+    }
+  }
+  return out.length >= 3 ? out : null;
+}
+
+/** The plan raised from y0 to a top whose height at (x, z) is `top(x, z)`: a flat or sloping roof's slab
+ * when `top` is a plane over the plan. */
+export function slopedPrism(b, plan, y0, top, material) {
+  if (!plan) return;
+  const s = new THREE.Shape(plan.map(([x, z]) => new THREE.Vector2(x, -z)));
+  const g = new THREE.ExtrudeGeometry(s, { depth: 1, bevelEnabled: false });
+  g.rotateX(-Math.PI / 2);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), z = p.getZ(i);
+    p.setY(i, p.getY(i) > 0.5 ? top(x, z) : y0);
+  }
+  b.add(g, material);
+}
+
+/** A section in (z, y), [[z, y], ...] round its outline, drawn along x from x0 to x1. */
+export function along(b, section, x0, x1, material) {
+  const s = new THREE.Shape(section.map(([z, y]) => new THREE.Vector2(-z, y)));
+  const g = new THREE.ExtrudeGeometry(s, { depth: x1 - x0, bevelEnabled: false });
+  // the shape's x is -z and its extrusion +z; turning it a quarter about y takes the extrusion to +x
+  g.rotateY(Math.PI / 2);
+  g.translate(x0, 0, 0);
+  b.add(g, material);
+}
