@@ -38,7 +38,7 @@ streets after it.
 - **Christchurch**: the address is 2 Riccarton Avenue, Christchurch Hospital's. The University of
   Canterbury's committed Arts Centre snapshot (`osm/context-uc-arts-centre.json`, #110) holds
   Otago's Department of General Practice at 14 Gloucester Street (`operator=University of Otago`)
-  and the hospital's School of Medicine, so the box was drawn round the hospital and those two:
+  and the School of Medicine on the hospital's grounds, so the box was drawn round the hospital and those two:
   `[-43.5372, 172.6215, -43.5275, 172.632]`, 1.1 km by 0.85 km. Riccarton Avenue, Hagley Avenue,
   Oxford Terrace and Gloucester Street run through it. `osm/context-otago-christchurch.json`:
   1,912,367 bytes, 1,966 elements, `overpass-api.de`, base 2026-10-27 08:44 UTC; **1 request**.
@@ -50,7 +50,7 @@ streets after it.
   to Otago by its tags.** The box holds 19 `building=university`, none with an operator tag and none
   whose name says Otago: 16 have no name (5 of them stand about 60 to 100 m north of Mein Street,
   on the hospital's side), and the three named are "Massey University Block 7" and "K1" and "K2",
-  50 m from it. The rule's last step would take K1 and K2 by `building=university` with no
+  103 and 64 m from it, edge to edge, about 760 m north of Mein Street. The rule's last step would take K1 and K2 by `building=university` with no
   operator, but in this box that tag does not single out Otago: the one building named for a
   university is Massey's, with no operator either. The hospital's buildings are
   `building=hospital`, with no university tag. So Wellington is not on the site (Real or absent):
@@ -78,7 +78,8 @@ streets after it.
 there. No building in it has `amenity=university`. In the Christchurch box 2 carry Otago's operator
 (Terrace House and the Department of General Practice) and 2 `building=university` with no operator
 (the "University of Otago - Wai Ora Building" and one with no name); the School of Medicine is
-`building=hospital` with `amenity=university` and no operator. Neither snapshot holds an
+`building=hospital` with `amenity=university`, `education=university` and `wikidata=Q7896032`, and no
+operator. Neither snapshot holds an
 `amenity=university` area: `fetch-osm.ts` asks Overpass for buildings, streets, paths, parks and
 trees, not for campus outlines.
 
@@ -92,8 +93,11 @@ boxes hold, each before the step that would take it:
   named "Childcare Centre", and the Polytechnic's I Block ("Polykids Childcare Centre");
 - `building=hospital` with no Otago operator: the School of Medicine on Christchurch Hospital's
   grounds. Its tags name no operator, and `amenity=university` with that name does not say which
-  university's it is; a building of another body is shown as Otago's only where its own tags say so,
-  as for the Malaghan Institute at VUW (#101);
+  university's it is. Its `wikidata` tag may: the item, Q7896032, was not looked up, since nothing is
+  asked of any host beyond the two fetches, and the step reads the tag so that the record publishes
+  it. If the item is the University of Otago's (most likely its Christchurch school, by the item
+  numbers round Otago's Registry Building's Q7896039), the step comes out and the building joins the
+  Christchurch campus: a question for the maintainer;
 - the Otago University Students' Association's two buildings, by their names: a body of its own;
 - "B Block" (`building=university`, no operator): named in Otago Polytechnic's lettered series on
   Forth Street, whose A, D, F, G, H, I, L, N, O, P, S and T Blocks all carry the Polytechnic's

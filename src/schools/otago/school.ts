@@ -66,7 +66,7 @@ export const school: School = {
    * it an address, 2 Riccarton Avenue, Christchurch Hospital's, and no point. The University of
    * Canterbury's Arts Centre snapshot (osm/context-uc-arts-centre.json, pull request #110) holds
    * Otago's Department of General Practice at 14 Gloucester Street (operator=University of Otago)
-   * and the hospital's School of Medicine (building=hospital), so the box was drawn round the
+   * and the School of Medicine on the hospital's grounds (building=hospital), so the box was drawn round the
    * hospital and those two before the fetch; Otago's buildings in it lie 245 to 277 m inside its
    * edges. The Wellington
    * and Invercargill boxes held no building that OpenStreetMap traces to Otago, so those campuses
@@ -88,7 +88,7 @@ export const school: School = {
    * Christchurch box 2 carry Otago's operator, and 2 `building=university` with no operator. So a
    * building is taken by its operator, or by `building=university` with no other operator named,
    * and by its name, which is what it is called on the map. A home is never considered (NOT_HOME).
-   * A building of another body is left out: a hospital's (building=hospital), the students'
+   * A building that no tag traces to Otago is left out: a hospital building (building=hospital), the students'
    * association's, and two on Forth Street that the Polytechnic's tags place among its own. A
    * building's campus is the area it stands in, named as Otago's AskOtago pages name it. The pull
    * request that built it lists every building it takes and every one it leaves out.
@@ -110,17 +110,17 @@ export const school: School = {
       {
         when: { amenity: /^(childcare|kindergarten)$/ },
         take: false,
-        reason: "A childcare centre. Childcare centres stay blank: it stays in the surroundings, with no name.",
+        reason: "A childcare centre. Childcare centres stay blank: it stays in the surroundings, unnamed on the map.",
       },
       {
         when: { name: /child ?care|kindergarten|kōhanga|early childhood/i },
         take: false,
-        reason: "A childcare centre, by its name. Childcare centres stay blank: it stays in the surroundings, with no name.",
+        reason: "A childcare centre, by its name. Childcare centres stay blank: it stays in the surroundings, unnamed on the map.",
       },
       {
         when: { description: /child ?care|kindergarten/i },
         take: false,
-        reason: "It holds a childcare centre, by its description. Childcare centres stay blank: it stays in the surroundings, with no name.",
+        reason: "It holds a childcare centre, by its description. Childcare centres stay blank: it stays in the surroundings, unnamed on the map.",
       },
       {
         when: { building: /^ruins$/ },
@@ -158,9 +158,16 @@ export const school: School = {
       },
       { when: { operator: OTAGO }, take: true, reason: "operator=University of Otago, and a name." },
       {
+        // The School of Medicine on Christchurch Hospital's grounds: reading its wikidata tag here
+        // publishes the tag with the record's original text.
+        when: { building: /^hospital$/, wikidata: /./ },
+        take: false,
+        reason: `A hospital building (building=hospital), with no operator tag. amenity=university and its name make it a university's, but no tag this rule reads says which; its wikidata tag names an item that was not looked up, since nothing is asked of any host beyond the map's two fetches. It stays out until a person checks that item: if the item is the University of Otago's, this step comes out and the building joins its campus. ${SURROUNDINGS}`,
+      },
+      {
         when: { building: /^hospital$/ },
         take: false,
-        reason: `A hospital building (building=hospital) on Christchurch Hospital's grounds, with no operator tag. amenity=university and its name, School of Medicine, do not say which university's it is, so OpenStreetMap does not trace it to Otago: a building of another body is shown as Otago's only where its own tags say so, as for the Malaghan Institute at VUW. ${SURROUNDINGS}`,
+        reason: `A hospital building (building=hospital), with no operator tag: no tag this rule reads says whose it is. ${SURROUNDINGS}`,
       },
       {
         when: { name: /^(Otago University Students Association|OUSA\b)/ },
@@ -181,7 +188,7 @@ export const school: School = {
         when: { building: /^university$/, operator: null },
         take: true,
         reason:
-          "building=university with no operator tag, and a name. The one other tertiary school with buildings in Otago's boxes, Otago Polytechnic in Dunedin's, names itself as their operator.",
+          "building=university with no operator tag, and a name. The one other tertiary school with building=university buildings in Otago's boxes, Otago Polytechnic in Dunedin's, names itself as their operator.",
       },
       {
         when: { operator: /./ },

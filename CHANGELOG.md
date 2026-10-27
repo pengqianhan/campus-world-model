@@ -25,11 +25,13 @@ A change to what the site does or shows adds its line here, and the README's
   come from OpenStreetMap, picked by their `operator` and `building=university` tags and their
   names, each one block at its OpenStreetMap height (21 from their number of levels), else at a
   default, and labelled by name. Otago Polytechnic's buildings, the students' association's, the
-  hospital's and those with no name are left out, each with its reason. The Wellington and
-  Invercargill campuses are not shown: OpenStreetMap tags no building at either as Otago's. Rooms,
-  class times, semester dates and the paper list are not shown, and the status strip, the time
-  panel, the card and About say why in Otago's own case. Residential colleges and childcare centres
-  stay unnamed. Unofficial, with the project's own colours; nothing is taken from Otago (#PR).
+  School of Medicine on Christchurch Hospital's grounds (no tag the site reads says whose it is)
+  and those with no name are left out, each with its reason. The Wellington and Invercargill
+  campuses are not shown: OpenStreetMap names no university building at either and gives none
+  Otago as its operator. Rooms, class times, semester dates and the paper list are not shown, and
+  the status strip, the time panel, the card and About say why in Otago's own case. Residential
+  colleges and childcare centres stay unnamed. Unofficial, with the project's own colours; nothing
+  is taken from Otago (#PR).
 - **VUW's Pipitea and Te Aro campuses.** /vuw/ adds two campuses to Kelburn, each chosen from
   "Other campuses" in the campus list and standing in its own patch of Wellington from
   OpenStreetMap, on the LINZ ground. Pipitea has three buildings: Old Government Buildings,

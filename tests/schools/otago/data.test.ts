@@ -143,8 +143,10 @@ describe("Otago's buildings", () => {
     const verdict = (osm: string) => decide(rule, elements.get(osm)!.tags ?? {});
     const on = (id: string) => campus.buildings.filter((b) => b.campus === id).map((b) => b.name.en).sort();
     expect(on("christchurch")).toEqual(["Terrace House", "University of Otago - Wai Ora Building", "University of Otago, Department of General Practice"].sort());
-    // The hospital's School of Medicine is tagged amenity=university and building=hospital, with no operator.
-    expect(verdict("way/27167079")?.reason).toMatch(/^A hospital building/);
+    // The School of Medicine on the hospital's grounds is tagged amenity=university, building=hospital and a
+    // wikidata item, with no operator: it waits for a person to check the item, and its record keeps the tag.
+    expect(verdict("way/27167079")?.reason).toMatch(/^A hospital building.*wikidata tag names an item that was not looked up/);
+    expect(campus.buildingExclusions?.find((x) => x.osm === "way/27167079")?.sourceText).toContain("wikidata=Q7896032");
     // The health board's outpatients' building and UC's Music & Classics are not candidates.
     expect(verdict("way/459668365")).toBeUndefined();
     expect(verdict("way/32050466")).toBeUndefined();
@@ -155,7 +157,7 @@ describe("Otago's buildings", () => {
     }
   });
 
-  it("leave homes and childcare to the surroundings, with no name anywhere in the published data", () => {
+  it("leave homes and childcare to the surroundings: no home and no centre tagged as childcare is named anywhere in the published data", () => {
     expect([...HOMES].sort()).toEqual([...ACCOMMODATION].sort());
     const published = fs.readdirSync("public/data/otago", { recursive: true, withFileTypes: true }).filter((f) => f.isFile());
     const text = published.map((f) => fs.readFileSync(`${f.parentPath}/${f.name}`, "utf8")).join("\n");
