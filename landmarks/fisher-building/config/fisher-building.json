@@ -1,0 +1,269 @@
+{
+ "name": "fisher-building",
+ "site": false,
+ "building": {
+  "id": "804",
+  "also": [],
+  "title": "Fisher Building, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    214.7,
+    391.1
+   ],
+   [
+    214.4,
+    390.6
+   ],
+   [
+    220.3,
+    382.1
+   ],
+   [
+    220.9,
+    382.2
+   ],
+   [
+    221,
+    381.7
+   ],
+   [
+    220.3,
+    381.4
+   ],
+   [
+    218.1,
+    375.8
+   ],
+   [
+    221.2,
+    374.5
+   ],
+   [
+    221.8,
+    373.1
+   ],
+   [
+    221,
+    372.3
+   ],
+   [
+    220.3,
+    372.3
+   ],
+   [
+    217.8,
+    373.3
+   ],
+   [
+    217.1,
+    374.1
+   ],
+   [
+    211.4,
+    370
+   ],
+   [
+    211.5,
+    369.5
+   ],
+   [
+    211,
+    369.5
+   ],
+   [
+    210.7,
+    370
+   ],
+   [
+    203.4,
+    369.8
+   ],
+   [
+    202.9,
+    369.4
+   ],
+   [
+    205.1,
+    363.1
+   ],
+   [
+    202.5,
+    362.1
+   ],
+   [
+    198.8,
+    367.5
+   ],
+   [
+    199,
+    367.6
+   ],
+   [
+    196,
+    370.5
+   ],
+   [
+    194.9,
+    369.7
+   ],
+   [
+    193.3,
+    372.1
+   ],
+   [
+    194.3,
+    372.7
+   ],
+   [
+    194.9,
+    371.8
+   ],
+   [
+    193.5,
+    375.8
+   ],
+   [
+    193.1,
+    375.6
+   ],
+   [
+    190.7,
+    379
+   ],
+   [
+    196.5,
+    383
+   ],
+   [
+    199.6,
+    386.7
+   ],
+   [
+    200,
+    386.4
+   ],
+   [
+    205.7,
+    390.3
+   ],
+   [
+    205.8,
+    391
+   ],
+   [
+    206.3,
+    391.2
+   ],
+   [
+    206.4,
+    390.6
+   ],
+   [
+    213.8,
+    390.8
+   ],
+   [
+    214.3,
+    391.4
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 29.1,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 20,
+  "spine_below": 15,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    215.63132406,
+    375.2706439
+   ],
+   "axis": [
+    0.99998698,
+    0.00510285
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "pano_ids": [
+   "MGAo0rbb0J5NgaeV2uoAKw",
+   "W9y5hI3w3gMsLp1S8xNmPw"
+  ],
+  "pano_ids_note": "the two Google panoramas (2026-04, 42-44 m) that the sight-line test over the LiDAR finds seeing most of the west and south faces (MGAo: S 70%, W 67%, SW 54%; W9y5: W 55%); the other 18 Google panoramas within 80 m see under 2% of the faces turned to them, behind trees and neighbours",
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "tower",
+    "aim_y": 19,
+    "hfov": 60,
+    "width": 1200,
+    "height": 1600
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}
