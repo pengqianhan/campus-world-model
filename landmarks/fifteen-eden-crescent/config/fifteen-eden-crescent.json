@@ -1,6 +1,6 @@
 {
  "name": "fifteen-eden-crescent",
- "site": false,
+ "site": true,
  "building": {
   "id": "802",
   "also": [],
@@ -83,7 +83,8 @@
     211.5,
     450.8
    ]
-  ]
+  ],
+  "also_note": "the top view (run.sh topview, round 3): the model covers block 802 and no other block within 80 m by half or more"
  },
  "origin": {
   "lat": -36.8523,
@@ -190,7 +191,7 @@
   ],
   "groundshade": 0.6,
   "exposure": 2.2,
-  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins), as 9 Eden Crescent's (801) next door: the same three panoramas of 2024-08, and 802's street face looks north-east (bearing 44.5 deg) as 801's street end does. Every photograph shows it in open shade (no shadow from its piers or deep window reveals, sunlit patches on the street in front), so the sun was behind it: 305 deg and 25 deg up, about 15:00 in August, inferred as for 801, not read from the photographs. Without this block the sun is the Clock Tower's July morning, low in the north-east and full on this face (round 1: drawn median 206 against the photographs' 166). Exposure 2.2 as 801's (the same camera, exposed for the shade): the drawn median is 242-249 against the photographs' 236-252 in every view, within 12 (the white walls are in the photographs' building region only with sky_mask.pale_tint; without it the region was the windows, the base and a tree, median 155-175). At 1.4 and 1.8 the white paint still draws at 235 and 240."
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins), as 9 Eden Crescent's (801) next door: the same three panoramas of 2024-08, and 802's street face looks north-east (bearing 44.5 deg) as 801's street end does. Every photograph shows it in open shade (no shadow from its piers or deep window reveals, sunlit patches on the street in front), so the sun was behind it: 305 deg and 25 deg up, about 15:00 in August, inferred as for 801, not read from the photographs. Without this block the sun is the Clock Tower's July morning, low in the north-east and full on this face (round 1: drawn median 206 against the photographs' 166). Exposure 2.2 as 801's (the same camera, exposed for the shade): the drawn median is 242-249 against the photographs' 236-252: within 12 in every view in round 2, and in eight of the nine in round 3; in mdk1's wide view 249 against 236 (13), where most of the model's region is its north-west end, which 801 stands in front of in the photograph and this light falls on in the render (the white walls are in the photographs' building region only with sky_mask.pale_tint; without it the region was the windows, the base and a tree, median 155-175). At 1.4 and 1.8 the white paint still draws at 235 and 240."
  },
  "refine": {
   "position_m": 3,
@@ -204,10 +205,15 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true,
-  "note": "keep_fixes (round 2, 2026-10-27): every camera is where streetview.camera_fixes puts it; the search still runs and its report says what it would move, but corrects nothing. With sky_mask.pale_tint the white cloud behind the face is solid in the masks too, and MH15's search ran to its bounds (dy +1.0 m, dz -2.25 m), pulled to cover it; v8ia's and mdk1's fail the reliability test (sky 4% and 2% round the silhouette)."
+  "note": "keep_fixes (round 2, 2026-10-27): every camera is where streetview.camera_fixes puts it; the search still runs and its report says what it would move, but corrects nothing. With sky_mask.pale_tint the white cloud behind the face is solid in the masks too, and MH15's search ran to its bounds (dy +1.0 m, dz -2.25 m), pulled to cover it; v8ia's and mdk1's fail the reliability test (sky 4% and 2% round the silhouette). Round 3: MH15's ran to dy +1.0 m and dz -2.63 m (sky 28% round the silhouette), v8ia's and mdk1's to their bounds (sky 0%); none applied."
  },
  "sky_mask": {
   "pale_tint": 8,
   "note": "tools/sky_mask.py, as for 9 Eden Crescent (801): the same three photographs, in which 801's white cladding stands in front of this building in mdk1's and v8ia's views and beside it in MH15's, in open shade and exposed for the shade, as white as a hazy sky; without pale_tint the masks take it for sky wherever it touches the top of a view (mdk1's wide view: its bands of white cladding are sky in the mask), so this model's end and top storey, drawn behind it, lose there. With pale_tint 8 the pale sky must be tinted blue (801's note: the sky's pale blue here is 18-21 above red, the cladding -4 to +2)."
+ },
+ "door": {
+  "x": -24.6,
+  "z": -2.9,
+  "note": "view frame: the point whose ground is the model's y = 0. Eden Crescent's footpath lies 0.55-1.06 m below the frame's ground along the whole street face (the LiDAR's ground returns at z 12.6-14), so no street door's foot is at y = 0 (doors A and C, parts/body.js, step down to it at -0.95). The ground rises along the lane at the south-east end to the frame's ground at the back; the door is the foot of the plan's south-east tip on that lane, 0.4 m out from the plan's tip (x -24.2 to -24.0 at z -2.2 to -3.5), where the LiDAR ground is -0.11 m (-0.16 to -0.06 within a metre), as 801's door is the foot of a corner. place.py puts it on the map"
  }
 }
