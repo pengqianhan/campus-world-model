@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   every height measured from the LINZ 2024 LiDAR. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own stone, glass and red clay tiles. Its
   back, its ends and the low link toward the Clock Tower, which no photograph shows, are drawn
-  plainly. A click still opens its floors (#PR).
+  plainly. A click still opens its floors (#102).
 
 ### Changed
 
