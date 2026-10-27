@@ -7,10 +7,11 @@ aerial show. What none of them shows is drawn plainly at the LiDAR's sizes.
 
 ## From Waterloo Quadrant (west-south-west)
 - **A brick tower** of about ten storeys: warm tan to orange-brown brick in level courses, its faces
-  plain between thin **white bands** at every floor.
+  plain between thin **cream bands** at every floor (paler than the brick, not white; about 0.15 m
+  high and nearly flush with it).
 - **The shaft**, the higher half on the south-west, is the brick face in the middle of the
   photograph: near its right edge a narrow vertical slot of windows, framed in white concrete, runs
-  up the face.
+  up the corner between its two south-west faces.
 - **To its left**, the lower part of the tower: white concrete floor edges and piers, with balconies
   or deep sills and dark red-brown louvres or sunshades between them; at its top a red tiled edge.
 - **The roofs** are flat (the LiDAR), not seen from the street.

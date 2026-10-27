@@ -25,10 +25,11 @@ export function roof(b, plan, y, t, material) {
 }
 
 /** Bands h high round the plan at each height in `ys`, standing `proud` out from its walls: one box
- * along each edge, a little longer than the edge so that the corners close. */
-export function bands(b, plan, ys, h, proud, material) {
+ * along each edge, a little longer than the edge so that the corners close; none on the edges in `skip`. */
+export function bands(b, plan, ys, h, proud, material, skip = []) {
   const turn = area(plan) > 0 ? 1 : -1;
   for (let i = 0; i < plan.length; i++) {
+    if (skip.includes(i)) continue;
     const [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length];
     const dx = x1 - x0, dz = z1 - z0, L = Math.hypot(dx, dz);
     if (L < 0.3) continue;
@@ -42,6 +43,22 @@ export function bands(b, plan, ys, h, proud, material) {
       b.add(g, material);
     }
   }
+}
+
+/** The plan with its edges `edges` (consecutive indices) moved `d` metres inward: each moved edge's
+ * corners are where its line meets the next edge's line, moved or not. */
+export function inset(plan, edges, d) {
+  const n = plan.length, moved = new Set(edges);
+  const line = (i) => {  // a point on edge i's line, moved inward if it is one of `edges`, and its direction
+    const [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % n], [nx, nz] = outward(plan, i), s = moved.has(i) ? -d : 0;
+    return [x0 + nx * s, z0 + nz * s, x1 - x0, z1 - z0];
+  };
+  const meet = (i, j) => {  // where the lines of edges i and j meet
+    const [ax, az, adx, adz] = line(i), [bx, bz, bdx, bdz] = line(j);
+    const den = adx * bdz - adz * bdx, t = ((bx - ax) * bdz - (bz - az) * bdx) / den;
+    return [ax + adx * t, az + adz * t];
+  };
+  return plan.map((p, k) => (moved.has(k) || moved.has((k - 1 + n) % n) ? meet((k - 1 + n) % n, k) : p));
 }
 
 /** The outward normal [nx, nz] of the plan's edge from corner i to corner i + 1. */

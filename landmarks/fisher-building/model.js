@@ -6,6 +6,7 @@ import { Builder } from "../kit/gothic.js";
 import { tower, shaft, floorBands } from "./parts/tower.js";
 import { wing } from "./parts/wing.js";
 import { slot } from "./parts/slot.js";
+import { canopy, deck } from "./parts/entrance.js";
 
 const PARTS = {
   tower: (b) => tower(b),
@@ -13,6 +14,8 @@ const PARTS = {
   bands: (b) => floorBands(b),
   wing: (b) => wing(b),
   slot: (b) => slot(b),
+  canopy: (b) => canopy(b),
+  deck: (b) => deck(b),
 };
 
 export function build(materials, only) {
