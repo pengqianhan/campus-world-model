@@ -263,7 +263,7 @@ entries in `exclusions.json`.
   Stuart McCutcheon House (residential floors), and 255 Te Kohanga Reo and 410 Symonds Street
   Early Childhood Centre (childcare). Inside the tiles, 102, 440, 441, 442, 614, 616, 818, 831 and
   833 of tiers 1 and 2 also have residential floors. Since the generator measures tiers 1 and 2 as
-  stand-ins (see "Which buildings"), it keeps the blocks of 440 to 833 by the same rule, each in
+  stand-ins (see "Which buildings"), it keeps the blocks of the eight besides 102 by the same rule, each in
   `exclusions.json` with its reason; decision 6 bears on 102 too: Old Government House
   (residential floors 10 and 20) is drawn as a landmark, outside and in detail (#75).
   **841 Nicholls Lane ECE** is a childcare centre by its name. Before PR #69 the data build's test
