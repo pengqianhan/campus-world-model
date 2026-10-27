@@ -13,11 +13,11 @@ from the LiDAR. Look at the photographs yourself, at full size; this page says o
   comes forward a little and rises well above the roofs, a plain tall block with no window toward the
   lawn and a flat top.
 - **The pavilions** each end in a low gable toward the lawn, coped with stone; under it, upstairs, a
-  pair of round-headed windows, and downstairs a row of narrow square-headed ones.
-- **The range between** has, each side of the tower, round-headed windows upstairs (a pair, and on the
+  pair of windows with shallow segmental heads, and downstairs a row of narrow square-headed ones.
+- **The range between** has, each side of the tower, segmental-headed windows upstairs (a pair, and on the
   west side a third on the pavilion's side wall) and a row of three or four narrow square-headed ones
   below.
-- **Windows**: white-painted frames and glazing bars in a light pattern (the round heads radiate, the
+- **Windows**: white-painted frames and glazing bars in a light pattern (the arched heads radiate, the
   lower lights have small panes), set back in the stone; the glass dark, with the sky in it.
 - **The roof**: red clay tiles on the main range, hipped at the ends, seen above the walls between the
   pavilions; the pavilions' own low roofs behind their gables are grey (the aerial).

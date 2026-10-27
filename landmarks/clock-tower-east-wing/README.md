@@ -47,20 +47,21 @@ wall in front of them is solid in the photograph and absent from the model. The 
 median 150 in the renders, 145 in the photographs. From above (`run.sh clock-tower-east-wing
 topview`): footprint IoU 0.811 against the LiDAR (the link is drawn and the LiDAR selection leaves it
 out), 81% of cells within 0.5 m of the LiDAR's height, 97.4% of block 119 under the model. After the
-heights were checked one by one against the LiDAR (below), 86%, the model 0.05 m above the LiDAR at
-the median, and the silhouettes the same to 0.01.
+heights were checked one by one against the LiDAR (below) and the range's roof was ended at its west
+wall (the review of #102), 86%, the model 0.01 m above the LiDAR at the median, footprint IoU 0.827,
+and the silhouettes 0.628, 0.941 and 0.961.
 
 ## Heights against the LiDAR
 
 Building points of `data/clock-tower-east-wing_pts.npy` in the view frame; model / LiDAR (median,
-or 90th or 95th percentile where said): the main ridge 9.50 / 9.42; the tile roof just behind the
-front wall 7.27 / 7.17 and at z -1.2 7.22 / 7.24; the flat roof behind it 7.00 / 6.93; the pavilions'
+or 90th or 95th percentile where said): the main ridge 9.42 / 9.42 (9.37 to 9.39 in other bands
+across it); the tile roof just behind the front wall 7.26 / 7.17 and at z -1.2 7.21 / 7.24; the flat roof behind it 7.00 / 6.93; the pavilions'
 ridges 7.90 / 7.84 and 7.90; their gables' apexes 8.50 / 8.52 and 8.45 (p90); their side eaves
 7.20 / 7.26 and 7.19 (p90); the stair tower's top 10.35 / 10.38 (p95) and its shoulders 9.95 / 10.07
 (p90); the blocks at the back 10.05 / 10.03; the low roof between them 4.05 / 4.06; the link 6.55 /
 6.55 where trees do not stand over it. Every one within 0.12 m (limit 0.5 m). The LiDAR's highest
-point near the wing, 12.19 m (p99.9), is the Clock Tower South Wing's eaves at x -21 to -20, within
-1.5 m of the outline's west end.
+point near the wing, 12.19 m (p99.9), is in the crowns of the trees over the link, classed as
+building, within 1.5 m of the outline's west end.
 
 ## On the site (October 2026)
 
@@ -74,5 +75,7 @@ the model meets the map's ground. The walls go down to `FOOT`, -1.0 m: the LiDAR
 
 - What no photograph shows is plain stone wall: the back, the ends, the two blocks at the back and the
   link. The grey of the roofs behind the pavilions' gables comes from the aerial.
+- The east pavilion's gable front is half hidden by the basalt wall in every photograph: the one upper
+  and two lower windows that show are as the west pavilion's, and the rest is drawn after it.
 - The windows' glazing patterns (geometric bars, leaded fanlights) are drawn as plain white bars.
 - The stone is the Clock Tower's `ashlar`, a little greyer than the photographs' warm cream.

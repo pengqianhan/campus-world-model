@@ -17,18 +17,20 @@ sampled from them into the model.
   it); the front faces 224.56°.
 - What the LiDAR shows, in this frame (`data/clock-tower-east-wing_plan_frame.png`,
   `_front_elevation.png`; the walls from building 119's floor outline in campus.json):
-  - **the main range** (x -19.9 to 17.0, z -4.4 to 8.2; its west end steps in to x -17.8 from z 1.1):
-    two storeys under a red tile roof hipped at both ends, ridge 9.2-9.6 m along z 1.5 to 3.5, eaves
-    about 7.3 m (8.0 m on the slope just behind the front wall, 7.0 m at the back);
+  - **the main range** (x -17.8 to 17.0, z -4.4 to 8.2): two storeys; a red tile roof over its front
+    (z -1.6 to 8.2), its ridge at 9.42 m (median) along z 3.0 from x -17 to 17, hipped only in the last
+    metre at each end, falling to 7.17 m just behind the front wall and 7.24 m at z -1.2, eaves at
+    7.0 m; behind it a flat roof at 6.93 m (median) over z -4.4 to -1.6;
   - **two pavilions** toward the lawn (x -17.7 to -7.4 and 6.7 to 17.0, z 8.2 to 13.05): walls to
-    7.4 m at the corners, a gable toward the lawn with its apex at 8.3-8.6 m, a low roof along z
-    behind it (8.0-8.15 m on its ridge);
+    7.2 m at the sides, a gable toward the lawn with its apex at 8.45-8.5 m, a low roof along z
+    behind it (7.84-7.9 m on its ridge);
   - **the stair tower** in the middle of the front (x -3.1 to 2.3, 0.8 m proud of the wall at z 9.0,
     its body back to about z 6): flat-topped at 10.3-10.4 m;
   - **two blocks at the back** (x -10.3 to -5.0 and 4.6 to 9.4, z -6.7 to about -1.5): flat-topped at
-    10.0-10.35 m; between them a low roof at 3.1 m over the back wall's foot (z -5.5 to -4.4);
-  - **the link** toward the Clock Tower (x about -33 to -19.9, z -4.3 to 1.1): one storey, a flat roof
-    at 6.5-6.6 m, on ground that rises about 3 m toward the tower; under trees.
+    10.03 m (median; parapets to 10.35); between them a low roof at 4.06 m over the back wall's foot
+    (z -5.5 to -4.4);
+  - **the link** toward the Clock Tower (x about -33 to the range's west wall at -17.8, z -4.3 to 1.1):
+    one storey, a flat roof at 6.5-6.6 m, on ground that rises about 3 m toward the tower; under trees.
   - The ground: 0 to +0.1 m on the car park in front, -0.6 to -0.9 m behind the range, rising to about
     +3 m under the link. Walls go down to `FOOT` (-1.0 m).
 - `parts/common.js` holds these sizes. It is the lead's: read it, do not edit it; report a size you
@@ -63,5 +65,8 @@ sampled from them into the model.
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a photograph against them; say
   which in a comment.
-- Real or absent: what no photograph shows is plain stone wall, not invented windows.
+- Real or absent: what no photograph shows is plain stone wall, not invented windows. The one
+  exception is the east pavilion's gable front, half hidden by the basalt wall in every photograph:
+  its one upper and two lower windows that show are as the west pavilion's, so the rest of it is drawn
+  after the west pavilion's (the README's "Limits").
 - No people, no cars: they are in the photographs, not in the model.

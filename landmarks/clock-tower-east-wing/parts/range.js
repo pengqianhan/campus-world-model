@@ -32,9 +32,8 @@ export function range(b) {
   // the body: under the tile roof up to its eaves, under the flat roof at the back up to that; the front
   // wall between the pavilions is drawn on its own, so the body stops behind it
   const low = R.flat - 0.15;
-  b.box(-17.8, R.x[1], FOOT, R.eave, R.back, R.z[1] - T, "ashlar");
+  b.box(R.x[0], R.x[1], FOOT, R.eave, R.back, R.z[1] - T, "ashlar");
   b.box(R.x[0], R.x[1], FOOT, low, R.z[0], R.back, "ashlar");
-  b.box(R.x[0], -17.8, FOOT, R.eave, R.back, 1.1, "ashlar");
   // the lawn side, either side of the stair tower, with a plain band of stone at the eaves
   const t = M.tower, band = R.eave - 0.3;
   frontWall(b, w.x[1], t.x[0], R.z[1], band, bayWindows((w.x[1] + t.x[0]) / 2));
