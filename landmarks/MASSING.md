@@ -338,16 +338,18 @@ The same measurement leaves these as blocks:
 
 ### The second round (2026-10-27)
 
-Why the 13 tier-3 buildings that fail the top-view check fail, from their top views
-(`measured/out/<id>.png`):
+Why the 13 tier-3 buildings that failed the top-view check in the first round failed, from their
+top views (`measured/out/<id>.png`):
 
 - **Roofs of several ridges** (132, 212, 215, 216, 219, 225, 226, 240, 322). The model draws each
   layer's roof as the lowest of its planes. That fits one ridge (a mono-pitch, a gable, a hip), but
   not two hips side by side, a cross-gable or gables in a row: where they meet in valleys, the lowest
-  plane cuts the others down. And when the lowest layer is a small piece (a porch roof, a flat strip)
+  plane cuts the others down. And when the lowest layer was a small piece (a porch roof, a flat strip)
   that covers less than half of the outline, a larger sloping layer whose walls would stand lower
-  than that piece is dropped, and the whole building is drawn flat at the small piece's height (219,
-  225, 240).
+  than that piece was dropped, and the whole building was drawn flat at the small piece's height
+  (219, 225, 240).
+- **A hipped end too small to count as a face** (240): the roof over it was left as high as the
+  ridge.
 - **A raised part taken into the roof round it** (432: a rectangle 1.5 m higher; 423: the lower
   slopes of its hip roofs, drawn at the flat roof's height).
 - **Footprints that differ from the campus map's outline where the heights agree** (274, 431: IoU
@@ -355,12 +357,17 @@ Why the 13 tier-3 buildings that fail the top-view check fail, from their top vi
 - **Trees classed as building** over part of a roof (215, 216, 219, 240): left out of the heights,
   but counted in the footprint.
 
-Two general changes were tried and not kept, as neither made a building pass: a roof under 5°
-drawn as a mono-pitch where one plane holds it and one height does not (274 falls about 3°), and,
-when the lowest layer is small, a flat plinth at the lowest eave with every layer standing on it.
-The plinth brought 240 to IoU 0.904 with 88% within 0.5 m, 219 from 31% to 78% and 423 from 54% to
-76%. A roof of several ridges needs each group of planes kept to the part of the outline it covers,
-which `measured/model.js` does not draw yet.
+Since this round the generator (`landmarks/README.md`, "Measured massings") stands the layers on a
+flat plinth at the lowest eave when the lowest layer covers less than half of the outline and the
+old rule would lose a roof, and keeps a face of a sloping roof from 4% of its sloping cells (it was
+8% and 12%). Neither alone makes a building pass; together they draw 240 (IoU 0.904, 94.5% within
+0.5 m; two hips on a plinth), bring 219 from 31% to 69%, 225 from 12% to 41% and 423 from 54% to
+76%, and change 103 (its walls stop at its lowest eave, and its smallest roof keeps its slope). 431
+went from 94% to 82% (a small face of its own), still below the limits as before. A third change was
+tried and not kept, as it made no building pass: a roof under 5° drawn as a mono-pitch where one
+plane holds it and one height does not (274 falls about 3°). The other 12 need a roof of several
+ridges with each group of planes kept to the part of the outline it covers, which
+`measured/model.js` does not draw yet, or their outlines and trees, which are not the generator's.
 
 The 14 tier-3 buildings with too little roof are not mis-measured: in each the LiDAR sees
 vegetation above the roof, ground, or nothing. 120, 121, 122, 124 and 125 are under tree crowns

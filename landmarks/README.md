@@ -210,11 +210,15 @@ agent and no photograph. All of them share one model and have a data file each:
   where most of its points are building points over 2.5 m); layers where neighbouring cells step
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
   lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
-  plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
+  plane fitted to the cells that fall that way (a face from 4% of the layer's sloping cells, so that
+  a hipped end counts), then again to the cells it fits best. The lowest layer stands on the campus outline,
   with its eaves round it, edge by edge (how far building points at its eave reach out past each
   edge: the median along it); the others stand on it, traced from the LiDAR and put onto the outline
-  where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
-  left out.
+  where they meet it. When the lowest layer covers less than half of the outline and that would lose
+  a roof (its own slopes flattened, or a larger layer under its walls, as where two hips meet in a
+  valley), the walls round the outline stop instead at a flat plinth at the lowest eave of all the
+  layers, and every layer stands on it. Roof that no layer draws (a chimney, plant, a tree classed
+  as building) is left out. An outline on the campus map that crosses itself keeps its block.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof

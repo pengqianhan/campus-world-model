@@ -59,9 +59,9 @@ It is built to answer two questions a student actually has:
   from OpenStreetMap, chosen from "Other campuses" in the campus list and labelled by their AUT
   codes. Near the Clock Tower the map draws its East Wing in detail: rock-faced stone, two gabled
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
-  trimester dates, not semester dates. Five more University buildings, among them Alfred Nathan
-  House and 67 Symonds Street, are drawn near the camera to their LiDAR-measured heights and roofs
-  until their own landmarks come.
+  trimester dates, not semester dates. Six more University buildings are drawn near the camera to
+  their LiDAR-measured heights and roofs: Building 240, and five buildings planned as landmarks,
+  among them Alfred Nathan House and 67 Symonds Street, until their own landmarks come.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
@@ -337,8 +337,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Ten are on the site
-  (`landmarks/measured/`): five plain buildings, and five of the buildings planned as landmarks, which
+  measured heights, walls, storeys and windows by the street look's rules. Eleven are on the site
+  (`landmarks/measured/`): six plain buildings, and five of the buildings planned as landmarks, which
   they stand in for until their landmarks come. The other buildings it measures keep their blocks,
   each with its reason in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built

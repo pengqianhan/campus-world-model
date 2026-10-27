@@ -18,13 +18,15 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
-- **Five more measured massings.** Near the camera, 103 Alfred Nathan House, 305 Science Centre,
-  619 67 Symonds Street and Carlaw Park Blocks 835 and 837 are drawn from the LINZ 2024 LiDAR in
-  place of their blocks, as the five plain buildings already are: their layers and roofs measured,
-  their walls, storeys and windows drawn by rule. They are buildings that the landmark queue means
-  to draw in detail one day; each stands in until its landmark comes. The other buildings of the
-  queue in the LiDAR keep their blocks, every place where people live among them, each with its
-  reason (`landmarks/measured/exclusions.json`) (#PR).
+- **Six more measured massings.** Near the camera, Building 240, 103 Alfred Nathan House, 305
+  Science Centre, 619 67 Symonds Street and Carlaw Park Blocks 835 and 837 are drawn from the LINZ
+  2024 LiDAR in place of their blocks, as the five plain buildings already are: their layers and
+  roofs measured, their walls, storeys and windows drawn by rule. Building 240's two hip roofs are
+  measured now, as the program stands roofs that meet in a valley on a plinth at their eaves.
+  The other five are buildings that the landmark queue means to draw in detail one day; each stands
+  in until its landmark comes. The other buildings of the queue in the LiDAR keep their blocks,
+  every place where people live among them, each with its reason
+  (`landmarks/measured/exclusions.json`) (#PR).
 - **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
   Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
   streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and
