@@ -1,0 +1,153 @@
+{
+ "name": "seventeen-eden-crescent",
+ "site": false,
+ "building": {
+  "id": "803",
+  "also": [],
+  "title": "17 Eden Crescent, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    266.7,
+    407.9
+   ],
+   [
+    258.9,
+    401.7
+   ],
+   [
+    257.6,
+    403.4
+   ],
+   [
+    251.2,
+    398.4
+   ],
+   [
+    237.4,
+    416
+   ],
+   [
+    249.6,
+    425.6
+   ],
+   [
+    248.4,
+    426.5
+   ],
+   [
+    249.4,
+    427.3
+   ],
+   [
+    250.8,
+    426.5
+   ],
+   [
+    251.8,
+    425.3
+   ],
+   [
+    263.1,
+    434.1
+   ],
+   [
+    273.4,
+    421
+   ],
+   [
+    266.6,
+    415.7
+   ],
+   [
+    270.5,
+    410.8
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 18.2,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 6,
+  "spine_below": 6,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    264.89644243,
+    410.32960383
+   ],
+   "axis": [
+    0.75376441,
+    0.65714474
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ]
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ }
+}
