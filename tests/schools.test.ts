@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { School, Words } from "../src/shared/school.ts";
 import type { CampusData } from "../src/shared/types.ts";
-import { SCHOOL_KEYS, lookupWords, overlayWords, wordKeys } from "../src/shared/words.ts";
+import { SCHOOL_KEYS, TERM_KEYS, lookupWords, overlayWords, wordKeys } from "../src/shared/words.ts";
 
 const descriptors = import.meta.glob<School>("../src/schools/*/school.ts", { eager: true, import: "school" });
 const schools = Object.entries(descriptors).map(([file, school]) => ({ folder: file.split("/").at(-2)!, school }));
@@ -74,6 +74,7 @@ describe("the school's words", () => {
       if (k.endsWith(".*")) expect(wordKeys(en).some((x) => x.startsWith(k.slice(0, -1))), k).toBe(true);
       else expect(all.has(k), k).toBe(true);
     }
+    for (const k of TERM_KEYS) expect(all.has(k), k).toBe(true);
   });
 
   it("cover every English text that names the University, its site, its place or its room codes", () => {
@@ -103,8 +104,31 @@ describe("the school's words", () => {
     }
   });
 
-  it("replace only the keys SCHOOL_KEYS names", () => {
-    const allowed = new Set(schoolKeys());
+  it("give each school's teaching periods one name, semester or trimester, in every text the school shows", () => {
+    for (const { school } of schools) {
+      const words = overlayWords(en, school.words.en);
+      // The picker's words (picker.*) are on the site's root page, not in any school's app.
+      const shown = wordKeys(words).filter((key) => !key.startsWith("picker."));
+      const names = new Set(shown.flatMap((key) => [...lookupWords(words, key)!.matchAll(/\b(semester|trimester)s?\b/gi)].map((m) => m[1]!.toLowerCase())));
+      expect([...names], school.id).toHaveLength(1);
+    }
+  });
+
+  it("say trimester dates at VUW, and keep the University of Auckland's and AUT's semester dates as they were", () => {
+    const expected: Record<string, Record<string, string>> = {
+      uoa: { "time.noCalendar": "No semester dates are shown", "status.layer.calendar": "semester dates" },
+      aut: { "time.noCalendar": "No semester dates are shown", "status.layer.calendar": "semester dates" },
+      vuw: { "time.noCalendar": "No trimester dates are shown", "status.layer.calendar": "trimester dates" },
+    };
+    for (const [id, texts] of Object.entries(expected)) {
+      const school = schools.find((s) => s.school.id === id)!.school;
+      const words = overlayWords(en, school.words.en);
+      for (const key of TERM_KEYS) expect(lookupWords(words, key), `${id}: ${key}`).toBe(texts[key]);
+    }
+  });
+
+  it("replace only the keys SCHOOL_KEYS and TERM_KEYS name", () => {
+    const allowed = new Set([...schoolKeys(), ...TERM_KEYS]);
     for (const { school } of schools) {
       for (const [lang, words] of Object.entries(school.words)) {
         for (const key of wordKeys(words)) expect(allowed.has(key), `${school.id} (${lang}): ${key}`).toBe(true);
