@@ -269,6 +269,9 @@ describe("Overpass instances", () => {
     // a body the host cut short when its answer is not kept alive
     expect(failure(A, new Error(`${A} -> TypeError: terminated (Response body length does not match content-length header)`))).toBe("dropped");
     expect(failure(A, new Error(`${A} -> TypeError: terminated (Response does not match the HTTP/1.1 protocol (Invalid EOF state))`))).toBe("dropped");
+    // the same length words for a malformed header block, before any body: not a cut, not the host's verdict
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (Response body length does not match content-length header)`))).toBe("offline");
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (Response does not match the HTTP/1.1 protocol (Invalid header value char))`))).toBe("offline");
     // a TLS alert, and a name that holds the word "redirect": neither is the host's verdict
     expect(failure(A, new Error(`${A} -> TypeError: fetch failed (ssl/tls alert handshake failure: SSL alert number 40)`))).toBe("offline");
     expect(failure(A, new Error(`${A} -> TypeError: fetch failed (getaddrinfo ENOTFOUND overpass.redirect.test)`))).toBe("offline");
