@@ -23,7 +23,7 @@
      "model_m2": 706.2,
      "within_0.5m": 0.87,
      "model_minus_lidar_m": {
-      "p10": -0.15,
+      "p10": -0.14,
       "p50": 0.0,
       "p90": 0.09
      },
@@ -36,7 +36,7 @@
   },
   "110": {
    "name": "Thomas Building",
-   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 52% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 50% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 2231.9,
     "ground": {
@@ -49,16 +49,16 @@
     "cover": 0.979,
     "vegetation": 0.036,
     "open_below": 0.028,
-    "not_drawn_m2": 84.5,
+    "not_drawn_m2": 84.2,
     "check": {
      "iou": 0.848,
      "lidar_m2": 2391.0,
      "model_m2": 2566.8,
-     "within_0.5m": 0.516,
+     "within_0.5m": 0.5,
      "model_minus_lidar_m": {
-      "p10": -7.61,
-      "p50": -0.04,
-      "p90": 1.39
+      "p10": -7.63,
+      "p50": -0.05,
+      "p90": 1.36
      },
      "highest_m": {
       "model": 22.18,
@@ -102,7 +102,7 @@
   },
   "118": {
    "name": "Lippincott Cottage",
-   "reason": "top-view check: footprint IoU 0.806 (limit 0.9), 64% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 87.6,
     "ground": {
@@ -117,17 +117,17 @@
     "open_below": 0.073,
     "not_drawn_m2": 8.2,
     "check": {
-     "iou": 0.806,
+     "iou": 0.818,
      "lidar_m2": 96.2,
-     "model_m2": 92.0,
-     "within_0.5m": 0.635,
+     "model_m2": 93.2,
+     "within_0.5m": 0.689,
      "model_minus_lidar_m": {
-      "p10": -1.68,
-      "p50": -0.08,
-      "p90": 0.63
+      "p10": -0.93,
+      "p50": -0.06,
+      "p90": 0.12
      },
      "highest_m": {
-      "model": 7.65,
+      "model": 9.75,
       "lidar": 10.55
      }
     }
@@ -201,17 +201,17 @@
     "open_below": 0.272,
     "not_drawn_m2": 6.5,
     "check": {
-     "iou": 0.843,
+     "iou": 0.79,
      "lidar_m2": 76.5,
-     "model_m2": 82.5,
-     "within_0.5m": 0.268,
+     "model_m2": 77.0,
+     "within_0.5m": 0.87,
      "model_minus_lidar_m": {
-      "p10": -2.4,
-      "p50": -1.12,
-      "p90": 0.2
+      "p10": -0.19,
+      "p50": 0.04,
+      "p90": 0.53
      },
      "highest_m": {
-      "model": 3.74,
+      "model": 8.87,
       "lidar": 18.17
      }
     }
@@ -287,7 +287,7 @@
   },
   "130": {
    "name": "Pembridge House",
-   "reason": "top-view check: footprint IoU 0.923 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 376.1,
     "ground": {
@@ -300,19 +300,19 @@
     "cover": 0.973,
     "vegetation": 0.049,
     "open_below": 0.173,
-    "not_drawn_m2": 7.2,
+    "not_drawn_m2": 6.2,
     "check": {
-     "iou": 0.923,
+     "iou": 0.92,
      "lidar_m2": 394.0,
-     "model_m2": 378.5,
-     "within_0.5m": 0.851,
+     "model_m2": 377.5,
+     "within_0.5m": 0.891,
      "model_minus_lidar_m": {
-      "p10": -0.16,
-      "p50": 0.01,
-      "p90": 0.62
+      "p10": -0.15,
+      "p50": 0.0,
+      "p90": 0.27
      },
      "highest_m": {
-      "model": 11.31,
+      "model": 10.91,
       "lidar": 12.72
      }
     }
@@ -370,7 +370,7 @@
   },
   "201": {
    "name": "Te Pūtahi Tangata",
-   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 84% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 5167.4,
     "ground": {
@@ -388,11 +388,11 @@
      "iou": 0.872,
      "lidar_m2": 4759.2,
      "model_m2": 5169.5,
-     "within_0.5m": 0.857,
+     "within_0.5m": 0.84,
      "model_minus_lidar_m": {
-      "p10": -0.48,
-      "p50": -0.0,
-      "p90": 0.25
+      "p10": -0.52,
+      "p50": -0.01,
+      "p90": 0.26
      },
      "highest_m": {
       "model": 41.41,
@@ -520,7 +520,7 @@
   },
   "216": {
    "name": "Mona",
-   "reason": "top-view check: footprint IoU 0.871 (limit 0.9), 71% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.882 (limit 0.9), 70% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 153.5,
     "ground": {
@@ -535,14 +535,14 @@
     "open_below": 0.171,
     "not_drawn_m2": 21.5,
     "check": {
-     "iou": 0.871,
+     "iou": 0.882,
      "lidar_m2": 176.2,
-     "model_m2": 153.5,
-     "within_0.5m": 0.709,
+     "model_m2": 155.5,
+     "within_0.5m": 0.699,
      "model_minus_lidar_m": {
-      "p10": -1.08,
+      "p10": -1.2,
       "p50": -0.07,
-      "p90": 0.1
+      "p90": 0.09
      },
      "highest_m": {
       "model": 14.73,
@@ -553,7 +553,7 @@
   },
   "219": {
    "name": "8 Grafton Road",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 31% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 320.0,
     "ground": {
@@ -566,19 +566,19 @@
     "cover": 0.934,
     "vegetation": 0.063,
     "open_below": 0.148,
-    "not_drawn_m2": 21.8,
+    "not_drawn_m2": 24.0,
     "check": {
-     "iou": 0.89,
+     "iou": 0.897,
      "lidar_m2": 319.5,
-     "model_m2": 321.2,
-     "within_0.5m": 0.306,
+     "model_m2": 326.5,
+     "within_0.5m": 0.689,
      "model_minus_lidar_m": {
-      "p10": -2.15,
-      "p50": -0.62,
-      "p90": 0.79
+      "p10": -2.3,
+      "p50": -0.04,
+      "p90": 0.19
      },
      "highest_m": {
-      "model": 9.98,
+      "model": 13.53,
       "lidar": 20.48
      }
     }
@@ -603,7 +603,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 12% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -621,14 +621,14 @@
      "iou": 0.83,
      "lidar_m2": 188.2,
      "model_m2": 171.8,
-     "within_0.5m": 0.12,
+     "within_0.5m": 0.406,
      "model_minus_lidar_m": {
-      "p10": -2.57,
-      "p50": -1.69,
-      "p90": -0.15
+      "p10": -2.14,
+      "p50": -0.79,
+      "p90": -0.0
      },
      "highest_m": {
-      "model": 4.3,
+      "model": 6.84,
       "lidar": 7.8
      }
     }
@@ -667,39 +667,6 @@
     }
    }
   },
-  "240": {
-   "name": "Building 240",
-   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 43% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 246.8,
-    "ground": {
-     "p5": 23.44,
-     "p50": 26.83,
-     "p95": 28.82,
-     "zero": 25.5
-    },
-    "roof_inside_m2": 235.5,
-    "cover": 0.95,
-    "vegetation": 0.103,
-    "open_below": 0.266,
-    "not_drawn_m2": 55.2,
-    "check": {
-     "iou": 0.93,
-     "lidar_m2": 257.2,
-     "model_m2": 266.2,
-     "within_0.5m": 0.432,
-     "model_minus_lidar_m": {
-      "p10": -1.58,
-      "p50": -0.29,
-      "p90": 0.92
-     },
-     "highest_m": {
-      "model": 10.04,
-      "lidar": 20.35
-     }
-    }
-   }
-  },
   "250": {
    "name": "Music School",
    "reason": "roof cells cover 77% of the outline (limit 85%)",
@@ -734,17 +701,17 @@
     "open_below": 0.093,
     "not_drawn_m2": 38.0,
     "check": {
-     "iou": 0.852,
+     "iou": 0.91,
      "lidar_m2": 241.5,
-     "model_m2": 213.8,
-     "within_0.5m": 0.363,
+     "model_m2": 244.5,
+     "within_0.5m": 0.994,
      "model_minus_lidar_m": {
-      "p10": -1.48,
-      "p50": -0.34,
-      "p90": 0.8
+      "p10": -0.09,
+      "p50": 0.0,
+      "p90": 0.1
      },
      "highest_m": {
-      "model": 4.54,
+      "model": 8.32,
       "lidar": 12.78
      }
     }
@@ -765,19 +732,19 @@
     "cover": 0.944,
     "vegetation": 0.055,
     "open_below": 0.197,
-    "not_drawn_m2": 26.2,
+    "not_drawn_m2": 27.0,
     "check": {
-     "iou": 0.903,
+     "iou": 0.894,
      "lidar_m2": 520.0,
-     "model_m2": 521.2,
-     "within_0.5m": 0.834,
+     "model_m2": 516.2,
+     "within_0.5m": 0.969,
      "model_minus_lidar_m": {
-      "p10": -0.54,
-      "p50": 0.01,
-      "p90": 0.41
+      "p10": -0.11,
+      "p50": -0.0,
+      "p90": 0.08
      },
      "highest_m": {
-      "model": 11.24,
+      "model": 11.25,
       "lidar": 14.82
      }
     }
@@ -848,19 +815,19 @@
     "cover": 0.965,
     "vegetation": 0.018,
     "open_below": 0.274,
-    "not_drawn_m2": 6.8,
+    "not_drawn_m2": 15.2,
     "check": {
-     "iou": 0.917,
+     "iou": 0.825,
      "lidar_m2": 222.8,
-     "model_m2": 220.0,
-     "within_0.5m": 0.764,
+     "model_m2": 190.2,
+     "within_0.5m": 0.433,
      "model_minus_lidar_m": {
-      "p10": -0.59,
-      "p50": -0.0,
-      "p90": 0.53
+      "p10": -1.32,
+      "p50": -0.61,
+      "p90": -0.05
      },
      "highest_m": {
-      "model": 6.94,
+      "model": 6.14,
       "lidar": 8.56
      }
     }
@@ -965,19 +932,19 @@
     "cover": 0.981,
     "vegetation": 0.0,
     "open_below": 0.071,
-    "not_drawn_m2": 90.8,
+    "not_drawn_m2": 70.5,
     "check": {
      "iou": 0.978,
      "lidar_m2": 356.8,
      "model_m2": 361.2,
-     "within_0.5m": 0.687,
+     "within_0.5m": 0.81,
      "model_minus_lidar_m": {
-      "p10": -0.13,
-      "p50": 0.16,
-      "p90": 1.55
+      "p10": -0.16,
+      "p50": 0.09,
+      "p90": 0.73
      },
      "highest_m": {
-      "model": 17.8,
+      "model": 17.85,
       "lidar": 17.87
      }
     }
@@ -1185,7 +1152,7 @@
   },
   "322": {
    "name": "AUSA House",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 70% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 74% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 192.8,
     "ground": {
@@ -1203,9 +1170,9 @@
      "iou": 0.858,
      "lidar_m2": 218.8,
      "model_m2": 194.2,
-     "within_0.5m": 0.697,
+     "within_0.5m": 0.735,
      "model_minus_lidar_m": {
-      "p10": -1.56,
+      "p10": -0.95,
       "p50": -0.01,
       "p90": 0.68
      },
@@ -1364,19 +1331,19 @@
     "cover": 0.976,
     "vegetation": 0.004,
     "open_below": 0.167,
-    "not_drawn_m2": 7.0,
+    "not_drawn_m2": 16.8,
     "check": {
-     "iou": 0.835,
+     "iou": 0.785,
      "lidar_m2": 236.2,
-     "model_m2": 205.5,
-     "within_0.5m": 0.992,
+     "model_m2": 189.0,
+     "within_0.5m": 0.894,
      "model_minus_lidar_m": {
-      "p10": -0.03,
-      "p50": 0.0,
+      "p10": -0.62,
+      "p50": -0.0,
       "p90": 0.03
      },
      "highest_m": {
-      "model": 6.09,
+      "model": 5.64,
       "lidar": 10.69
      }
     }
@@ -1435,7 +1402,7 @@
   },
   "423": {
    "name": "Conference Centre",
-   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 54% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 2018.9,
     "ground": {
@@ -1453,11 +1420,11 @@
      "iou": 0.924,
      "lidar_m2": 2118.2,
      "model_m2": 2095.8,
-     "within_0.5m": 0.536,
+     "within_0.5m": 0.759,
      "model_minus_lidar_m": {
-      "p10": -4.3,
-      "p50": -0.12,
-      "p90": 0.1
+      "p10": -2.73,
+      "p50": -0.02,
+      "p90": 0.11
      },
      "highest_m": {
       "model": 21.31,
@@ -1468,7 +1435,7 @@
   },
   "431": {
    "name": "Fine Arts Studio Block 431",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 82% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 800.8,
     "ground": {
@@ -1481,19 +1448,19 @@
     "cover": 0.968,
     "vegetation": 0.053,
     "open_below": 0.091,
-    "not_drawn_m2": 9.5,
+    "not_drawn_m2": 8.0,
     "check": {
      "iou": 0.89,
      "lidar_m2": 851.0,
      "model_m2": 801.5,
-     "within_0.5m": 0.944,
+     "within_0.5m": 0.817,
      "model_minus_lidar_m": {
-      "p10": -0.06,
-      "p50": 0.01,
-      "p90": 0.1
+      "p10": -1.04,
+      "p50": -0.02,
+      "p90": 0.07
      },
      "highest_m": {
-      "model": 19.26,
+      "model": 18.57,
       "lidar": 18.9
      }
     }
@@ -1699,9 +1666,9 @@
     "open_below": 0.031,
     "not_drawn_m2": 19.8,
     "check": {
-     "iou": 0.872,
+     "iou": 0.868,
      "lidar_m2": 484.5,
-     "model_m2": 497.8,
+     "model_m2": 495.2,
      "within_0.5m": 0.933,
      "model_minus_lidar_m": {
       "p10": -0.1,
@@ -1817,7 +1784,7 @@
   },
   "802": {
    "name": "15 Eden Crescent",
-   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 37% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 39% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 886.0,
     "ground": {
@@ -1830,19 +1797,19 @@
     "cover": 0.997,
     "vegetation": 0.0,
     "open_below": 0.012,
-    "not_drawn_m2": 6.2,
+    "not_drawn_m2": 36.8,
     "check": {
      "iou": 0.958,
      "lidar_m2": 983.0,
      "model_m2": 951.5,
-     "within_0.5m": 0.372,
+     "within_0.5m": 0.391,
      "model_minus_lidar_m": {
-      "p10": -3.06,
-      "p50": -1.52,
-      "p90": 0.09
+      "p10": -3.15,
+      "p50": -0.89,
+      "p90": 0.02
      },
      "highest_m": {
-      "model": 8.58,
+      "model": 12.78,
       "lidar": 14.33
      }
     }
@@ -1952,11 +1919,11 @@
      "iou": 0.849,
      "lidar_m2": 914.5,
      "model_m2": 951.8,
-     "within_0.5m": 0.852,
+     "within_0.5m": 0.851,
      "model_minus_lidar_m": {
-      "p10": -0.44,
+      "p10": -0.48,
       "p50": 0.0,
-      "p90": 0.24
+      "p90": 0.23
      },
      "highest_m": {
       "model": 23.12,
@@ -2052,7 +2019,7 @@
     "check": {
      "iou": 0.951,
      "lidar_m2": 640.2,
-     "model_m2": 622.8,
+     "model_m2": 623.2,
      "within_0.5m": 0.893,
      "model_minus_lidar_m": {
       "p10": -0.5,
