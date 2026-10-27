@@ -320,6 +320,16 @@ Per view: silhouette IoU (as above) and, inside the building region (model build
 solid), luma percentiles p02/p10/p50/p90/p98 (Rec.709 on sRGB, 0–255) and the mean sRGB colour of
 the reference and of the render; plus the mean over views.
 
+Beside them, the **IoU in the box** (`iou_box`): the same silhouette IoU counted only inside the
+model's own screen box (`box`), the smallest rectangle of the view that holds every pixel of the
+model, above the cut or below it. What the photograph shows outside that rectangle, a neighbour, a
+tree, a tower behind, does not count; what it shows inside does, so a model drawn too narrow or too
+low still loses there. Each view also says whether its camera was **corrected** (`corrected`:
+refined, or set by `streetview.camera_fixes`), and the summary gives the mean IoU in the box over
+all views and the mean IoU and IoU in the box over the corrected views (`iou_mean_corrected`,
+`iou_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
+the IoU in the box.
+
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in
 `building.also` (inside their outlines, from `campus.json` for `also`, or within `frame.near_outline`
