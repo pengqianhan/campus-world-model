@@ -107,7 +107,9 @@ describe("the school's words", () => {
   it("give each school's teaching periods one name, semester or trimester, in every text the school shows", () => {
     for (const { school } of schools) {
       const words = overlayWords(en, school.words.en);
-      const names = new Set(wordKeys(words).flatMap((key) => [...lookupWords(words, key)!.matchAll(/\b(semester|trimester)s?\b/gi)].map((m) => m[1]!.toLowerCase())));
+      // The picker's words (picker.*) are on the site's root page, not in any school's app.
+      const shown = wordKeys(words).filter((key) => !key.startsWith("picker."));
+      const names = new Set(shown.flatMap((key) => [...lookupWords(words, key)!.matchAll(/\b(semester|trimester)s?\b/gi)].map((m) => m[1]!.toLowerCase())));
       expect([...names], school.id).toHaveLength(1);
     }
   });
