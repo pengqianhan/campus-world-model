@@ -34,8 +34,20 @@ export const school: School = {
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
   /** The City Campus buildings span about 340 m east to west and 280 m north to south. */
   campusSpan: { city: 600 },
-  /** North and South need an Overpass request each, a gate (docs/schools/aut.md, "Needs the maintainer", 4). */
-  areas: { central: CENTRAL, remote: [] },
+  /**
+   * North (90 Akoranga Drive) and South (640 Great South Road): docs/schools/aut.md, "Campuses".
+   * Each box is about 1 km square, as the University of Auckland's remote areas are, round the
+   * centre of the map on AUT's own page for that campus ("AUT North Campus" and "South Campus",
+   * read in the recon of 2026-10-22). The maintainer let the loop fetch them on 2026-10-27. Their
+   * raw snapshots carry the school's id first (docs/schools/DESIGN.md, section 3).
+   */
+  areas: {
+    central: CENTRAL,
+    remote: [
+      { id: "north", bbox: [-36.8024, 174.7505, -36.7933, 174.7618], osm: "osm/context-aut-north.json" },
+      { id: "south", bbox: [-36.99, 174.874, -36.9809, 174.8854], osm: "osm/context-aut-south.json" },
+    ],
+  },
   roomCode: { building: NONE, wing: NONE, room: NONE, floorLetters: [], equivalentFloors: [] },
   words: { en },
   /**
