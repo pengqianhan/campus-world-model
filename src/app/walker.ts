@@ -11,7 +11,7 @@ import { parseRoomCode } from "../shared/roomcode.ts";
 import { formatMinutes } from "../shared/time.ts";
 import { bearing, compass, describeBuilding, look, relative, type Look } from "../shared/walkerLook.ts";
 import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts";
-import type { Building } from "../shared/types.ts";
+import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
 import { pick } from "./i18n.ts";
@@ -62,6 +62,18 @@ function cleanName(name: unknown): string {
 /** A building's name as the panel and the look report give it. */
 function buildingName(b: Building): string {
   return pick(b.name);
+}
+
+/**
+ * A building as the panel names it: its code and its name, or its name alone for a building from
+ * OpenStreetMap with no `ref`, whose id names only its element (`buildingCode`). With `plain`, a
+ * name that only repeats the number ("Building 105") is left out.
+ */
+function called(b: Building, plain = false): string {
+  const code = buildingCode(b), name = buildingName(b);
+  const shownName = plain && /^Building /.test(name) ? "" : name;
+  if (!code) return name || b.id;
+  return shownName ? `${code} ${shownName}` : code;
 }
 
 /** Buildings on the map near a point, with the distance to their walls. */
@@ -226,11 +238,11 @@ function resolveTarget(target: string, from: Pt): { building?: Building; at?: Pt
   const xy = /^(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)$/.exec(t);
   if (xy) return { at: [Number(xy[1]), Number(xy[2])], label: `${xy[1]} m east, ${xy[2]} m north` };
   const byId = d.buildingById.get(t.toUpperCase());
-  if (byId && !byId.offMap) return { building: byId, label: `${byId.id} ${buildingName(byId)}` };
+  if (byId && !byId.offMap) return { building: byId, label: called(byId) };
   const room = parseRoomCode(school, t, d.buildingIds);
   if (room) {
     const b = d.buildingById.get(room.building);
-    if (b && !b.offMap) return { building: b, room: room.code, label: `${room.code}, in ${b.id} ${buildingName(b)}` };
+    if (b && !b.offMap) return { building: b, room: room.code, label: `${room.code}, in ${called(b)}` };
   }
   const s = need();
   const other = s.walkers.names().find((o) => o.toLowerCase() === t.toLowerCase());
@@ -244,7 +256,7 @@ function resolveTarget(target: string, from: Pt): { building?: Building; at?: Pt
   const named = d.campus.buildings
     .filter((b) => !b.offMap && buildingName(b).toLowerCase().includes(q))
     .sort((a, b) => Math.hypot(a.center[0] - from[0], a.center[1] - from[1]) - Math.hypot(b.center[0] - from[0], b.center[1] - from[1]));
-  if (named[0]) return { building: named[0], label: `${named[0].id} ${buildingName(named[0])}` };
+  if (named[0]) return { building: named[0], label: called(named[0]) };
   throw new Error(`Cannot find "${target}". Give a building number (109), a room code (303-G23), a building's name, "east,north" in metres, a campus, or another walker's name.`);
 }
 
@@ -633,11 +645,11 @@ export function bindWalkerScene(s: CampusScene | undefined): void {
     const near = st.indoor ? undefined : buildingsNear(st.at, 150)[0];
     const inB = st.indoor ? data.value?.buildingById.get(st.indoor.building) : undefined;
     walkerStatus.value = {
-      near: near ? `${near.b.id}${buildingName(near.b) && !/^Building /.test(buildingName(near.b)) ? ` ${buildingName(near.b)}` : ""} · ${Math.round(near.distance)} m` : undefined,
+      near: near ? `${called(near.b, true)} · ${Math.round(near.distance)} m` : undefined,
       nearId: near?.b.id,
       nearMetres: near ? Math.round(near.distance) : undefined,
       walking: st.walking,
-      indoor: inB ? `${inB.id}${buildingName(inB) && !/^Building /.test(buildingName(inB)) ? ` ${buildingName(inB)}` : ""}` : undefined,
+      indoor: inB ? called(inB, true) : undefined,
       floor: inB && st.indoor ? floorNameOf(inB, st.indoor.floor) : undefined,
     };
   }, 400);

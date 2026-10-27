@@ -413,3 +413,13 @@ export interface AcademicCalendar {
   holidays: { date: string; name: LocalizedText }[];
   terms: TermDates[];
 }
+
+/**
+ * The code a building is known by: its OpenStreetMap `ref` for a building from OpenStreetMap,
+ * which two buildings can share (their ids then add the element), else its id. A building from
+ * OpenStreetMap with no `ref` has no code, and none is made up: its id names only the element
+ * (`WAY-26127574`), so it is shown by its name.
+ */
+export function buildingCode(b: Building): string {
+  return b.ref ?? (b.osm ? "" : b.id);
+}

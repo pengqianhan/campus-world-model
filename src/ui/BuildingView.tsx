@@ -240,7 +240,7 @@ export function BuildingView() {
         <RoomCard d={d} b={b} />
         <div class="building-bar" id="building-bar">
           <div class="building-id">
-            <b>{buildingCode(b)}</b>
+            {buildingCode(b) && <b>{buildingCode(b)}</b>}
             <span class="building-name">{title || t("building.number", { id: buildingCode(b) })}</span>
             <small>
               {campusName(d, b.campus)} ·{" "}
@@ -262,7 +262,7 @@ export function BuildingView() {
             {b.osm && (
               <small id="building-source">
                 <a href={`https://www.openstreetmap.org/${b.osm}`} target="_blank" rel="noopener noreferrer">
-                  {t("building.fromOsm")}
+                  {t(b.ref ? "building.fromOsm" : "building.fromOsmName")}
                 </a>
               </small>
             )}

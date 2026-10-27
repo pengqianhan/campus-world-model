@@ -61,11 +61,15 @@ export function SceneHost() {
     try {
       scene = new CampusScene(stage.current!, labels.current!, {
         lite,
-        buildingLabel: (b) => ({
-          text: buildingCode(b),
-          sub: lite && b.roomCount < 12 ? undefined : buildingTitle(b) || undefined,
-          title: `${t("building.number", { id: buildingCode(b) })}${buildingTitle(b) ? ` · ${buildingTitle(b)}` : ""}`,
-        }),
+        // A building with no code is labelled by its name alone (buildingCode).
+        buildingLabel: (b) =>
+          buildingCode(b)
+            ? {
+                text: buildingCode(b),
+                sub: lite && b.roomCount < 12 ? undefined : buildingTitle(b) || undefined,
+                title: `${t("building.number", { id: buildingCode(b) })}${buildingTitle(b) ? ` · ${buildingTitle(b)}` : ""}`,
+              }
+            : { text: buildingTitle(b), title: buildingTitle(b) },
         roomLabel: (r) => ({
           text: r.code.slice(r.b.length + 1),
           title: `${r.code} · ${pick(r.name)}`,

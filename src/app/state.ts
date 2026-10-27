@@ -34,7 +34,12 @@ export const data = signal<AppData | null>(null);
 export const loadError = signal(false);
 export const webglFailed = signal(false);
 
-export const selCampus = signal("city");
+/**
+ * The campus the map opens on, which the address leaves out: the City Campus, or, for a school
+ * with no campus "city" (VUW's Kelburn Campus), its first campus on the map (readUrl).
+ */
+let homeCampus = "city";
+export const selCampus = signal(homeCampus);
 export const selBuilding = signal<string | undefined>(undefined);
 export const selFloor = signal<number | undefined>(undefined);
 export const selRoom = signal<string | undefined>(undefined);
@@ -282,6 +287,10 @@ export function readUrl(d: AppData): void {
   const p = q.get("panel");
   if (p === "about" || p === "search" || p === "time") panel.value = p;
 
+  if (!d.campusById.has(homeCampus)) {
+    homeCampus = d.campus.campuses.find((c) => c.onMap)?.id ?? homeCampus;
+    selCampus.value = homeCampus;
+  }
   const campus = q.get("campus");
   if (campus && d.campusById.has(campus)) selCampus.value = campus;
 
@@ -311,7 +320,7 @@ export function currentUrl(): string {
   const d = data.value;
   const q = new URLSearchParams();
   const b = selBuilding.value ? d?.buildingById.get(selBuilding.value) : undefined;
-  if (!b && selCampus.value !== "city") q.set("campus", selCampus.value);
+  if (!b && selCampus.value !== homeCampus) q.set("campus", selCampus.value);
   if (b) {
     q.set("building", b.id);
     const name = floorName(b, selFloor.value);

@@ -18,6 +18,16 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **VUW World Model, at /vuw/.** A third school on the site: the Kelburn Campus of Te Herenga
+  Waka—Victoria University of Wellington, in 3D on the LINZ ground among Kelburn's houses and
+  streets. Its 52 buildings come from OpenStreetMap, picked by their `operator` and
+  `building=university` tags and their names, each one block at its OpenStreetMap height (43 from
+  their number of levels), else at a default, and labelled by name: OpenStreetMap gives none of
+  them a code. A building's card gives its name and height, says how the height was found, and
+  links to its OpenStreetMap element. Rooms, class times, trimester dates and the course list are
+  not shown, and the status strip, the time panel, the card and About say why in VUW's own case.
+  Halls of residence and the childcare centre stay unnamed. Unofficial, with the project's own
+  colours; nothing is taken from VUW (#101).
 - **The Clock Tower East Wing drawn in detail.** Near the camera the map draws the Clock Tower East
   Wing (119) from code in place of its block: two storeys of rock-faced cream stone, two gabled
   pavilions toward the lawn and the car park, a plain stair tower rising between them,
