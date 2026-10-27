@@ -298,8 +298,9 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   (125 km north) shapes are about 1.4% too narrow east to west, which About says. The sea is not
   drawn: OpenStreetMap's coastline is a line, and turning it into water was not attempted. The
   public Overpass instances answered 504 or nothing for most of an hour on 2026-10-15; the fetch now
-  times out after 240 s (`scripts/lib/snapshot.ts`) and goes round all three instances up to three
-  times, a minute apart.
+  times out after 240 s (`scripts/lib/snapshot.ts`) and goes round the three instances up to three
+  times, a minute apart; since 2026-10-28 one that refuses, redirects or drops the connection is
+  recorded in `data/raw/overpass-closed.txt` and left alone (`scripts/lib/overpass.ts`).
 - VUW's Kelburn Campus, since 2026-10-27 (the maintainer let the loop fetch it): one Overpass
   snapshot, `data/raw/osm/context-vuw-kelburn.json` (committed, ODbL; 2,073 elements), of the box
   round VUW's own 24 map points and the buildings its tag rule takes, with 150 m of margin, and the

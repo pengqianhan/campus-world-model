@@ -2,9 +2,11 @@
 // Overpass query for each area the map draws (scripts/lib/areas.ts): the City / Grafton /
 // Newmarket area, and each campus or building away from it.
 // OSM data is © OpenStreetMap contributors, ODbL 1.0, so these snapshots are committed.
+import fs from "node:fs";
+import path from "node:path";
 import { AREAS, type SceneArea } from "./lib/areas.ts";
 import { askOverpass, closedOnDisk } from "./lib/overpass.ts";
-import { snapshot } from "./lib/snapshot.ts";
+import { RAW_DIR, snapshot } from "./lib/snapshot.ts";
 
 const query = (area: SceneArea) => `
 [out:json][timeout:180][bbox:${area.bbox.join(",")}];
@@ -26,17 +28,20 @@ out body geom qt;
 `;
 
 // Public Overpass instances, tried in order; the main one is often busy and answers 504. A busy one is
-// asked again; one that refuses, redirects or drops the connection is recorded once and left alone
-// (scripts/lib/overpass.ts).
+// asked again; one that refuses, redirects or drops the connection is recorded once and left alone,
+// and a snapshot on disk is read with no request (scripts/lib/overpass.ts).
 const ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.private.coffee/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
 
+const refresh = process.argv.includes("--refresh");
 for (const area of AREAS) {
   // Go round the instances up to three times, a minute apart.
+  const file = path.join(RAW_DIR, area.osm);
   const buf = await askOverpass(ENDPOINTS, {
+    cached: () => (!refresh && fs.existsSync(file) ? fs.readFileSync(file) : undefined),
     get: (url) =>
       snapshot({
         source: "osm",
@@ -47,7 +52,7 @@ for (const area of AREAS) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         // An API has no reason to send the query elsewhere: a redirect is a failure, never followed.
         redirect: "error",
-        refresh: process.argv.includes("--refresh"),
+        refresh,
       }),
     ...closedOnDisk,
     wait: (ms) => new Promise((r) => setTimeout(r, ms)),

@@ -1,75 +1,127 @@
-// Asking the public Overpass instances for a snapshot, and when to stop asking one. Closed is a
-// verdict (AGENTS.md): an endpoint that refuses (401, 403, or any other answer that is not a busy
-// server's), sends the query elsewhere (a redirect, which is not followed) or drops the connection is
-// recorded once in data/raw/overpass-closed.txt (gitignored, as landmark-fetch.ts's closed.txt is) and
-// is not asked again, in this run or a later one, until a person deletes its line. Only a busy
-// endpoint is asked again in the next round: a server error (5xx), 429, or no answer within
-// snapshot.ts's timeout to a query it took.
+// Asking the public Overpass instances for a snapshot, and when to stop asking one. An area whose
+// snapshot is on disk needs no request, and is read whatever follows. Closed is a verdict (AGENTS.md):
+// an instance that refuses the query (401, 403) or sends it elsewhere (a redirect, which is not followed)
+// is recorded at once in data/raw/overpass-closed.txt (gitignored, in the checkout that ran the fetch, as
+// landmark-fetch.ts's closed.txt is), and is not asked again until a person deletes its line; so is one
+// that drops the connection, once another instance has answered in the same run, which shows the fault
+// is not this machine's network. A busy instance (5xx, 429, or no answer in time) is asked again in the
+// next round, and one that answers another 4xx is left for the rest of the run. A fault of ours is never
+// an instance's verdict and stops the run with its error, since every instance would answer the same: an
+// answer of 400 (the query is wrong), a failure on this machine (a file that cannot be written), or no
+// instance reached at all (no network).
 import fs from "node:fs";
 import path from "node:path";
 import { HttpError, RAW_DIR } from "./snapshot.ts";
 
 export const CLOSED_FILE = path.join(RAW_DIR, "overpass-closed.txt");
 
-/** Whether a failed request closes its endpoint: anything but a busy server's answer or a timeout. */
-export function closes(e: unknown): boolean {
-  if (e instanceof HttpError) return !(e.status >= 500 || e.status === 429);
-  // snapshot.ts words a failed fetch as "<url> -> <name>: <message>"; its own timeout is a TimeoutError
-  return !/ -> TimeoutError\b/.test(e instanceof Error ? e.message : String(e));
+/** What a failed request to an instance says about it. */
+export type Failure = "refused" | "dropped" | "busy" | "unavailable" | "ours";
+
+/**
+ * Sorts a failed request by its error. `url` is the instance's: snapshot.ts words every failure of the
+ * request itself as "<url> -> <name>: <message> (<cause>)", so an error without that prefix happened on
+ * this machine after the answer came (writing the snapshot down).
+ */
+export function failure(url: string, e: unknown): Failure {
+  if (e instanceof HttpError) {
+    if (e.status === 401 || e.status === 403) return "refused";
+    if (e.status >= 500 || e.status === 429) return "busy";
+    if (e.status === 400) return "ours";
+    return "unavailable";
+  }
+  const m = e instanceof Error ? e.message : String(e);
+  if (!m.startsWith(`${url} -> `)) return "ours";
+  if (/ -> TimeoutError\b/.test(m)) return "busy";
+  if (/redirect/i.test(m)) return "refused";
+  return "dropped";
 }
 
 export interface OverpassDeps {
-  /** One request to an endpoint (snapshot.ts in the script). */
+  /** The area's snapshot if it is on disk (and not to be refreshed). */
+  cached: () => Buffer | undefined;
+  /** One request to an instance (snapshot.ts in the script). */
   get: (url: string) => Promise<Buffer>;
-  /** The endpoints recorded as closed, with why. */
+  /** The instances recorded as closed, with why. */
   closed: () => Map<string, string>;
-  /** Records an endpoint as closed. */
+  /** Records an instance as closed. */
   close: (url: string, why: string) => void;
   wait: (ms: number) => Promise<void>;
   warn: (message: string) => void;
 }
 
+/** The part of a failure worth keeping: the status, or snapshot.ts's words after the URL. */
+function why(url: string, e: unknown): string {
+  if (e instanceof HttpError) return `HTTP ${e.status}`;
+  const m = e instanceof Error ? e.message : String(e);
+  return (m.startsWith(`${url} -> `) ? m.slice(url.length + 4) : m).replace(/\s+/g, " ");
+}
+
 /**
- * Asks the endpoints in order, up to `rounds` times round, a minute apart, and returns the first
- * answer. An endpoint that closes is recorded and left out of every later round.
+ * Returns the area's snapshot: from disk if it is there, else the first answer of the instances, asked
+ * in order up to `rounds` times round, a minute apart.
  */
 export async function askOverpass(endpoints: string[], d: OverpassDeps, rounds = 3): Promise<Buffer> {
+  const disk = d.cached();
+  if (disk) return disk;
   const shut = d.closed();
+  const left = new Set<string>();
+  const dropped = new Map<string, string>();
+  let answered = false;
+  // A drop becomes the instance's verdict once another instance has answered: this machine reaches Overpass.
+  const settleDrops = () => {
+    for (const [u, r] of dropped) {
+      if (shut.has(u)) continue;
+      shut.set(u, r);
+      d.close(u, r);
+    }
+  };
   for (let round = 0; round < rounds; round++) {
-    const open = endpoints.filter((u) => !shut.has(u));
+    const open = endpoints.filter((u) => !shut.has(u) && !left.has(u) && !dropped.has(u));
     if (!open.length) break;
     if (round > 0) await d.wait(60_000);
     for (const url of open) {
       try {
-        return await d.get(url);
+        const buf = await d.get(url);
+        settleDrops();
+        return buf;
       } catch (e) {
         d.warn(String(e));
-        if (closes(e)) {
-          const why = e instanceof Error ? e.message : String(e);
-          shut.set(url, why);
-          d.close(url, why);
-        }
+        const kind = failure(url, e);
+        if (kind === "ours") throw e;
+        if (kind === "refused") {
+          shut.set(url, why(url, e));
+          d.close(url, why(url, e));
+        } else if (kind === "unavailable") left.add(url);
+        else if (kind === "dropped") dropped.set(url, why(url, e));
+        if (kind !== "dropped") answered = true;
+        if (answered) settleDrops();
         await d.wait(5000);
       }
     }
   }
+  if (!answered && dropped.size > 0) {
+    const tried = [...dropped].map(([u, r]) => `${u}: ${r}`).join("; ");
+    throw new Error(`no Overpass instance could be reached, so none is recorded as closed: is this machine online? (${tried})`);
+  }
   const closedNow = endpoints.filter((u) => shut.has(u)).map((u) => `${u} is closed (${shut.get(u)})`);
-  throw new Error(`no Overpass endpoint answered${closedNow.length ? `; ${closedNow.join("; ")}` : ""}`);
+  const how = `delete its line in ${path.relative(process.cwd(), CLOSED_FILE)} to ask it again`;
+  throw new Error(`no Overpass instance answered${closedNow.length ? `; ${closedNow.join("; ")}; ${how}` : ""}`);
 }
 
-/** The closed record on disk: one line per endpoint, "<time> <url> <why>". */
+/** The closed record on disk: one line per instance, "<time> <url> <why>". */
 export const closedOnDisk = {
   closed: (): Map<string, string> => {
     const m = new Map<string, string>();
     if (!fs.existsSync(CLOSED_FILE)) return m;
     for (const line of fs.readFileSync(CLOSED_FILE, "utf8").split("\n")) {
-      const [, url, ...why] = line.trim().split(" ");
-      if (url) m.set(url, why.join(" "));
+      const [, url, ...reason] = line.trim().split(" ");
+      if (url) m.set(url, reason.join(" "));
     }
     return m;
   },
-  close: (url: string, why: string): void => {
+  close: (url: string, reason: string): void => {
     fs.mkdirSync(path.dirname(CLOSED_FILE), { recursive: true });
-    fs.appendFileSync(CLOSED_FILE, `${new Date().toISOString()} ${url} ${why.replace(/\s+/g, " ")}\n`);
+    fs.appendFileSync(CLOSED_FILE, `${new Date().toISOString()} ${url} ${reason.replace(/\s+/g, " ")}\n`);
   },
 };
