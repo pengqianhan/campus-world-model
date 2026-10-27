@@ -73,6 +73,8 @@ A change to what the site does or shows adds its line here, and the README's
   them. VUW teaches in trimesters, and its About already said so. A school's words can now replace
   these two texts: at /vuw/ they say "No trimester dates are shown" and "trimester dates". The
   University of Auckland's and AUT's words do not change (#104).
+- **Search on Tai Tokerau and Ardmore** no longer lists buildings under "Buildings with the most
+  learning spaces": neither campus has any, so the list is empty again, as it was before #97 (#98).
 
 ## 2026-10-26
 
@@ -87,28 +89,6 @@ A change to what the site does or shows adds its line here, and the README's
   publishes them, and the site shows them only with AUT's permission (its floor plans need a
   written agreement with MazeMap). The status strip, the time panel, the card and About say so in
   AUT's own words. Unofficial, with the project's own colours; nothing is taken from AUT (#97).
-
-### Fixed
-
-- **Search on Tai Tokerau and Ardmore** no longer lists buildings under "Buildings with the most
-  learning spaces": neither campus has any, so the list is empty again, as it was before #97 (#98).
-
-## 2026-10-25
-
-### Added
-
-- **Maclaurin Chapel drawn in detail.** Near the camera the map draws Maclaurin Chapel (107) from
-  code in place of its block: the white hexagonal chapel with its great corner window, its low green
-  roof and slender spire, the bay beside it and the hall behind it, every height measured from the
-  LINZ 2024 LiDAR. On the map it has the map's colours; from a walker's height on a computer with a
-  graphics card, its own white walls, glass and light green metal roof. The small room beyond the
-  bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the
-  faces that the Street View photographs from Princes Street do not show. A click still opens its
-  floors (#92).
-
-## 2026-10-23
-
-### Added
 
 - **Old Choral Hall's range on Symonds Street drawn in detail.** Near Old Choral Hall (building
   104) the map now draws its south-west range from code, to sizes measured from the LiDAR survey:
@@ -133,14 +113,15 @@ A change to what the site does or shows adds its line here, and the README's
   side; the faces they do not show are drawn plain or after the faces they do show, and the south-east end is simpler than in the photographs. Its
   block still answers a click and opens on its floors. About now names brick and concrete among the
   landmarks' materials, and says that what no photograph shows is drawn plainly or after the parts that are shown (#80).
-- **Measured massings.** Near the camera, five plain buildings of the City Campus are drawn from
-  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
-  Studio Block 433 and 435 58 Symonds Street.
-  A program measures their layers and roofs (flat, or sloping planes); their walls, storeys and
-  windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
-  The building card and About name them. The other 43 small buildings in the LiDAR keep their
-  blocks, among them every place where people live and every childcare centre, each with its
-  reason (`landmarks/measured/exclusions.json`) (#79).
+
+- **Maclaurin Chapel drawn in detail.** Near the camera the map draws Maclaurin Chapel (107) from
+  code in place of its block: the white hexagonal chapel with its great corner window, its low green
+  roof and slender spire, the bay beside it and the hall behind it, every height measured from the
+  LINZ 2024 LiDAR. On the map it has the map's colours; from a walker's height on a computer with a
+  graphics card, its own white walls, glass and light green metal roof. The small room beyond the
+  bay, which a tree hides in the LiDAR and in every photograph, is drawn plainly, and so are the
+  faces that the Street View photographs from Princes Street do not show. A click still opens its
+  floors (#92).
 
 ### Fixed
 
@@ -150,6 +131,20 @@ A change to what the site does or shows adds its line here, and the README's
   centres. The data build now leaves them out of the search, and a code typed for such a floor is
   placed in its building only, with no pin and no floor, and the search and the room card say why
   (#84).
+
+## 2026-10-23
+
+### Added
+
+- **Measured massings.** Near the camera, five plain buildings of the City Campus are drawn from
+  the LINZ 2024 LiDAR in place of their blocks: 113, 114 Building 114, 409 Security, 433 Fine Arts
+  Studio Block 433 and 435 58 Symonds Street.
+  A program measures their layers and roofs (flat, or sloping planes); their walls, storeys and
+  windows are drawn by rule in their blocks' own colours, and a click still opens their floors.
+  The building card and About name them. The other 43 small buildings in the LiDAR keep their
+  blocks, among them every place where people live and every childcare centre, each with its
+  reason (`landmarks/measured/exclusions.json`) (#79).
+
 
 ## 2026-10-22
 
