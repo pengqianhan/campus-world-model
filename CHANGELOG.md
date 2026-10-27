@@ -49,7 +49,7 @@ A change to what the site does or shows adds its line here, and the README's
 ### Changed
 
 - **Each school's name in te reo Māori on the site's root page.** Under its English name, each
-  school on the list now has its name in te reo Māori, as its own home page gives it: Waipapa
+  school on the list now has its name in te reo Māori, as the school gives it on its own site: Waipapa
   Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT) and Te
   Herenga Waka (VUW), marked as te reo Māori for screen readers. VUW's line, which gave its two
   names as one, now gives them as the others do (#109).

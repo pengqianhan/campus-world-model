@@ -415,17 +415,17 @@
     "schools": {
       "uoa": {
         "name": "University of Auckland",
-      "reo": "Waipapa Taumata Rau",
+        "reo": "Waipapa Taumata Rau",
         "city": "Auckland"
       },
       "aut": {
         "name": "Auckland University of Technology",
-      "reo": "Te Wānanga Aronui o Tāmaki Makau Rau",
+        "reo": "Te Wānanga Aronui o Tāmaki Makau Rau",
         "city": "Auckland"
       },
       "vuw": {
         "name": "Victoria University of Wellington",
-      "reo": "Te Herenga Waka",
+        "reo": "Te Herenga Waka",
         "city": "Wellington"
       }
     }

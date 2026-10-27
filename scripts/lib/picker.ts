@@ -1,11 +1,13 @@
 // The two pages at the root of the Cloudflare site (docs/schools/DESIGN.md, section 7): index.html,
 // the school picker, and 404.html, the page an unknown path gets. Both are static: no script and
 // no WebGL. Each school's line comes from its meta.json and its words, and every other text from
-// the picker.* keys of src/i18n/locales/en.json. A school's `reo` is its name in te reo Māori, as its
-// own home page gives it (read on 2026-10-27, one request each through scripts/research/polite.mjs:
-// the University of Auckland's title and logo, "Waipapa Taumata Rau"; AUT's welcome, "Te Wānanga
-// Aronui o Tāmaki Makau Rau"; VUW's own name for itself, "Te Herenga Waka"), shown under its name. scripts/build-root.ts writes them in the deploy
-// jobs; tests/picker.test.ts checks them.
+// the picker.* keys of src/i18n/locales/en.json. A school's `reo`, shown under its name, is its name in
+// te reo Māori as the school gives it on its own site: the University of Auckland's and AUT's home
+// pages, read on 2026-10-27 through scripts/research/polite.mjs, robots.txt first ("Waipapa Taumata
+// Rau", the University's title and logo, its home page redirecting once; "Te Wānanga Aronui o
+// Tāmaki Makau Rau", AUT's welcome), and VUW's pages as docs/schools/vuw.md quotes them, its
+// copyright page in the recon of 2026-10-22 ("Te Herenga Waka"). scripts/build-root.ts writes the two
+// pages in the deploy jobs; tests/picker.test.ts checks them.
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../../src/shared/school.ts";
