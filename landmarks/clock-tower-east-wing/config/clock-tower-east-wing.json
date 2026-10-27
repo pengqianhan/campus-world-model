@@ -1,6 +1,6 @@
 {
  "name": "clock-tower-east-wing",
- "site": false,
+ "site": true,
  "building": {
   "id": "119",
   "also": [],
