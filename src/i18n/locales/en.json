@@ -424,6 +424,10 @@
       "vuw": {
         "name": "Te Herenga Waka—Victoria University of Wellington",
         "city": "Wellington"
+      },
+      "uc": {
+        "name": "University of Canterbury (Te Whare Wānanga o Waitaha)",
+        "city": "Christchurch"
       }
     }
   }
