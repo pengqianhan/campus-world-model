@@ -52,8 +52,9 @@ Against the photographs (`run.sh nine-eden-crescent compare`), round 2, every ca
 maintainer, 2026-10-27) 0.905, 1.000 and 1.000 over `v8ia…`'s wide, upper and door views, 0.867,
 1.000 and 1.000 over `mdk1…`'s and 0.812, 0.865 and 0.964 over `MH15…`'s, mean 0.935; over the whole
 frame 0.805 (round 1: 0.442). That passes tier 1's limit (0.65), but for this building the IoU in the
-box tells little: the boxes hold 2% sky on the mean (0-8% in each view), and a plain block filling each
-box would score 0.980 on the mean, more than the model in every view (`sky_in_box`, `iou_box_filled`).
+box tells little: 2% of the boxes' counted pixels are sky on the mean (0-8% in each view,
+`sky_in_box`), and a plain block filling each box would score 0.980 on the mean (1 minus that share), as
+much as the model in v8ia's and mdk1's upper and door views and more in the other five.
 Most of the rise from round 1 comes from `sky_mask.pale_tint`, which stopped the photographs' shaded
 white cladding being read as sky, not from the model; and two of the three `camera_fixes` (mdk1's and
 MH15's) were fitted to the street end's drawn openings. v8ia's and mdk1's upper and door views see no sky
@@ -91,5 +92,5 @@ at the far end: the walls go down to `FOOT`, -1.3 m.
 - What no photograph shows is plain white wall: the long sides, which stand against their
   neighbours, and the far end. The plant on the roof is drawn as plain grey boxes at the LiDAR's sizes.
 - The street end's cladding is drawn as smooth paint, without its panels' joints.
-- The glass is the kit's pale glass, which reflects the sky; the photographs' glass reflects the
-  sunlit buildings across the street.
+- The ribbons' panes are the kit's pale glass, which reflects the sky (the glazed canopy is the kit's
+  glass); the photographs' glass reflects the sunlit buildings across the street.

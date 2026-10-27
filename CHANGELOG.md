@@ -50,7 +50,7 @@ A change to what the site does or shows adds its line here, and the README's
   white top storey raked at one corner over three bays between two white piers, bands of windows,
   a vehicle way, a glazed entrance and a glazed corner under a canopy; along one side the top storey
   stands back behind a terrace, and plant stands on the flat roof. Every height is measured from the
-  LINZ 2024 LiDAR, and the street end's openings from three Street View photographs of it. On the map
+  LINZ 2024 LiDAR, and the street end's openings from two Street View photographs of it. On the map
   it has the map's colours; from a walker's height on a computer with a graphics card, its own white
   paint, glass and aluminium. Its long sides and far end, which no photograph shows, are drawn
   plainly. A click still opens its floors (#107).
