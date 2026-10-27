@@ -1,6 +1,6 @@
 // Auckland University of Technology's descriptor (docs/schools/DESIGN.md, section 5): data only.
-// AUT is in the Buildings form (DESIGN.md, section 2): its City Campus buildings come from
-// OpenStreetMap by a rule on their tags, on the LINZ ground; its rooms, class times, dates and
+// AUT is in the Buildings form (DESIGN.md, section 2): the buildings of its City, North and South
+// campuses come from OpenStreetMap by a rule on their tags, on the LINZ ground; its rooms, class times, dates and
 // course list wait for AUT's permission, and its floor plans for a written agreement with MazeMap
 // (docs/schools/aut.md, "Verdicts").
 import type { SceneArea, School } from "../../shared/school.ts";
@@ -13,8 +13,13 @@ import en from "./locales/en.json";
  */
 const CENTRAL: SceneArea = { id: "central", bbox: [-36.8689, 174.7608, -36.8441, 174.7797], osm: "osm/context.json" };
 
-/** A building code on the City Campus as OpenStreetMap tags it: W and one letter (WA to WZ). */
-const CODE = /^W[A-Z]$/;
+/**
+ * A building code as AUT gives it: a campus letter and a building letter (AUT's page "Getting
+ * around AUT": W = City, A = North, M = South; docs/schools/aut.md, "Campuses"), as OpenStreetMap
+ * tags it in `ref` (WA, AA) or, where an outline has no `ref`, as its whole `name` (AY, MA). In
+ * the three committed snapshots no element but AUT's buildings carries one (tests/schools/aut/).
+ */
+const CODE = /^[WAM][A-Z]$/;
 
 /**
  * Matches nothing. AUT publishes no room list the site may use, so no room code is read: the
@@ -32,7 +37,11 @@ export const school: School = {
   weather:
     "https://api.open-meteo.com/v1/forecast?latitude=-36.8533&longitude=174.766" +
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
-  /** The City Campus buildings span about 340 m east to west and 280 m north to south. */
+  /**
+   * The City Campus buildings span about 340 m east to west and 280 m north to south. North and
+   * South are framed by their own buildings' extent, as the University of Auckland's remote
+   * campuses are.
+   */
   campusSpan: { city: 600 },
   /**
    * North (90 Akoranga Drive) and South (640 Great South Road): docs/schools/aut.md, "Campuses".
@@ -52,12 +61,18 @@ export const school: School = {
   words: { en },
   /**
    * The rule on OpenStreetMap's tags that picks AUT's buildings ("A school whose campus map cannot
-   * be used" in PROGRESS.md, "Decisions"): its `operator` and `ref` tags. The pull request that
-   * built it lists every building it takes and every one it leaves out.
+   * be used" in PROGRESS.md, "Decisions"): its `operator` tag and its building code, in `ref` or
+   * as the whole `name`. A building's campus is the area it stands in, named as AUT's campuses
+   * page names it. The pull requests that built it list every building it takes and every one it
+   * leaves out.
    */
   osmBuildings: {
-    campus: { id: "city", name: "City Campus" },
-    candidates: [{ operator: /^AUT$/ }, { ref: CODE }],
+    campuses: [
+      { id: "city", name: "City Campus", area: "central" },
+      { id: "north", name: "North Campus", area: "north" },
+      { id: "south", name: "South Campus", area: "south" },
+    ],
+    candidates: [{ operator: /^AUT$/ }, { ref: CODE }, { name: CODE }],
     steps: [
       {
         when: { building: null },
@@ -81,20 +96,26 @@ export const school: School = {
           "A bridge between buildings (man_made=bridge), not a building that stands on the ground. It stays in the surroundings as a bridge, drawn from the height it starts at (min_height or building:min_level); where its tags give none, it is not drawn.",
       },
       {
+        when: { ref: null, name: CODE, operator: null },
+        take: true,
+        reason:
+          "No ref, but its whole name is a building code (a campus letter and a building letter, as AUT's room codes begin), with no operator tag: no other operator is named.",
+      },
+      {
         when: { ref: null },
         take: false,
         reason: "No building code (ref) to name it by. It stays in the surroundings.",
       },
       { when: { ref: CODE, operator: /^AUT$/ }, take: true, reason: "A building code (ref) and operator=AUT." },
       {
-        when: { ref: CODE, operator: null, building: /^university$/ },
+        when: { ref: CODE, operator: null },
         take: true,
-        reason: "A building code (ref) and building=university, with no operator tag: no other operator is named.",
+        reason: "A building code (ref), with no operator tag: no other operator is named.",
       },
       {
         when: { operator: /^AUT$/ },
         take: false,
-        reason: "operator=AUT, but its ref is not one of AUT's building codes (W and a letter). It stays in the surroundings.",
+        reason: "operator=AUT, but its ref is not one of AUT's building codes (a campus letter, W, A or M, and a building letter). It stays in the surroundings.",
       },
       {
         when: { operator: /./ },
@@ -103,7 +124,7 @@ export const school: School = {
       },
     ],
     provides:
-      "AUT's City Campus buildings, picked by their operator and ref tags: outlines, names, codes, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
+      "AUT's City, North and South Campus buildings, picked by their operator tag and building code: outlines, names, codes, and heights where tagged. Surrounding buildings, streets, paths, parks and trees",
   },
   /** docs/schools/aut.md, "Verdicts". */
   layers: {

@@ -8,7 +8,7 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 (also at https://pengqianhan.github.io/campus-world-model/)
 
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
-University of Technology's City Campus, at https://campusworldmodel.com/aut/; and **VUW World
+University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; and **VUW World
 Model**, an **unofficial** 3D map of the buildings of the Kelburn Campus of Te Herenga Waka—Victoria
 University of Wellington, at https://campusworldmodel.com/vuw/
 
@@ -55,6 +55,9 @@ It is built to answer two questions a student actually has:
   site, each with its city, how much of it the site shows and the date of its campus snapshot; it
   no longer sends every visitor to /uoa/. Bridges between the surrounding buildings span the street
   at their mapped height instead of standing on it; five with no mapped height are not drawn.
+  [/aut/](https://campusworldmodel.com/aut/) adds AUT's North and South campuses: 23 more buildings
+  from OpenStreetMap, chosen from "Other campuses" in the campus list and labelled by their AUT
+  codes.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
@@ -485,10 +488,11 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
 **AUT World Model** (`/aut/`) uses four of these sources and nothing of AUT's own. OpenStreetMap
-gives AUT's City Campus buildings, picked by their `operator` and `ref` tags, with their names,
-codes, outlines and, where tagged, heights, and the city round them; `public/data/aut/campus.json`
-and `context.json` are derived from the same committed snapshot as the University's and are under
-the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/aut/terrain/`), under CC BY 3.0
+gives the buildings of AUT's City, North and South campuses, picked by their `operator` tag and
+AUT's building code, with their names, codes, outlines and, where tagged, heights, and the city
+round them; `public/data/aut/campus.json` and `context.json` are derived from the same committed
+snapshot as the University's, and `context/north.json` and `context/south.json` from the snapshots of
+those two campuses, all under the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/aut/terrain/`), under CC BY 3.0
 NZ. Open-Meteo gives the weather at the City Campus, and Quaternius's figure is the walker's body.
 AUT's rooms, class times, semester dates and course list wait for AUT's permission, and its floor
 plans for a written agreement with MazeMap: see [docs/schools/aut.md](docs/schools/aut.md).
