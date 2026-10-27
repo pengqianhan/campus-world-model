@@ -109,7 +109,7 @@ Building points of `data/fifteen-eden-crescent_pts.npy` in the view frame; model
 0.5 m band across the building at x -18 to 15, unless said): the street side's roof by the face (z 11 to
 11.5) 7.34 / 7.34, by the top storey (z 6.5 to 7) 8.03 / 8.01; the back's roof by the back wall (z -12 to
 -11.5) 7.42 / 7.35, by the top storey (z -7 to -6.5) 8.10 / 8.08; the flat roof at the north-west end
-7.3 / 7.1-7.4 (0.5 m cells, but for those by the street face at x 17 to 18.5: Limits); the canopy's top
+7.3 / 7.1-7.4 (0.5 m cells, but for those by the street face at x 17 to 18: Limits); the canopy's top
 7.42 / 7.34 (z 12 to 12.5); the top storey's crown 10.60 / 10.59-10.60, its roof at z 5.75 and -5.75
 9.10 and 9.34 / 9.09 and 9.32, its eaves 8.81 / 8.89 and 8.91; the cut crown at the north-west end 9.72
 / 9.71-9.76 (0.5 m cells). Every one within 0.1 m (limit 0.5 m). Two parts of the roofs are not
@@ -142,7 +142,7 @@ footpath lies 0.55 to 1.06 m below it along the street face, and the walls go do
   10.0-10.6 m, 3.5 to 4.1 m above the LiDAR on about 23 m² (estimated): the top view's cells where the
   model stands highest over the LiDAR are there.
 - At the north-west end, between the canopy's end and 801, the LiDAR has the roof by the street face
-  lower than the flat roof beside it: the medians of its returns in 0.5 m cells at x 17 to 18.5, z 9.5
+  lower than the flat roof beside it: the medians of its returns in 0.5 m cells at x 17 to 18, z 9.5
   to 11.6 are 6.15-6.43 m, where the flat roof is drawn on at 7.3 m (estimated), about 1 m above it on
   about 2 m²; the face's top there, under it, is at 6.45 m, as the panels' elsewhere.
 - The street face's layers stop 0.5 m short of the plan's north-west corner, where 801's end stands
