@@ -36,7 +36,7 @@ A change to what the site does or shows adds its line here, and the README's
   that ground open, so a walker could walk into the stone, and the view from behind them filled with
   its plain face; the default start's first heading leads there. The link now stands from the
   wing's first floor, 3.6 m, up, as the map's blocks drew it, and a walker passes under it in view.
-  Seen from a distance, the map is unchanged; near 119 only the link's own pixels change (#PR).
+  Seen from a distance, the map is unchanged; near 119 only the link's own pixels change (#117).
 
 ## 2026-10-27
 
