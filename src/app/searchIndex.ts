@@ -25,8 +25,9 @@ function indexFor(d: AppData) {
   for (const building of d.campus.buildings) {
     entries.push({
       item: { type: "building", building },
-      // A building from OpenStreetMap is found by its code (`ref`), which two buildings can share.
-      code: building.ref ?? building.id,
+      // A building from OpenStreetMap is found by its code (`ref`), which two buildings can share;
+      // one with no `ref` has no code, only its name (its id names the element).
+      code: building.ref ?? (building.osm ? undefined : building.id),
       text: [...Object.values(building.name), building.sourceText],
       // Buildings outrank their own rooms for a bare number such as "303".
       boost: 40 + Math.min(20, building.roomCount),
@@ -90,7 +91,9 @@ export function browseBuildings(d: AppData, campus: string, limit = 12): Buildin
   // A school whose data says it has no floors and rooms (the Buildings form): its buildings by code.
   // A campus of a school with rooms that has none of its own (Tai Tokerau, Ardmore) offers none.
   const indoor = d.meta.layers?.indoor;
-  if (indoor && indoor !== "usable") return here.sort((a, b) => (a.ref ?? a.id).localeCompare(b.ref ?? b.id, "en", { numeric: true })).slice(0, limit);
+  // A building with no code (an OpenStreetMap building with no `ref`) sorts by its name.
+  const key = (x: Building) => x.ref ?? (x.osm ? (x.name.en ?? x.id) : x.id);
+  if (indoor && indoor !== "usable") return here.sort((a, b) => key(a).localeCompare(key(b), "en", { numeric: true })).slice(0, limit);
   return here
     .filter((b) => b.roomCount > 0)
     .sort((a, b) => b.roomCount - a.roomCount)

@@ -23,7 +23,10 @@ async function published<T>(page: Page, file: string): Promise<T> {
   return page.evaluate((f) => fetch(`data/${f}`).then((r) => r.json()), file) as Promise<T>;
 }
 
-const code = (b: Building) => b.ref ?? b.id;
+/** The code a building is known by (buildingCode in src/ui/common.tsx): none for a building from OpenStreetMap with no ref. */
+const code = (b: Building) => b.ref ?? (b.osm ? "" : b.id);
+/** What its label shows first: its code, else its name. */
+const shown = (b: Building) => code(b) || b.name.en;
 
 test.beforeEach(() => {
   test.skip(SCHOOL === "uoa", "the University of Auckland has its own specs");
@@ -42,13 +45,13 @@ test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ pag
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");
   const onMap = campus.buildings.filter((b) => !b.offMap);
-  // The labels laid out on screen ("on"), by the code each shows first.
+  // The labels laid out on screen ("on"), by the code (or the name) each shows first.
   const labels = await page.locator(".lbl-building.on").evaluateAll((els) => els.map((el) => el.querySelector("b")?.textContent ?? ""));
-  const labelled = onMap.filter((b) => labels.includes(code(b)));
+  const labelled = onMap.filter((b) => labels.includes(shown(b)));
   // Labels give way to each other where they would overlap, so not every one shows at once.
-  expect(labelled.length, `labelled: ${labelled.map(code).join(", ")}`).toBeGreaterThan(onMap.length / 2);
+  expect(labelled.length, `labelled: ${labelled.map(shown).join(", ")}`).toBeGreaterThan(onMap.length / 2);
   // The tallest buildings stand above the rest, so their labels show.
-  for (const b of [...onMap].sort((a, z) => z.height - a.height).slice(0, 3)) expect(labelled.map(code), `${code(b)}`).toContain(code(b));
+  for (const b of [...onMap].sort((a, z) => z.height - a.height).slice(0, 3)) expect(labelled.map(shown), `${shown(b)}`).toContain(shown(b));
 });
 
 test(`${SCHOOL}: About has the unofficial notice with the school's full name, and every source with its link and snapshot date`, async ({ page }) => {
@@ -108,7 +111,8 @@ test(`${SCHOOL}: a building opens on its card, framed, with how its height was f
   const b = [...campus.buildings].filter((x) => !x.offMap).sort((a, z) => z.height - a.height)[0]!;
   await open(page, `${DAY}&building=${encodeURIComponent(b.id)}`);
   const bar = page.locator("#building-bar");
-  await expect(bar.locator(".building-id b")).toHaveText(code(b));
+  if (code(b)) await expect(bar.locator(".building-id b")).toHaveText(code(b));
+  else await expect(bar.locator(".building-id b")).toHaveCount(0);
   await expect(bar).toContainText(b.name.en);
   if (b.floors.length === 0) {
     await expect(page.locator(".floors")).toHaveCount(0);
@@ -129,16 +133,18 @@ test(`${SCHOOL}: a building opens on its card, framed, with how its height was f
 test(`${SCHOOL}: search finds a building by its name and by its code`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");
-  const b = campus.buildings.find((x) => !x.offMap && x.name.en !== code(x) && !x.name.en.startsWith(code(x)))!;
+  // A building whose name does not hold its code, so the two searches differ; or one with no code.
+  const b = campus.buildings.find((x) => !x.offMap && (!code(x) || (x.name.en !== code(x) && !x.name.en.startsWith(code(x)))))!;
   await page.locator("#search-button").click();
   const input = page.locator("#search-input");
-  for (const query of [b.name.en, code(b)]) {
+  for (const query of [b.name.en, code(b)].filter(Boolean)) {
     await input.fill(query);
     await expect(page.locator(".results li.type-building", { hasText: b.name.en }).first(), query).toBeVisible();
   }
   await page.locator(".results li.type-building", { hasText: b.name.en }).first().locator("button.result-main").click();
   await expect(page).toHaveURL(new RegExp(`[?&]building=${encodeURIComponent(b.id)}(&|$)`));
-  await expect(page.locator("#building-bar .building-id b")).toHaveText(code(b));
+  if (code(b)) await expect(page.locator("#building-bar .building-id b")).toHaveText(code(b));
+  else await expect(page.locator("#building-bar .building-id b")).toHaveCount(0);
 });
 
 test(`${SCHOOL}: ?lang= falls back to English, in the school's words`, async ({ page }) => {

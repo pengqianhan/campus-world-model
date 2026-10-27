@@ -240,7 +240,7 @@ export function BuildingView() {
         <RoomCard d={d} b={b} />
         <div class="building-bar" id="building-bar">
           <div class="building-id">
-            <b>{buildingCode(b)}</b>
+            {buildingCode(b) && <b>{buildingCode(b)}</b>}
             <span class="building-name">{title || t("building.number", { id: buildingCode(b) })}</span>
             <small>
               {campusName(d, b.campus)} ·{" "}
