@@ -305,6 +305,12 @@ boundary:
   classifies each photograph again after a grey closing with a disc of r degrees, which gives what
   is darker than its surroundings and narrower than 2r the colour round it, and adds the sky it finds
   (Maclaurin Chapel: 0.4); without it the masks are as before, byte for byte;
+- pale and hazy sky are pale, smooth and grey or bluish, and so is a white wall that the camera took
+  as white as a hazy sky (a white building in open shade, exposed for the shade): where such a wall
+  touches the top of the view or sky that does, it is taken for sky. The config's
+  `sky_mask.pale_tint` (t, 0–255) keeps as pale or hazy sky only what is tinted blue, its blue above
+  its red by t or more: clear and pale blue sky stay sky, white walls and the sky's own clipped white
+  go to solid (9 Eden Crescent: 8); without it the masks are as before, byte for byte;
 - score = IoU of model-above-cut vs photo-solid over pixels that are neither ignored nor below the
   cut, pooled over the panorama's views, minus a small prior on the size of the correction;
 - compass search from five starts at quarter resolution (~500 renders per panorama).
