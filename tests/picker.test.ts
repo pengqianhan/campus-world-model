@@ -80,6 +80,9 @@ describe("the school picker at the site's root", () => {
     if (aut) expect(schoolLine(aut, shared)).toMatchObject({ site: "AUT World Model", name: "Auckland University of Technology", reo: "Te Wānanga Aronui o Tāmaki Makau Rau", form: "Buildings only" });
     const vuw = schools.find((s) => s.id === "vuw");
     if (vuw) expect(schoolLine(vuw, shared)).toMatchObject({ name: "Victoria University of Wellington", reo: "Te Herenga Waka" });
+    // Otago's bilingual name, as its recon gives it ("University of Otago | Ōtākou Whakaihu Waka"), split as VUW's is
+    const otago = schools.find((s) => s.id === "otago");
+    if (otago) expect(schoolLine(otago, shared)).toMatchObject({ name: "University of Otago", reo: "Ōtākou Whakaihu Waka" });
     // each school's name in te reo Māori stands under its English name, marked as te reo Māori
     expect(pages.index).toContain('<p class="reo" lang="mi">Waipapa Taumata Rau</p>');
     expect(pages.index).toContain("<h1>Campus World Model</h1>");

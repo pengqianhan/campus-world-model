@@ -429,7 +429,8 @@
         "city": "Wellington"
       },
       "otago": {
-        "name": "University of Otago | Ōtākou Whakaihu Waka",
+        "name": "University of Otago",
+        "reo": "Ōtākou Whakaihu Waka",
         "city": "Dunedin and Christchurch"
       }
     }
