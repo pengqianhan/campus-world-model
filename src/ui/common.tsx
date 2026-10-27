@@ -83,6 +83,14 @@ export function absentLayers(d: AppData): { layer: Layer; verdict: Exclude<Layer
   });
 }
 
+/**
+ * True when none of the school's buildings has a code (buildingCode): its buildings come from
+ * OpenStreetMap with no ref, as VUW's do, so the site names them by their names alone.
+ */
+export function noCodes(d: AppData): boolean {
+  return d.campus.buildings.length > 0 && d.campus.buildings.every((b) => !buildingCode(b));
+}
+
 /** True when the school's data says it has no floors and rooms to show: the Buildings form. */
 export function noIndoor(d: AppData): boolean {
   return absentLayers(d).some((a) => a.layer === "indoor");

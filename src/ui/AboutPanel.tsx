@@ -5,7 +5,7 @@ import { LANDMARKS, MEASURED, landmarkBuildings } from "../app/landmarks.ts";
 import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../app/links.ts";
 import { data, panel } from "../app/state.ts";
 import { aucklandWallTime } from "../shared/time.ts";
-import { IconButton, Section, absentLayers, buildingTitle, noIndoor } from "./common.tsx";
+import { IconButton, Section, absentLayers, buildingTitle, noCodes, noIndoor } from "./common.tsx";
 import { WorldLink } from "./Travel.tsx";
 
 const longDate: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" };
@@ -49,10 +49,10 @@ export function AboutPanel() {
           </div>
 
           <Section title={t("about.whatTitle")}>
-            <p>{buildingsOnly ? t("about.whatBuildings") : available ? t("about.what") : t("about.whatNoTimetable")}</p>
+            <p>{buildingsOnly ? t(noCodes(d) ? "about.whatBuildingsNames" : "about.whatBuildings") : available ? t("about.what") : t("about.whatNoTimetable")}</p>
           </Section>
           <Section title={t("about.howTitle")}>
-            <p>{buildingsOnly ? t("about.howBuildings") : t("about.how")}</p>
+            <p>{buildingsOnly ? t(noCodes(d) ? "about.howBuildingsNames" : "about.howBuildings") : t("about.how")}</p>
           </Section>
 
           <Section title={t("about.sourcesTitle")}>

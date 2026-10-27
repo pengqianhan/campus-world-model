@@ -92,6 +92,7 @@
       "estimated": "Height estimated: OpenStreetMap gives no height and no number of levels, so it stands at {height} m, the default of the surrounding buildings"
     },
     "fromOsm": "Outline, name and code from OpenStreetMap",
+    "fromOsmName": "Outline and name from OpenStreetMap",
     "landmark": "Drawn in detail, to sizes measured by LiDAR",
     "landmarkPart": "{part} drawn in detail, to sizes measured by LiDAR; the rest of the building keeps its height estimated from the number of floors",
     "measured": "Heights and roof measured by LiDAR; walls and windows drawn by rule",
@@ -247,9 +248,11 @@
     "what": "It answers two questions: which building and floor is my room in, and is a class timetabled in this room right now. Type a room code, a building or a course into Search, or click a building to step inside and browse floors and rooms.",
     "whatNoTimetable": "It answers one question today: which building and floor is my room in. Type a room code from your timetable or a building name into Search, or click a building to step inside and browse floors and rooms. It is also built to show what is timetabled in a room at any moment, but class times are not available yet; see Known limitations below.",
     "whatBuildings": "It shows the buildings in 3D on the real ground, with their names, codes and heights. Type a building's name or code into Search, or click a building to see what is known about it. Floors, rooms and class times are not shown; see Known limitations below.",
+    "whatBuildingsNames": "It shows the buildings in 3D on the real ground, with their names and heights. Type a building's name into Search, or click a building to see what is known about it. Floors, rooms and class times are not shown; see Known limitations below.",
     "howTitle": "Getting around",
     "how": "Drag to rotate. Scroll or pinch to zoom. Right-drag, Shift-drag or use two fingers to move. Click a building to open it, then pick a floor and a room. The address bar always holds a link to exactly what you are looking at.",
     "howBuildings": "Drag to rotate. Scroll or pinch to zoom. Right-drag, Shift-drag or use two fingers to move. Click a building to see its name, code and height. The address bar always holds a link to exactly what you are looking at.",
+    "howBuildingsNames": "Drag to rotate. Scroll or pinch to zoom. Right-drag, Shift-drag or use two fingers to move. Click a building to see its name and height. The address bar always holds a link to exactly what you are looking at.",
     "sourcesTitle": "Data sources",
     "sourceProvides": "Used for",
     "sourceSnapshot": "Snapshot",
@@ -328,6 +331,7 @@
     "why": "Why?",
     "hintCampus": "Click a building to see its floors and rooms.",
     "hintBuildings": "Click a building to see its name, code and height.",
+    "hintBuildingsNames": "Click a building to see its name and height.",
     "absent": {
       "needs-permission": "Not shown until permission is given: {layers}.",
       "not-published": "Not published by any source the site can use: {layers}."

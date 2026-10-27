@@ -120,6 +120,8 @@ test(`${SCHOOL}: a building opens on its card, framed, with how its height was f
     await expect(page.locator("#height-note")).toContainText({ "floor-count": "floors", "osm-height": "height tag", "osm-levels": "number of levels", estimated: "Height estimated" }[b.heightSource]);
   }
   if (b.osm) await expect(page.locator("#building-source a")).toHaveAttribute("href", `https://www.openstreetmap.org/${b.osm}`);
+  // A building with no code is not said to have one.
+  if (b.osm && !code(b)) await expect(page.locator("#building-source a")).not.toContainText("code");
   if (meta.layers?.indoor && meta.layers.indoor !== "usable") await expect(page.locator("#no-indoor-note")).toHaveText(words.about.limits.rooms!);
   await shot(page, `schools-${SCHOOL}-building`);
   // Framed: the building stands on screen, closer than in the campus view.
