@@ -25,7 +25,14 @@ export const MEASURED = {
       [5.2, 4.0], [8.2, 0.0], [9.2, 0.5], [11.8, -0.5], [14.5, -3.2], [14.5, -5.2], [12.0, -7.8], [12.5, -8.8]],
     top: 36.9,
   },
-  // Storeys: white bands at every floor (the photographs), 3.3 m apart from 3.3 m (estimated: the
-  // tower's 32.6 m over ten storeys above the street side's ground); not yet measured.
-  floor: 3.3,
+  // Storeys: a white band at every floor (the photographs). The building's returns within 2 m of its
+  // walls peak at 8.6, 11.5, 14.5, 17.4, 20.3, 23.1, 26.0, 28.9 and 31.6 m (0.25 m bins; their
+  // autocorrelation peaks at 2.75-3.0 m): 23.0 m over eight storeys, 2.875 m each, from 2.875 m.
+  floor: 2.875,
+  // The lower part's faces turned to the west and north-west (the tower plan's edges 10 to 13, from
+  // [5.2, 8.0] to [10.0, 0.8]), with balconies and louvres in MGAo's photograph.
+  wing: { edges: [10, 11, 12, 13] },
+  // The window slot: on the tower plan's edge 17 (the shaft's south-west face, from [12.5, -8.8] to
+  // [9.2, -12.0]), from 0.62 to 0.80 of the way along it, near its south end (the photograph).
+  slot: { edge: 17, from: 0.62, to: 0.8 },
 };

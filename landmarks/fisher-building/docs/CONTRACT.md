@@ -17,6 +17,8 @@ nothing is traced or sampled from them into the model.
     roof at 32.6 m (median); building 804's floor outline in campus.json holds 95% of it;
   - **the shaft**: its south-west half (178 m2) rises to a second flat roof at 36.9 m (median, 37.4 at
     p90); its south-west faces are the tower's own;
+  - **the storeys**: the returns within 2 m of the walls peak every 2.875 m, at 8.6, 11.5, 14.5,
+    17.4, 20.3, 23.1, 26.0, 28.9 and 31.6 m: the floor bands;
   - **the ground**: +3.3 m on the south-west (the street side, the ramp), 0 to +0.4 m on the north and
     south, -2.7 to -3.1 m on the north-east and east (toward the gully). Walls go down to `FOOT`
     (-3.2 m).

@@ -4,11 +4,15 @@
 // parts. Every landmark's model.js exports build(materials, only), which returns a Group.
 import { Builder } from "../kit/gothic.js";
 import { tower, shaft, floorBands } from "./parts/tower.js";
+import { wing } from "./parts/wing.js";
+import { slot } from "./parts/slot.js";
 
 const PARTS = {
   tower: (b) => tower(b),
   shaft: (b) => shaft(b),
   bands: (b) => floorBands(b),
+  wing: (b) => wing(b),
+  slot: (b) => slot(b),
 };
 
 export function build(materials, only) {
