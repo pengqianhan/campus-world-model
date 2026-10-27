@@ -20,11 +20,12 @@ address of a campus), and Singapore (a partner's campus abroad, outside LINZ's g
 
 **Massey's own host.** The research browser (`scripts/research/polite.mjs`, documents only) asked
 `www.massey.ac.nz` for its `robots.txt` and then its home page, once, on 2026-10-28 at 01:18
-(New Zealand time), for the school's name and the brand-colour check (DESIGN.md, section 6). The
-page answered, and the browser blocked what it would have loaded (its stylesheets and images on
-`d2ub1k1pknil0e.cloudfront.net`, its scripts, and its icons). The reader that called it failed to
-save the page (its output folder did not exist), and no second request went to the home page, so
-nothing was read from it. The name used is this report's, "Te Kunenga ki Pūrehuroa Massey
+(New Zealand time), for the school's name and the brand-colour check (DESIGN.md, section 6): two
+requests, since `polite.mjs` asks for a host's `robots.txt` before anything else. The page
+answered (its status was not kept; no host was closed), and the browser blocked what it would have
+loaded (its stylesheets and images on `d2ub1k1pknil0e.cloudfront.net`, its scripts, and its icons).
+The reader that called it failed to save the page (its output folder did not exist), and no second
+request went to the home page, so nothing was read from it. The name used is this report's, "Te Kunenga ki Pūrehuroa Massey
 University"; OpenStreetMap's operator tag on the Manawatū library writes it "Massey University / Te
 Kunenga ki Pūrehuroa". The brand colours were not compared: the site's accent and tones are the
 project's own, taken from no school. No stylesheet was asked for, and nothing else went to any
