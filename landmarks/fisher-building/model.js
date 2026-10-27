@@ -6,7 +6,7 @@ import { Builder } from "../kit/gothic.js";
 import { tower, shaft, floorBands } from "./parts/tower.js";
 import { wing } from "./parts/wing.js";
 import { slot } from "./parts/slot.js";
-import { canopy, deck } from "./parts/entrance.js";
+import { canopy, deck, ramp } from "./parts/entrance.js";
 
 const PARTS = {
   tower: (b) => tower(b),
@@ -16,11 +16,9 @@ const PARTS = {
   slot: (b) => slot(b),
   canopy: (b) => canopy(b),
   deck: (b) => deck(b),
-  // parts/entrance.js's ramp (the white parapet along the street) is measured but not built: drawn with a
-  // fixed lower edge it stood far too tall at its near end, 9 m from MGAo's camera, and widened the model's
-  // screen box over the street and the trees (IoU in the box 0.853 -> 0.678 in MGAo's tower view). Its
-  // lower edge follows the ramp down to the street, which the photographs show only in part.
-  ramp: null,
+  // the ramp's white side along the street, on the LiDAR's line (round 3; round 2 measured it 1-5 m nearer
+  // MGAo's camera, where it widened the model's screen box over the street and the trees)
+  ramp: (b) => ramp(b),
 };
 
 export function build(materials, only) {

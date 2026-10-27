@@ -6,28 +6,34 @@
 // entrance and its ramp are a later round's.
 import { MEASURED as M, FOOT } from "./common.js";
 import { prism, roof, bands, inset, edgeBox } from "./shapes.js";
+import { notched } from "./slot.js";
 
 export function tower(b) {
-  // the brick core: the outline with the wing's faces set back by the balconies' depth (parts/wing.js)
-  prism(b, inset(M.tower.plan, M.wing.edges, M.wing.deep), FOOT, M.tower.top, "brickTan");
-  roof(b, M.tower.plan, M.tower.top + 0.02, 0.3, "roofGrey");
+  // the brick core: the outline with the wing's faces set back by the balconies' depth (parts/wing.js), and
+  // the slot's recess cut into its south-west corner (parts/slot.js)
+  const plan = notched(M.tower.plan, M.slot.corner).plan;
+  prism(b, inset(plan, M.wing.edges, M.wing.deep), FOOT, M.tower.top, "brickTan");
+  roof(b, plan, M.tower.top + 0.02, 0.3, "roofGrey");
 }
 
 export function shaft(b) {
-  prism(b, M.shaft.plan, M.tower.top, M.shaft.top, "brickTan");
-  roof(b, M.shaft.plan, M.shaft.top, 0.3, "roofGrey");
+  const plan = notched(M.shaft.plan, M.slot.shaftCorner).plan;
+  prism(b, plan, M.tower.top, M.shaft.top, "brickTan");
+  roof(b, plan, M.shaft.top, 0.3, "roofGrey");
   // its parapet, standing on the walls' line, inside the outline
-  for (let i = 0; i < M.shaft.plan.length; i++) edgeBox(b, M.shaft.plan, i, 0, 1, -0.25, 0, M.shaft.top, M.shaft.parapet, "brickTan");
+  for (let i = 0; i < plan.length; i++) edgeBox(b, plan, i, 0, 1, -0.25, 0, M.shaft.top, M.shaft.parapet, "brickTan");
 }
 
 /** The floor bands, cream as MGAo's photograph shows them (round 1 drew them white): on the tower to its
- * roof, but not on the wing's faces, where the balconies' slabs and the tile fascia stand; and on the shaft
- * above it, where its floor at 34.5 m shows as the band nearest its top. */
+ * roof, but not on the wing's faces, where the balconies' slabs and the tile fascia stand, nor across the
+ * slot's recess (parts/slot.js); and on the shaft above it, the band nearest its top at the height the LiDAR
+ * and the photograph give (MEASURED.band.shaft, round 3; round 2 put it at the next storey's 34.5 m). */
 export function floorBands(b) {
-  const { h, proud } = M.band, low = [], high = [];
-  for (let y = M.floor; y < M.shaft.top - 0.5; y += M.floor) (y < M.tower.top - 0.5 ? low : high).push(y - h / 2);
-  bands(b, M.tower.plan, low, h, proud, "render", M.wing.edges);
-  bands(b, M.tower.plan, [M.tower.top - 0.35], 0.35, 0.15, "render", M.wing.edges);
-  bands(b, M.shaft.plan, high, h, proud, "render");
-  bands(b, M.shaft.plan, [M.shaft.top - 0.35], 0.35, 0.15, "render");
+  const { h, proud, shaft } = M.band, low = [];
+  for (let y = M.floor; y < M.tower.top - 0.5; y += M.floor) low.push(y - h / 2);
+  const tower = notched(M.tower.plan, M.slot.corner), top = notched(M.shaft.plan, M.slot.shaftCorner);
+  bands(b, tower.plan, low, h, proud, "render", [...M.wing.edges, ...tower.notch]);
+  bands(b, tower.plan, [M.tower.top - 0.35], 0.35, 0.15, "render", [...M.wing.edges, ...tower.notch]);
+  bands(b, top.plan, [shaft - h / 2], h, proud, "render", top.notch);
+  bands(b, top.plan, [M.shaft.top - 0.35], 0.35, 0.15, "render", top.notch);
 }

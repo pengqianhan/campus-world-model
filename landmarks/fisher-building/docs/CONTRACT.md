@@ -21,18 +21,22 @@ nothing is traced or sampled from them into the model.
   - **the south-west faces** (round 2): lines fitted to the wall returns between 12 and 31.5 m (rms
     0.03-0.17 m) meet at the west corner (14.3, -4.2), the slot's corner (12.49, -8.48) and the south
     corner (9.04, -11.64), where the plan's 0.6 m simplification had cut the corners; the returns stop
-    0.33 and 0.52 m short of the slot's corner on either side (its recess);
+    0.33 and 0.52 m short of the slot's corner on either side (its recess); round 3: 0.33 m deep, to
+    0.8 m along the north-west face and 0.4 m along the south-east one, cut into both plans' corner;
   - **the storeys**: the returns within 2 m of the walls peak every 2.875 m, at 8.6, 11.5, 14.5,
-    17.4, 20.3, 23.1, 26.0, 28.9 and 31.6 m: the floor bands;
+    17.4, 20.3, 23.1, 26.0, 28.9 and 31.6 m: the floor bands; on the shaft the band nearest its top
+    is at 33.75 m (round 3: its returns peak at 33.5-34.0 m, and MGAo's tower view through the fitted
+    camera puts it at 33.7-34.0 m), not at a storey's 34.5 m: the top storey is not taller;
   - **the ground**: +3.3 m on the south-west (the street side, the ramp), 0 to +0.4 m on the north and
     south, -2.7 to -3.1 m on the north-east and east (toward the gully). Walls go down to `FOOT`
     (-3.2 m).
   - The outline's lobe on the south-west (the entrance, x 4 to 10, z -17 to -9) is under trees: the
     LiDAR sees no roof there, and ground at +0.4 m.
-  - **the ramp** (round 2, not drawn yet): through the trees the LiDAR's building returns show a deck at
-    6 to 7 m west of the tower (x 16 to 19, z -9 to -3) rising to 9 to 10 m off its west corner (x 13 to
-    19, z -2 to 1), over ground at 3.2 m (the car park); in MGAo's wide view they lie along the top of
-    the ramp's white parapet.
+  - **the ramp** (round 2; drawn in round 3): through the trees the LiDAR's building returns show a deck
+    at 5.9 m west of the tower (x 15 to 18.5, z -8.5 to -3.4) over ground at 3.2 m (the car park). Its
+    side along the street runs on the line of the planter's flat returns at 6.6-6.85 m, from (18.0, -2.2)
+    to (25.5, -14.5), where the ground has risen to it (5.65 m); its grey face, top 6.22 m and foot
+    4.66 m over the car park, is MGAo's door and upper views through the fitted camera on that line.
 - `parts/common.js` holds these sizes. It is the lead's: read it, do not edit it; report a size you
   measure and the lead moves it there.
 
@@ -59,7 +63,10 @@ nothing is traced or sampled from them into the model.
 - `MGAo…`'s camera is set by `streetview.camera_fixes` (round 2): fitted to its tower view's floor
   bands, corners and the canopy's edge against the LiDAR's, 1.8 m from the recorded camera, its
   photograph looking 5.56° lower than its cut says (the panorama's roll, which the cut does not
-  apply). Its note says how. `W9y5…`'s is not fitted (no edge shows through the leaves).
+  apply). Its note says how. `W9y5…`'s (round 3) keeps its recorded position, which no edge through the
+  leaves can fit, and takes a pitch only, fitted to the canopy's red eave in its tower, upper and door
+  views against the LiDAR's canopy roof: its photograph looks 6.41° lower than its cut says (its
+  panorama's roll, -5.71° at 87° off the car's heading, gives 5.70°).
 - Not used: six panoramas that are not Google's (user-contributed).
 - No photograph shows the north or east faces: draw them plainly at the LiDAR's sizes.
 
