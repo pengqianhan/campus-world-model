@@ -1,41 +1,62 @@
 // The block (parts/common.js MEASURED): four storeys of white cladding under a flat roof, the top storey
-// sloping back along the south-east side. The street end (south-west, -x) as the three panoramas from
-// Eden Crescent show it: three bays between white piers; downstairs a vehicle way, the glazed entrance and
-// a glazed corner; upstairs a ribbon of glazing in each bay on two storeys (the corner bay's lower one
-// taller), and a band of glazing across the top storey. The long sides stand against their neighbours and
-// the north-east end faces a slope behind: no photograph shows them, so they are plain white walls.
+// sloping back along the south-east side. The street end (-x) as the three panoramas from Eden Crescent show
+// it, every size measured in round 1 (parts/common.js, "street"): a white top storey whose face comes down
+// over three bays set back between two white piers, its corner raked on the south-east; in the bays a
+// band of glazing on each of the two storeys below it, the right bay's lower one taller; downstairs a
+// vehicle way, the glazed entrance with its doors and a glazed corner under a glazed canopy. The long sides
+// stand against their neighbours and the far end faces a slope behind: no photograph shows them, so they
+// are plain white walls.
 import { MEASURED as M, FOOT } from "./common.js";
 import { wall, facing, tris } from "./shapes.js";
 
 const T = 0.35; // the street end's thickness
+const STREET = -0.75; // the street at the end's foot (the LiDAR: -0.72), where the vehicle way opens
 
 export function block(b) {
   const B = M.block, S = M.street, [s0, s1] = B.slope.z;
-  // the body behind the street end, up to the roof, and the lower part along the sloping side
-  b.box(B.x[0] + T, B.x[1], FOOT, B.roof, s1, B.z[1], "paint");
-  b.box(B.x[0] + T, B.x[1], FOOT, B.slope.low, B.z[0], s1, "paint");
+  // the body behind the street end, up to the roof, and the lower part along the sloping side; below the
+  // top storey it starts D behind the end's face, so that the bays' openings look into rooms and the vehicle
+  // way into its dark passage, closed at its two sides
+  const D = S.recess + T + 1.25, top = S.bayTop;
+  b.box(B.x[0] + T, B.x[1], top, B.roof, s1, B.z[1], "paint");
+  b.box(B.x[0] + D, B.x[1], FOOT, top, s1, B.z[1], "paint");
+  b.box(B.x[0] + T, B.x[1], top, B.slope.low, B.z[0], s1, "paint");
+  b.box(B.x[0] + D, B.x[1], FOOT, top, B.z[0], s1, "paint");
+  b.box(B.x[0] + T, B.x[0] + D, FOOT, top, B.z[1] - 0.3, B.z[1], "paint");
+  b.box(B.x[0] + T, B.x[0] + D, FOOT, top, B.z[0], B.z[0] + 0.3, "paint");
   // the sloping side of the top storey: one plane from its low edge up to the roof, facing up and out
-  const a0 = [B.x[0], B.slope.low, s0], a1 = [B.x[1], B.slope.low, s0], r0 = [B.x[0], B.roof, s1], r1 = [B.x[1], B.roof, s1];
+  const a0 = [B.x[0] + T, B.slope.low, s0], a1 = [B.x[1], B.slope.low, s0], r0 = [B.x[0] + T, B.roof, s1], r1 = [B.x[1], B.roof, s1];
   tris(b, [[a0, r1, a1], [a0, r0, r1]], "roofGrey");
   // the flat roof and its parapet
-  b.box(B.x[0], B.x[1], B.roof - 0.1, B.roof, s1, B.z[1], "roofGrey");
-  b.box(B.x[0], B.x[1], B.roof, B.parapet, B.z[1] - 0.25, B.z[1], "paint");
+  b.box(B.x[0] + T, B.x[1], B.roof - 0.1, B.roof, s1, B.z[1], "roofGrey");
+  b.box(B.x[0] + T, B.x[1], B.roof, B.parapet, B.z[1] - 0.25, B.z[1], "paint");
   b.box(B.x[1] - 0.25, B.x[1], B.roof, B.parapet, s1, B.z[1], "paint");
   // the street end, facing -x: in that turned frame x runs along +z (to the right as seen from the street)
+  // and the end's face is at z = F
   facing(b, "-x", 0, 0, () => {
+    const F = -S.x, R = S.recess, [z0, z1] = S.z, [P1, P2] = S.piers;
+    // the top storey's face, from the bays' head to its top, raked at its south-east corner, with its band
+    const W = z1 - z0, H = S.crest - top, t = S.band;
+    const face = [[0, 0], [W, 0], [W, H], [S.rake.z - z0, H], [0, S.rake.low - top]];
+    wall(b, face, z0, top, F, T, [{ x: (t.z[0] + t.z[1]) / 2, w: t.z[1] - t.z[0], y: t.y[0], h: t.y[1] - t.y[0], bay: 1.45 }]);
+    // the two piers and the end's narrow south-east edge, in the face's plane, down to the street
+    for (const [p0, p1] of [P1, P2, [z0, S.vehicle.z[0]]]) b.box(p0, p1, FOOT, top, F - R - 0.05, F, "paint");
+    // the bays, set back R behind the piers: one wall across the end, from the foot to the top storey's face
     const wins = [];
-    const [L, C, R] = S.bays;
-    const mid = (r) => (r[0] + r[1]) / 2, wd = (r) => r[1] - r[0] - 0.5;
-    // downstairs: the vehicle way (an opening, dark), the entrance and the glazed corner
-    wins.push({ x: mid(C), w: wd(C), y: S.ground[0], h: S.ground[1] - S.ground[0], transom: 2.3, bay: 1.2 });
-    wins.push({ x: mid(R), w: wd(R), y: S.ground[0], h: S.ground[1] - S.ground[0], bay: 1.2 });
-    for (const [y0, y1] of S.bands) for (const r of [L, C]) wins.push({ x: mid(r), w: wd(r), y: y0, h: y1 - y0 });
-    wins.push({ x: mid(R), w: wd(R), y: S.corner[0], h: S.corner[1] - S.corner[0] });
-    wins.push({ x: mid(R), w: wd(R), y: S.bands[1][0], h: S.bands[1][1] - S.bands[1][0] });
-    wins.push({ x: (s1 + 0.3 + R[1] - 0.25) / 2, w: R[1] - 0.25 - (s1 + 0.3), y: S.top[0], h: S.top[1] - S.top[0], bay: 1.5 });
-    const poly = [[0, 0], [B.z[1] - B.z[0], 0], [B.z[1] - B.z[0], B.parapet - FOOT], [s1 - B.z[0], B.parapet - FOOT], [0, B.slope.low - FOOT]];
-    // the vehicle way: an opening with nothing in it, dark inside
-    wins.push({ x: mid(L), w: wd(L), y: S.ground[0], h: S.ground[1] - 0.3 - S.ground[0], open: true });
-    wall(b, poly, B.z[0], FOOT, -S.x, T, wins);
+    const span = (a, c, y0, y1, o = {}) => ({ x: (a + c) / 2, w: c - a, y: y0, h: y1 - y0, ...o });
+    const [lo, up] = [S.lower, S.upper], cu = S.cornerUp;
+    // upstairs: the left and centre bays' two bands, the right bay's upper band and its taller lower window
+    for (const [y0, y1] of [lo, up]) wins.push(span(S.leftWin, P1[0], y0, y1), span(P1[1], P2[0], y0, y1));
+    wins.push(span(P2[1], S.rightWin, up[0], up[1]), span(P2[1], cu.z1, cu.y[0], cu.y[1], { transom: cu.transom - cu.y[0] }));
+    // downstairs: the vehicle way (open, dark inside), the entrance with its doors, the glazed corner
+    wins.push(span(S.vehicle.z[0], S.vehicle.z[1], STREET, S.vehicle.head, { open: true }));
+    const e = S.entrance;
+    wins.push(span(P1[1], P2[0], e.y[0], e.y[1], { bay: 1.05, posts: e.doors }));
+    wins.push(span(S.corner.z[0], S.corner.z[1], S.corner.y[0], S.corner.y[1], { bay: 1.2 }));
+    wall(b, [[0, 0], [W, 0], [W, top - FOOT], [0, top - FOOT]], z0, FOOT, F - R, T, wins);
+    // the glazed canopy over the corner, standing out from the bay to its far edge past the end
+    const c = S.canopy;
+    b.box(P2[1], c.z1, c.y[0] + 0.06, c.y[1] - 0.06, F - R, F + c.out, "glass");
+    for (const y of [c.y[0], c.y[1] - 0.06]) b.box(P2[1], c.z1, y, y + 0.06, F - R, F + c.out, "iron");
   });
 }

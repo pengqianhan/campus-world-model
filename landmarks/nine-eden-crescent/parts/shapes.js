@@ -30,7 +30,8 @@ export function tris(b, list, material) {
 }
 
 /** A ribbon of glazing set back `reveal` in its opening: dark glass, a dark aluminium frame round it and a
- * mullion every `bay` metres; with `door`, the lowest 2.2 m of its middle light is a pair of doors. */
+ * mullion every `bay` metres; a transom `transom` m above its foot; and, with `posts` ([x0, x1] pairs), a
+ * door's frame at each: its two jambs, a little heavier than a mullion, and its head at the transom. */
 function ribbon(b, w, front) {
   const { x, y, w: W, h, reveal = 0.15, frame = 0.06, bay = 1.3 } = w;
   const zf = front - reveal, zg = zf - 0.02, list = [];
@@ -40,6 +41,10 @@ function ribbon(b, w, front) {
   const n = Math.max(1, Math.round(W / bay));
   for (let k = 1; k < n; k++) { const xx = x - W / 2 + (W * k) / n; list.push([xx - 0.03, xx + 0.03, y, y + h, zf - 0.05, zf]); }
   if (w.transom) list.push([x - W / 2, x + W / 2, y + w.transom - 0.03, y + w.transom + 0.03, zf - 0.05, zf]);
+  for (const [p0, p1] of w.posts ?? []) {
+    for (const xx of [p0, p1]) list.push([xx - 0.05, xx + 0.05, y, y + h, zf - 0.07, zf]);
+    if (w.transom) list.push([p0, p1, y + w.transom - 0.05, y + w.transom + 0.05, zf - 0.07, zf]);
+  }
   b.add(boxesGeometry(list), "iron");
 }
 
