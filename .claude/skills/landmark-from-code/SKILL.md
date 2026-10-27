@@ -75,7 +75,8 @@ A new landmark is steps 1 to 5. Another round on a landmark is steps 3 to 5. A c
 
 4. **Check.** Move the measured sizes the agents reported into `parts/common.js`. Run
    `landmarks/pipeline/run.sh <name> refine compare`. Open the strips and read `out/pipeline/compare/metrics.md`: the
-   silhouette IoU of the views whose camera was refined, and the luma of the building in the render
+   silhouette IoU of the views whose camera was corrected (refined, or set by `camera_fixes`), with what
+   the IoU in the box can tell there (`sky_in_box`, `iou_box_filled`), and the luma of the building in the render
    against the photograph.
    Done when no part fails to build, the triangle and draw-call counts are within the contract's
    budget, and you have looked at every strip.

@@ -46,7 +46,7 @@ A change to what the site does or shows adds its line here, and the README's
   back, its ends and the low link toward the Clock Tower, which no photograph shows, are drawn
   plainly. A click still opens its floors (#102).
 - **9 Eden Crescent drawn in detail.** Near the camera the map draws 9 Eden Crescent (801) from code
-  in place of its block: a white four-storey office block whose street end on Eden Crescent shows a
+  in place of its block: a white four-storey building whose street end on Eden Crescent shows a
   white top storey raked at one corner over three bays between two white piers, bands of windows,
   a vehicle way, a glazed entrance and a glazed corner under a canopy; along one side the top storey
   stands back behind a terrace, and plant stands on the flat roof. Every height is measured from the

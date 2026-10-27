@@ -60,7 +60,7 @@ It is built to answer two questions a student actually has:
   codes. Near the Clock Tower the map draws its East Wing in detail: rock-faced stone, two gabled
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
   trimester dates, not semester dates. On Eden Crescent the map draws 9 Eden Crescent in detail: a
-  white office block, its street end of piers, bays and bands of windows over a glazed entrance.
+  white four-storey building, its street end of piers, bays and bands of windows over a glazed entrance.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
@@ -316,15 +316,16 @@ Clock Tower, which no photograph shows, are drawn plainly.
 | ![The Clock Tower East Wing from the car park, drawn from code](docs/landmarks/clock-tower-east-wing-front.jpg) | ![The Clock Tower East Wing from above the lawn, drawn from code](docs/landmarks/clock-tower-east-wing-above.jpg) |
 | ![The Clock Tower East Wing on the map, drawn from code in the map's colours](docs/landmarks/clock-tower-east-wing-map.jpg) | ![The Clock Tower East Wing from the lawn, through the walker's eyes](docs/landmarks/clock-tower-east-wing-eyes.jpg) |
 
-The seventh is 9 Eden Crescent (801), a white four-storey office block in the city centre. Its street
+The seventh is 9 Eden Crescent (801), a white four-storey building in the city centre. Its street
 end on Eden Crescent has a white top storey, raked at its south-east corner, over three bays set back
 between two white piers: bands of windows, a vehicle way, a glazed entrance and a glazed corner under a
 canopy. Along its south-east side the top storey stands back behind a terrace, and plant stands on its
 flat roof. Every height comes from the LiDAR, within 0.25 m. Three Street View panoramas see the
 street end square on, with the neighbours either side and a 70 m tower behind it in their wide views;
 counted inside the rectangle the model fills on the screen, so that the neighbours do not count,
-the model's silhouette has an IoU of 0.81 to 1.00 over their nine views, and from above its outline
-covers the LiDAR's with an IoU of 0.91. Its long sides, which stand against their neighbours, and its
+the model's silhouette has an IoU of 0.81 to 1.00 over their nine views, though there those rectangles
+hold so little sky that a plain block filling them would score as high; from above its outline covers
+the LiDAR's with an IoU of 0.91. Its long sides, which stand against their neighbours, and its
 far end, which no photograph shows, are drawn plainly.
 
 | | |

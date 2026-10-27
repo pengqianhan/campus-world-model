@@ -13,10 +13,15 @@ tools/sky_mask.py; computed on the fly for a reference without one). Writes <dir
                image) that holds every pixel of the model, above the cut or below it
   iou_box      the silhouette IoU as `iou`, over the pixels inside `box` only: what the photograph shows
                outside it (a neighbour, a tree) does not count
+  sky_in_box   the share of the counted pixels inside `box` that the photograph shows as sky: what the IoU
+               in the box can tell; near 0, any model that fills its box scores high
+  iou_box_filled  the IoU in the box of a plain block filling the box (every counted pixel of it above
+               the cut and the ground): a baseline that a drawn model has to beat to show likeness there
   corrected    whether the view's camera was corrected: refined (refine applied) or set by the config's
                streetview.camera_fixes (`camera_fix` in the views file compare.mjs read)
-and in the summary the means of `iou_box` over all views and of `iou` and `iou_box` over the corrected
-views. These keys come after the others; the others are as they were before the box was added.
+and in the summary the means of `iou_box` over all views and of `iou`, `iou_box`, `sky_in_box` and
+`iou_box_filled` over the corrected views. These keys come after the others; the others are as they
+were before the box was added.
 """
 import json, os, sys
 import numpy as np
@@ -54,16 +59,23 @@ for u in used:
     lr, cr = stats(ref); ln, cn = stats(ren)
     # the model's own screen box (red or yellow in the label: the model at any height) and the IoU inside it
     ys, xs = np.nonzero(R)
-    box, iou_box = None, None
+    box, iou_box, sky_box, iou_filled = None, None, None, None
     if len(xs):
         box = [int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1]
         ab, bb = a[box[1]:box[3], box[0]:box[2]], b[box[1]:box[3], box[0]:box[2]]
         ub = int((ab | bb).sum()); iou_box = round(float((ab & bb).sum() / ub), 4) if ub else None
+        # how much the IoU in the box can tell: the share of the box's counted pixels that the photograph
+        # shows as sky, and the IoU in the box of a plain block filling the box (every counted pixel of it
+        # above the cut and the ground): a model that fills its box scores high where there is little sky
+        vb = valid[box[1]:box[3], box[0]:box[2]]
+        nb = int(vb.sum()); sky_box = round(float(((mk[box[1]:box[3], box[0]:box[2]] < 64) & vb).sum() / nb), 4) if nb else None
+        fb = vb & ~G[box[1]:box[3], box[0]:box[2]]
+        uf = int((fb | bb).sum()); iou_filled = round(float((fb & bb).sum() / uf), 4) if uf else None
     cam = cams.get(u["file"], {})
     fixed, refined = bool(cam.get("camera_fix")), u.get("camera") == "refined"
     rows.append({"view": u["file"], "iou": None if iou is None else round(iou, 4), "region_px": int(region.sum()),
                  "lum_ref": lr, "lum_render": ln, "rgb_ref": cr, "rgb_render": cn, "camera": u.get("camera", "views.json"),
-                 "box": box, "iou_box": iou_box, "corrected": fixed or refined,
+                 "box": box, "iou_box": iou_box, "sky_in_box": sky_box, "iou_box_filled": iou_filled, "corrected": fixed or refined,
                  "correction": " and ".join(w for w, on in (("camera_fixes", fixed), ("refined", refined)) if on) or None})
 ious = [r["iou"] for r in rows if r["iou"] is not None]
 summary = {"views": len(rows), "iou_mean": round(float(np.mean(ious)), 4) if ious else None}
@@ -75,15 +87,17 @@ corr = [r for r in rows if r["corrected"]]
 summary.update({"iou_box_mean": mean([r["iou_box"] for r in rows if r["iou_box"] is not None]),
                 "corrected_views": len(corr),
                 "iou_mean_corrected": mean([r["iou"] for r in corr if r["iou"] is not None]),
-                "iou_box_mean_corrected": mean([r["iou_box"] for r in corr if r["iou_box"] is not None])})
+                "iou_box_mean_corrected": mean([r["iou_box"] for r in corr if r["iou_box"] is not None]),
+                "sky_in_box_mean_corrected": mean([r["sky_in_box"] for r in corr if r["sky_in_box"] is not None]),
+                "iou_box_filled_mean_corrected": mean([r["iou_box_filled"] for r in corr if r["iou_box_filled"] is not None])})
 json.dump({"summary": summary, "views": rows}, open(os.path.join(out, "metrics.json"), "w"), indent=1)
 f = lambda v: "–" if v is None else " ".join(f"{x:.0f}" for x in v)
 g = lambda x: "–" if x is None else f"{x:.3f}"
-md = ["| view | camera | corrected | IoU | IoU in box | luma p02 p10 p50 p90 p98 ref | render | mean RGB ref | render |",
-      "| --- | --- | --- | ---: | ---: | --- | --- | --- | --- |"]
+md = ["| view | camera | corrected | IoU | IoU in box | sky in box | filled box | luma p02 p10 p50 p90 p98 ref | render | mean RGB ref | render |",
+      "| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |"]
 for r in rows:
-    md.append(f"| {r['view']} | {r['camera']} | {r['correction'] or 'no'} | {g(r['iou'])} | {g(r['iou_box'])} | {f(r['lum_ref'])} | {f(r['lum_render'])} | {f(r['rgb_ref'])} | {f(r['rgb_render'])} |")
-md.append(f"| **mean** | | | {g(summary['iou_mean'])} | {g(summary['iou_box_mean'])} | {f(summary['lum_ref_mean'])} | {f(summary['lum_render_mean'])} | {f(summary['rgb_ref_mean'])} | {f(summary['rgb_render_mean'])} |")
-md.append(f"| **mean, corrected cameras** | | {summary['corrected_views']} of {len(rows)} | {g(summary['iou_mean_corrected'])} | {g(summary['iou_box_mean_corrected'])} | | | | |")
+    md.append(f"| {r['view']} | {r['camera']} | {r['correction'] or 'no'} | {g(r['iou'])} | {g(r['iou_box'])} | {g(r['sky_in_box'])} | {g(r['iou_box_filled'])} | {f(r['lum_ref'])} | {f(r['lum_render'])} | {f(r['rgb_ref'])} | {f(r['rgb_render'])} |")
+md.append(f"| **mean** | | | {g(summary['iou_mean'])} | {g(summary['iou_box_mean'])} | | | {f(summary['lum_ref_mean'])} | {f(summary['lum_render_mean'])} | {f(summary['rgb_ref_mean'])} | {f(summary['rgb_render_mean'])} |")
+md.append(f"| **mean, corrected cameras** | | {summary['corrected_views']} of {len(rows)} | {g(summary['iou_mean_corrected'])} | {g(summary['iou_box_mean_corrected'])} | {g(summary['sky_in_box_mean_corrected'])} | {g(summary['iou_box_filled_mean_corrected'])} | | | | |")
 open(os.path.join(out, "metrics.md"), "w").write("\n".join(md) + "\n")
 print("\n".join(md))

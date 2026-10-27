@@ -329,11 +329,17 @@ the reference and of the render; plus the mean over views.
 Beside them, the **IoU in the box** (`iou_box`): the same silhouette IoU counted only inside the
 model's own screen box (`box`), the smallest rectangle of the view that holds every pixel of the
 model, above the cut or below it. What the photograph shows outside that rectangle, a neighbour, a
-tree, a tower behind, does not count; what it shows inside does, so a model drawn too narrow or too
-low still loses there. Each view also says whether its camera was **corrected** (`corrected`:
+tree, a tower behind, does not count; what it shows inside does. The box is the model's own, so a model
+drawn too narrow or too low does not lose there: what it leaves out at its edges falls outside the box.
+The top view below and the heights against the LiDAR measure the model's size. Two more numbers say how
+much the IoU in the box can tell: the share of the box that the photograph shows as sky (`sky_in_box`),
+and the IoU in the box of a plain block filling the box (`iou_box_filled`). Where the box holds little
+sky, any model that fills it scores high, and a drawn model that does not beat the plain block shows no
+likeness by this number: look at the strips. Each view also says whether its camera was **corrected** (`corrected`:
 refined, or set by `streetview.camera_fixes`), and the summary gives the mean IoU in the box over
-all views and the mean IoU and IoU in the box over the corrected views (`iou_mean_corrected`,
-`iou_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
+all views and the mean IoU, IoU in the box, sky in the box and filled box's IoU over the corrected views
+(`iou_mean_corrected`, `iou_box_mean_corrected`, `sky_in_box_mean_corrected`,
+`iou_box_filled_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
 the IoU in the box.
 
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph

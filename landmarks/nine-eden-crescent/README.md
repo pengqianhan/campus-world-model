@@ -1,7 +1,7 @@
 # Landmark: 9 Eden Crescent, drawn from code
 
-9 Eden Crescent (building 801 of the University of Auckland's campus map), a white four-storey office
-block in the city centre, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, checked
+9 Eden Crescent (building 801 of the University of Auckland's campus map), a white four-storey
+building in the city centre, drawn in three.js from code alone and sized by the LINZ 2024 LiDAR, checked
 against three Street View photographs of its street end (October 2026). The kit it is built with, the
 pipeline, the viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
 
@@ -51,9 +51,14 @@ Against the photographs (`run.sh nine-eden-crescent compare`), round 2, every ca
 `camera_fixes`: silhouette IoU inside the model's own screen box (the likeness limits are read there,
 maintainer, 2026-10-27) 0.905, 1.000 and 1.000 over `v8ia…`'s wide, upper and door views, 0.867,
 1.000 and 1.000 over `mdk1…`'s and 0.812, 0.865 and 0.964 over `MH15…`'s, mean 0.935; over the whole
-frame 0.805 (round 1: 0.442, its cameras uncorrected and the cladding read as sky). The upper and door
-views see no sky round the building, so their IoU of 1.000 says only that the model fills them as the
-building does; the wide views alone give 0.861 in the box. The building's luma median 241-242 in the
+frame 0.805 (round 1: 0.442). That passes tier 1's limit (0.65), but for this building the IoU in the
+box tells little: the boxes hold 2% sky on the mean (0-8% in each view), and a plain block filling each
+box would score 0.980 on the mean, more than the model in every view (`sky_in_box`, `iou_box_filled`).
+Most of the rise from round 1 comes from `sky_mask.pale_tint`, which stopped the photographs' shaded
+white cladding being read as sky, not from the model; and two of the three `camera_fixes` (mdk1's and
+MH15's) were fitted to the street end's drawn openings. v8ia's and mdk1's upper and door views see no sky
+round the building, so their 1.000 says only that the model fills them. The likeness rests on the
+heights and the top view below, and on the strips. The building's luma median 241-242 in the
 renders, 237-253 in the photographs (248 on the mean; limit 12). From above (`run.sh
 nine-eden-crescent topview`): footprint IoU 0.906 against the LiDAR, 82% of cells within 0.5 m of its
 height, the model 0.04 m below it at the median, 99.6% of block 801 under the model. The model is

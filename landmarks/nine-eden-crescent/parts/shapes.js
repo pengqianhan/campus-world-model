@@ -29,7 +29,7 @@ export function tris(b, list, material) {
   b.add(g, material);
 }
 
-/** A ribbon of glazing set back `reveal` in its opening: dark glass, a dark aluminium frame round it and a
+/** A ribbon of glazing set back `reveal` in its opening: the kit's pale glass, a dark aluminium frame round it and a
  * mullion every `bay` metres; a transom `transom` m above its foot; and, with `posts` ([x0, x1] pairs), a
  * door's frame at each: its two jambs, a little heavier than a mullion, and its head at the transom. */
 function ribbon(b, w, front) {
