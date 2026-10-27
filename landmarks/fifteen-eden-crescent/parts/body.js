@@ -220,18 +220,20 @@ export function windows(b) {
   const C = OPEN.C;
   face(b, C.s[0], C.s[1], -0.02, 0.04, C.foot, C.leaf, "timber");
   window(b, C.s[0], C.s[1], C.leaf + 0.08, C.head);
-  // B: the louvre's dark blades and the green hood under it
+  // B: the louvre's dark blades on a dark backing (on the wall's face, not in its plane) and the green hood
+  // under it
   const B = OPEN.B;
-  face(b, B.s[0], B.s[1], -0.05, 0.0, B.louvre[0], B.louvre[1], "iron");
+  face(b, B.s[0], B.s[1], 0.0, 0.01, B.louvre[0], B.louvre[1], "iron");
   for (let y = B.louvre[0] + 0.06; y < B.louvre[1] - 0.04; y += 0.12) face(b, B.s[0], B.s[1], -0.05, 0.03, y, y + 0.03, "roofGrey");
   face(b, B.s[0] - 0.03, B.s[1] + 0.03, 0.0, DEEP + 0.08, B.hood[0], B.hood[1], "roofGreen");
-  // A: the leaf with its glazed panel, under a red head (the leaf's material: OPEN)
+  // A: the leaf with its glazed panel (the pane on the wall's face, behind the leaf's), under a red head
+  // (the leaf's material: OPEN)
   const A = OPEN.A, p = A.pane;
   face(b, A.s[0], p.s[0], -0.02, 0.04, A.foot, A.leaf, "timber");
   face(b, p.s[1], A.s[1], -0.02, 0.04, A.foot, A.leaf, "timber");
   face(b, p.s[0], p.s[1], -0.02, 0.04, A.foot, p.y[0], "timber");
   face(b, p.s[0], p.s[1], -0.02, 0.04, p.y[1], A.leaf, "timber");
-  face(b, p.s[0], p.s[1], -0.04, -0.02, p.y[0], p.y[1], "glass");
+  face(b, p.s[0], p.s[1], 0.0, 0.02, p.y[0], p.y[1], "glass");
   face(b, A.s[0], A.s[1], -0.02, 0.06, A.leaf, A.head, "roofTile");
   // the band of windows under the canopy: dark glass over the panels' top, red mullions
   face(b, -0.01 * LEN, 1.01 * LEN, 0.0, 0.02, FACE_TOP - 0.05, BAND.y1, "glass");
