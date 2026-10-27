@@ -47,7 +47,9 @@ It is built to answer two questions a student actually has:
 - **2026-10-27:** [campusworldmodel.com](https://campusworldmodel.com/) lists the schools on the
   site, each with its city, how much of it the site shows and the date of its campus snapshot; it
   no longer sends every visitor to /uoa/. Bridges between the surrounding buildings span the street
-  at their mapped height instead of standing on it; five with no mapped height are not drawn.
+  at their mapped height instead of standing on it; five with no mapped height are not drawn. Near
+  the Clock Tower the map draws its East Wing in detail: rock-faced stone, two gabled pavilions, a
+  stair tower and a red tile roof.
 - **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
   AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
   found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
@@ -289,9 +291,24 @@ drawn plainly.
 | ![Maclaurin Chapel from Princes Street, drawn from code](docs/landmarks/maclaurin-chapel-front.jpg) | ![Maclaurin Chapel and its hall from above the street, drawn from code](docs/landmarks/maclaurin-chapel-above.jpg) |
 | ![Maclaurin Chapel on the map, drawn from code in the map's colours](docs/landmarks/maclaurin-chapel-map.jpg) | ![Maclaurin Chapel from the lawn by Princes Street, through the walker's eyes](docs/landmarks/maclaurin-chapel-eyes.jpg) |
 
+The sixth is the Clock Tower East Wing (119), below the Clock Tower to the south-east: two storeys of
+the same rock-faced cream stone, two gabled pavilions toward the lawn and the car park, a plain stair
+tower rising between them, segmental-headed windows upstairs and narrow ones below, and a red tile
+roof. Every height comes from the LiDAR, within 0.12 m. One Street View panorama sees its whole lawn
+side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its three views, and from
+above its outline covers the LiDAR's with an IoU of 0.81. Three more see it over the old basalt wall
+of the Albert Barracks, which fills half their frames. Its back, its ends and the low link toward the
+Clock Tower, which no photograph shows, are drawn plainly.
+
+| | |
+| --- | --- |
+| ![The Clock Tower East Wing from the car park, drawn from code](docs/landmarks/clock-tower-east-wing-front.jpg) | ![The Clock Tower East Wing from above the lawn, drawn from code](docs/landmarks/clock-tower-east-wing-above.jpg) |
+| ![The Clock Tower East Wing on the map, drawn from code in the map's colours](docs/landmarks/clock-tower-east-wing-map.jpg) | ![The Clock Tower East Wing from the lawn, through the walker's eyes](docs/landmarks/clock-tower-east-wing-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
-of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107) when the camera comes
+of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
+in place of 119) when the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -472,8 +489,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street and Maclaurin Chapel (107), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/` and `landmarks/maclaurin-chapel/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall and Maclaurin Chapel were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107) and the Clock Tower East Wing (119), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/` and `landmarks/clock-tower-east-wing/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel and the Clock Tower East Wing were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -502,7 +519,8 @@ If you represent the University and would like something changed or removed, ple
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
   105S), Old Government House (102), the General Library (109), the range of Old Choral Hall
-  (104) on Symonds Street and Maclaurin Chapel (107) are the exceptions: their models are drawn to
+  (104) on Symonds Street, Maclaurin Chapel (107) and the Clock Tower East Wing (119) are the
+  exceptions: their models are drawn to
   sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
@@ -532,6 +550,12 @@ If you represent the University and would like something changed or removed, ple
   colour of the bay's and that room's roofs (pale), and the faces away from the street (plain white
   walls). The row of skylights in the hall's far roof, which the aerial photograph shows, is not
   drawn.
+- **The Clock Tower East Wing is seen whole from one place.** One Street View panorama, across the
+  car park, sees its lawn side; three more see its roofline over the old basalt wall of the Albert
+  Barracks. Its heights come from the LiDAR. What no photograph shows is drawn plainly: its back, its
+  ends, the two blocks at the back, the low link toward the Clock Tower (under trees; a flat roof at
+  the height the LiDAR finds) and the grey roofs behind the pavilions' gables (their colour from the
+  aerial). The windows' glazing patterns are drawn as plain bars.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the

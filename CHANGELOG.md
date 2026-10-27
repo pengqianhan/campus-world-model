@@ -16,6 +16,17 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-10-27
 
+### Added
+
+- **The Clock Tower East Wing drawn in detail.** Near the camera the map draws the Clock Tower East
+  Wing (119) from code in place of its block: two storeys of rock-faced cream stone, two gabled
+  pavilions toward the lawn and the car park, a plain stair tower rising between them,
+  segmental-headed windows upstairs and narrow ones below, all white-framed, and a red tile roof,
+  every height measured from the LINZ 2024 LiDAR. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own stone, glass and red clay tiles. Its
+  back, its ends and the low link toward the Clock Tower, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#PR).
+
 ### Changed
 
 - **The site's root lists the schools.** https://campusworldmodel.com/ is now a page of its own,
