@@ -336,7 +336,7 @@ descriptor and checks its fields.
 
 **Words.** `src/i18n/locales/en.json` keeps every key and text it has: they are the University of
 Auckland's words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
-school, its campus map or its verdicts: 35 of the 292 keys of 2026-10-23 (33 of 342 on 2026-10-27), among them `app.*`,
+school, its campus map or its verdicts: 35 of the 292 keys when this was written (33 of 342 on 2026-10-27), among them `app.*`,
 `about.unofficial`, `about.limits.*`, `attribution.short`, `room.noTimetableWhy`, `travel.leaving`
 and `travel.stay`. A unit test makes every school other than `uoa` override each of these keys.
 Two more keys, `TERM_KEYS` in `src/shared/words.ts`, name the school's teaching periods where its
