@@ -131,6 +131,12 @@
   }
  },
  "streetview": {
+  "pano_ids": [
+   "v8ia-KiFy8InsSKu-68fcg",
+   "mdk1IFK9FpXz58gtNvcvow",
+   "MH15gD4Eo-K2ekDNdhtQiQ"
+  ],
+  "pano_ids_note": "the three Google panoramas of 2024-08 bought for 9 Eden Crescent (801), already in the cache, which the sight-line test finds seeing 802's north face (v8ia N 100%, MH15 N and NW 100%, mdk1 N 99%)",
   "max_panos": 12,
   "radius_m": 80,
   "camera_height_m": 2.5,
