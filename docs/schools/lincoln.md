@@ -84,10 +84,10 @@ No host was asked. The box is `[-43.6561, 172.4508, -43.6327, 172.4832]` (south,
 2.6 km by 2.6 km. The snapshot's own data then placed the campus: west of Springs Road and south of
 Ellesmere Junction Road, with Farm Road, Engineering Drive, South Drive and three service roads
 named "Lincoln University service road" in it, and the meadow "Research Dairy Farm (Lincoln
-University)" north of Ellesmere Junction Road. The campus buildings with a name or a tag that says Lincoln lie 463 m
-(west) to 1,112 m (east) inside the box's edges. The box's west edge passes through a group of farm
-buildings at the end of a "Lincoln University service road". The snapshot does not show what lies
-west of it.
+University)" north of Ellesmere Junction Road. The campus buildings with a name or a tag that says
+Lincoln lie 463 m (west) to 1,112 m (east) inside the box's edges. The box's west edge passes
+through a group of farm buildings at the end of a "Lincoln University service road". The snapshot
+does not show what lies west of it.
 
 **What was fetched.** `osm/context-lincoln.json`: 4,029,505 bytes, 4,928 elements (1,780 building
 ways, 3 building relations, 5 building parts), from `overpass-api.de`, OpenStreetMap base
@@ -108,8 +108,8 @@ requests**. The `x-amz-meta-x-imagery-sources` header of each tile names LINZ's 
   building has the tag.
 - No other tag on a building names Lincoln University. Three service roads and the dairy farm's
   meadow do.
-- 73 buildings have `operator=Bioeconomy Science Institute Maiangi Taiao`. They stand east of Springs
-  Road, by Gerald Street: another body's buildings.
+- 73 buildings have `operator=Bioeconomy Science Institute Maiangi Taiao`. They stand east of
+  Springs Road, by Gerald Street: another body's buildings.
 
 **The campus.** Here the campus is the buildings west of Springs Road, south of Ellesmere Junction
 Road and north of latitude -43.6496, where the houses of the subdivisions to the south start. It
