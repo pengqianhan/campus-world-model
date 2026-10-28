@@ -21,7 +21,9 @@ nothing is traced or sampled from them into the model.
   - **the main range**: x -16.7 to 21.4, z -12.6 to 16.2, its flat roof at 6.62 m, a parapet at 7.9 m
     round its east part; the east wall runs 3.5° off the frame's z;
   - **the street face** steps back twice from west to east: the west part's face at z 16.21 (x -16.7
-    to 2.0), the porch's at 14.78 (x 2.0 to 6.9), the east part's at 11.71 (x 6.9 to 21.4);
+    to 0.0), the porch's at 14.78 (x 0.0 to 7.2) with a spired pilaster block at each end standing out
+    to 15.3 and 15.0, the east part's on a line 3.9° off the frame's x, from (7.2, 12.17) to
+    (21.37, 11.19);
   - **the west part's range along the street** at 10.04 m, 4.4 m deep, turning back down the west side
     as a wing at 10.15 m; **the porch** at 8.37 m; **two blocks** at 10.06 and 10.03 m on the main roof;
   - **the mast**: a lattice on the main roof at (2.96, -1.04), 3.9 m across at 13 m, 1.6 m at 37 m, its
@@ -42,14 +44,20 @@ nothing is traced or sampled from them into the model.
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Build time of a part
   ≤ ~300 ms on this machine (the console logs it).
-- No image textures; the walls use the kit's `brick`, the dressings its `render`.
+- No image textures; the walls use the kit's `brickBrown` (the brick's shader in a browner, duller
+  brick, added for this building), the dressings its `render`, the openings its `void`. Round 1:
+  13,242 triangles in 5 meshes (`brickBrown`, `render`, `void`, `roofGrey`, `paint`).
 - Street View: ≤ 1,200 tiles for this building; 429 bought (one panorama, 2026-10-27). Nothing more.
 
 ## References
 - One Google panorama of 2026-04 on Shortland Street, `0Rjk296LTsGDt_gXXn3yrg`
   (`streetview.pano_ids`), 32 m from the frame's centre, south-east of the building: its `wide` view
   sees the whole street face, `upper` the porch and the east part's upper storey, `door` the door and
-  its steps.
+  its steps. Its copyright reads "From the Owner, Photo by: Google". The cut does not apply its own
+  tilt and roll, so its views stood turned 4.53° clockwise: `streetview.camera_fixes` cuts them level
+  and sets the camera (`camera_fixes_note`). Through it the east part and the porch agree with the LiDAR
+  to 9.5 px; the west part does not (its corner falls at x -8.3, its coping at 7.0 m, where the LiDAR
+  has x -16.7 and 10.3 m): that part of the photograph is not measured through the camera.
 - Glass towers stand behind the building, so the photographs show little sky round it: the IoU in
   the model's box says little (`sky_in_box`); the luma of the brick and the strips say more.
 - A construction fence, a digger, a truck and a portable toilet stand in front of the east part's foot

@@ -4,10 +4,12 @@
 // landmark's model.js exports build(materials, only), which returns a Group.
 import { Builder } from "../kit/gothic.js";
 import { body } from "./parts/body.js";
+import { front } from "./parts/front.js";
 import { mast } from "./parts/mast.js";
 
 const PARTS = {
   body: (b) => body(b),
+  front: (b) => front(b),
   mast: (b) => mast(b),
 };
 

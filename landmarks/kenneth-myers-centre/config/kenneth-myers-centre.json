@@ -211,7 +211,17 @@
     "width": 1200,
     "height": 900
    }
-  ]
+  ],
+  "camera_fixes_note": "0Rjk's camera, fitted to its wide view's own edges against the LiDAR (round 1, 2026-10-28). The panorama records a tilt of 95.89 (5.89 deg off level) and a roll of -2.41 deg, which tools/streetview_collect.py does not apply when it cuts the views: in them the verticals lean (a downpipe on the east part at column 930 by about 5 deg, its top to the right), and the east part's coping, level in the LiDAR (p90 8.02-8.07 m), runs nearly level across the photograph (rows 317 to 300 over columns 837-1558) where a level camera draws it rising 86 px. Fifteen points of the east part and the porch: the five pinnacles at the LiDAR's x (their returns above 8.5 m), each at its coping (8.05 m) and at its tip (one unknown height for all, fitted: 9.34 m), the porch's coping at x 4.0 (8.86 m), and the columns of its four spires at the LiDAR's two blocks. With its views cut turned back by 4.53 deg (the fifth number) and drawn from x 16.26, z 29.53 (1.12 m from the recorded camera), 5.68 deg lower and 0.83 deg right of the cut's aim, they fit at rms 9.5 px (|r| p50 6.7; the largest, 22.3, at the first pinnacle's tip, which stands higher than the rest, 9.93 m); a turn of 4.0 or 5.0 deg fits at 9.9 and 9.5 px. The panorama's own tilt and roll give, 240 deg round from its heading where these views look, a pitch of -5.0 or -0.8 deg and a turn of 3.9 or 6.3 deg (as the signs of its tilt and roll are read): the fit's sizes. Cut level, the downpipe stands upright (column 932 from row 420 to 520). Through this camera the east part's merlons stand at 7.96 m (the LiDAR's 8.05), its pinnacles within 0.2 m of the LiDAR's x, the porch's coping at 8.74 m (8.86) and the door's centre at x 3.91 (4.0 between the blocks). The recorded camera and the cut's aim leave the fifteen points at rms 80.6 px; the round's first fix, [18.35, 28.94, -3.54, 7.08] (no turn; fitted by the run stopped at 13:44, its points not kept), at 32.8 px; the best fix of four numbers over them and the west end's three at 28.8. The west part does not agree: the photograph's west part (columns 330-550) is a face with a level coping, its left end a corner with a pinnacle at column 330, which this camera puts at x -8.3 on the west part's face (z 16.21) with the coping at 7.0 m and four pinnacles 3.1 m apart, where the LiDAR's west part runs to x -16.7 with its top at 10.3-10.9 m (its tall front over x -15.5 to -9.5 only, its top set back to z 14.2-14.7 east of there); a level camera puts that corner at x -16.7 but its coping sloping from 11.0 to 8.8 m. Whether the panorama is stitched unevenly there (its copyright reads 'From the Owner, Photo by: Google') or the building has changed since the LiDAR of 2024 (the photograph shows a building site before it) is open; the model keeps the LiDAR's west part, and nothing on it is measured through this camera.",
+  "camera_fixes": {
+   "0Rjk296LTsGDt_gXXn3yrg": [
+    16.26,
+    29.53,
+    -5.68,
+    -0.83,
+    4.53
+   ]
+  }
  },
  "refine": {
   "position_m": 3,
@@ -224,5 +234,9 @@
   "min_gain": 0.01,
   "min_sky": 0.2,
   "max_solid": 0.5
+ },
+ "light": {
+  "exposure": 2.2,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins): the Clock Tower's sun, low in the north-east and so behind this south-south-east street face, which stands in open shade as the photographs' bright, cloudy April day shows it (soft light, no shadow cast on it). Exposure 2.2 with the kit's brickBrown (round 1): the building's luma median drawn 129, 118 and 115 against the photographs' 138, 121 and 122 in the wide, upper and door views (the views cut level); at 2.0, before they were cut level, 115/119/111 against 128/121/122. Round 0 (exposure 1.0 and the kit's red brick) drew 66 against 121-126."
  }
 }
