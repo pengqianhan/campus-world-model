@@ -77,8 +77,9 @@ for every campus in the recon reports. The maintainer also decided that no reque
 Lincoln host. None went.
 
 **How the box was set.** This report read no address. So the box was drawn before the fetch, about
-1.3 km on every side of the point that two public pages give for "Lincoln University": LINZ's NZ
-Topo Map entry (-43.6441, 172.4654) and Wikipedia (-43.6444, 172.4686), both found by web search.
+1.3 km on every side of the point that two public pages give for "Lincoln University": the entry
+on NZ Topo Map (`topomap.co.nz`, a site that shows LINZ's topographic maps; -43.6441, 172.4654) and
+Wikipedia (-43.6444, 172.4686), both found by web search.
 No host was asked. The box is `[-43.6561, 172.4508, -43.6327, 172.4832]` (south, west, north, east),
 2.6 km by 2.6 km. The snapshot's own data then placed the campus: west of Springs Road and south of
 Ellesmere Junction Road, with Farm Road, Engineering Drive, South Drive and three service roads
