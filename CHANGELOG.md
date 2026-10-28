@@ -51,6 +51,18 @@ A change to what the site does or shows adds its line here, and the README's
   them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
   (`landmarks/measured/exclusions.json`) (#108).
 
+### Fixed
+
+- **The way under the Clock Tower East Wing's link is open.** The East Wing's landmark drew its link
+  toward the Clock Tower as solid stone down to the ground, where the campus map has no ground floor
+  under most of it and OpenStreetMap has a footway through a passage. The walk map leaves that ground
+  open, so a walker could walk into the stone, and the view from behind them filled with its plain
+  face; the default start's first heading leads there. The link now stands from 3.6 m up, the
+  campus map's storey height (nothing measures its underside), and goes down to the ground only over
+  the space the campus map has under its east third, as the map's blocks drew them; a walker passes
+  under it in view. Seen from a distance, the map is unchanged; near 119 only the link and the
+  ground under it change (#117).
+
 ## 2026-10-27
 
 ### Added
