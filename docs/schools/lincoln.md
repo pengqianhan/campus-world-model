@@ -8,6 +8,10 @@ file comes with it.
 Path name if the school is added: `/lincoln/` ("Decisions" in `PROGRESS.md`: each school's own
 short name; Lincoln's web domain is `lincoln.ac.nz`). Time zone: Pacific/Auckland.
 
+On 2026-10-28 the loop took the campus's OpenStreetMap snapshot and the ground under it ("The
+OpenStreetMap check", below). Lincoln is not on the site: OpenStreetMap's tags do not pick out
+enough of its buildings, and the maintainer chooses the next step.
+
 ## Verdicts
 
 | Layer | Verdict | What decided it |
@@ -65,6 +69,65 @@ source and leave them blank.
 - **Floor and room outlines:** no source read publishes them. Whether the campus map page holds an
   interactive map with rooms is not known: a web search did not find one, and the page was not
   requested.
+
+## The OpenStreetMap check (2026-10-28)
+
+On 2026-10-27 the maintainer let the loop run `scripts/fetch-osm.ts` and `scripts/fetch-terrain.ts`
+for every campus in the recon reports. The maintainer also decided that no request goes to any
+Lincoln host. None went.
+
+**How the box was set.** This report read no address. So the box was drawn before the fetch, about
+1.3 km on every side of the point that two public pages give for "Lincoln University": LINZ's NZ
+Topo Map entry (-43.6441, 172.4654) and Wikipedia (-43.6444, 172.4686), both found by web search.
+No host was asked. The box is `[-43.6561, 172.4508, -43.6327, 172.4832]` (south, west, north, east),
+2.6 km by 2.6 km. The snapshot's own data then placed the campus: west of Springs Road and south of
+Ellesmere Junction Road, with Farm Road, Engineering Drive, South Drive and three service roads
+named "Lincoln University service road" in it, and the meadow "Research Dairy Farm (Lincoln University)" north of
+Ellesmere Junction Road. The campus buildings with a name or a tag that says Lincoln lie 463 m
+(west) to 1,112 m (east) inside the box's edges. The box's west edge passes through a group of farm
+buildings at the end of a "Lincoln University service road". The snapshot does not show what lies
+west of it.
+
+**What was fetched.** `osm/context-lincoln.json`: 4,029,505 bytes, 4,928 elements (1,780 building
+ways, 3 building relations, 5 building parts), from `overpass-api.de`, OpenStreetMap base
+2026-10-28 06:32 UTC, in **1 request**. The ground: 12 AWS terrain tiles at zoom 14, in **12
+requests**. The `x-amz-meta-x-imagery-sources` header of each tile names LINZ's model only
+(`nzlinz/lds-tile-qh.tif`).
+
+**What the tags say,** counted in the snapshot:
+
+- `operator=Lincoln University`: 2 buildings, the Recreation Centre (`building=university`) and a
+  bicycle shed with no name.
+- `building=university`: 12. 10 have a name: Ivey Hall, Memorial Hall (`disused=yes`, "closed
+  following post-earthquake damage and assessment"), Hudson Hall, Forbes Building, James Stewart
+  Building, Landscape Architecture Building, Young Farmers Club Hall, The Poplars, the Recreation
+  Centre, and "AgResearch", another body's name ("Science building, replaced the earthquake-damaged
+  Hilgendorf Wing").
+- `amenity=university`: none. `fetch-osm.ts` does not ask Overpass for campus outlines, and no
+  building has the tag.
+- No other tag on a building names Lincoln University. Three service roads and the dairy farm's
+  meadow do.
+- 73 buildings have `operator=Bioeconomy Science Institute Maiangi Taiao`. They stand east of Springs
+  Road, by Gerald Street: another body's buildings.
+
+**The campus.** Here the campus is the buildings west of Springs Road, south of Ellesmere Junction
+Road and north of latitude -43.6496, where the houses of the subdivisions to the south start. It
+holds 163 buildings (144 `building=yes`, 12 `university`, 4 `greenhouse`, 1 `construction`, 1
+`garages`, 1 `garage`). 41 have a name, with 29 different names. The tags above pick out 13 of the
+163, and 10 of the 13 have a name. These have a name and no tag that says Lincoln: the Commerce
+Building, Science South, the RFH Building ("Replacement For Hilgendorf"), Waimarie ("University
+research building"), Te Kete Ika - Dining Hall, The Lodge, Orchard Hall, the Accomodation Office (so
+written), the Field Research Centre (2 outlines), the New Zealand Cricket High Performance Centre,
+The BHU Organics Trust and two sheds beside it, and the buildings named Colombo Hall (3), Stevens
+Hall (4), Centennial Hall (5), Lowry Hall (3), Southland Hall and The Quarters round the
+Accomodation Office. Their tags do not say whether people live in them. Many large buildings in the
+middle of the campus have no name.
+
+**Verdict.** The tags do not pick out enough of Lincoln's buildings for a campus map of the
+University. They give 9 named University buildings (10 with "AgResearch"), and leave the Commerce
+Building, Science South, the RFH Building and Waimarie as unnamed surroundings. So Lincoln is not
+built yet. The snapshot and the ground are committed. The maintainer chooses how the University's
+buildings are chosen, as for Waikato (#119).
 
 ## Layer 1: footprints and surroundings
 
