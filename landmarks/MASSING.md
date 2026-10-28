@@ -245,11 +245,12 @@ A building moves out of tier 3 when the maintainer plans a landmark for it.
 round the generator also measures the buildings of tiers 1 and 2 that have no landmark yet, through
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
-`landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109 and
-119) and the landmarks in progress on their own branches (`SOON` in the generator: 801). Making one
+`landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 119,
+801, 802 and 804) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 45. Places where people live keep their blocks here
+leaving out the landmarks and `SOON`, it measures 43. Places where people live keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
