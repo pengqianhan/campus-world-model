@@ -83,6 +83,8 @@ describe("the school picker at the site's root", () => {
     // Otago's bilingual name, as its recon gives it ("University of Otago | Ōtākou Whakaihu Waka"), split as VUW's is
     const otago = schools.find((s) => s.id === "otago");
     if (otago) expect(schoolLine(otago, shared)).toMatchObject({ name: "University of Otago", reo: "Ōtākou Whakaihu Waka" });
+    const uc = schools.find((s) => s.id === "uc");
+    if (uc) expect(schoolLine(uc, shared)).toMatchObject({ name: "University of Canterbury", reo: "Te Whare Wānanga o Waitaha" });
     // each school's name in te reo Māori stands under its English name, marked as te reo Māori
     expect(pages.index).toContain('<p class="reo" lang="mi">Waipapa Taumata Rau</p>');
     expect(pages.index).toContain("<h1>Campus World Model</h1>");

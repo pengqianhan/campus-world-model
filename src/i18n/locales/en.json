@@ -434,7 +434,8 @@
         "city": "Dunedin and Christchurch"
       },
       "uc": {
-        "name": "University of Canterbury (Te Whare Wānanga o Waitaha)",
+        "name": "University of Canterbury",
+        "reo": "Te Whare Wānanga o Waitaha",
         "city": "Christchurch"
       }
     }
