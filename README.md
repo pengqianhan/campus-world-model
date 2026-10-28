@@ -66,10 +66,11 @@ It is built to answer two questions a student actually has:
   location, and at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
   University's Manawatū, Auckland and Wellington campuses, each with its name and height and how
   the height was found; their rooms, class times, dates and course lists are not shown, and the
-  site says why. On Eden Crescent the map draws 15 Eden Crescent in detail, next to 9 Eden
-  Crescent: a long white two-storey building, its windows deep in square openings in two rows over a
-  base of tiles, under a roof that slopes up to a top storey with a curved roof. Four more University
-  of Auckland buildings are drawn near the camera to their
+  site says why. The root page names each school in te reo Māori too. On Eden Crescent the map
+  draws 15 Eden Crescent in detail, next to 9 Eden Crescent: a long white two-storey building, its
+  windows deep in square openings in two rows over a base of tiles, under a roof that slopes up to a
+  top storey with a curved roof. Four more University of Auckland buildings are drawn near the camera
+  to their
   LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
   Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
   walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
