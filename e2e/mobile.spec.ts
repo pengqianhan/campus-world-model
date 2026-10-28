@@ -330,3 +330,18 @@ test("phone on its side: the map keeps the screen, and a walk puts the stick und
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(1);
   await expectRealRender(page);
 });
+
+test("phone on its side: in the passage under the Clock Tower East Wing's link, the view from behind still sees the walker", async ({ page }) => {
+  await page.setViewportSize({ width: 844, height: 390 });
+  await open(page, "?light=day&time=preview&date=2026-03-20&t=15:00");
+  await openStrip(page);
+  await page.locator("#walk-start").click();
+  await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
+  // OpenStreetMap's footway through the passage under 119's link, where the campus map has no ground
+  // storey: the walk map lets a walker through, so the landmark must too. The default start faces it.
+  expect(((await page.evaluate(() => window.__walker!.run("walk", { to: "45.2,204.3", speed: 40 }))) as { arrived: boolean }).arrived).toBe(true);
+  await page.evaluate(() => window.__walker!.run("turn", { face: "60" }));
+  await page.evaluate(() => window.__walker!.run("view", { view: "follow", yaw: 0, pitch: 0 }));
+  await settle(page);
+  await expectRealRender(page);
+});
