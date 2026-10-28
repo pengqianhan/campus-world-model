@@ -74,7 +74,7 @@ It is built to answer two questions a student actually has:
   LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
   Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
   walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
-  solid stone on the footway under it.
+  solid stone on the footway under it; the building's card says the link's underside is estimated.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are

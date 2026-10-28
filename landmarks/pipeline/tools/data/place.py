@@ -9,7 +9,8 @@ Reads the config's frame.expected (the frame that the model and the cameras use)
 building.id and building.also (the campus map's buildings whose blocks the model stands in place of),
 and site (true puts the landmark on the site, which finds every placement.json that says so),
 and part, when only a part of the building is drawn in detail (the building's card says which part, and
-that the rest keeps its estimated height); needs no LiDAR, so it runs in a fresh clone.
+that the rest keeps its estimated height), and estimated, the words for a size of the model that nothing
+measures (the building's card says it is estimated); needs no LiDAR, so it runs in a fresh clone.
   python -I ../pipeline/tools/data/place.py [--config config/<name>.json]
 """
 import json, math, os, sys
@@ -64,6 +65,11 @@ if part is not None:
     if not isinstance(part, str) or not part.strip():
         sys.exit(f"place: part is {part!r}: the words for the part drawn in detail, or no part when it is the whole building")
     placement["part"] = part
+estimated = cfg.get("estimated")
+if estimated is not None:
+    if not isinstance(estimated, str) or not estimated.strip():
+        sys.exit(f"place: estimated is {estimated!r}: the words for the size that nothing measures, or none when every size is measured")
+    placement["estimated"] = estimated
 dst = os.path.join(common.ROOT, "placement.json")
 with open(dst, "w", encoding="utf-8", newline="\n") as f:
     json.dump(placement, f, indent=1)

@@ -31,6 +31,11 @@ export interface Placement {
    * the rest keeps the map's estimated block, and the building's card says so.
    */
   part?: string;
+  /**
+   * The words for a size of the model that nothing measures (its config's `estimated`), such as the
+   * Clock Tower East Wing's link's underside: the building's card says it is estimated.
+   */
+  estimated?: string;
 }
 
 export interface LandmarkEntry {

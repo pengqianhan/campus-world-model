@@ -1,6 +1,7 @@
 {
  "name": "clock-tower-east-wing",
  "site": true,
+ "estimated": "the underside of its link toward the Clock Tower (the campus map's storey height)",
  "building": {
   "id": "119",
   "also": [],

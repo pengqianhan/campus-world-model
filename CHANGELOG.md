@@ -85,6 +85,10 @@ A change to what the site does or shows adds its line here, and the README's
   the space the campus map has under its east third, as the map's blocks drew them; a walker passes
   under it in view. Seen from a distance, the map is unchanged; near 119 only the link and the
   ground under it change (#117).
+- **The Clock Tower East Wing's card says what is estimated.** Its card said every size of the
+  model was measured by LiDAR, while the underside of its link toward the Clock Tower stands at the
+  campus map's storey height, which nothing measures. The card now says that it is estimated, as
+  About does (#PR).
 
 ## 2026-10-27
 
