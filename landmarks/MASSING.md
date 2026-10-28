@@ -427,6 +427,11 @@ Five pass the top-view check and are drawn:
 | 906 Structures Hall | 0.914 | 99.6% | a flat roof (15.7 m) and six mono-pitches (18.2 to 25.1 m) | 18.0 m |
 | 909 Building 909 | 0.936 | 92.3% | flat, 6.6 m | 3.6 m |
 
+904's outline on the campus map overlaps 903's by 220 m² along its south side. Its flat strip at
+16.8 m is the roof the LiDAR sees there, at 903's height; 903 keeps its 14.4 m block (below the
+top-view limits), so on the map the strip stands above that block, with the ragged edge of a layer
+traced from the LiDAR.
+
 The other 34 keep their blocks, each in `exclusions.json` with its reason:
 
 - **By decision 6** (seven): Grafton Hall's 644, 645 and 646 and Building 523 by their residential
