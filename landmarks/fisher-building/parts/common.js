@@ -92,7 +92,7 @@ export const MEASURED = {
   // 6.8 m, which put the line 1-5 m nearer the camera than the LiDAR's returns, over open ground at
   // 3.5-4.3 m, and stretched MGAo's tower view's box. Its thickness (0.3 m) is estimated.
   // From corner `stands` on, where its foot is the LiDAR's ground, it stands on the pavement: there it goes
-  // down to FOOT, as the walls do (round 4, the review). The map's ground is not the LiDAR's: at the last two
+  // on down to FOOT, as the walls do (round 4, the review; parts/entrance.js rampFoot). The map's ground is not the LiDAR's: at the last two
   // corners it lies 2.3 and 2.4 m over the door's, the LiDAR's 5.2 and 5.7 m, and a foot at the pavement's
   // height hung about 3 m over the drawn street. Over the car park (corners 0 to 4) the face stands clear of
   // the ground, as the photographs show it.

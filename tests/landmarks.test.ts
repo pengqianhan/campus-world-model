@@ -126,18 +126,19 @@ describe("each landmark on the site's ground", () => {
       };
       const log = console.log;
       console.log = () => {};
-      // The whole model; and alone, each part the model names as standing on ground higher than the door's
-      // (STANDS: its foot is above y = 0 where its source stands it, as the Fisher Building's ramp on the street).
+      // The whole model; and alone, together, the parts the model names as standing on ground higher than the
+      // door's (STANDS: their foot is above y = 0 where the source stands them, as the Fisher Building's ramp on
+      // the street).
       const models = [{ model: build(geometryMaterials()), part: "" }];
-      for (const part of STANDS ?? []) models.push({ model: build(geometryMaterials(), [part]), part });
+      if (STANDS?.length) models.push({ model: build(geometryMaterials(), STANDS), part: STANDS.join("+") });
       console.log = log;
       const v = new Vector3();
       for (const { model, part } of models) {
         model.updateMatrixWorld(true);
         const meshes: Mesh[] = [];
         model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
-        // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points; a part
-        // in STANDS, at its lowest points wherever they are. The kit's Builder joins a model's parts into one
+        // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points; the parts
+        // in STANDS, at their lowest points wherever they are. The kit's Builder joins a model's parts into one
         // mesh a material, so this is a material's foot, not a part's: give every part the same foot (Old
         // Government House's take FOOT from common.js).
         let worst = -Infinity;

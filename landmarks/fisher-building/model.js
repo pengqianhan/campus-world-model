@@ -6,7 +6,7 @@ import { Builder } from "../kit/gothic.js";
 import { tower, shaft, floorBands } from "./parts/tower.js";
 import { wing } from "./parts/wing.js";
 import { slot } from "./parts/slot.js";
-import { canopy, deck, ramp } from "./parts/entrance.js";
+import { canopy, deck, ramp, rampFoot } from "./parts/entrance.js";
 
 const PARTS = {
   tower: (b) => tower(b),
@@ -19,13 +19,15 @@ const PARTS = {
   // the ramp's white side along the street, on the LiDAR's line (round 3; round 2 measured it 1-5 m nearer
   // MGAo's camera, where it widened the model's screen box over the street and the trees)
   ramp: (b) => ramp(b),
+  // under it where it stands on the pavement, down to FOOT (round 4): the compare draws it as the ground
+  rampFoot: (b) => rampFoot(b),
 };
 
 // The parts that stand on ground higher than the door's, where their foot is above y = 0 in the source: the
-// ramp's side, on the pavement of Waterloo Quadrant at its street end, 5.2-5.7 m above the door's ground.
-// tests/landmarks.test.ts builds each alone and checks its lowest points against the map's ground, as it checks
-// every mesh that reaches y = 0 (landmarks/README.md, "Placement").
-export const STANDS = ["ramp"];
+// ramp's side and its foot, on the pavement of Waterloo Quadrant at its street end, 5.2-5.7 m above the door's
+// ground. tests/landmarks.test.ts builds them together, alone, and checks their lowest points against the map's
+// ground, as it checks every mesh that reaches y = 0 (landmarks/README.md, "Placement").
+export const STANDS = ["ramp", "rampFoot"];
 
 export function build(materials, only) {
   const b = new Builder(materials);
