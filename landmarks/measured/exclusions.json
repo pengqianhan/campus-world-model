@@ -1,6 +1,138 @@
 {
- "note": "The tier-3 buildings of the City campus in the eight LiDAR tiles that keep their blocks, each with its reason (landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
+ "note": "The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason (landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
  "buildings": {
+  "106": {
+   "name": "George Mason Biology Bldg",
+   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 701.2,
+    "ground": {
+     "p5": 35.85,
+     "p50": 36.96,
+     "p95": 38.57,
+     "zero": 35.76
+    },
+    "roof_inside_m2": 684.0,
+    "cover": 0.98,
+    "vegetation": 0.02,
+    "open_below": 0.027,
+    "not_drawn_m2": 37.2,
+    "check": {
+     "iou": 0.865,
+     "lidar_m2": 787.0,
+     "model_m2": 706.2,
+     "within_0.5m": 0.87,
+     "model_minus_lidar_m": {
+      "p10": -0.14,
+      "p50": 0.0,
+      "p90": 0.09
+     },
+     "highest_m": {
+      "model": 18.96,
+      "lidar": 20.34
+     }
+    }
+   }
+  },
+  "110": {
+   "name": "Thomas Building",
+   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 50% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2231.9,
+    "ground": {
+     "p5": 34.46,
+     "p50": 35.91,
+     "p95": 37.04,
+     "zero": 34.45
+    },
+    "roof_inside_m2": 2182.8,
+    "cover": 0.979,
+    "vegetation": 0.036,
+    "open_below": 0.028,
+    "not_drawn_m2": 84.2,
+    "check": {
+     "iou": 0.848,
+     "lidar_m2": 2391.0,
+     "model_m2": 2566.8,
+     "within_0.5m": 0.5,
+     "model_minus_lidar_m": {
+      "p10": -7.63,
+      "p50": -0.05,
+      "p90": 1.36
+     },
+     "highest_m": {
+      "model": 22.18,
+      "lidar": 27.49
+     }
+    }
+   }
+  },
+  "110N": {
+   "name": "Thomas Building Extension",
+   "reason": "top-view check: footprint IoU 0.936 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1257.3,
+    "ground": {
+     "p5": 34.12,
+     "p50": 34.58,
+     "p95": 35.67,
+     "zero": 34.27
+    },
+    "roof_inside_m2": 1207.0,
+    "cover": 0.961,
+    "vegetation": 0.019,
+    "open_below": 0.064,
+    "not_drawn_m2": 26.2,
+    "check": {
+     "iou": 0.936,
+     "lidar_m2": 1286.2,
+     "model_m2": 1266.0,
+     "within_0.5m": 0.892,
+     "model_minus_lidar_m": {
+      "p10": -0.36,
+      "p50": 0.02,
+      "p90": 0.34
+     },
+     "highest_m": {
+      "model": 20.23,
+      "lidar": 23.2
+     }
+    }
+   }
+  },
+  "118": {
+   "name": "Lippincott Cottage",
+   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 87.6,
+    "ground": {
+     "p5": 37.28,
+     "p50": 37.59,
+     "p95": 38.02,
+     "zero": 36.14
+    },
+    "roof_inside_m2": 81.8,
+    "cover": 0.908,
+    "vegetation": 0.139,
+    "open_below": 0.073,
+    "not_drawn_m2": 8.2,
+    "check": {
+     "iou": 0.818,
+     "lidar_m2": 96.2,
+     "model_m2": 93.2,
+     "within_0.5m": 0.689,
+     "model_minus_lidar_m": {
+      "p10": -0.93,
+      "p50": -0.06,
+      "p90": 0.12
+     },
+     "highest_m": {
+      "model": 9.75,
+      "lidar": 10.55
+     }
+    }
+   }
+  },
   "120": {
    "name": "Grounds Bldg",
    "reason": "roof cells cover 0% of the outline (limit 85%)",
@@ -69,17 +201,17 @@
     "open_below": 0.272,
     "not_drawn_m2": 6.5,
     "check": {
-     "iou": 0.843,
+     "iou": 0.79,
      "lidar_m2": 76.5,
-     "model_m2": 82.5,
-     "within_0.5m": 0.268,
+     "model_m2": 77.0,
+     "within_0.5m": 0.87,
      "model_minus_lidar_m": {
-      "p10": -2.4,
-      "p50": -1.12,
-      "p90": 0.2
+      "p10": -0.19,
+      "p50": 0.04,
+      "p90": 0.53
      },
      "highest_m": {
-      "model": 3.74,
+      "model": 8.87,
       "lidar": 18.17
      }
     }
@@ -153,6 +285,39 @@
     "open_below": 0.52
    }
   },
+  "130": {
+   "name": "Pembridge House",
+   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 376.1,
+    "ground": {
+     "p5": 48.22,
+     "p50": 48.9,
+     "p95": 49.08,
+     "zero": 48.41
+    },
+    "roof_inside_m2": 366.0,
+    "cover": 0.973,
+    "vegetation": 0.049,
+    "open_below": 0.173,
+    "not_drawn_m2": 6.2,
+    "check": {
+     "iou": 0.92,
+     "lidar_m2": 394.0,
+     "model_m2": 377.5,
+     "within_0.5m": 0.891,
+     "model_minus_lidar_m": {
+      "p10": -0.15,
+      "p50": 0.0,
+      "p90": 0.27
+     },
+     "highest_m": {
+      "model": 10.91,
+      "lidar": 12.72
+     }
+    }
+   }
+  },
   "132": {
    "name": "George Fraser Gallery",
    "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
@@ -203,6 +368,39 @@
     "open_below": 0.333
    }
   },
+  "201": {
+   "name": "Te Pūtahi Tangata",
+   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 84% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 5167.4,
+    "ground": {
+     "p5": 24.4,
+     "p50": 25.22,
+     "p95": 35.79,
+     "zero": 24.44
+    },
+    "roof_inside_m2": 4593.5,
+    "cover": 0.889,
+    "vegetation": 0.048,
+    "open_below": 0.05,
+    "not_drawn_m2": 12.0,
+    "check": {
+     "iou": 0.872,
+     "lidar_m2": 4759.2,
+     "model_m2": 5169.5,
+     "within_0.5m": 0.84,
+     "model_minus_lidar_m": {
+      "p10": -0.52,
+      "p50": -0.01,
+      "p90": 0.26
+     },
+     "highest_m": {
+      "model": 41.41,
+      "lidar": 43.3
+     }
+    }
+   }
+  },
   "202": {
    "name": "Overbridge: Human Science/Music",
    "reason": "roof cells cover 53% of the outline (limit 85%)",
@@ -218,6 +416,40 @@
     "cover": 0.533,
     "vegetation": 0.298,
     "open_below": 0.196
+   }
+  },
+  "206": {
+   "name": "Humanities Building",
+   "reason": "roof cells cover 77% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 1646.5,
+    "ground": {
+     "p5": 24.77,
+     "p50": 29.33,
+     "p95": 33.3,
+     "zero": 24.84
+    },
+    "roof_inside_m2": 1265.8,
+    "cover": 0.767,
+    "vegetation": 0.1,
+    "open_below": 0.133
+   }
+  },
+  "207": {
+   "name": "CLL Building",
+   "reason": "roof cells cover 74% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 2025.2,
+    "ground": {
+     "p5": 25.0,
+     "p50": 29.82,
+     "p95": 36.55,
+     "zero": 24.98
+    },
+    "roof_inside_m2": 1486.5,
+    "cover": 0.735,
+    "vegetation": 0.071,
+    "open_below": 0.115
    }
   },
   "212": {
@@ -288,7 +520,7 @@
   },
   "216": {
    "name": "Mona",
-   "reason": "top-view check: footprint IoU 0.871 (limit 0.9), 71% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.882 (limit 0.9), 70% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 153.5,
     "ground": {
@@ -303,14 +535,14 @@
     "open_below": 0.171,
     "not_drawn_m2": 21.5,
     "check": {
-     "iou": 0.871,
+     "iou": 0.882,
      "lidar_m2": 176.2,
-     "model_m2": 153.5,
-     "within_0.5m": 0.709,
+     "model_m2": 155.5,
+     "within_0.5m": 0.699,
      "model_minus_lidar_m": {
-      "p10": -1.08,
+      "p10": -1.2,
       "p50": -0.07,
-      "p90": 0.1
+      "p90": 0.09
      },
      "highest_m": {
       "model": 14.73,
@@ -321,7 +553,7 @@
   },
   "219": {
    "name": "8 Grafton Road",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 31% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 320.0,
     "ground": {
@@ -334,19 +566,19 @@
     "cover": 0.934,
     "vegetation": 0.063,
     "open_below": 0.148,
-    "not_drawn_m2": 21.8,
+    "not_drawn_m2": 24.0,
     "check": {
-     "iou": 0.89,
+     "iou": 0.897,
      "lidar_m2": 319.5,
-     "model_m2": 321.2,
-     "within_0.5m": 0.306,
+     "model_m2": 326.5,
+     "within_0.5m": 0.689,
      "model_minus_lidar_m": {
-      "p10": -2.15,
-      "p50": -0.62,
-      "p90": 0.79
+      "p10": -2.3,
+      "p50": -0.04,
+      "p90": 0.19
      },
      "highest_m": {
-      "model": 9.98,
+      "model": 13.53,
       "lidar": 20.48
      }
     }
@@ -371,7 +603,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 12% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -389,14 +621,14 @@
      "iou": 0.83,
      "lidar_m2": 188.2,
      "model_m2": 171.8,
-     "within_0.5m": 0.12,
+     "within_0.5m": 0.406,
      "model_minus_lidar_m": {
-      "p10": -2.57,
-      "p50": -1.69,
-      "p90": -0.15
+      "p10": -2.14,
+      "p50": -0.79,
+      "p90": -0.0
      },
      "highest_m": {
-      "model": 4.3,
+      "model": 6.84,
       "lidar": 7.8
      }
     }
@@ -435,37 +667,21 @@
     }
    }
   },
-  "240": {
-   "name": "Building 240",
-   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 43% of cells within 0.5 m (limit 90%)",
+  "250": {
+   "name": "Music School",
+   "reason": "roof cells cover 77% of the outline (limit 85%)",
    "measured": {
-    "outline_m2": 246.8,
+    "outline_m2": 1587.1,
     "ground": {
-     "p5": 23.44,
-     "p50": 26.83,
-     "p95": 28.82,
-     "zero": 25.5
+     "p5": 28.8,
+     "p50": 32.48,
+     "p95": 34.49,
+     "zero": 28.94
     },
-    "roof_inside_m2": 235.5,
-    "cover": 0.95,
-    "vegetation": 0.103,
-    "open_below": 0.266,
-    "not_drawn_m2": 55.2,
-    "check": {
-     "iou": 0.93,
-     "lidar_m2": 257.2,
-     "model_m2": 266.2,
-     "within_0.5m": 0.432,
-     "model_minus_lidar_m": {
-      "p10": -1.58,
-      "p50": -0.29,
-      "p90": 0.92
-     },
-     "highest_m": {
-      "model": 10.04,
-      "lidar": 20.35
-     }
-    }
+    "roof_inside_m2": 1229.2,
+    "cover": 0.774,
+    "vegetation": 0.107,
+    "open_below": 0.102
    }
   },
   "251": {
@@ -485,17 +701,17 @@
     "open_below": 0.093,
     "not_drawn_m2": 38.0,
     "check": {
-     "iou": 0.852,
+     "iou": 0.91,
      "lidar_m2": 241.5,
-     "model_m2": 213.8,
-     "within_0.5m": 0.363,
+     "model_m2": 244.5,
+     "within_0.5m": 0.994,
      "model_minus_lidar_m": {
-      "p10": -1.48,
-      "p50": -0.34,
-      "p90": 0.8
+      "p10": -0.09,
+      "p50": 0.0,
+      "p90": 0.1
      },
      "highest_m": {
-      "model": 4.54,
+      "model": 8.32,
       "lidar": 12.78
      }
     }
@@ -516,19 +732,19 @@
     "cover": 0.944,
     "vegetation": 0.055,
     "open_below": 0.197,
-    "not_drawn_m2": 26.2,
+    "not_drawn_m2": 27.0,
     "check": {
-     "iou": 0.903,
+     "iou": 0.894,
      "lidar_m2": 520.0,
-     "model_m2": 521.2,
-     "within_0.5m": 0.834,
+     "model_m2": 516.2,
+     "within_0.5m": 0.969,
      "model_minus_lidar_m": {
-      "p10": -0.54,
-      "p50": 0.01,
-      "p90": 0.41
+      "p10": -0.11,
+      "p50": -0.0,
+      "p90": 0.08
      },
      "highest_m": {
-      "model": 11.24,
+      "model": 11.25,
       "lidar": 14.82
      }
     }
@@ -599,19 +815,19 @@
     "cover": 0.965,
     "vegetation": 0.018,
     "open_below": 0.274,
-    "not_drawn_m2": 6.8,
+    "not_drawn_m2": 15.2,
     "check": {
-     "iou": 0.917,
+     "iou": 0.825,
      "lidar_m2": 222.8,
-     "model_m2": 220.0,
-     "within_0.5m": 0.764,
+     "model_m2": 190.2,
+     "within_0.5m": 0.433,
      "model_minus_lidar_m": {
-      "p10": -0.59,
-      "p50": -0.0,
-      "p90": 0.53
+      "p10": -1.32,
+      "p50": -0.61,
+      "p90": -0.05
      },
      "highest_m": {
-      "model": 6.94,
+      "model": 6.14,
       "lidar": 8.56
      }
     }
@@ -632,6 +848,23 @@
     "cover": 0.0,
     "vegetation": 0.754,
     "open_below": 0.0
+   }
+  },
+  "260": {
+   "name": "Sir Owen G Glenn Building OGGB",
+   "reason": "roof cells cover 51% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 11156.1,
+    "ground": {
+     "p5": 12.09,
+     "p50": 24.74,
+     "p95": 30.93,
+     "zero": 11.64
+    },
+    "roof_inside_m2": 5662.8,
+    "cover": 0.507,
+    "vegetation": 0.108,
+    "open_below": 0.157
    }
   },
   "273": {
@@ -699,20 +932,203 @@
     "cover": 0.981,
     "vegetation": 0.0,
     "open_below": 0.071,
-    "not_drawn_m2": 90.8,
+    "not_drawn_m2": 70.5,
     "check": {
      "iou": 0.978,
      "lidar_m2": 356.8,
      "model_m2": 361.2,
-     "within_0.5m": 0.687,
+     "within_0.5m": 0.81,
      "model_minus_lidar_m": {
-      "p10": -0.13,
-      "p50": 0.16,
-      "p90": 1.55
+      "p10": -0.16,
+      "p50": 0.09,
+      "p90": 0.73
      },
      "highest_m": {
-      "model": 17.8,
+      "model": 17.85,
       "lidar": 17.87
+     }
+    }
+   }
+  },
+  "301": {
+   "name": "Science Centre - Faculty of Science",
+   "reason": "roof cells cover 79% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 2130.7,
+    "ground": {
+     "p5": 40.97,
+     "p50": 44.94,
+     "p95": 45.99,
+     "zero": 40.95
+    },
+    "roof_inside_m2": 1689.5,
+    "cover": 0.793,
+    "vegetation": 0.026,
+    "open_below": 0.1
+   }
+  },
+  "302": {
+   "name": "Science Centre - Faculty of Science",
+   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 42% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2706.3,
+    "ground": {
+     "p5": 41.01,
+     "p50": 44.57,
+     "p95": 46.26,
+     "zero": 40.81
+    },
+    "roof_inside_m2": 2531.0,
+    "cover": 0.935,
+    "vegetation": 0.019,
+    "open_below": 0.07,
+    "not_drawn_m2": 193.0,
+    "check": {
+     "iou": 0.93,
+     "lidar_m2": 2593.2,
+     "model_m2": 2726.0,
+     "within_0.5m": 0.415,
+     "model_minus_lidar_m": {
+      "p10": -3.96,
+      "p50": -0.47,
+      "p90": 0.35
+     },
+     "highest_m": {
+      "model": 56.45,
+      "lidar": 58.28
+     }
+    }
+   }
+  },
+  "303": {
+   "name": "Science Centre - Faculty of Science",
+   "reason": "top-view check: footprint IoU 0.916 (limit 0.9), 84% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 3716.9,
+    "ground": {
+     "p5": 37.43,
+     "p50": 42.37,
+     "p95": 45.99,
+     "zero": 37.48
+    },
+    "roof_inside_m2": 3404.8,
+    "cover": 0.916,
+    "vegetation": 0.024,
+    "open_below": 0.072,
+    "not_drawn_m2": 28.0,
+    "check": {
+     "iou": 0.916,
+     "lidar_m2": 3437.2,
+     "model_m2": 3718.0,
+     "within_0.5m": 0.844,
+     "model_minus_lidar_m": {
+      "p10": -0.27,
+      "p50": 0.01,
+      "p90": 0.6
+     },
+     "highest_m": {
+      "model": 45.87,
+      "lidar": 48.91
+     }
+    }
+   }
+  },
+  "303S": {
+   "name": "Science Centre - Faculty of Science",
+   "reason": "top-view check: footprint IoU 0.938 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 973.7,
+    "ground": {
+     "p5": 37.27,
+     "p50": 39.87,
+     "p95": 41.66,
+     "zero": 37.4
+    },
+    "roof_inside_m2": 939.8,
+    "cover": 0.965,
+    "vegetation": 0.008,
+    "open_below": 0.153,
+    "not_drawn_m2": 20.8,
+    "check": {
+     "iou": 0.938,
+     "lidar_m2": 974.5,
+     "model_m2": 974.0,
+     "within_0.5m": 0.888,
+     "model_minus_lidar_m": {
+      "p10": -0.47,
+      "p50": -0.0,
+      "p90": 0.3
+     },
+     "highest_m": {
+      "model": 37.01,
+      "lidar": 37.07
+     }
+    }
+   }
+  },
+  "310": {
+   "name": "HIWA Recreation Centre",
+   "reason": "roof cells cover 64% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 5473.2,
+    "ground": {
+     "p5": 41.99,
+     "p50": 45.18,
+     "p95": 45.98,
+     "zero": 40.8
+    },
+    "roof_inside_m2": 3481.5,
+    "cover": 0.636,
+    "vegetation": 0.055,
+    "open_below": 0.221
+   }
+  },
+  "311": {
+   "name": "Student Commons Blocks A-D",
+   "reason": "its outline on the campus map crosses itself: no inside to draw",
+   "measured": {
+    "outline_m2": 1617.7,
+    "ground": {
+     "p5": 41.96,
+     "p50": 45.2,
+     "p95": 45.64,
+     "zero": 41.94
+    },
+    "roof_inside_m2": 1495.2,
+    "cover": 0.926,
+    "vegetation": 0.009,
+    "open_below": 0.11
+   }
+  },
+  "315": {
+   "name": "Kate Edger Information Commons",
+   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 90% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 3083.0,
+    "ground": {
+     "p5": 37.94,
+     "p50": 41.11,
+     "p95": 45.31,
+     "zero": 37.97
+    },
+    "roof_inside_m2": 2768.5,
+    "cover": 0.898,
+    "vegetation": 0.047,
+    "open_below": 0.08,
+    "not_drawn_m2": 14.0,
+    "check": {
+     "iou": 0.865,
+     "lidar_m2": 2918.0,
+     "model_m2": 3083.0,
+     "within_0.5m": 0.895,
+     "model_minus_lidar_m": {
+      "p10": -0.29,
+      "p50": -0.01,
+      "p90": 0.17
+     },
+     "highest_m": {
+      "model": 23.9,
+      "lidar": 24.57
      }
     }
    }
@@ -736,7 +1152,7 @@
   },
   "322": {
    "name": "AUSA House",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 70% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 74% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 192.8,
     "ground": {
@@ -754,9 +1170,9 @@
      "iou": 0.858,
      "lidar_m2": 218.8,
      "model_m2": 194.2,
-     "within_0.5m": 0.697,
+     "within_0.5m": 0.735,
      "model_minus_lidar_m": {
-      "p10": -1.56,
+      "p10": -0.95,
       "p50": -0.01,
       "p90": 0.68
      },
@@ -782,6 +1198,105 @@
     "cover": 0.128,
     "vegetation": 0.726,
     "open_below": 0.2
+   }
+  },
+  "401": {
+   "name": "Engineering Block 1",
+   "reason": "top-view check: footprint IoU 0.964 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2389.9,
+    "ground": {
+     "p5": 39.26,
+     "p50": 41.44,
+     "p95": 44.73,
+     "zero": 39.27
+    },
+    "roof_inside_m2": 2344.2,
+    "cover": 0.981,
+    "vegetation": 0.001,
+    "open_below": 0.023,
+    "not_drawn_m2": 55.5,
+    "check": {
+     "iou": 0.964,
+     "lidar_m2": 2449.8,
+     "model_m2": 2435.5,
+     "within_0.5m": 0.874,
+     "model_minus_lidar_m": {
+      "p10": -0.28,
+      "p50": 0.01,
+      "p90": 0.14
+     },
+     "highest_m": {
+      "model": 41.34,
+      "lidar": 41.48
+     }
+    }
+   }
+  },
+  "402": {
+   "name": "Engineering Block 2",
+   "reason": "top-view check: footprint IoU 0.927 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1936.4,
+    "ground": {
+     "p5": 35.0,
+     "p50": 35.35,
+     "p95": 38.6,
+     "zero": 35.12
+    },
+    "roof_inside_m2": 1828.0,
+    "cover": 0.944,
+    "vegetation": 0.002,
+    "open_below": 0.028,
+    "not_drawn_m2": 15.8,
+    "check": {
+     "iou": 0.927,
+     "lidar_m2": 1946.0,
+     "model_m2": 2022.2,
+     "within_0.5m": 0.872,
+     "model_minus_lidar_m": {
+      "p10": -0.48,
+      "p50": -0.01,
+      "p90": 0.16
+     },
+     "highest_m": {
+      "model": 36.0,
+      "lidar": 36.94
+     }
+    }
+   }
+  },
+  "405": {
+   "name": "Engineering Block 5",
+   "reason": "top-view check: footprint IoU 0.900 (limit 0.9), 82% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 3861.5,
+    "ground": {
+     "p5": 29.66,
+     "p50": 35.38,
+     "p95": 39.41,
+     "zero": 29.56
+    },
+    "roof_inside_m2": 3494.2,
+    "cover": 0.905,
+    "vegetation": 0.032,
+    "open_below": 0.089,
+    "not_drawn_m2": 152.2,
+    "check": {
+     "iou": 0.9,
+     "lidar_m2": 3589.5,
+     "model_m2": 3863.5,
+     "within_0.5m": 0.822,
+     "model_minus_lidar_m": {
+      "p10": -0.47,
+      "p50": -0.0,
+      "p90": 0.45
+     },
+     "highest_m": {
+      "model": 51.74,
+      "lidar": 55.53
+     }
+    }
    }
   },
   "408": {
@@ -816,22 +1331,56 @@
     "cover": 0.976,
     "vegetation": 0.004,
     "open_below": 0.167,
-    "not_drawn_m2": 7.0,
+    "not_drawn_m2": 16.8,
     "check": {
-     "iou": 0.835,
+     "iou": 0.785,
      "lidar_m2": 236.2,
-     "model_m2": 205.5,
-     "within_0.5m": 0.992,
+     "model_m2": 189.0,
+     "within_0.5m": 0.894,
      "model_minus_lidar_m": {
-      "p10": -0.03,
-      "p50": 0.0,
+      "p10": -0.62,
+      "p50": -0.0,
       "p90": 0.03
      },
      "highest_m": {
-      "model": 6.09,
+      "model": 5.64,
       "lidar": 10.69
      }
     }
+   }
+  },
+  "421E": {
+   "name": "Architecture - East",
+   "reason": "roof cells cover 60% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 2281.3,
+    "ground": {
+     "p5": 26.75,
+     "p50": 34.76,
+     "p95": 39.92,
+     "zero": 27.91
+    },
+    "roof_inside_m2": 1363.5,
+    "cover": 0.598,
+    "vegetation": 0.137,
+    "open_below": 0.088
+   }
+  },
+  "421W": {
+   "name": "Architecture - West",
+   "reason": "roof cells cover 72% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 913.6,
+    "ground": {
+     "p5": 35.03,
+     "p50": 40.0,
+     "p95": 43.45,
+     "zero": 34.93
+    },
+    "roof_inside_m2": 655.5,
+    "cover": 0.717,
+    "vegetation": 0.131,
+    "open_below": 0.161
    }
   },
   "422": {
@@ -853,7 +1402,7 @@
   },
   "423": {
    "name": "Conference Centre",
-   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 54% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 2018.9,
     "ground": {
@@ -871,11 +1420,11 @@
      "iou": 0.924,
      "lidar_m2": 2118.2,
      "model_m2": 2095.8,
-     "within_0.5m": 0.536,
+     "within_0.5m": 0.759,
      "model_minus_lidar_m": {
-      "p10": -4.3,
-      "p50": -0.12,
-      "p90": 0.1
+      "p10": -2.73,
+      "p50": -0.02,
+      "p90": 0.11
      },
      "highest_m": {
       "model": 21.31,
@@ -886,7 +1435,7 @@
   },
   "431": {
    "name": "Fine Arts Studio Block 431",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 82% of cells within 0.5 m (limit 90%)",
    "measured": {
     "outline_m2": 800.8,
     "ground": {
@@ -899,19 +1448,19 @@
     "cover": 0.968,
     "vegetation": 0.053,
     "open_below": 0.091,
-    "not_drawn_m2": 9.5,
+    "not_drawn_m2": 8.0,
     "check": {
      "iou": 0.89,
      "lidar_m2": 851.0,
      "model_m2": 801.5,
-     "within_0.5m": 0.944,
+     "within_0.5m": 0.817,
      "model_minus_lidar_m": {
-      "p10": -0.06,
-      "p50": 0.01,
-      "p90": 0.1
+      "p10": -1.04,
+      "p50": -0.02,
+      "p90": 0.07
      },
      "highest_m": {
-      "model": 19.26,
+      "model": 18.57,
       "lidar": 18.9
      }
     }
@@ -1016,6 +1565,90 @@
     }
    }
   },
+  "439": {
+   "name": "Auckland Bioengineering House",
+   "reason": "top-view check: footprint IoU 0.910 (limit 0.9), 88% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1266.6,
+    "ground": {
+     "p5": 47.92,
+     "p50": 57.22,
+     "p95": 59.62,
+     "zero": 41.4
+    },
+    "roof_inside_m2": 1142.0,
+    "cover": 0.902,
+    "vegetation": 0.069,
+    "open_below": 0.13,
+    "not_drawn_m2": 46.8,
+    "check": {
+     "iou": 0.91,
+     "lidar_m2": 1191.0,
+     "model_m2": 1288.0,
+     "within_0.5m": 0.884,
+     "model_minus_lidar_m": {
+      "p10": -0.46,
+      "p50": -0.02,
+      "p90": 0.06
+     },
+     "highest_m": {
+      "model": 60.05,
+      "lidar": 82.74
+     }
+    }
+   }
+  },
+  "440": {
+   "name": "University Hall",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 1153.8,
+    "ground": {
+     "p5": 25.9,
+     "p50": 33.23,
+     "p95": 39.3,
+     "zero": 24.51
+    },
+    "roof_inside_m2": 952.5,
+    "cover": 0.825,
+    "vegetation": 0.104,
+    "open_below": 0.081
+   }
+  },
+  "441": {
+   "name": "Waipārūrū Hall 441",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 904.4,
+    "ground": {
+     "p5": 35.2,
+     "p50": 46.44,
+     "p95": 46.95,
+     "zero": 34.28
+    },
+    "roof_inside_m2": 188.2,
+    "cover": 0.208,
+    "vegetation": 0.753,
+    "open_below": 0.229
+   }
+  },
+  "442": {
+   "name": "Waipārūrū Hall 442",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 1234.8,
+    "ground": {
+     "p5": 35.69,
+     "p50": 46.8,
+     "p95": 47.46,
+     "zero": 34.38
+    },
+    "roof_inside_m2": 189.2,
+    "cover": 0.153,
+    "vegetation": 0.824,
+    "open_below": 0.119
+   }
+  },
   "450": {
    "name": "UniLodge Whitaker",
    "reason": "decision 6, a place where people live (student housing by its name, though its floor is marked unmapped): kept until the maintainer decides",
@@ -1033,9 +1666,9 @@
     "open_below": 0.031,
     "not_drawn_m2": 19.8,
     "check": {
-     "iou": 0.872,
+     "iou": 0.868,
      "lidar_m2": 484.5,
-     "model_m2": 497.8,
+     "model_m2": 495.2,
      "within_0.5m": 0.933,
      "model_minus_lidar_m": {
       "p10": -0.1,
@@ -1045,6 +1678,56 @@
      "highest_m": {
       "model": 50.45,
       "lidar": 51.62
+     }
+    }
+   }
+  },
+  "614": {
+   "name": "O'Rorke Hall",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 2756.9,
+    "ground": {
+     "p5": 52.95,
+     "p50": 54.4,
+     "p95": 56.83,
+     "zero": 53.02
+    },
+    "roof_inside_m2": 1879.5,
+    "cover": 0.681,
+    "vegetation": 0.105,
+    "open_below": 0.078
+   }
+  },
+  "616": {
+   "name": "55 Symonds Street",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 736.4,
+    "ground": {
+     "p5": 54.21,
+     "p50": 58.75,
+     "p95": 62.8,
+     "zero": 54.18
+    },
+    "roof_inside_m2": 725.5,
+    "cover": 0.984,
+    "vegetation": 0.023,
+    "open_below": 0.08,
+    "not_drawn_m2": 67.0,
+    "check": {
+     "iou": 0.904,
+     "lidar_m2": 821.2,
+     "model_m2": 767.5,
+     "within_0.5m": 0.908,
+     "model_minus_lidar_m": {
+      "p10": -0.35,
+      "p50": -0.01,
+      "p90": 0.15
+     },
+     "highest_m": {
+      "model": 57.49,
+      "lidar": 58.49
      }
     }
    }
@@ -1078,6 +1761,340 @@
      "highest_m": {
       "model": 49.97,
       "lidar": 52.74
+     }
+    }
+   }
+  },
+  "620": {
+   "name": "49 Symonds Street",
+   "reason": "roof cells cover 53% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 2961.8,
+    "ground": {
+     "p5": 54.92,
+     "p50": 57.0,
+     "p95": 58.63,
+     "zero": 54.41
+    },
+    "roof_inside_m2": 1567.0,
+    "cover": 0.529,
+    "vegetation": 0.112,
+    "open_below": 0.101
+   }
+  },
+  "802": {
+   "name": "15 Eden Crescent",
+   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 39% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 886.0,
+    "ground": {
+     "p5": 16.12,
+     "p50": 16.41,
+     "p95": 17.33,
+     "zero": 16.24
+    },
+    "roof_inside_m2": 882.5,
+    "cover": 0.997,
+    "vegetation": 0.0,
+    "open_below": 0.012,
+    "not_drawn_m2": 36.8,
+    "check": {
+     "iou": 0.958,
+     "lidar_m2": 983.0,
+     "model_m2": 951.5,
+     "within_0.5m": 0.391,
+     "model_minus_lidar_m": {
+      "p10": -3.15,
+      "p50": -0.89,
+      "p90": 0.02
+     },
+     "highest_m": {
+      "model": 12.78,
+      "lidar": 14.33
+     }
+    }
+   }
+  },
+  "803": {
+   "name": "17 Eden Crescent",
+   "reason": "top-view check: footprint IoU 0.862 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 677.8,
+    "ground": {
+     "p5": 16.75,
+     "p50": 17.34,
+     "p95": 20.42,
+     "zero": 16.93
+    },
+    "roof_inside_m2": 653.8,
+    "cover": 0.964,
+    "vegetation": 0.014,
+    "open_below": 0.132,
+    "not_drawn_m2": 8.5,
+    "check": {
+     "iou": 0.862,
+     "lidar_m2": 736.5,
+     "model_m2": 678.5,
+     "within_0.5m": 0.937,
+     "model_minus_lidar_m": {
+      "p10": -0.18,
+      "p50": 0.01,
+      "p90": 0.13
+     },
+     "highest_m": {
+      "model": 11.36,
+      "lidar": 15.25
+     }
+    }
+   }
+  },
+  "804": {
+   "name": "Fisher Building",
+   "reason": "roof cells cover 80% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 483.8,
+    "ground": {
+     "p5": 26.2,
+     "p50": 29.29,
+     "p95": 32.45,
+     "zero": 26.32
+    },
+    "roof_inside_m2": 384.2,
+    "cover": 0.797,
+    "vegetation": 0.216,
+    "open_below": 0.087
+   }
+  },
+  "810": {
+   "name": "1-11 Short Street",
+   "reason": "its outline on the campus map crosses itself: no inside to draw",
+   "measured": {
+    "outline_m2": 1191.3,
+    "ground": {
+     "p5": 13.01,
+     "p50": 14.53,
+     "p95": 19.5,
+     "zero": 13.23
+    },
+    "roof_inside_m2": 1145.8,
+    "cover": 0.964,
+    "vegetation": 0.039,
+    "open_below": 0.021
+   }
+  },
+  "818": {
+   "name": "Te Tirohanga O Te Toangaroa",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 720.2,
+    "ground": {
+     "p5": 3.02,
+     "p50": 23.22,
+     "p95": 24.01,
+     "zero": 3.09
+    },
+    "roof_inside_m2": 511.5,
+    "cover": 0.71,
+    "vegetation": 0.312,
+    "open_below": 0.04
+   }
+  },
+  "820": {
+   "name": "Kenneth Myers Centre",
+   "reason": "top-view check: footprint IoU 0.849 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 935.4,
+    "ground": {
+     "p5": 13.29,
+     "p50": 25.09,
+     "p95": 27.1,
+     "zero": 12.48
+    },
+    "roof_inside_m2": 847.0,
+    "cover": 0.907,
+    "vegetation": 0.092,
+    "open_below": 0.006,
+    "not_drawn_m2": 21.5,
+    "check": {
+     "iou": 0.849,
+     "lidar_m2": 914.5,
+     "model_m2": 951.8,
+     "within_0.5m": 0.851,
+     "model_minus_lidar_m": {
+      "p10": -0.48,
+      "p50": 0.0,
+      "p90": 0.23
+     },
+     "highest_m": {
+      "model": 23.12,
+      "lidar": 52.31
+     }
+    }
+   }
+  },
+  "831": {
+   "name": "Carlaw Park Block 831",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 1138.1,
+    "ground": {
+     "p5": 4.12,
+     "p50": 4.71,
+     "p95": 7.45,
+     "zero": 4.18
+    },
+    "roof_inside_m2": 823.0,
+    "cover": 0.723,
+    "vegetation": 0.187,
+    "open_below": 0.152
+   }
+  },
+  "832": {
+   "name": "Carlaw Park Block 832",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 797.2,
+    "ground": {
+     "p5": 4.2,
+     "p50": 4.36,
+     "p95": 7.52,
+     "zero": 4.21
+    },
+    "roof_inside_m2": 456.0,
+    "cover": 0.572,
+    "vegetation": 0.319,
+    "open_below": 0.131
+   }
+  },
+  "833": {
+   "name": "Carlaw Park Block 833",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 868.4,
+    "ground": {
+     "p5": 7.28,
+     "p50": 7.44,
+     "p95": 7.64,
+     "zero": 7.4
+    },
+    "roof_inside_m2": 370.5,
+    "cover": 0.427,
+    "vegetation": 0.493,
+    "open_below": 0.196
+   }
+  },
+  "834": {
+   "name": "Carlaw Park Block 834",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 776.2,
+    "ground": {
+     "p5": 4.2,
+     "p50": 7.42,
+     "p95": 7.49,
+     "zero": 4.21
+    },
+    "roof_inside_m2": 352.8,
+    "cover": 0.454,
+    "vegetation": 0.402,
+    "open_below": 0.123
+   }
+  },
+  "835": {
+   "name": "Carlaw Park Block 835",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 481.8,
+    "ground": {
+     "p5": 4.07,
+     "p50": 4.24,
+     "p95": 7.46,
+     "zero": 4.08
+    },
+    "roof_inside_m2": 479.2,
+    "cover": 0.997,
+    "vegetation": 0.022,
+    "open_below": 0.183,
+    "not_drawn_m2": 28.0,
+    "check": {
+     "iou": 0.918,
+     "lidar_m2": 534.8,
+     "model_m2": 492.5,
+     "within_0.5m": 0.919,
+     "model_minus_lidar_m": {
+      "p10": -0.42,
+      "p50": -0.01,
+      "p90": 0.26
+     },
+     "highest_m": {
+      "model": 23.07,
+      "lidar": 26.13
+     }
+    }
+   }
+  },
+  "836": {
+   "name": "Carlaw Park Block 836",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 600.2,
+    "ground": {
+     "p5": 4.08,
+     "p50": 4.23,
+     "p95": 7.44,
+     "zero": 4.16
+    },
+    "roof_inside_m2": 595.0,
+    "cover": 0.992,
+    "vegetation": 0.04,
+    "open_below": 0.08,
+    "not_drawn_m2": 12.5,
+    "check": {
+     "iou": 0.951,
+     "lidar_m2": 640.2,
+     "model_m2": 623.2,
+     "within_0.5m": 0.893,
+     "model_minus_lidar_m": {
+      "p10": -0.5,
+      "p50": -0.02,
+      "p90": 0.26
+     },
+     "highest_m": {
+      "model": 24.2,
+      "lidar": 25.37
+     }
+    }
+   }
+  },
+  "837": {
+   "name": "Carlaw Park Block 837",
+   "reason": "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though the campus map marks none of its floors residential: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 428.6,
+    "ground": {
+     "p5": 4.11,
+     "p50": 4.34,
+     "p95": 7.41,
+     "zero": 4.09
+    },
+    "roof_inside_m2": 425.2,
+    "cover": 0.992,
+    "vegetation": 0.04,
+    "open_below": 0.136,
+    "not_drawn_m2": 7.2,
+    "check": {
+     "iou": 0.922,
+     "lidar_m2": 465.0,
+     "model_m2": 433.5,
+     "within_0.5m": 0.938,
+     "model_minus_lidar_m": {
+      "p10": -0.4,
+      "p50": -0.02,
+      "p90": 0.2
+     },
+     "highest_m": {
+      "model": 27.46,
+      "lidar": 27.85
      }
     }
    }
