@@ -26,7 +26,8 @@ The many plain buildings are drawn by a program instead, as **measured massings*
 ## A landmark's files
 
 - `model.js` exports `build(materials, only)`. It returns a `Group` in the view frame (below) and
-  builds only the parts named in `only` when it is given.
+  builds only the parts named in `only` when it is given. A model with parts that stand on ground
+  higher than its door's also exports their names, `STANDS` ("Placement").
 - `config/<name>.json`: the building id, the LiDAR and aerial tiles, `ground`, `door`, the `frame`
   thresholds and `frame.expected`, the Street View panoramas and the refinement bounds.
   `config/default_camera.json` is the viewer's first view.
@@ -129,7 +130,15 @@ falls under it (Old Government House's to 1.6 m below its porch), so that their 
 more than 0.25 m above it. `tests/landmarks.test.ts` checks that for every landmark on the site, at
 the lowest points of each material's mesh that reaches y = 0 (the kit joins a model's parts by
 material, so a part with a higher foot can hide behind another): give every part's walls the same
-foot, as Old Government House's parts take `FOOT` from `common.js`.
+foot, as Old Government House's parts take `FOOT` from `common.js`. A part that stands on ground
+higher than the door's has its foot above y = 0, and its mesh may not reach y = 0 at all: the Fisher
+Building's ramp stands on the pavement of Waterloo Quadrant 5.2 to 5.7 m above its door, where the
+map's ground is only 2.3 to 2.4 m above it. Take it down to `FOOT` there too, in a part of its own
+under the street (its `rampFoot`, which the compare draws as the ground: `compare.underground`,
+below), and name the parts in `model.js`'s `STANDS` (`export const STANDS = ["ramp", "rampFoot"]`):
+the test builds them together, alone, and checks their lowest points as well. It cannot find such a
+part by itself, since the site does not hold the LiDAR's ground and canopies, decks and windows stand
+clear of the ground by design.
 The stage needs no LiDAR: it reads `frame.expected`, `door`, `building` and `site` from the config.
 
 ## On the site
@@ -298,7 +307,14 @@ panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels w
 13,312, and those have fewer columns of tiles at every zoom. A panorama whose recorded camera is off
 by more than the refinement can find may have its camera set in the config
 (`streetview.camera_fixes`: panorama id to `[x, z]` in the view frame, with a note saying how it was
-found): its views are cut from the panorama as before, and drawn from there looking the same way.
+found): its views are cut from the panorama as before, and drawn from there looking the same way. A
+third number, `[x, z, pitch]`, also turns the camera drawn from by `pitch` degrees, up or (negative)
+down from the cut's pitch: the cut does not apply a panorama's own tilt and roll, and where the car
+stood on a cross-slope its photographs look up or down by up to the roll, the roll times the sine of
+the view's angle off the car's heading. A fitted pitch need not be that alone: the Fisher Building's
+MGAo… records a roll of -4.16°, which gives 3.9° at its views' 71° off the heading (4.2° at most
+with its tilt), and its photographs' edges fit 5.56° lower; the other 1.4 to 1.6° is fitted, not
+explained by the recorded roll. Without it nothing changes.
 
 ### Camera refinement
 
@@ -365,6 +381,13 @@ stands where the model is not, count in neither the IoU, the IoU in the box, the
 the luma: there the photograph shows the neighbour. The refine stage's search counts them out too.
 Without the option the labels are as before, and so are the IoU, the box and the region the luma is
 read in (15 Eden Crescent: 9 Eden Crescent).
+
+The compare draws a flat ground at y = 0, so a wall taken down to `FOOT` under a street higher than
+that shows below the street. Parts that stand below the ground in the photographs can be named in
+the config's `compare.underground` (part names of the model): the label pass draws them again over the
+model in the ground's green, so that they count in neither the IoU, the box nor the luma and hide what
+stands behind them, as the ground would. The rendered picture still draws them. Without the option the
+labels are as before (the Fisher Building: its ramp's foot under Waterloo Quadrant, `rampFoot`).
 
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in

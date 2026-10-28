@@ -1782,39 +1782,6 @@
     "open_below": 0.101
    }
   },
-  "802": {
-   "name": "15 Eden Crescent",
-   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 39% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 886.0,
-    "ground": {
-     "p5": 16.12,
-     "p50": 16.41,
-     "p95": 17.33,
-     "zero": 16.24
-    },
-    "roof_inside_m2": 882.5,
-    "cover": 0.997,
-    "vegetation": 0.0,
-    "open_below": 0.012,
-    "not_drawn_m2": 36.8,
-    "check": {
-     "iou": 0.958,
-     "lidar_m2": 983.0,
-     "model_m2": 951.5,
-     "within_0.5m": 0.391,
-     "model_minus_lidar_m": {
-      "p10": -3.15,
-      "p50": -0.89,
-      "p90": 0.02
-     },
-     "highest_m": {
-      "model": 12.78,
-      "lidar": 14.33
-     }
-    }
-   }
-  },
   "803": {
    "name": "17 Eden Crescent",
    "reason": "top-view check: footprint IoU 0.862 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
@@ -1846,23 +1813,6 @@
       "lidar": 15.25
      }
     }
-   }
-  },
-  "804": {
-   "name": "Fisher Building",
-   "reason": "roof cells cover 80% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 483.8,
-    "ground": {
-     "p5": 26.2,
-     "p50": 29.29,
-     "p95": 32.45,
-     "zero": 26.32
-    },
-    "roof_inside_m2": 384.2,
-    "cover": 0.797,
-    "vegetation": 0.216,
-    "open_below": 0.087
    }
   },
   "810": {
