@@ -446,10 +446,28 @@ reason, only 405's model area in its top view (3863.5 to 3863.2 m²); the City's
 for byte, so it is off there until the maintainer says (`--drop-bare` turns it on for a run). 906's numbers do not change (footprint IoU 0.914, 99.6%
 within 0.5 m), as its lowest layer still stands on the whole outline: the lobe now stands at that
 layer's height, 15.65 m, where the LiDAR sees nothing over 2.4 m and the campus map has the lobe
-on floor 1 only (the block drew one storey there). That is the tolerance decision 3 gives every
-massing (roof cells cover 85% of the outline or more): the cells of an outline with no roof in the
-LiDAR stand at the lowest layer's height, 1.3% of 906's outline (22.6 m², the lobe among them),
-and 0.1% to 6.5% of the others' (305 the most, 28.6 m²).
+on floor 1 only (the block drew one storey there).
+
+**Roofless cells under an upper layer (pre-existing since the second round, #108; the second review
+of #120).** The rule above leaves out only a piece with no roof cell at all. A cell of the outline
+with no roof in the LiDAR still goes to its nearest layer, and where that layer's traced piece has
+roof cells too, the cell stands at that layer's roof. 906 has 22.5 m² of outline cells with no roof
+(0.5 m cells): 13.5 m² stand at the lowest layer's 15.65 m (12.75 m² of them the lobe), and 9.0 m²
+under its mono-pitches, 1.0 m² at 18.25 to 18.46 m and 8.0 m² at 19.52 to 20.76 m. 7.75 m² of these
+are a strip about 1 m wide along its north-west edge (x 444.25 to 447.25, y -1496.75 to -1487.75),
+where tile 3905 has 35 points of class 1 at 3.5 to 6.1 m and 2 of class 18, and no point of classes
+2 to 6; the block drew one storey there. The other massings do the same, the City's on the site
+since #79 or #108 and 904 new here (roofless cells under an upper layer, of all their roofless
+cells): 240 12.5 of
+12.5 m², 435 8.25 of 9.0, 619 9.5 of 9.75, 433 14.75 of 30.75, 305 10.0 of 28.5 (at 14.39 to
+23.05 m, over a lowest layer at 8.1 m), 103 1.25 of 1.25, 904 5.0 of 25.25 and 409 2.0 of 33.5;
+113, 114, 532, 901 and 909 have none. In all, 72.25 of the fourteen's 191.0 m² of roofless cells
+stand under an upper layer, and the rest at the lowest layer's height. Decision 3 lets a massing
+stand on an outline whose roof cells cover 85% of it or more; it does not say at which height the
+other cells stand. Whether they should stand at the lowest layer's height (or keep the block's)
+instead of their nearest layer's is for the maintainer: it would change the City's massings too.
+(906 and 305 counted for this pull request with a copy of the generator that keeps its masks; the
+others are the review's count, which two reviewers made with scripts of their own.)
 
 **904's strip and overlapping outlines.** 904's outline on the campus map overlaps 903's by
 220.4 m² and 902's by 71.6 m² along its south side (rasterised on a 0.05 m grid). 904's second
@@ -461,9 +479,12 @@ gable at 7.1 to 9.7 m: the strip is the edge of their roofs, not 904's. Both kee
 (below the top-view limits), which the site draws to 14.4 m there (902's upper floors do not reach
 its overlap with 904), so on the map the strip stands above both blocks, with the ragged edge of a
 layer traced from the LiDAR (the near shot over Newmarket shows it). The same happens on the City
-campus since the second round: two of 305's layers lie mostly in 303's outline (18.2 of 21.7 m² and
-28.0 of 63.2 m²). No other layer of the fourteen lies in another building's outline; 901's outline
-overlaps 902's by 16.3 m², where only its lowest layer stands. Whether a layer may stand in a
+campus since the second round: 305's layer 3 (a mono-pitch at 18.9 to 19.3 m) lies mostly in 303's
+outline (18.2 of 21.7 m²), and its layer 4 (flat, 23.05 m) partly (28.0 of 63.2 m², and 0.9 m² in
+301's); its layers 1 and 2 cross into 301's, 303's and 303S's outlines by slivers along shared walls
+(layer 1: 1.2 m² in 301's, 0.15 m² in 303's; layer 2: 0.8 m² in 303's, 0.7 m² in 303S's). No other
+layer above the lowest of the fourteen lies in another building's outline; 901's outline overlaps
+902's by 16.3 m², where only its lowest layer stands. Whether a layer may stand in a
 neighbour's outline is for the maintainer: keep these strips; or keep 904's block; or have the
 generator leave the neighbours' outlines out of the layers above the lowest, which would change
 305 on the City campus too.

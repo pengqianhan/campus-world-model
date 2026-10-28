@@ -750,10 +750,17 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    (`landmarks/MASSING.md`, "The third round").** 904's outline overlaps 903's by 220.4 m² and 902's
    by 71.6 m²; its layer at 16.8 m (321.0 m²: 217.1 m² in 903's outline, 71.6 m² in 902's, 32.3 m²
    in 904's alone) is the edge of their roofs, and stands above their 14.4 m blocks with a ragged
-   edge. 305's layers do the same over 303 (on the site since #108). Keep such layers, keep 904's
-   block, or have the generator leave a neighbour's outline out of the layers above the lowest
-   (305 would change too). And: the generator now leaves out a traced piece of a layer where the
-   LiDAR sees no roof of it (on Grafton and Newmarket; 906's lobe), but the lowest layer still
-   stands on the whole outline, so 906's lobe stands at 15.65 m where the LiDAR sees nothing over
-   2.4 m (decision 3's tolerance; 22.6 m² of 906's outline in all). Say whether to turn the rule on
-   for the City campus too (it changes one number of 405's in `exclusions.json`, no data file).
+   edge. 305's layer 3 does the same over 303 (18.2 of 21.7 m²), and its layer 4 partly (28.0 of
+   63.2 m²; on the site since #108). Keep such layers, keep 904's block, or have the generator leave
+   a neighbour's outline out of the layers above the lowest (305 would change too). And: the
+   generator now leaves out a traced piece of a layer where the LiDAR sees no roof of it at all (on
+   Grafton and Newmarket; 906's lobe, which now stands at the lowest layer's 15.65 m where the LiDAR
+   sees nothing over 2.4 m). Say whether to turn that rule on for the City campus too (it changes one
+   number of 405's in `exclusions.json`, no data file). And a cell of an outline with no roof in the
+   LiDAR still goes to its nearest layer: where that layer's piece has roof cells, the cell stands at
+   its roof. 906 has 22.5 m² of such cells: 13.5 m² at the lowest layer (the lobe among them) and
+   9.0 m² under its mono-pitches at 18.25 to 20.76 m, among them a strip about 1 m wide along its
+   north-west edge where the LiDAR has no point of classes 2 to 6. The City's massings do the same since
+   #79 and #108 (305: 10.0 of 28.5 m²; in all 72.25 of the fourteen's 191.0 m²; MASSING.md, "The third
+   round"). Say whether such cells should stand at the lowest layer's height (or keep the block's)
+   instead of their nearest layer's; that would change the City's massings.
