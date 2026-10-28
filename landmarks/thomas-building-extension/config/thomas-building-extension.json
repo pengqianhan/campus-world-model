@@ -1,0 +1,319 @@
+{
+ "name": "thomas-building-extension",
+ "site": true,
+ "building": {
+  "id": "110N",
+  "also": [],
+  "title": "Thomas Building Extension, University of Auckland",
+  "note": "outline: building 110N's outline from the main project's campus.json with the end of its link to the Thomas Building (110) moved back to where the LiDAR shows the two meet (building.outline_note), in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). campus_outline: the campus.json outline as it is, kept for the record; the site replaces block 110N by its id.",
+  "outline": [
+   [
+    236.5,
+    219.7
+   ],
+   [
+    238.8,
+    217.1
+   ],
+   [
+    240.7,
+    213.3
+   ],
+   [
+    241.2,
+    209.5
+   ],
+   [
+    240.9,
+    206.3
+   ],
+   [
+    238.8,
+    201.0
+   ],
+   [
+    234.6,
+    193.3
+   ],
+   [
+    230.6,
+    187.3
+   ],
+   [
+    230.8,
+    187.1
+   ],
+   [
+    226.1,
+    181.3
+   ],
+   [
+    217.2,
+    189.7
+   ],
+   [
+    213.73,
+    186.05
+   ],
+   [
+    199.0,
+    200.51
+   ],
+   [
+    198.74,
+    200.76
+   ],
+   [
+    201.8,
+    203.5
+   ],
+   [
+    196.6,
+    208.4
+   ],
+   [
+    199.1,
+    211.0
+   ],
+   [
+    200.2,
+    210.0
+   ],
+   [
+    212.4,
+    222.8
+   ],
+   [
+    230.1,
+    224.5
+   ],
+   [
+    230.1,
+    224.0
+   ],
+   [
+    231.8,
+    224.1
+   ]
+  ],
+  "campus_outline": [
+   [
+    236.5,
+    219.7
+   ],
+   [
+    238.8,
+    217.1
+   ],
+   [
+    240.7,
+    213.3
+   ],
+   [
+    241.2,
+    209.5
+   ],
+   [
+    240.9,
+    206.3
+   ],
+   [
+    238.8,
+    201.0
+   ],
+   [
+    234.6,
+    193.3
+   ],
+   [
+    230.6,
+    187.3
+   ],
+   [
+    230.8,
+    187.1
+   ],
+   [
+    226.1,
+    181.3
+   ],
+   [
+    217.2,
+    189.7
+   ],
+   [
+    212.8,
+    185.1
+   ],
+   [
+    198.3,
+    199.8
+   ],
+   [
+    198.1,
+    200.1
+   ],
+   [
+    201.8,
+    203.5
+   ],
+   [
+    196.6,
+    208.4
+   ],
+   [
+    199.1,
+    211.0
+   ],
+   [
+    200.2,
+    210.0
+   ],
+   [
+    212.4,
+    222.8
+   ],
+   [
+    230.1,
+    224.5
+   ],
+   [
+    230.1,
+    224.0
+   ],
+   [
+    231.8,
+    224.1
+   ]
+  ],
+  "outline_note": "campus_outline with its vertices 11 to 13, the end of the link to the Thomas Building (110), moved back along -z of frame.expected's view frame from z 19.63, 19.29 and 19.22 to z 18.3 (1.0 to 1.3 m), then taken to the map's frame. In the LiDAR the link (x -13 to 8, z 13.5 to 19.5) is a roof 16.94 m above the ground (median of 238 building returns at x -12.5 to 7.5, z 14 to 17.5; sparse, as on glass) which ends at z 19.5 to 19.6, where 110's flat roof at 15.8 to 16.0 m begins; 110's own outline reaches z 18.4 to 18.8, so the two campus outlines overlap by 0.6 to 1.0 m there. Counting as 110's the returns beyond z 19.6 and those above z 17.4 outside the link's x -13.0 to 8.0 (its roof and its parapet and wall beside the link), the first data run (campus_outline, near_outline 1.5) took 12,206 building returns more than 3 m up, 343 of them 110's; this ring with near_outline 1.0 takes none of 110's and leaves out 123 of 110N's own (1.0%: the link's last 0.3 m and a few eave returns).",
+  "also_note": "the top view (run.sh topview, round 2): the model covers block 110N by 99.3% and the Thomas Building's (110) by 0.9%, where the link meets it; no other block whose centre is within 80 m by 0.5% or more, so none goes in also"
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 34.6,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline (building.outline_note: none of the Thomas Building's): centre = mean x/y of those higher than tower_above m, the main roof at 16.4-17.2 m and the raised middle at 20.0-20.2 m above the ground; axis = the bearing of most of the walls seen from above (axis_from walls), of the two square to each other the one nearest the principal axis of the points from min_above to spine_below m within spine_radius m, pointing north-west (bearing -45.16 deg); toStreet = the axis turned 90 deg toward street_side: south-west (224.84 deg), to the link and the Thomas Building. The road on the south-east and both panoramas lie along +x (bearing 134.84 deg): a curved building has no one street face, and the walls give z either this way or toward the trees on the north-east. The first data run, on campus_outline within 1.5 m, gave a centre 0.78 m further toward the Thomas Building (x 0.08, z -0.78 in that frame) and an axis 0.69 deg off this one.",
+  "min_above": 3,
+  "tower_above": 10.0,
+  "spine_below": 10.0,
+  "spine_radius": 30,
+  "near_outline": 1.0,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    225.22376026,
+    201.0201045
+   ],
+   "axis": [
+    -0.70913203,
+    0.70507571
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "pano_ids": [
+   "oWaFtXI8EGzKeGyT-DYEOA",
+   "MOQAtzmVodKTh6sUUJ8yFw"
+  ],
+  "pano_ids_note": "the two Google panoramas of 2024-08 (35-37 m) that the sight-line test over the LiDAR finds seeing 110N's south-east and south faces whole and 98% of its east face; they see the Thomas Building (110) too",
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ],
+  "camera_fixes": {
+   "oWaFtXI8EGzKeGyT-DYEOA": [
+    31.69,
+    12.34,
+    0.04,
+    2.21,
+    -2.29
+   ],
+   "MOQAtzmVodKTh6sUUJ8yFw": [
+    31.2,
+    1.23,
+    -0.01,
+    2.9,
+    -2.02
+   ]
+  },
+  "camera_fixes_note": "round 1 (2026-10-28): [x, z, pitch, yaw, roll], each camera fitted to its photograph's own edges against the LiDAR's lines in the wide view (least squares, soft-L1; the drawn camera's pitch and yaw as streetview_collect.py turns it, the roll as a turn of the picture): the south-east corner's vertical edge (the board-marked wall's left edge; oWaF only), the curtain wall's first vertical edge at (19.6, 7.5), where it stands 0.2 m proud of that wall (the wall's returns reach x 19.6-19.8 at z 6-9), the roof's edge against the sky (the roof's plan at 16.3 m), the curve's right silhouette, the glass's foot along the curve (its height fitted with the camera: 4.1-4.3 m in every fit, both panoramas) and the kerb along the road (the LiDAR's ground steps 0.13-0.16 m at x 24.8, z 3-10; footpath top -0.82 + 0.037 (z - 3.5)). The views were cut again with each roll and the edges fitted again, twice: oWaF stands 0.79 m from where its panorama records it, MOQA 1.27 m; both look 2.2 and 2.9 deg left of their cuts and their photographs stand turned 2.3 and 2.0 deg anticlockwise in the uncut views (both panoramas record a tilt of 1.9 and 2.2 deg and a roll of -1.1 and -0.9 deg). On the last cut a free fit leaves rms 5.0 and 6.5 px over 61 and 48 edge points (oWaF's corner edge did not survive the last extraction), and would move them 0.23 and 0.27 m more, turn them 0.3-0.5 and 0.3-0.7 deg and roll them 0.4 and 0.2 deg: within what the kerb's place in the LiDAR (about 0.25 m) and the edges allow, so left. The door sills were tried too, with their foot at the forecourt's LiDAR ground (-0.2), and did not agree with the kerb by 12-25 px: through the fixed cameras they stand at 0.13-0.17 (MOQA), a step above it."
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true,
+  "note": "keep_fixes (round 1, 2026-10-28): both cameras are where streetview.camera_fixes puts them; the search still runs and reports what it would move. At round 0, before the fixes, it moved oWaF by (-1.88, +1.00, -2.81) m, yaw -0.38, pitch +1.00 (its height at the bound), IoU 0.762 to 0.835, and left MOQA (sky 6% round the silhouette)."
+ },
+ "door": {
+  "x": 18.5,
+  "z": -4.2,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the curved face on its east side, 0.9 m out from the wall's line, where the LiDAR's ground is +0.01 m (11 returns within 1 m: -0.02 to +0.05): no door there, as 802's is the foot of a corner. The service doors the photographs show on the base, from the south-east face round onto the curve (parts/common.js MEASURED.doors), have their sills at 0.13-0.17 through MOQA's camera, over a forecourt whose LiDAR ground is -0.13 to -0.26."
+ },
+ "light": {
+  "sunaz": 305,
+  "sunel": 25,
+  "env": 2.5,
+  "ground": [
+   0.3,
+   0.28,
+   0.24
+  ],
+  "groundshade": 0.6,
+  "exposure": 1.15,
+  "note": "9 Eden Crescent's (801) sun: panoramas of the same month (2024-08); a sun 305 deg round and 25 deg up, behind this building's face to the road, so the viewer draws that face in shade, as the photographs show it (soft shadows, bright cloud; the sun's place is not read from them: estimated). Exposure by the luma: at 2.2 (801's) the drawn medians were 182-240 against the photographs' 121-150 (round 1). Round 2: 1.15, with the concrete in the kit's grey and the base in its renderGrey (parts/body.js): the drawn luma medians 130.0, 128.5, 141.0, 130.8, 130.0 and 139.9 against the photographs' 121.3, 130.1, 130.9, 138.8, 136.1 and 149.8 (MOQA's wide, upper and door views, oWaF's), every one within 12 (the largest 10.1). At 1.2 MOQA's wide view was 13 apart (134 against 121)."
+ }
+}

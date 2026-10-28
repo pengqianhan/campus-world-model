@@ -298,7 +298,19 @@ panorama's size comes from its metadata (`imageWidth`): most are 16,384 pixels w
 13,312, and those have fewer columns of tiles at every zoom. A panorama whose recorded camera is off
 by more than the refinement can find may have its camera set in the config
 (`streetview.camera_fixes`: panorama id to `[x, z]` in the view frame, with a note saying how it was
-found): its views are cut from the panorama as before, and drawn from there looking the same way.
+found): its views are cut from the panorama as before, and drawn from there looking the same way. A
+third number, `[x, z, pitch]`, also turns the camera drawn from by `pitch` degrees, up or (negative)
+down from the cut's pitch: the cut does not apply a panorama's own tilt and roll, and where the car
+stood on a cross-slope its photographs look up or down by up to the roll (the Fisher Building's MGAo…,
+roll -4.16°: 5.6° lower). Without it nothing changes. A fourth number, `[x, z, pitch, yaw]`, also
+turns it by `yaw` degrees to the left (anticlockwise seen from above; right if negative), for a
+panorama whose recorded heading is off. Without it nothing changes either. A fifth number,
+`[x, z, pitch, yaw, roll]`, is for a photograph that stands turned clockwise in its cut by `roll`
+degrees (its verticals leaning right at the top), as the panorama's own tilt and roll turn it where the
+car stood on a slope: the views are cut from that panorama turned back by it, level, and the camera
+drawn from, which does not roll, sees them so (the Kenneth Myers Centre's `0Rjk…`, which records a
+tilt of 5.89° and a roll of -2.41°: 4.53°). Only that panorama's pictures change; without it they are
+cut as before, byte for byte.
 
 ### Camera refinement
 
