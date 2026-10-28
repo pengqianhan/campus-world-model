@@ -41,6 +41,13 @@ export const MEASURED = {
   // The link toward the Clock Tower (north-west, -x): one storey under trees, a flat roof at 6.5-6.6 m
   // where the LiDAR sees it clear of the trees (x -30 to -24 and -21 to -18; between, crowns classed as
   // building stand over it to 13 m), on ground that rises toward the tower; it runs east to the range's
-  // west wall (x -17.8), where the LiDAR reads 6.6 m too. No photograph shows it.
-  link: { x: [-33.0, -17.8], z: [-4.3, 1.1], top: 6.55 },
+  // west wall (x -17.8), where the LiDAR reads 6.6 m too. No photograph shows it. The campus map has it
+  // on floor "1" (level 10), whose block starts at the map's storey height, 3.6 m (`under`: nothing
+  // measures the underside); on floor "G" it has under it only a "Non Usable Area" under its east third
+  // (`linkGround`, campus.json's ring taken into this frame), so the walk map, made from ground floors,
+  // leaves the rest open, and OpenStreetMap has a footway through a building passage there (way
+  // 918249408, x -27.3 to -28.2). The link stands from `under`, with `linkGround` down to the ground, as
+  // the map's blocks drew them.
+  link: { x: [-33.0, -17.8], z: [-4.3, 1.1], top: 6.55, under: 3.6 },
+  linkGround: { x: [-24.82, -19.8], z: [-4.3, 0.83] },
 };
