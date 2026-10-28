@@ -85,10 +85,11 @@ A change to what the site does or shows adds its line here, and the README's
   the space the campus map has under its east third, as the map's blocks drew them; a walker passes
   under it in view. Seen from a distance, the map is unchanged; near 119 only the link and the
   ground under it change (#117).
-- **The Clock Tower East Wing's card says what is estimated.** Its card said every size of the
-  model was measured by LiDAR, while the underside of its link toward the Clock Tower stands at the
-  campus map's storey height, which nothing measures. The card now says that it is estimated, as
-  About does (#118).
+- **The cards of the Clock Tower East Wing and 15 Eden Crescent say what is estimated.** Their
+  cards said every size of the model was measured by LiDAR, while the underside of the East Wing's
+  link toward the Clock Tower stands at the campus map's storey height, and two parts of 15 Eden
+  Crescent's roofs are drawn on from the rest: nothing measures them. Each card now says what is
+  estimated, as About does (#118).
 
 ## 2026-10-27
 
