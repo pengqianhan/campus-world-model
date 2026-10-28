@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   doors and windows from two Street View photographs of it. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own glass, render, concrete and metal. The
   faces no photograph shows, round its north and on its north-west, are drawn plainly. A click still
-  opens its floors (#PR).
+  opens its floors (#122).
 - **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
   9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
