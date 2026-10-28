@@ -74,7 +74,7 @@ Against the photographs (`run.sh thomas-building-extension compare`), every came
 `camera_fixes`: silhouette IoU in the model's own screen box (the likeness limits are read there,
 maintainer, 2026-10-27) 0.843, 0.957 and 0.854 over `MOQA…`'s wide, upper and door views and 0.812, 0.884
 and 0.622 over `oWaF…`'s, mean 0.829 (tier 2's limit 0.60); over the whole frame 0.805. The IoU in the
-box tells less than it seems: in the upper and door views the box is the whole frame, the photographs'
+box tells less than it seems: in the upper and door views the box spans the frame's width, the photographs'
 glass reflects the sky and the masks take it for sky (4-38% of the box), and the model, which fills the
 box, scores 1 minus that share. In the wide views, where the box has edges, the model beats a plain block
 filling the box (0.843 against 0.823 in `MOQA…`'s, 0.812 against 0.731 in `oWaF…`'s). The building's luma

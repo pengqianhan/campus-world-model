@@ -74,7 +74,9 @@ It is built to answer two questions a student actually has:
   LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
   Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
   walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
-  solid stone on the footway under it.
+  solid stone on the footway under it. On Symonds Street the map draws the Thomas Building Extension
+  in detail: a curved building, three storeys of glass curtain wall over a white rendered base,
+  beside a face of board-marked concrete, joined to the Thomas Building by a glazed link.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -384,10 +386,31 @@ plainly; a glazed case on its street face is measured and not drawn.
 | ![15 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/fifteen-eden-crescent-front.jpg) | ![15 Eden Crescent from above the street, drawn from code](docs/landmarks/fifteen-eden-crescent-above.jpg) |
 | ![15 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/fifteen-eden-crescent-map.jpg) | ![15 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/fifteen-eden-crescent-eyes.jpg) |
 
+The ninth is the Thomas Building Extension (110N) on Symonds Street, a curved building joined to the
+Thomas Building (110) by a glazed link. Round its curve three storeys of glass curtain wall stand over a
+white rendered base, a dark beam between them, with service doors and small windows in the base; beside
+the curve is a flat face of board-marked concrete, where a University banner hangs (not drawn). Its pale
+metal roof rises from its edge to a raised middle with plant on it. Its roofs' heights come from the
+LiDAR, within 0.12 m of the medians of their returns but in the outer 0.2 m of the main roof, where
+the returns are of two heights (a fascia and a gutter behind it); the curtain wall's storeys, the doors and the
+windows are measured in two Street View photographs through their cameras, which are set from the
+photographs' own edges; how far the beam and the glass's fins stand out is estimated. Counted inside the
+rectangle the model fills on the screen, the model's silhouette has an IoU of 0.62 to 0.96 over the six
+views of the two panoramas, though in the upper and door views that rectangle spans the frame's width
+and the glass's reflected sky counts as sky there; from above its outline covers the LiDAR's with an IoU of 0.96,
+and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What no photograph shows is
+drawn plainly: the curve round its north, its north-west faces, the link's sides and its roofs.
+
+| | |
+| --- | --- |
+| ![The Thomas Building Extension from Symonds Street, drawn from code](docs/landmarks/thomas-building-extension-front.jpg) | ![The Thomas Building Extension from above, drawn from code](docs/landmarks/thomas-building-extension-above.jpg) |
+| ![The Thomas Building Extension on the map, drawn from code in the map's colours](docs/landmarks/thomas-building-extension-map.jpg) | ![The Thomas Building Extension from Symonds Street, through the walker's eyes](docs/landmarks/thomas-building-extension-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
-in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802) when the camera comes
+in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802; the Thomas
+Building Extension in place of 110N) when the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -569,8 +592,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801) and 15 Eden Crescent (802), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/` and `landmarks/fifteen-eden-crescent/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent and 15 Eden Crescent were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802) and the Thomas Building Extension (110N), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/` and `landmarks/thomas-building-extension/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent and the Thomas Building Extension were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -651,8 +674,8 @@ If you represent the University and would like something changed or removed, ple
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
   105S), Old Government House (102), the General Library (109), the range of Old Choral Hall
   (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden
-  Crescent (801) and 15 Eden Crescent (802) are the exceptions: their models are drawn to
-  sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
+  Crescent (801), 15 Eden Crescent (802) and the Thomas Building Extension (110N) are the
+  exceptions: their models are drawn to sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
@@ -710,6 +733,15 @@ If you represent the University and would like something changed or removed, ple
   3.5 m, 3.5 to 4.1 m above the LiDAR's, and by the street face at its north-west end, about 1 m above
   it on about 2 m². What no photograph shows is drawn plainly: its back, its ends and the walls of its
   top storey, and its roofs are grey.
+- **The Thomas Building Extension is seen from Symonds Street only.** Two Street View panoramas see its
+  flat south-east face and the first 25 m of its curve; their cameras are set from the photographs' own
+  edges, 0.8 and 1.3 m from where the panoramas record them. Its roofs' heights come from the LiDAR, its
+  curtain wall's storeys and its base's doors and windows from the photographs. The two photographs
+  differ by 25 in the brightness of its white base, and it is drawn between them. What no photograph
+  shows is drawn plainly: the curve round its north, the north end, the diagonal north-west face, the
+  north-west wall, the link's sides and the roofs. The University banner on its concrete face and the
+  creeper on its base are not drawn, and how far the beam under its glass and the glass's fins stand
+  out is estimated.
   The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
   and a red-framed glazed case near its north-west end is measured and not drawn: it stands on a street
   a metre below the building's ground, where the map's ground is lower still. Its panels are drawn
