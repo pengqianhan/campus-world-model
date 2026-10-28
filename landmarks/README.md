@@ -329,6 +329,10 @@ A correction is applied only when the photo's sky is well labelled round the mod
 (≥ 20 % photo sky and ≤ 50 % photo solid next to it) and it raises the IoU by ≥ 0.01. Backlit views
 with hazy white sky, views mostly of trees, and back views keep their Street View camera.
 `views_refined.json` holds every view, with `refine: {from, delta, applied, iou_before, iou_after}`.
+With `refine.keep_fixes` true in the config, a panorama whose camera `streetview.camera_fixes` sets is
+searched and reported as before but never corrected: its views keep the fixed camera, and the report
+says so (15 Eden Crescent, whose cameras are set where 9 Eden Crescent's fits put them). Without it
+nothing changes.
 
 ### Metrics
 
@@ -351,6 +355,16 @@ refined, or set by `streetview.camera_fixes`), and the summary gives the mean Io
 all views and the mean IoU, IoU in the box and sky in the box over the corrected views
 (`iou_mean_corrected`, `iou_box_mean_corrected`, `sky_in_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
 the IoU in the box.
+
+A neighbour that stands between the cameras and the landmark (another landmark already drawn from
+code) can be named in the config's `compare.occluders` (landmark folder names): the label pass
+(`viewer/mask.js`) draws it in blue, moved from its own view frame into this one through the two
+configs' `frame.expected` (centre and axis, in NZTM metres from the campus origin, grid north) and their
+`ground`, not through the map's projection, depth-tested with the model, and the pixels where it hides the model, or
+stands where the model is not, count in neither the IoU, the IoU in the box, the sky in the box nor
+the luma: there the photograph shows the neighbour. The refine stage's search counts them out too.
+Without the option the labels are as before, and so are the IoU, the box and the region the luma is
+read in (15 Eden Crescent: 9 Eden Crescent).
 
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in

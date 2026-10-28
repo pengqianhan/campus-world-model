@@ -1,8 +1,15 @@
 // The two pages at the root of the Cloudflare site (docs/schools/DESIGN.md, section 7): index.html,
 // the school picker, and 404.html, the page an unknown path gets. Both are static: no script and
 // no WebGL. Each school's line comes from its meta.json and its words, and every other text from
-// the picker.* keys of src/i18n/locales/en.json. scripts/build-root.ts writes them in the deploy
-// jobs; tests/picker.test.ts checks them.
+// the picker.* keys of src/i18n/locales/en.json. A school's `reo`, shown under its name, is its name in
+// te reo Māori as the school gives it on its own site: the University of Auckland's and AUT's home
+// pages, read on 2026-10-27 through scripts/research/polite.mjs, robots.txt first ("Waipapa Taumata
+// Rau", the University's title and logo, its home page redirecting once; "Te Wānanga Aronui o
+// Tāmaki Makau Rau", AUT's welcome), and VUW's pages as docs/schools/vuw.md quotes them, its
+// copyright page in the recon of 2026-10-22 ("Te Herenga Waka"), UC's own text as docs/schools/uc.md
+// quotes it ("Te Whare Wānanga o Waitaha"), and the title of Massey's home page as
+// docs/schools/massey.md quotes it ("Te Kunenga ki Pūrehuroa"). scripts/build-root.ts writes the two
+// pages in the deploy jobs; tests/picker.test.ts checks them.
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../../src/shared/school.ts";
@@ -74,6 +81,7 @@ export function schoolLine(school: PickerSchool, shared: Words) {
     href: `/${school.id}/`,
     site: word(school.words, "app.title"),
     name: word(shared, `picker.schools.${school.id}.name`),
+    reo: lookupWords(shared, `picker.schools.${school.id}.reo`),
     city: word(shared, `picker.schools.${school.id}.city`),
     form: word(shared, `picker.form.${schoolForm(school.meta)}`),
     date,
@@ -104,6 +112,7 @@ h2{margin:0 0 6px;font:600 1.375rem/1.25 var(--font-display);overflow-wrap:anywh
 h2 a{color:inherit;text-decoration:none}
 h2 a::before{content:"";position:absolute;inset:0;border-radius:12px}
 h2 a:focus{outline:none}
+.reo{margin:-2px 0 6px;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
 .facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:var(--muted);font-size:.9375rem}
 `.trim();
 
@@ -116,6 +125,7 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
       `<li data-school="${e(s.id)}">`,
       `<p class="site">${e(s.site)}</p>`,
       `<h2><a href="${e(s.href)}">${e(s.name)}</a></h2>`,
+      s.reo ? `<p class="reo" lang="mi">${e(s.reo)}</p>` : "",
       `<p class="facts"><span>${e(s.city)}</span><span>${e(s.form)}</span><span>${e(s.snapshot)}</span></p>`,
       `</li>`,
     ].join("");

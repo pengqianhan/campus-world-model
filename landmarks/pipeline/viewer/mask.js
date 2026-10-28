@@ -1,7 +1,10 @@
 // Silhouette page for camera refinement and metrics (pipeline-owned; imports the model directly and
 // never touches main.js). The model is drawn flat on black: red = building above the cut height,
 // yellow = building below it, green = the ground plane, black = sky. Green channel set = left out of
-// the overlap (IoU); red channel set = building.
+// the overlap (IoU); red channel set = building. A neighbour named in the config's compare.occluders is
+// drawn in blue, depth-tested with the model: where it stands between the camera and this building, the
+// photograph shows the neighbour, so those pixels count in neither the overlap nor the luma (blue channel
+// set = left out). Without the option the page draws as before.
 //   http://localhost:8765/landmarks/pipeline/viewer/mask.html?landmark=<name>[&only=tower,centre][&cut=8]
 // API for tools/refine_cameras.mjs and tools/compare.mjs:
 //   __loadMask(name, url)  -> loads a reference mask (0 sky, 128 ignore, 255 solid)
@@ -9,7 +12,7 @@
 //   __search(views, bounds, opts) -> {best, score, base, evals}
 //   __label(view, delta, w, h) -> draws the label image on the canvas (for screenshots)
 import * as THREE from "three";
-import { build } from "./landmark.js";
+import { build, config } from "./landmark.js";
 
 const params = new URLSearchParams(location.search);
 const cut = { value: Number(params.get("cut") ?? 8) };
@@ -36,6 +39,34 @@ model.traverse((o) => { if (o.isMesh) o.material = label; }); // also parts that
 scene.add(model);
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000).rotateX(-Math.PI / 2), groundMat);
 ground.position.y = -0.02; scene.add(ground);
+// compare.occluders: other landmarks, each moved from its own view frame into this one through the two
+// configs' frame.expected (centre and axis: NZTM metres from the campus origin, grid north; x = -axis, z = the
+// axis turned toward street_side, as tools/data/measure.py makes them) and their ground; not through the map's
+// projection, which this page never uses
+function frameOf(cfg) {
+  const ax = cfg.frame.expected.axis;
+  let ts = [-ax[1], ax[0]];
+  if (((cfg.frame.street_side ?? "west") === "west") === (ts[0] > 0)) ts = [-ts[0], -ts[1]];
+  return { c: cfg.frame.expected.centre, X: [-ax[0], -ax[1]], Z: ts, ground: cfg.ground };
+}
+const occluderMat = new THREE.MeshBasicMaterial({ color: 0x0000ff, side: THREE.DoubleSide });
+occluderMat.userData.metres = 2;
+for (const other of config.compare?.occluders ?? []) {
+  if (!/^[a-z0-9-]+$/.test(other)) throw new Error(`compare.occluders: not a landmark folder: ${other}`);
+  const cfg = await (await fetch(`../../${other}/config/${other}.json`)).json();
+  const { build: buildOther } = await import(`../../${other}/model.js`);
+  const group = buildOther(new Proxy({}, { get: () => occluderMat }));
+  group.traverse((o) => { if (o.isMesh) o.material = occluderMat; });
+  const a = frameOf(cfg), b = frameOf(config), dot = (p, q) => p[0] * q[0] + p[1] * q[1];
+  const dc = [a.c[0] - b.c[0], a.c[1] - b.c[1]];
+  group.applyMatrix4(new THREE.Matrix4().set(
+    dot(a.X, b.X), 0, dot(a.Z, b.X), dot(dc, b.X),
+    0, 1, 0, a.ground - b.ground,
+    dot(a.X, b.Z), 0, dot(a.Z, b.Z), dot(dc, b.Z),
+    0, 0, 0, 1));
+  scene.add(group);
+  console.log(`occluder ${other}: drawn in blue in this frame`);
+}
 let tris = 0; model.traverse((o) => { if (o.isMesh) tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
 console.log(`mask model built in ${(performance.now() - t0).toFixed(0)} ms, ${tris | 0} triangles`);
 const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 3000);
@@ -87,7 +118,7 @@ function score1(v, d, scale) {
   let inter = 0, union = 0, model = 0, photo = 0, valid = 0;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = ((h - 1 - y) * w + x) * 4, m = mk[y * w + x];
-    if (px[i + 1] > 127 || (m > 64 && m < 192)) continue;  // below the cut / ground, or ignore in the photo
+    if (px[i + 1] > 127 || px[i + 2] > 127 || (m > 64 && m < 192)) continue;  // below the cut / ground, an occluder, or ignore in the photo
     valid++;
     const a = px[i] > 127, b = m >= 192;
     if (a) model++; if (b) photo++; if (a && b) inter++; if (a || b) union++;
@@ -104,7 +135,7 @@ window.__reliability = (views, d, scale = 0.25, r = 3) => {
     const bld = (x, y) => px[((h - 1 - y) * w + x) * 4] > 127;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
       const i = ((h - 1 - y) * w + x) * 4;
-      if (px[i] > 127 || px[i + 1] > 127) continue;
+      if (px[i] > 127 || px[i + 1] > 127 || px[i + 2] > 127) continue;
       let close = false;
       for (let dy = -r; dy <= r && !close; dy++) for (let dx = -r; dx <= r && !close; dx++) {
         const xx = x + dx, yy = y + dy; if (xx >= 0 && yy >= 0 && xx < w && yy < h && bld(xx, yy)) close = true;

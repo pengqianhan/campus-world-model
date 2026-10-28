@@ -10,9 +10,13 @@ An **unofficial**, student-made 3D map of University of Auckland buildings, floo
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
 University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; **VUW World
 Model**, an **unofficial** 3D map of the buildings of the Kelburn, Pipitea and Te Aro campuses of Te
-Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/; and **Otago
-World Model**, an **unofficial** 3D map of the buildings of the University of Otago's Dunedin and
-Christchurch campuses, at https://campusworldmodel.com/otago/
+Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.com/vuw/; **Otago World
+Model**, an **unofficial** 3D map of the buildings of the University of Otago's Dunedin and
+Christchurch campuses, at https://campusworldmodel.com/otago/; **UC World Model**, an
+**unofficial** 3D map of the buildings of the University of Canterbury's Ilam and Dovedale campuses
+and its Arts Centre location, at https://campusworldmodel.com/uc/; and **Massey World Model**, an
+**unofficial** 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington
+campuses, at https://campusworldmodel.com/massey/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -29,7 +33,12 @@ Christchurch campuses, at https://campusworldmodel.com/otago/
 > World Model is not affiliated with, endorsed by or maintained by Te Herenga Waka—Victoria
 > University of Wellington, and uses no VUW logo; its colours are the project's own. Otago World
 > Model is not affiliated with, endorsed by or maintained by the University of Otago | Ōtākou
-> Whakaihu Waka, and uses no Otago logo; its colours are the project's own.
+> Whakaihu Waka, and uses no Otago logo; its colours are the project's own. UC World Model is not
+> affiliated with, endorsed by or maintained by the University of Canterbury, and uses no UC logo;
+> its colours are the project's own.
+> Massey World Model is
+> not affiliated with, endorsed by or maintained by Te Kunenga ki Pūrehuroa Massey University, and
+> uses no Massey logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -52,9 +61,20 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-28:** four more University buildings are drawn near the camera to their LiDAR-measured
-  heights and roofs: Building 240, and three buildings planned as landmarks, Alfred Nathan House,
-  the Science Centre's 305 and 67 Symonds Street, until their own landmarks come.
+- **2026-10-28:** two more schools, from OpenStreetMap: at [/uc/](https://campusworldmodel.com/uc/),
+  57 buildings of the University of Canterbury's Ilam and Dovedale campuses and its Arts Centre
+  location, and at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
+  University's Manawatū, Auckland and Wellington campuses, each with its name and height and how
+  the height was found; their rooms, class times, dates and course lists are not shown, and the
+  site says why. The root page names each school in te reo Māori too. On Eden Crescent the map
+  draws 15 Eden Crescent in detail, next to 9 Eden Crescent: a long white two-storey building, its
+  windows deep in square openings in two rows over a base of tiles, under a roof that slopes up to a
+  top storey with a curved roof. Four more University of Auckland buildings are drawn near the camera
+  to their
+  LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
+  Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
+  walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
+  solid stone on the footway under it.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
   of the University of Otago's Dunedin and Christchurch campuses from OpenStreetMap, each with its
   name and height and how the height was found; its rooms, class times, dates and paper list are
@@ -78,9 +98,6 @@ It is built to answer two questions a student actually has:
   Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
   map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
   people live and in childcare centres no longer turn up in the search.
-- **2026-10-23:** near Old Government House (building 102) the map draws it in detail, from code
-  and to its measured sizes. Near the camera, five plain buildings of the City Campus are drawn from
-  the LiDAR survey as measured massings, in place of their blocks.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -319,11 +336,12 @@ drawn plainly.
 The sixth is the Clock Tower East Wing (119), below the Clock Tower to the south-east: two storeys of
 the same rock-faced cream stone, two gabled pavilions toward the lawn and the car park, a plain stair
 tower rising between them, segmental-headed windows upstairs and narrow ones below, and a red tile
-roof. Every height comes from the LiDAR, within 0.12 m. One Street View panorama sees its whole lawn
-side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its three views, and from
-above its outline covers the LiDAR's with an IoU of 0.83. Three more see it over the old basalt wall
-of the Albert Barracks, which fills half their frames. Its back, its ends and the low link toward the
-Clock Tower, which no photograph shows, are drawn plainly.
+roof. Every height comes from the LiDAR, within 0.12 m, but the underside of the link toward the
+Clock Tower, which stands at the campus map's storey height over a passage. One Street View panorama
+sees its whole lawn side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its
+three views, and from above its outline covers the LiDAR's with an IoU of 0.83. Three more see it
+over the old basalt wall of the Albert Barracks, which fills half their frames. Its back, its ends
+and the low link toward the Clock Tower, which no photograph shows, are drawn plainly.
 
 | | |
 | --- | --- |
@@ -347,10 +365,29 @@ far end, which no photograph shows, are drawn plainly.
 | ![9 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/nine-eden-crescent-front.jpg) | ![9 Eden Crescent from above the street, drawn from code](docs/landmarks/nine-eden-crescent-above.jpg) |
 | ![9 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/nine-eden-crescent-map.jpg) | ![9 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/nine-eden-crescent-eyes.jpg) |
 
+The eighth is its neighbour, 15 Eden Crescent (802), a long white building of two storeys along the
+street. Its windows sit deep in square openings, in two rows with red frames, over a base of
+brownish-grey tiles; a band of windows runs under the canopy at its top, and near its north-west end
+two doors with steps and a louvre stand among them. Its roof slopes up from the street face and from the back
+to a top storey down the middle, under a curved roof. Its heights come from the LiDAR, within 0.1 m,
+except on two parts of its roofs drawn on from the rest, estimated: over a well at its south-east end,
+3.5 to 4.1 m above the LiDAR's, and by the street at its north-west end, about 1 m above it; the
+openings and the doors are measured in a Street View photograph through its camera. Counted inside the rectangle the model fills on the screen, the model's silhouette has an IoU
+of 0.58 to 1.00 over the nine views of three panoramas, 9 Eden Crescent's model left out where it
+stands in front, though there those rectangles hold so little sky that a plain block filling them
+would score higher; from above its outline covers the LiDAR's with an IoU of 0.87, and on
+90% of the cells both cover it is within 0.5 m of the LiDAR's height. Its back and ends, which no photograph shows, are drawn
+plainly; a glazed case on its street face is measured and not drawn.
+
+| | |
+| --- | --- |
+| ![15 Eden Crescent from Eden Crescent, drawn from code](docs/landmarks/fifteen-eden-crescent-front.jpg) | ![15 Eden Crescent from above the street, drawn from code](docs/landmarks/fifteen-eden-crescent-above.jpg) |
+| ![15 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/fifteen-eden-crescent-map.jpg) | ![15 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/fifteen-eden-crescent-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
-in place of 119; 9 Eden Crescent in place of 801) when the camera comes
+in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802) when the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -532,8 +569,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119) and 9 Eden Crescent (801), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/` and `landmarks/nine-eden-crescent/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing and 9 Eden Crescent were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801) and 15 Eden Crescent (802), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/` and `landmarks/fifteen-eden-crescent/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent and 15 Eden Crescent were compared with while they were drawn | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -570,8 +607,35 @@ campus map, room list, key dates and paper pages are on its main website, which 
 project's first request to it; its class times answer only on its own network: see
 [docs/schools/otago.md](docs/schools/otago.md).
 
+**UC World Model** (`/uc/`) uses the same four sources and nothing of the University of
+Canterbury's own. OpenStreetMap gives the buildings of the Ilam and Dovedale campuses and of the
+Arts Centre city location, picked by their `operator` and `building=university` tags, with their
+names, outlines and, where tagged, heights, and the streets round them, from the snapshots of its
+three areas (`data/raw/osm/context-uc-ilam.json`, `context-uc-dovedale.json` and
+`context-uc-arts-centre.json`); `public/data/uc/campus.json`, `context.json` and `context/` are
+under the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/uc/terrain/`), under
+CC BY 3.0 NZ. Open-Meteo gives the weather at the Ilam campus,
+and Quaternius's figure is the walker's body. UC's copyright page asks for its written permission
+before material on its webpages is copied, which holds back its rooms, key dates and course list,
+and its timetable planner is on a site whose `robots.txt` disallows every automated visitor: see
+[docs/schools/uc.md](docs/schools/uc.md).
+
+**Massey World Model** (`/massey/`) uses the same four sources and nothing of Massey University's
+own. OpenStreetMap gives the buildings of the Manawatū, Auckland and Wellington campuses, picked by
+their `operator`, `building=university` and `amenity=university` tags, or a name or an address that
+says Massey,
+with their names, outlines and, where tagged, heights, and the streets round them, from the
+snapshots of its three areas (`data/raw/osm/context-massey-manawatu.json`, `context-massey-auckland.json`
+and `context-massey-wellington.json`); `public/data/massey/campus.json`, `context.json` and
+`context/` are under the ODbL. The LINZ 8 m elevation model gives the ground
+(`public/data/massey/terrain/`), under CC BY 3.0 NZ. Open-Meteo gives the weather at the Manawatū
+campus, and Quaternius's figure is the walker's body. Massey publishes no room outlines the site
+could find, and its class timetable is behind a sign-in; its key dates and course list are open
+for non-commercial use but are not read yet: see [docs/schools/massey.md](docs/schools/massey.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
-`public/data/aut/meta.json`, `public/data/vuw/meta.json` and `public/data/otago/meta.json`.
+`public/data/aut/meta.json`, `public/data/vuw/meta.json`, `public/data/otago/meta.json`,
+`public/data/uc/meta.json` and `public/data/massey/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.
@@ -586,8 +650,8 @@ If you represent the University and would like something changed or removed, ple
   the LINZ 8 m elevation model, drawn from contours: smooth, peaks a few metres low. A building stands
   at the ground under its middle, with a footing of up to 4 m on a slope. The Clock Tower (105 and
   105S), Old Government House (102), the General Library (109), the range of Old Choral Hall
-  (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119) and 9 Eden
-  Crescent (801) are the exceptions: their models are drawn to
+  (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden
+  Crescent (801) and 15 Eden Crescent (802) are the exceptions: their models are drawn to
   sizes measured from LiDAR. The measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
@@ -624,7 +688,10 @@ If you represent the University and would like something changed or removed, ple
   Barracks. Its heights come from the LiDAR. What no photograph shows is drawn plainly: its back, its
   ends, the two blocks at the back, the low link toward the Clock Tower (under trees; a flat roof at
   the height the LiDAR finds) and the grey roofs behind the pavilions' gables (their colour from the
-  aerial). The east pavilion's front, half hidden by the basalt wall, is drawn after the west
+  aerial). The link stands over a passage where the campus map has no ground floor under it, from
+  the map's storey height, 3.6 m: nothing measures its underside, and the LiDAR's ground under it is
+  up to about 2.5 m higher than the site's 8 m elevation model, so the real passage is lower than
+  drawn. The east pavilion's front, half hidden by the basalt wall, is drawn after the west
   pavilion's. The windows' glazing patterns are drawn as plain bars.
 - **9 Eden Crescent is seen from its street end only.** Three Street View panoramas on Eden Crescent
   see the street end; its neighbours either side and a tall tower behind it stand in their wide views,
@@ -635,6 +702,18 @@ If you represent the University and would like something changed or removed, ple
   photograph shows is drawn plainly: its long sides, which stand against their neighbours, its far
   end, and the plant on its roof (grey boxes at the LiDAR's sizes). Its white cladding is drawn
   without the panels' joints.
+- **15 Eden Crescent is seen from Eden Crescent only, mostly along its street face.** The same three
+  Street View panoramas see its street face, one of them square enough to measure its openings through
+  its camera, which is set where 9 Eden Crescent's fit puts it; their rectangles hold so little sky that
+  the likeness counted inside them shows little. Its heights come from the LiDAR, except on two parts
+  of its roofs drawn on from the rest (estimated): over a well at its south-east end, about 6.5 by
+  3.5 m, 3.5 to 4.1 m above the LiDAR's, and by the street face at its north-west end, about 1 m above
+  it on about 2 m². What no photograph shows is drawn plainly: its back, its ends and the walls of its
+  top storey, and its roofs are grey.
+  The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
+  and a red-framed glazed case near its north-west end is measured and not drawn: it stands on a street
+  a metre below the building's ground, where the map's ground is lower still. Its panels are drawn
+  without their joints, its base's tiles and its two red-brown doors in a dark timber.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the
