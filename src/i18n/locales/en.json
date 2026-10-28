@@ -437,6 +437,10 @@
         "name": "University of Canterbury",
         "reo": "Te Whare Wānanga o Waitaha",
         "city": "Christchurch"
+      },
+      "massey": {
+        "name": "Te Kunenga ki Pūrehuroa Massey University",
+        "city": "Palmerston North, Auckland and Wellington"
       }
     }
   }

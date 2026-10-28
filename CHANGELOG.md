@@ -18,6 +18,20 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Massey World Model, at /massey/.** Another school on the site: Te Kunenga ki Pūrehuroa Massey
+  University, in 3D on the LINZ ground among the streets and buildings round it. The Manawatū
+  campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes
+  the map to the Auckland campus at Albany and the Wellington campus at Mount Cook, 8 buildings
+  each. The 55 buildings come from OpenStreetMap, picked by their `operator`,
+  `building=university` and `amenity=university` tags, or a name or an address that says Massey,
+  each one block at
+  its OpenStreetMap height (14 from their number of levels), else at a default, and labelled by
+  name (the Sir Neil Waters Lecture Theatres by their code, SNW). Halls of residence and childcare
+  centres stay unnamed among the surroundings; buildings with no name, and one whose own tags ask
+  whether it is a police college, are left out, each with its reason. Many of Massey's own buildings
+  that OpenStreetMap tags as plain buildings, and the research institutes beside the Manawatū
+  campus, stand among the surroundings. Its rooms, class times, dates and course list are not
+  shown, and About says why for each (#114).
 - **UC World Model, at /uc/.** Another school on the site: the University of Canterbury (Te
   Whare Wānanga o Waitaha) in Christchurch, in 3D on the LINZ ground among the houses and streets
   round it. The Ilam campus has 45 buildings; "Other campuses" in the campus list takes the map to
