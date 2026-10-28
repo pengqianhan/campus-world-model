@@ -42,7 +42,7 @@ A change to what the site does or shows adds its line here, and the README's
   trimester dates and paper list are not shown: Waikato's main website, which holds them, is closed
   to this project by its `robots.txt`, and the site says so. The Tauranga campus is not shown:
   OpenStreetMap ties no building there to Waikato, and the campus map is Hamilton's alone. The
-  accent and the map's colours are the project's own; none is taken from Waikato (#PR).
+  accent and the map's colours are the project's own; none is taken from Waikato (#119).
 - **Massey World Model, at /massey/.** Another school on the site: Te Kunenga ki Pūrehuroa Massey
   University, in 3D on the LINZ ground among the streets and buildings round it. The Manawatū
   campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes
