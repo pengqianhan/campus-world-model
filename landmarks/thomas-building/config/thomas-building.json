@@ -267,6 +267,11 @@
   }
  },
  "streetview": {
+  "pano_ids": [
+   "S_C83uV6erL3A0gsWU2LUg",
+   "oWaFtXI8EGzKeGyT-DYEOA"
+  ],
+  "pano_ids_note": "S_C8 (2024-08, 40 m from the centre, 17 m out from the face to the road) sees that face whole, a tree in front of its south-west end: the screening's sight-line test over the LiDAR gives its walls facing that way 86%; its 143 tiles were bought for this building on 2026-10-28. oWaF (2024-08, 55 m), bought for 110N on 2026-10-27, sees the north-east end and the east corner; the half of its views toward the face to the road needs 66 tiles never bought and is left black, which the sky masks take as ignored. MOQA, 110N's other panorama, sees 110 almost only behind 110N and is not pinned. Every one's copyright reads \"From the Owner, Photo by: Google\".",
   "max_panos": 12,
   "radius_m": 80,
   "camera_height_m": 2.5,
