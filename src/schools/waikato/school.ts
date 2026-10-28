@@ -206,12 +206,15 @@ export const school: School = {
     "https://api.open-meteo.com/v1/forecast?latitude=-37.786&longitude=175.3173" +
     "&current=temperature_2m,weather_code,cloud_cover,precipitation,wind_speed_10m,wind_direction_10m&timezone=Pacific%2FAuckland",
   /**
-   * The opening view frames 700 m round the campus's centre, the median of its buildings' centres,
-   * which stands among the teaching blocks. The rule for a campus away from the centre would frame
-   * 1.6 times the span of every building's centre, from Facilities Management in the north to FC2 in
-   * the south-east: about 1.8 km, in which the blocks' labels give way to one another.
+   * The opening view frames 500 m round the campus's centre, the median of its buildings' centres,
+   * which stands among the teaching blocks. At 1440 x 900 it labels 34 of the 53 buildings. The
+   * school e2e asks for the three tallest: FG Link (the one building OpenStreetMap gives levels,
+   * 10.8 m), then S Block and G Block, first of the many at the 10 m default. Framed at 600 or 700 m,
+   * G Block's label gives way to its neighbours'. The rule for a campus away from the
+   * centre would frame 1.6 times the span of every building's centre, from Facilities Management in
+   * the north to FC2 in the south-east: about 1.8 km.
    */
-  campusSpan: { hamilton: 700 },
+  campusSpan: { hamilton: 500 },
   /**
    * Hamilton alone. The Tauranga campus's box ([-37.6935, 176.1565, -37.6775, 176.1745], round
    * Durham Street) held no building that OpenStreetMap traces to Waikato: three building=university

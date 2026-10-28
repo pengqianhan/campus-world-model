@@ -116,7 +116,7 @@ export function AboutPanel() {
                 </tr>
                 {c.buildingsExcluded !== undefined && (
                   <tr class="sub">
-                    <th>{t("about.coverage.buildingsExcluded")}</th>
+                    <th>{t(d.meta.sources.some((x) => x.id === "campus-map") ? "about.coverage.buildingsExcludedByMap" : "about.coverage.buildingsExcluded")}</th>
                     <td>{n(c.buildingsExcluded)}</td>
                   </tr>
                 )}

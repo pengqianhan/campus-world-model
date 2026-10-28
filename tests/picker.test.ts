@@ -87,6 +87,9 @@ describe("the school picker at the site's root", () => {
     if (uc) expect(schoolLine(uc, shared)).toMatchObject({ name: "University of Canterbury", reo: "Te Whare Wānanga o Waitaha" });
     const massey = schools.find((s) => s.id === "massey");
     if (massey) expect(schoolLine(massey, shared)).toMatchObject({ name: "Massey University", reo: "Te Kunenga ki Pūrehuroa" });
+    // Waikato's line has no name in te reo Māori: its recon gives none, and its own site is closed to this project.
+    const waikato = schools.find((s) => s.id === "waikato");
+    if (waikato) expect(schoolLine(waikato, shared)).toMatchObject({ site: "Waikato World Model", name: "The University of Waikato", reo: undefined, city: "Hamilton", form: "Buildings only" });
     // each school's name in te reo Māori stands under its English name, marked as te reo Māori
     expect(pages.index).toContain('<p class="reo" lang="mi">Waipapa Taumata Rau</p>');
     expect(pages.index).toContain("<h1>Campus World Model</h1>");

@@ -272,7 +272,8 @@
       "sessionsFloor": "located to a floor",
       "sessionsBuilding": "located to a building only",
       "sessionsExcluded": "could not be used (kept in the data with a reason)",
-      "buildingsExcluded": "Buildings the tag rule left out (kept in the data with a reason)"
+      "buildingsExcluded": "Buildings the tag rule left out (kept in the data with a reason)",
+      "buildingsExcludedByMap": "Buildings the tag rule or the campus map's table left out (kept in the data with a reason)"
     },
     "limitsTitle": "Known limitations",
     "limits": {
