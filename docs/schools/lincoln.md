@@ -83,8 +83,8 @@ Wikipedia (-43.6444, 172.4686), both found by web search.
 No host was asked. The box is `[-43.6561, 172.4508, -43.6327, 172.4832]` (south, west, north, east),
 2.6 km by 2.6 km. The snapshot's own data then placed the campus: west of Springs Road and south of
 Ellesmere Junction Road, with Farm Road, Engineering Drive, South Drive and three service roads
-named "Lincoln University service road" in it, and the meadow "Research Dairy Farm (Lincoln University)" north of
-Ellesmere Junction Road. The campus buildings with a name or a tag that says Lincoln lie 463 m
+named "Lincoln University service road" in it, and the meadow "Research Dairy Farm (Lincoln
+University)" north of Ellesmere Junction Road. The campus buildings with a name or a tag that says Lincoln lie 463 m
 (west) to 1,112 m (east) inside the box's edges. The box's west edge passes through a group of farm
 buildings at the end of a "Lincoln University service road". The snapshot does not show what lies
 west of it.
