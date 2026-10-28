@@ -112,6 +112,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | Auckland University of Technology (AUT) | `/aut/` | Buildings: the City, North and South campuses from OpenStreetMap, picked by the `operator` tag and AUT's building code (a campus letter and a building letter) in `ref` or as the whole `name`, each on the campus of the area it stands in, on the LINZ ground | 41 buildings, all on the map (City 18, North 15, South 8); 6 more left out, each with its reason (`buildingExclusions`; North's AE Building is 15 separate rings); heights: 0 from a `height` tag, 4 from `building:levels`, 37 estimated; 0 rooms, subjects and classes |
 | Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn, Pipitea and Te Aro campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, each on the campus of the area it stands in, on the LINZ ground | 56 buildings, all on the map (Kelburn 52, Pipitea 3, Te Aro 1); 30 more left out by the tag rule, each with its reason (26 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 46 from `building:levels`, 10 estimated; 0 rooms, subjects and classes |
 | University of Otago \| Ōtākou Whakaihu Waka (Otago) | `/otago/` | Buildings: the Dunedin and Christchurch campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, and never a hospital building, the students' association's or the ones the Polytechnic's tags place among its own, each on the campus of the area it stands in, on the LINZ ground. Wellington and Invercargill are not shown: OpenStreetMap names no university building at either and gives none Otago as its operator (`docs/schools/otago.md`, "On the site") | 97 buildings, all on the map (Dunedin 94, Christchurch 3); 72 more left out by the tag rule, each with its reason (51 with no name, 15 with Otago Polytechnic's operator, one of them holding a childcare centre, a childcare centre by its name, 2 of the students' association's, B Block and Poho, and the School of Medicine on Christchurch Hospital's grounds, whose wikidata tag is left for a person to check); heights: 0 from a `height` tag, 21 from `building:levels`, 76 estimated; 0 rooms, subjects and classes |
+| University of Canterbury (UC) | `/uc/` | Buildings: the Ilam and Dovedale campuses and the Arts Centre city location from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, each on the campus of the area it stands in, on the LINZ ground; homes are never considered. Nelson is not shown: OpenStreetMap tags no building there as UC's | 57 buildings, all on the map (Ilam 45, Dovedale 11, the Arts Centre 1); 17 more left out by the tag rule, each with its reason (13 with no name, 2 under construction, 1 with no storey above the ground, and 1 of the University of Otago's at the Arts Centre); heights: 0 from a `height` tag, 52 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -161,6 +162,38 @@ to do):
    site, since OpenStreetMap names no university building at either and gives none Otago as its
    operator (`docs/schools/otago.md`, "On
    the site").
+
+UC's open items, from `docs/schools/uc.md`, "Needs the maintainer" (each is the maintainer's to do):
+
+1. UC's written permission: its copyright page forbids copying its web material without "prior,
+   express written permission", which holds back its map points (rooms by building), its key dates
+   and its subject codes, and would hold back any timetable. One request covers them all. Until it
+   is asked, the site does not say that it has asked.
+2. The timetable planner (`timetable.canterbury.ac.nz`), whose `robots.txt` disallows every agent,
+   and the Course Information System, whose `robots.txt` disallows Claude's agents: the same
+   request can ask about both.
+3. Done on 2026-10-27: Ilam, Dovedale and the Arts Centre are on the site, from one Overpass area
+   each, which the maintainer let the loop fetch (`docs/schools/uc.md`, "On the site"). Nelson's
+   area held no building that OpenStreetMap traces to UC: the UC Nelson Centre's point stands among
+   NMIT's blocks, tagged `building=school` with NMIT's website. Nelson waits for a source that
+   traces a building there to UC.
+4. The LINZ attribution page, for the 1 m DEMs of Christchurch and Nelson, if they are used (a new
+   dependency, a gate).
+5. Judgements on the Ilam campus (`docs/schools/uc.md`, "On the site"): Haere-roa and Ilam
+   Homestead, each with the website of a venue of its own, and Putaiao Koiora, mapped as closed
+   since about 2020, are shown as UC's by their `building=university` tag; "47 Creyke Road" is shown by OpenStreetMap's name for
+   it, with no floor or room, although UC's map gives it keywords of a postgraduate village; Alice
+   Candy (`building=school`) and the UC Health Centre (`building=yes`) carry neither of the rule's
+   tags and are not shown as UC's.
+6. Brand colours: on 2026-10-27 UC's home page sets four colours in its own markup, in its
+   accessibility widget's settings: teal `#477A7E`, navy `#052942`, gold `#FFCF4B` and white. It
+   links no brand page, and its logo (an SVG) was not read. CIEDE2000 from the accent `#ffb454`:
+   gold 11.3, the rest 29.0 to 73.4; the gold is 9.2 from the night hover `#ffd08a`, and the navy
+   9.4 from the night roof tone `#2f4460`. The nearest tones of the palette are the night map's
+   water, ground and road edge (4.3 to 5.8 from the navy), which every school shares, and the night
+   lab-room colour `#4b7570` (4.6 from the teal), which `/uc/` never draws. UC keeps the project's
+   accent. Whether the night map's navy and orange read too much like UC's navy and gold is the
+   maintainer's call. If UC publishes brand colours, compare them again (DESIGN.md, section 6).
 
 ## Done (with evidence)
 
@@ -298,8 +331,11 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   (125 km north) shapes are about 1.4% too narrow east to west, which About says. The sea is not
   drawn: OpenStreetMap's coastline is a line, and turning it into water was not attempted. The
   public Overpass instances answered 504 or nothing for most of an hour on 2026-10-15; the fetch now
-  times out after 240 s (`scripts/lib/snapshot.ts`) and goes round all three instances up to three
-  times, a minute apart.
+  times out after 240 s (`scripts/lib/snapshot.ts`) and goes round the three instances up to three
+  times, a minute apart; since 2026-10-28 one that refuses or redirects the query, or drops the
+  connection (a reset, a close, a refused connection) where another instance answers after it, is
+  recorded in `data/raw/overpass-closed.txt` and left alone, while a timeout or a host this machine
+  could not reach is not (`scripts/lib/overpass.ts`).
 - VUW's Kelburn Campus, since 2026-10-27 (the maintainer let the loop fetch it): one Overpass
   snapshot, `data/raw/osm/context-vuw-kelburn.json` (committed, ODbL; 2,073 elements), of the box
   round VUW's own 24 map points and the buildings its tag rule takes, with 150 m of margin, and the

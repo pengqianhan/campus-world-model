@@ -432,6 +432,10 @@
         "name": "University of Otago",
         "reo": "Ōtākou Whakaihu Waka",
         "city": "Dunedin and Christchurch"
+      },
+      "uc": {
+        "name": "University of Canterbury (Te Whare Wānanga o Waitaha)",
+        "city": "Christchurch"
       }
     }
   }
