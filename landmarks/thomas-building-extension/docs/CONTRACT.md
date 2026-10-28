@@ -18,12 +18,13 @@ traced or sampled from them into the model.
   from):
   - **the main block**: a flat south-east face (x 19.4, z 7.5 to 14.9), a curve from there round the
     east and north to z -21, a diagonal north-west face, a north-west wall at x -18.5, and the
-    south-west walls either side of the link (z 14.8 and 15.1); walls to the eave at 15.8 m;
+    south-west walls either side of the link (z 14.8 and 15.1); walls to the eave at 15.8 m; not the
+    small block campus.json adds at the north-west corner, where the LiDAR has a tree and no roof;
   - **the main roof**: a pale metal roof rising from its edge (16.3 m) 0.094 m a metre inward, to
     16.3-17.5 m against the raised middle; past the diagonal face and the north-west wall it overhangs
     0.6-0.7 m;
-  - **the raised middle**: x -11.6 to 7.8, z -4.3 to 13.3, its flat roof at 19.86 m, plant on it to
-    21.6 m (22.9 at most);
+  - **the raised middle**: x -11.6 to 7.8, z -4.3 to 13.3, its flat roof at 19.86 m; on it a screen
+    to 22.70 m (the highest point) and a plant unit to 21.21 m;
   - **the link** to 110: x -13.4 to 7.4, z 14.8 to 20.4, its glazed roof at 17.04 m;
   - **the ground**: -0.33 to +1.48 round the building, -1.40 at the lowest within 3 m; walls go down to
     `FOOT` (-1.6 m).
@@ -46,7 +47,9 @@ traced or sampled from them into the model.
   square. Their metadata's `copyright` reads "From the Owner, Photo by: Google", as every landmark's
   on the site does. A University banner hangs on the south-east face: not part of the model.
 - Their cameras are fixed from the photographs' own edges against the LiDAR (`streetview.camera_fixes`,
-  its note), and `refine.keep_fixes` keeps them there.
+  its note: position, pitch, yaw and the photograph's roll in its cut), and `refine.keep_fixes` keeps
+  them there. Measure through them onto the walls' planes; where the two disagree (the base's doors, by
+  0.4-1.3 m along the wall), trust the one that sees the feature nearer square and say so.
 - No photograph shows the north-west, the north or the roofs: draw them plainly at the LiDAR's sizes.
 
 ## Rules

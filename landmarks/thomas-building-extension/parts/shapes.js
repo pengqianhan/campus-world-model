@@ -206,3 +206,29 @@ export function along(b, section, x0, x1, material) {
   g.translate(x0, 0, 0);
   b.add(g, material);
 }
+
+/**
+ * The plan's edges i0 to i1 as a path measured along its length s (metres from corner i0): `length`, and
+ * `span(s0, s1)`, the pieces of edge [i, a, b] (edge i from a to b of the way along it) that lie between.
+ */
+export function path(plan, i0, i1) {
+  const lens = [];
+  for (let i = i0; i <= i1; i++) { const [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length]; lens.push(Math.hypot(x1 - x0, z1 - z0)); }
+  const length = lens.reduce((a, b) => a + b, 0);
+  function span(s0, s1) {
+    const out = [];
+    let at = 0;
+    for (let k = 0; k < lens.length; k++) {
+      const a = Math.max(s0, at), b = Math.min(s1, at + lens[k]);
+      if (b > a + 1e-6) out.push([i0 + k, (a - at) / lens[k], (b - at) / lens[k]]);
+      at += lens[k];
+    }
+    return out;
+  }
+  return { length, span };
+}
+
+/** A box along the path from s0 to s1, standing out from the wall between o0 and o1, from y0 to y1. */
+export function pathBox(b, plan, p, s0, s1, o0, o1, y0, y1, material) {
+  for (const [i, a, c] of p.span(s0, s1)) edgeBox(b, plan, i, a, c, o0, o1, y0, y1, material);
+}

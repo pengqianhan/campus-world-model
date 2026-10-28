@@ -264,7 +264,24 @@
     "width": 1200,
     "height": 900
    }
-  ]
+  ],
+  "camera_fixes": {
+   "oWaFtXI8EGzKeGyT-DYEOA": [
+    31.69,
+    12.34,
+    0.04,
+    2.21,
+    -2.29
+   ],
+   "MOQAtzmVodKTh6sUUJ8yFw": [
+    31.2,
+    1.23,
+    -0.01,
+    2.9,
+    -2.02
+   ]
+  },
+  "camera_fixes_note": "round 1 (2026-10-28): [x, z, pitch, yaw, roll], each camera fitted to its photograph's own edges against the LiDAR's lines in the wide view (least squares, soft-L1; the drawn camera's pitch and yaw as streetview_collect.py turns it, the roll as a turn of the picture): the south-east corner's vertical edge (the board-marked wall's left edge; oWaF only), the curtain wall's first vertical edge at (19.6, 7.5), where it stands 0.2 m proud of that wall (the wall's returns reach x 19.6-19.8 at z 6-9), the roof's edge against the sky (the roof's plan at 16.3 m), the curve's right silhouette, the glass's foot along the curve (its height fitted with the camera: 4.1-4.3 m in every fit, both panoramas) and the kerb along the road (the LiDAR's ground steps 0.13-0.16 m at x 24.8, z 3-10; footpath top -0.82 + 0.037 (z - 3.5)). The views were cut again with each roll and the edges fitted again, twice: oWaF stands 0.79 m from where its panorama records it, MOQA 1.27 m; both look 2.2 and 2.9 deg left of their cuts and their photographs stand turned 2.3 and 2.0 deg anticlockwise in the uncut views (both panoramas record a tilt of 1.9 and 2.2 deg and a roll of -1.1 and -0.9 deg). On the last cut a free fit leaves rms 5.0 and 6.5 px over 61 and 48 edge points (oWaF's corner edge did not survive the last extraction), and would move them 0.23 and 0.27 m more, turn them 0.3-0.5 and 0.3-0.7 deg and roll them 0.4 and 0.2 deg: within what the kerb's place in the LiDAR (about 0.25 m) and the edges allow, so left. The door sills were tried too, with their foot at the forecourt's LiDAR ground (-0.2), and did not agree with the kerb by 12-25 px: through the fixed cameras they stand at 0.13-0.17 (MOQA), a step above it."
  },
  "refine": {
   "position_m": 3,
@@ -276,11 +293,26 @@
   "prior": 0.01,
   "min_gain": 0.01,
   "min_sky": 0.2,
-  "max_solid": 0.5
+  "max_solid": 0.5,
+  "keep_fixes": true,
+  "note": "keep_fixes (round 1, 2026-10-28): both cameras are where streetview.camera_fixes puts them; the search still runs and reports what it would move. At round 0, before the fixes, it moved oWaF by (-1.88, +1.00, -2.81) m, yaw -0.38, pitch +1.00 (its height at the bound), IoU 0.762 to 0.835, and left MOQA (sky 6% round the silhouette)."
  },
  "door": {
   "x": 18.5,
   "z": -4.2,
-  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the curved face on its east side, 0.9 m out from the wall's line, where the LiDAR's ground is +0.01 m (11 returns within 1 m: -0.02 to +0.05): no door there, as 802's is the foot of a corner. The service doors the photographs show on the curve's base nearer the south-east face stand on ground 0.13-0.26 m lower (-0.13 at x 19.0, z 3.3; -0.26 at 19.8, 5.3)."
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the curved face on its east side, 0.9 m out from the wall's line, where the LiDAR's ground is +0.01 m (11 returns within 1 m: -0.02 to +0.05): no door there, as 802's is the foot of a corner. The service doors the photographs show on the base, from the south-east face round onto the curve (parts/common.js MEASURED.doors), have their sills at 0.13-0.17 through MOQA's camera, over a forecourt whose LiDAR ground is -0.13 to -0.26."
+ },
+ "light": {
+  "sunaz": 305,
+  "sunel": 25,
+  "env": 2.5,
+  "ground": [
+   0.3,
+   0.28,
+   0.24
+  ],
+  "groundshade": 0.6,
+  "exposure": 1.2,
+  "note": "round 1: 9 Eden Crescent's (801) sun, as a start: panoramas of the same month (2024-08); a sun 305 deg round and 25 deg up, behind this building's face to the road, so the viewer draws that face in shade, as the photographs show it (soft shadows, bright cloud; the sun's place is not read from them: estimated). Exposure set by the luma: at 2.2 (801's) the drawn medians were 182-240 against the photographs' 121-150; at 1.0 the glass matched (121 against 121 in MOQA's wide view) and the base's white paint stayed 202-205; at 1.2, with the base in the kit's grey and the concrete in its render (parts/body.js), see README."
  }
 }

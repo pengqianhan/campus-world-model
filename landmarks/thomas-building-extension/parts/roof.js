@@ -1,6 +1,7 @@
 // The roofs (parts/common.js): the pale metal roof falling all round from the raised middle to the
 // edge, the raised middle's box with its dark flat roof, and the plant on it. Round 0 (the lead): heights
-// from the LiDAR, the roof's rise by the distance in from its edge.
+// from the LiDAR, the roof's rise by the distance in from its edge. Round 1: the plant as the LiDAR
+// shows it, a screen and a unit, in place of one box.
 import { MEASURED as M } from "./common.js";
 import { hipRoof, prism, roof as flat } from "./shapes.js";
 
@@ -21,6 +22,7 @@ export function middle(b) {
   // its walls from inside the main roof to its own roof, which is a dark flat slab
   prism(b, mid, M.roof.at1, M.middle.top - 0.12, "grey");
   flat(b, mid, M.middle.top, 0.12, "roofGrey");
-  // the plant at its south-west end
+  // on it: the screen and the plant unit (common.js)
+  prism(b, rect(M.screen.x, M.screen.z), M.middle.top, M.screen.top, "grey");
   prism(b, rect(M.plant.x, M.plant.z), M.middle.top, M.plant.top, "grey");
 }
