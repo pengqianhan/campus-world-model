@@ -28,7 +28,7 @@ A change to what the site does or shows adds its line here, and the README's
   View photographs of it, and the balconies' depth is estimated. On the
   map it has the map's colours; from a walker's height on a computer with a graphics card, its own tan
   brick, render, glass and red clay tiles. Its faces turned north, east and south-east, which no
-  photograph shows, are drawn plainly. A click still opens its floors (#PR).
+  photograph shows, are drawn plainly. A click still opens its floors (#121).
 - **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
   9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
