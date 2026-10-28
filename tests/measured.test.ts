@@ -49,15 +49,17 @@ function cross(a: number[], b: number[], c: number[], d: number[]): boolean {
 }
 
 describe("measured massings", () => {
-  it("are on the site, one a data file, each for a building of the City campus map", () => {
+  it("are on the site, one a data file, each for a building of the City, Grafton or Newmarket campus map", () => {
     expect(FILES.length).toBeGreaterThan(0);
     expect(MEASURED.map((m) => m.placement.building).sort()).toEqual(DATA.map((d) => d.data.place.building).sort());
     for (const { file, data } of DATA) {
       expect(file).toBe(`${data.place.building}.json`);
       const b = byId.get(data.place.building);
       expect(b, file).toBeDefined();
-      expect(b!.campus).toBe("city");
+      // The campuses whose LiDAR tiles massing.py reads (CAMPUS_TILES), in the map's central area.
+      expect(["city", "grafton", "newmarket"]).toContain(b!.campus);
       expect(b!.offMap).toBeFalsy();
+      expect(b!.area, file).toBeUndefined();
       expect(exclusions[data.place.building], `${file} is also in exclusions.json`).toBeUndefined();
       expect(measuredOf(data.place.building)?.name).toBe(`measured/${data.place.building}`);
     }
@@ -85,10 +87,10 @@ describe("measured massings", () => {
       const b = byId.get(data.place.building)!;
       expect(["251", "252", "253", "254", "255", "256", "275", "408"]).not.toContain(b.id);
       expect(b.floors.some((f) => f.noPlan === "childcare"), b.id).toBe(false);
-      // Places where people live: residential floors, and those massing.py keeps by hand (434, 450, and
-      // Carlaw Park's blocks, which OpenStreetMap tags as dormitories).
+      // Places where people live: residential floors, and those massing.py keeps by hand (434, 450,
+      // Carlaw Park's blocks, which OpenStreetMap tags as dormitories, and Grafton Hall's 621 and 643).
       expect(b.floors.some((f) => f.noPlan === "residential"), b.id).toBe(false);
-      expect(["434", "450", "831", "832", "833", "834", "835", "836", "837", "838"]).not.toContain(b.id);
+      expect(["434", "450", "831", "832", "833", "834", "835", "836", "837", "838", "621", "643"]).not.toContain(b.id);
     }
   });
 
