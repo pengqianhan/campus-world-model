@@ -20,6 +20,8 @@ Run from the repository root, with the pipeline's Python:
   $PY -I landmarks/pipeline/tools/massing.py --campus grafton --fetch   first fetches the campus's tiles that are
       not cached, through tools/data/fetch_bridge.py (landmarks/README.md, "Fetching": cached once in
       data/raw/landmarks/, logged in data/sources.json); nothing else is fetched
+  --drop-bare, --keep-bare   whether a traced piece of a layer with no roof cell of it in the LiDAR is left out
+      (DROP_BARE_ON: on for Grafton and Newmarket, off for the City campus until the maintainer decides)
 """
 import json, math, os, re, subprocess, sys
 from collections import deque
@@ -35,7 +37,8 @@ LIDAR = os.path.join(ROOT, "data", "raw", "landmarks", "lidar", "NZ24_Auckland")
 # The tiles of the Auckland Part 1 LiDAR (2024) that each campus's buildings need, with the 12 m round each
 # outline that main() crops the points to (the 1:1000 tiles of sheet BA32: 480 m east-west, 720 m north-south;
 # rows 36 to 39 from the north, columns 03 to 06 from the west). The City campus's eight are those the landmarks
-# use. Grafton's 532 reaches into 3704 and its 621 and 644 into 3803; Newmarket's P9A and P9B lie partly in 3904.
+# use. Grafton's 532 reaches into 3704 and its 621 and 644 into 3803; Newmarket's P9A lies in 3904, and P9B and the
+# crop round 901 reach into it.
 CAMPUS_TILES = {
     "city": ("3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706"),
     "grafton": ("3704", "3803", "3804"),
@@ -43,6 +46,14 @@ CAMPUS_TILES = {
 }
 LIDAR_URL = "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz"
 CAMPUS = "city"      # --campus
+# A piece of an upper layer, as traced, in which the LiDAR sees no roof cell of that layer (every cell of it came to
+# the layer only as the nearest) is not drawn as a layer, so that no layer's roof stands where the LiDAR sees none
+# (the review of #120: a lobe of 906's outline over open ground was drawn as a 20 m mono-pitch). It is on for the
+# campuses measured since then. On the City campus (2026-10-28) it changes no data file and no reason, only one
+# number of a building that keeps its block (405's model area in the top view, 3863.5 to 3863.2 m2), but the City's
+# files are kept byte for byte, so it waits for the maintainer there. --drop-bare or --keep-bare sets it for a run.
+DROP_BARE_ON = {"city": False, "grafton": True, "newmarket": True}
+DROP_BARE = DROP_BARE_ON[CAMPUS]
 TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
 
 RES = 0.5            # m, the heightmap's cells
@@ -585,6 +596,8 @@ def measure(b, P, others, campus_origin):
         bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
     eave0 = bi["height"] if bi["form"] == "flat" else float(roof_at(bi["planes"], *(along(outer) - centre).T).min())
 
+    bare = set()     # (layer, m2) of the pieces DROP_BARE leaves out
+
     def traced(k):
         mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
         for ring in trace(mk, cx, cy):
@@ -594,7 +607,13 @@ def measure(b, P, others, campus_origin):
             ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
             if len(ring) >= 3 and crosses(ring): ring = despike(np.round(plain, 2))
             if len(ring) < 3 or area(ring) < MIN_PIECE or crosses(ring): continue
-            yield ccw(ring)
+            ring = ccw(ring)
+            # a piece in which the LiDAR sees no roof cell of this layer: every cell of it came to the layer only as
+            # the nearest (906's lobe over open ground); with DROP_BARE it is not drawn as a layer
+            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & (full == k)).any():
+                bare.add((k, round(float(area(ring)), 1)))
+                continue
+            yield ring
 
     def stands(rec_k):
         # a layer no higher than the walls it would stand on is part of the roof under it
@@ -628,6 +647,10 @@ def measure(b, P, others, campus_origin):
                     u["wall"] = round(y0 + 0.05, 2)
                     u["storey"], u["storeys"] = storeys(u["wall"], levels)
                 if stands(u): out.append(u)
+    for k, a in sorted(bare):
+        dropped.append({"m2": a, "why": "a piece of the outline that only came to a layer as its nearest, where the LiDAR "
+                        "sees no roof cell of that layer: not drawn as a layer (DROP_BARE); the walls under it stand "
+                        "there to their own height"})
     data = {
         "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
                 "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
@@ -835,7 +858,8 @@ def landmark_buildings():
 
 
 def options(argv):
-    """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, and building ids."""
+    """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, --drop-bare or --keep-bare
+    (DROP_BARE), and building ids."""
     args, campus, flags = [], "city", set()
     it = iter(argv)
     for a in it:
@@ -844,8 +868,9 @@ def options(argv):
         elif a.startswith("--"): flags.add(a)
         else: args.append(a)
     if campus not in CAMPUS_TILES: sys.exit(f"--campus: one of {', '.join(CAMPUS_TILES)}")
-    unknown = flags - {"--tier3", "--fetch"}
+    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare"}
     if unknown: sys.exit(f"unknown option {', '.join(sorted(unknown))}")
+    if {"--drop-bare", "--keep-bare"} <= flags: sys.exit("--drop-bare or --keep-bare, not both")
     return campus, flags, args
 
 
@@ -862,9 +887,10 @@ def fetch_tiles(tiles):
 
 
 def main():
-    global CAMPUS, TILES
+    global CAMPUS, TILES, DROP_BARE
     CAMPUS, flags, ask = options(sys.argv[1:])
     TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
+    DROP_BARE = "--drop-bare" in flags or (DROP_BARE_ON[CAMPUS] and "--keep-bare" not in flags)
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     origin = campus["origin"]
     to_map, to_grid = projector(origin)
