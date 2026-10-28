@@ -66,7 +66,8 @@ It is built to answer two questions a student actually has:
   location, and at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
   University's Manawatū, Auckland and Wellington campuses, each with its name and height and how
   the height was found; their rooms, class times, dates and course lists are not shown, and the
-  site says why. Four more University of Auckland buildings are drawn near the camera to their
+  site says why. The root page names each school in te reo Māori too. Four more University of
+  Auckland buildings are drawn near the camera to their
   LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
   Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
   walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
