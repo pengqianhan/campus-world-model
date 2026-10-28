@@ -1,10 +1,12 @@
 // The osm-buildings campus adapter (docs/schools/DESIGN.md, section 4), shared by every school in
 // the Buildings form: a school whose campus map cannot be used takes its buildings from
 // OpenStreetMap alone ("One source for a University building" in PROGRESS.md). The school's
-// descriptor holds the rule, written in OpenStreetMap's tags (`osmBuildings`). Each building gets
-// its name or `ref`, its outline, a height by the rule below with `heightSource`, and `osm`, the
+// descriptor holds the rule, written in OpenStreetMap's tags (`osmBuildings`), and, where the
+// maintainer has given the school's own campus map, a table read off it (`campusMap`) that says
+// which elements are the school's. Each building gets its name or `ref` (or, unnamed, its block
+// code on that map), its outline, a height by the rule below with `heightSource`, and `osm`, the
 // element it comes from. It gets no floors and no rooms. Every candidate the rule leaves out goes
-// to `buildingExclusions` with the reason of the step that left it out.
+// to `buildingExclusions` with the reason of the step that left it out, or of the table.
 import { cleanRing, encodeRing, pointInRing, ringArea, ringCentroid, simplifyRing, type Ring } from "../../src/shared/geo.ts";
 import type { CampusMapRow, OsmBuildingRule, TagTest } from "../../src/shared/school.ts";
 import type { Building, BuildingExclusion, CampusData, FloorPlans, RoomIndex } from "../../src/shared/types.ts";

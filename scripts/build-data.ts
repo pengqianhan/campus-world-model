@@ -109,9 +109,18 @@ const osmSource: SourceInfo = {
 // A school's own campus map, where the maintainer gave one to choose its buildings with
 // (OsmBuildingRule.campusMap): its line names the map and the day the maintainer got it. The map
 // itself is never in the repository, and no fetch script asks for it.
-const map = osmForm?.campusMap?.source;
-const campusMapSource: SourceInfo[] = map
-  ? [{ id: "campus-map", name: map.name, url: map.url, licence: map.licence, snapshotDate: map.received, provides: map.provides }]
+const campusMap = osmForm?.campusMap?.source;
+const campusMapSource: SourceInfo[] = campusMap
+  ? [
+      {
+        id: "campus-map",
+        name: campusMap.name,
+        url: campusMap.url,
+        licence: campusMap.licence,
+        snapshotDate: campusMap.received,
+        provides: campusMap.provides,
+      },
+    ]
   : [];
 const sources: SourceInfo[] = osmForm
   ? [osmSource, ...campusMapSource]
