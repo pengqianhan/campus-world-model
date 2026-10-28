@@ -198,20 +198,27 @@ A measured massing (`MASSING.md`) is a plain building drawn by a program from th
 agent and no photograph. All of them share one model and have a data file each:
 
 - `pipeline/tools/massing.py` measures every tier-3 building of the City campus that the eight
-  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), from the repository root:
-  `$PY -I landmarks/pipeline/tools/massing.py [ids]`. It writes `measured/buildings/<id>.json` for
-  each that passes the limits, and `measured/exclusions.json` for each that keeps its block, with
-  its reason. Its top views (LiDAR | model | difference) and a table go to `measured/out/`, which
-  is not committed.
+  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), and, as stand-ins until
+  their landmarks come, the buildings of tiers 1 and 2 there that the site does not draw as
+  landmarks (it reads the placements; `SOON` holds those in progress on other branches), from the
+  repository root: `$PY -I landmarks/pipeline/tools/massing.py [--tier3] [ids]`. It writes
+  `measured/buildings/<id>.json` for each that passes the limits, and `measured/exclusions.json` for
+  each that keeps its block, with its reason; a run over every building also drops the data file of
+  one it no longer measures. Its top views (LiDAR | model | difference) and a table go to
+  `measured/out/`, which is not committed.
 - How it measures: the ground round the outline; roof cells (a 0.5 m heightmap, a cell being roof
   where most of its points are building points over 2.5 m); layers where neighbouring cells step
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
   lowest of its sloping planes (one plane a mono-pitch, two opposite a gable, more a hip), each
-  plane fitted to the cells that fall that way, then again to the cells it fits best. The lowest layer stands on the campus outline,
+  plane fitted to the cells that fall that way (a face from 4% of the layer's sloping cells, so that
+  a hipped end counts), then again to the cells it fits best. The lowest layer stands on the campus outline,
   with its eaves round it, edge by edge (how far building points at its eave reach out past each
   edge: the median along it); the others stand on it, traced from the LiDAR and put onto the outline
-  where they meet it. Roof that no layer draws (a chimney, plant, a tree classed as building) is
-  left out.
+  where they meet it. When the lowest layer covers less than half of the outline and that would lose
+  a roof (its own slopes flattened, or a larger layer under its walls, as where two hips meet in a
+  valley), the walls round the outline stop instead at a flat plinth at the lowest eave of all the
+  layers, and every layer stands on it. Roof that no layer draws (a chimney, plant, a tree classed
+  as building) is left out. An outline on the campus map that crosses itself keeps its block.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
@@ -230,7 +237,10 @@ agent and no photograph. All of them share one model and have a data file each:
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
   or removed: run it with `--fsModuleCache=false` after the generator has run.
 - Kept as blocks by decision, whatever the LiDAR (each in `measured/exclusions.json` with its
-  reason): places where people live (123, 436, 617 and 838 by their residential floors; 434, whose
+  reason): places where people live (123, 436, 617 and 838, and of tiers 1 and 2 440, 441, 442,
+  614, 616, 818, 831 and 833, by their residential floors; by hand, Carlaw Park's 832 and 834 to
+  837, which OpenStreetMap tags as dormitories run by the University though the campus map marks none
+  of their floors residential; 434, whose
   floor 2 has an Accommodation Reception on the campus map; 450 by its name) and childcare centres
   (410, 841, and 255, which decision 7 keeps too), both until the maintainer decides (MASSING.md
   decision 6); Waipapa Marae (251 to 256) and
@@ -323,6 +333,10 @@ A correction is applied only when the photo's sky is well labelled round the mod
 (≥ 20 % photo sky and ≤ 50 % photo solid next to it) and it raises the IoU by ≥ 0.01. Backlit views
 with hazy white sky, views mostly of trees, and back views keep their Street View camera.
 `views_refined.json` holds every view, with `refine: {from, delta, applied, iou_before, iou_after}`.
+With `refine.keep_fixes` true in the config, a panorama whose camera `streetview.camera_fixes` sets is
+searched and reported as before but never corrected: its views keep the fixed camera, and the report
+says so (15 Eden Crescent, whose cameras are set where 9 Eden Crescent's fits put them). Without it
+nothing changes.
 
 ### Metrics
 
@@ -345,6 +359,16 @@ refined, or set by `streetview.camera_fixes`), and the summary gives the mean Io
 all views and the mean IoU, IoU in the box and sky in the box over the corrected views
 (`iou_mean_corrected`, `iou_box_mean_corrected`, `sky_in_box_mean_corrected`). The likeness limits of a landmark (maintainer, 2026-10-27) are read on
 the IoU in the box.
+
+A neighbour that stands between the cameras and the landmark (another landmark already drawn from
+code) can be named in the config's `compare.occluders` (landmark folder names): the label pass
+(`viewer/mask.js`) draws it in blue, moved from its own view frame into this one through the two
+configs' `frame.expected` (centre and axis, in NZTM metres from the campus origin, grid north) and their
+`ground`, not through the map's projection, depth-tested with the model, and the pixels where it hides the model, or
+stands where the model is not, count in neither the IoU, the IoU in the box, the sky in the box nor
+the luma: there the photograph shows the neighbour. The refine stage's search counts them out too.
+Without the option the labels are as before, and so are the IoU, the box and the region the luma is
+read in (15 Eden Crescent: 9 Eden Crescent).
 
 From above (`run.sh <name> topview`), for every landmark and above all for one that no photograph
 shows whole: the model's triangles and the LiDAR's points of this building and of those in

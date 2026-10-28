@@ -2,14 +2,16 @@
 at the heights the LINZ 2024 LiDAR measures, drawn by landmarks/measured/model.js.
 
 Reads the eight LiDAR tiles that the landmark pipeline already keeps in data/raw/landmarks/lidar/ (it
-fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles (MASSING.md, "Which
-buildings") it measures the ground, the roof and its layers and roof forms, builds the model with
-model.js (massing_triangles.mjs) and checks it from above against the LiDAR. It writes
+fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles, and each of tiers 1
+and 2 that the site does not draw as a landmark yet (MASSING.md, "Which buildings"), it measures the ground,
+the roof and its layers and roof forms, builds the model with model.js (massing_triangles.mjs) and checks it
+from above against the LiDAR. It writes
   landmarks/measured/buildings/<id>.json   each building that passes every limit (MASSING.md, decision 3)
   landmarks/measured/exclusions.json       each that does not, with its reason and its numbers
   landmarks/measured/out/<id>.png, report.md   the top views (LiDAR | model | difference) and a table (not committed)
 Run from the repository root, with the pipeline's Python:
-  $PY -I landmarks/pipeline/tools/massing.py            every tier-3 building in the tiles
+  $PY -I landmarks/pipeline/tools/massing.py            every such building in the tiles
+  $PY -I landmarks/pipeline/tools/massing.py --tier3    tier 3 alone
   $PY -I landmarks/pipeline/tools/massing.py 216 113    these only; the other files are kept
 """
 import json, math, os, re, subprocess, sys
@@ -37,19 +39,26 @@ SIMPLIFY = 0.25      # m
 SNAP = 0.75          # m: a layer's edge this near the outline goes onto it
 MIN_OVERHANG = 0.2   # m: a smaller overhang is a wall on the outline
 SLAB = 0.3           # m: the edge of a flat roof that overhangs its walls
+FACE_MIN = 0.04      # a face of a sloping roof: at least this share of its sloping cells (a hipped end too)
 # The limits (MASSING.md, decision 3): below any of them the block stays.
 COVER_MIN, VEG_MAX, OPEN_MAX, IOU_MIN, WITHIN_MIN = 0.85, 0.15, 0.5, 0.90, 0.90
 STOREY_MIN, STOREY_MAX = 2.4, 4.5
 
-# The landmark queue's tiers 1 and 2 (MASSING.md, "Which buildings"): the generator leaves them to it.
+# The landmark queue's tiers 1 and 2 (MASSING.md, "Which buildings"). Until its landmark comes, a building of
+# these tiers is measured too, through the same limits (a stand-in: making it a landmark deletes its data
+# file); the buildings that the site draws as landmarks, and those in SOON, are left to the landmarks.
+# `--tier3` measures tier 3 alone, as the generator did before.
 TIER1 = {"102", "103", "104", "105", "105S", "107", "109", "118", "119", "130", "801", "802", "803", "804"}
 TIER2 = {"106", "110", "110N", "201", "206", "207", "250", "260", "301", "302", "303", "303S", "305", "310",
          "311", "315", "401", "402", "405", "421E", "421W", "439", "440", "441", "442", "614", "616", "619",
          "620", "810", "818", "820"} | {str(i) for i in range(831, 838)}
+# Landmarks in progress on their own branches, not yet on the site: the generator leaves them alone too.
+SOON = {"801"}
 # Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
 # take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
 # 6 stays at the design's default until the maintainer decides: places where people live (residential
-# floors, and 434 and 450 by hand below) and childcare centres keep their blocks.
+# floors, and by hand below 434, 450 and Carlaw Park's 832 and 834 to 837) and childcare centres keep
+# their blocks.
 KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people "
               "it belongs to (decision 7)" for i in ("251", "252", "253", "254", "255", "256")},
         "275": "Fale Pasifika: culturally significant; its block stays until the maintainer has asked the people "
@@ -59,7 +68,11 @@ KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the 
         "434": "decision 6, a place where people live (the campus map shows an Accommodation Reception on its "
                "floor 2, though its floors are not marked residential): kept until the maintainer decides",
         "450": "decision 6, a place where people live (student housing by its name, though its floor is marked "
-               "unmapped): kept until the maintainer decides"}
+               "unmapped): kept until the maintainer decides",
+        **{i: "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: "
+              "Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though "
+              "the campus map marks none of its floors residential: kept until the maintainer decides"
+           for i in ("832", "834", "835", "836", "837")}}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
 
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
@@ -355,7 +368,7 @@ def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
     hist = np.bincount((np.degrees(d[sl]) % 360 // 10).astype(int), minlength=36).astype(float)
     sm = sum(np.roll(hist, k) * w for k, w in ((-2, 1), (-1, 2), (0, 3), (1, 2), (2, 1))) / 9
     tot = max(1.0, float(sl.sum()))
-    peaks = [k for k in range(36) if sm[k] >= sm[k - 1] and sm[k] > sm[(k + 1) % 36] and sm[k] * 5 / tot >= 0.08]
+    peaks = [k for k in range(36) if sm[k] >= sm[k - 1] and sm[k] > sm[(k + 1) % 36] and sm[k] * 5 / tot >= FACE_MIN]
     peaks = [math.radians(k * 10 + 5) for k in sorted(peaks, key=lambda k: -sm[k])]
     keep = []
     for pk in peaks:
@@ -366,7 +379,7 @@ def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
     planes, dirs = [], []
     for k, q in enumerate(keep):
         m = sl & (near == k) & (turn[k] <= math.radians(40))
-        if m.sum() < 8 or m.sum() < 0.12 * tot: continue
+        if m.sum() < 8 or m.sum() < FACE_MIN * tot: continue
         t = np.tan(np.radians(slope[m]))
         z0, gx, gy = fit_plane(x[m], y[m], h[m], -t * np.cos(d[m]), -t * np.sin(d[m]))
         if math.degrees(math.atan(math.hypot(gx, gy))) < max(FLAT_DEG, 0.5 * float(np.median(slope[m]))): continue
@@ -479,6 +492,8 @@ def measure(b, P, others, campus_origin):
     if rec["cover"] < COVER_MIN: return rec, None, f"roof cells cover {rec['cover']:.0%} of the outline (limit {COVER_MIN:.0%})"
     if rec["vegetation"] > VEG_MAX: return rec, None, f"vegetation over {rec['vegetation']:.0%} of the outline (limit {VEG_MAX:.0%})"
     if rec["open_below"] > OPEN_MAX: return rec, None, f"ground seen under {rec['open_below']:.0%} of the roof: open below, a bridge or a canopy (decision 8)"
+    # the lowest layer stands on the outline itself: an outline that crosses itself has no inside to draw
+    if any(crosses(r) for r in rings): return rec, None, "its outline on the campus map crosses itself: no inside to draw"
 
     # layers: smooth roof (planes that fit within 0.15 m), split where neighbours step by more than 0.6 m
     fit = cell_planes(roof, H, cx, cy)
@@ -502,7 +517,8 @@ def measure(b, P, others, campus_origin):
     rough = roof & Cin & ~np.isin(lab, layers)
     if rough.sum() * A >= MIN_PIECE:
         dropped.append({"m2": round(float(rough.sum() * A), 1), "why": "roof cells on no smooth plane, or in pieces under 4 m2: "
-                        "counted as LiDAR only in the top-view check"})
+                        "drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of "
+                        "the top-view check's share within 0.5 m (not_drawn_m2)"})
     if not layers: return rec, None, "no layer of smooth roof of 4 m2 or more"
     layers.sort(key=lambda k: info[k]["low"])
 
@@ -522,9 +538,10 @@ def measure(b, P, others, campus_origin):
             take = near & (off < best)
             best[take] = off[take]; pick[take] = k
         full[loose] = pick
-    # roof that no layer draws: a cell on no smooth plane more than 1 m from every layer's roof there
-    # (a chimney, plant, a tree classed as building), or a piece under 4 m2. The top-view check counts
-    # these cells as LiDAR only (MASSING.md, step 5)
+    # roof that no layer draws to its height: a cell on no smooth plane more than 1 m from every layer's
+    # roof there (a chimney, plant, a tree classed as building). The top-view check leaves these cells out
+    # of its share within 0.5 m, and its footprint IoU counts those the model stands over as covered
+    # (MASSING.md, step 5)
     off = np.full(H.shape, np.inf)
     for k in layers:
         f = info[k]
@@ -536,17 +553,81 @@ def measure(b, P, others, campus_origin):
     levels = levels_of(b)
     base = layers[0]
     out = []
-    # the lowest layer stands on the whole outline (flat if it covers less than half of it). Its eaves
-    # are measured from the points, edge by edge: at each half metre of an edge where building points
-    # at the layer's eave (within 0.6 m) lie just inside, how far out such points go, in a strip 1 m
-    # wide, with no gap of more than 0.6 m. An edge's overhang is the median of these, if half of the
-    # edge has roof at the eave; an edge under 1 m long takes the larger of its neighbours'
+    # the lowest layer stands on the whole outline (flat if it covers less than half of it), with its eaves
+    # measured edge by edge from the building points at its eave, within 0.6 m (edge_eaves)
     bi = info[base]
-    if bi["inside"] < 0.5 * Cin.sum() and bi["form"] != "flat":
+    small = bi["inside"] < 0.5 * Cin.sum()
+    flattened = small and bi["form"] != "flat"
+    if flattened:
         bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
     eave0 = bi["height"] if bi["form"] == "flat" else float(roof_at(bi["planes"], *(along(outer) - centre).T).min())
-    pts = xy[B & (np.abs(z - zero - eave0) <= 0.6)]
 
+    def traced(k):
+        mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
+        for ring in trace(mk, cx, cy):
+            plain = simplify(ring, SIMPLIFY)
+            ring = snap(plain, outer)
+            # snapping can fold a ring over itself; then the traced edge stays as it is
+            ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
+            if len(ring) >= 3 and crosses(ring): ring = despike(np.round(plain, 2))
+            if len(ring) < 3 or area(ring) < MIN_PIECE or crosses(ring): continue
+            yield ccw(ring)
+
+    def stands(rec_k):
+        # a layer no higher than the walls it would stand on is part of the roof under it
+        return rec_k["ridge"] > rec_k["y0"] + 0.2 and rec_k["wall"] > rec_k["y0"]
+
+    def eaves_at(h):
+        return edge_eaves(xy[B & (np.abs(z - zero - h) <= 0.6)], outer)
+
+    out.append(layer_record(rings, bi, -1.0, eaves_at(eave0), levels, centre))
+    lost = 0.0
+    for k in layers[1:]:
+        for ring in traced(k):
+            rec_k = layer_record([ring], info[k], out[0]["wall"], 0.0, levels, centre)
+            if stands(rec_k): out.append(rec_k)
+            else: lost = max(lost, rec_k["m2"])
+    # When the lowest layer covers less than half of the outline and the rule above would lose a roof (the
+    # lowest layer's own slopes, flattened, or a larger layer under the walls it would stand on, as when two
+    # hips meet in a valley), the walls round the outline stop instead at a flat plinth at the lowest eave of
+    # all the layers (the 10th percentile of each one's roof), with its eaves, and every layer, the lowest
+    # too, stands on it as traced. A sloping roof whose planes reach below the plinth's top has its walls
+    # rise from that top, and those parts of its planes stay inside the plinth.
+    if small and (flattened or lost > info[base]["m2"]):
+        ups = [layer_record([ring], info[k], 0.0, 0.0, levels, centre) for k in layers for ring in traced(k)]
+        e = min(info[k]["low"] for k in layers)
+        if ups and e >= FLOOR:
+            out = [layer_record(rings, {"form": "flat", "height": e, "m2": float(Cin.sum() * A)}, -1.0, eaves_at(e), levels, centre)]
+            y0 = out[0]["wall"]
+            for u in ups:
+                u["y0"] = y0
+                if u["roof"] != "flat" and u["wall"] <= y0 + 0.05 < u["ridge"] - 0.2:
+                    u["wall"] = round(y0 + 0.05, 2)
+                    u["storey"], u["storeys"] = storeys(u["wall"], levels)
+                if stands(u): out.append(u)
+    data = {
+        "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
+                "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
+                "of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above "
+                "ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model "
+                "stands on the map's ground (place.door).",
+        "place": {"building": b["id"], "centre": centre, "door": [round(float(door[0]), 2), round(float(door[1]), 2)]},
+        "lidar": "Auckland Part 1 LiDAR point cloud (2024), tiles " + ", ".join(t[-4:] for t in TILES),
+        "ground": rec["ground"],
+        "levels": levels,
+        "layers": out,
+        "dropped": dropped,
+        "measured": {k: rec[k] for k in ("outline_m2", "roof_inside_m2", "cover", "vegetation", "open_below", "not_drawn_m2")},
+    }
+    rec["skip"] = np.c_[CX[skip], CY[skip]]
+    return rec, data, None
+
+
+def edge_eaves(pts, outer):
+    """The overhang of each edge of a counter-clockwise outline, from the building points at its eave (`pts`):
+    at each half metre of an edge where such points lie just inside, how far out they go, in a strip 1 m
+    wide, with no gap of more than 0.6 m. An edge's overhang is the median of these, if half of the edge
+    has roof at the eave; an edge under 1 m long takes the larger of its neighbours'. 0 where none has one."""
     def reach_at(p_, t_):
         n_ = np.array([t_[1], -t_[0]])                       # out of a counter-clockwise ring
         v = pts - p_
@@ -572,36 +653,7 @@ def measure(b, P, others, campus_origin):
         eaves[k] = round(min(EAVE_BAND, o), 2) if o >= MIN_OVERHANG else 0.0
     eaves = [max(eaves[k - 1] if not short[k - 1] else 0.0, eaves[(k + 1) % ne] if not short[(k + 1) % ne] else 0.0)
              if short[k] else eaves[k] for k in range(ne)]
-    over = eaves if any(eaves) else 0.0
-    out.append(layer_record(rings, bi, -1.0, over, levels, centre))
-    for k in layers[1:]:
-        mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
-        for ring in trace(mk, cx, cy):
-            plain = simplify(ring, SIMPLIFY)
-            ring = snap(plain, outer)
-            # snapping can fold a ring over itself; then the traced edge stays as it is
-            ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
-            if len(ring) >= 3 and crosses(ring): ring = despike(np.round(plain, 2))
-            if len(ring) < 3 or area(ring) < MIN_PIECE or crosses(ring): continue
-            rec_k = layer_record([ccw(ring)], info[k], out[0]["wall"], 0.0, levels, centre)
-            # a layer no higher than the walls it would stand on is part of the roof under it
-            if rec_k["ridge"] > rec_k["y0"] + 0.2 and rec_k["wall"] > rec_k["y0"]: out.append(rec_k)
-    data = {
-        "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
-                "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
-                "of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above "
-                "ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model "
-                "stands on the map's ground (place.door).",
-        "place": {"building": b["id"], "centre": centre, "door": [round(float(door[0]), 2), round(float(door[1]), 2)]},
-        "lidar": "Auckland Part 1 LiDAR point cloud (2024), tiles " + ", ".join(t[-4:] for t in TILES),
-        "ground": rec["ground"],
-        "levels": levels,
-        "layers": out,
-        "dropped": dropped,
-        "measured": {k: rec[k] for k in ("outline_m2", "roof_inside_m2", "cover", "vegetation", "open_below", "not_drawn_m2")},
-    }
-    rec["skip"] = np.c_[CX[skip], CY[skip]]
-    return rec, data, None
+    return eaves if any(eaves) else 0.0
 
 
 def _hull(p):
@@ -747,6 +799,18 @@ def compact(data):
 
 # ---- the batch --------------------------------------------------------------------------------------------
 
+def landmark_buildings():
+    """The buildings that the site draws as landmarks: `building` and `also` of each landmarks/<name>/placement.json
+    with `site: true` for the University (no `school`, or "uoa"), as src/app/landmarks.ts finds them."""
+    out = set()
+    for name in os.listdir(os.path.join(ROOT, "landmarks")):
+        f = os.path.join(ROOT, "landmarks", name, "placement.json")
+        if not os.path.exists(f): continue
+        p = json.load(open(f, encoding="utf-8"))
+        if p.get("site") is True and p.get("school", "uoa") == "uoa": out |= {p["building"], *p.get("also", [])}
+    return out
+
+
 def main():
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     origin = campus["origin"]
@@ -764,16 +828,28 @@ def main():
         return all(any(x0 <= a <= x1 and y0 <= c <= y1 for x0, y0, x1, y1 in bounds) for a, c in zip(e, n))
     city = [b for b in campus["buildings"] if b["campus"] == "city" and not b.get("offMap") and not b.get("area")]
     tier3 = [b for b in city if b["id"] not in TIER1 | TIER2 and in_tiles(decode(b["outline"][0]))]
-    ask = sys.argv[1:]
-    todo = [b for b in tier3 if not ask or b["id"] in ask]
-    print(f"{len(tier3)} tier-3 buildings in the tiles; measuring {len(todo)}")
+    only3 = "--tier3" in sys.argv[1:]
+    ask = [a for a in sys.argv[1:] if not a.startswith("--")]
+    drawn = landmark_buildings()
+    wider = [] if only3 else [b for b in city if b["id"] in TIER1 | TIER2 and b["id"] not in drawn | SOON
+                              and in_tiles(decode(b["outline"][0]))]
+    every = tier3 + wider
+    todo = [b for b in every if not ask or b["id"] in ask]
+    print(f"{len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
     boxes = []
-    for b in todo:
+    # the points round every building of the run's set (`every`), whichever of them it measures: a run of
+    # some ids shares the cache of a full run, but a --tier3 run crops round tier 3 alone and rewrites it
+    for b in every:
         r = decode(b["outline"][0]); lo = r.min(0) - 12; hi = r.max(0) + 12
         e, n = to_grid([lo[0], hi[0], lo[0], hi[0]], [lo[1], lo[1], hi[1], hi[1]])
         boxes.append((min(e), min(n), max(e), max(n)))
     P = load_points(boxes, to_map)
     os.makedirs(os.path.join(OUT, "buildings"), exist_ok=True)
+    if not ask:
+        # a run over every building writes the whole set: the data file of a building it no longer measures
+        # (one that has become a landmark) goes
+        for f in os.listdir(os.path.join(OUT, "buildings")):
+            if f.endswith(".json") and f[:-5] not in {b["id"] for b in todo}: os.remove(os.path.join(OUT, "buildings", f))
     exfile = os.path.join(OUT, "exclusions.json")
     ex = json.load(open(exfile, encoding="utf-8"))["buildings"] if os.path.exists(exfile) and ask else {}
     rows = []
@@ -809,8 +885,9 @@ def main():
             c = data["check"]
             print(f"{bid} {name}: drawn, {len(data['layers'])} layer(s) "
                   f"{'/'.join(l['roof'] for l in data['layers'])}, IoU {c['iou']}, within {c['within_0.5m']}")
-    json.dump({"note": "The tier-3 buildings of the City campus in the eight LiDAR tiles that keep their blocks, each with "
-                       "its reason (landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
+    json.dump({"note": "The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and "
+                       "tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason "
+                       "(landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
                "buildings": dict(sorted(ex.items()))}, open(exfile, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
     with open(os.path.join(WORK, "report.md"), "w", encoding="utf-8") as f:
         f.write("| Building | Layers | Roofs | IoU | Within 0.5 m | p10 / p50 / p90 (m) | Highest model / LiDAR (m) |\n|---|---|---|---|---|---|---|\n")

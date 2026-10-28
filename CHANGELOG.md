@@ -27,6 +27,73 @@ A change to what the site does or shows adds its line here, and the README's
   map it has the map's colours; from a walker's height on a computer with a graphics card, its own tan
   brick, render, glass and red clay tiles. Its north-east and east faces, which no photograph shows,
   are drawn plainly. A click still opens its floors (#PR).
+- **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
+  9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
+  Crescent, its windows set deep in square openings with red frames, in two rows over a base of
+  brownish-grey tiles, a band of windows under the canopy at its top and, near its north-west end, two
+  doors with steps and a louvre; its roof slopes up from the street and from the back to a top storey
+  under a curved roof. Its heights are measured from the LINZ 2024 LiDAR, but for two parts of its
+  roofs, over a well at its south-east end and by the street at its north-west end, which are
+  estimated, and the street face's openings and doors from a Street View photograph of it. On the map
+  it has the map's colours; from a walker's height on a computer with a graphics card, its own white
+  paint, glass, timber and red frames. Its back and ends, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#116).
+- **Massey World Model, at /massey/.** Another school on the site: Te Kunenga ki Pūrehuroa Massey
+  University, in 3D on the LINZ ground among the streets and buildings round it. The Manawatū
+  campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes
+  the map to the Auckland campus at Albany and the Wellington campus at Mount Cook, 8 buildings
+  each. The 55 buildings come from OpenStreetMap, picked by their `operator`,
+  `building=university` and `amenity=university` tags, or a name or an address that says Massey,
+  each one block at
+  its OpenStreetMap height (14 from their number of levels), else at a default, and labelled by
+  name (the Sir Neil Waters Lecture Theatres by their code, SNW). Halls of residence and childcare
+  centres stay unnamed among the surroundings; buildings with no name, and one whose own tags ask
+  whether it is a police college, are left out, each with its reason. Many of Massey's own buildings
+  that OpenStreetMap tags as plain buildings, and the research institutes beside the Manawatū
+  campus, stand among the surroundings. Its rooms, class times, dates and course list are not
+  shown, and About says why for each (#114).
+- **UC World Model, at /uc/.** Another school on the site: the University of Canterbury (Te
+  Whare Wānanga o Waitaha) in Christchurch, in 3D on the LINZ ground among the houses and streets
+  round it. The Ilam campus has 45 buildings; "Other campuses" in the campus list takes the map to
+  the Dovedale campus (11 buildings) and to the Arts Centre city location, where only Music &
+  Classics is tagged as UC's. The 57 buildings come from OpenStreetMap, picked by their `operator`
+  and `building=university` tags and their names, each one block at its OpenStreetMap height (52
+  from their number of levels), else at a default, and labelled by name. Buildings still under
+  construction, an underground one and those with no name are left out, each with its reason. The
+  Nelson campus is not shown: OpenStreetMap tags no building there as UC's. Rooms, class times,
+  semester dates and the course list are not shown, and the status strip, the time panel, the card
+  and About say why in UC's own case. Halls of residence and childcare centres stay unnamed.
+  Unofficial, with the project's own colours; nothing is taken from UC (#110).
+- **Four more measured massings.** Near the camera, Building 240, 103 Alfred Nathan House, 305
+  Science Centre and 619 67 Symonds Street are drawn from the LINZ 2024 LiDAR in place of their
+  blocks, as the five plain buildings already are: their layers and roofs measured, their walls,
+  storeys and windows drawn by rule. Building 240's two hip roofs are measured now, as the program
+  stands roofs that meet in a valley on a plinth at their eaves. The other three are buildings that
+  the landmark queue means to draw in detail one day; each stands in until its landmark comes. The
+  other buildings of the queue in the LiDAR keep their blocks, every place where people live among
+  them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
+  (`landmarks/measured/exclusions.json`) (#108).
+
+### Changed
+
+- **Each school's name in te reo Māori on the site's root page.** Under its English name, each
+  school on the list now has its name in te reo Māori, as the school gives it on its own site: Waipapa
+  Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT), Te Herenga
+  Waka (VUW), Ōtākou Whakaihu Waka (Otago), Te Whare Wānanga o Waitaha (UC) and Te Kunenga ki
+  Pūrehuroa (Massey), marked as te reo Māori for screen readers. VUW's, Otago's, UC's and Massey's
+  lines, which gave their two names as one, now give them as the others do (#109).
+
+### Fixed
+
+- **The way under the Clock Tower East Wing's link is open.** The East Wing's landmark drew its link
+  toward the Clock Tower as solid stone down to the ground, where the campus map has no ground floor
+  under most of it and OpenStreetMap has a footway through a passage. The walk map leaves that ground
+  open, so a walker could walk into the stone, and the view from behind them filled with its plain
+  face; the default start's first heading leads there. The link now stands from 3.6 m up, the
+  campus map's storey height (nothing measures its underside), and goes down to the ground only over
+  the space the campus map has under its east third, as the map's blocks drew them; a walker passes
+  under it in view. Seen from a distance, the map is unchanged; near 119 only the link and the
+  ground under it change (#117).
 
 ## 2026-10-27
 

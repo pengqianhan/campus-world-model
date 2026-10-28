@@ -5,7 +5,9 @@
 // photo's solid/sky pixels count (trees, cars, people and dark glass are ignored). A correction is
 // applied only where the photo's sky is well labelled round the model's silhouette (refine.min_sky of
 // the model-sky pixels next to the silhouette are photo sky, at most refine.max_solid are photo solid)
-// and it raises the IoU by refine.min_gain; otherwise the view keeps its Street View camera.
+// and it raises the IoU by refine.min_gain; otherwise the view keeps its Street View camera. With
+// refine.keep_fixes true, a panorama that streetview.camera_fixes places is searched and reported but
+// never corrected: its views keep the fixed camera (without it, as before).
 // Writes refs/streetview/views_refined.json (views.json with corrected position/target, plus a
 // `refine` record per view) and out/refine/report.{json,md} and outline images.
 //   node ../pipeline/tools/refine_cameras.mjs [--config config/<name>.json] [--match <pano>] [--out out/refine] [--no-images]
@@ -46,9 +48,10 @@ for (const p of panos) {
   // and only when the photo's sky is well labelled round the model's silhouette (not haze, trees or flare)
   const rel = await page.evaluate(([vs, s]) => window.__reliability(vs, [0, 0, 0, 0, 0], s), [vs, R.scale]);
   const photo = after.reduce((s, x) => s + x.photo, 0), valid = after.reduce((s, x) => s + x.valid, 0);
-  const ok = photo > 0.03 * valid && rel.sky >= (R.min_sky ?? 0.2) && rel.solid <= (R.max_solid ?? 0.5) && r.score - r.base >= (R.min_gain ?? 0.01);
+  const kept = !!R.keep_fixes && vs.some((v) => v.camera_fix);
+  const ok = !kept && photo > 0.03 * valid && rel.sky >= (R.min_sky ?? 0.2) && rel.solid <= (R.max_solid ?? 0.5) && r.score - r.base >= (R.min_gain ?? 0.01);
   const d = ok ? r.best : [0, 0, 0, 0, 0];
-  const rec = { pano: p, sky_round_silhouette: +rel.sky.toFixed(3), solid_round_silhouette: +rel.solid.toFixed(3), delta: r.best.map((x) => +x.toFixed(3)), applied: ok, iou_before: +r.base.toFixed(4), iou_after: +r.score.toFixed(4), evals: r.evals,
+  const rec = { pano: p, sky_round_silhouette: +rel.sky.toFixed(3), solid_round_silhouette: +rel.solid.toFixed(3), delta: r.best.map((x) => +x.toFixed(3)), applied: ok, ...(kept ? { kept: "streetview.camera_fixes" } : {}), iou_before: +r.base.toFixed(4), iou_after: +r.score.toFixed(4), evals: r.evals,
     views: vs.map((v, i) => ({ file: v.file, iou_before: +before[i].iou.toFixed(4), iou_after: +after[i].iou.toFixed(4), photo_px: after[i].photo, valid_px: after[i].valid })) };
   report.push(rec);
   for (const v of vs) {
@@ -65,7 +68,7 @@ if (!match) fs.writeFileSync("refs/streetview/views_refined.json", JSON.stringif
 else console.log("--match given: views_refined.json not written");
 fs.writeFileSync(`${out}/report.json`, JSON.stringify(report, null, 1));
 const md = ["| panorama | sky / solid round silhouette | dx m | dy m | dz m | yaw ° | pitch ° | IoU before | IoU after | applied |", "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
-  ...report.map((r) => `| ${r.pano.slice(0, 16)} | ${(r.sky_round_silhouette * 100).toFixed(0)}% / ${(r.solid_round_silhouette * 100).toFixed(0)}% | ${r.delta.map((x, i) => x.toFixed(i < 3 ? 2 : 2)).join(" | ")} | ${r.iou_before.toFixed(3)} | ${r.iou_after.toFixed(3)} | ${r.applied ? "yes" : "no"} |`)];
+  ...report.map((r) => `| ${r.pano.slice(0, 16)} | ${(r.sky_round_silhouette * 100).toFixed(0)}% / ${(r.solid_round_silhouette * 100).toFixed(0)}% | ${r.delta.map((x, i) => x.toFixed(i < 3 ? 2 : 2)).join(" | ")} | ${r.iou_before.toFixed(3)} | ${r.iou_after.toFixed(3)} | ${r.applied ? "yes" : r.kept ? "no (camera_fixes kept)" : "no"} |`)];
 fs.writeFileSync(`${out}/report.md`, md.join("\n") + "\n");
 console.log(md.join("\n"));
 if (images) { // label images before/after, at half size, for the outline overlays

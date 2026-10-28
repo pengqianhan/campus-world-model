@@ -71,10 +71,28 @@ empty. The door is the foot of the stair tower's face toward the car park, where
 the model meets the map's ground. The walls go down to `FOOT`, -1.0 m: the LiDAR ground falls to
 -0.86 m behind the range and rises about 3 m under the link.
 
+Since 2026-10-28 the link stands from 3.6 m up, but for the space the campus map has under its east
+third, which goes down to `FOOT`, as the map's blocks drew them. The campus map has the link on its
+floor "1"; its floor "G" has only a "Non Usable Area" under the link's east third (x -24.8 to -19.8)
+and leaves the rest open, so the walk map, made from each building's ground floor, lets a walker
+through there, and OpenStreetMap has a footway through a building passage (x -27.3 to -28.2). Drawn
+down to `FOOT` all along until then, the link was solid stone on that footway: a walker walked into
+it, and the view from behind them filled with its plain face. The 3.6 m is the campus map's storey
+height, where its block for the link starts: nothing measures the underside. On the site the passage
+stands on the 8 m elevation model's ground, 0.1 to 0.5 m over the door's, so 3.1 to 3.5 m stay under
+the link. The LiDAR's ground there is higher, 2.7 to 2.9 m over the door's along the link's back
+edge and 0.8 to 1.8 m on its lawn side: the real passage is lower than the one drawn, and its shape
+is not known.
+
 ## Limits
 
 - What no photograph shows is plain stone wall: the back, the ends, the two blocks at the back and the
-  link. The grey of the roofs behind the pavilions' gables comes from the aerial.
+  link. The grey of the roofs behind the pavilions' gables comes from the aerial. The open ground
+  under the link and its underside, 3.6 m up, come from the campus map's floors and storey height
+  and from OpenStreetMap, not from a photograph or the LiDAR (above).
+- The link ends at x -33, where the Clock Tower's model, which leaves out 105S's nose, stands 0.7 to
+  7.3 m back but for 0.2 m at the link's back corner; the campus map's block for the link runs on to
+  105S's outline. Over open ground, its end shows that gap from below.
 - The east pavilion's gable front is half hidden by the basalt wall in every photograph: the one upper
   and two lower windows that show are as the west pavilion's, and the rest is drawn after it.
 - The windows' glazing patterns (geometric bars, leaded fanlights) are drawn as plain white bars.

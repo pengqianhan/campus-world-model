@@ -101,6 +101,27 @@ export class HttpError extends Error {
   }
 }
 
+/** A failed fetch, as snapshot() throws it; `attempts` when its name was tried at several addresses. */
+export type FetchError = Error & { attempts?: string[] };
+
+/**
+ * The error a failed fetch is thrown as: "<logUrl> -> <name>: <message> (<its cause's message>)", with the
+ * URL as logged wherever it is quoted. A name with several addresses is tried at each in turn, and the
+ * attempts' errors come gathered in an AggregateError with no message of its own: they are given in the
+ * order tried, and kept one by one in `attempts` (scripts/lib/overpass.ts sorts by them).
+ */
+export function fetchError(e: unknown, url: string, logUrl: string): FetchError {
+  const hide = (t: string) => t.replaceAll(url, logUrl);
+  if (!(e instanceof Error)) return new Error(`${logUrl} -> ${hide(String(e))}`);
+  const c = e.cause;
+  if (!(c instanceof Error)) return new Error(`${logUrl} -> ${hide(`${e.name}: ${e.message}`)}`);
+  const attempts = c instanceof AggregateError && Array.isArray(c.errors) && c.errors.length
+    ? c.errors.map((x: unknown) => hide(x instanceof Error ? x.message : String(x)))
+    : undefined;
+  const why = attempts ? [...attempts, ...(c.message ? [hide(c.message)] : [])].join("; ") : hide(c.message);
+  return Object.assign(new Error(`${logUrl} -> ${hide(`${e.name}: ${e.message}`)} (${why})`), attempts ? { attempts } : {});
+}
+
 /** Returns the snapshot bytes, downloading them only if they are not on disk yet. */
 export async function snapshot(opts: FetchOptions): Promise<Buffer> {
   const abs = path.join(RAW_DIR, opts.file);
@@ -124,8 +145,7 @@ export async function snapshot(opts: FetchOptions): Promise<Buffer> {
     buf = res.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0);
   } catch (e) {
     // The error of a failed fetch can quote the URL: give the logged one only.
-    const why = e instanceof Error ? `${e.name}: ${e.message}${e.cause instanceof Error ? ` (${e.cause.message})` : ""}` : String(e);
-    throw new Error(`${logUrl} -> ${why.replaceAll(opts.url, logUrl)}`);
+    throw fetchError(e, opts.url, logUrl);
   }
   if (!res.ok) throw new HttpError(`${logUrl} -> HTTP ${res.status}`, res.status);
   fs.mkdirSync(path.dirname(abs), { recursive: true });
