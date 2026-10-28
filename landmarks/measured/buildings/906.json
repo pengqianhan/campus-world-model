@@ -194,29 +194,6 @@
   {
    "rings": [
     [
-     [442.2, -1491.8],
-     [443.34, -1487.53],
-     [441.28, -1486.88],
-     [440.6, -1486.7],
-     [439.4, -1491.1]
-    ]
-   ],
-   "y0": 15.65,
-   "roof": "mono",
-   "planes": [
-    [-0.0335, -0.1281, 21.328]
-   ],
-   "slope": 7.6,
-   "wall": 19.6,
-   "ridge": 20.2,
-   "overhang": 0.0,
-   "storey": 3.919,
-   "storeys": 5,
-   "m2": 891.2
-  },
-  {
-   "rings": [
-    [
      [461.5, -1510.75],
      [463.5, -1510.75],
      [463.25, -1508.0],
@@ -300,6 +277,10 @@
   {
    "m2": 54.5,
    "why": "roof cells on no smooth plane, or in pieces under 4 m2: drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of the top-view check's share within 0.5 m (not_drawn_m2)"
+  },
+  {
+   "m2": 12.9,
+   "why": "a piece of the outline that only came to a layer as its nearest, where the LiDAR sees no roof cell of that layer: not drawn as a layer (DROP_BARE); the walls under it stand there to their own height"
   }
  ],
  "measured": {
