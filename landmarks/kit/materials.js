@@ -213,12 +213,14 @@ function glassPale(space) {
  * long, each course set half a brick along from the one below, on every wall whatever way it faces.
  * Pale mortar joints, a little brick-to-brick variation, a faint broad unevenness. The joints fade to
  * their average where a course is under about two pixels, so a far wall does not shimmer. Shader hooks
- * only, no textures, so a model that does not use it pays nothing.
+ * only, no textures, so a model that does not use it pays nothing. `lo` and `hi` are the two ends of the
+ * brick-to-brick variation (linear RGB, as GLSL reads them) and `key` names the shader they make: the
+ * defaults are Old Choral Hall's red brick.
  */
-function brick(space) {
+function brick(space, { lo = "0.235, 0.080, 0.036", hi = "0.305, 0.122, 0.056", key = "brick-v1" } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.88 });
   m.userData.metres = 2;
-  return hook(m, "brick-v1", /* glsl */ `
+  return hook(m, key, /* glsl */ `
   {
     vec3 P = vWPos, N = normalize(vWNrm);
     float side = abs(N.x) > abs(N.z) ? P.z : P.x;
@@ -230,7 +232,7 @@ function brick(space) {
     float jx = 1.0 - smoothstep(0.0, 0.043 + ws, min(fract(s), 1.0 - fract(s)) * 2.0);
     float joint = max(jy, jx) * (1.0 - smoothstep(0.35, 0.7, max(wt, ws * 0.37)));
     float b = wh(vec3(row, col, 7.0));
-    vec3 c = mix(vec3(0.235, 0.080, 0.036), vec3(0.305, 0.122, 0.056), b) * (0.94 + 0.12 * wfbm(P * 0.6));
+    vec3 c = mix(vec3(${lo}), vec3(${hi}), b) * (0.94 + 0.12 * wfbm(P * 0.6));
     vec3 mortar = vec3(0.42, 0.38, 0.31);
     float wall = 1.0 - smoothstep(0.55, 0.8, abs(N.y));
     diffuseColor.rgb = mix(c, mix(c, mortar, joint * 0.6), wall);
@@ -279,6 +281,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     roofGreen: roofGreen(0xa4b8a2, space),              // light green corrugated metal (the 2023 aerial)
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
+    // the Kenneth Myers Centre: the brick's shader in a browner, duller brick (its photographs)
+    brickBrown: brick(space, { lo: "0.22, 0.105, 0.058", hi: "0.28, 0.14, 0.08", key: "brick-brown-v1" }),
     render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
     roofGrey: roofPale(0x7a8088, space),                // mid-grey metal roofs (the 2023 aerial: about 110-150 luma)
     // plain walls for a part drawn as the campus map's estimated block, not as seen (Old Choral Hall's rest):
