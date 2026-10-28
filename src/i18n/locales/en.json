@@ -93,6 +93,7 @@
     },
     "fromOsm": "Outline, name and code from OpenStreetMap",
     "fromOsmName": "Outline and name from OpenStreetMap",
+    "fromOsmCampusMap": "Outline from OpenStreetMap; its name is its block code on the school's own campus map",
     "landmark": "Drawn in detail, to sizes measured by LiDAR",
     "landmarkPart": "{part} drawn in detail, to sizes measured by LiDAR; the rest of the building keeps its height estimated from the number of floors",
     "measured": "Heights and roof measured by LiDAR; walls and windows drawn by rule",

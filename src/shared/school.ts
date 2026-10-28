@@ -40,7 +40,8 @@ export type TagTest = Readonly<Record<string, RegExp | null>>;
 /**
  * How the osm-buildings campus adapter (scripts/lib/osm-buildings.ts) picks a school's buildings
  * from the OpenStreetMap snapshots of its areas: a rule written in the source's tags, never a list
- * of elements typed by hand (docs/schools/DESIGN.md, section 10, risk 8).
+ * of elements typed by hand (docs/schools/DESIGN.md, section 10, risk 8). The one exception is a
+ * table read off the school's own campus map (`campusMap`), where the maintainer gives one.
  */
 export interface OsmBuildingRule {
   /**
@@ -59,9 +60,43 @@ export interface OsmBuildingRule {
    * otherwise it goes to the exclusions with the step's reason. A candidate that no step decides is
    * left out too.
    */
-  steps: readonly { when: TagTest; take: boolean; reason: string }[];
+  steps: readonly { when: TagTest; take: boolean; reason: string; map?: boolean }[];
   /** What the OpenStreetMap source line in About says it provides. */
   provides: string;
+  /**
+   * The school's own campus map, where the maintainer has given one to choose the school's
+   * buildings with (Waikato): a table of the OpenStreetMap elements that stand where the map shows
+   * one of the school's blocks. Each row is a candidate, whatever its tags. A step with `map: true`
+   * holds only for a row of the table, and one with `map: false` only for any other candidate.
+   */
+  campusMap?: CampusMapTable;
+}
+
+/** One OpenStreetMap element that stands where the school's campus map shows one of its blocks. */
+export interface CampusMapRow {
+  /** The element, as `${type}/${id}`, e.g. "way/66210760". */
+  osm: string;
+  /** The block's code as the map gives it, e.g. "J" or "TRU". */
+  block: string;
+  /**
+   * How the row was matched. "name": OpenStreetMap's name for the element is the map's name or code
+   * for the block. "place": the element stands where the map draws the block.
+   */
+  by: "name" | "place";
+}
+
+/** The school's campus map and what it decides (OsmBuildingRule.campusMap). */
+export interface CampusMapTable {
+  /** The source line About shows for the map: never a copy of the map, which stays outside the repository. */
+  source: { name: string; url: string; licence: string; received: string; provides: string };
+  /** The elements taken, one row each. */
+  rows: readonly CampusMapRow[];
+  /**
+   * Elements that stand where the map shows the school's buildings but are not taken, each with the
+   * reason that goes to the exclusions. Homes and childcare centres are never listed: they stay
+   * among the surroundings with nothing published about them.
+   */
+  left: readonly { osm: string; reason: string }[];
 }
 
 export interface School {
