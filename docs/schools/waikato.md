@@ -2,7 +2,7 @@
 
 Recon for a possible port, done on 2026-10-25 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Waikato publishes
-without a sign-in, and on what terms. No fetch script and no data file came with it. Since #PR the
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #119 the
 Hamilton campus is on the site in the Buildings form, from OpenStreetMap, with the University's
 buildings chosen by the University's own campus map, which the maintainer gave the project ("On the
 site", below). The rest of this report is the recon as it was done.

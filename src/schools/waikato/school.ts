@@ -103,7 +103,7 @@ const CAMPUS_MAP: CampusMapTable = {
     name: "The University of Waikato, Hamilton campus map (version Q1 2025)",
     url: "https://www.waikato.ac.nz/assets/Uploads/About-us/Our-campuses/Campus-maps/Hamilton-campus-map.pdf",
     licence:
-      "© The University of Waikato. Downloaded by the site's maintainer and used only to choose which of OpenStreetMap's buildings are the University's, and to call those OpenStreetMap leaves unnamed by their block codes. The map is not copied here.",
+      "© The University of Waikato. Its terms of use are on www.waikato.ac.nz, which this project's agents may not read, so they were not read. Downloaded by the site's maintainer and used only to choose which of OpenStreetMap's buildings are the University's, and to call those OpenStreetMap leaves unnamed by their block codes. The map is not copied here.",
     received: "2026-10-28",
     provides: "Which of OpenStreetMap's buildings on the Hamilton campus are the University's, and the block codes of those OpenStreetMap leaves unnamed",
   },
