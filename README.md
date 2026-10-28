@@ -387,17 +387,20 @@ plainly; a glazed case on its street face is measured and not drawn.
 | ![15 Eden Crescent on the map, drawn from code in the map's colours](docs/landmarks/fifteen-eden-crescent-map.jpg) | ![15 Eden Crescent from Eden Crescent, through the walker's eyes](docs/landmarks/fifteen-eden-crescent-eyes.jpg) |
 
 The ninth is the Fisher Building (804), a tan brick tower on Waterloo Quadrant, its higher half a
-shaft over its south-west side. A cream band runs round it at each floor, where the
-LiDAR's wall returns peak every 2.875 m; a slot of windows framed in white runs up the shaft's corner;
-down its north-west side stand balconies with dark louvres; a red tile canopy covers its entrance, and a
-ramp runs to it from the street over a car park. Every height comes from the LiDAR, within 0.15 m. Two
+shaft over its south-west side. A cream band runs round it at each floor, every 2.875 m, as the
+LiDAR's wall returns peak; a slot of windows framed in white runs up the shaft's corner;
+down its west side stand balconies with dark louvres; a red tile canopy covers its entrance, and a
+ramp runs to it from the street over a car park. Its roofs, its parapet, the canopy and the ramp's
+deck are within 0.15 m of the LiDAR's heights, and the floor bands within 0.18 m of where its wall
+returns peak, the two lowest, behind trees, carrying the spacing on (estimated); the ramp's side
+along the street is measured in the photographs, and the balconies' depth is estimated. Two
 Street View panoramas on Waterloo Quadrant see its west and south faces, their cameras set by the
 photographs' own edges against the LiDAR; counted inside the rectangle the model fills on the screen,
 the model's silhouette has an IoU of 0.54 to 0.99 over their eight views, though only one of those
 rectangles holds much sky, and there the model scores a little more than a plain block filling it;
-from above its outline covers the LiDAR's with an IoU of 0.91. Its north-east and east faces, which no
-photograph shows, are drawn plainly, and the lobe of its outline under the trees by its entrance is
-not drawn.
+from above its outline covers the LiDAR's with an IoU of 0.91. Its faces turned north, east and
+south-east, which no photograph shows, are drawn plainly, and the parts of its outline under the trees
+by its entrance, where the LiDAR sees no roof, are not drawn.
 
 | | |
 | --- | --- |
@@ -735,16 +738,22 @@ If you represent the University and would like something changed or removed, ple
   a metre below the building's ground, where the map's ground is lower still. Its panels are drawn
   without their joints, its base's tiles and its two red-brown doors in a dark timber.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
-  and south faces; its north-east and east faces, which no photograph shows, are tan brick with their
-  floor bands, and its roofs are flat. The lobe of block 804's outline under the trees by its
-  entrance, where the LiDAR sees no roof, is not drawn. The car park under its ramp is open, without
+  and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
+  brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
+  entrance, where the LiDAR sees no roof, is not drawn: the lobe on its south-west and the part west
+  and north-west of the tower, round its door, about a third of the block's 13.5% that the model
+  leaves uncovered each. The car park under its ramp is open, without
   its red columns, and the planting along the ramp's top is not drawn; the depth of the balconies down
-  its north-west side is estimated from a photograph.
+  its west side is estimated from a photograph.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the
   map's ground rises 2.75 m from end to end, more than the LiDAR's: its north-west end stands up to
-  1.2 m too deep, and some of its ground-floor windows there are partly under the drawn ground.
+  1.2 m too deep, and some of its ground-floor windows there are partly under the drawn ground. By the
+  Fisher Building the map's ground on Waterloo Quadrant lies about 3 m below the LiDAR's: the side of
+  its ramp, a parapet under a metre high on the pavement, goes down to the drawn street and rises 3.8
+  to 3.9 m from it, and over the car park the ramp stands 2.6 to 4.6 m above the drawn ground, where
+  the LiDAR has it 1.0 to 2.4 m up.
 - **Only learning spaces are named and can be selected.** The rest of a floor is shapes that show the
   campus map's type and nothing more; where the map's type says nothing ("Non Usable Area",
   "Nonasgn Rentable" and the like) the site says "Other area". Floors where people live and

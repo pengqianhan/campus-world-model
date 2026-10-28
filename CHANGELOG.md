@@ -21,12 +21,14 @@ A change to what the site does or shows adds its line here, and the README's
 - **The Fisher Building drawn in detail.** Near the camera the map draws the Fisher Building (804)
   from code in place of its block: a tan brick tower on Waterloo Quadrant, its higher half a shaft
   over its south-west side, a cream band at each floor, a slot of windows framed in
-  white up the shaft's corner, balconies with dark louvres down its north-west side, a red tile canopy
-  over its entrance and the ramp to it from the street. Every height is measured from the LINZ 2024
-  LiDAR, and the slot, the bands, the canopy and the ramp in two Street View photographs of it. On the
+  white up the shaft's corner, balconies with dark louvres down its west side, a red tile canopy
+  over its entrance and the ramp to it from the street. Its roofs, the canopy, the ramp's deck and the
+  floor bands are measured from the LINZ 2024 LiDAR, the lowest two bands carrying the spacing on
+  (estimated); the ramp's side along the street, the slot and the balconies are measured in two Street
+  View photographs of it, and the balconies' depth is estimated. On the
   map it has the map's colours; from a walker's height on a computer with a graphics card, its own tan
-  brick, render, glass and red clay tiles. Its north-east and east faces, which no photograph shows,
-  are drawn plainly. A click still opens its floors (#PR).
+  brick, render, glass and red clay tiles. Its faces turned north, east and south-east, which no
+  photograph shows, are drawn plainly. A click still opens its floors (#PR).
 - **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
   9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
