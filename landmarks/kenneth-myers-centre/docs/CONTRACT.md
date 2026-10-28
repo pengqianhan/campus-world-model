@@ -58,6 +58,12 @@ nothing is traced or sampled from them into the model.
   and sets the camera (`camera_fixes_note`). Through it the east part and the porch agree with the LiDAR
   to 9.5 px; the west part does not (its corner falls at x -8.3, its coping at 7.0 m, where the LiDAR
   has x -16.7 and 10.3 m): that part of the photograph is not measured through the camera.
+- **The LiDAR over the west part is likely temporary works** (`camera_fixes_note`): a third of the
+  returns before it are classed vegetation or unclassified (none before the east part), and both the
+  2023 aerial (pinnacle caps at z 12.9) and the photograph through the camera (pinnacles on that line
+  within 0.1-1.0 m of the aerial's, a level coping at 7.6-7.9 m) put its street face about 3.3 m behind
+  the LiDAR's 16.21 and its coping 2.5 m below the LiDAR's 10.3. The model keeps the LiDAR's west part
+  until the lead decides.
 - Glass towers stand behind the building, so the photographs show little sky round it: the IoU in
   the model's box says little (`sky_in_box`); the luma of the brick and the strips say more.
 - A construction fence, a digger, a truck and a portable toilet stand in front of the east part's foot
