@@ -88,7 +88,7 @@ A change to what the site does or shows adds its line here, and the README's
 - **The Clock Tower East Wing's card says what is estimated.** Its card said every size of the
   model was measured by LiDAR, while the underside of its link toward the Clock Tower stands at the
   campus map's storey height, which nothing measures. The card now says that it is estimated, as
-  About does (#PR).
+  About does (#118).
 
 ## 2026-10-27
 
