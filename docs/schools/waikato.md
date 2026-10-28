@@ -2,11 +2,95 @@
 
 Recon for a possible port, done on 2026-10-25 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Waikato publishes
-without a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data
-file comes with it.
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since #119 the
+Hamilton campus is on the site in the Buildings form, from OpenStreetMap, with the University's
+buildings chosen by the University's own campus map, which the maintainer gave the project ("On the
+site", below). The rest of this report is the recon as it was done.
 
 Path name if the school is added: `/waikato/` ("Decisions" in `PROGRESS.md`: each school's own
 short name; Waikato's web domain is `waikato.ac.nz`). Time zone: Pacific/Auckland.
+
+## On the site (2026-10-28)
+
+On the maintainer's word of 2026-10-27, the loop fetched one Overpass area for each campus that this
+report gives an address for (Hamilton and Tauranga) through `scripts/fetch-osm.ts`, and the terrain
+tiles under them through `scripts/fetch-terrain.ts`. Not part of this step: Hangzhou, a partner's
+campus abroad, outside LINZ's ground. **No request went to any Waikato host**, then or since:
+`www.waikato.ac.nz`'s `robots.txt` closes it to this project's agents. The school's name is this
+report's, "The University of Waikato"; the report gives no name in te reo Māori, so the root page
+gives none.
+
+**How each box was set.** This report gives addresses and no map points, so each box was drawn from
+the address before the fetch, without asking any host, and checked against the snapshot's own
+streets after it.
+
+- **Hamilton** (`central`): "Gate 1, Knighton Road", in Hillcrest. The box was drawn round the
+  campus east of Knighton Road, about 1.2 km on every side of where the campus was expected:
+  `[-37.799, 175.304, -37.777, 175.331]`, 2.4 km east to west and 2.4 km north to south. Knighton
+  Road, Hillcrest Road, Silverdale Road and Ruakura Road run through the snapshot.
+  `osm/context-waikato-hamilton.json`: 5,104,056 bytes, 6,534 elements (4,514 building ways and 12
+  relations); **2 requests**: `overpass-api.de` answered 502, and `overpass.kumi.systems` answered,
+  with an OpenStreetMap base of 2026-06-01 08:52 UTC. The 53 buildings taken lie 528 m (north) to
+  970 m (south) inside the box's edges, and span 675 m east to west and 948 m north to south; the
+  origin, the sun and the weather are at their middle (-37.786, 175.3173).
+- **Tauranga**: "101-121 Durham Street", in the city centre. A box of 1.8 km north to south and
+  1.6 km east to west, `[-37.6935, 176.1565, -37.6775, 176.1745]`; **4 requests**. It held three
+  `building=university` ways by Durham Street with no name and no operator, and no building that
+  OpenStreetMap ties to Waikato. So Tauranga is not on the site (Real or absent): its area was taken out again, and its
+  snapshot and its record were deleted before any commit.
+
+**The ground.** Nine AWS terrain tiles at zoom 14 under the Hamilton box, **9 requests**. Each
+tile's `x-amz-meta-x-imagery-sources` header names one source only, LINZ's model
+(`nzlinz/lds-tile-gl`), so the site's terrain line, the LINZ 8 m elevation model, holds for them.
+
+**Which buildings are Waikato's.** OpenStreetMap ties only one building in the Hamilton box to the
+University by its tags: the Gallagher Academy of Performing Arts (`operator=University of
+Waikato`). The other operator-tagged ones are a bicycle shed with no name and the Orchard Park
+Apartments, a home; the one `building=university` way is the medical school's building site, which
+its name calls a construction site. J Block, the Student Centre, TT Block and the campus's other
+buildings carry names, or nothing, and no tag that says whose they are. So on 2026-10-28 the
+maintainer downloaded the University's Hamilton campus map in their own browser ("Hamilton Campus
+Map Update", one A3 page, version Q1 2025; the address in layer 2 below) and gave it to the loop,
+to decide which of OpenStreetMap's buildings are the University's and to call those OpenStreetMap
+leaves unnamed by the map's block codes. No agent of this project fetched it; it is not in the
+repository, and nothing of it is but block codes and names. The maintainer asked Waikato by email,
+the same day, whether the project may read its pages.
+
+The descriptor (`src/schools/waikato/school.ts`, `CAMPUS_MAP`) holds the result: one row for each
+OpenStreetMap element, with the map's block code and how it was matched, and a comment for every
+judgement. The map is a drawing, turned about 30 degrees from north and not to an even scale. Its
+labelled buildings were tied to OpenStreetMap's named ones, every outline was laid over the drawing
+by a local fit to those points, and each was checked by its shape against the building drawn there.
+
+- **Taken: 53.** 32 by name, where OpenStreetMap's name is the map's name or code for the block (the
+  eleven lettered blocks from C to S, TT, TC, TL, UL1, UL2, ULS, SUB, ITS, LSL, the Gallagher
+  Academy (PA), the Student Centre (M), the management school (MSB), Law (N), the pavilion (PAV)
+  and more). 21 by
+  place, where the outline stands where the map draws the block: 4 keep OpenStreetMap's own name
+  (Facilities Management Division at FM, Hiko hub at TSR, The Cowshed at Nº5D, Pathways College at
+  LAIN), and the 17 that OpenStreetMap leaves unnamed are called by the block code (TRU, EAS, CHSS,
+  TG, TW, CRC, MS8, FC1, FC2, MAR, Shop, and the second outlines of LSL and LAIN). The building
+  card says where such a name comes from. Heights: 1 from `building:levels` (FG Link), 52
+  estimated.
+- **Left out, with their reasons in the data: 27.** 25 that the map draws on the campus: small
+  buildings it gives no code of its own and OpenStreetMap no name (link buildings between the
+  lettered blocks, a shed, the cricket nets), three small buildings under one code CONF, seven
+  small buildings among which it writes LITB and BL, and two buildings beside SUB and FC1 whose
+  code or name cannot be tied to one outline. And 2 tag candidates: the bicycle shed (no name) and
+  the medical school's building site.
+- **Not the University's,** by the map's own names, and so not candidates: NIWA's two buildings,
+  Te Kuuwaha o te Waiora - Health NZ (which OpenStreetMap names NIWA), Landcare Research, St John's
+  College, a kura kaupapa Māori and a kōhanga reo by Gate 10, and the houses the map marks as
+  private property.
+- **Homes and childcare** stay unnamed among the surroundings, and nothing about them is published:
+  the halls of residence (Bryant Hall, College Hall, Orchard Park, the Student Village, the
+  Scotland Place flats), the University's rental houses, the créche, and, since whether people live
+  in them cannot be told, the four small buildings the map marks TTH and the numbered houses by
+  Gates 4a to 4c.
+- **Not drawn:** the blocks the map draws that OpenStreetMap does not have, among them TA, ELT and
+  the MS blocks but MS8.
+
+The map is Hamilton's alone, so it says nothing about Tauranga.
 
 ## Verdicts
 

@@ -262,7 +262,7 @@ export function BuildingView() {
             {b.osm && (
               <small id="building-source">
                 <a href={`https://www.openstreetmap.org/${b.osm}`} target="_blank" rel="noopener noreferrer">
-                  {t(b.ref ? "building.fromOsm" : "building.fromOsmName")}
+                  {t(b.nameSource === "campus-map" ? "building.fromOsmCampusMap" : b.ref ? "building.fromOsm" : "building.fromOsmName")}
                 </a>
               </small>
             )}

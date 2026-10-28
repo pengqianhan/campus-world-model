@@ -92,6 +92,12 @@ export interface Building {
    * also the building's `id`, except where two buildings carry the same code.
    */
   ref?: string;
+  /**
+   * Set when the building's name is not OpenStreetMap's: "campus-map" for a building OpenStreetMap
+   * leaves unnamed, which takes its block code on the school's own campus map ("G Block", "TRU";
+   * `sourceText` is the code as the map gives it). The building card says so.
+   */
+  nameSource?: "campus-map";
   /** Number of published learning spaces in this building. */
   roomCount: number;
   /** Number of shapes in this building's floor-plan file. Absent when there is no file. */
