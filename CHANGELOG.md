@@ -78,6 +78,16 @@ A change to what the site does or shows adds its line here, and the README's
   other buildings of the queue in the LiDAR keep their blocks, every place where people live among
   them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
   (`landmarks/measured/exclusions.json`) (#108).
+- **Measured massings on the Grafton and Newmarket campuses.** Near the camera, 93 Grafton Road (532)
+  on the Grafton campus, and the Ray Meyer Building (901), Building 904, Structures Hall (906) and
+  Building 909 on the Newmarket campus, are drawn from the LINZ 2024 LiDAR in place of their blocks,
+  as the City campus's measured massings are: their layers and roofs measured, their walls, storeys
+  and windows drawn by rule. Four more tiles of the same LiDAR were fetched for them. The other 34
+  buildings of the two campuses keep their blocks, each with its reason: Grafton Hall, Building 523
+  and Te Ako o Te Tui Early Childhood Centre as places where people live and a childcare centre;
+  18 Carrick Place, which stands in another area of the map; the rest because the LiDAR shows too
+  little roof inside their outlines (open ground, car parks, trees, a building under the ground) or
+  because a model fails the check against the LiDAR from above (#120).
 
 ### Changed
 

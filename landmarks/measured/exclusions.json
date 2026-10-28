@@ -1,5 +1,5 @@
 {
- "note": "The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason (landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
+ "note": "The buildings that the generator measures and that keep their blocks, each with its reason (landmarks/MASSING.md): those of the City campus in its eight LiDAR tiles (tier 3, and tiers 1 and 2 until their landmarks come), and every building of the Grafton and Newmarket campuses (their own tiles; massing.py, CAMPUS_TILES). Written by landmarks/pipeline/tools/massing.py; do not edit.",
  "buildings": {
   "106": {
    "name": "George Mason Biology Bldg",
@@ -1682,6 +1682,343 @@
     }
    }
   },
+  "501": {
+   "name": "M&HS Building",
+   "reason": "roof cells cover 58% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 1529.5,
+    "ground": {
+     "p5": 71.52,
+     "p50": 72.06,
+     "p95": 72.21,
+     "zero": 66.99
+    },
+    "roof_inside_m2": 891.5,
+    "cover": 0.583,
+    "vegetation": 0.035,
+    "open_below": 0.096
+   }
+  },
+  "501C": {
+   "name": "Building 501C",
+   "reason": "roof cells cover 56% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 1282.0,
+    "ground": {
+     "p5": 67.03,
+     "p50": 68.17,
+     "p95": 68.38,
+     "zero": 66.89
+    },
+    "roof_inside_m2": 720.8,
+    "cover": 0.562,
+    "vegetation": 0.296,
+    "open_below": 0.039
+   }
+  },
+  "502": {
+   "name": "M&HS Building",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 95% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2115.5,
+    "ground": {
+     "p5": 68.19,
+     "p50": 69.87,
+     "p95": 72.15,
+     "zero": 68.22
+    },
+    "roof_inside_m2": 1859.5,
+    "cover": 0.879,
+    "vegetation": 0.056,
+    "open_below": 0.048,
+    "not_drawn_m2": 88.2,
+    "check": {
+     "iou": 0.858,
+     "lidar_m2": 1923.8,
+     "model_m2": 2120.0,
+     "within_0.5m": 0.95,
+     "model_minus_lidar_m": {
+      "p10": -0.07,
+      "p50": -0.01,
+      "p90": 0.05
+     },
+     "highest_m": {
+      "model": 38.21,
+      "lidar": 38.45
+     }
+    }
+   }
+  },
+  "503": {
+   "name": "M&HS Building",
+   "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1945.1,
+    "ground": {
+     "p5": 71.92,
+     "p50": 72.1,
+     "p95": 72.21,
+     "zero": 71.99
+    },
+    "roof_inside_m2": 1681.5,
+    "cover": 0.865,
+    "vegetation": 0.029,
+    "open_below": 0.06,
+    "not_drawn_m2": 33.2,
+    "check": {
+     "iou": 0.854,
+     "lidar_m2": 1724.2,
+     "model_m2": 1945.0,
+     "within_0.5m": 0.943,
+     "model_minus_lidar_m": {
+      "p10": -0.19,
+      "p50": 0.0,
+      "p90": 0.2
+     },
+     "highest_m": {
+      "model": 31.59,
+      "lidar": 35.25
+     }
+    }
+   }
+  },
+  "504": {
+   "name": "M&HS Building",
+   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1132.3,
+    "ground": {
+     "p5": 67.89,
+     "p50": 68.28,
+     "p95": 68.73,
+     "zero": 67.9
+    },
+    "roof_inside_m2": 1039.0,
+    "cover": 0.918,
+    "vegetation": 0.069,
+    "open_below": 0.046,
+    "not_drawn_m2": 49.2,
+    "check": {
+     "iou": 0.87,
+     "lidar_m2": 1125.2,
+     "model_m2": 1149.0,
+     "within_0.5m": 0.907,
+     "model_minus_lidar_m": {
+      "p10": -0.16,
+      "p50": 0.0,
+      "p90": 0.18
+     },
+     "highest_m": {
+      "model": 33.64,
+      "lidar": 33.62
+     }
+    }
+   }
+  },
+  "505": {
+   "name": "M&HS Building",
+   "reason": "roof cells cover 81% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 3515.3,
+    "ground": {
+     "p5": 68.81,
+     "p50": 72.11,
+     "p95": 73.25,
+     "zero": 68.7
+    },
+    "roof_inside_m2": 2862.2,
+    "cover": 0.814,
+    "vegetation": 0.063,
+    "open_below": 0.065
+   }
+  },
+  "507": {
+   "name": "M&HS Building",
+   "reason": "top-view check: footprint IoU 0.877 (limit 0.9), 96% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 3583.0,
+    "ground": {
+     "p5": 62.18,
+     "p50": 68.01,
+     "p95": 68.82,
+     "zero": 60.84
+    },
+    "roof_inside_m2": 3221.8,
+    "cover": 0.899,
+    "vegetation": 0.025,
+    "open_below": 0.174,
+    "not_drawn_m2": 4.2,
+    "check": {
+     "iou": 0.877,
+     "lidar_m2": 3479.2,
+     "model_m2": 3609.8,
+     "within_0.5m": 0.956,
+     "model_minus_lidar_m": {
+      "p10": -0.21,
+      "p50": -0.0,
+      "p90": 0.1
+     },
+     "highest_m": {
+      "model": 27.96,
+      "lidar": 28.14
+     }
+    }
+   }
+  },
+  "509": {
+   "name": "9 Glasgow Terrace",
+   "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 141.0,
+    "ground": {
+     "p5": 69.1,
+     "p50": 69.93,
+     "p95": 70.92,
+     "zero": 68.85
+    },
+    "roof_inside_m2": 129.8,
+    "cover": 0.92,
+    "vegetation": 0.016,
+    "open_below": 0.145,
+    "not_drawn_m2": 19.0,
+    "check": {
+     "iou": 0.828,
+     "lidar_m2": 156.5,
+     "model_m2": 156.5,
+     "within_0.5m": 0.852,
+     "model_minus_lidar_m": {
+      "p10": -0.18,
+      "p50": 0.02,
+      "p90": 0.42
+     },
+     "highest_m": {
+      "model": 8.84,
+      "lidar": 10.2
+     }
+    }
+   }
+  },
+  "511": {
+   "name": "Te Ako o Te Tui Early Childhood Centre",
+   "reason": "decision 6, a childcare centre: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 928.7,
+    "ground": {
+     "p5": 67.17,
+     "p50": 68.54,
+     "p95": 69.8,
+     "zero": 68.35
+    },
+    "roof_inside_m2": 660.8,
+    "cover": 0.713,
+    "vegetation": 0.087,
+    "open_below": 0.216
+   }
+  },
+  "523": {
+   "name": "Building 523",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 196.3,
+    "ground": {
+     "p5": 67.69,
+     "p50": 68.66,
+     "p95": 70.32,
+     "zero": 67.75
+    },
+    "roof_inside_m2": 181.8,
+    "cover": 0.925,
+    "vegetation": 0.107,
+    "open_below": 0.143,
+    "not_drawn_m2": 4.5,
+    "check": {
+     "iou": 0.807,
+     "lidar_m2": 215.8,
+     "model_m2": 199.0,
+     "within_0.5m": 0.986,
+     "model_minus_lidar_m": {
+      "p10": -0.05,
+      "p50": -0.0,
+      "p90": 0.05
+     },
+     "highest_m": {
+      "model": 7.15,
+      "lidar": 9.23
+     }
+    }
+   }
+  },
+  "528": {
+   "name": "8 Park Avenue",
+   "reason": "roof cells cover 77% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 245.7,
+    "ground": {
+     "p5": 67.97,
+     "p50": 68.26,
+     "p95": 68.52,
+     "zero": 67.96
+    },
+    "roof_inside_m2": 188.2,
+    "cover": 0.766,
+    "vegetation": 0.12,
+    "open_below": 0.207
+   }
+  },
+  "529": {
+   "name": "2-6 Park Ave",
+   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1364.7,
+    "ground": {
+     "p5": 68.17,
+     "p50": 68.62,
+     "p95": 69.05,
+     "zero": 68.26
+    },
+    "roof_inside_m2": 1276.5,
+    "cover": 0.935,
+    "vegetation": 0.09,
+    "open_below": 0.119,
+    "not_drawn_m2": 17.0,
+    "check": {
+     "iou": 0.92,
+     "lidar_m2": 1350.0,
+     "model_m2": 1403.0,
+     "within_0.5m": 0.864,
+     "model_minus_lidar_m": {
+      "p10": -0.42,
+      "p50": -0.01,
+      "p90": 0.22
+     },
+     "highest_m": {
+      "model": 17.89,
+      "lidar": 18.92
+     }
+    }
+   }
+  },
+  "581": {
+   "name": "18 Carrick Place",
+   "reason": "it stands in another area of the map (carrick-place), which the campus's LiDAR tiles do not reach"
+  },
+  "595": {
+   "name": "Med School Hospital Underpass",
+   "reason": "roof cells cover 4% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 153.4,
+    "ground": {
+     "p5": 69.94,
+     "p50": 70.49,
+     "p95": 73.91,
+     "zero": 69.94
+    },
+    "roof_inside_m2": 5.8,
+    "cover": 0.037,
+    "vegetation": 0.347,
+    "open_below": 0.5
+   }
+  },
   "614": {
    "name": "O'Rorke Hall",
    "reason": "decision 6, a place where people live: kept until the maintainer decides",
@@ -1782,37 +2119,173 @@
     "open_below": 0.101
    }
   },
-  "802": {
-   "name": "15 Eden Crescent",
-   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 39% of cells within 0.5 m (limit 90%)",
+  "621": {
+   "name": "Grafton Hall Residences",
+   "reason": "decision 6, a place where people live (Grafton Hall Residences by its name, though its floors are marked unmapped): kept until the maintainer decides",
    "measured": {
-    "outline_m2": 886.0,
+    "outline_m2": 112.8,
     "ground": {
-     "p5": 16.12,
-     "p50": 16.41,
-     "p95": 17.33,
-     "zero": 16.24
+     "p5": 79.34,
+     "p50": 82.44,
+     "p95": 83.11,
+     "zero": 80.54
     },
-    "roof_inside_m2": 882.5,
-    "cover": 0.997,
-    "vegetation": 0.0,
-    "open_below": 0.012,
-    "not_drawn_m2": 36.8,
+    "roof_inside_m2": 93.8,
+    "cover": 0.828,
+    "vegetation": 0.108,
+    "open_below": 0.349
+   }
+  },
+  "623": {
+   "name": "38 Seafield View Road",
+   "reason": "roof cells cover 76% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 241.4,
+    "ground": {
+     "p5": 71.73,
+     "p50": 73.24,
+     "p95": 75.29,
+     "zero": 71.62
+    },
+    "roof_inside_m2": 185.2,
+    "cover": 0.765,
+    "vegetation": 0.01,
+    "open_below": 0.061
+   }
+  },
+  "628": {
+   "name": "Geothermal House",
+   "reason": "roof cells cover 81% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 134.1,
+    "ground": {
+     "p5": 69.18,
+     "p50": 70.07,
+     "p95": 70.5,
+     "zero": 69.28
+    },
+    "roof_inside_m2": 107.2,
+    "cover": 0.812,
+    "vegetation": 0.176,
+    "open_below": 0.341
+   }
+  },
+  "629": {
+   "name": "French House",
+   "reason": "roof cells cover 75% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 180.5,
+    "ground": {
+     "p5": 68.22,
+     "p50": 70.36,
+     "p95": 70.78,
+     "zero": 68.75
+    },
+    "roof_inside_m2": 135.0,
+    "cover": 0.752,
+    "vegetation": 0.065,
+    "open_below": 0.241
+   }
+  },
+  "632": {
+   "name": "Carlton Pines",
+   "reason": "top-view check: footprint IoU 0.867 (limit 0.9), 37% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 356.7,
+    "ground": {
+     "p5": 77.68,
+     "p50": 80.06,
+     "p95": 81.2,
+     "zero": 78.77
+    },
+    "roof_inside_m2": 348.0,
+    "cover": 0.976,
+    "vegetation": 0.053,
+    "open_below": 0.114,
+    "not_drawn_m2": 33.5,
     "check": {
-     "iou": 0.958,
-     "lidar_m2": 983.0,
-     "model_m2": 951.5,
-     "within_0.5m": 0.391,
+     "iou": 0.867,
+     "lidar_m2": 400.5,
+     "model_m2": 362.2,
+     "within_0.5m": 0.366,
      "model_minus_lidar_m": {
-      "p10": -3.15,
-      "p50": -0.89,
-      "p90": 0.02
+      "p10": -4.09,
+      "p50": -1.28,
+      "p90": 0.07
      },
      "highest_m": {
-      "model": 12.78,
-      "lidar": 14.33
+      "model": 14.88,
+      "lidar": 20.74
      }
     }
+   }
+  },
+  "643": {
+   "name": "Grafton Hall Block A",
+   "reason": "decision 6, a place where people live (a block of Grafton Hall, the hall of residence whose blocks B and C, 644 and 645, have residential floors and whose reception in 645 is an Accommodation Reception on the campus map), though its own floors are marked unmapped: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 599.3,
+    "ground": {
+     "p5": 70.62,
+     "p50": 71.54,
+     "p95": 72.51,
+     "zero": 71.27
+    },
+    "roof_inside_m2": 163.0,
+    "cover": 0.272,
+    "vegetation": 0.252,
+    "open_below": 0.254
+   }
+  },
+  "644": {
+   "name": "Grafton Hall Block B",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 1028.2,
+    "ground": {
+     "p5": 72.67,
+     "p50": 76.89,
+     "p95": 82.87,
+     "zero": 72.58
+    },
+    "roof_inside_m2": 906.0,
+    "cover": 0.882,
+    "vegetation": 0.155,
+    "open_below": 0.191
+   }
+  },
+  "645": {
+   "name": "Grafton Hall Block C",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 1284.2,
+    "ground": {
+     "p5": 72.12,
+     "p50": 74.24,
+     "p95": 75.07,
+     "zero": 71.61
+    },
+    "roof_inside_m2": 1143.5,
+    "cover": 0.889,
+    "vegetation": 0.174,
+    "open_below": 0.134
+   }
+  },
+  "646": {
+   "name": "Grafton Hall Site + Bike Sheds",
+   "reason": "decision 6, a place where people live: kept until the maintainer decides",
+   "measured": {
+    "outline_m2": 91.7,
+    "ground": {
+     "p5": 74.11,
+     "p50": 75.85,
+     "p95": 79.2,
+     "zero": 74.15
+    },
+    "roof_inside_m2": 20.5,
+    "cover": 0.222,
+    "vegetation": 0.0,
+    "open_below": 0.533
    }
   },
   "803": {
@@ -2147,6 +2620,289 @@
     "cover": 0.724,
     "vegetation": 0.146,
     "open_below": 0.217
+   }
+  },
+  "902": {
+   "name": "Building 902",
+   "reason": "top-view check: footprint IoU 0.972 (limit 0.9), 79% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2638.3,
+    "ground": {
+     "p5": 52.43,
+     "p50": 54.57,
+     "p95": 59.53,
+     "zero": 51.65
+    },
+    "roof_inside_m2": 2633.5,
+    "cover": 0.998,
+    "vegetation": 0.003,
+    "open_below": 0.053,
+    "not_drawn_m2": 24.8,
+    "check": {
+     "iou": 0.972,
+     "lidar_m2": 2719.5,
+     "model_m2": 2675.2,
+     "within_0.5m": 0.793,
+     "model_minus_lidar_m": {
+      "p10": -0.64,
+      "p50": -0.03,
+      "p90": 0.41
+     },
+     "highest_m": {
+      "model": 26.75,
+      "lidar": 26.74
+     }
+    }
+   }
+  },
+  "903": {
+   "name": "Building 903",
+   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 2635.5,
+    "ground": {
+     "p5": 52.05,
+     "p50": 52.35,
+     "p95": 52.79,
+     "zero": 51.87
+    },
+    "roof_inside_m2": 2560.5,
+    "cover": 0.971,
+    "vegetation": 0.004,
+    "open_below": 0.07,
+    "not_drawn_m2": 16.8,
+    "check": {
+     "iou": 0.958,
+     "lidar_m2": 2617.8,
+     "model_m2": 2636.2,
+     "within_0.5m": 0.855,
+     "model_minus_lidar_m": {
+      "p10": -0.48,
+      "p50": 0.01,
+      "p90": 0.43
+     },
+     "highest_m": {
+      "model": 19.35,
+      "lidar": 20.62
+     }
+    }
+   }
+  },
+  "907": {
+   "name": "Building 907",
+   "reason": "top-view check: footprint IoU 0.859 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 1623.6,
+    "ground": {
+     "p5": 52.22,
+     "p50": 53.2,
+     "p95": 53.68,
+     "zero": 52.15
+    },
+    "roof_inside_m2": 1449.0,
+    "cover": 0.893,
+    "vegetation": 0.007,
+    "open_below": 0.047,
+    "not_drawn_m2": 6.5,
+    "check": {
+     "iou": 0.859,
+     "lidar_m2": 1517.2,
+     "model_m2": 1622.0,
+     "within_0.5m": 0.763,
+     "model_minus_lidar_m": {
+      "p10": -0.19,
+      "p50": 0.05,
+      "p90": 0.67
+     },
+     "highest_m": {
+      "model": 12.16,
+      "lidar": 12.6
+     }
+    }
+   }
+  },
+  "908": {
+   "name": "Building 908",
+   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 455.1,
+    "ground": {
+     "p5": 54.37,
+     "p50": 58.32,
+     "p95": 59.59,
+     "zero": 54.52
+    },
+    "roof_inside_m2": 440.0,
+    "cover": 0.968,
+    "vegetation": 0.018,
+    "open_below": 0.066,
+    "not_drawn_m2": 33.5,
+    "check": {
+     "iou": 0.89,
+     "lidar_m2": 482.8,
+     "model_m2": 454.8,
+     "within_0.5m": 0.764,
+     "model_minus_lidar_m": {
+      "p10": -1.51,
+      "p50": -0.02,
+      "p90": 0.05
+     },
+     "highest_m": {
+      "model": 10.32,
+      "lidar": 12.7
+     }
+    }
+   }
+  },
+  "910": {
+   "name": "Building 910",
+   "reason": "top-view check: footprint IoU 0.881 (limit 0.9), 100% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 74.3,
+    "ground": {
+     "p5": 54.44,
+     "p50": 54.67,
+     "p95": 55.33,
+     "zero": 54.7
+    },
+    "roof_inside_m2": 72.2,
+    "cover": 0.973,
+    "vegetation": 0.01,
+    "open_below": 0.302,
+    "not_drawn_m2": 0.0,
+    "check": {
+     "iou": 0.881,
+     "lidar_m2": 87.0,
+     "model_m2": 78.5,
+     "within_0.5m": 1.0,
+     "model_minus_lidar_m": {
+      "p10": -0.03,
+      "p50": 0.0,
+      "p90": 0.03
+     },
+     "highest_m": {
+      "model": 4.29,
+      "lidar": 4.42
+     }
+    }
+   }
+  },
+  "911": {
+   "name": "Building 911",
+   "reason": "top-view check: footprint IoU 0.869 (limit 0.9), 98% of cells within 0.5 m (limit 90%)",
+   "measured": {
+    "outline_m2": 282.1,
+    "ground": {
+     "p5": 52.07,
+     "p50": 53.3,
+     "p95": 55.02,
+     "zero": 52.12
+    },
+    "roof_inside_m2": 281.8,
+    "cover": 0.998,
+    "vegetation": 0.003,
+    "open_below": 0.125,
+    "not_drawn_m2": 4.0,
+    "check": {
+     "iou": 0.869,
+     "lidar_m2": 332.8,
+     "model_m2": 289.0,
+     "within_0.5m": 0.976,
+     "model_minus_lidar_m": {
+      "p10": -0.11,
+      "p50": -0.01,
+      "p90": 0.08
+     },
+     "highest_m": {
+      "model": 11.52,
+      "lidar": 13.18
+     }
+    }
+   }
+  },
+  "913": {
+   "name": "Larder Cafe",
+   "reason": "roof cells cover 0% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 62.0,
+    "ground": {
+     "p5": 50.95,
+     "p50": 52.28,
+     "p95": 52.4,
+     "zero": 51.71
+    },
+    "roof_inside_m2": 0.0,
+    "cover": 0.0,
+    "vegetation": 0.409,
+    "open_below": 0.0
+   }
+  },
+  "P9A": {
+   "name": "P9A - Newmarket Carpark",
+   "reason": "roof cells cover 0% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 1894.6,
+    "ground": {
+     "p5": 64.26,
+     "p50": 67.99,
+     "p95": 71.16,
+     "zero": 63.86
+    },
+    "roof_inside_m2": 0.0,
+    "cover": 0.0,
+    "vegetation": 0.061,
+    "open_below": 0.0
+   }
+  },
+  "P9B": {
+   "name": "P9B - Newmarket Carpark",
+   "reason": "roof cells cover 0% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 2710.3,
+    "ground": {
+     "p5": 57.77,
+     "p50": 61.52,
+     "p95": 63.77,
+     "zero": 57.88
+    },
+    "roof_inside_m2": 0.0,
+    "cover": 0.0,
+    "vegetation": 0.052,
+    "open_below": 0.0
+   }
+  },
+  "P9C": {
+   "name": "P9C - Newmarket Carpark",
+   "reason": "roof cells cover 0% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 113.4,
+    "ground": {
+     "p5": 53.39,
+     "p50": 54.36,
+     "p95": 55.33,
+     "zero": 53.56
+    },
+    "roof_inside_m2": 0.0,
+    "cover": 0.0,
+    "vegetation": 0.261,
+    "open_below": 0.0
+   }
+  },
+  "P9C_2": {
+   "name": "P9C - Newmarket Carpark",
+   "reason": "roof cells cover 0% of the outline (limit 85%)",
+   "measured": {
+    "outline_m2": 31.9,
+    "ground": {
+     "p5": 51.46,
+     "p50": 54.26,
+     "p95": 54.52,
+     "zero": 51.51
+    },
+    "roof_inside_m2": 0.0,
+    "cover": 0.0,
+    "vegetation": 0.008,
+    "open_below": 0.0
    }
   }
  }

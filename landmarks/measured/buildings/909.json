@@ -1,0 +1,74 @@
+{
+ "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model stands on the map's ground (place.door).",
+ "place": {
+  "building": "909",
+  "centre": [324.2, -1561.9],
+  "door": [335.1, -1560.1]
+ },
+ "lidar": "Auckland Part 1 LiDAR point cloud (2024), tiles 3904, 3905",
+ "ground": {
+  "p5": 54.63,
+  "p50": 56.57,
+  "p95": 57.69,
+  "zero": 54.77
+ },
+ "levels": 1,
+ "layers": [
+  {
+   "rings": [
+    [
+     [332.8, -1568.7],
+     [335.1, -1560.1],
+     [315.6, -1555.0],
+     [313.3, -1563.6],
+     [323.6, -1566.3]
+    ]
+   ],
+   "y0": -1.0,
+   "roof": "flat",
+   "eave": 6.57,
+   "wall": 6.27,
+   "ridge": 6.57,
+   "overhang": 0.91,
+   "storey": 4.5,
+   "storeys": 1,
+   "m2": 159.5,
+   "eaves": [
+    0.0,
+    0.21,
+    0.91,
+    0.38,
+    0.4
+   ]
+  }
+ ],
+ "dropped": [
+  {
+   "m2": 24.2,
+   "why": "roof cells on no smooth plane, or in pieces under 4 m2: drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of the top-view check's share within 0.5 m (not_drawn_m2)"
+  }
+ ],
+ "measured": {
+  "outline_m2": 179.5,
+  "roof_inside_m2": 177.2,
+  "cover": 0.986,
+  "vegetation": 0.026,
+  "open_below": 0.036,
+  "not_drawn_m2": 1.5
+ },
+ "check": {
+  "iou": 0.936,
+  "lidar_m2": 206.8,
+  "model_m2": 200.8,
+  "within_0.5m": 0.923,
+  "model_minus_lidar_m": {
+   "p10": -0.3,
+   "p50": -0.02,
+   "p90": 0.16
+  },
+  "highest_m": {
+   "model": 6.57,
+   "lidar": 9.26
+  }
+ }
+}

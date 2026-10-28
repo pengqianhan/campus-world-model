@@ -25,11 +25,14 @@ the generator makes.
 
 ### Input
 
-- **The LiDAR tiles** that the landmark pipeline already uses: Auckland Part 1 (2024),
-  `CL2_BA32_2024_1000_{3603..3606, 3703..3706}`, fetched once through `scripts/lib/snapshot.ts`
-  into `data/raw/landmarks/lidar/` (see `landmarks/README.md`, "Fetching", once PR #67 is
-  merged). They cover local x -759 to 1161 m and y -692 to 748 m: the whole City campus.
-  The generator reads them from disk. It fetches nothing.
+- **The LiDAR tiles** of Auckland Part 1 (2024), each campus's own (`CAMPUS_TILES` in
+  `massing.py`), fetched once through `scripts/lib/snapshot.ts` into `data/raw/landmarks/lidar/`
+  (see `landmarks/README.md`, "Fetching"). The City campus's are the eight that the landmark
+  pipeline already uses, `CL2_BA32_2024_1000_{3603..3606, 3703..3706}`; they cover local x -759 to
+  1161 m and y -692 to 748 m, the whole City campus. Grafton's are 3704, 3803 and 3804, and
+  Newmarket's 3904 and 3905 (see "The third round"). The generator reads them from disk. It fetches
+  nothing, unless it is given `--fetch`: then it first fetches the campus's tiles that are not on
+  disk, through the same path.
 - **The building's outline** from `public/data/uoa/campus.json`, taken from the map's frame to local
   NZTM metres (`map_to_local` in `pipeline/tools/data/common.py`). The outline chooses the points:
   building points (class 6) inside it, or within 1 m of it for the eaves.
@@ -205,7 +208,9 @@ Decisions in `PROGRESS.md` that a measured massing touches:
    not.
 6. **"All network fetching goes through `scripts/lib/snapshot.ts`".** The City campus needs no new
    fetch: its eight tiles are on disk. Grafton, Newmarket and the other campuses need more tiles of
-   the same LiDAR, which is a fetch the pipeline has not asked for before (a gate). Tai Tokerau
+   the same LiDAR, which is a fetch the pipeline has not asked for before (a gate). The maintainer
+   allowed it for Grafton and Newmarket on 2026-10-27 and 2026-10-28: four tiles came through
+   `snapshot.ts` (see "The third round"). Tai Tokerau
    needs the Northland LiDAR, which is a new data source with its own licensor (a gate).
 
 Not touched: the walker's paths keep the blocks (`src/shared/walkmap.ts` takes each building's
@@ -281,6 +286,13 @@ entries in `exclusions.json`.
   `unmapped`, not `residential`. Its block is 3.6 m tall, and the LiDAR shows a tower about 47 m
   tall there. The generator would make the largest change of all to it, so it also stays a block
   until decision 6.
+  **Grafton Hall** (the Grafton campus, since the third round): 644, 645 and 646 have residential
+  floors, and so has Building 523. 621 Grafton Hall Residences, by its name, and 643 Grafton Hall
+  Block A, a block of the same hall, have their floors marked `unmapped`; they keep their blocks by
+  hand, as 434 and 450 do. 511 Te Ako o Te Tui Early Childhood Centre is a childcare centre. The
+  houses near the hall that neither source calls a place where people live (623, 628, 629, 632; the
+  campus map marks their floors `unmapped`, OpenStreetMap tags 623, 629 and 632 `building=university`)
+  are measured as any other building; none of them passes the limits.
 - **Waipapa Marae (251 to 256) and Fale Pasifika (275).** They are culturally significant. The
   generator gives them massing only: blocks and roof forms at measured heights, in the map's own
   colours. It never draws carvings, patterns, or colours of their own, and nobody adds them later
@@ -395,6 +407,128 @@ Building (72%) and 422 Architecture Acoustics Laboratory (60%) have outlines on 
 take in open ground, which the LiDAR sees in 11%, 19% and 26% of their cells. No roof among them is
 hidden by glass alone (122 Glasshouses lies under tree crowns too), and none has crowns classed as
 building over it.
+
+### The third round (2026-10-28): Grafton and Newmarket
+
+The maintainer's goal of 2026-10-28 is every building of the City, Grafton and Newmarket campuses
+drawn at least as a measured massing. `massing.py --campus grafton` and `--campus newmarket` measure
+every building of those campuses by the same steps, limits and decisions as on the City campus (no
+tiers there: no landmark is planned for them yet). They need four more tiles of the same LiDAR, the
+1:1000 tiles of sheet BA32 that cover each outline with the 12 m the generator crops round it:
+3803 and 3804 for Grafton, with 3704 that the City campus already uses (93 Grafton Road reaches
+into it), and 3904 and 3905 for Newmarket. `--fetch` fetched them once through `snapshot.ts` on
+2026-10-28 (122.9 MB; `data/sources.json`). A City run without options writes the City campus's
+files byte for byte as before.
+
+Five pass the top-view check and are drawn:
+
+| Building | Footprint IoU | Cells within 0.5 m | Layers | Block today |
+| --- | --- | --- | --- | --- |
+| 532 93 Grafton Road | 0.966 | 99.3% | 3 flat, 16.5 to 18.1 m | 21.6 m |
+| 901 Ray Meyer Building | 0.965 | 97.9% | a gable (15.6 to 18.1 m) and a flat roof (17.4 m) | 14.4 m |
+| 904 Building 904 | 0.977 | 99.2% | a gable (7.1 to 9.7 m) and a flat strip (16.8 m) | 10.8 m |
+| 906 Structures Hall | 0.914 | 99.6% | a flat roof (15.7 m) and five mono-pitches (18.2 to 25.1 m) | 18.0 m |
+| 909 Building 909 | 0.936 | 92.3% | flat, 6.6 m | 3.6 m |
+
+**Pieces with no roof in the LiDAR (906; the review of #120).** Every cell of an outline goes to its
+nearest layer, and each layer's cells are traced into rings. 906's outline has a lobe of 13.1 m² at
+its north-west corner, joined to the rest at one point, (443.7, -1486.2). The LiDAR sees no roof in
+it: 79 points of class 1 at 0.1 to 2.4 m over 906's ground.zero and 49 of class 2, no building point
+(tile 3905). The
+lobe came to the mono-pitch next to it as its nearest layer, and was traced and drawn as a piece of
+that layer of its own, a 12.9 m² column up to 20.2 m. Since this review the generator draws no such
+piece: a traced piece of a layer in which the LiDAR sees no roof cell of that layer is left out
+(`DROP_BARE`), and the data file lists it under `dropped`. Of all the pieces the generator traces
+on the three campuses, seven have no roof cell in the LiDAR, in five buildings: 906's lobe, two
+pieces of 402, two of 405, one of 436 and one of 820; those four keep their blocks. The rule is on
+for Grafton and Newmarket. On the City campus it would change no data file and no
+reason, only 405's model area in its top view (3863.5 to 3863.2 m²); the City's files are kept byte
+for byte, so it is off there until the maintainer says (`--drop-bare` turns it on for a run). 906's numbers do not change (footprint IoU 0.914, 99.6%
+within 0.5 m), as its lowest layer still stands on the whole outline: the lobe now stands at that
+layer's height, 15.65 m, where the LiDAR sees nothing over 2.4 m and the campus map has the lobe
+on floor 1 only (the block drew one storey there).
+
+**Roofless cells under an upper layer (pre-existing since the second round, #108; the second review
+of #120).** The rule above leaves out only a piece with no roof cell at all. A cell of the outline
+with no roof in the LiDAR still goes to its nearest layer, and where that layer's traced piece has
+roof cells too, the cell stands at that layer's roof. 906 has 22.5 m² of outline cells with no roof
+(0.5 m cells): 13.5 m² stand at the lowest layer's 15.65 m (12.75 m² of them the lobe), and 9.0 m²
+under its mono-pitches, 1.0 m² at 18.25 to 18.46 m and 8.0 m² at 19.52 to 20.76 m. 7.75 m² of these
+are a strip about 1 m wide along its north-west edge (x 444.25 to 447.25, y -1496.75 to -1487.75),
+where tile 3905 has 35 points of class 1 at 3.5 to 6.1 m and 2 of class 18, and no point of classes
+2 to 6; the block drew one storey there. The other massings do the same, the City's on the site
+since #79 or #108 and 904 new here (roofless cells under an upper layer, of all their roofless
+cells): 240 12.5 of
+12.5 m², 435 8.25 of 9.0, 619 9.5 of 9.75, 433 14.75 of 30.75, 305 10.0 of 28.5 (at 14.39 to
+23.05 m, over a lowest layer at 8.1 m), 103 1.25 of 1.25, 904 5.0 of 25.25 and 409 2.0 of 33.5;
+113, 114, 532, 901 and 909 have none. In all, 72.25 of the fourteen's 191.0 m² of roofless cells
+stand under an upper layer, and the rest at the lowest layer's height. Decision 3 lets a massing
+stand on an outline whose roof cells cover 85% of it or more; it does not say at which height the
+other cells stand. Whether they should stand at the lowest layer's height (or keep the block's)
+instead of their nearest layer's is for the maintainer: it would change the City's massings too.
+(906 and 305 counted for this pull request with a copy of the generator that keeps its masks; the
+others are the review's count, which two reviewers made with scripts of their own.)
+
+**904's strip and overlapping outlines.** 904's outline on the campus map overlaps 903's by
+220.4 m² and 902's by 71.6 m² along its south side (rasterised on a 0.05 m grid). 904's second
+layer is a flat strip at 16.8 m over 321.0 m² (its data file's `m2`, 313.0, counts the LiDAR's cells
+of the layer): 217.1 m² of it lies in 903's outline, where the LiDAR's building points stand at
+16.70 m (the median over 904's ground.zero), 71.6 m² in 902's, at 16.82 m, and 32.3 m² in 904's
+outline alone. The roofs of 903 and 902 outside 904 stand at 17.31 m and 17.26 m, and 904's own
+gable at 7.1 to 9.7 m: the strip is the edge of their roofs, not 904's. Both keep their blocks
+(below the top-view limits), which the site draws to 14.4 m there (902's upper floors do not reach
+its overlap with 904), so on the map the strip stands above both blocks, with the ragged edge of a
+layer traced from the LiDAR (the near shot over Newmarket shows it). The same happens on the City
+campus since the second round: 305's layer 3 (a mono-pitch at 18.9 to 19.3 m) lies mostly in 303's
+outline (18.2 of 21.7 m²), and its layer 4 (flat, 23.05 m) partly (28.0 of 63.2 m², and 0.9 m² in
+301's); its layers 1 and 2 cross into 301's, 303's and 303S's outlines by slivers along shared walls
+(layer 1: 1.2 m² in 301's, 0.15 m² in 303's; layer 2: 0.8 m² in 303's, 0.7 m² in 303S's). No other
+layer above the lowest of the fourteen lies in another building's outline; 901's outline overlaps
+902's by 16.3 m², where only its lowest layer stands. Whether a layer may stand in a
+neighbour's outline is for the maintainer: keep these strips; or keep 904's block; or have the
+generator leave the neighbours' outlines out of the layers above the lowest, which would change
+305 on the City campus too.
+
+The other 34 keep their blocks, each in `exclusions.json` with its reason:
+
+- **By decision 6** (seven): Grafton Hall's 644, 645 and 646 and Building 523 by their residential
+  floors; by hand 621 Grafton Hall Residences, by its name, and 643 Grafton Hall Block A, a block of
+  the same hall (the campus map shows its Accommodation Reception in 645), though the campus map
+  marks their floors unmapped; and 511 Te Ako o Te Tui Early Childhood Centre, a childcare centre.
+  None of the seven would pass the limits (523, the nearest: footprint IoU 0.807).
+- **In another area of the map** (one): 581 18 Carrick Place stands at Carrick Place, Mount Eden,
+  in its own area of the map, which the campus's tiles do not reach.
+- **Too little roof** (13). The LiDAR is not wrong in any of them; it sees ground, trees or a low
+  structure inside the outline. The car parks P9A, P9B and P9C are open-air: ground in 95%, 95% and
+  75% of their cells; P9C's second outline (P9C_2, 32 m²) holds a structure lower than 2.5 m.
+  595 Med School Hospital Underpass is under the ground (ground in 67% of its cells, crowns in 32%),
+  and 501C has only floors -2 and -1: the LiDAR sees trees over 28% of it. 913 Larder Cafe (62 m²)
+  lies under crowns about 5 m high (42% of its cells) with no point in 37%. The outlines of 501
+  (ground in 27% of its cells, no point in 13%), 505 (ground in 14%), 528 (ground 11%, crowns 8%),
+  628 (crowns 11%, ground 8%) and 629 (ground 19%) take in open ground or trees. 623's low side
+  stands under 2.5 m above the median ground round it, which falls 3.6 m across the site (24% of
+  its cells).
+- **Below the top-view limits** (13), from their top views (`measured/out/<id>.png`):
+  - Outlines that take in open ground the model roofs: 503 (a strip 2 to 3 m wide along its north
+    side, where the LiDAR sees the ground), 507 (a court on its west side, under scattered points at
+    about 17 m that the LiDAR sees the ground through: an open or glazed roof), 907 (a wing of
+    about 15 by 10 m at its north-west corner, and a strip on its north side, where the LiDAR sees
+    ground or no point) and 502 (with trees, below).
+  - Trees over part of the roof, counted in the model's footprint and not in the LiDAR's: 502, 529
+    (crowns 8 to 10 m over its 4 m lower roof) and 632.
+  - A low roof whose points the LiDAR classes as vegetation: 504 (620 points lying flat at 4.2 to
+    4.3 m, where the model draws its low roof at 4.3 m: a planted roof).
+  - Roofs of several ridges, as on the City campus: 632 Carlton Pines (hips; the model is 1.3 m low
+    at the median, 4.1 m at the 10th percentile), 509 9 Glasgow Terrace and the south wing of 908
+    (1.5 m low at the 10th percentile).
+  - Roofs that fall less than 5° from a ridge, drawn flat: 903 (the model 0.5 m low along its
+    ridge and 0.4 m high at its eaves; 86% within 0.5 m) and 902 (rows of ridges and roof lights
+    across a flat roof; 79%).
+  - Footprints that differ from the outline where the heights agree, as 274 and 431 do: 910 (74 m²,
+    every cell within 0.5 m, footprint IoU 0.881) and 911 (98%, 0.869), whose roofs reach up to
+    1 m past their outlines where the model draws no eave.
+  - 529 (footprint IoU 0.920, 86% within 0.5 m) also has a raised part drawn larger than the LiDAR
+    shows it, and its west and north edges fall 2 m below the model's roof.
 
 ### How the numbers were measured
 

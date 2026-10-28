@@ -761,8 +761,30 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    buildings of tiers 1 and 2 as stand-ins too (2026-10-27, a gate for you), the same rule keeps the
    blocks of 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
    Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University though the campus map marks none of their floors residential; of these 616 55 Symonds Street (IoU 0.904, 90.8% within 0.5 m) and
-   835 and 837 would pass the limits. And one reading: the top-view check leaves the roof cells the
+   835 and 837 would pass the limits. On the Grafton campus (2026-10-28) the same rule keeps the
+   blocks of 523, 644, 645 and 646 by their residential floors and of 511 Te Ako o Te Tui Early
+   Childhood Centre, and by hand of Grafton Hall's 621 Grafton Hall Residences (by its name) and 643
+   Grafton Hall Block A (a block of the same hall), whose floors the campus map marks unmapped; none
+   of the seven would pass the limits. And one reading: the top-view check leaves the roof cells the
    generator does not draw to their height out of its share within 0.5 m, and counts those the model
    stands over as covered in its footprint IoU. Counted in the share, 409 (on the site), 240 and 305
    would fall below 90% (0.889, 0.719, 0.762); counted as LiDAR only, the footprint IoU of 435 (on the
    site), 240 and 305 would fall below 0.90 (0.873, 0.689, 0.739). Say which decision 3 means.
+6. **Measured massings where two outlines overlap, and where the LiDAR sees no roof
+   (`landmarks/MASSING.md`, "The third round").** 904's outline overlaps 903's by 220.4 m² and 902's
+   by 71.6 m²; its layer at 16.8 m (321.0 m²: 217.1 m² in 903's outline, 71.6 m² in 902's, 32.3 m²
+   in 904's alone) is the edge of their roofs, and stands above their 14.4 m blocks with a ragged
+   edge. 305's layer 3 does the same over 303 (18.2 of 21.7 m²), and its layer 4 partly (28.0 of
+   63.2 m²; on the site since #108). Keep such layers, keep 904's block, or have the generator leave
+   a neighbour's outline out of the layers above the lowest (305 would change too). And: the
+   generator now leaves out a traced piece of a layer where the LiDAR sees no roof of it at all (on
+   Grafton and Newmarket; 906's lobe, which now stands at the lowest layer's 15.65 m where the LiDAR
+   sees nothing over 2.4 m). Say whether to turn that rule on for the City campus too (it changes one
+   number of 405's in `exclusions.json`, no data file). And a cell of an outline with no roof in the
+   LiDAR still goes to its nearest layer: where that layer's piece has roof cells, the cell stands at
+   its roof. 906 has 22.5 m² of such cells: 13.5 m² at the lowest layer (the lobe among them) and
+   9.0 m² under its mono-pitches at 18.25 to 20.76 m, among them a strip about 1 m wide along its
+   north-west edge where the LiDAR has no point of classes 2 to 6. The City's massings do the same since
+   #79 and #108 (305: 10.0 of 28.5 m²; in all 72.25 of the fourteen's 191.0 m²; MASSING.md, "The third
+   round"). Say whether such cells should stand at the lowest layer's height (or keep the block's)
+   instead of their nearest layer's; that would change the City's massings.
