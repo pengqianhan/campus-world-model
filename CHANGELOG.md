@@ -73,7 +73,7 @@ A change to what the site does or shows adds its line here, and the README's
   and Te Ako o Te Tui Early Childhood Centre as places where people live and a childcare centre;
   18 Carrick Place, which stands in another area of the map; the rest because the LiDAR shows too
   little roof inside their outlines (open ground, car parks, trees, a building under the ground) or
-  because a model fails the check against the LiDAR from above (#PR).
+  because a model fails the check against the LiDAR from above (#120).
 
 ### Changed
 
