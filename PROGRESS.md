@@ -746,3 +746,14 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    stands over as covered in its footprint IoU. Counted in the share, 409 (on the site), 240 and 305
    would fall below 90% (0.889, 0.719, 0.762); counted as LiDAR only, the footprint IoU of 435 (on the
    site), 240 and 305 would fall below 0.90 (0.873, 0.689, 0.739). Say which decision 3 means.
+6. **Measured massings where two outlines overlap, and where the LiDAR sees no roof
+   (`landmarks/MASSING.md`, "The third round").** 904's outline overlaps 903's by 220.4 m² and 902's
+   by 71.6 m²; its layer at 16.8 m (321.0 m²: 217.1 m² in 903's outline, 71.6 m² in 902's, 32.3 m²
+   in 904's alone) is the edge of their roofs, and stands above their 14.4 m blocks with a ragged
+   edge. 305's layers do the same over 303 (on the site since #108). Keep such layers, keep 904's
+   block, or have the generator leave a neighbour's outline out of the layers above the lowest
+   (305 would change too). And: the generator now leaves out a traced piece of a layer where the
+   LiDAR sees no roof of it (on Grafton and Newmarket; 906's lobe), but the lowest layer still
+   stands on the whole outline, so 906's lobe stands at 15.65 m where the LiDAR sees nothing over
+   2.4 m (decision 3's tolerance; 22.6 m² of 906's outline in all). Say whether to turn the rule on
+   for the City campus too (it changes one number of 405's in `exclusions.json`, no data file).
