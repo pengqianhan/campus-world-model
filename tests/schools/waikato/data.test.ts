@@ -1,17 +1,19 @@
-// The University of Waikato's published data (docs/schools/DESIGN.md, section 8): its campuses in
-// the Buildings form, from the committed OpenStreetMap snapshots of its areas by the rule in its
-// descriptor, and nothing of Waikato's own.
+// The University of Waikato's published data (docs/schools/DESIGN.md, section 8): its campus in the
+// Buildings form, from the committed OpenStreetMap snapshot of its area, the buildings chosen by the
+// table read off the University's campus map in its descriptor, and nothing else of Waikato's own.
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { pointInRing, ringArea, type Ring } from "../../../src/shared/geo.ts";
 import type { AcademicCalendar, CampusData, Meta, Schedule } from "../../../src/shared/types.ts";
 import { HOMES, school } from "../../../src/schools/waikato/school.ts";
-import { DEFAULT_HEIGHT, decide } from "../../../scripts/lib/osm-buildings.ts";
+import { DEFAULT_HEIGHT, blockLabel, buildOsmCampus, decide, onCampusMap } from "../../../scripts/lib/osm-buildings.ts";
+import { mapFrame } from "../../../scripts/lib/map-frame.ts";
 
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(`public/data/waikato/${file}`, "utf8")) as T;
 const campus = read<CampusData>("campus.json");
 const meta = read<Meta>("meta.json");
 const rule = school.osmBuildings!;
+const table = rule.campusMap!;
 
 interface Element {
   type: string;
@@ -39,13 +41,19 @@ for (const area of areas) {
 const ACCOMMODATION = ["apartments", "barracks", "bungalow", "cabin", "detached", "annexe", "dormitory", "farm", "ger", "hotel", "house",
   "houseboat", "residential", "semidetached_house", "static_caravan", "stilt_house", "terrace", "tree_house", "trullo"];
 
+/**
+ * Buildings whose outline is bent round a yard (Information Technology Services, the pavilion and
+ * Facilities Management), so that the centroid, the centre the adapter gives, lies outside the walls.
+ */
+const COURTYARD = new Set(["way/66210779", "way/66211505", "way/179065156"]);
+
 const ring = (flat: number[]): Ring => {
   const r: Ring = [];
   for (let i = 0; i < flat.length; i += 2) r.push([flat[i]! / 10, flat[i + 1]! / 10]);
   return r;
 };
 
-const verdict = (osm: string) => decide(rule, elements.get(osm)!.tags ?? {});
+const verdict = (osm: string) => decide(rule, elements.get(osm)?.tags ?? {}, osm);
 const on = (id: string) => campus.buildings.filter((b) => b.campus === id).map((b) => b.name.en);
 
 describe("Waikato's buildings", () => {
@@ -74,19 +82,34 @@ describe("Waikato's buildings", () => {
     }
   });
 
-  it("each trace to an element of the committed snapshots that the rule takes, named as OpenStreetMap names it", () => {
+  it("each trace to an element of the committed snapshots that the table takes, named as OpenStreetMap names it or by its block code", () => {
     expect(campus.buildings.length).toBeGreaterThan(0);
     for (const b of campus.buildings) {
       const e = elements.get(b.osm!);
       expect(e, `${b.id}: ${b.osm}`).toBeDefined();
       const tags = e!.tags ?? {};
-      expect(decide(rule, tags)?.take, b.id).toBe(true);
+      expect(decide(rule, tags, b.osm)?.take, b.id).toBe(true);
+      const row = onCampusMap(rule, b.osm!).row;
+      expect(row, b.id).toBeDefined();
       // OpenStreetMap gives none of them a code (ref), and none is made up: each id names the element.
       expect(b.ref, b.id).toBe(tags.ref);
       expect(b.id).toBe(tags.ref ?? b.osm!.replace("/", "-").toUpperCase());
-      expect(b.sourceText, b.id).toBe(tags.name);
-      expect(b.name.en, b.id).toBe(tags.name);
-      expect(pointInRing(b.center, ring(b.outline[0]!)), `${b.id}: centre inside its outline`).toBe(true);
+      if (tags.name !== undefined) {
+        expect(b.sourceText, b.id).toBe(tags.name);
+        expect(b.name.en, b.id).toBe(tags.name);
+        expect(b.nameSource, b.id).toBeUndefined();
+      } else {
+        // An unnamed building takes the map's block code, kept as the map gives it, and says so.
+        expect(b.sourceText, b.id).toBe(row!.block);
+        expect(b.name.en, b.id).toBe(blockLabel(row!.block));
+        expect(b.nameSource, b.id).toBe("campus-map");
+      }
+      // The centre is the outline's centroid. An L- or U-shaped outline's centroid can lie outside
+      // its walls, so the test asks for its bounds there.
+      const outline = ring(b.outline[0]!);
+      const [xs, ys] = [outline.map((p) => p[0]), outline.map((p) => p[1])];
+      const inBounds = b.center[0] >= Math.min(...xs) && b.center[0] <= Math.max(...xs) && b.center[1] >= Math.min(...ys) && b.center[1] <= Math.max(...ys);
+      expect(pointInRing(b.center, outline) || (COURTYARD.has(b.osm!) && inBounds), `${b.id}: centre inside its outline`).toBe(true);
     }
   });
 
@@ -94,7 +117,7 @@ describe("Waikato's buildings", () => {
     const taken = new Set(campus.buildings.map((b) => b.osm));
     const excluded = new Map((campus.buildingExclusions ?? []).map((x) => [x.osm, x]));
     for (const [osm, e] of elements) {
-      const v = decide(rule, e.tags ?? {});
+      const v = decide(rule, e.tags ?? {}, osm);
       if (!v) {
         expect(taken.has(osm) || excluded.has(osm), osm).toBe(false);
         continue;
@@ -111,18 +134,68 @@ describe("Waikato's buildings", () => {
   });
 
   it("decide the Hamilton cases as the pull request lists them", () => {
-    // The Gallagher Academy of Performing Arts carries Waikato's operator tag and a name.
-    expect(verdict("way/66211908")?.reason).toMatch(/^operator=University of Waikato/);
-    expect(on("hamilton")).toEqual(["Gallagher Academy of Performing Arts"]);
+    // The Gallagher Academy of Performing Arts carries Waikato's operator tag and a name, and is on the map as PA.
+    expect(verdict("way/66211908")?.reason).toMatch(/^The University's campus map shows a block/);
+    // J Block and the Student Centre carry a name and no tag that says whose they are: the map's table takes them.
+    expect(verdict("way/66210760")?.take).toBe(true);
+    expect(verdict("relation/19815926")?.take).toBe(true);
+    // TRU and G Block's outline: TRU has no name in OpenStreetMap and takes the map's code.
+    expect(campus.buildings.find((b) => b.osm === "way/649353653")?.name.en).toBe("TRU");
+    expect(campus.buildings.find((b) => b.osm === "relation/19798011")?.name.en).toBe("G Block");
     // A bicycle shed with Waikato's operator tag has no name; the medical school's site is named a construction site.
     expect(verdict("way/1078686300")?.reason).toMatch(/^No name/);
     expect(verdict("way/1447813529")?.reason).toMatch(/^Its name calls it a construction site/);
-    // Not candidates: the Orchard Park Apartments (a home, with Waikato's operator tag); J Block and the
-    // Student Centre, which carry a name and no tag that says whose they are; NIWA's building; Hillcrest
-    // High School's library (building=school); and Hillcrest Childcare (amenity=kindergarten).
-    for (const osm of ["relation/17882437", "way/66210760", "relation/19815926", "relation/2389691", "way/179066961", "way/245271389"]) {
+    // The building by SUB that the map draws with no code of its own is left out with the table's reason.
+    expect(verdict("way/179065668")).toEqual({ take: false, reason: table.left.find((l) => l.osm === "way/179065668")!.reason, step: -1 });
+    // Not candidates: the Orchard Park Apartments (a home, with Waikato's operator tag); the building
+    // OpenStreetMap names NIWA, which the map names Health NZ, and the two the map names NIWA;
+    // Landcare Research; Hillcrest High School's library (building=school); Hillcrest Childcare
+    // (amenity=kindergarten); and TTH1, which the map marks TTH without saying whether people live there.
+    for (const osm of ["relation/17882437", "relation/2389691", "way/1447813527", "way/1447813528", "way/179065305", "way/179066961", "way/245271389", "way/179065255"]) {
       expect(verdict(osm), osm).toBeUndefined();
     }
+    expect(on("hamilton")).toHaveLength(53);
+  });
+
+  it("follow the campus map's table: each row an element of the snapshot, taken once, and each left-out building with its reason", () => {
+    const named = [...table.rows.map((r) => r.osm), ...table.left.map((l) => l.osm)];
+    expect(new Set(named).size).toBe(named.length);
+    const taken = new Set(campus.buildings.map((b) => b.osm));
+    for (const r of table.rows) {
+      expect(elements.has(r.osm), r.osm).toBe(true);
+      expect(taken.has(r.osm), r.osm).toBe(true);
+      expect(r.block.length, r.osm).toBeGreaterThan(0);
+      // A row by name has a name in OpenStreetMap; a building with none can only be placed.
+      if (r.by === "name") expect(elements.get(r.osm)!.tags?.name, r.osm).toBeDefined();
+    }
+    const excluded = new Map((campus.buildingExclusions ?? []).map((x) => [x.osm, x.reason]));
+    for (const l of table.left) {
+      expect(elements.has(l.osm), l.osm).toBe(true);
+      expect(excluded.get(l.osm), l.osm).toBe(l.reason);
+    }
+    expect(campus.buildings.length).toBe(table.rows.length);
+    expect(table.rows.filter((r) => r.by === "name").length).toBe(32);
+    expect(table.rows.filter((r) => r.by === "place").length).toBe(21);
+    expect(campus.buildings.filter((b) => b.nameSource === "campus-map").length).toBe(17);
+  });
+
+  it("stop the build when the table names an element twice, or one that is not a building of the snapshot", () => {
+    const frame = mapFrame(school.origin, school.areas.central, [school.areas.central]);
+    const withRows = (rows: typeof table.rows) => ({ ...rule, campusMap: { ...table, rows } });
+    expect(() => buildOsmCampus(withRows([...table.rows, { osm: "way/1", block: "Z", by: "place" }]), frame)).toThrow(/not buildings in the snapshots: way\/1$/);
+    expect(() => buildOsmCampus(withRows([...table.rows, table.rows[0]!]), frame)).toThrow(/more than once/);
+    // A street is not a building: Knighton Road is in the snapshot.
+    const street = [...elements.entries()].find(([, e]) => e.tags?.highway && e.tags?.name === "Knighton Road")![0];
+    expect(() => buildOsmCampus(withRows([...table.rows, { osm: street, block: "Z", by: "place" }]), frame)).toThrow(/not buildings/);
+  });
+
+  it("name the campus map in the sources, with its address on the University's site and the day the maintainer got it", () => {
+    const { received, ...line } = table.source;
+    expect(meta.sources.find((s) => s.id === "campus-map")).toEqual({ id: "campus-map", ...line, snapshotDate: received });
+    expect(received).toBe("2026-10-28");
+    expect(line.url).toMatch(/^https:\/\/www\.waikato\.ac\.nz\/.+\/Hamilton-campus-map\.pdf$/);
+    // The picker reads the first line's date as the campus snapshot's: OpenStreetMap's.
+    expect(meta.sources[0]!.id).toBe("osm");
   });
 
   it("leave homes and childcare to the surroundings: no home and no centre tagged as childcare is named anywhere in the published data", () => {
@@ -135,7 +208,10 @@ describe("Waikato's buildings", () => {
     const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const takenNames = new Set(campus.buildings.map((b) => b.name.en));
     for (const e of blank) {
-      expect(decide(rule, e.tags ?? {}), `${e.type}/${e.id}`).toBeUndefined();
+      const osm = `${e.type}/${e.id}`;
+      expect(decide(rule, e.tags ?? {}, osm), osm).toBeUndefined();
+      // Nor does the campus map's table name it, taken or left out.
+      expect(onCampusMap(rule, osm), osm).toEqual({ row: undefined, left: undefined });
       const name = e.tags?.name;
       if (!name || takenNames.has(name)) continue;
       expect(text, name).not.toContain(JSON.stringify(name));
@@ -171,18 +247,31 @@ describe("Waikato's buildings", () => {
   });
 });
 
-describe("the rule on OpenStreetMap's tags", () => {
-  const take = (tags: Record<string, string>) => decide(rule, tags)?.take;
+describe("the rule on OpenStreetMap's tags and the campus map's table", () => {
+  const take = (tags: Record<string, string>, osm?: string) => decide(rule, tags, osm)?.take;
+  /** An element the table takes, under tags it does not carry today. */
+  const ROW = "way/66210760";
 
-  it("takes a named building by Waikato's operator tag, or by building=university or amenity=university with no operator", () => {
-    expect(take({ building: "yes", amenity: "theatre", name: "Gallagher Academy of Performing Arts", operator: "University of Waikato" })).toBe(true);
-    expect(take({ building: "university", name: "A lecture block" })).toBe(true);
-    expect(take({ building: "school", amenity: "university", name: "A teaching block" })).toBe(true);
+  it("takes a building only by the campus map's table, whatever its tags say, unless a step before the map's leaves it out", () => {
+    expect(take({ building: "yes" }, ROW)).toBe(true);
+    expect(take({ building: "yes", name: "J Block" }, ROW)).toBe(true);
     // A ground floor numbered 0 stands on the ground.
-    expect(take({ building: "university", "building:min_level": "0", name: "A building" })).toBe(true);
+    expect(take({ building: "yes", "building:min_level": "0" }, ROW)).toBe(true);
+    // Tags that say Waikato's are not enough: the map decides.
+    expect(take({ building: "yes", amenity: "theatre", name: "A theatre", operator: "University of Waikato" })).toBe(false);
+    expect(take({ building: "university", name: "A lecture block" })).toBe(false);
+    expect(take({ building: "school", amenity: "university", name: "A teaching block" })).toBe(false);
+    expect(decide(rule, { building: "university", name: "A lecture block" })?.reason).toMatch(/^The University's campus map, which decides/);
+    // The guards hold for a row of the table too.
+    expect(decide(rule, { building: "yes", amenity: "childcare" }, ROW)?.reason).toMatch(/^A childcare centre/);
+    expect(decide(rule, { building: "yes", name: "A construction site" }, ROW)?.reason).toMatch(/^Its name calls it a construction site/);
+    expect(decide(rule, { building: "yes", fixme: "check" }, ROW)?.reason).toMatch(/^Its fixme tag/);
+    expect(decide(rule, { building: "yes", "building:min_level": "2" }, ROW)?.reason).toMatch(/^It starts above the ground/);
+    // Not a building at all: not a candidate, even in the table.
+    expect(decide(rule, { highway: "footway" }, ROW)).toBeUndefined();
   });
 
-  it("leaves out what it cannot name, what is in doubt or not built, what does not stand on the ground, and another body's building", () => {
+  it("leaves out what it cannot name, what is in doubt or not built, what does not stand on the ground, and what the map does not show", () => {
     expect(decide(rule, { building: "university" })?.reason).toMatch(/^No name/);
     expect(decide(rule, { building: "yes", amenity: "bicycle_parking", operator: "University of Waikato" })?.reason).toMatch(/^No name/);
     expect(decide(rule, { building: "university", name: "A medical school construction site" })?.reason).toMatch(/^Its name calls it a construction site/);
@@ -192,8 +281,7 @@ describe("the rule on OpenStreetMap's tags", () => {
     expect(decide(rule, { building: "construction", name: "A new building", operator: "University of Waikato" })?.reason).toMatch(/under construction/);
     expect(take({ building: "university", name: "A bridge", man_made: "bridge" })).toBe(false);
     expect(take({ building: "ruins", name: "A ruin", operator: "University of Waikato" })).toBe(false);
-    expect(decide(rule, { building: "university", name: "A polytechnic block", operator: "Wintec" })?.reason).toMatch(/^Its operator tag names another operator/);
-    expect(decide(rule, { building: "university", name: "A shared block", operator: "Toi Ohomai Institute of Technology" })?.reason).toMatch(/^Its operator tag names another operator/);
+    expect(decide(rule, { building: "university", name: "A polytechnic block", operator: "Wintec" })?.reason).toMatch(/^The University's campus map, which decides/);
     expect(decide(rule, { "building:part": "yes", operator: "University of Waikato" })?.reason).toMatch(/^A building part/);
     // Childcare stays blank, even if it were ever tagged as the University's.
     expect(decide(rule, { building: "university", amenity: "childcare", name: "A childcare centre" })?.reason).toMatch(/^A childcare centre/);
@@ -206,6 +294,8 @@ describe("the rule on OpenStreetMap's tags", () => {
     for (const home of HOMES) expect(decide(rule, { building: home, name: "A home", amenity: "university" }), home).toBeUndefined();
     expect(decide(rule, { building: "yes", name: "J Block" })).toBeUndefined();
     expect(decide(rule, { building: "yes", name: "Waikato Management School/PWC" })).toBeUndefined();
+    // No row of the table is a home.
+    for (const r of table.rows) expect(HOMES.includes(elements.get(r.osm)!.tags?.building ?? ""), r.osm).toBe(false);
     expect(decide(rule, { building: "yes", amenity: "kindergarten", name: "A childcare centre" })).toBeUndefined();
   });
 });
@@ -224,12 +314,13 @@ describe("Waikato's absent layers", () => {
     expect(fs.existsSync("public/data/waikato/plans")).toBe(false);
   });
 
-  it("carry the descriptor's verdicts, and the sources are OpenStreetMap and the terrain only", () => {
+  it("carry the descriptor's verdicts, and the sources are OpenStreetMap, the University's campus map and the terrain", () => {
     expect(meta.layers).toEqual(school.layers);
-    expect(meta.sources.map((s) => s.id)).toEqual(["osm", "terrain"]);
+    expect(meta.sources.map((s) => s.id)).toEqual(["osm", "campus-map", "terrain"]);
     for (const s of meta.sources) {
       expect(s.snapshotDate, s.id).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(s.url, s.id).not.toMatch(/waikato\.ac\.nz/);
+      // Only the campus map's line links to Waikato's site, which no fetch script asks.
+      if (s.id !== "campus-map") expect(s.url, s.id).not.toMatch(/waikato\.ac\.nz/);
     }
     expect(meta.coverage).toMatchObject({ buildings: campus.buildings.length, rooms: 0, indexedRooms: 0, subjects: 0, sessions: 0 });
   });
