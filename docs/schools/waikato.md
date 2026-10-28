@@ -79,7 +79,7 @@ by a local fit to those points, and each was checked by its shape against the bu
   code or name cannot be tied to one outline. And 2 tag candidates: the bicycle shed (no name) and
   the medical school's building site.
 - **Not the University's,** by the map's own names, and so not candidates: NIWA's two buildings,
-  Te Kūwaha o te Waiora - Health NZ (which OpenStreetMap names NIWA), Landcare Research, St John's
+  Te Kuuwaha o te Waiora - Health NZ (which OpenStreetMap names NIWA), Landcare Research, St John's
   College, a kura kaupapa Māori and a kōhanga reo by Gate 10, and the houses the map marks as
   private property.
 - **Homes and childcare** stay unnamed among the surroundings, and nothing about them is published:

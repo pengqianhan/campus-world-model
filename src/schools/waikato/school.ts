@@ -72,7 +72,7 @@ const noCode = (where: string) =>
  * What the map shows and the table does not take:
  * - Not the University's, by the map's own names, and so not candidates: the two large buildings
  *   the map names NIWA (way/1447813527, way/1447813528, unnamed in OpenStreetMap); the building it
- *   names Te Kūwaha o te Waiora - Health NZ, which OpenStreetMap names NIWA (relation/2389691);
+ *   names Te Kuuwaha o te Waiora - Health NZ, which OpenStreetMap names NIWA (relation/2389691);
  *   Landcare Research (way/179065305); St John's College (way/178621688 and six more); a kura
  *   kaupapa Māori (a school) and a kōhanga reo by Gate 10, which the map names as their own
  *   (way/179065309 and nine more; the kōhanga reo is childcare too); and the houses the map marks as
