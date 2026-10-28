@@ -120,35 +120,45 @@ describe("each landmark on the site's ground", () => {
       const l = new Landmark(entry, host);
       l.stand(terrain.height(...(entry.placement.door.map as [number, number])));
       l.group.updateMatrixWorld(true);
-      const { build } = (await import(`../landmarks/${entry.name}/model.js`)) as { build: (m: unknown) => Object3D };
+      const { build, STANDS } = (await import(`../landmarks/${entry.name}/model.js`)) as {
+        build: (m: unknown, only?: string[]) => Object3D;
+        STANDS?: string[];
+      };
       const log = console.log;
       console.log = () => {};
-      const model = build(geometryMaterials());
+      // The whole model; and alone, each part the model names as standing on ground higher than the door's
+      // (STANDS: its foot is above y = 0 where its source stands it, as the Fisher Building's ramp on the street).
+      const models = [{ model: build(geometryMaterials()), part: "" }];
+      for (const part of STANDS ?? []) models.push({ model: build(geometryMaterials(), [part]), part });
       console.log = log;
-      model.updateMatrixWorld(true);
-      const meshes: Mesh[] = [];
-      model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
-      // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points. The kit's
-      // Builder joins a model's parts into one mesh a material, so this is a material's foot, not
-      // a part's: give every part the same foot (Old Government House's take FOOT from common.js).
-      let worst = -Infinity;
-      let at = "";
       const v = new Vector3();
-      for (const m of meshes) {
-        m.geometry.computeBoundingBox();
-        const foot = new Box3().copy(m.geometry.boundingBox!).applyMatrix4(m.matrixWorld).min.y;
-        if (foot > 0) continue;
-        const p = m.geometry.getAttribute("position");
-        for (let i = 0; i < p.count; i++) {
-          v.fromBufferAttribute(p, i).applyMatrix4(m.matrixWorld);
-          if (v.y > foot + 0.01) continue;
-          v.applyMatrix4(l.group.matrixWorld);
-          const gap = v.y - terrain.height(v.x, -v.z);
-          if (gap > worst) [worst, at] = [gap, `${m.parent?.name ?? ""}/${m.name}`];
+      for (const { model, part } of models) {
+        model.updateMatrixWorld(true);
+        const meshes: Mesh[] = [];
+        model.traverse((o) => void ((o as Mesh).isMesh && meshes.push(o as Mesh)));
+        // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points; a part
+        // in STANDS, at its lowest points wherever they are. The kit's Builder joins a model's parts into one
+        // mesh a material, so this is a material's foot, not a part's: give every part the same foot (Old
+        // Government House's take FOOT from common.js).
+        let worst = -Infinity;
+        let at = "";
+        for (const m of meshes) {
+          m.geometry.computeBoundingBox();
+          const foot = new Box3().copy(m.geometry.boundingBox!).applyMatrix4(m.matrixWorld).min.y;
+          if (foot > 0 && !part) continue;
+          const p = m.geometry.getAttribute("position");
+          for (let i = 0; i < p.count; i++) {
+            v.fromBufferAttribute(p, i).applyMatrix4(m.matrixWorld);
+            if (v.y > foot + 0.01) continue;
+            v.applyMatrix4(l.group.matrixWorld);
+            const gap = v.y - terrain.height(v.x, -v.z);
+            if (gap > worst) [worst, at] = [gap, `${m.parent?.name ?? ""}/${m.name}`];
+          }
         }
+        const what = part ? `${entry.name}'s ${part}` : entry.name;
+        expect(at, `${what}: no mesh reaches the ground at its door`).not.toBe("");
+        expect(worst, `${what} ${at}`).toBeLessThan(0.25);
       }
-      expect(at, `${entry.name}: no mesh reaches the ground at its door`).not.toBe("");
-      expect(worst, `${entry.name} ${at}`).toBeLessThan(0.25);
       l.dispose();
     }
   }, 60_000);

@@ -44,11 +44,14 @@ export const MEASURED = {
   // 31.6-32.0, 29.1-29.2 and 26.1-26.2 m). The top storey is not taller: the band nearest the shaft's top is
   // 2.1 m over the one below it.
   band: { h: 0.15, proud: 0.04, shaft: 33.75 },
-  // The lower part's faces turned to the west and north-west (the tower plan's edges 10 to 13, from
-  // [5.2, 8.0] to [10.0, 0.8]), with balconies and louvres in MGAo's photograph.
+  // The lower part's faces turned to the west and north-west (the tower plan's edges 11 to 13, from
+  // [7.8, 7.5] to [10.0, 0.8]): edges 12 and 13 with balconies and louvres in MGAo's photograph (58 and 14 deg
+  // off its line of sight), edge 11 seen there edge-on (82 deg off), a pale strip at their left. Edge 10, from
+  // [5.2, 8.0], turns north, away from both panoramas: no photograph shows it, and it is plain brick with its
+  // bands as the other faces no photograph shows (round 4, the review; rounds 1 to 3 gave it balconies too).
   // Their balconies stand inside the outline (its edge is the roof's red tile fascia, over them), 1.0 m deep
   // (estimated from the photograph); the fascia is 1.0 m high (the photograph through the fitted camera).
-  wing: { edges: [10, 11, 12, 13], deep: 1.0, fascia: 1.0 },
+  wing: { edges: [11, 12, 13], deep: 1.0, fascia: 1.0 },
   // The window slot: in the corner between the shaft's two south-west faces (the tower plan's corner 16,
   // (12.49, -8.48)), where the LiDAR's wall returns stop 0.33 m short of the corner on one face and 0.52 m on
   // the other (a recess). Its width is MGAo's tower view's through the fitted camera
@@ -88,9 +91,15 @@ export const MEASURED = {
   // higher (5.24 m and 5.65 m at the last two corners). Round 2 placed its top edge at the plants'
   // 6.8 m, which put the line 1-5 m nearer the camera than the LiDAR's returns, over open ground at
   // 3.5-4.3 m, and stretched MGAo's tower view's box. Its thickness (0.3 m) is estimated.
+  // From corner `stands` on, where its foot is the LiDAR's ground, it stands on the pavement: there it goes
+  // down to FOOT, as the walls do (round 4, the review). The map's ground is not the LiDAR's: at the last two
+  // corners it lies 2.3 and 2.4 m over the door's, the LiDAR's 5.2 and 5.7 m, and a foot at the pavement's
+  // height hung about 3 m over the drawn street. Over the car park (corners 0 to 4) the face stands clear of
+  // the ground, as the photographs show it.
   ramp: {
     line: [[18.0, -2.2], [20.1, -8.0], [20.65, -9.3], [22.9, -11.7], [24.5, -13.0], [25.5, -14.5]],
     top: [6.22, 6.22, 6.22, 6.22, 6.22, 6.22],
     foot: [4.66, 4.66, 4.66, 4.66, 5.24, 5.65],
+    stands: 4,
   },
 };

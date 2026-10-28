@@ -21,6 +21,12 @@ const PARTS = {
   ramp: (b) => ramp(b),
 };
 
+// The parts that stand on ground higher than the door's, where their foot is above y = 0 in the source: the
+// ramp's side, on the pavement of Waterloo Quadrant at its street end, 5.2-5.7 m above the door's ground.
+// tests/landmarks.test.ts builds each alone and checks its lowest points against the map's ground, as it checks
+// every mesh that reaches y = 0 (landmarks/README.md, "Placement").
+export const STANDS = ["ramp"];
+
 export function build(materials, only) {
   const b = new Builder(materials);
   for (const [name, part] of Object.entries(PARTS)) {
