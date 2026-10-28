@@ -277,5 +277,10 @@
   "min_gain": 0.01,
   "min_sky": 0.2,
   "max_solid": 0.5
+ },
+ "door": {
+  "x": 18.5,
+  "z": -4.2,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the curved face on its east side, 0.9 m out from the wall's line, where the LiDAR's ground is +0.01 m (11 returns within 1 m: -0.02 to +0.05): no door there, as 802's is the foot of a corner. The service doors the photographs show on the curve's base nearer the south-east face stand on ground 0.13-0.26 m lower (-0.13 at x 19.0, z 3.3; -0.26 at 19.8, 5.3)."
  }
 }
