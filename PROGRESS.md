@@ -113,6 +113,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | Te Herenga Waka—Victoria University of Wellington (VUW) | `/vuw/` | Buildings: the Kelburn, Pipitea and Te Aro campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, each on the campus of the area it stands in, on the LINZ ground | 56 buildings, all on the map (Kelburn 52, Pipitea 3, Te Aro 1); 30 more left out by the tag rule, each with its reason (26 with no name, 2 that start above the ground, 1 with another operator, and the Malaghan Institute of Medical Research, an independent institute on the campus); heights: 0 from a `height` tag, 46 from `building:levels`, 10 estimated; 0 rooms, subjects and classes |
 | University of Otago \| Ōtākou Whakaihu Waka (Otago) | `/otago/` | Buildings: the Dunedin and Christchurch campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, and never a hospital building, the students' association's or the ones the Polytechnic's tags place among its own, each on the campus of the area it stands in, on the LINZ ground. Wellington and Invercargill are not shown: OpenStreetMap names no university building at either and gives none Otago as its operator (`docs/schools/otago.md`, "On the site") | 97 buildings, all on the map (Dunedin 94, Christchurch 3); 72 more left out by the tag rule, each with its reason (51 with no name, 15 with Otago Polytechnic's operator, one of them holding a childcare centre, a childcare centre by its name, 2 of the students' association's, B Block and Poho, and the School of Medicine on Christchurch Hospital's grounds, whose wikidata tag is left for a person to check); heights: 0 from a `height` tag, 21 from `building:levels`, 76 estimated; 0 rooms, subjects and classes |
 | University of Canterbury (UC) | `/uc/` | Buildings: the Ilam and Dovedale campuses and the Arts Centre city location from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, each on the campus of the area it stands in, on the LINZ ground; homes are never considered. Nelson is not shown: OpenStreetMap tags no building there as UC's | 57 buildings, all on the map (Ilam 45, Dovedale 11, the Arts Centre 1); 17 more left out by the tag rule, each with its reason (13 with no name, 2 under construction, 1 with no storey above the ground, and 1 of the University of Otago's at the Arts Centre); heights: 0 from a `height` tag, 52 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
+| Te Kunenga ki Pūrehuroa Massey University (Massey) | `/massey/` | Buildings: the Manawatū, Auckland and Wellington campuses from OpenStreetMap, picked by the `operator`, `building=university` and `amenity=university` tags or a name, house name or address place that says Massey, and a name, never a home or a childcare centre, and never a building whose own `fixme` tag asks what it is, each on the campus of the area it stands in, on the LINZ ground. The School of Aviation, the Large Animal Teaching Unit, the research farms and Singapore are not shown (`docs/schools/massey.md`, "On the site") | 55 buildings, all on the map (Manawatū 39, Auckland 8, Wellington 8); 43 more left out by the tag rule, each with its reason (42 with no name, and Student Central at Albany, whose `fixme` tag asks whether it is the new police college); heights: 0 from a `height` tag, 14 from `building:levels`, 41 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -194,6 +195,24 @@ UC's open items, from `docs/schools/uc.md`, "Needs the maintainer" (each is the 
    lab-room colour `#4b7570` (4.6 from the teal), which `/uc/` never draws. UC keeps the project's
    accent. Whether the night map's navy and orange read too much like UC's navy and gold is the
    maintainer's call. If UC publishes brand colours, compare them again (DESIGN.md, section 6).
+
+Massey's open items, from `docs/schools/massey.md`, "Needs the maintainer" and "On the site" (each
+is the maintainer's to do):
+
+1. Massey's key dates and course list are open, and its copyright page allows non-commercial reuse
+   (layers 4 and 5 there), but reading them takes a fetch of a new source, a gate. Until the
+   maintainer decides, both are absent, and the site says that it does not take them until then.
+2. Massey's room data and class timetable: only Massey can open them (items 1 and 2 there).
+3. Brand colours: not compared. Massey's home page (read twice on 2026-10-28, four requests in all)
+   sets none in its own markup, and its stylesheets are on a CDN host the research browser does not
+   ask; whether to ask that host, or a brand page Massey publishes, is the maintainer's. The accent
+   and tones are the project's own, taken from no school.
+4. The phone's top bar: "Massey World Model" reached 7 px past a 390 px screen. Since #114 a name
+   longer than 17 characters is drawn at 14.5 px on phones and 13 px under 384 px, whole; DESIGN.md,
+   section 6, asks such a name for a shorter form there, so the maintainer may prefer one.
+5. Done on 2026-10-28: the Manawatū, Auckland and Wellington campuses are on the site, from one
+   Overpass area each, which the maintainer let the loop fetch (`docs/schools/massey.md`, "On the
+   site").
 
 ## Done (with evidence)
 
