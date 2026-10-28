@@ -72,7 +72,9 @@ It is built to answer two questions a student actually has:
   top storey with a curved roof. Four more University of Auckland buildings are drawn near the camera
   to their
   LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
-  Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. A
+  Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. On the
+  Grafton and Newmarket campuses five buildings are drawn the same way: 93 Grafton Road, the Ray Meyer
+  Building, Buildings 904 and 909, and Structures Hall. A
   walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
   solid stone on the footway under it.
 - **2026-10-27:** another school, at [/otago/](https://campusworldmodel.com/otago/): 97 buildings
@@ -404,10 +406,11 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Nine are on the site
-  (`landmarks/measured/`): six plain buildings, and three of the buildings planned as landmarks, which
-  they stand in for until their landmarks come. The other buildings it measures keep their blocks,
-  each with its reason in `landmarks/measured/exclusions.json`.
+  measured heights, walls, storeys and windows by the street look's rules. Fourteen are on the site
+  (`landmarks/measured/`): on the City campus six plain buildings, and three of the buildings planned
+  as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
+  the Newmarket campus four. The other buildings it measures keep their blocks, each with its reason
+  in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
   collect the Street View references, correct their cameras, render and score, and place the model

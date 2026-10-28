@@ -198,7 +198,7 @@ A measured massing (`MASSING.md`) is a plain building drawn by a program from th
 agent and no photograph. All of them share one model and have a data file each:
 
 - `pipeline/tools/massing.py` measures every tier-3 building of the City campus that the eight
-  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing), and, as stand-ins until
+  LiDAR tiles in `data/raw/landmarks/lidar/` cover (it fetches nothing unless given `--fetch`), and, as stand-ins until
   their landmarks come, the buildings of tiers 1 and 2 there that the site does not draw as
   landmarks (it reads the placements; `SOON` holds those in progress on other branches), from the
   repository root: `$PY -I landmarks/pipeline/tools/massing.py [--tier3] [ids]`. It writes
@@ -206,6 +206,14 @@ agent and no photograph. All of them share one model and have a data file each:
   each that keeps its block, with its reason; a run over every building also drops the data file of
   one it no longer measures. Its top views (LiDAR | model | difference) and a table go to
   `measured/out/`, which is not committed.
+- `--campus grafton` and `--campus newmarket` measure every building of those campuses in their own
+  tiles of the same LiDAR (`CAMPUS_TILES`: 3704, 3803 and 3804 for Grafton, 3904 and 3905 for
+  Newmarket; the City campus's eight when not given). A run writes its own campus's data files and
+  entries in `exclusions.json`, and leaves the other campuses' as they are. A building of the campus
+  that stands in another area of the map (Grafton's 581, at Carrick Place) keeps its block. With
+  `--fetch` it first fetches the campus's tiles that are not cached, through
+  `tools/data/fetch_bridge.py` (see "Fetching"), as the data stage fetches a landmark's LiDAR;
+  without it, it fetches nothing.
 - How it measures: the ground round the outline; roof cells (a 0.5 m heightmap, a cell being roof
   where most of its points are building points over 2.5 m); layers where neighbouring cells step
   by more than 0.6 m, of cells that a plane fits within 0.15 m; each layer's roof flat, or the
@@ -241,9 +249,11 @@ agent and no photograph. All of them share one model and have a data file each:
   614, 616, 818, 831 and 833, by their residential floors; by hand, Carlaw Park's 832 and 834 to
   837, which OpenStreetMap tags as dormitories run by the University though the campus map marks none
   of their floors residential; 434, whose
-  floor 2 has an Accommodation Reception on the campus map; 450 by its name) and childcare centres
-  (410, 841, and 255, which decision 7 keeps too), both until the maintainer decides (MASSING.md
-  decision 6); Waipapa Marae (251 to 256) and
+  floor 2 has an Accommodation Reception on the campus map; 450 by its name; on the Grafton campus
+  523, 644, 645 and 646 by their residential floors, and by hand Grafton Hall's 621, by its name, and
+  643, a block of the same hall) and childcare centres
+  (410, 841, and 255, which decision 7 keeps too; on the Grafton campus 511), both until the maintainer
+  decides (MASSING.md decision 6); Waipapa Marae (251 to 256) and
   Fale Pasifika (275), until the maintainer has asked the people they belong to (decision 7); and
   408 UniPress, whose outline the LiDAR shows no roof on (decision 10).
 - Roofs: every roof, flat or sloping, takes its block's roof: the map's roof colour on the map, and
