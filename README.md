@@ -321,11 +321,12 @@ drawn plainly.
 The sixth is the Clock Tower East Wing (119), below the Clock Tower to the south-east: two storeys of
 the same rock-faced cream stone, two gabled pavilions toward the lawn and the car park, a plain stair
 tower rising between them, segmental-headed windows upstairs and narrow ones below, and a red tile
-roof. Every height comes from the LiDAR, within 0.12 m. One Street View panorama sees its whole lawn
-side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its three views, and from
-above its outline covers the LiDAR's with an IoU of 0.83. Three more see it over the old basalt wall
-of the Albert Barracks, which fills half their frames. Its back, its ends and the low link toward the
-Clock Tower, which no photograph shows, are drawn plainly.
+roof. Every height comes from the LiDAR, within 0.12 m, but the underside of the link toward the
+Clock Tower, which stands at the campus map's storey height over a passage. One Street View panorama
+sees its whole lawn side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its
+three views, and from above its outline covers the LiDAR's with an IoU of 0.83. Three more see it
+over the old basalt wall of the Albert Barracks, which fills half their frames. Its back, its ends
+and the low link toward the Clock Tower, which no photograph shows, are drawn plainly.
 
 | | |
 | --- | --- |
@@ -626,7 +627,10 @@ If you represent the University and would like something changed or removed, ple
   Barracks. Its heights come from the LiDAR. What no photograph shows is drawn plainly: its back, its
   ends, the two blocks at the back, the low link toward the Clock Tower (under trees; a flat roof at
   the height the LiDAR finds) and the grey roofs behind the pavilions' gables (their colour from the
-  aerial). The east pavilion's front, half hidden by the basalt wall, is drawn after the west
+  aerial). The link stands over a passage where the campus map has no ground floor under it, from
+  the map's storey height, 3.6 m: nothing measures its underside, and the LiDAR's ground under it is
+  up to about 2.5 m higher than the site's 8 m elevation model, so the real passage is lower than
+  drawn. The east pavilion's front, half hidden by the basalt wall, is drawn after the west
   pavilion's. The windows' glazing patterns are drawn as plain bars.
 - **9 Eden Crescent is seen from its street end only.** Three Street View panoramas on Eden Crescent
   see the street end; its neighbours either side and a tall tower behind it stand in their wide views,
