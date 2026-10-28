@@ -80,11 +80,15 @@ describe("measured massings", () => {
     expect(new Set(drawn).size).toBe(drawn.length);
   });
 
-  it("leave the blocks of childcare centres, Waipapa Marae, Fale Pasifika and UniPress (decisions 6, 7 and 10)", () => {
+  it("leave the blocks of places where people live, childcare centres, Waipapa Marae, Fale Pasifika and UniPress (decisions 6, 7 and 10)", () => {
     for (const { data } of DATA) {
       const b = byId.get(data.place.building)!;
       expect(["251", "252", "253", "254", "255", "256", "275", "408"]).not.toContain(b.id);
       expect(b.floors.some((f) => f.noPlan === "childcare"), b.id).toBe(false);
+      // Places where people live: residential floors, and those massing.py keeps by hand (434, 450, and
+      // Carlaw Park's blocks, which OpenStreetMap tags as dormitories).
+      expect(b.floors.some((f) => f.noPlan === "residential"), b.id).toBe(false);
+      expect(["434", "450", "831", "832", "833", "834", "835", "836", "837", "838"]).not.toContain(b.id);
     }
   });
 

@@ -146,6 +146,14 @@ describe("VUW's buildings", () => {
     expect(campus.buildingExclusions?.find((x) => x.osm === "way/752299347")?.reason).toMatch(/^No name/);
   });
 
+  it("keep in the Malaghan Institute's record the wikidata tag its reason mentions, and claim nothing of the item", () => {
+    const malaghan = campus.buildingExclusions?.find((x) => x.osm === "way/627676675");
+    expect(malaghan?.reason).toMatch(/by its name an institute of its own.*It carries a wikidata tag, kept in this record; the item was not looked up/);
+    // nothing the item would say: no Wikidata item was ever fetched
+    expect(malaghan?.reason).not.toMatch(/independent|research institute|wikidata (tag|item) (shows|says)/);
+    expect(malaghan?.sourceText).toContain("wikidata=Q6741044");
+  });
+
   it("stand at the height the rule gives, with its source, and have no floors or rooms", () => {
     for (const b of campus.buildings) {
       const tags = elements.get(b.osm!)!.tags ?? {};

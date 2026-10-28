@@ -415,19 +415,33 @@
     "schools": {
       "uoa": {
         "name": "University of Auckland",
+        "reo": "Waipapa Taumata Rau",
         "city": "Auckland"
       },
       "aut": {
         "name": "Auckland University of Technology",
+        "reo": "Te Wānanga Aronui o Tāmaki Makau Rau",
         "city": "Auckland"
       },
       "vuw": {
-        "name": "Te Herenga Waka—Victoria University of Wellington",
+        "name": "Victoria University of Wellington",
+        "reo": "Te Herenga Waka",
         "city": "Wellington"
       },
       "otago": {
-        "name": "University of Otago | Ōtākou Whakaihu Waka",
+        "name": "University of Otago",
+        "reo": "Ōtākou Whakaihu Waka",
         "city": "Dunedin and Christchurch"
+      },
+      "uc": {
+        "name": "University of Canterbury",
+        "reo": "Te Whare Wānanga o Waitaha",
+        "city": "Christchurch"
+      },
+      "massey": {
+        "name": "Massey University",
+        "reo": "Te Kunenga ki Pūrehuroa",
+        "city": "Palmerston North, Auckland and Wellington"
       },
       "waikato": {
         "name": "The University of Waikato",
