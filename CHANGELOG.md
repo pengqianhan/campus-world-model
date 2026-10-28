@@ -29,6 +29,20 @@ A change to what the site does or shows adds its line here, and the README's
   it has the map's colours; from a walker's height on a computer with a graphics card, its own white
   paint, glass, timber and red frames. Its back and ends, which no photograph shows, are drawn
   plainly. A click still opens its floors (#116).
+- **Waikato World Model, at /waikato/.** Another school on the site: the University of Waikato's
+  Hamilton campus, in 3D on the LINZ ground among the streets and buildings round it. Its 53
+  buildings come from OpenStreetMap, which tags only one of them as the University's; so which of
+  them are the University's, and the names of the 17 that OpenStreetMap leaves unnamed (their block
+  codes, such as TRU and MS8), come from the University's own Hamilton campus map, version Q1 2025,
+  which the site's maintainer downloaded and gave the project. Each building is one block at its
+  OpenStreetMap height (1 from its number of levels), else at a default, and the building card says
+  where its name and height come from; About lists the map with the other sources. Halls of
+  residence and childcare centres stay unnamed among the surroundings, and the buildings the map
+  gives to others, such as NIWA and Landcare Research, stand among them too. Its rooms, class times,
+  trimester dates and paper list are not shown: Waikato's main website, which holds them, is closed
+  to this project by its `robots.txt`, and the site says so. The Tauranga campus is not shown:
+  OpenStreetMap ties no building there to Waikato, and the campus map is Hamilton's alone. The
+  accent and the map's colours are the project's own; none is taken from Waikato (#PR).
 - **Massey World Model, at /massey/.** Another school on the site: Te Kunenga ki Pūrehuroa Massey
   University, in 3D on the LINZ ground among the streets and buildings round it. The Manawatū
   campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes

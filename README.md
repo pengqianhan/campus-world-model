@@ -14,9 +14,11 @@ Herenga Waka—Victoria University of Wellington, at https://campusworldmodel.co
 Model**, an **unofficial** 3D map of the buildings of the University of Otago's Dunedin and
 Christchurch campuses, at https://campusworldmodel.com/otago/; **UC World Model**, an
 **unofficial** 3D map of the buildings of the University of Canterbury's Ilam and Dovedale campuses
-and its Arts Centre location, at https://campusworldmodel.com/uc/; and **Massey World Model**, an
+and its Arts Centre location, at https://campusworldmodel.com/uc/; **Massey World Model**, an
 **unofficial** 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington
-campuses, at https://campusworldmodel.com/massey/
+campuses, at https://campusworldmodel.com/massey/; and **Waikato World Model**, an **unofficial** 3D
+map of the buildings of the University of Waikato's Hamilton campus, at
+https://campusworldmodel.com/waikato/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -38,7 +40,9 @@ campuses, at https://campusworldmodel.com/massey/
 > its colours are the project's own.
 > Massey World Model is
 > not affiliated with, endorsed by or maintained by Te Kunenga ki Pūrehuroa Massey University, and
-> uses no Massey logo; its colours are the project's own.
+> uses no Massey logo; its colours are the project's own. Waikato World Model is not affiliated
+> with, endorsed by or maintained by The University of Waikato, and uses no Waikato logo; its
+> colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -61,13 +65,17 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-10-28:** two more schools, from OpenStreetMap: at [/uc/](https://campusworldmodel.com/uc/),
+- **2026-10-28:** three more schools, from OpenStreetMap: at [/uc/](https://campusworldmodel.com/uc/),
   57 buildings of the University of Canterbury's Ilam and Dovedale campuses and its Arts Centre
-  location, and at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
-  University's Manawatū, Auckland and Wellington campuses, each with its name and height and how
-  the height was found; their rooms, class times, dates and course lists are not shown, and the
-  site says why. The root page names each school in te reo Māori too. On Eden Crescent the map
-  draws 15 Eden Crescent in detail, next to 9 Eden Crescent: a long white two-storey building, its
+  location; at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
+  University's Manawatū, Auckland and Wellington campuses; and at
+  [/waikato/](https://campusworldmodel.com/waikato/), 53 buildings of the University of Waikato's
+  Hamilton campus, chosen with the University's own campus map, which also names by their block
+  codes the 17 that OpenStreetMap leaves unnamed. Each building has its name and height and how the
+  height was found; their rooms, class times, dates and course lists are not shown, and the site
+  says why. The root page names each school in te reo Māori too, where the school's own words give
+  the name. On Eden Crescent the map draws 15 Eden Crescent in detail, next to 9 Eden Crescent: a
+  long white two-storey building, its
   windows deep in square openings in two rows over a base of tiles, under a roof that slopes up to a
   top storey with a curved roof. Four more University of Auckland buildings are drawn near the camera
   to their
@@ -633,9 +641,24 @@ campus, and Quaternius's figure is the walker's body. Massey publishes no room o
 could find, and its class timetable is behind a sign-in; its key dates and course list are open
 for non-commercial use but are not read yet: see [docs/schools/massey.md](docs/schools/massey.md).
 
+**Waikato World Model** (`/waikato/`) uses the same four sources and one of the University of
+Waikato's own: its Hamilton campus map. OpenStreetMap gives the buildings of the Hamilton campus,
+with their names, outlines and, where tagged, heights, and the streets round them, from the snapshot
+of its one area (`data/raw/osm/context-waikato-hamilton.json`); `public/data/waikato/campus.json`
+and `context.json` are under the ODbL. Which of those buildings are the University's comes from the
+University's Hamilton campus map (version Q1 2025), which the site's maintainer downloaded in their
+own browser and gave the project on 2026-10-28: a table in `src/schools/waikato/school.ts` ties each
+building to the map's block, and the 17 buildings OpenStreetMap leaves unnamed are called by the
+map's block codes. The map is the University of Waikato's and is not in the repository; About lists
+it with the other sources. The LINZ 8 m elevation model gives the ground
+(`public/data/waikato/terrain/`), under CC BY 3.0 NZ. Open-Meteo gives the weather at the Hamilton
+campus, and Quaternius's figure is the walker's body. Waikato's main website, which holds its
+campus maps, key dates and paper pages, is closed to this project by its `robots.txt`, so no
+agent of the project reads it: see [docs/schools/waikato.md](docs/schools/waikato.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
 `public/data/aut/meta.json`, `public/data/vuw/meta.json`, `public/data/otago/meta.json`,
-`public/data/uc/meta.json` and `public/data/massey/meta.json`.
+`public/data/uc/meta.json`, `public/data/massey/meta.json` and `public/data/waikato/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.

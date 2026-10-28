@@ -114,6 +114,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | University of Otago \| Ōtākou Whakaihu Waka (Otago) | `/otago/` | Buildings: the Dunedin and Christchurch campuses from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, never a home, and never a hospital building, the students' association's or the ones the Polytechnic's tags place among its own, each on the campus of the area it stands in, on the LINZ ground. Wellington and Invercargill are not shown: OpenStreetMap names no university building at either and gives none Otago as its operator (`docs/schools/otago.md`, "On the site") | 97 buildings, all on the map (Dunedin 94, Christchurch 3); 72 more left out by the tag rule, each with its reason (51 with no name, 15 with Otago Polytechnic's operator, one of them holding a childcare centre, a childcare centre by its name, 2 of the students' association's, B Block and Poho, and the School of Medicine on Christchurch Hospital's grounds, whose wikidata tag is left for a person to check); heights: 0 from a `height` tag, 21 from `building:levels`, 76 estimated; 0 rooms, subjects and classes |
 | University of Canterbury (UC) | `/uc/` | Buildings: the Ilam and Dovedale campuses and the Arts Centre city location from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, each on the campus of the area it stands in, on the LINZ ground; homes are never considered. Nelson is not shown: OpenStreetMap tags no building there as UC's | 57 buildings, all on the map (Ilam 45, Dovedale 11, the Arts Centre 1); 17 more left out by the tag rule, each with its reason (13 with no name, 2 under construction, 1 with no storey above the ground, and 1 of the University of Otago's at the Arts Centre); heights: 0 from a `height` tag, 52 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
 | Te Kunenga ki Pūrehuroa Massey University (Massey) | `/massey/` | Buildings: the Manawatū, Auckland and Wellington campuses from OpenStreetMap, picked by the `operator`, `building=university` and `amenity=university` tags or a name, house name or address place that says Massey, and a name, never a home or a childcare centre, and never a building whose own `fixme` tag asks what it is, each on the campus of the area it stands in, on the LINZ ground. The School of Aviation, the Large Animal Teaching Unit, the research farms and Singapore are not shown (`docs/schools/massey.md`, "On the site") | 55 buildings, all on the map (Manawatū 39, Auckland 8, Wellington 8); 43 more left out by the tag rule, each with its reason (42 with no name, and Student Central at Albany, whose `fixme` tag asks whether it is the new police college); heights: 0 from a `height` tag, 14 from `building:levels`, 41 estimated; 0 rooms, subjects and classes |
+| The University of Waikato (Waikato) | `/waikato/` | Buildings: the Hamilton campus from OpenStreetMap, on the LINZ ground. OpenStreetMap ties only one building there to the University by its tags, so the University's own Hamilton campus map (version Q1 2025), which the maintainer downloaded and gave the project on 2026-10-28, decides which are the University's: a table in the descriptor, one row for each OpenStreetMap element, matched by name or by place. Each building is named as OpenStreetMap names it, or by the map's block code where OpenStreetMap gives no name; never a home or a childcare centre. Tauranga is not shown: OpenStreetMap ties no building there to Waikato, and the map is Hamilton's alone (`docs/schools/waikato.md`, "On the site") | 53 buildings, all on the map (32 matched by name, 21 by place; 17 named by their block code); 27 more left out, each with its reason (25 the map draws with no code of their own or under a code shared by several outlines, the bicycle shed with no name, and the medical school's building site); heights: 0 from a `height` tag, 1 from `building:levels`, 52 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -213,6 +214,29 @@ is the maintainer's to do):
 5. Done on 2026-10-28: the Manawatū, Auckland and Wellington campuses are on the site, from one
    Overpass area each, which the maintainer let the loop fetch (`docs/schools/massey.md`, "On the
    site").
+
+Waikato's open items, from `docs/schools/waikato.md`, "Needs the maintainer" and "On the site" (each
+is the maintainer's to do):
+
+1. Waikato's answer: the maintainer asked by email on 2026-10-28 whether the project may read its
+   pages. Its main website, `www.waikato.ac.nz`, which holds the campus maps, key dates, paper pages
+   and terms, is closed to this project's agents by its `robots.txt`; until Waikato answers, nothing
+   is fetched from any Waikato host, and its rooms, timetable, dates and papers are absent.
+2. The campus map's table (its pull request is a gate): the University's buildings are chosen with
+   the campus map the maintainer downloaded, a source the project's own agents may not read, and the
+   17 buildings OpenStreetMap leaves unnamed are called by the map's block codes. Taking it amends
+   "A school whose campus map cannot be used" in "Decisions", which says such a school's buildings
+   come from OpenStreetMap alone by a rule on their tags.
+3. Brand colours: not checked, since `www.waikato.ac.nz` is closed to this project (DESIGN.md,
+   section 6); the accent and tones are the project's own, taken from no school.
+4. The phone's top bar: "Waikato World Model" has 19 characters. By #114's rule it is drawn at
+   14.5 px on phones and 13 px under 384 px, whole, and the bar fits at 390 and 360 px; at 345 px
+   the time's button reaches 1 px past the screen's edge. DESIGN.md, section 6, asks such a name for
+   a shorter form there, so the maintainer may prefer one.
+5. The root page gives Waikato no name in te reo Māori: its recon gives none, and its own site is
+   closed to this project.
+6. Done on 2026-10-28: the Hamilton campus is on the site, from one Overpass area, which the
+   maintainer let the loop fetch (`docs/schools/waikato.md`, "On the site").
 
 ## Done (with evidence)
 

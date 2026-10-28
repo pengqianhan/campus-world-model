@@ -25,7 +25,10 @@ their terms:
   Database License 1.0. It holds nothing of Massey University's own material.
 - public/data/waikato/campus.json: the University of Waikato's buildings on its Hamilton campus,
   taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open Database License 1.0.
-  It holds nothing of the University of Waikato's own material.
+  Which of them are the University's, and the names of those OpenStreetMap leaves unnamed (their
+  block codes), come from the University of Waikato's Hamilton campus map (version Q1 2025), which
+  the site's maintainer downloaded; the map is not in this repository, and those block codes and
+  names remain the University of Waikato's.
 - data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land
   Information New Zealand and the New Zealand Government, under CC BY 3.0 NZ.
 - What the site takes from the University of Auckland's public campus map and Calendar
