@@ -50,7 +50,8 @@ traced or sampled from them into the model.
   its note: position, pitch, yaw and the photograph's roll in its cut), and `refine.keep_fixes` keeps
   them there. Measure through them onto the walls' planes; where the two disagree (the base's doors, by
   0.4-1.3 m along the wall), trust the one that sees the feature nearer square and say so.
-- No photograph shows the north-west, the north or the roofs: draw them plainly at the LiDAR's sizes.
+- No photograph shows the curve round the north (from 25.1 m along it: `MEASURED.faces.seen`), the north-west,
+  the north or the roofs: draw them plainly at the LiDAR's sizes.
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a photograph through its fixed

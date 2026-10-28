@@ -12,8 +12,10 @@ what they show. What none of them shows is drawn plainly at the LiDAR's sizes.
   with the offices' window frames and ceiling lights seen through it.
 - **A dark steel beam** under the glass, along the whole curve, standing a little proud of the base.
 - **The base**: white-painted rendered concrete, with creeper on it; a set of louvred service doors with
-  dark glazed side lights near the flat face, and small square windows further round.
-- **The flat south-east face** beside the curve: grey board-marked concrete, the boards running up,
+  dark glazed side lights near the flat face, and small square windows further round. In shade it reads
+  light grey, 133 in `MOQA…`'s photographs and 158 in `oWaF…`'s for the same patch.
+- **The flat south-east face** beside the curve: grey board-marked concrete (123-133 in both
+  photographs), the boards running up,
   over a concrete band at the curtain wall's foot, and white render with creeper under that. A
   University banner hangs on it (not drawn).
 - **Beyond it**, to the left in `oWaF…`'s view: the glazed end of the link to the Thomas Building, and

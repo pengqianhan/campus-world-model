@@ -84,6 +84,39 @@ within 0.5 m of its height (round 0: 88%), the model 0.10 m below it at the medi
 under the model (the corner block left out) and 0.9% of block 110. 2,298 triangles in 8 meshes (round 0:
 804 in 7).
 
+## Round 2 (October 2026, the lead alone)
+
+Round 1 left one view's luma 17 apart (`oWaF…`'s door view, 133 drawn against 150). Read part by part
+where the fixed cameras put each part:
+
+- **The concrete** of the south-east face reads 123 in `MOQA…`'s wide view and 126-133 in `oWaF…`'s;
+  round 1 drew it in the kit's cream `render` at 165. It is now the kit's `grey`, drawn at 130-132.
+- **The base's white render** reads 133-134 in `MOQA…`'s views and 158-159 in `oWaF…`'s for the same
+  patch of wall (beside the doors, 0.8-3.2 m up), though both cameras face it within 25° of square and
+  the concrete beside it reads alike in both: the two panoramas disagree on it by 25. It is drawn between
+  them in a new material of the kit, `renderGrey` (the paint's shader in a light grey, 0x9c9ea0), at 141.
+  The light aluminium head strips (133-174 in `oWaF…`'s wide view; round 1's white paint drew them at
+  218) take it too.
+- **The exposure** 1.15 (round 1: 1.2), which takes `MOQA…`'s wide view, whose glass the model draws
+  brighter than the photograph shows it, from 13 apart to 9.
+- **The curve as far as the photographs show it.** Both cameras see the curve's first 25.1 m (its
+  edges 1 to 13: each faces a camera and lies inside its wide view, to its right silhouette against the
+  sky); round the north the curve faces away from both. Round 1 drew the curtain wall all round; it now
+  stops there, and the rest of the curve is plain render, as every face no photograph shows.
+
+A van stands in front of the base in `oWaF…`'s views, and the University's banner hangs on the concrete:
+neither is the building, and both count in the photographs' luma (without the van's part of the door
+view the photograph reads 146 there, not 150).
+
+Against the photographs, after round 2: silhouette IoU in the model's own screen box 0.842, 0.957 and
+0.854 over `MOQA…`'s wide, upper and door views and 0.812, 0.884 and 0.622 over `oWaF…`'s, mean 0.829
+(tier 2's limit 0.60; each at least 0.45); sky in the box 0.177, 0.043, 0.146, 0.269, 0.116 and 0.378;
+over the whole frame 0.805. The building's luma median, drawn against photographed: 130.0/121.3,
+128.5/130.1, 141.0/130.9, 130.8/138.8, 130.0/136.1 and 139.9/149.8, every view within 12 (the largest
+10.1). From above: footprint IoU 0.959, 92% of cells within 0.5 m of the LiDAR's height, the model 0.09 m
+below it at the median, 99.3% of block 110N under the model and 0.9% of block 110. 1,570 triangles in 7
+meshes, one a material.
+
 ## Heights against the LiDAR
 
 Building returns of `data/thomas-building-extension_pts.npy` in the view frame; model / LiDAR (medians):
@@ -100,10 +133,12 @@ wall's storeys and the base's openings come from the photographs (above).
 
 ## Limits
 
-- What no photograph shows is plain: the north-west, the north, the diagonal face and the roofs.
-- The University banner on the south-east face is not drawn, nor the creeper on the base.
+- What no photograph shows is plain: the curve round the north (from 25.1 m along it), the north end,
+  the diagonal face, the north-west wall, the link's sides and the roofs.
+- The University banner on the south-east face is not drawn, nor the creeper on the base, nor the van.
 - The glass is the kit's pale glass, without the photographs' green tint and without the offices' window
-  frames that show through it; the base's render is the kit's grey and the concrete its cream render.
+  frames that show through it; the base's render is `renderGrey`, drawn between the two photographs'
+  readings of it, and the board-marked concrete the kit's plain `grey`.
 - The walls go down to `FOOT` (-1.6 m) all round; in the viewer, which draws no ground here, they show
   below the forecourt.
 - The beam's depth out from the base and the fins' depth are estimated.

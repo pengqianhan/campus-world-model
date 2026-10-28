@@ -34,7 +34,11 @@ export const MEASURED = {
   // north-west corner (x -20.19 to -18.67, z 11.24 to 14.86): the LiDAR has a tree there (132 returns of
   // vegetation up to 17.0 m), 8 building returns, all on the north-west wall's line (x -19.25 to -18.51),
   // and its ground at +1.09; round 0 drew it to the eave.
-  faces: { se: [0, 0], curve: [1, 23] },
+  faces: { se: [0, 0], curve: [1, 23], seen: [1, 13] },
+  // Of the curve, the photographs show edges 1 to 13 (25.1 m along it from its start; round 2): each faces
+  // one camera or both and lies inside its wide view (out/seen.mjs: MOQA's to 41 deg off its axis, oWaF's
+  // to 36 deg; its right silhouette against the sky in both). Edges 14 to 23, round the north, face away
+  // from both and are drawn plainly (round 1 drew the curtain wall all round).
   // The roof's plan: the walls' plan, but on the curve the roof's edge itself, and out past the diagonal
   // face by 0.63 m (median of 53 edge cells) and the north-west wall by 0.69 m (34, z -4 to 4.5); north of
   // z 4.5 the roof's edge over 14 m stands inside that wall (-0.52 m, 24 cells: a lower roof there, not

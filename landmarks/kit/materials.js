@@ -284,6 +284,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     // plain walls for a part drawn as the campus map's estimated block, not as seen (Old Choral Hall's rest):
     // no texture and no shader, so that it claims no surface; the map's wall colour for a teaching building by day
     plain: Object.assign(new THREE.MeshStandardMaterial({ color: 0xfaf1dc, roughness: 0.95, metalness: 0 }), { userData: { metres: 2 } }),
+    // the Thomas Building Extension: the paint's shader in a light grey, its white render in open shade
+    renderGrey: painted(0x9c9ea0, 0.75, space),
     // the General Library: shader hooks, no textures (the paint's own shader, so nothing new to make)
     grey: painted(0x8e9194, 0.75, space),               // mid-grey cladding and piers
     // the Clock Tower East Wing: the pale roof's shader, no textures

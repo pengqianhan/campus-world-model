@@ -312,7 +312,7 @@
    0.24
   ],
   "groundshade": 0.6,
-  "exposure": 1.2,
-  "note": "round 1: 9 Eden Crescent's (801) sun, as a start: panoramas of the same month (2024-08); a sun 305 deg round and 25 deg up, behind this building's face to the road, so the viewer draws that face in shade, as the photographs show it (soft shadows, bright cloud; the sun's place is not read from them: estimated). Exposure set by the luma: at 2.2 (801's) the drawn medians were 182-240 against the photographs' 121-150; at 1.0 the glass matched (121 against 121 in MOQA's wide view) and the base's white paint stayed 202-205; at 1.2, with the base in the kit's grey and the concrete in its render (parts/body.js), see README."
+  "exposure": 1.15,
+  "note": "9 Eden Crescent's (801) sun: panoramas of the same month (2024-08); a sun 305 deg round and 25 deg up, behind this building's face to the road, so the viewer draws that face in shade, as the photographs show it (soft shadows, bright cloud; the sun's place is not read from them: estimated). Exposure by the luma: at 2.2 (801's) the drawn medians were 182-240 against the photographs' 121-150 (round 1). Round 2: 1.15, with the concrete in the kit's grey and the base in its renderGrey (parts/body.js): the drawn luma medians 130.0, 128.5, 141.0, 130.8, 130.0 and 139.9 against the photographs' 121.3, 130.1, 130.9, 138.8, 136.1 and 149.8 (MOQA's wide, upper and door views, oWaF's), every one within 12 (the largest 10.1). At 1.2 MOQA's wide view was 13 apart (134 against 121)."
  }
 }
