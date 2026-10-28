@@ -59,9 +59,9 @@ A change to what the site does or shows adds its line here, and the README's
 - **Each school's name in te reo Māori on the site's root page.** Under its English name, each
   school on the list now has its name in te reo Māori, as the school gives it on its own site: Waipapa
   Taumata Rau (the University of Auckland), Te Wānanga Aronui o Tāmaki Makau Rau (AUT), Te Herenga
-  Waka (VUW), Ōtākou Whakaihu Waka (Otago) and Te Whare Wānanga o Waitaha (UC), marked as te reo
-  Māori for screen readers. VUW's, Otago's and UC's lines, which gave their two names as one, now
-  give them as the others do (#109).
+  Waka (VUW), Ōtākou Whakaihu Waka (Otago), Te Whare Wānanga o Waitaha (UC) and Te Kunenga ki
+  Pūrehuroa (Massey), marked as te reo Māori for screen readers. VUW's, Otago's, UC's and Massey's
+  lines, which gave their two names as one, now give them as the others do (#109).
 
 ### Fixed
 

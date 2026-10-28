@@ -6,8 +6,9 @@
 // pages, read on 2026-10-27 through scripts/research/polite.mjs, robots.txt first ("Waipapa Taumata
 // Rau", the University's title and logo, its home page redirecting once; "Te Wānanga Aronui o
 // Tāmaki Makau Rau", AUT's welcome), and VUW's pages as docs/schools/vuw.md quotes them, its
-// copyright page in the recon of 2026-10-22 ("Te Herenga Waka"), and UC's own text as docs/schools/uc.md
-// quotes it ("Te Whare Wānanga o Waitaha"). scripts/build-root.ts writes the two
+// copyright page in the recon of 2026-10-22 ("Te Herenga Waka"), UC's own text as docs/schools/uc.md
+// quotes it ("Te Whare Wānanga o Waitaha"), and the title of Massey's home page as
+// docs/schools/massey.md quotes it ("Te Kunenga ki Pūrehuroa"). scripts/build-root.ts writes the two
 // pages in the deploy jobs; tests/picker.test.ts checks them.
 import fs from "node:fs";
 import path from "node:path";
