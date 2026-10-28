@@ -33,9 +33,9 @@ streets after it.
   with an OpenStreetMap base of 2026-06-01 08:52 UTC. The 53 buildings taken lie 528 m (north) to
   970 m (south) inside the box's edges, and span 675 m east to west and 948 m north to south; the
   origin, the sun and the weather are at their middle (-37.786, 175.3173).
-- **Tauranga**: "101-121 Durham Street", in the city centre. A box of 1.8 km north to south and 1.6 km east to
-  west, `[-37.6935, 176.1565, -37.6775, 176.1745]`; **4 requests**. It held three `building=university`
-  ways by Durham Street with no name and no operator, and no building that OpenStreetMap ties to
+- **Tauranga**: "101-121 Durham Street", in the city centre. A box of 1.8 km north to south and
+  1.6 km east to west, `[-37.6935, 176.1565, -37.6775, 176.1745]`; **4 requests**. It held three
+  `building=university` ways by Durham Street with no name and no operator, and no building that OpenStreetMap ties to
   Waikato. So Tauranga is not on the site (Real or absent): its area was taken out again, and its
   snapshot and its record were deleted before any commit.
 
@@ -63,8 +63,9 @@ labelled buildings were tied to OpenStreetMap's named ones, every outline was la
 by a local fit to those points, and each was checked by its shape against the building drawn there.
 
 - **Taken: 53.** 32 by name, where OpenStreetMap's name is the map's name or code for the block (the
-  lettered blocks C to S, TT, TC, TL, UL1, UL2, ULS, SUB, ITS, LSL, the Gallagher Academy (PA), the
-  Student Centre (M), the management school (MSB), Law (N), the pavilion (PAV) and more). 21 by
+  eleven lettered blocks from C to S, TT, TC, TL, UL1, UL2, ULS, SUB, ITS, LSL, the Gallagher
+  Academy (PA), the Student Centre (M), the management school (MSB), Law (N), the pavilion (PAV)
+  and more). 21 by
   place, where the outline stands where the map draws the block: 4 keep OpenStreetMap's own name
   (Facilities Management Division at FM, Hiko hub at TSR, The Cowshed at Nº5D, Pathways College at
   LAIN), and the 17 that OpenStreetMap leaves unnamed are called by the block code (TRU, EAS, CHSS,

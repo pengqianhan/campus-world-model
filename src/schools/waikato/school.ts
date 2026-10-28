@@ -59,10 +59,11 @@ const noCode = (where: string) =>
  * How the table was made. The map is a drawing, turned about 30 degrees from north and not to an
  * even scale, with a grid (columns A to I, rows 1 to 9) and an index of blocks with their grid
  * squares. Its labelled buildings were tied to OpenStreetMap's named ones (Gallagher Academy, UL1,
- * UL2, ULS, Oranga, SUB, Uni Rec Centre, ITS, LSL, blocks C to S, TT, TC, TL, the management school,
- * Law, the pavilion, Facilities Management, and three buildings east of Hillcrest Road), and every
- * OpenStreetMap outline was laid over the drawing by a local fit to those points. Each outline was
- * then checked by its shape against the building drawn there. A row is "name" where OpenStreetMap's
+ * UL2, ULS, the Education Resource Centre, Oranga, SUB, Uni Rec Centre, ITS, LSL, blocks C, D, E, F,
+ * G, L, R and S, TT, TC, TL, the management school, Law, the pavilion, Facilities Management, the
+ * medical school's building site, and the four buildings the map gives to NIWA, Health NZ and
+ * Landcare Research), and every OpenStreetMap outline was laid over the drawing by a local fit to
+ * those points. Each outline was then checked by its shape against the building drawn there. A row is "name" where OpenStreetMap's
  * name is the map's name or code for the block, and "place" where the outline stands where the map
  * draws the block. A building OpenStreetMap leaves unnamed takes the map's block code as its name
  * (blockLabel in scripts/lib/osm-buildings.ts: "G Block" for a letter, else the code), and the
@@ -90,11 +91,12 @@ const noCode = (where: string) =>
  * - On the map but not in OpenStreetMap, so not drawn: TA (beside TC), ELT, MS1, MS3, MS4, MS5,
  *   MS6 and MS9. The map's index also lists TC2, which its drawing does not place.
  *
- * Two of the index's lines are read as the drawing has them: its "General" list sets each code one
- * line below its name from Shops down (UniRec Centre's SRC stands against WSU), and the drawing
- * writes SRC on the Uni Rec Centre and SUB on the Students' Union's building. The index gives the
- * Faculty of Māori and Indigenous Studies the code ITS (E8), as it does Information Technology
- * Services (D8); the drawing writes no code on the faculty's building, only its name beside it.
+ * Two codes are read as the drawing has them: the index's "General" list does not line its codes
+ * up with its names from Shops down (it sets SRC against WSU and SUB against Te Ahurutanga), and
+ * the drawing writes SRC on the Uni Rec Centre and SUB on the Students' Union's building. The index
+ * gives the Faculty of Māori and Indigenous Studies the code ITS (E8), as it does Information
+ * Technology Services (D8); the drawing writes no code on the faculty's building, only its name
+ * beside it.
  */
 const CAMPUS_MAP: CampusMapTable = {
   source: {
