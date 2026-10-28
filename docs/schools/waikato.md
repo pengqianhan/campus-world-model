@@ -35,8 +35,8 @@ streets after it.
   origin, the sun and the weather are at their middle (-37.786, 175.3173).
 - **Tauranga**: "101-121 Durham Street", in the city centre. A box of 1.8 km north to south and
   1.6 km east to west, `[-37.6935, 176.1565, -37.6775, 176.1745]`; **4 requests**. It held three
-  `building=university` ways by Durham Street with no name and no operator, and no building that OpenStreetMap ties to
-  Waikato. So Tauranga is not on the site (Real or absent): its area was taken out again, and its
+  `building=university` ways by Durham Street with no name and no operator, and no building that
+  OpenStreetMap ties to Waikato. So Tauranga is not on the site (Real or absent): its area was taken out again, and its
   snapshot and its record were deleted before any commit.
 
 **The ground.** Nine AWS terrain tiles at zoom 14 under the Hamilton box, **9 requests**. Each
