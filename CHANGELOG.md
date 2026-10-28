@@ -18,6 +18,18 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **UC World Model, at /uc/.** Another school on the site: the University of Canterbury (Te
+  Whare Wānanga o Waitaha) in Christchurch, in 3D on the LINZ ground among the houses and streets
+  round it. The Ilam campus has 45 buildings; "Other campuses" in the campus list takes the map to
+  the Dovedale campus (11 buildings) and to the Arts Centre city location, where only Music &
+  Classics is tagged as UC's. The 57 buildings come from OpenStreetMap, picked by their `operator`
+  and `building=university` tags and their names, each one block at its OpenStreetMap height (52
+  from their number of levels), else at a default, and labelled by name. Buildings still under
+  construction, an underground one and those with no name are left out, each with its reason. The
+  Nelson campus is not shown: OpenStreetMap tags no building there as UC's. Rooms, class times,
+  semester dates and the course list are not shown, and the status strip, the time panel, the card
+  and About say why in UC's own case. Halls of residence and childcare centres stay unnamed.
+  Unofficial, with the project's own colours; nothing is taken from UC (#110).
 - **Four more measured massings.** Near the camera, Building 240, 103 Alfred Nathan House, 305
   Science Centre and 619 67 Symonds Street are drawn from the LINZ 2024 LiDAR in place of their
   blocks, as the five plain buildings already are: their layers and roofs measured, their walls,
