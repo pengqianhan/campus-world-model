@@ -16,6 +16,10 @@ their terms:
 - public/data/otago/campus.json: the University of Otago's buildings on its Dunedin and
   Christchurch campuses, taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open
   Database License 1.0. It holds nothing of the University of Otago's own material.
+- public/data/uc/campus.json: the University of Canterbury's buildings on its Ilam and Dovedale
+  campuses and at its Arts Centre location, taken from OpenStreetMap, (c) OpenStreetMap
+  contributors, under the Open Database License 1.0. It holds nothing of the University of
+  Canterbury's own material.
 - public/data/massey/campus.json: Massey University's buildings on its Manawatu, Auckland and
   Wellington campuses, taken from OpenStreetMap, (c) OpenStreetMap contributors, under the Open
   Database License 1.0. It holds nothing of Massey University's own material.

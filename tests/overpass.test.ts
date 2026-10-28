@@ -1,0 +1,277 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { askOverpass, failure, type OverpassDeps } from "../scripts/lib/overpass.ts";
+import fs from "node:fs";
+import path from "node:path";
+import { HttpError, RAW_DIR, fetchError, snapshot } from "../scripts/lib/snapshot.ts";
+
+const A = "https://a.example/api/interpreter";
+const B = "https://b.example/api/interpreter";
+const C = "https://c.example/api/interpreter";
+
+/** The instances' answers, in the order they are asked: a Buffer, or an error to throw. */
+function fake(answers: (string | Error)[], opts: { closedBefore?: [string, string][]; cached?: string } = {}) {
+  const asked: string[] = [];
+  const closed: string[] = [];
+  const waits: number[] = [];
+  const d: OverpassDeps = {
+    cached: () => (opts.cached === undefined ? undefined : Buffer.from(opts.cached)),
+    get: async (url) => {
+      asked.push(url);
+      const next = answers.shift();
+      if (next === undefined) throw new Error("asked more often than the test expects");
+      if (next instanceof Error) throw next;
+      return Buffer.from(next);
+    },
+    closed: () => new Map(opts.closedBefore ?? []),
+    close: (url) => {
+      closed.push(url);
+    },
+    wait: async (ms) => {
+      waits.push(ms);
+    },
+    warn: () => {},
+  };
+  return { d, asked, closed, waits };
+}
+
+// snapshot.ts words a failed request as "<url> -> <name>: <message> (<cause>)"
+const status = (url: string, n: number) => new HttpError(`${url} -> HTTP ${n}`, n);
+const host = (url: string) => new URL(url).host;
+// the host dropping the connection
+const dropped = (url: string) => new Error(`${url} -> TypeError: fetch failed (read ECONNRESET)`);
+const closedSocket = (url: string) => new Error(`${url} -> TypeError: fetch failed (other side closed)`);
+const refusedTcp = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect ECONNREFUSED 192.0.2.1:443)`);
+const redirected = (url: string) => new Error(`${url} -> TypeError: fetch failed (unexpected redirect)`);
+// no answer in time
+const timedOut = (url: string) => new Error(`${url} -> TimeoutError: The operation was aborted due to timeout`);
+const connectTimeout = (url: string) =>
+  new Error(`${url} -> TypeError: fetch failed (Connect Timeout Error (attempted address: ${host(url)}:443, timeout: 10000ms))`);
+// the network failing on this machine: the host is not reached
+const noDns = (url: string) => new Error(`${url} -> TypeError: fetch failed (getaddrinfo EAI_AGAIN ${host(url)})`);
+const notFound = (url: string) => new Error(`${url} -> TypeError: fetch failed (getaddrinfo ENOTFOUND ${host(url)})`);
+const noRoute = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect ENETUNREACH 192.0.2.1:443)`);
+// an error on this machine, or one that does not show the host's answer
+const noPort = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect ENOBUFS 192.0.2.1:443 - Local (0.0.0.0:0))`);
+const firewall = (url: string) => new Error(`${url} -> TypeError: fetch failed (connect EACCES 192.0.2.1:443 - Local (0.0.0.0:0))`);
+const untrusted = (url: string) => new Error(`${url} -> TypeError: fetch failed (self-signed certificate; if the root CA is installed locally, try running Node.js with --use-system-ca)`);
+// a failure on this machine after the answer came: snapshot.ts writes the file outside its request
+const diskFull = () => new Error("ENOSPC: no space left on device, write 'osm/context.json.part'");
+
+describe("Overpass instances", () => {
+  it("read an area that is on disk with no request, whatever the record says", async () => {
+    const f = fake([], { cached: "{}", closedBefore: [[A, "HTTP 403"], [B, "HTTP 403"], [C, "HTTP 403"]] });
+    expect((await askOverpass([A, B, C], f.d)).toString()).toBe("{}");
+    expect(f.asked).toEqual([]);
+  });
+
+  it("ask a busy instance again in the next round, and record nothing", async () => {
+    const f = fake([status(A, 504), status(B, 429), timedOut(C), "{}"]);
+    expect((await askOverpass([A, B, C], f.d)).toString()).toBe("{}");
+    expect(f.asked).toEqual([A, B, C, A]);
+    expect(f.closed).toEqual([]);
+    expect(f.waits).toContain(60_000);
+    // a connection not made in time is no answer in time, and a request with no answer in time is asked again too
+    for (const late of [connectTimeout(A), timedOut(A)]) {
+      const g = fake([late, "{}"]);
+      await askOverpass([A], g.d);
+      expect(g.asked).toEqual([A, A]);
+      expect(g.closed).toEqual([]);
+    }
+  });
+
+  it("record a refusal and a redirect at once, and never ask those instances again", async () => {
+    for (const refusal of [status(A, 403), status(A, 401), redirected(A)]) {
+      const f = fake([refusal, status(B, 504), "{}"]);
+      await askOverpass([A, B], f.d);
+      // round 1 asks A and B; round 2 asks B alone
+      expect(f.asked).toEqual([A, B, B]);
+      expect(f.closed).toEqual([A]);
+    }
+  });
+
+  it("record a dropped connection once another instance answers after it", async () => {
+    for (const drop of [dropped(A), closedSocket(A), refusedTcp(A)]) {
+      const f = fake([drop, status(B, 504), "{}"]);
+      await askOverpass([A, B], f.d);
+      expect(f.asked).toEqual([A, B, B]);
+      expect(f.closed).toEqual([A]);
+    }
+    const g = fake([dropped(A), "{}"]);
+    await askOverpass([A, B], g.d);
+    expect(g.closed).toEqual([A]);
+  });
+
+  it("never record an instance this machine could not reach, and ask it again: the network may be this machine's", async () => {
+    const f = fake([noDns(A), notFound(B), noRoute(C), noDns(A), noDns(B), noDns(C), noDns(A), noDns(B), noDns(C)]);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/failed with no answer that shows the host's .*: is this machine online, or something on it in the way\?/);
+    expect(f.asked).toEqual([A, B, C, A, B, C, A, B, C]);
+    expect(f.closed).toEqual([]);
+    // a host not reached is no answer: a drop before it stays unrecorded
+    const h = fake([dropped(A), noDns(B), noDns(B), noDns(B)]);
+    await expect(askOverpass([A, B], h.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(h.closed).toEqual([]);
+    // the network fails after a busy answer and comes back before the next round: nothing is recorded
+    for (const gone of [noDns, connectTimeout]) {
+      const g = fake([status(A, 504), gone(B), gone(C), "{}"]);
+      expect((await askOverpass([A, B, C], g.d)).toString()).toBe("{}");
+      expect(g.asked).toEqual([A, B, C, A]);
+      expect(g.closed).toEqual([]);
+    }
+  });
+
+  it("record nothing when every instance drops and none answers", async () => {
+    const f = fake([dropped(A), dropped(B), dropped(C)]);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/no other instance answered after, so none of them is recorded as closed/);
+    expect(f.closed).toEqual([]);
+    // nothing is asked again after every instance dropped: no minute's wait for a second round
+    expect(f.waits).not.toContain(60_000);
+  });
+
+  it("record no drop that no answer follows, though an instance answered before it", async () => {
+    // round 1 asks A, B and C; round 2 asks A alone
+    const f = fake([status(A, 504), dropped(B), dropped(C), dropped(A)]);
+    await expect(askOverpass([A, B, C], f.d)).rejects.toThrow(/none of them is recorded as closed/);
+    expect(f.asked).toEqual([A, B, C, A]);
+    expect(f.closed).toEqual([]);
+    // a timeout is no answer
+    const g = fake([timedOut(A), dropped(B), dropped(C), dropped(A)]);
+    await expect(askOverpass([A, B, C], g.d)).rejects.toThrow(/none of them is recorded as closed/);
+    expect(g.closed).toEqual([]);
+    // one instance, busy and then dropping: no other instance answered after
+    const h = fake([status(A, 504), dropped(A)]);
+    await expect(askOverpass([A], h.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(h.closed).toEqual([]);
+  });
+
+  it("record a drop when another instance answers after it with a status or a redirect, and not with a timeout", async () => {
+    const answers: (string | Error)[][] = [
+      [status(B, 504), status(B, 504), status(B, 504)],
+      [status(B, 403)],
+      [redirected(B)],
+      [status(B, 404)],
+    ];
+    for (const after of answers) {
+      const f = fake([dropped(A), ...after]);
+      await expect(askOverpass([A, B], f.d)).rejects.toThrow(/no Overpass instance answered/);
+      expect(f.closed).toContain(A);
+    }
+    const g = fake([dropped(A), timedOut(B), timedOut(B), timedOut(B)]);
+    await expect(askOverpass([A, B], g.d)).rejects.toThrow(/it is not recorded as closed/);
+    expect(g.closed).toEqual([]);
+  });
+
+  it("record a drop that a fault of ours follows, which is an answer too, and then stop", async () => {
+    for (const ours of [status(B, 400), diskFull()]) {
+      const f = fake([dropped(A), ours]);
+      await expect(askOverpass([A, B, C], f.d)).rejects.toBe(ours);
+      expect(f.asked).toEqual([A, B]);
+      expect(f.closed).toEqual([A]);
+    }
+  });
+
+  it("name the instances closed before, and the record, when the one left drops", async () => {
+    const f = fake([dropped(C)], { closedBefore: [[A, "HTTP 403"], [B, "HTTP 403"]] });
+    const err = await askOverpass([A, B, C], f.d).catch((e: Error) => e);
+    expect(String(err)).toMatch(/c\.example.* dropped the connection .*it is not recorded as closed/);
+    expect(String(err)).toMatch(/a\.example.* is closed \(HTTP 403\); .*b\.example.* is closed \(HTTP 403\); delete its line in .*overpass-closed\.txt/);
+    expect(f.asked).toEqual([C]);
+    expect(f.closed).toEqual([]);
+  });
+
+  it("stop at once on a fault of ours, recording nothing and asking no other instance", async () => {
+    for (const ours of [status(A, 400), diskFull()]) {
+      const f = fake([ours]);
+      await expect(askOverpass([A, B, C], f.d)).rejects.toBe(ours);
+      expect(f.asked).toEqual([A]);
+      expect(f.closed).toEqual([]);
+    }
+  });
+
+  it("leave an instance that answers another 4xx for the rest of that area's requests, without recording it", async () => {
+    const f = fake([status(A, 404), status(B, 504), "{}"]);
+    await askOverpass([A, B], f.d);
+    expect(f.asked).toEqual([A, B, B]);
+    expect(f.closed).toEqual([]);
+  });
+
+  it("do not ask an instance recorded as closed in an earlier run", async () => {
+    const f = fake(["{}"], { closedBefore: [[A, "HTTP 403"]] });
+    await askOverpass([A, B], f.d);
+    expect(f.asked).toEqual([B]);
+  });
+
+  it("fail, naming each closed instance, why and the record to edit, when none answers", async () => {
+    const f = fake([status(A, 403), status(B, 504), status(B, 504), status(B, 504)]);
+    await expect(askOverpass([A, B], f.d)).rejects.toThrow(/no Overpass instance answered; .*a\.example.* is closed \(HTTP 403\); delete its line in .*overpass-closed\.txt/);
+  });
+
+  it("sort a name with several addresses by the attempts that say something of the host", () => {
+    // Node tries each of a name's addresses in turn and gathers the attempts' errors, with no message of its
+    // own; it cuts every attempt but the last short after 250 ms (ETIMEDOUT), whatever the host would have done
+    const tried = (...messages: string[]) => fetchError(new TypeError("fetch failed", { cause: new AggregateError(messages.map((m) => new Error(m)), "") }), A, A);
+    const cut = "connect ETIMEDOUT ::ffff:192.0.2.1:443", refused = "connect ECONNREFUSED 192.0.2.1:443";
+    const noRoute6 = "connect ENETUNREACH 2001:db8::1:443 - Local (:::0)", noRoute4 = "connect ENETUNREACH 192.0.2.1:443";
+    const noPort = "connect ENOBUFS 192.0.2.1:443 - Local (0.0.0.0:0)", blocked = "IP(192.0.2.1) is blocked by net.BlockList";
+    const each = tried(cut, refused);
+    expect(String(each)).toBe(`Error: ${A} -> TypeError: fetch failed (${cut}; ${refused})`);
+    expect(each.attempts).toEqual([cut, refused]);
+    // the host refused at an address, before or after one this machine has no route to, or one cut short
+    expect(failure(A, each)).toBe("dropped");
+    expect(failure(A, tried(noRoute6, refused))).toBe("dropped");
+    expect(failure(A, tried(refused, noRoute6))).toBe("dropped");
+    expect(failure(A, tried(refused, refused))).toBe("dropped");
+    // no address reached, or none answered: this machine, or busy if the last, which Node does not cut short, timed out
+    expect(failure(A, tried(noRoute6, noRoute4))).toBe("offline");
+    expect(failure(A, tried(cut, noRoute6))).toBe("offline");
+    // an attempt that failed on this machine for another reason is not the host's answer either
+    expect(failure(A, tried(noPort, noRoute6))).toBe("offline");
+    expect(failure(A, tried(blocked, blocked))).toBe("offline");
+    expect(failure(A, tried(noRoute6, "connect ETIMEDOUT 192.0.2.1:443"))).toBe("busy");
+    // one address: the cause's own message, as before, and no attempts
+    const one = fetchError(new TypeError("fetch failed", { cause: new Error("other side closed") }), A, A);
+    expect(String(one)).toBe(`Error: ${A} -> TypeError: fetch failed (other side closed)`);
+    expect(one.attempts).toBeUndefined();
+  });
+
+  describe("snapshot()'s own error for a failed request", () => {
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("give every attempt, the logged URL in place of the real one, and write nothing", async () => {
+      const file = "osm/never-written-by-the-overpass-test.json";
+      const url = "https://a.example/api/interpreter?secret=1";
+      vi.stubGlobal("fetch", async () => {
+        throw new TypeError(`fetch failed for ${url}`, {
+          cause: new AggregateError([new Error("connect ECONNREFUSED 192.0.2.1:443"), new Error(`connect ENETUNREACH 2001:db8::1:443 (${url})`)], ""),
+        });
+      });
+      const err = await snapshot({ source: "osm", file, url, logUrl: A }).catch((e: Error) => e);
+      expect(String(err)).toBe(`Error: ${A} -> TypeError: fetch failed for ${A} (connect ECONNREFUSED 192.0.2.1:443; connect ENETUNREACH 2001:db8::1:443 (${A}))`);
+      expect(String(err)).not.toContain("secret");
+      expect(JSON.stringify((err as { attempts?: string[] }).attempts)).not.toContain("secret");
+      expect(failure(A, err)).toBe("dropped");
+      expect(fs.existsSync(path.join(RAW_DIR, file))).toBe(false);
+    });
+  });
+
+  it("tell a refusal, a drop, a busy answer, a host not reached and our own fault apart", () => {
+    for (const n of [500, 502, 503, 504, 429]) expect(failure(A, status(A, n)), String(n)).toBe("busy");
+    for (const n of [401, 403]) expect(failure(A, status(A, n)), String(n)).toBe("refused");
+    for (const n of [404, 410]) expect(failure(A, status(A, n)), String(n)).toBe("unavailable");
+    expect(failure(A, status(A, 400))).toBe("ours");
+    expect(failure(A, timedOut(A))).toBe("busy");
+    expect(failure(A, connectTimeout(A))).toBe("busy");
+    expect(failure(A, redirected(A))).toBe("refused");
+    for (const drop of [dropped(A), closedSocket(A), refusedTcp(A)]) expect(failure(A, drop)).toBe("dropped");
+    for (const gone of [noDns(A), notFound(A), noRoute(A), noPort(A), firewall(A), untrusted(A)]) expect(failure(A, gone)).toBe("offline");
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (Client network socket disconnected before secure TLS connection was established)`))).toBe("dropped");
+    // a body the host cut short when its answer is not kept alive
+    expect(failure(A, new Error(`${A} -> TypeError: terminated (Response body length does not match content-length header)`))).toBe("dropped");
+    expect(failure(A, new Error(`${A} -> TypeError: terminated (Response does not match the HTTP/1.1 protocol (Invalid EOF state))`))).toBe("dropped");
+    // a TLS alert, and a name that holds the word "redirect": neither is the host's verdict
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (ssl/tls alert handshake failure: SSL alert number 40)`))).toBe("offline");
+    expect(failure(A, new Error(`${A} -> TypeError: fetch failed (getaddrinfo ENOTFOUND overpass.redirect.test)`))).toBe("offline");
+    expect(failure(A, diskFull())).toBe("ours");
+  });
+});
