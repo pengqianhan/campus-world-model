@@ -1,6 +1,6 @@
 {
  "name": "thomas-building-extension",
- "site": false,
+ "site": true,
  "building": {
   "id": "110N",
   "also": [],
@@ -186,7 +186,8 @@
     224.1
    ]
   ],
-  "outline_note": "campus_outline with its vertices 11 to 13, the end of the link to the Thomas Building (110), moved back along -z of frame.expected's view frame from z 19.63, 19.29 and 19.22 to z 18.3 (1.0 to 1.3 m), then taken to the map's frame. In the LiDAR the link (x -13 to 8, z 13.5 to 19.5) is a roof 16.94 m above the ground (median of 238 building returns at x -12.5 to 7.5, z 14 to 17.5; sparse, as on glass) which ends at z 19.5 to 19.6, where 110's flat roof at 15.8 to 16.0 m begins; 110's own outline reaches z 18.4 to 18.8, so the two campus outlines overlap by 0.6 to 1.0 m there. Counting as 110's the returns beyond z 19.6 and those above z 17.4 outside the link's x -13.0 to 8.0 (its roof and its parapet and wall beside the link), the first data run (campus_outline, near_outline 1.5) took 12,206 building returns more than 3 m up, 343 of them 110's; this ring with near_outline 1.0 takes none of 110's and leaves out 123 of 110N's own (1.0%: the link's last 0.3 m and a few eave returns)."
+  "outline_note": "campus_outline with its vertices 11 to 13, the end of the link to the Thomas Building (110), moved back along -z of frame.expected's view frame from z 19.63, 19.29 and 19.22 to z 18.3 (1.0 to 1.3 m), then taken to the map's frame. In the LiDAR the link (x -13 to 8, z 13.5 to 19.5) is a roof 16.94 m above the ground (median of 238 building returns at x -12.5 to 7.5, z 14 to 17.5; sparse, as on glass) which ends at z 19.5 to 19.6, where 110's flat roof at 15.8 to 16.0 m begins; 110's own outline reaches z 18.4 to 18.8, so the two campus outlines overlap by 0.6 to 1.0 m there. Counting as 110's the returns beyond z 19.6 and those above z 17.4 outside the link's x -13.0 to 8.0 (its roof and its parapet and wall beside the link), the first data run (campus_outline, near_outline 1.5) took 12,206 building returns more than 3 m up, 343 of them 110's; this ring with near_outline 1.0 takes none of 110's and leaves out 123 of 110N's own (1.0%: the link's last 0.3 m and a few eave returns).",
+  "also_note": "the top view (run.sh topview, round 2): the model covers block 110N by 99.3% and the Thomas Building's (110) by 0.9%, where the link meets it; no other block whose centre is within 80 m by 0.5% or more, so none goes in also"
  },
  "origin": {
   "lat": -36.8523,

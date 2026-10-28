@@ -7,7 +7,8 @@ View photographs of its face to the road (October 2026). The kit it is built wit
 viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=thomas-building-extension&view=orbit`
-  with the repository root served on port 8765. The site does not draw it yet (`site` is false).
+  with the repository root served on port 8765. The site draws it in place of block 110N (below, "On the
+  site").
 - Run its pipeline: `landmarks/pipeline/run.sh thomas-building-extension [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
@@ -131,6 +132,17 @@ over the outer 0.75 m, tried in round 1, cost 0.004-0.012 of IoU in the box in t
 nothing from above, and was not kept. The highest point: 22.70 / 22.79 (the LiDAR's p99.9). The curtain
 wall's storeys and the base's openings come from the photographs (above).
 
+## On the site (October 2026)
+
+The model covers 99.3% of block 110N and 0.9% of the Thomas Building's block (110), where the link meets
+it, and no other block within 80 m by 0.5% or more, so `building.also` is empty. The door is the foot of
+the curve on its east side, 0.9 m out from the wall, where the LiDAR's ground is +0.01 m from `ground`
+(-0.02 to +0.05 within a metre): no door stands there; the service doors the photographs show have their
+sills at 0.13-0.17 m, over a forecourt 0.13-0.26 m below `ground`. The site stands the model on its own
+ground at the door (its 10 m elevation grid, 28.87 m there), which lies from 0.04 m below to 2.87 m above
+that under the model's walls; the walls go down to `FOOT`, -1.6 m, and stood as the site stands it no
+mesh's foot is above the drawn ground (the highest, the doors' sills, 0.11 m below it).
+
 ## Limits
 
 - What no photograph shows is plain: the curve round the north (from 25.1 m along it), the north end,
@@ -140,5 +152,5 @@ wall's storeys and the base's openings come from the photographs (above).
   frames that show through it; the base's render is `renderGrey`, drawn between the two photographs'
   readings of it, and the board-marked concrete the kit's plain `grey`.
 - The walls go down to `FOOT` (-1.6 m) all round; in the viewer, which draws no ground here, they show
-  below the forecourt.
+  below the forecourt; on the site they reach below the drawn ground everywhere.
 - The beam's depth out from the base and the fins' depth are estimated.
