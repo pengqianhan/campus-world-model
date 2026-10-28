@@ -46,8 +46,9 @@ for u in used:
     mpath = os.path.join(ROOT, "refs", "streetview", "masks", os.path.basename(u["ref"]).rsplit(".", 1)[0] + ".png")
     mk = np.asarray(Image.open(mpath).resize((W, H), Image.NEAREST)) if os.path.exists(mpath) else classify(np.asarray(ref))
     ref = np.asarray(ref, np.float32); ren = np.asarray(Image.open(u["render"]).convert("RGB").resize((W, H), Image.BILINEAR), np.float32)
-    R, G = lab[..., 0] > 127, lab[..., 1] > 127
-    valid = ~G & ((mk < 64) | (mk >= 192))
+    # blue: a neighbour of the config's compare.occluders in front (viewer/mask.js); left out with the ground
+    R, G, Bl = lab[..., 0] > 127, lab[..., 1] > 127, lab[..., 2] > 127
+    valid = ~G & ~Bl & ((mk < 64) | (mk >= 192))
     a, b = R & ~G & valid, (mk >= 192) & valid
     union = int((a | b).sum()); iou = float((a & b).sum() / union) if union else None
     region = R & (mk >= 192)

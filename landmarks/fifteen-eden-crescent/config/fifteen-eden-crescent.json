@@ -1,0 +1,225 @@
+{
+ "name": "fifteen-eden-crescent",
+ "site": true,
+ "building": {
+  "id": "802",
+  "also": [],
+  "title": "15 Eden Crescent, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    222.2,
+    461.5
+   ],
+   [
+    227.6,
+    467
+   ],
+   [
+    255.9,
+    441.2
+   ],
+   [
+    251.6,
+    437.6
+   ],
+   [
+    252.6,
+    436.5
+   ],
+   [
+    245.1,
+    430.4
+   ],
+   [
+    249.4,
+    427.3
+   ],
+   [
+    248.4,
+    426.5
+   ],
+   [
+    244.1,
+    429.6
+   ],
+   [
+    243.5,
+    429.2
+   ],
+   [
+    242.5,
+    430.1
+   ],
+   [
+    238,
+    426.5
+   ],
+   [
+    231.2,
+    432.6
+   ],
+   [
+    229.8,
+    431.5
+   ],
+   [
+    226.2,
+    434.9
+   ],
+   [
+    226.4,
+    435.1
+   ],
+   [
+    224.9,
+    436.6
+   ],
+   [
+    225.9,
+    437.6
+   ],
+   [
+    211.5,
+    450.8
+   ]
+  ],
+  "also_note": "the top view (run.sh topview, round 3): the model covers block 802 and no other block within 80 m by half or more"
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 17.3,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 6,
+  "spine_below": 6,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    241.58088809,
+    441.10200437
+   ],
+   "axis": [
+    0.71331507,
+    -0.7008435
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "pano_ids": [
+   "v8ia-KiFy8InsSKu-68fcg",
+   "mdk1IFK9FpXz58gtNvcvow",
+   "MH15gD4Eo-K2ekDNdhtQiQ"
+  ],
+  "pano_ids_note": "the three Google panoramas of 2024-08 bought for 9 Eden Crescent (801), already in the cache, which the sight-line test finds seeing 802's north face (v8ia N 100%, MH15 N and NW 100%, mdk1 N 99%)",
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   }
+  ],
+  "camera_fixes_note": "the three panoramas of 2024-08 are the ones bought for 9 Eden Crescent (801) next door, whose round 1 found them recorded about 1 m from where the LiDAR puts what they see, all three the same way, from one drive (801's config, streetview.camera_fixes_note: v8ia's camera fitted to its photograph's own edges against the LiDAR's, residuals 0.08 m or less; mdk1's and MH15's to 801's street end as drawn). An error in a panorama's recorded position is the same whatever building it looks at, so each camera here is where 801's fit puts it: 801's shift turned into the map's east and north and back into this frame (v8ia 1.11 m, mdk1 0.87 m, MH15 1.47 m, each toward the south-east along Eden Crescent, x -1.06, -0.87 and -1.39 m here, and 0.32, 0.02 and 0.48 m nearer the face). Not fitted to 802's own edges yet. Their views are cut from the panoramas as before; only the camera they are drawn from moves",
+  "camera_fixes": {
+   "v8ia-KiFy8InsSKu-68fcg": [
+    25.3,
+    23.82
+   ],
+   "mdk1IFK9FpXz58gtNvcvow": [
+    35.49,
+    24.73
+   ],
+   "MH15gD4Eo-K2ekDNdhtQiQ": [
+    14.76,
+    23.42
+   ]
+  }
+ },
+ "light": {
+  "sunaz": 305,
+  "sunel": 25,
+  "env": 2.5,
+  "ground": [
+   0.3,
+   0.28,
+   0.24
+  ],
+  "groundshade": 0.6,
+  "exposure": 2.2,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins), as 9 Eden Crescent's (801) next door: the same three panoramas of 2024-08, and 802's street face looks north-east (bearing 44.5 deg) as 801's street end does. The sun here, 305 deg and 25 deg up (about 15:00 in August), is 801's, inferred, not read from the photographs: it stands 9.5 deg behind the face's plane, so the viewer draws the face in shade. The photographs do not show it so (round 3's review, 2026-10-28, which this note said wrongly): in MH15's the face is in the sun, the light falling on it at a slant from the north-west, the street tree's shadow on the wall and the base beside it and each opening's head throwing its shadow across the jamb below; those shadows are not drawn (estimated light, docs/ART_BIBLE.md). Without this block the sun is the Clock Tower's July morning, low in the north-east and full on this face (round 1: drawn median 206 against the photographs' 166). Exposure 2.2 as 801's (the same camera): after round 3's review, with 801 drawn as an occluder (compare), the drawn median is 242-243 against the photographs' 234-252, within 9.4 in every view (MH15's three, which are the brightest, 250-252 against 242); without the occluder, mdk1's wide view is 249 against 236 (12.3), 801's white cladding and dark glass counted where 801 hides the model (the white walls are in the photographs' building region only with sky_mask.pale_tint; without it the region was the windows, the base and a tree, median 155-175). At 1.4 and 1.8 the white paint still draws at 235 and 240."
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true,
+  "note": "keep_fixes (round 2, 2026-10-27): every camera is where streetview.camera_fixes puts it; the search still runs and its report says what it would move, but corrects nothing. With sky_mask.pale_tint the white cloud behind the face is solid in the masks too, and MH15's search ran to its bounds (dy +1.0 m, dz -2.25 m), pulled to cover it; v8ia's and mdk1's fail the reliability test (sky 4% and 2% round the silhouette). Round 3: MH15's ran to dy +1.0 m and dz -2.63 m (sky 28% round the silhouette), v8ia's and mdk1's to their bounds (sky 0%); none applied."
+ },
+ "sky_mask": {
+  "pale_tint": 8,
+  "note": "tools/sky_mask.py, as for 9 Eden Crescent (801): the same three photographs, in which 801's white cladding stands in front of this building in mdk1's and v8ia's views and beside it in MH15's, in open shade and exposed for the shade, as white as a hazy sky; without pale_tint the masks take it for sky wherever it touches the top of a view (mdk1's wide view: its bands of white cladding are sky in the mask), so this model's end and top storey, drawn behind it, lose there. With pale_tint 8 the pale sky must be tinted blue (801's note: the sky's pale blue here is 18-21 above red, the cladding -4 to +2)."
+ },
+ "door": {
+  "x": -24.6,
+  "z": -2.9,
+  "note": "view frame: the point whose ground is the model's y = 0. Eden Crescent's footpath lies 0.55-1.06 m below the frame's ground along the whole street face (the LiDAR's ground returns at z 12.6-14), so no street door's foot is at y = 0 (doors A and C, parts/body.js, step down to it at -0.95). The ground rises along the lane at the south-east end to the frame's ground at the back; the door is the foot of the plan's south-east tip on that lane, 0.4 m out from the plan's tip (x -24.2 to -24.0 at z -2.2 to -3.5), where the LiDAR ground is -0.11 m (-0.16 to -0.06 within a metre), as 801's door is the foot of a corner. place.py puts it on the map"
+ },
+ "compare": {
+  "occluders": [
+   "nine-eden-crescent"
+  ],
+  "note": "9 Eden Crescent (801, on the site since #107) stands between the street and this building's north-west end in v8ia's and mdk1's photographs of 2024-08 (after round 3's review it hides 39%, 8% and 13% of the model's region in v8ia's wide, upper and door views, 65%, 54% and 56% in mdk1's), and beside it in MH15's, where it hides none. The compare draws 801's model as an occluder (viewer/mask.js: moved into this frame through both configs' frame.expected and ground), and the pixels where it hides this building count in neither the IoU nor the luma: they show 801. After round 3's review: mdk1 wide's luma median 236 against 249 drawn without the occluder (12.3, the only view past 12), 239 against 243 with it, every view within 9.4; IoU in the box 0.724 without it and 0.730 with it over the 9 corrected views (before the review 0.715 and 0.702)."
+ }
+}
