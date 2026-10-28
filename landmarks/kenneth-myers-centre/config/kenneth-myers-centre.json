@@ -5,8 +5,42 @@
   "id": "820",
   "also": [],
   "title": "Kenneth Myers Centre, University of Auckland",
-  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "note": "outline: traced from the LiDAR (building.outline_note), in the map's frame; chooses the crop box and the building's own points (frame.near_outline, measure and topview). campus_outline: building 820's outline from the main project's campus.json, kept for the record; the site replaces block 820 by its id, and topview measures the share of that block under the model.",
   "outline": [
+   [
+    7.5,
+    597.3
+   ],
+   [
+    25.8,
+    600.9
+   ],
+   [
+    25.6,
+    602.2
+   ],
+   [
+    30.4,
+    603.2
+   ],
+   [
+    29.8,
+    606.3
+   ],
+   [
+    44.0,
+    609.1
+   ],
+   [
+    37.9,
+    632.6
+   ],
+   [
+    2.0,
+    625.5
+   ]
+  ],
+  "campus_outline": [
    [
     43.3,
     611.5
@@ -99,7 +133,8 @@
     37.4,
     633.7
    ]
-  ]
+  ],
+  "outline_note": "traced from the LiDAR's roofs and wall returns in the view frame of frame.expected (walls fitted to the returns: front z 16.2, porch front 14.8, east front 11.6, back -12.6, west x -16.7; the east wall from (21.4, 11.6) to (19.9, -12.6), skewed 3.5 deg as its parapet's returns run), taken to the map's frame. campus.json's outline (campus_outline) lies about 2 m north of the building's front and back (its front edge at z 11.8-12.7 against the LiDAR's 16.2; its back at -11.6 to -13.8 against -12.6) and adds a west tail (x -21.6 to -15, z -19 to -3) over the low lane beside the tower to the west and an east nub (x 21 to 27, z 7 to 13) over the low roofs to the east. Within 1.5 m of it the first data run took 94% of the building's roof returns, the mast's, and none of the tower's (no return above 40 m), but cut off the front 2 m of the street face (z 14.2 to 16.2 west of x 1.3) and its south-west corner; so the points are chosen by this ring, within 1.0 m of it. (The data stage's heightmap figure draws the map-frame outline without taking it to NZTM, so there it stands about 5 m off: most of that is the frame difference heightmap.py names.)"
  },
  "origin": {
   "lat": -36.8523,
@@ -126,14 +161,25 @@
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
  },
  "frame": {
-  "method": "screening run",
+  "method": "LiDAR building points (class 6) within near_outline m of building 820's outline from campus.json (the first data run, before the outline was traced from the LiDAR: building.outline_note): centre = mean x/y of points higher than tower_above m: the front range's and the two roof blocks' tops at 10.0-10.2 m and the mast; axis = the bearing of most of the walls seen from above (axis_from walls), the one of the two square to each other nearest the principal axis of the points from min_above to spine_below m within spine_radius m, pointing west-south-west (street_side east); toStreet = the axis turned 90 deg toward street_side: south-south-east, to Shortland Street. With the traced ring and near_outline 1.0 the centre would be 0.73 m from this one (x -0.41, z +0.61 in this frame): the model, the cameras and the placement keep frame.expected.",
   "min_above": 3,
   "tower_above": 8.0,
   "spine_below": 8.0,
   "spine_radius": 30,
-  "near_outline": 1.5,
+  "near_outline": 1.0,
   "street_side": "east",
-  "axis_from": "walls"
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    32.18388226,
+    615.84007645
+   ],
+   "axis": [
+    -0.98475817,
+    -0.17392915
+   ],
+   "tolerance_m": 0.05
+  }
  },
  "streetview": {
   "pano_ids": [
