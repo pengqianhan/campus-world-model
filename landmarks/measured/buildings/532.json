@@ -1,0 +1,179 @@
+{
+ "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north of the campus origin, true north, as public/data/uoa/campus.json. Heights in metres above ground.zero, the LiDAR ground (NZVD2016) at the lowest point of the outline, where the model stands on the map's ground (place.door).",
+ "place": {
+  "building": "532",
+  "centre": [-78.8, -683.2],
+  "door": [-88.57, -665.1]
+ },
+ "lidar": "Auckland Part 1 LiDAR point cloud (2024), tiles 3704, 3803, 3804",
+ "ground": {
+  "p5": 40.38,
+  "p50": 44.54,
+  "p95": 49.08,
+  "zero": 40.52
+ },
+ "levels": 6,
+ "layers": [
+  {
+   "rings": [
+    [
+     [-81.5, -693.5],
+     [-75.2, -698.3],
+     [-72.5, -699.8],
+     [-68.5, -700.6],
+     [-64.5, -700.0],
+     [-62.6, -699.2],
+     [-63.2, -698.1],
+     [-59.4, -693.2],
+     [-58.4, -693.6],
+     [-58.2, -690.5],
+     [-58.8, -687.5],
+     [-60.2, -684.8],
+     [-62.2, -682.5],
+     [-69.2, -677.1],
+     [-70.0, -677.8],
+     [-80.8, -669.6],
+     [-80.1, -668.8],
+     [-82.9, -666.8],
+     [-87.4, -665.1],
+     [-90.9, -665.1],
+     [-93.2, -665.6],
+     [-94.4, -666.1],
+     [-93.8, -667.1],
+     [-97.5, -672.0],
+     [-98.8, -671.7],
+     [-98.9, -675.1],
+     [-98.5, -677.2],
+     [-97.2, -680.2],
+     [-95.1, -682.8],
+     [-92.5, -684.8],
+     [-91.8, -683.9],
+     [-87.3, -687.4],
+     [-89.9, -690.8],
+     [-83.4, -695.8]
+    ]
+   ],
+   "y0": -1.0,
+   "roof": "flat",
+   "eave": 16.53,
+   "wall": 16.23,
+   "ridge": 16.53,
+   "overhang": 1.0,
+   "storey": 2.705,
+   "storeys": 6,
+   "m2": 849.0,
+   "eaves": [
+    0.0,
+    0.0,
+    0.0,
+    0.36,
+    0.51,
+    1.0,
+    0.98,
+    1.0,
+    0.77,
+    0.67,
+    0.65,
+    0.68,
+    0.85,
+    0.6,
+    0.41,
+    1.0,
+    0.72,
+    0.65,
+    0.44,
+    0.24,
+    0.48,
+    0.75,
+    0.49,
+    0.39,
+    0.0,
+    0.0,
+    0.0,
+    0.22,
+    0.28,
+    0.27,
+    0.0,
+    0.0,
+    0.0,
+    0.6
+   ]
+  },
+  {
+   "rings": [
+    [
+     [-84.88, -694.66],
+     [-83.5, -693.25],
+     [-83.5, -692.25],
+     [-84.75, -691.0],
+     [-86.25, -691.0],
+     [-87.45, -692.68]
+    ]
+   ],
+   "y0": 16.23,
+   "roof": "flat",
+   "eave": 17.99,
+   "wall": 17.99,
+   "ridge": 17.99,
+   "overhang": 0.0,
+   "storey": 2.998,
+   "storeys": 6,
+   "m2": 9.8
+  },
+  {
+   "rings": [
+    [
+     [-79.5, -679.75],
+     [-78.75, -680.0],
+     [-76.0, -676.75],
+     [-76.0, -676.25],
+     [-75.25, -675.5],
+     [-74.75, -676.0],
+     [-73.77, -674.94],
+     [-75.16, -673.88],
+     [-76.25, -674.5],
+     [-79.5, -678.25],
+     [-79.0, -678.75]
+    ]
+   ],
+   "y0": 16.23,
+   "roof": "flat",
+   "eave": 18.07,
+   "wall": 18.07,
+   "ridge": 18.07,
+   "overhang": 0.0,
+   "storey": 3.011,
+   "storeys": 6,
+   "m2": 7.8
+  }
+ ],
+ "dropped": [
+  {
+   "m2": 19.5,
+   "why": "roof cells on no smooth plane, or in pieces under 4 m2: drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of the top-view check's share within 0.5 m (not_drawn_m2)"
+  }
+ ],
+ "measured": {
+  "outline_m2": 828.5,
+  "roof_inside_m2": 828.8,
+  "cover": 0.998,
+  "vegetation": 0.001,
+  "open_below": 0.094,
+  "not_drawn_m2": 6.0
+ },
+ "check": {
+  "iou": 0.966,
+  "lidar_m2": 904.5,
+  "model_m2": 882.5,
+  "within_0.5m": 0.993,
+  "model_minus_lidar_m": {
+   "p10": -0.23,
+   "p50": 0.01,
+   "p90": 0.2
+  },
+  "highest_m": {
+   "model": 18.07,
+   "lidar": 18.3
+  }
+ }
+}
