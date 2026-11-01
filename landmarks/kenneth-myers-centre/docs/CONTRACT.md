@@ -12,8 +12,10 @@ nothing is traced or sampled from them into the model.
   south-south-east (`toStreet`, toward Shortland Street); the mean of the building's points above 8 m
   at x = z = 0. `config/kenneth-myers-centre.json`, `frame`: the centre from the points within 1.5 m of
   building 820's outline in campus.json (the first data run), the axis from the walls.
-- **The plan is the LiDAR's, and the aerial's for the west part.** campus.json's outline of 820 lies about 2 m north of the building's
-  front and back and adds a tail on the west and a nub on the east over lower roofs; the config's
+- **The plan is the LiDAR's, and the aerial's for the west part.** campus.json's outline of 820 lies 0.27 to 0.93 m north of the
+  building's street face (0.84-0.93 before the west part, 0.27-0.54 before the porch, 0.66-0.72 before the
+  east part) and is turned against it, its back from 0.88 m south of the building's at x -13 to 1.15 m north
+  at x 19 (centroids 1.1 m apart); it adds a tail on the west and a nub on the east over lower roofs; the config's
   `building.outline` is a ring traced from the LiDAR instead (`building.outline_note`), and
   `building.campus_outline` keeps the University's. The data stage's heightmap figure draws the
   map-frame outline without taking it to NZTM, so there it stands about 5 m off. The model stands
@@ -50,7 +52,8 @@ nothing is traced or sampled from them into the model.
   brick, added for this building), the dressings its `render`, the openings its `void`. Round 1:
   13,242 triangles in 5 meshes (`brickBrown`, `render`, `void`, `roofGrey`, `paint`); round 2, 13,700
   in the same 5.
-- Street View: ≤ 1,200 tiles for this building; 429 bought (one panorama, 2026-10-27). Nothing more.
+- Street View: ≤ 1,200 tiles for this building; 143 bought (one panorama at zoom 5, 2026-10-27; the
+  screening's 429 that day were three panoramas', two of them 110N's). Nothing more.
 
 ## References
 - One Google panorama of 2026-04 on Shortland Street, `0Rjk296LTsGDt_gXXn3yrg`

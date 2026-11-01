@@ -26,9 +26,12 @@ A change to what the site does or shows adds its line here, and the README's
   the LINZ 2024 LiDAR, and what its street face carries is measured in a Street View photograph of it.
   Over its west part the LiDAR holds scaffolding and a temporary roof, so that part is drawn from the
   LINZ aerial photograph of 2023 and the Street View photograph instead. The campus map's outline for
-  820 lies about 2 m north of the building; the model stands where the LiDAR and the aerial show it, in
-  place of the block. The height of its west side's parapet, its steps, how far its pilasters and arcades
-  stand out, its parapets' thickness and its radio mast's members are estimated, and its card says so.
+  820 lies up to about 1 m off the building; the model stands where the LiDAR and the aerial show it, in
+  place of the block. Its card says what measures it: the LiDAR, and for its west part the aerial
+  photograph and the Street View photograph; About credits the aerial photograph. The height of its west side's parapet and of its west part's dentil course, how far its pilasters, arcades,
+  coping and door surround stand out, its parapets' thickness, the widths of the piers between its blind
+  arches, of its merlons and of the porch's windows and colonnettes, where its blind arches come down, and
+  its radio mast's members are estimated, and its card says so.
   On the map it has the map's colours; from a walker's height on a computer with a graphics card, its
   own brick, render and paint. Its sides, its back and its roofs, which no photograph shows, are drawn
   plainly. A click still opens its floors (#PR).

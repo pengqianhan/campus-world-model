@@ -21,10 +21,12 @@ bearing of most of the walls, points west-south-west and x is minus it); y up fr
 street before the door; z south-south-east, toward Shortland Street; the mean of the building's returns
 above 8 m at x = z = 0.
 
-**The campus map's outline for 820 is about 2 m off the building.** Taken to the LiDAR's grid, it lies
-about 2 m north of the building's front and back (its front edge at z 11.8 to 12.7 where the LiDAR's
-wall stands at 16.2 before the porch, its back at -11.6 to -13.8 against -12.6), and adds a tail on the
-west and a nub on the east over lower roofs. The outline is the University's and is not changed here:
+**The campus map's outline for 820 is up to about 1 m off the building.** Taken to the LiDAR's grid, it
+lies north of the street face that the model draws by 0.84 to 0.93 m before the west part, 0.27 to 0.54 m
+before the porch and 0.66 to 0.72 m before the east part, and is turned against the building: its back
+stands 0.88 m south of the building's back at x -13 and 1.15 m north of it at x 19, and the two shapes'
+centroids are 1.1 m apart. It adds a tail on the west and a nub on the east over lower roofs. (Round 1
+measured it against the LiDAR's face at z 16.2, which was the temporary works', and wrote about 2 m.) The outline is the University's and is not changed here:
 `building.campus_outline` keeps it, and the model, drawn where the LiDAR and the aerial show the
 building, stands in place of block 820, of which it covers 90.2% from above. The data stage chooses the
 building's points by a ring traced from the LiDAR instead (`building.outline`, `outline_note`).
@@ -32,7 +34,7 @@ building's points by a ring traced from the LiDAR instead (`building.outline`, `
 ## References
 
 One Google panorama of April 2026 on Shortland Street, `0Rjk…`, 32 m from the frame's centre, bought on
-2026-10-27 (429 tiles, none since): its `wide` view sees the whole street face, `upper` the porch and the
+2026-10-27 (143 tiles, at zoom 5; none since): its `wide` view sees the whole street face, `upper` the porch and the
 east part's top, `door` the door and its steps. Its metadata's `copyright` reads "From the Owner, Photo
 by: Google", as every landmark's on the site does. The panorama records a tilt of 5.89° and a roll of
 -2.41°, which the cut does not apply, so its views stood turned 4.53° clockwise: they are cut turned
@@ -82,6 +84,13 @@ still holds the works: whole, its footprint IoU is 0.884 and 59% of the cells bo
   The wide view's IoU in the box fell from round 1's 0.530 as the west part came down to the
   photograph's height: the towers behind it count against it.
 
+- **Review fixes** (November 2026): the steps as the LiDAR and the door view show them, a landing to z 15.7
+  and six risers down south between two cream walls (round 1's flight to the west stood on footpath); the
+  western porch block's spires at the photograph's 9.85 m (the LiDAR's 10.8 there was the temporary roof);
+  the porch's cream band and corbel table, the east part's pilasters and the porch's spires measured in the
+  photograph; six small arches to a bay, as the photograph has them. IoU in the box 0.452 / 0.908 / 1.000 (sky in the box unchanged), luma 125 / 120 / 115 against
+  126 / 121 / 121.
+
 ## Heights against the LiDAR
 
 Building returns of `data/kenneth-myers-centre_pts.npy` in the view frame; model / LiDAR (medians, with
@@ -92,16 +101,18 @@ coping 8.86 / 8.86 (its highest at x 3 to 4); the two blocks on the roof 10.06 /
 the box 7.70 / 7.70 and the lantern 9.42 / 9.42; the mast's top 39.3 / 39.29 (its highest return; the
 LiDAR's p99.9 over the whole building is 38.21). Every one within 0.15 m. The east part's pinnacles'
 tips come from the photograph (9.27 to 9.93 m: the LiDAR rarely hits a spire's top, and its highest
-returns there are 9.04 to 9.99), and the west part's heights from the photograph (above).
+returns there are 9.04 to 9.99), as do the western porch block's (9.85 m: above 9.5 m the LiDAR there
+holds the temporary roof's returns) and the west part's heights (above). The steps: the landing at the
+door's threshold, 0.65 m (the LiDAR 0.67-0.80), and the street at their foot -0.05 (the LiDAR).
 
 ## On the site (November 2026)
 
 The model covers 90.2% of block 820 and no other block within 80 m by 0.5% or more, so `building.also`
 is empty. The door is the footpath at the foot of the steps before the door, on its centre line (x 4.0,
-z 17.6), where the LiDAR's ground is -0.03 m from `ground`. The site stands the model on its own ground
+z 17.6, just beyond the steps' walls), where the LiDAR's ground is -0.03 m from `ground`. The site stands the model on its own ground
 at the door (the 8 m elevation model), which lies from 0.03 m to 1.03 m below it along the street face
 and 3.9 to 4.0 m below it along the back; the walls go down to `FOOT` (-13.1 m), the east part's
-pilasters and areaway to -2.7, the west part's face and the steps to -2.0, the porch to -0.6, each below
+pilasters and areaway to -2.7, the west part's face to -2.0, the steps to -1.0, the porch to -0.6, each below
 the drawn ground under it, so no part hangs above it (`tests/landmarks.test.ts` passes).
 
 ## Limits
@@ -112,10 +123,14 @@ the drawn ground under it, so no part hangs above it (`tests/landmarks.test.ts` 
   one photograph, where the LiDAR elsewhere gives them; its pilasters' widths are read from the
   photograph's silhouettes of their shafts against the tower behind, and how far they stand out is
   estimated.
-- The height of the west side's parapet (drawn as high as the west part's coping band), the steps before
-  the door (drawn as round 1 read them in the door view), how far the pilasters and arcades stand out,
-  the parapets' thickness and the mast's members are estimated; the config's `estimated` says so on its
-  card. The mast is white: its red bands are not drawn.
+- Estimated, and named in the config's `estimated`, which its card shows: the height of the west side's
+  parapet (drawn as high as the west part's coping band) and of the west part's dentil course; how far
+  the pilasters, the arcades round the blind arches, the coping and the door's surround stand out, and the
+  parapets' thickness; the widths of the piers between the blind arches, of the merlons and of the porch's
+  windows and colonnettes; where the blind arches come down (behind the east part's areaway and the cars
+  before the west part); and the mast's members. The split of the porch's cream between its band and its
+  dentil course is estimated too, within the cream the photograph measures. The mast is white: its red
+  bands are not drawn.
 - The walls go down to `FOOT` (-13.1 m) all round; in the viewer, which draws no ground here, they show
   below the street; on the site they reach below the drawn ground everywhere.
   The two renders in the README (`docs/landmarks/kenneth-myers-centre-front.jpg` and `-above.jpg`) are

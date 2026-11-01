@@ -444,11 +444,11 @@ sized by the LiDAR, every height within 0.15 m of the medians of their returns, 
 carries is measured in one Street View photograph through its camera, which is set from the photograph's
 own edges. Over the part west of the porch the LiDAR of 2024 holds temporary works, scaffolding and a
 temporary roof: that part's plan comes from the LINZ aerial photograph of 2023 and its heights from the
-Street View photograph, at the aerial's plan. The campus map's outline for 820 lies about 2 m north of
-the building that the LiDAR and the aerial show; the model, drawn where they show it, stands in place of
-its block. Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.45
+Street View photograph, at the aerial's plan. The campus map's outline for 820 lies up to about 1 m off
+the building that the LiDAR and the aerial show (0.3 to 0.9 m north of its street face, its back turned
+across the building's); the model, drawn where they show it, stands in place of its block. Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.45
 to 1.00 over the three views of the panorama, though glass towers fill the sky round it, so the IoU
-there says little; the brightness of its brick is within 8 of the photograph's in each view. From above
+there says little; the brightness of its brick is within 6 of the photograph's in each view. From above
 its outline covers the LiDAR's with an IoU of 0.88, 0.95 leaving out the west part, where the LiDAR
 holds the works. What no photograph shows is drawn plainly: its sides, its back and its roofs.
 
@@ -835,11 +835,14 @@ If you represent the University and would like something changed or removed, ple
   edges, 1.1 m from where the panorama records it, and its views are cut turned level by 4.5°. Over the
   part west of its porch the LiDAR of 2024 holds scaffolding and a temporary roof: that part's plan comes
   from the aerial photograph of 2023 and its heights from the Street View photograph, and its roof from
-  the LiDAR's few returns under the temporary roof. The campus map's outline for 820 lies about 2 m north
-  of the building, and the model, drawn where the LiDAR and the aerial show it, stands in place of its
-  block. What no photograph shows is drawn plainly: its sides, its back and its roofs. The height of its
-  west side's parapet, its steps, how far its pilasters and arcades stand out, its parapets' thickness
-  and its radio mast's members are estimated, and its card says so; the mast's red bands are not drawn.
+  the LiDAR's few returns under the temporary roof. The campus map's outline for 820 lies up to about 1 m
+  off the building (0.3 to 0.9 m north of its street face, its back turned across the building's), and
+  the model, drawn where the LiDAR and the aerial show it, stands in place of its block. What no
+  photograph shows is drawn plainly: its sides, its back and its roofs. The height of its west side's parapet and of its west part's dentil course, how far its pilasters, arcades,
+  coping and door surround stand out, its parapets' thickness, the widths of the piers between its blind
+  arches, of its merlons and of the porch's windows and colonnettes, where its blind arches come down, and
+  its radio mast's members are estimated, and its card says so; the mast's
+  red bands are not drawn.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
