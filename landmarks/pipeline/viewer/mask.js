@@ -67,6 +67,19 @@ for (const other of config.compare?.occluders ?? []) {
   scene.add(group);
   console.log(`occluder ${other}: drawn in blue in this frame`);
 }
+// compare.underground: parts of this model that stand below the street in the photographs (a wall's foot taken
+// down to FOOT where the map's ground lies lower than the LiDAR's), drawn again over the model in the ground's
+// green: left out of the overlap, the luma and the model's box, as the ground is, and hiding what stands behind
+// them, as the ground does. Without the option the page draws as before.
+const only = params.get("only")?.split(",");
+const under = (config.compare?.underground ?? []).filter((p) => !only || only.includes(p));
+if (under.length) {
+  const underMat = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+  const group = build(materials, under);
+  group.traverse((o) => { if (o.isMesh) { o.material = underMat; o.renderOrder = 1; } });
+  scene.add(group);
+  console.log(`underground ${under.join(", ")}: drawn as the ground`);
+}
 let tris = 0; model.traverse((o) => { if (o.isMesh) tris += (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3; });
 console.log(`mask model built in ${(performance.now() - t0).toFixed(0)} ms, ${tris | 0} triangles`);
 const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 3000);

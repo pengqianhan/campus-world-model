@@ -28,6 +28,17 @@ A change to what the site does or shows adds its line here, and the README's
   walker's height on a computer with a graphics card, its own glass, render, concrete and metal. The
   faces no photograph shows, round its north and on its north-west, are drawn plainly. A click still
   opens its floors (#122).
+- **The Fisher Building drawn in detail.** Near the camera the map draws the Fisher Building (804)
+  from code in place of its block: a tan brick tower on Waterloo Quadrant, its higher half a shaft
+  over its south-west side, a cream band at each floor, a slot of windows framed in
+  white up the shaft's corner, balconies with dark louvres down its west side, a red tile canopy
+  over its entrance and the ramp to it from the street. Its roofs, the canopy, the ramp's deck and the
+  floor bands are measured from the LINZ 2024 LiDAR, the lowest two bands carrying the spacing on
+  (estimated); the ramp's side along the street, the slot and the balconies are measured in two Street
+  View photographs of it, and the balconies' depth is estimated. On the
+  map it has the map's colours; from a walker's height on a computer with a graphics card, its own tan
+  brick, render, glass and red clay tiles. Its faces turned north, east and south-east, which no
+  photograph shows, are drawn plainly. A click still opens its floors (#121).
 - **15 Eden Crescent drawn in detail.** Near the camera the map draws 15 Eden Crescent (802), next to
   9 Eden Crescent, from code in place of its block: a long white two-storey building on Eden
   Crescent, its windows set deep in square openings with red frames, in two rows over a base of
@@ -39,6 +50,20 @@ A change to what the site does or shows adds its line here, and the README's
   it has the map's colours; from a walker's height on a computer with a graphics card, its own white
   paint, glass, timber and red frames. Its back and ends, which no photograph shows, are drawn
   plainly. A click still opens its floors (#116).
+- **Waikato World Model, at /waikato/.** Another school on the site: the University of Waikato's
+  Hamilton campus, in 3D on the LINZ ground among the streets and buildings round it. Its 53
+  buildings come from OpenStreetMap, which tags only one of them as the University's; so which of
+  them are the University's, and the names of the 17 that OpenStreetMap leaves unnamed (their block
+  codes, such as TRU and MS8), come from the University's own Hamilton campus map, version Q1 2025,
+  which the site's maintainer downloaded and gave the project. Each building is one block at its
+  OpenStreetMap height (1 from its number of levels), else at a default, and the building card says
+  where its name and height come from; About lists the map with the other sources. Halls of
+  residence and childcare centres stay unnamed among the surroundings, and the buildings the map
+  gives to others, such as NIWA and Landcare Research, stand among them too. Its rooms, class times,
+  trimester dates and paper list are not shown: Waikato's main website, which holds them, is closed
+  to this project by its `robots.txt`, and the site says so. The Tauranga campus is not shown:
+  OpenStreetMap ties no building there to Waikato, and the campus map is Hamilton's alone. The
+  accent and the map's colours are the project's own; none is taken from Waikato (#119).
 - **Massey World Model, at /massey/.** Another school on the site: Te Kunenga ki Pūrehuroa Massey
   University, in 3D on the LINZ ground among the streets and buildings round it. The Manawatū
   campus at Turitea, Palmerston North, has 39 buildings; "Other campuses" in the campus list takes
@@ -74,6 +99,16 @@ A change to what the site does or shows adds its line here, and the README's
   other buildings of the queue in the LiDAR keep their blocks, every place where people live among
   them (Carlaw Park's blocks too, which OpenStreetMap tags as student housing), each with its reason
   (`landmarks/measured/exclusions.json`) (#108).
+- **Measured massings on the Grafton and Newmarket campuses.** Near the camera, 93 Grafton Road (532)
+  on the Grafton campus, and the Ray Meyer Building (901), Building 904, Structures Hall (906) and
+  Building 909 on the Newmarket campus, are drawn from the LINZ 2024 LiDAR in place of their blocks,
+  as the City campus's measured massings are: their layers and roofs measured, their walls, storeys
+  and windows drawn by rule. Four more tiles of the same LiDAR were fetched for them. The other 34
+  buildings of the two campuses keep their blocks, each with its reason: Grafton Hall, Building 523
+  and Te Ako o Te Tui Early Childhood Centre as places where people live and a childcare centre;
+  18 Carrick Place, which stands in another area of the map; the rest because the LiDAR shows too
+  little roof inside their outlines (open ground, car parks, trees, a building under the ground) or
+  because a model fails the check against the LiDAR from above (#120).
 
 ### Changed
 
@@ -95,6 +130,11 @@ A change to what the site does or shows adds its line here, and the README's
   the space the campus map has under its east third, as the map's blocks drew them; a walker passes
   under it in view. Seen from a distance, the map is unchanged; near 119 only the link and the
   ground under it change (#117).
+- **The cards of the Clock Tower East Wing and 15 Eden Crescent say what is estimated.** Their
+  cards said every size of the model was measured by LiDAR, while the underside of the East Wing's
+  link toward the Clock Tower stands at the campus map's storey height, and two parts of 15 Eden
+  Crescent's roofs are drawn on from the rest: nothing measures them. Each card now says what is
+  estimated, as About does (#118).
 
 ## 2026-10-27
 
