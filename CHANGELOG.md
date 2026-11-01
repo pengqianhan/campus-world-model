@@ -31,7 +31,7 @@ A change to what the site does or shows adds its line here, and the README's
   times, semester dates and course list are not shown: Lincoln's main website, which holds its
   campus maps, key dates and course pages, is closed to this project by its `robots.txt`, and the
   site says so. The accent and the map's colours are the project's own; none is taken from Lincoln
-  (#PR).
+  (#125).
 
 ## 2026-11-01
 
