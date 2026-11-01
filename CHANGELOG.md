@@ -34,7 +34,7 @@ A change to what the site does or shows adds its line here, and the README's
   its radio mast's members are estimated, and its card says so.
   On the map it has the map's colours; from a walker's height on a computer with a graphics card, its
   own brick, render and paint. Its sides, its back and its roofs, which no photograph shows, are drawn
-  plainly. A click still opens its floors (#PR).
+  plainly. A click still opens its floors (#126).
 - **Lincoln World Model, at /lincoln/.** Another school on the site: Lincoln University's Lincoln
   campus, in 3D on the LINZ ground among the streets and buildings round it. Only the buildings
   OpenStreetMap tags as the University's are shown as the University's: a building that names
