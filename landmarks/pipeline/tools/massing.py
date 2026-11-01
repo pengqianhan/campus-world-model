@@ -1,18 +1,27 @@
-"""Measured massings (landmarks/MASSING.md): the plain buildings of the City campus as blocks and roofs
-at the heights the LINZ 2024 LiDAR measures, drawn by landmarks/measured/model.js.
+"""Measured massings (landmarks/MASSING.md): the plain buildings of the University's campuses as blocks and
+roofs at the heights the LINZ 2024 LiDAR measures, drawn by landmarks/measured/model.js.
 
-Reads the eight LiDAR tiles that the landmark pipeline already keeps in data/raw/landmarks/lidar/ (it
-fetches nothing) and public/data/uoa/campus.json. For each tier-3 building in the tiles, and each of tiers 1
-and 2 that the site does not draw as a landmark yet (MASSING.md, "Which buildings"), it measures the ground,
-the roof and its layers and roof forms, builds the model with model.js (massing_triangles.mjs) and checks it
-from above against the LiDAR. It writes
+Reads the campus's tiles of that LiDAR (CAMPUS_TILES) that the landmark pipeline keeps in
+data/raw/landmarks/lidar/ (it fetches nothing, unless given --fetch) and public/data/uoa/campus.json. On the
+City campus, for each tier-3 building in the tiles, and each of tiers 1 and 2 that the site does not draw as a
+landmark yet (MASSING.md, "Which buildings"); on Grafton and Newmarket, for each building in the tiles; it
+measures the ground, the roof and its layers and roof forms, builds the model with model.js
+(massing_triangles.mjs) and checks it from above against the LiDAR. It writes
   landmarks/measured/buildings/<id>.json   each building that passes every limit (MASSING.md, decision 3)
   landmarks/measured/exclusions.json       each that does not, with its reason and its numbers
-  landmarks/measured/out/<id>.png, report.md   the top views (LiDAR | model | difference) and a table (not committed)
+  landmarks/measured/out/<id>.png, report.md   the top views (LiDAR | model | difference) and a table (not committed;
+                                           report-<campus>.md for a campus other than the City campus)
+A run writes the files of its own campus only: the other campuses' data files and exclusions stay as they are.
 Run from the repository root, with the pipeline's Python:
-  $PY -I landmarks/pipeline/tools/massing.py            every such building in the tiles
+  $PY -I landmarks/pipeline/tools/massing.py            every such building of the City campus in its tiles
   $PY -I landmarks/pipeline/tools/massing.py --tier3    tier 3 alone
   $PY -I landmarks/pipeline/tools/massing.py 216 113    these only; the other files are kept
+  $PY -I landmarks/pipeline/tools/massing.py --campus grafton           another campus (grafton, newmarket)
+  $PY -I landmarks/pipeline/tools/massing.py --campus grafton --fetch   first fetches the campus's tiles that are
+      not cached, through tools/data/fetch_bridge.py (landmarks/README.md, "Fetching": cached once in
+      data/raw/landmarks/, logged in data/sources.json); nothing else is fetched
+  --drop-bare, --keep-bare   whether a traced piece of a layer with no roof cell of it in the LiDAR is left out
+      (DROP_BARE_ON: on for Grafton and Newmarket, off for the City campus until the maintainer decides)
 """
 import json, math, os, re, subprocess, sys
 from collections import deque
@@ -25,7 +34,27 @@ if not os.path.exists(os.path.join(ROOT, "public", "data", "uoa", "campus.json")
 OUT = os.path.join(ROOT, "landmarks", "measured")
 WORK = os.path.join(OUT, "out")     # gitignored (landmarks/.gitignore)
 LIDAR = os.path.join(ROOT, "data", "raw", "landmarks", "lidar", "NZ24_Auckland")
-TILES = [f"CL2_BA32_2024_1000_{t}" for t in ("3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706")]
+# The tiles of the Auckland Part 1 LiDAR (2024) that each campus's buildings need, with the 12 m round each
+# outline that main() crops the points to (the 1:1000 tiles of sheet BA32: 480 m east-west, 720 m north-south;
+# rows 36 to 39 from the north, columns 03 to 06 from the west). The City campus's eight are those the landmarks
+# use. Grafton's 532 reaches into 3704 and its 621 and 644 into 3803; Newmarket's P9A lies in 3904, and P9B and the
+# crop round 901 reach into it.
+CAMPUS_TILES = {
+    "city": ("3603", "3604", "3605", "3606", "3703", "3704", "3705", "3706"),
+    "grafton": ("3704", "3803", "3804"),
+    "newmarket": ("3904", "3905"),
+}
+LIDAR_URL = "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz"
+CAMPUS = "city"      # --campus
+# A piece of an upper layer, as traced, in which the LiDAR sees no roof cell of that layer (every cell of it came to
+# the layer only as the nearest) is not drawn as a layer, so that no layer's roof stands where the LiDAR sees none
+# (the review of #120: a lobe of 906's outline over open ground was drawn as a 20 m mono-pitch). It is on for the
+# campuses measured since then. On the City campus (2026-10-28) it changes no data file and no reason, only one
+# number of a building that keeps its block (405's model area in the top view, 3863.5 to 3863.2 m2), but the City's
+# files are kept byte for byte, so it waits for the maintainer there. --drop-bare or --keep-bare sets it for a run.
+DROP_BARE_ON = {"city": False, "grafton": True, "newmarket": True}
+DROP_BARE = DROP_BARE_ON[CAMPUS]
+TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
 
 RES = 0.5            # m, the heightmap's cells
 FLOOR = 2.5          # m above the reference ground: a roof
@@ -57,8 +86,8 @@ SOON = {"801"}
 # Buildings that keep their blocks in this batch, by decision (MASSING.md, "Decisions the maintainer must
 # take"): 10 is the maintainer's (2026-10-22); 7 is the campus loop's lead's, as the design left it open;
 # 6 stays at the design's default until the maintainer decides: places where people live (residential
-# floors, and by hand below 434, 450 and Carlaw Park's 832 and 834 to 837) and childcare centres keep
-# their blocks.
+# floors, and by hand below 434, 450, Carlaw Park's 832 and 834 to 837, and Grafton Hall's 621 and 643) and
+# childcare centres keep their blocks.
 KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people "
               "it belongs to (decision 7)" for i in ("251", "252", "253", "254", "255", "256")},
         "275": "Fale Pasifika: culturally significant; its block stays until the maintainer has asked the people "
@@ -72,7 +101,12 @@ KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the 
         **{i: "decision 6, a place where people live (OpenStreetMap tags it building=dormitory, run by the University: "
               "Carlaw Park's student accommodation, as 831 and 833 beside it, whose floors are marked residential), though "
               "the campus map marks none of its floors residential: kept until the maintainer decides"
-           for i in ("832", "834", "835", "836", "837")}}
+           for i in ("832", "834", "835", "836", "837")},
+        "621": "decision 6, a place where people live (Grafton Hall Residences by its name, though its floors are marked "
+               "unmapped): kept until the maintainer decides",
+        "643": "decision 6, a place where people live (a block of Grafton Hall, the hall of residence whose blocks B and C, "
+               "644 and 645, have residential floors and whose reception in 645 is an Accommodation Reception on the "
+               "campus map), though its own floors are marked unmapped: kept until the maintainer decides"}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
 
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
@@ -246,14 +280,14 @@ def load_points(boxes, to_map):
     """Points of classes 2 to 6 inside any of the boxes (NZTM), in map metres: x, y, z, class."""
     import laspy
     crop = json.dumps([[round(v, 1) for v in b] for b in boxes])
-    cache = os.path.join(WORK, "points.npz")
+    cache = os.path.join(WORK, "points.npz" if CAMPUS == "city" else f"points-{CAMPUS}.npz")
     if os.path.exists(cache):
         c = np.load(cache)
         if str(c["boxes"]) == crop: return c["p"]
     parts = []
     for t in TILES:
         f = os.path.join(LIDAR, t + ".laz")
-        if not os.path.exists(f): sys.exit(f"missing {os.path.relpath(f, ROOT)}: the generator fetches nothing (landmarks/README.md, Fetching)")
+        if not os.path.exists(f): sys.exit(f"missing {os.path.relpath(f, ROOT)}: the generator fetches nothing without --fetch (landmarks/README.md, Fetching)")
         with laspy.open(f) as r:
             for ch in r.chunk_iterator(4_000_000):
                 x = np.asarray(ch.x); y = np.asarray(ch.y)
@@ -562,6 +596,8 @@ def measure(b, P, others, campus_origin):
         bi = {**bi, "form": "flat", "height": float(np.median(H[lab == base] - zero))}
     eave0 = bi["height"] if bi["form"] == "flat" else float(roof_at(bi["planes"], *(along(outer) - centre).T).min())
 
+    bare = set()     # (layer, m2) of the pieces DROP_BARE leaves out
+
     def traced(k):
         mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
         for ring in trace(mk, cx, cy):
@@ -571,7 +607,13 @@ def measure(b, P, others, campus_origin):
             ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
             if len(ring) >= 3 and crosses(ring): ring = despike(np.round(plain, 2))
             if len(ring) < 3 or area(ring) < MIN_PIECE or crosses(ring): continue
-            yield ccw(ring)
+            ring = ccw(ring)
+            # a piece in which the LiDAR sees no roof cell of this layer: every cell of it came to the layer only as
+            # the nearest (906's lobe over open ground); with DROP_BARE it is not drawn as a layer
+            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & (full == k)).any():
+                bare.add((k, round(float(area(ring)), 1)))
+                continue
+            yield ring
 
     def stands(rec_k):
         # a layer no higher than the walls it would stand on is part of the roof under it
@@ -605,6 +647,10 @@ def measure(b, P, others, campus_origin):
                     u["wall"] = round(y0 + 0.05, 2)
                     u["storey"], u["storeys"] = storeys(u["wall"], levels)
                 if stands(u): out.append(u)
+    for k, a in sorted(bare):
+        dropped.append({"m2": a, "why": "a piece of the outline that only came to a layer as its nearest, where the LiDAR "
+                        "sees no roof cell of that layer: not drawn as a layer (DROP_BARE); the walls under it stand "
+                        "there to their own height"})
     data = {
         "note": "A measured massing (landmarks/MASSING.md), written by landmarks/pipeline/tools/massing.py from the "
                 "LINZ 2024 LiDAR and drawn by landmarks/measured/model.js; do not edit. Map metres east and north "
@@ -811,31 +857,70 @@ def landmark_buildings():
     return out
 
 
+def options(argv):
+    """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, --drop-bare or --keep-bare
+    (DROP_BARE), and building ids."""
+    args, campus, flags = [], "city", set()
+    it = iter(argv)
+    for a in it:
+        if a == "--campus": campus = next(it, "")
+        elif a.startswith("--campus="): campus = a.split("=", 1)[1]
+        elif a.startswith("--"): flags.add(a)
+        else: args.append(a)
+    if campus not in CAMPUS_TILES: sys.exit(f"--campus: one of {', '.join(CAMPUS_TILES)}")
+    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare"}
+    if unknown: sys.exit(f"unknown option {', '.join(sorted(unknown))}")
+    if {"--drop-bare", "--keep-bare"} <= flags: sys.exit("--drop-bare or --keep-bare, not both")
+    return campus, flags, args
+
+
+def fetch_tiles(tiles):
+    """The campus's tiles that are not cached, fetched through the landmark pipeline's one way out
+    (tools/data/fetch_bridge.py: scripts/lib/snapshot.ts caches each once in data/raw/landmarks/lidar/,
+    paced, and logs it in data/sources.json). Its LiDAR folder there is the one this tool reads."""
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
+    import fetch_bridge
+    need = [t for t in tiles if not os.path.exists(os.path.join(LIDAR, f"CL2_BA32_2024_1000_{t}.laz"))]
+    print(f"fetching {len(need)} of the campus's {len(tiles)} tiles: {', '.join(need) or 'none'}", flush=True)
+    for path in fetch_bridge.files([LIDAR_URL.format(tile=t) for t in need]):
+        print(f"  {os.path.relpath(path, ROOT)}: {os.path.getsize(path):,} bytes", flush=True)
+
+
 def main():
+    global CAMPUS, TILES, DROP_BARE
+    CAMPUS, flags, ask = options(sys.argv[1:])
+    TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
+    DROP_BARE = "--drop-bare" in flags or (DROP_BARE_ON[CAMPUS] and "--keep-bare" not in flags)
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
     origin = campus["origin"]
     to_map, to_grid = projector(origin)
     bounds = []
     import laspy
+    if "--fetch" in flags: fetch_tiles(CAMPUS_TILES[CAMPUS])
     missing = [t for t in TILES if not os.path.exists(os.path.join(LIDAR, t + ".laz"))]
     if missing:
         sys.exit(f"missing {', '.join(missing)} in {os.path.relpath(LIDAR, ROOT)}: the generator fetches nothing "
-                 "(landmarks/README.md, Fetching)")
+                 "without --fetch (landmarks/README.md, Fetching)")
     for t in TILES:
         with laspy.open(os.path.join(LIDAR, t + ".laz")) as r: bounds.append((*r.header.mins[:2], *r.header.maxs[:2]))
     def in_tiles(ring):
         e, n = to_grid(ring[:, 0], ring[:, 1])
         return all(any(x0 <= a <= x1 and y0 <= c <= y1 for x0, y0, x1, y1 in bounds) for a, c in zip(e, n))
-    city = [b for b in campus["buildings"] if b["campus"] == "city" and not b.get("offMap") and not b.get("area")]
-    tier3 = [b for b in city if b["id"] not in TIER1 | TIER2 and in_tiles(decode(b["outline"][0]))]
-    only3 = "--tier3" in sys.argv[1:]
-    ask = [a for a in sys.argv[1:] if not a.startswith("--")]
+    # The campus's buildings in the map's central area. One that stands in another area of the map (Grafton's 581
+    # at Carrick Place) or off it keeps its block: the campus's tiles do not reach it.
+    here = [b for b in campus["buildings"] if b["campus"] == CAMPUS and not b.get("offMap") and not b.get("area")]
+    away = [b for b in campus["buildings"] if b["campus"] == CAMPUS and (b.get("offMap") or b.get("area"))]
+    elsewhere = {b["id"] for b in campus["buildings"] if b["campus"] != CAMPUS}
     drawn = landmark_buildings()
-    wider = [] if only3 else [b for b in city if b["id"] in TIER1 | TIER2 and b["id"] not in drawn | SOON
+    # Tiers 1 and 2 are the City campus's landmark queue (MASSING.md, "Which buildings"); on the other campuses
+    # every building is tier 3, less any that the site draws as a landmark.
+    tier3 = [b for b in here if b["id"] not in TIER1 | TIER2 and b["id"] not in drawn and in_tiles(decode(b["outline"][0]))]
+    only3 = "--tier3" in flags
+    wider = [] if only3 else [b for b in here if b["id"] in TIER1 | TIER2 and b["id"] not in drawn | SOON
                               and in_tiles(decode(b["outline"][0]))]
     every = tier3 + wider
     todo = [b for b in every if not ask or b["id"] in ask]
-    print(f"{len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
+    print(f"{CAMPUS}: {len(tier3)} tier-3 buildings and {len(wider)} of tiers 1 and 2 with no landmark in the tiles; measuring {len(todo)}")
     boxes = []
     # the points round every building of the run's set (`every`), whichever of them it measures: a run of
     # some ids shares the cache of a full run, but a --tier3 run crops round tier 3 alone and rewrites it
@@ -846,14 +931,22 @@ def main():
     P = load_points(boxes, to_map)
     os.makedirs(os.path.join(OUT, "buildings"), exist_ok=True)
     if not ask:
-        # a run over every building writes the whole set: the data file of a building it no longer measures
-        # (one that has become a landmark) goes
+        # a run over every building of its campus writes the campus's whole set: the data file of a building it
+        # no longer measures (one that has become a landmark) goes; the other campuses' files stay
         for f in os.listdir(os.path.join(OUT, "buildings")):
-            if f.endswith(".json") and f[:-5] not in {b["id"] for b in todo}: os.remove(os.path.join(OUT, "buildings", f))
+            if f.endswith(".json") and f[:-5] not in {b["id"] for b in todo} | elsewhere: os.remove(os.path.join(OUT, "buildings", f))
     exfile = os.path.join(OUT, "exclusions.json")
-    ex = json.load(open(exfile, encoding="utf-8"))["buildings"] if os.path.exists(exfile) and ask else {}
+    ex = json.load(open(exfile, encoding="utf-8"))["buildings"] if os.path.exists(exfile) else {}
+    if not ask: ex = {k: v for k, v in ex.items() if k in elsewhere}
     rows = []
-    outlines = {b["id"]: [ccw(decode(b["outline"][0]))] for b in city}
+    for b in away if not ask else [b for b in away if b["id"] in ask]:
+        why = f"it stands in another area of the map ({b['area']})" if b.get("area") else "it stands off the map"
+        why += ", which the campus's LiDAR tiles do not reach"
+        ex[b["id"]] = {"name": b["name"]["en"], "reason": why}
+        rows.append((b["id"], b["name"]["en"], None, why))
+        print(f"{b['id']} {b['name']['en']}: block stays: {why}")
+    # the neighbours whose points a building's own leave out: every building of the map's central area, of any campus
+    outlines = {b["id"]: [ccw(decode(b["outline"][0]))] for b in campus["buildings"] if not b.get("offMap") and not b.get("area")}
     for b in todo:
         bid = b["id"]; name = b["name"]["en"]
         target = os.path.join(OUT, "buildings", f"{bid}.json")
@@ -885,11 +978,22 @@ def main():
             c = data["check"]
             print(f"{bid} {name}: drawn, {len(data['layers'])} layer(s) "
                   f"{'/'.join(l['roof'] for l in data['layers'])}, IoU {c['iou']}, within {c['within_0.5m']}")
-    json.dump({"note": "The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and "
-                       "tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason "
-                       "(landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.",
+    # the note names the campuses whose buildings the file holds
+    of = {b["id"]: b["campus"] for b in campus["buildings"]}
+    names = {c["id"]: c["name"]["en"].removesuffix(" Campus") for c in campus["campuses"]}
+    more = [names[c] for c in CAMPUS_TILES if c != "city" and any(of.get(k) == c for k in ex)]
+    note = ("The buildings of the City campus in the eight LiDAR tiles that the generator measures (tier 3, and "
+            "tiers 1 and 2 until their landmarks come) and that keep their blocks, each with its reason "
+            "(landmarks/MASSING.md). Written by landmarks/pipeline/tools/massing.py; do not edit.")
+    if more:
+        note = ("The buildings that the generator measures and that keep their blocks, each with its reason "
+                "(landmarks/MASSING.md): those of the City campus in its eight LiDAR tiles (tier 3, and tiers 1 and 2 "
+                f"until their landmarks come), and every building of the {' and '.join(more)} campus"
+                f"{'es' if len(more) > 1 else ''} (their own tiles; massing.py, CAMPUS_TILES). Written by "
+                "landmarks/pipeline/tools/massing.py; do not edit.")
+    json.dump({"note": note,
                "buildings": dict(sorted(ex.items()))}, open(exfile, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=1)
-    with open(os.path.join(WORK, "report.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(WORK, "report.md" if CAMPUS == "city" else f"report-{CAMPUS}.md"), "w", encoding="utf-8") as f:
         f.write("| Building | Layers | Roofs | IoU | Within 0.5 m | p10 / p50 / p90 (m) | Highest model / LiDAR (m) |\n|---|---|---|---|---|---|---|\n")
         for bid, name, data, why in rows:
             if data:
