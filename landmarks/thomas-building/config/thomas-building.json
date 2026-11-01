@@ -298,6 +298,7 @@
     "height": 900
    }
   ],
+  "camera_fixes_note": "[x, z, pitch, yaw, roll] (landmarks/README.md). S_C8 (round 1, 2026-10-28): x at its recorded place (no vertical edge of known u to fix it), z, pitch, yaw and roll fitted to the photograph's four horizontal edges in the wide view, the parapet's top against the sky and the three bands' tops over the windows, against the LiDAR's ledges 15.13, 11.12, 7.12 and 2.38 m, between the two piers it sees square (the panorama's stitching seams at about 720 and 1300 px shift a ledge by 10-25 px beyond them); cut again level by its roll, the middle's rms is about 2-3 px. oWaF: where the Thomas Building Extension's round 1 fixed it from its own photograph's edges (110N's config: [31.69, 12.34] in 110N's frame, 0.79 m from the recorded place, turned 2.21 deg left), moved into this frame through both configs' frame.expected (NZTM 238.996, 169.925): x and z, and the yaw, which is the panorama's heading and the same in any frame. Its pitch and roll are not carried over: 110N's views look 64 deg away from these, where a tilted panorama's roll and pitch differ, so they stay the cut's (0, and no roll).",
   "camera_fixes": {
    "S_C83uV6erL3A0gsWU2LUg": [
     6.37,
@@ -305,6 +306,12 @@
     -0.95,
     -1.48,
     -1.62
+   ],
+   "oWaFtXI8EGzKeGyT-DYEOA": [
+    37.63,
+    40.64,
+    0,
+    2.21
    ]
   }
  },
@@ -320,5 +327,11 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true
+ },
+ "compare": {
+  "occluders": [
+   "thomas-building-extension"
+  ],
+  "note": "The Thomas Building Extension (110N, on the site since #122) stands between oWaF and this building's north-east end and the glazed link before it: the compare draws 110N's model as an occluder (viewer/mask.js: moved into this frame through both configs' frame.expected and ground), and the pixels where it hides this building count in neither the IoU nor the luma."
  }
 }
