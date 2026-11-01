@@ -168,8 +168,11 @@ for m, b, g, cam_y, zoom, tiles in plans:
         views.append({"file": fn, "pano": m["panoId"], "date": m["date"], "position": [x, cam_y, z], "target": [0, aim_y, 0], "vfov": vfov, "width": w, "height": h, "bearing": b, "pitch": pitch, "ground_lidar": g})
         fix = SV.get("camera_fixes", {}).get(m["panoId"])
         if fix:  # the config puts this panorama's camera at [x, z] of the view frame (its recorded one is off): cut as before, drawn from there looking the same way
-            fx, fz = fix
+            fx, fz = fix[0], fix[1]
             views[-1].update({"position": [fx, cam_y, fz], "target": [fx - x, aim_y, fz - z], "camera_fix": [x, z]})
+            if len(fix) > 2:  # [x, z, pitch]: the photograph looks `pitch` degrees higher (lower if negative) than its cut says (a panorama whose own tilt or roll the cut does not apply), so the camera drawn from does too
+                hd = math.hypot(x, z); views[-1]["target"][1] = cam_y + math.tan(math.atan2(aim_y - cam_y, hd) + math.radians(fix[2])) * hd
+                views[-1]["camera_fix_pitch"] = fix[2]
     print(f"  {pid}: {len(tiles)} tiles at zoom {zoom} ({len(gaps)} missing), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
 json.dump(views, open(os.path.join(OUT, "views.json"), "w"), indent=1)
 print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed, already in the ledger); "

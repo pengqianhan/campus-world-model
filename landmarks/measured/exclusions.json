@@ -2321,23 +2321,6 @@
     }
    }
   },
-  "804": {
-   "name": "Fisher Building",
-   "reason": "roof cells cover 80% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 483.8,
-    "ground": {
-     "p5": 26.2,
-     "p50": 29.29,
-     "p95": 32.45,
-     "zero": 26.32
-    },
-    "roof_inside_m2": 384.2,
-    "cover": 0.797,
-    "vegetation": 0.216,
-    "open_below": 0.087
-   }
-  },
   "810": {
    "name": "1-11 Short Street",
    "reason": "its outline on the campus map crosses itself: no inside to draw",

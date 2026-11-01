@@ -1,0 +1,301 @@
+{
+ "name": "fisher-building",
+ "site": true,
+ "building": {
+  "id": "804",
+  "also": [],
+  "title": "Fisher Building, University of Auckland",
+  "note": "outline from campus.json, map frame; chooses the crop box and the building's own points",
+  "outline": [
+   [
+    214.7,
+    391.1
+   ],
+   [
+    214.4,
+    390.6
+   ],
+   [
+    220.3,
+    382.1
+   ],
+   [
+    220.9,
+    382.2
+   ],
+   [
+    221,
+    381.7
+   ],
+   [
+    220.3,
+    381.4
+   ],
+   [
+    218.1,
+    375.8
+   ],
+   [
+    221.2,
+    374.5
+   ],
+   [
+    221.8,
+    373.1
+   ],
+   [
+    221,
+    372.3
+   ],
+   [
+    220.3,
+    372.3
+   ],
+   [
+    217.8,
+    373.3
+   ],
+   [
+    217.1,
+    374.1
+   ],
+   [
+    211.4,
+    370
+   ],
+   [
+    211.5,
+    369.5
+   ],
+   [
+    211,
+    369.5
+   ],
+   [
+    210.7,
+    370
+   ],
+   [
+    203.4,
+    369.8
+   ],
+   [
+    202.9,
+    369.4
+   ],
+   [
+    205.1,
+    363.1
+   ],
+   [
+    202.5,
+    362.1
+   ],
+   [
+    198.8,
+    367.5
+   ],
+   [
+    199,
+    367.6
+   ],
+   [
+    196,
+    370.5
+   ],
+   [
+    194.9,
+    369.7
+   ],
+   [
+    193.3,
+    372.1
+   ],
+   [
+    194.3,
+    372.7
+   ],
+   [
+    194.9,
+    371.8
+   ],
+   [
+    193.5,
+    375.8
+   ],
+   [
+    193.1,
+    375.6
+   ],
+   [
+    190.7,
+    379
+   ],
+   [
+    196.5,
+    383
+   ],
+   [
+    199.6,
+    386.7
+   ],
+   [
+    200,
+    386.4
+   ],
+   [
+    205.7,
+    390.3
+   ],
+   [
+    205.8,
+    391
+   ],
+   [
+    206.3,
+    391.2
+   ],
+   [
+    206.4,
+    390.6
+   ],
+   [
+    213.8,
+    390.8
+   ],
+   [
+    214.3,
+    391.4
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 29.1,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "screening run",
+  "min_above": 3,
+  "tower_above": 20,
+  "spine_below": 15,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    215.63132406,
+    375.2706439
+   ],
+   "axis": [
+    0.99998698,
+    0.00510285
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "streetview": {
+  "pano_ids": [
+   "MGAo0rbb0J5NgaeV2uoAKw",
+   "W9y5hI3w3gMsLp1S8xNmPw"
+  ],
+  "pano_ids_note": "the two Google panoramas (2026-04; their recorded cameras 38.3 m (MGAo) and 36.2 m (W9y5) from the frame's centre) that the sight-line test over the LiDAR finds seeing most of the west and south faces (MGAo: S 70%, W 67%, SW 54%; W9y5: W 55%); the other 18 Google panoramas within 80 m see under 2% of the faces turned to them, behind trees and neighbours",
+  "camera_fixes_note": "MGAo's camera fitted to its tower view's own edges against the LiDAR's (round 2, 2026-10-27): 20 floor bands on the shaft's brick faces either side of the slot (columns 545-775, rows 66-339) as the floors at 25.88, 28.75, 31.62 and 34.50 m, the heights where the wall returns peak, on the faces' lines fitted to the LiDAR's wall returns (rms 0.03-0.08 m); the brick's left edge (columns 515-517) on the west corner (14.3, -4.2) and the slot's middle (column 681) on the slot's corner (12.49, -8.48); and the top of the entrance canopy's red tiles (row 960 at columns 300-390) on the LiDAR's canopy roof at 8.76 m. The camera stands 1.36 m west and 1.18 m south of the recorded one (1.8 m; 40.0 m from the frame's centre, 38.3 m recorded) and the photograph looks 5.56 deg lower than its cut says (the third number, std 0.36 deg); residuals: the bands -23.6 to +13.1 px, the corners and the canopy within 2.8 px, rms 10.4 px over 27 (80 px at the recorded camera). Without a pitch the best fit moves the camera 2.8 m nearer and leaves the canopy 98 px off (rms 33.8 px): a point near the camera's height does not move when the camera does. Most of that pitch is the panorama's own roll: it records a roll of -4.16 deg and a tilt of 0.8 deg (the car on the street's cross-slope), which tools/streetview_collect.py does not apply when it cuts the views, and the tower view looks 71 deg off the car's heading, where that roll alone is 3.9 deg of pitch (3.7 to 4.2 with the tilt; 4.24 at most at any heading). The other 1.4 to 1.6 deg (about 4 std of the fit) the recorded orientation does not explain: it is fitted. W9y5's camera (round 3, 2026-10-28) keeps its recorded position (to 1 mm) and takes a pitch only, fitted to the top edge of the entrance canopy's red tiles in its tower, upper and door views (54 columns) against the LiDAR's canopy roof at 8.76 m: the photograph looks 6.41 deg lower than its cut says (|r| p50 12.8 px; before, the canopy was drawn 128, 192 and 173 px low in the three views). Its views show the tower only in patches through leaves, with no edge or roof corner for its position, and the canopy, 0.9 m above the camera's eye, barely moves when the camera does: freed, the position runs to the search's bounds (3.9 m) for little gain (|r| p50 8.5 px), so it is left as recorded. Most of that pitch is the panorama's own roll: it records a roll of -5.71 deg, and its views look 87 deg off the car's heading, where that roll alone is 5.70 deg of pitch; the other 0.7 deg is fitted.",
+  "camera_fixes": {
+   "MGAo0rbb0J5NgaeV2uoAKw": [
+    36.55,
+    -16.3,
+    -5.56
+   ],
+   "W9y5hI3w3gMsLp1S8xNmPw": [
+    27.9023,
+    -23.065,
+    -6.41
+   ]
+  },
+  "max_panos": 12,
+  "radius_m": 80,
+  "camera_height_m": 2.5,
+  "views": [
+   {
+    "name": "wide",
+    "aim_y": 5,
+    "hfov": 95,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "name": "upper",
+    "aim_y": 8,
+    "hfov": 40,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "door",
+    "aim_y": 2.5,
+    "hfov": 45,
+    "width": 1200,
+    "height": 900
+   },
+   {
+    "name": "tower",
+    "aim_y": 19,
+    "hfov": 60,
+    "width": 1200,
+    "height": 1600
+   }
+  ]
+ },
+ "light": {
+  "sunaz": 300,
+  "sunel": 32,
+  "sun": 2.5,
+  "env": 3.6,
+  "exposure": 0.62,
+  "note": "the viewer's light for this building (pipeline/viewer/main.js; the address still wins). The two panoramas are of April 2026 (autumn), partly cloudy. In MGAo's tower view the shaft's face left of the slot (facing bearing 248 deg) is brighter than the face right of it (bearing 222 deg), luma 131-133 against 112-114, so the sun stood west of both, toward the north-west: 300 deg and 32 deg up is mid-afternoon in April (about 35 deg at 14:00 and 27 deg at 15:00, solar time), inferred, not read from the photographs, as is everything here but the side. The sun is soft (2.5, the viewer's default 8) and the sky strong (3.6): the drawn faces then differ by 19, as the photograph's do (21 at sun 4 with sky 3.6, 26 at the default sun); exposure 0.62 puts the building's median luma within 12 of the photographs in every view (round 4's compare, drawn against photographed): W9y5's wide, upper, door and tower views 114 / 106, 119 / 125, 118 / 122 and 118 / 123, MGAo's 146 / 134, 150 / 138, 151 / 143 and 139 / 127. Round 2, before the ramp's side was drawn, left MGAo's upper and door views 18 and 20 below the photographs, where they show that side's light grey face; drawn since round 3, it brought them to 10 and 6 above, and round 4, which leaves the ramp's foot under the street out of the compare, to 12 and 8. Without this block the sun is the Clock Tower's July morning, low in the north-east, and every face the photographs show was in shade (round 1: the drawn median luma 104 against 131)."
+ },
+ "compare": {
+  "underground": [
+   "rampFoot"
+  ],
+  "note": "The ramp's side stands on the pavement of Waterloo Quadrant from its corner 4, where its foot is the LiDAR's ground (5.24 and 5.65 m); under it parts/entrance.js rampFoot takes it on down to FOOT, so that on the site it meets the map's ground, 2.9 to 3.2 m lower there (round 4). In the photographs that is below the street: the label pass (viewer/mask.js) draws it as the ground, so that it counts in neither the IoU, the model's box nor the luma. Drawn as the model, it put the pavement and the street into the luma of MGAo's wide, door and tower views and W9y5's wide view (drawn against photographed 150 / 122, 150 / 136, 142 / 127 and 109 / 94) and stretched the tower view's box to the foot of the frame (IoU in the box 0.818, against 0.838 in round 3 and 0.837 with the option)."
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5
+ },
+ "door": {
+  "x": 10.6,
+  "z": 1.2,
+  "note": "view frame: a point at the foot of the tower's west-south-west face (the tower plan's edge 13, one of the balconies' faces), 0.43 m out from its outline and 0.72 m from the brick core behind the balconies, 1.9 m north of the entrance canopy's nearest corner (not under the canopy, where the LiDAR's ground is the car park's, 2.9 to 3.1 m higher), at the tower's own ground: the LiDAR's ground returns within a metre are 29.29 m (0.07 / 0.19 / 0.28 m p10/p50/p90 from ground; 3 returns, the trees over it hiding the rest; 0.17-0.35 m in the 1 m cells round it), so the model's y is 0 there. The entrance's deck and the ramp up from Waterloo Quadrant stand 5.9 m above it, over the car park (3.0-3.5 m); the ground falls from the door to -3.1 m on the north-east and east, which the walls' foot (FOOT -3.2) reaches. place.py puts it on the map"
+ }
+}
