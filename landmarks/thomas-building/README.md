@@ -82,8 +82,10 @@ the bands, from the plinth to the top band; and the treatment carried round the 
 link. Most panes read light grey with the blinds and fittings behind them: a seeded draw puts blinds in
 about two panes in three, in half in the second row, none in the ground storey's (estimated from the
 photographs' luma, not which panes); the second row's panes below its transom at 3.47 are dark, glass
-with no blind. In the photographs: the piers at u 1.72 and 13.72 land on `S_C8…`'s within about 10 px, the
-one at u 25.72 on `oWaF…`'s, the rows on their rows.
+with no blind. In the photographs: the piers at u 1.72 and 13.72 land on `S_C8…`'s within about 10 px and
+the rows on their rows; the one at u 25.72 (at the measured spacing) lands on `oWaF…`'s within about 10 px
+in its wide view but 50-70 px (about 2°) right of it in its upper and door views, which look higher and
+lower through a camera whose pitch and roll are not yet fitted.
 
 Estimated (the config's `estimated`, for the card), no photograph or return giving them: how far the frames stand out (0.12 m), the plinth's top
 (0.35 m, behind the hedge), the second row's upper transom (4.45 m, read to about 0.1 m), the plain end at
