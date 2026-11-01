@@ -19,7 +19,7 @@ and its Arts Centre location, at https://campusworldmodel.com/uc/; **Massey Worl
 campuses, at https://campusworldmodel.com/massey/; **Waikato World Model**, an **unofficial** 3D
 map of the buildings of the University of Waikato's Hamilton campus, at
 https://campusworldmodel.com/waikato/; and **Lincoln World Model**, an **unofficial** 3D map of the
-buildings of Lincoln University's Lincoln campus that OpenStreetMap tags as the University's, at
+buildings of Lincoln University's Lincoln campus, chosen by OpenStreetMap's tags, at
 https://campusworldmodel.com/lincoln/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
@@ -69,10 +69,11 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-11-02:** another school, at [/lincoln/](https://campusworldmodel.com/lincoln/): Lincoln
-  University's Lincoln campus, from OpenStreetMap. Only the 8 buildings OpenStreetMap tags as the
-  University's (its `operator` tag, or `building=university`) are shown as the University's, each
-  with its name and height and how the height was found; the campus's other buildings stand among
-  the surroundings, with no name. Its rooms, class times, dates and course list are not shown, and
+  University's Lincoln campus, from OpenStreetMap. Only buildings OpenStreetMap tags as the
+  University's (its `operator` tag, or `building=university`) and names are shown as the
+  University's, 8 of them, each with its name and height and how the height was found; Memorial
+  Hall, mapped as disused, and the building named AgResearch are left out, and the campus's other
+  buildings stand among the surroundings, with no name. Its rooms, class times, dates and course list are not shown, and
   the site says why.
 - **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
   balconies and canopy are, and how thick its ramp and parapet are.

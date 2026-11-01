@@ -249,8 +249,8 @@ Lincoln's open items, from `docs/schools/lincoln.md`, "Needs the maintainer" and
    posted, and its terms are unread. Until Lincoln answers, nothing is fetched from any Lincoln
    host, and its rooms, timetable, dates and courses are absent. Until it is asked, the site does
    not say that it has asked.
-2. More of the campus's buildings. OpenStreetMap tags 8 of the campus's 163 buildings as the
-   University's. The Commerce Building, Science South, the RFH Building, Waimarie and many large
+2. More of the campus's buildings. OpenStreetMap tags 13 of the campus's 163 buildings as the
+   University's, and 8 of them are shown. The Commerce Building, Science South, the RFH Building, Waimarie and many large
    unnamed buildings in the middle of the campus carry no such tag, so they stand among the
    surroundings with no name. A table read off the University's own campus map, as for Waikato,
    could add them; the descriptor leaves room for one (its pull request would be a gate).

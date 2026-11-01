@@ -29,8 +29,8 @@ their terms:
   block codes), come from the University of Waikato's Hamilton campus map (version Q1 2025), which
   the site's maintainer downloaded; the map is not in this repository, and those block codes and
   names remain the University of Waikato's.
-- public/data/lincoln/campus.json: Lincoln University's buildings on its Lincoln campus, the ones
-  OpenStreetMap tags as the University's, taken from OpenStreetMap, (c) OpenStreetMap
+- public/data/lincoln/campus.json: Lincoln University's buildings on its Lincoln campus, chosen
+  by OpenStreetMap's tags, taken from OpenStreetMap, (c) OpenStreetMap
   contributors, under the Open Database License 1.0. It holds nothing of Lincoln University's own
   material.
 - data/raw/terrain/ and public/data/<school>/terrain/: New Zealand terrain data (c) Land

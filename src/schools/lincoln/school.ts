@@ -181,9 +181,9 @@ export const school: School = {
       },
     ],
     provides:
-      "Lincoln University's buildings on its Lincoln campus that OpenStreetMap tags as the University's (operator=Lincoln University, or building=university): outlines, names, and heights where tagged. Every other building on the campus, and the streets, paths, parks and trees round it, as surroundings",
+      "Lincoln University's buildings on its Lincoln campus, chosen by OpenStreetMap's tags (operator=Lincoln University, or building=university, and a name; one mapped as disused and one named for another body are left out): outlines, names, and heights where tagged. Every other building on the campus, and the streets, paths, parks and trees round it, as surroundings",
   },
-  /** docs/schools/lincoln.md, "Verdicts". */
+  /** docs/schools/lincoln.md, "Verdicts"; for buildings and terrain, "On the site (2026-11-02)". */
   layers: {
     buildings: "usable",
     indoor: "needs-permission",
