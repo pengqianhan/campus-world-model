@@ -1,15 +1,18 @@
 // The body: four ranges round the courtyard, from FOOT to the gutter behind the parapets, and the
 // parapets' broad tops. Drawn in the building's own axes (u, v: parts/common.js); model.js turns it.
-import { FOOT, MEASURED } from "./common.js";
+import { FOOT, MEASURED, FACADE } from "./common.js";
 
 const M = MEASURED;
 
-/** The four ranges, as boxes from FOOT to the gutter (the courtyard left open). */
+/** The four ranges, as boxes from FOOT to the gutter (the courtyard left open). The range to the road
+ * stops at its windows' plane, FACADE.recess behind the bands (parts/front.js draws the face), and so
+ * does its north-east end from the corner to 110N's link (FACADE.wrapTo). */
 export function body(b) {
   const { outer: o, court: c, parapet: p } = M;
-  const y0 = FOOT, y1 = p.gutter;
+  const y0 = FOOT, y1 = p.gutter, vw = o.v[1] - FACADE.recess, uw = o.u[1] - FACADE.recess;
   b.box(o.u[0], o.u[1], y0, y1, o.v[0], c.v[0], "grey");          // the back range (north-west)
-  b.box(o.u[0], o.u[1], y0, y1, c.v[1], o.v[1], "grey");          // the range to the road (south-east)
+  b.box(o.u[0], uw, y0, y1, c.v[1], vw, "grey");                  // the range to the road (south-east)
+  b.box(uw, o.u[1], y0, y1, c.v[1], FACADE.wrapTo, "grey");       // its north-east end behind the link
   b.box(o.u[0], c.u[0], y0, y1, c.v[0], c.v[1], "grey");          // the south-west range
   b.box(c.u[1], o.u[1], y0, y1, c.v[0], c.v[1], "grey");          // the north-east range
 }

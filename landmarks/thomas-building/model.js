@@ -8,12 +8,14 @@ import * as THREE from "three";
 import { Builder } from "../kit/gothic.js";
 import { SLOPE } from "./parts/common.js";
 import { body, parapets } from "./parts/body.js";
+import { front } from "./parts/front.js";
 import { roofs, plant } from "./parts/roofs.js";
 import { stair } from "./parts/stair.js";
 
 const PARTS = {
   body: (b) => body(b),
   parapets: (b) => parapets(b),
+  front: (b) => front(b),
   roofs: (b) => roofs(b),
   plant: (b) => plant(b),
   stair: (b) => stair(b),

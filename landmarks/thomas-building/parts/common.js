@@ -85,14 +85,31 @@ export const FACADE = {
   recess: 1.35,
   // the windows' rows, [sill, head], and their transoms, on the windows' plane: heads at the bands'
   // lower edges (13.37, 9.35, 5.43 through the camera); the sills hidden behind the bands' tops; the
-  // ground storey's sill at 0.46 (door view); transoms at 12.38, 8.37 and 3.47 (the third storey's panes
-  // dark below it)
+  // ground storey's sill at 0.46 (door view); transoms at 12.38, 8.37 and 3.47 (the panes below 3.47
+  // dark: the second row's, as `dark` says)
   rows: [[0.46, 1.46], [2.38, 5.45], [7.12, 9.38], [11.12, 13.35]],
   transoms: [null, 3.47, 8.37, 12.38],
+  // the second row (2.38 to 5.45) is the one with dark panes below its transom at 3.47 (the upper view: the
+  // rows there are the ground storey's behind the bus shelter, this one, and the third row at the top),
+  // and a second transom above it, read off the upper view between the row's sill, the transom at 3.47
+  // and its head, at 4.45 (estimated to about 0.1 m); the other rows have one transom
+  dark: { row: 1, top: 3.47 },
+  transoms2: [null, 4.45, null, null],
+  // the frames stand out from the glass (estimated: no photograph looks along the face)
+  frameDepth: 0.12,
+  // blinds and lab fittings behind most panes make them read light grey: in S_C8's upper view the panes
+  // of the top row and of the third row's upper tiers read luma 123-138 at the median and 169-188 at the
+  // p90, the dark panels 59, the bands 105; about two panes in three are light in the rows above the
+  // ground storey, whose panes read dark behind the hedge, and fewer in the second row (drawn at 0.65 it
+  // read 173 at the median against the photograph's 138). The share of light panes in each row (which
+  // ones: a seeded draw, estimated)
+  blinds: [0, 0.5, 0.65, 0.65],
   // the red steel mullions: 20 between the two piers the camera sees square, at u 2.94 to 13.96 on the
   // windows' plane (the peaks of the frames' red along rows 2 and 3): every 0.58 m; the same spacing
   // beyond the second pier (15.90 to 21.94, 11 more); elsewhere the same spacing (estimated)
-  mullion: { from: 2.94, step: 0.58, width: 0.07 },
+  // `starts`: the first mullion of a bay where the camera reads it (the bay that begins at that pier's
+  // right edge); in the other bays the first stands 0.07 right of the pier, as at u 2.94 (estimated)
+  mullion: { from: 2.94, step: 0.58, width: 0.07, starts: { 1.72: 2.94, 13.72: 15.9 } },
   // piers from the ground to the top band, flush with the bands: the front faces' edges through the
   // camera at u 1.72-2.92 and 13.70-14.84, 12.0 m apart; at that spacing a pier's edges show behind the
   // tree at u -10.3, and oWaF's view has a pier left of the east corner (its place at the spacing:
