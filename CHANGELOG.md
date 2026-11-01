@@ -14,6 +14,25 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-02
+
+### Added
+
+- **Lincoln World Model, at /lincoln/.** Another school on the site: Lincoln University's Lincoln
+  campus, in 3D on the LINZ ground among the streets and buildings round it. Only the buildings
+  OpenStreetMap tags as the University's are shown as the University's: a building that names
+  Lincoln University as its operator, or is tagged `building=university`, and has a name. That
+  makes 8 of the campus's 163 buildings, among them Ivey Hall, the Forbes Building and the
+  Recreation Centre; every other building on the campus stands among the surroundings, with no
+  name. So do Memorial Hall, which OpenStreetMap maps as disused, and the building it names
+  AgResearch, another body's name. Each building is one block at its OpenStreetMap height (3 from
+  their number of levels), else at a default, and the building card says how its height was found.
+  Halls of residence and childcare centres stay unnamed among the surroundings. Its rooms, class
+  times, semester dates and course list are not shown: Lincoln's main website, which holds its
+  campus maps, key dates and course pages, is closed to this project by its `robots.txt`, and the
+  site says so. The accent and the map's colours are the project's own; none is taken from Lincoln
+  (#125).
+
 ## 2026-11-01
 
 ### Fixed

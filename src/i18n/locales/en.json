@@ -449,6 +449,10 @@
       "waikato": {
         "name": "The University of Waikato",
         "city": "Hamilton"
+      },
+      "lincoln": {
+        "name": "Lincoln University",
+        "city": "Lincoln"
       }
     }
   }
