@@ -297,7 +297,16 @@
     "width": 1200,
     "height": 900
    }
-  ]
+  ],
+  "camera_fixes": {
+   "S_C83uV6erL3A0gsWU2LUg": [
+    6.37,
+    39.81,
+    -0.95,
+    -1.48,
+    -1.62
+   ]
+  }
  },
  "refine": {
   "position_m": 3,
@@ -309,6 +318,7 @@
   "prior": 0.01,
   "min_gain": 0.01,
   "min_sky": 0.2,
-  "max_solid": 0.5
+  "max_solid": 0.5,
+  "keep_fixes": true
  }
 }

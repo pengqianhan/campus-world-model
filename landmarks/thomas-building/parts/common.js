@@ -69,3 +69,40 @@ export const MEASURED = {
   stair: { u: -31.6, v: 9.6, r: 4.0, top: 16.6 },
   flue: { u: [-30.8, -29.6], v: [7.9, 9.2], top: 25.7 },
 };
+
+// The face to the road (round 1), measured through S_C8's camera (config: streetview.camera_fixes),
+// fixed from the photograph's own edges: the bands' upper edges against the windows read, on the face's
+// plane at u 6.9, 15.10 (against the sky), 11.09, 7.22 and 2.37 m (the LiDAR's ledges 15.13, 11.12, 7.12
+// and 2.38), and their lower edges 13.37, 9.41 and 5.62 (the LiDAR's lower ledges, the bands' lips:
+// 13.38, 9.38 and 5.38-5.62); the ground storey's band from 1.46 (the door view) to 2.38.
+export const FACADE = {
+  // four concrete bands the full length of the face, flush with it (the LiDAR's ledges reach v 21.47-21.82
+  // at their p50-p90 all along it), [bottom, top]
+  bands: [[1.46, 2.38], [5.45, 7.12], [9.38, 11.12], [13.35, 15.13]],
+  // the windows stand back from the bands' faces: the soffits under the bands run 1.33, 1.34 and 1.45 m
+  // in to the windows' heads (the heads' pixels through the camera, at the bands' lower edges); the
+  // gutter behind the top band starts there too (the LiDAR's returns at 14.26 m lie 1.33-2.94 m in)
+  recess: 1.35,
+  // the windows' rows, [sill, head], and their transoms, on the windows' plane: heads at the bands'
+  // lower edges (13.37, 9.35, 5.43 through the camera); the sills hidden behind the bands' tops; the
+  // ground storey's sill at 0.46 (door view); transoms at 12.38, 8.37 and 3.47 (the third storey's panes
+  // dark below it)
+  rows: [[0.46, 1.46], [2.38, 5.45], [7.12, 9.38], [11.12, 13.35]],
+  transoms: [null, 3.47, 8.37, 12.38],
+  // the red steel mullions: 20 between the two piers the camera sees square, at u 2.94 to 13.96 on the
+  // windows' plane (the peaks of the frames' red along rows 2 and 3): every 0.58 m; the same spacing
+  // beyond the second pier (15.90 to 21.94, 11 more); elsewhere the same spacing (estimated)
+  mullion: { from: 2.94, step: 0.58, width: 0.07 },
+  // piers from the ground to the top band, flush with the bands: the front faces' edges through the
+  // camera at u 1.72-2.92 and 13.70-14.84, 12.0 m apart; at that spacing a pier's edges show behind the
+  // tree at u -10.3, and oWaF's view has a pier left of the east corner (its place at the spacing:
+  // estimated, that camera is not fixed). 1.15 m wide.
+  piers: [-10.28, 1.72, 13.72, 25.72],
+  pierWidth: 1.15,
+  // the treatment wraps the east corner (oWaF's view: the bands run on round it, over glass) as far as
+  // 110N's link (v 16.4 at u 29.5-29.9: README); the south-west end, in no photograph, closes the recess
+  // with a plain end the width of a pier (estimated)
+  wrapTo: 16.4,
+  // the plinth under the ground storey's windows, at the face, to 0.35 (estimated: the hedge hides it)
+  plinth: 0.35,
+};
