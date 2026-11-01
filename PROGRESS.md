@@ -115,6 +115,7 @@ Several schools share this repository as `docs/schools/DESIGN.md` sets out: one 
 | University of Canterbury (UC) | `/uc/` | Buildings: the Ilam and Dovedale campuses and the Arts Centre city location from OpenStreetMap, picked by the `operator` and `building=university` tags and a name, each on the campus of the area it stands in, on the LINZ ground; homes are never considered. Nelson is not shown: OpenStreetMap tags no building there as UC's | 57 buildings, all on the map (Ilam 45, Dovedale 11, the Arts Centre 1); 17 more left out by the tag rule, each with its reason (13 with no name, 2 under construction, 1 with no storey above the ground, and 1 of the University of Otago's at the Arts Centre); heights: 0 from a `height` tag, 52 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
 | Te Kunenga ki Pūrehuroa Massey University (Massey) | `/massey/` | Buildings: the Manawatū, Auckland and Wellington campuses from OpenStreetMap, picked by the `operator`, `building=university` and `amenity=university` tags or a name, house name or address place that says Massey, and a name, never a home or a childcare centre, and never a building whose own `fixme` tag asks what it is, each on the campus of the area it stands in, on the LINZ ground. The School of Aviation, the Large Animal Teaching Unit, the research farms and Singapore are not shown (`docs/schools/massey.md`, "On the site") | 55 buildings, all on the map (Manawatū 39, Auckland 8, Wellington 8); 43 more left out by the tag rule, each with its reason (42 with no name, and Student Central at Albany, whose `fixme` tag asks whether it is the new police college); heights: 0 from a `height` tag, 14 from `building:levels`, 41 estimated; 0 rooms, subjects and classes |
 | The University of Waikato (Waikato) | `/waikato/` | Buildings: the Hamilton campus from OpenStreetMap, on the LINZ ground. OpenStreetMap ties only one building there to the University by its tags, so the University's own Hamilton campus map (version Q1 2025), which the maintainer downloaded and gave the project on 2026-10-28, decides which are the University's: a table in the descriptor, one row for each OpenStreetMap element, matched by name or by place. Each building is named as OpenStreetMap names it, or by the map's block code where OpenStreetMap gives no name; never a home or a childcare centre. Tauranga is not shown: OpenStreetMap ties no building there to Waikato, and the map is Hamilton's alone (`docs/schools/waikato.md`, "On the site") | 53 buildings, all on the map (32 matched by name, 21 by place; 17 named by their block code); 27 more left out, each with its reason (25 the map draws with no code of their own or under a code shared by several outlines, the bicycle shed with no name, and the medical school's building site); heights: 0 from a `height` tag, 1 from `building:levels`, 52 estimated; 0 rooms, subjects and classes |
+| Lincoln University (Lincoln) | `/lincoln/` | Buildings: the Lincoln campus from OpenStreetMap, on the LINZ ground. By the maintainer's decision of 2026-11-02, only the buildings OpenStreetMap tags as the University's are shown as its own: picked by the `operator` (`Lincoln University`) and `building=university` tags and a name, never a home or a childcare centre, never a building OpenStreetMap maps as disused, and never one whose name is another body's. The campus's other buildings stand among the surroundings, with no name; no campus map table is used (`docs/schools/lincoln.md`, "On the site") | 8 buildings, all on the map; 5 more left out by the tag rule, each with its reason (2 `building=university` outlines and a bicycle shed with no name, Memorial Hall, which OpenStreetMap maps as disused, and the building it names AgResearch); heights: 0 from a `height` tag, 3 from `building:levels`, 5 estimated; 0 rooms, subjects and classes |
 
 AUT's open items, from `docs/schools/aut.md`, "Needs the maintainer" (each is the maintainer's to do):
 
@@ -237,6 +238,36 @@ is the maintainer's to do):
    closed to this project.
 6. Done on 2026-10-28: the Hamilton campus is on the site, from one Overpass area, which the
    maintainer let the loop fetch (`docs/schools/waikato.md`, "On the site").
+
+Lincoln's open items, from `docs/schools/lincoln.md`, "Needs the maintainer" and "On the site"
+(each is the maintainer's to do):
+
+1. Lincoln's permission. Its main website, `www.lincoln.ac.nz`, which holds the campus map, key
+   dates, course pages and legal page, is closed to this project's agents by its `robots.txt`
+   (`ClaudeBot`, `anthropic-ai` and `Claude-Web`, each `Disallow: /`). The timetable host,
+   `splus.lincoln.ac.nz`, is open, but a class's day, time and room come only after its form is
+   posted, and its terms are unread. Until Lincoln answers, nothing is fetched from any Lincoln
+   host, and its rooms, timetable, dates and courses are absent. Until it is asked, the site does
+   not say that it has asked.
+2. More of the campus's buildings. OpenStreetMap tags 8 of the campus's 163 buildings as the
+   University's. The Commerce Building, Science South, the RFH Building, Waimarie and many large
+   unnamed buildings in the middle of the campus carry no such tag, so they stand among the
+   surroundings with no name. A table read off the University's own campus map, as for Waikato,
+   could add them; the descriptor leaves room for one (its pull request would be a gate).
+3. Judgements on the campus (`docs/schools/lincoln.md`, "On the site"): the Young Farmers Club Hall
+   is shown as the University's by its `building=university` tag, although its name is a club's;
+   Memorial Hall is left out by its `disused=yes` tag, as UC's Putaiao Koiora, closed but with no
+   such tag, is not; the building OpenStreetMap names AgResearch is left out by its name.
+4. Brand colours: not checked, since `www.lincoln.ac.nz` is closed to this project (DESIGN.md,
+   section 6); the accent and tones are the project's own, taken from no school.
+5. The phone's top bar: "Lincoln World Model" has 19 characters. By #114's rule it is drawn at
+   14.5 px on phones and 13 px under 384 px, whole, and the bar fits at 390, 360 and 345 px.
+   DESIGN.md, section 6, asks such a name for a shorter form there, so the maintainer may prefer
+   one.
+6. The root page gives Lincoln no name in te reo Māori: its recon gives none, and its own site is
+   closed to this project.
+7. Done on 2026-11-02: the Lincoln campus is on the site, from one Overpass area, which the
+   maintainer let the loop fetch (`docs/schools/lincoln.md`, "On the site").
 
 ## Done (with evidence)
 
