@@ -132,13 +132,16 @@ got = fetch_bridge.run([{"op": "tiles", "tiles": ask}], allow_fetch=a.allow_fetc
 cached = {(t["pano"], t["zoom"], t["x"], t["y"]): p for t, p in zip(ask, got["paths"])}
 calls["tiles"] = got["sent"]
 
-def perspective(pano, m, yaw, pitch, hfov, w, h):
+def perspective(pano, m, yaw, pitch, hfov, w, h, roll=0.0):
     H, W = pano.shape[:2]
     f = (w / 2) / math.tan(math.radians(hfov) / 2)
     xs, ys = np.meshgrid(np.arange(w) - w / 2 + 0.5, h / 2 - np.arange(h) - 0.5)
     # camera rays: forward (yaw, pitch), right, up; then their compass yaw and pitch
     cy, sy, cp, sp = math.cos(math.radians(yaw)), math.sin(math.radians(yaw)), math.cos(math.radians(pitch)), math.sin(math.radians(pitch))
     fwd = np.array([sy * cp, cy * cp, sp]); right = np.array([cy, -sy, 0]); up = np.cross(right, fwd)
+    if roll:  # the photograph stands turned `roll` degrees clockwise in its cut (camera_fixes' fifth number): cut it turned back, level
+        cr, sr = math.cos(math.radians(roll)), math.sin(math.radians(roll))
+        right, up = cr * right - sr * up, sr * right + cr * up
     d = fwd[None, None] * f + right[None, None] * xs[..., None] + up[None, None] * ys[..., None]
     ryaw = np.degrees(np.arctan2(d[..., 0], d[..., 1])); rpit = np.degrees(np.arctan2(d[..., 2], np.hypot(d[..., 0], d[..., 1])))
     px = (((ryaw - m["heading"] + 180) % 360) / 360 * W) - 0.5; py = ((90 - rpit) / 180 * H) - 0.5
@@ -158,18 +161,30 @@ for m, b, g, cam_y, zoom, tiles in plans:
     incomplete = bool(gaps)  # some tiles are not cached: never overwrite a good image with a holed one
     x, z = m["view_xz"]
     pid = m["panoId"][:16]
+    fix = SV.get("camera_fixes", {}).get(m["panoId"])
+    roll = fix[4] if fix and len(fix) > 4 else 0.0
     for V in SV["views"]:
         name, aim_y, hfov, w, h = V["name"], V["aim_y"], V["hfov"], V["width"], V["height"]
         pitch = math.degrees(math.atan2(aim_y - cam_y, max(dist, 1)))
-        img = perspective(pano, m, b, pitch, hfov, w, h)
+        img = perspective(pano, m, b, pitch, hfov, w, h, roll)
         fn = f"{pid}_{name}.jpg"
         if not (incomplete and os.path.exists(os.path.join(OUT, fn))): img.save(os.path.join(OUT, fn), quality=92)
         vfov = math.degrees(2 * math.atan(math.tan(math.radians(hfov) / 2) * h / w))
         views.append({"file": fn, "pano": m["panoId"], "date": m["date"], "position": [x, cam_y, z], "target": [0, aim_y, 0], "vfov": vfov, "width": w, "height": h, "bearing": b, "pitch": pitch, "ground_lidar": g})
         fix = SV.get("camera_fixes", {}).get(m["panoId"])
         if fix:  # the config puts this panorama's camera at [x, z] of the view frame (its recorded one is off): cut as before, drawn from there looking the same way
-            fx, fz = fix
+            fx, fz = fix[0], fix[1]
             views[-1].update({"position": [fx, cam_y, fz], "target": [fx - x, aim_y, fz - z], "camera_fix": [x, z]})
+            if len(fix) > 2:  # [x, z, pitch]: the photograph looks `pitch` degrees higher (lower if negative) than its cut says (a panorama whose own tilt or roll the cut does not apply), so the camera drawn from does too
+                hd = math.hypot(x, z); views[-1]["target"][1] = cam_y + math.tan(math.atan2(aim_y - cam_y, hd) + math.radians(fix[2])) * hd
+                views[-1]["camera_fix_pitch"] = fix[2]
+            if len(fix) > 3:  # [x, z, pitch, yaw]: the photograph looks `yaw` degrees to the left (anticlockwise seen from above; right if negative) of where its cut says (a panorama whose recorded heading is off), so the camera drawn from does too
+                t, a = views[-1]["target"], math.radians(fix[3])
+                dx, dz = t[0] - fx, t[2] - fz
+                t[0], t[2] = fx + dx * math.cos(a) + dz * math.sin(a), fz + dz * math.cos(a) - dx * math.sin(a)
+                views[-1]["camera_fix_yaw"] = fix[3]
+            if len(fix) > 4:  # [x, z, pitch, yaw, roll]: the photograph stands turned `roll` degrees clockwise in its cut (its verticals lean right at the top: a panorama whose own tilt and roll the cut does not apply); its views are cut turned back by it, so that the camera drawn from, which does not roll, sees them level
+                views[-1]["camera_fix_roll"] = fix[4]
     print(f"  {pid}: {len(tiles)} tiles at zoom {zoom} ({len(gaps)} missing), bearing to tower {b:.0f} deg, camera {cam_y:.1f} m above the door's ground")
 json.dump(views, open(os.path.join(OUT, "views.json"), "w"), indent=1)
 print(f"{len(views)} views from {min(MAX, len(metas))} panoramas; {used} tiles used, {calls['tiles']} downloaded (billed, already in the ledger); "

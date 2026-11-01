@@ -1,12 +1,14 @@
 // The osm-buildings campus adapter (docs/schools/DESIGN.md, section 4), shared by every school in
 // the Buildings form: a school whose campus map cannot be used takes its buildings from
 // OpenStreetMap alone ("One source for a University building" in PROGRESS.md). The school's
-// descriptor holds the rule, written in OpenStreetMap's tags (`osmBuildings`). Each building gets
-// its name or `ref`, its outline, a height by the rule below with `heightSource`, and `osm`, the
+// descriptor holds the rule, written in OpenStreetMap's tags (`osmBuildings`), and, where the
+// maintainer has given the school's own campus map, a table read off it (`campusMap`) that says
+// which elements are the school's. Each building gets its name or `ref` (or, unnamed, its block
+// code on that map), its outline, a height by the rule below with `heightSource`, and `osm`, the
 // element it comes from. It gets no floors and no rooms. Every candidate the rule leaves out goes
-// to `buildingExclusions` with the reason of the step that left it out.
+// to `buildingExclusions` with the reason of the step that left it out, or of the table.
 import { cleanRing, encodeRing, pointInRing, ringArea, ringCentroid, simplifyRing, type Ring } from "../../src/shared/geo.ts";
-import type { OsmBuildingRule, TagTest } from "../../src/shared/school.ts";
+import type { CampusMapRow, OsmBuildingRule, TagTest } from "../../src/shared/school.ts";
 import type { Building, BuildingExclusion, CampusData, FloorPlans, RoomIndex } from "../../src/shared/types.ts";
 import { outerRings, type OsmElement } from "./context.ts";
 import { inBox, placeOnMap, type MapFrame } from "./map-frame.ts";
@@ -58,13 +60,45 @@ const tagText = (tags: Readonly<Record<string, string>>, keys: readonly string[]
     .map((k) => `${k}=${tags[k]}`)
     .join("; ");
 
-/** The rule's verdict on one element: undefined when it is not a candidate. */
-export function decide(rule: OsmBuildingRule, tags: Readonly<Record<string, string>>): { take: boolean; reason: string; step: number } | undefined {
-  const building = tags.building !== undefined && tags.building !== "no";
-  const part = tags["building:part"] !== undefined && tags["building:part"] !== "no";
-  if (!building && !part) return undefined;
-  if (!rule.candidates.some((test) => tagsMatch(test, tags))) return undefined;
-  const step = rule.steps.findIndex((s) => tagsMatch(s.when, tags));
+/**
+ * What a building from the campus map's table is called where OpenStreetMap gives it no name: its
+ * block code, with "Block" after a code of one letter, as OpenStreetMap names its lettered
+ * neighbours ("G Block"), and the code alone otherwise ("TRU").
+ */
+export const blockLabel = (block: string): string => (/^[A-Z]$/.test(block) ? `${block} Block` : block);
+
+const mapIndex = new WeakMap<OsmBuildingRule, { rows: Map<string, CampusMapRow>; left: Map<string, string> }>();
+/** The campus map's row for an element, and the reason the map's table leaves it out, if it does. */
+export function onCampusMap(rule: OsmBuildingRule, osm: string): { row?: CampusMapRow; left?: string } {
+  if (!rule.campusMap) return {};
+  let index = mapIndex.get(rule);
+  if (!index) {
+    index = { rows: new Map(rule.campusMap.rows.map((r) => [r.osm, r])), left: new Map(rule.campusMap.left.map((l) => [l.osm, l.reason])) };
+    mapIndex.set(rule, index);
+  }
+  return { row: index.rows.get(osm), left: index.left.get(osm) };
+}
+
+/** Whether an element is a building or a building part. */
+const isBuilding = (tags: Readonly<Record<string, string>>) =>
+  (tags.building !== undefined && tags.building !== "no") || (tags["building:part"] !== undefined && tags["building:part"] !== "no");
+
+/**
+ * The rule's verdict on one element (`osm`, as "way/123", for a school with a campus map's table):
+ * undefined when it is not a candidate. A row of the table is a candidate whatever its tags, and an
+ * element the table leaves out goes to the exclusions with the table's reason (step -1).
+ */
+export function decide(
+  rule: OsmBuildingRule,
+  tags: Readonly<Record<string, string>>,
+  osm?: string,
+): { take: boolean; reason: string; step: number } | undefined {
+  if (!isBuilding(tags)) return undefined;
+  const map = osm === undefined ? {} : onCampusMap(rule, osm);
+  if (map.left !== undefined) return { take: false, reason: map.left, step: -1 };
+  const onMap = map.row !== undefined;
+  if (!onMap && !rule.candidates.some((test) => tagsMatch(test, tags))) return undefined;
+  const step = rule.steps.findIndex((s) => (s.map === undefined || s.map === onMap) && tagsMatch(s.when, tags));
   if (step < 0) return { take: false, reason: "No step of the school's rule takes it.", step };
   return { take: rule.steps[step]!.take, reason: rule.steps[step]!.reason, step };
 }
@@ -105,11 +139,21 @@ export function buildOsmCampus(
     const osm = JSON.parse(readSnapshot(box.area.osm).toString("utf8")) as { elements: OsmElement[] };
     return osm.elements.map((e) => ({ e, area: box.area.id }));
   });
+  // Every element the campus map's table names must be a building of the snapshots: a table that
+  // has fallen out of step with a new snapshot stops the build, rather than leave a block out.
+  if (rule.campusMap) {
+    const named = [...rule.campusMap.rows.map((r) => r.osm), ...rule.campusMap.left.map((l) => l.osm)];
+    const twice = named.filter((osm, i) => named.indexOf(osm) !== i);
+    if (twice.length) throw new Error(`The campus map's table names ${twice.join(", ")} more than once`);
+    const buildings = new Set(elements.filter(({ e }) => isBuilding(e.tags ?? {})).map(({ e }) => `${e.type}/${e.id}`));
+    const missing = named.filter((osm) => !buildings.has(osm));
+    if (missing.length) throw new Error(`The campus map's table names elements that are not buildings in the snapshots: ${missing.join(", ")}`);
+  }
   for (const { e, area } of elements) {
     const tags = e.tags ?? {};
-    const verdict = decide(rule, tags);
-    if (!verdict) continue;
     const osmId = `${e.type}/${e.id}`;
+    const verdict = decide(rule, tags, osmId);
+    if (!verdict) continue;
     if (seen.has(osmId)) continue;
     seen.add(osmId);
     bump("osmBuildings.candidates");
@@ -144,7 +188,9 @@ export function buildOsmCampus(
     const ref = tags.ref;
     const id = ref && refCount.get(ref) === 1 ? ref : `${ref ?? e.type.toUpperCase()}-${e.id}`;
     const center = ringCentroid(outline[0]!);
-    const name = tags.name ?? ref ?? id;
+    // A building OpenStreetMap leaves unnamed, taken by the campus map's table, takes its block code.
+    const block = tags.name === undefined && ref === undefined ? onCampusMap(rule, `${e.type}/${e.id}`).row?.block : undefined;
+    const name = tags.name ?? ref ?? (block !== undefined ? blockLabel(block) : id);
     const h = osmHeight(tags, ringArea(outline[0]!));
     bump(`osmBuildings.height.${h.heightSource}`);
     const standsIn = frame.boxes.find((b) => inBox(b, center))?.area.id ?? area;
@@ -154,7 +200,8 @@ export function buildOsmCampus(
       id,
       campus: campus.id,
       name: { en: name },
-      sourceText: name,
+      sourceText: block ?? name,
+      ...(block !== undefined ? { nameSource: "campus-map" as const } : {}),
       outline: outline.map(encodeRing),
       center: [round1(center[0]), round1(center[1])],
       floors: [],
