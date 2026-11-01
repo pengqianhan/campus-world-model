@@ -16,9 +16,11 @@ Christchurch campuses, at https://campusworldmodel.com/otago/; **UC World Model*
 **unofficial** 3D map of the buildings of the University of Canterbury's Ilam and Dovedale campuses
 and its Arts Centre location, at https://campusworldmodel.com/uc/; **Massey World Model**, an
 **unofficial** 3D map of the buildings of Massey University's Manawatū, Auckland and Wellington
-campuses, at https://campusworldmodel.com/massey/; and **Waikato World Model**, an **unofficial** 3D
+campuses, at https://campusworldmodel.com/massey/; **Waikato World Model**, an **unofficial** 3D
 map of the buildings of the University of Waikato's Hamilton campus, at
-https://campusworldmodel.com/waikato/
+https://campusworldmodel.com/waikato/; and **Lincoln World Model**, an **unofficial** 3D map of the
+buildings of Lincoln University's Lincoln campus, chosen by OpenStreetMap's tags, at
+https://campusworldmodel.com/lincoln/
 
 [![Deploy](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml/badge.svg)](https://github.com/pengqianhan/campus-world-model/actions/workflows/deploy.yml)
 [![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
@@ -42,7 +44,8 @@ https://campusworldmodel.com/waikato/
 > not affiliated with, endorsed by or maintained by Te Kunenga ki Pūrehuroa Massey University, and
 > uses no Massey logo; its colours are the project's own. Waikato World Model is not affiliated
 > with, endorsed by or maintained by The University of Waikato, and uses no Waikato logo; its
-> colours are the project's own.
+> colours are the project's own. Lincoln World Model is not affiliated with, endorsed by or
+> maintained by Lincoln University, and uses no Lincoln logo; its colours are the project's own.
 
 ![The City Campus by day](docs/campus-day.jpg)
 
@@ -65,7 +68,14 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-11-02:** On Shortland Street the map draws the Kenneth Myers Centre in detail: a brick building
+- **2026-11-02:** another school, at [/lincoln/](https://campusworldmodel.com/lincoln/): Lincoln
+  University's Lincoln campus, from OpenStreetMap. Only buildings OpenStreetMap tags as the
+  University's (its `operator` tag, or `building=university`) and names are shown as the
+  University's, 8 of them, each with its name and height and how the height was found; Memorial
+  Hall, mapped as disused, and the building named AgResearch are left out, and the campus's other
+  buildings stand among the surroundings, with no name. Its rooms, class times, dates and course list are not shown, and
+  the site says why.
+  On Shortland Street the map draws the Kenneth Myers Centre in detail: a brick building
   whose pilasters rise past its parapet into pinnacles, a cream coping over a row of small arches and
   tall blind arches, a porch with an arched cream doorway and three arched windows over it, and the
   radio mast on its roof. Over its west part the LiDAR of 2024 holds scaffolding, so that part is drawn
@@ -715,9 +725,22 @@ campus, and Quaternius's figure is the walker's body. Waikato's main website, wh
 campus maps, key dates and paper pages, is closed to this project by its `robots.txt`, so no
 agent of the project reads it: see [docs/schools/waikato.md](docs/schools/waikato.md).
 
+**Lincoln World Model** (`/lincoln/`) uses the same four sources and nothing of Lincoln University's
+own. OpenStreetMap gives the buildings of the Lincoln campus, and only the ones it tags as the
+University's, by their `operator` tag (`Lincoln University`) or `building=university`, are shown as
+the University's, with their names, outlines and, where tagged, heights; every other building on
+the campus, and the streets round it, are drawn as surroundings, from the snapshot of its one area
+(`data/raw/osm/context-lincoln.json`); `public/data/lincoln/campus.json` and `context.json` are
+under the ODbL. The LINZ 8 m elevation model gives the ground (`public/data/lincoln/terrain/`),
+under CC BY 3.0 NZ. Open-Meteo gives the weather at the Lincoln campus, and Quaternius's figure is
+the walker's body. Lincoln's main website, which holds its campus maps, key dates and course pages,
+is closed to this project by its `robots.txt`, so no agent of the project reads it: see
+[docs/schools/lincoln.md](docs/schools/lincoln.md).
+
 Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
 `public/data/aut/meta.json`, `public/data/vuw/meta.json`, `public/data/otago/meta.json`,
-`public/data/uc/meta.json`, `public/data/massey/meta.json` and `public/data/waikato/meta.json`.
+`public/data/uc/meta.json`, `public/data/massey/meta.json`, `public/data/waikato/meta.json` and
+`public/data/lincoln/meta.json`.
 
 The **code** is under the MIT licence (see `LICENSE`). That licence does not cover the data above;
 `NOTICE` says so too, beside the licence.
