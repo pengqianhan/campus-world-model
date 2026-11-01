@@ -14,6 +14,25 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-02
+
+### Added
+
+- **The Kenneth Myers Centre drawn in detail.** Near the camera the map draws the Kenneth Myers Centre
+  (820) on Shortland Street from code in place of its block: a brick building whose pilasters rise past
+  its parapet into pinnacles, a cream coping over a corbel table of small arches and tall blind arches
+  along its street face, a porch with an arched cream doorway up steps from the street and three arched
+  windows over it, and the radio mast on its roof. Its roofs, its east part and its porch are sized by
+  the LINZ 2024 LiDAR, and what its street face carries is measured in a Street View photograph of it.
+  Over its west part the LiDAR holds scaffolding and a temporary roof, so that part is drawn from the
+  LINZ aerial photograph of 2023 and the Street View photograph instead. The campus map's outline for
+  820 lies about 2 m north of the building; the model stands where the LiDAR and the aerial show it, in
+  place of the block. The height of its west side's parapet, its steps, how far its pilasters and arcades
+  stand out, its parapets' thickness and its radio mast's members are estimated, and its card says so.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its
+  own brick, render and paint. Its sides, its back and its roofs, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#PR).
+
 ## 2026-11-01
 
 ### Fixed

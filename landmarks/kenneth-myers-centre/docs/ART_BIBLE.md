@@ -20,8 +20,11 @@ they and the 2023 aerial show. What none of them shows is drawn plainly at the L
   door** (a round arch of several cream orders on cream colonnettes, the number "74" in its tympanum)
   over **steps** up from the street, and above it three tall arched windows with cream colonnettes;
   two big brick pilaster blocks flank it, each with two spires (the four tall spires of the front).
-- **The west part**, left of the porch, is the same brick with pilasters and pinnacles and tall blind
-  arches; the steps and their cream side walls run along its foot.
+- **The west part**, left of the porch, is the same brick with four pinnacled pilasters and tall blind
+  arches, three to a bay, its coping lower than the east part's (7.75 m against 8.05) and its pinnacles
+  short (8.8 to 9.3 m); it stands on the east part's line, behind the porch; the steps and their cream
+  side walls run down westward from the door. (The 2024 LiDAR's scaffolding over it is not the
+  building.)
 - **The east part**, right of the porch and set back from it, has four bays of three blind arches
   each between five pinnacled pilasters (the LiDAR's), a dark brown downpipe or two, and a sunken
   areaway along its foot behind a cream wall, which hides its base.
