@@ -22,7 +22,7 @@ A change to what the site does or shows adds its line here, and the README's
   measured by LiDAR, while how deep its balconies and its canopy are, how much of each storey the
   balconies' louvres fill, and how thick its ramp's deck and side and its parapet are were estimated
   from the photographs: nothing measures them. The card now says they are estimated, as the Clock
-  Tower East Wing's and 15 Eden Crescent's do (#PR).
+  Tower East Wing's and 15 Eden Crescent's do (#123).
 
 ## 2026-10-28
 
