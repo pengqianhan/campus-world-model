@@ -14,6 +14,16 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-01
+
+### Fixed
+
+- **The Fisher Building's card says what is estimated.** Its card said every size of the model was
+  measured by LiDAR, while how deep its balconies and its canopy are, how much of each storey the
+  balconies' louvres fill, and how thick its ramp's deck and side and its parapet are were estimated
+  from the photographs: nothing measures them. The card now says they are estimated, as the Clock
+  Tower East Wing's and 15 Eden Crescent's do (#PR).
+
 ## 2026-10-28
 
 ### Added

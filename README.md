@@ -65,6 +65,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
+  balconies and canopy are, and how thick its ramp and parapet are.
 - **2026-10-28:** On Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower
   with a cream band at each floor, a slot of windows up its corner, balconies down one side, a red tile
   canopy over its entrance and the ramp to it from the street. Three more schools, from OpenStreetMap:
@@ -105,12 +107,6 @@ It is built to answer two questions a student actually has:
   pavilions, a stair tower and a red tile roof. At /vuw/ the status strip and the time panel say
   trimester dates, not semester dates. On Eden Crescent the map draws 9 Eden Crescent in detail: a
   white four-storey building, its street end of piers, bays and bands of windows over a glazed entrance.
-- **2026-10-26:** a second school, at [/aut/](https://campusworldmodel.com/aut/): the buildings of
-  AUT's City Campus from OpenStreetMap, each with its code, name and height and how the height was
-  found. Its floors, rooms, class times and dates wait for AUT's permission, and the site says so.
-  Near Maclaurin Chapel, the General Library and Old Choral Hall (its range on Symonds Street) the
-  map draws them in detail, from code and to their measured sizes. Unnamed rooms on floors where
-  people live and in childcare centres no longer turn up in the search.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
