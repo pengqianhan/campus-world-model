@@ -251,11 +251,11 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110N,
-119, 801, 802 and 804) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+119, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 42. Places where people live keep their blocks here
+leaving out the landmarks and `SOON`, it measures 41. Places where people live keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
@@ -441,7 +441,7 @@ that layer of its own, a 12.9 m² column up to 20.2 m. Since this review the gen
 piece: a traced piece of a layer in which the LiDAR sees no roof cell of that layer is left out
 (`DROP_BARE`), and the data file lists it under `dropped`. Of all the pieces the generator traces
 on the three campuses, seven have no roof cell in the LiDAR, in five buildings: 906's lobe, two
-pieces of 402, two of 405, one of 436 and one of 820; those four keep their blocks. The rule is on
+pieces of 402, two of 405, one of 436 and one of 820; 402, 405 and 436 keep their blocks, and 820 is now drawn as a landmark in place of its block. The rule is on
 for Grafton and Newmarket. On the City campus it would change no data file and no
 reason, only 405's model area in its top view (3863.5 to 3863.2 m²); the City's files are kept byte
 for byte, so it is off there until the maintainer says (`--drop-bare` turns it on for a run). 906's numbers do not change (footprint IoU 0.914, 99.6%

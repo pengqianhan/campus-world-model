@@ -2322,39 +2322,6 @@
     "open_below": 0.04
    }
   },
-  "820": {
-   "name": "Kenneth Myers Centre",
-   "reason": "top-view check: footprint IoU 0.849 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 935.4,
-    "ground": {
-     "p5": 13.29,
-     "p50": 25.09,
-     "p95": 27.1,
-     "zero": 12.48
-    },
-    "roof_inside_m2": 847.0,
-    "cover": 0.907,
-    "vegetation": 0.092,
-    "open_below": 0.006,
-    "not_drawn_m2": 21.5,
-    "check": {
-     "iou": 0.849,
-     "lidar_m2": 914.5,
-     "model_m2": 951.8,
-     "within_0.5m": 0.851,
-     "model_minus_lidar_m": {
-      "p10": -0.48,
-      "p50": 0.0,
-      "p90": 0.23
-     },
-     "highest_m": {
-      "model": 23.12,
-      "lidar": 52.31
-     }
-    }
-   }
-  },
   "831": {
    "name": "Carlaw Park Block 831",
    "reason": "decision 6, a place where people live: kept until the maintainer decides",

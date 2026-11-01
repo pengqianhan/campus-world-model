@@ -1,6 +1,6 @@
 {
  "name": "kenneth-myers-centre",
- "site": false,
+ "site": true,
  "building": {
   "id": "820",
   "also": [],
@@ -136,6 +136,12 @@
   ],
   "outline_note": "traced from the LiDAR's roofs and wall returns in the view frame of frame.expected (walls fitted to the returns: front z 16.2, porch front 14.8, east front 11.6, back -12.6, west x -16.7; the east wall from (21.4, 11.6) to (19.9, -12.6), skewed 3.5 deg as its parapet's returns run), taken to the map's frame. campus.json's outline (campus_outline) lies about 2 m north of the building's front and back (its front edge at z 11.8-12.7 against the LiDAR's 16.2; its back at -11.6 to -13.8 against -12.6) and adds a west tail (x -21.6 to -15, z -19 to -3) over the low lane beside the tower to the west and an east nub (x 21 to 27, z 7 to 13) over the low roofs to the east. Within 1.5 m of it the first data run took 94% of the building's roof returns, the mast's, and none of the tower's (no return above 40 m), but cut off the front 2 m of the street face (z 14.2 to 16.2 west of x 1.3) and its south-west corner; so the points are chosen by this ring, within 1.0 m of it. (The data stage's heightmap figure draws the map-frame outline without taking it to NZTM, so there it stands about 5 m off: most of that is the frame difference heightmap.py names.)"
  },
+ "door": {
+  "x": 4.0,
+  "z": 17.6,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The footpath at the foot of the steps before the door, on the door's centre line (x 4.0, parts/common.js FRONT.porch.door), where the LiDAR's ground is -0.03 m (median of the ground returns over x 4 to 5, z 17 to 18); the frame's ground, 25.5 m, is the street's."
+ },
+ "estimated": "the height of its west side's parapet, the steps before its door, how far its pilasters and arcades stand out, its parapets' thickness and its radio mast's members",
  "origin": {
   "lat": -36.8523,
   "lon": 174.7691,
