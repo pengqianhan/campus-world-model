@@ -186,28 +186,27 @@ export function front(b) {
     box(b, P, s - col / 2, s + col / 2, wn.sill, wn.crown - wn.w / 2, 0, 0.12, "render");
   }
   box(b, P, sc - total / 2 - 0.1, sc + total / 2 + 0.1, wn.sill - 0.12, wn.sill, 0, 0.14, "render");
-  // ---- the west part's street face and its short return to the porch's western block
-  const fw = F.west, WF = face([W.west, W.front], [W.entranceWest, W.front]);
-  const wBand = fw.band;
+  // ---- the west part's street face (round 2: the aerial's line and the photograph's heights, common.js). Its
+  // short return to the porch's western block faces west, where no photograph sees it: the porch's brick
+  const fw = F.west, [WF0, WF1] = W.westFront, WF = face(WF0, WF1), sW = (x) => (x - WF0[0]) * (WF.L / (WF1[0] - WF0[0]));
   streetFace(b, WF, {
-    foot: -1.6,
-    parapet: [M.front.top, wBand[1]],
+    foot: fw.foot,
+    parapet: [M.roof, fw.band[1]],
     pilasters: fw.pilasters.map((x, i) => {
-      const w = 0.9; let s = x - W.west; if (i === 0) s = w / 2; s = Math.min(s, WF.L - w / 2);
-      return { s, w, d: 0.45, tip: fw.tip };
+      const w = fw.widths[i]; let s = sW(x); s = Math.min(Math.max(s, w / 2), WF.L - w / 2);
+      return { s, w, d: 0.35, tip: fw.tips[i] };
     }),
-    coping: { band: wBand, top: fw.copingTop, dentil: [wBand[0] - 0.2, wBand[0] - 0.03] },
-    frieze: { y0: fw.frieze[0] - 0.12, y1: wBand[0] - 0.2, ys: fw.frieze[1] - 0.17, w: 0.34, pitch: 0.58 },
-    arches: { pitch: 1.55, y0: 1.2, y1: fw.frieze[0] - 0.12, ys: fw.springer, max: 1.2 },
+    coping: { band: fw.band, top: fw.copingTop, dentil: fw.dentil },
+    frieze: { y0: fw.frieze[0] - 0.12, y1: fw.dentil[0], ys: fw.frieze[1] - 0.17, w: 0.34, pitch: 0.58 },
+    arches: { pitch: 0.97, y0: fw.archFoot, y1: fw.frieze[0] - 0.12, ys: fw.springer },
   });
-  const WR = face([W.entranceWest, W.front], [W.entranceWest, W.porchFront + bl.d]);
-  streetFace(b, WR, { foot: -0.6, parapet: [M.front.top, wBand[1]], pilasters: [], coping: { band: wBand, top: fw.copingTop } });
-  // ---- the steps: a landing before the door at its threshold and a flight down westward along the west
-  // part's foot to the street (the door view: about seven risers, a cream wall on the landing's east side).
-  // Sizes estimated, the street's level from the LiDAR (-0.2 m before the door)
-  const th = d.threshold, z0 = W.porchFront, z1 = W.front + 1.2, xl = W.entranceWest - 0.6, xr = W.entranceWest + br.s0 - 0.1;
-  b.box(xl, xr, -0.6, th, z0, z1, "brickBrown");
+  // ---- the steps: a landing before the door at its threshold and a flight down westward to the street (the
+  // door view: about seven risers, a cream wall on the landing's east side), as round 1 drew them: z 16.21 to
+  // 17.41 (round 1's street face of the west part, the works', plus 1.2). Sizes estimated, the street's level
+  // from the LiDAR (-0.2 m before the door); their foot goes down with the west part's, as the street falls
+  const th = d.threshold, z0 = W.porchFront, zf = 16.21, z1 = 17.41, xl = W.entranceWest - 0.6, xr = W.entranceWest + br.s0 - 0.1;
+  b.box(xl, xr, fw.foot, th, z0, z1, "brickBrown");
   const n = 7, rise = (th + 0.2) / n, tread = 0.36;
-  for (let i = 1; i <= n; i++) b.box(xl - tread * i, xl - tread * (i - 1), -0.6, th - rise * i, W.front, z1, "brickBrown");
-  b.box(xr, xr + 0.3, -0.6, th + 0.9, z0 + br.d, z1, "render");
+  for (let i = 1; i <= n; i++) b.box(xl - tread * i, xl - tread * (i - 1), fw.foot, th - rise * i, zf, z1, "brickBrown");
+  b.box(xr, xr + 0.3, fw.foot, th + 0.9, z0 + br.d, z1, "render");
 }
