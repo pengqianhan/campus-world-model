@@ -24,7 +24,8 @@ A change to what the site does or shows adds its line here, and the README's
   windows, a dark beam between them, beside a flat face of board-marked concrete, and a glazed link to
   the Thomas Building; its pale metal roof rises from its edge to a raised middle with plant on it. Its
   roofs' heights are measured from the LINZ 2024 LiDAR, and the curtain wall's storeys and the base's
-  doors and windows from two Street View photographs of it. On the map it has the map's colours; from a
+  doors and windows from two Street View photographs of it; how far the beam under the glass and the
+  glass's fins stand out is estimated, and its card says so. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own glass, render, concrete and metal. The
   faces no photograph shows, round its north and on its north-west, are drawn plainly. A click still
   opens its floors (#122).

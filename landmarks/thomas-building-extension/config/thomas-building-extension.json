@@ -1,6 +1,7 @@
 {
  "name": "thomas-building-extension",
  "site": true,
+ "estimated": "how far the beam under the glass and the glass's fins stand out",
  "building": {
   "id": "110N",
   "also": [],
