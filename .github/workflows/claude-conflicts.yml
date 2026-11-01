@@ -1,0 +1,167 @@
+name: Claude resolves conflicts
+
+# A comment on a pull request that names @claude and a conflict, such as "@claude resolve the merge
+# conflicts", has Claude merge the base branch into the pull request's branch, resolve what
+# conflicts, check it and push the merge; then the job says on the pull request what was done.
+# Claude's interactive @claude mode cannot do this: its own prompt forbids merging branches
+# (anthropics/claude-code-action, docs/faq.md). So this job merges without committing and gives the
+# action a fixed prompt (its automation mode), and Claude resolves, checks, commits and pushes.
+# GitHub runs an issue_comment workflow from the default branch only: it works once it is on main.
+#
+# Who: someone with write access (the job's `if`; the action checks again), on a pull request from a
+# branch of this repository. The comment's text never reaches Claude. The push goes with the Claude
+# GitHub App's token, so CI runs on it. The repository secret CLAUDE_CODE_OAUTH_TOKEN, made with
+# `claude setup-token`, bills the maintainer's Claude plan.
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: claude-conflicts-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    if: >-
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@claude') &&
+      (contains(github.event.comment.body, 'conflict') || contains(github.event.comment.body, '冲突')) &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read # the checkout; the push goes with the Claude GitHub App's token
+      issues: write # the comments on the pull request
+      pull-requests: read # its branches
+      id-token: write # the action's exchange for the Claude GitHub App's token
+    steps:
+      - name: Find the pull request's branches
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '"head=\(.head.ref)", "base=\(.base.ref)", "sha=\(.head.sha)", "same=\(.head.repo.full_name == .base.repo.full_name)"' >> "$GITHUB_OUTPUT"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="Merging the base branch into this one and resolving the conflicts: [run]($RUN_URL)." > /dev/null
+
+      - uses: actions/checkout@v7
+        if: steps.pr.outputs.same == 'true'
+        with:
+          ref: ${{ steps.pr.outputs.head }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        if: steps.pr.outputs.same == 'true'
+        with:
+          node-version: 24
+
+      - name: Merge the base branch, without committing
+        id: merge
+        if: steps.pr.outputs.same == 'true'
+        env:
+          BASE: ${{ steps.pr.outputs.base }}
+        run: |
+          git config user.name "claude[bot]"
+          git config user.email "41898282+claude[bot]@users.noreply.github.com"
+          git fetch origin "$BASE"
+          git merge --no-ff --no-commit "origin/$BASE" || true
+          files=$(git diff --name-only --diff-filter=U | tr '\n' ' ')
+          echo "conflicts=$files" >> "$GITHUB_OUTPUT"
+          if [ -z "$files" ]; then git merge --abort 2> /dev/null || true; fi
+
+      - name: Resolve the conflicts, check, commit and push
+        id: claude
+        if: steps.merge.outputs.conflicts != ''
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --model claude-opus-5-5
+            --effort xhigh
+            --max-turns 150
+            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git show:*),Bash(git ls-files:*),Bash(git checkout --ours:*),Bash(git checkout --theirs:*),Bash(git add:*),Bash(git commit:*),Bash(git push origin HEAD:*),Bash(npm ci),Bash(npm run typecheck),Bash(npm test)"
+          prompt: |
+            You are in a checkout of this repository on `${{ steps.pr.outputs.head }}`, the branch of
+            pull request #${{ github.event.issue.number }}, in the middle of merging
+            `origin/${{ steps.pr.outputs.base }}` into it. Nothing is committed yet. In this merge "ours"
+            is this branch and "theirs" is the base branch. These files conflict:
+            ${{ steps.merge.outputs.conflicts }}
+
+            Read AGENTS.md first: its rules bind this work. Then resolve every conflict so that the
+            merged tree keeps what each side meant:
+
+            - Code: keep both sides' changes. Where one side's version holds the other's line for line
+              and adds to it, keep that one.
+            - CHANGELOG.md: keep both entries; under the same date, this branch's entry first.
+            - README.md and the other documents: keep both sides' sentences, and keep lines within 100
+              characters. When both sides add a landmark drawn from code, also fix what the conflict
+              markers do not show: the ordinal in the README's landmarks section ("The ninth is ...":
+              this branch, merged later, takes the next number), and every list that names each
+              landmark (the blocks drawn "in place of", the sources table's LiDAR and Street View rows,
+              Known limitations).
+            - A landmark that this branch puts on the site (`"site": true` in
+              landmarks/<name>/placement.json) keeps no entry in landmarks/measured/exclusions.json and
+              no file in landmarks/measured/buildings/, and landmarks/MASSING.md's stand-ins paragraph
+              names it among the landmarks the generator leaves out.
+            - Generated files (landmarks/measured/**, public/data/**) cannot be written again here: the
+              LiDAR and the snapshots are not on this runner. Take the base branch's version, and change
+              it by hand only to remove a landmark's entry, keeping the generator's layout. If anything
+              else in them would need the generator, do not commit: say what the maintainer must
+              regenerate.
+
+            Then:
+
+            1. Check that no conflict marker is left (`git diff --check`) and that `git status` shows
+               no unmerged path.
+            2. Run `npm ci`, `npm run typecheck` and `npm test`. If one fails because of the merge, fix
+               it. If you cannot, do not commit.
+            3. Commit the merge. The first line says which branch was merged and which pull requests it
+               brings; the body says, file by file, how each conflict was resolved, and what else was
+               changed and why.
+            4. Push it with `git push origin HEAD:${{ steps.pr.outputs.head }}`. Never rebase, never
+               force-push, never push to another branch.
+
+            End with a short report in Markdown for the pull request: each conflicted file and how it
+            was resolved, anything else that was changed, each check and its result, and anything the
+            maintainer must still do. Mention no one with an @.
+
+      - name: Report on the pull request
+        if: always() && steps.pr.outputs.head != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SAME: ${{ steps.pr.outputs.same }}
+          BEFORE: ${{ steps.pr.outputs.sha }}
+          MERGED: ${{ steps.merge.outcome }}
+          CONFLICTS: ${{ steps.merge.outputs.conflicts }}
+          EXEC: ${{ steps.claude.outputs.execution_file }}
+        run: |
+          report="$RUNNER_TEMP/report.md"
+          after=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .head.sha)
+          {
+            if [ "$SAME" != true ]; then
+              echo "Claude resolves conflicts only on a branch of this repository. [Run]($RUN_URL)."
+            elif [ "$MERGED" = success ] && [ -z "$CONFLICTS" ]; then
+              echo "The base branch merges into this one without a conflict: nothing to resolve. [Run]($RUN_URL)."
+            else
+              if [ "$after" != "$BEFORE" ]; then
+                echo "Pushed $after: the base branch merged into this one. [Run]($RUN_URL)."
+              else
+                echo "Nothing was pushed. [Run]($RUN_URL)."
+              fi
+              if [ -n "$EXEC" ] && [ -f "$EXEC" ]; then
+                echo
+                # A zero-width space after each @, so that the report mentions no one.
+                jq -r 'map(select(.type == "result")) | last | .result // empty' "$EXEC" | sed 's/@/@\xe2\x80\x8b/g' || true
+                version=$(jq -r 'map(select(.type == "system" and .subtype == "init")) | first | .claude_code_version // empty' "$EXEC" || true)
+                echo
+                echo "How it was made: claude-opus-5-5 at thinking effort xhigh (this workflow's \`--model\` and \`--effort\`), through anthropics/claude-code-action@v1${version:+, Claude Code $version}."
+              fi
+            fi
+          } > "$report"
+          gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@"$report" > /dev/null
