@@ -28,6 +28,17 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Thomas Building Extension drawn in detail.** Near the camera the map draws the Thomas Building
+  Extension (110N) on Symonds Street from code in place of its block: a curved building, three storeys
+  of glass curtain wall round its curve over a white rendered base with service doors and small
+  windows, a dark beam between them, beside a flat face of board-marked concrete, and a glazed link to
+  the Thomas Building; its pale metal roof rises from its edge to a raised middle with plant on it. Its
+  roofs' heights are measured from the LINZ 2024 LiDAR, and the curtain wall's storeys and the base's
+  doors and windows from two Street View photographs of it; how far the beam under the glass and the
+  glass's fins stand out is estimated, and its card says so. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own glass, render, concrete and metal. The
+  faces no photograph shows, round its north and on its north-west, are drawn plainly. A click still
+  opens its floors (#122).
 - **The Fisher Building drawn in detail.** Near the camera the map draws the Fisher Building (804)
   from code in place of its block: a tan brick tower on Waterloo Quadrant, its higher half a shaft
   over its south-west side, a cream band at each floor, a slot of windows framed in

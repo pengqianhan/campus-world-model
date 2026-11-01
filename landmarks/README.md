@@ -332,7 +332,15 @@ stood on a cross-slope its photographs look up or down by up to the roll, the ro
 the view's angle off the car's heading. A fitted pitch need not be that alone: the Fisher Building's
 MGAo… records a roll of -4.16°, which gives 3.9° at its views' 71° off the heading (4.2° at most
 with its tilt), and its photographs' edges fit 5.56° lower; the other 1.4 to 1.6° is fitted, not
-explained by the recorded roll. Without it nothing changes.
+explained by the recorded roll. Without it nothing changes. A fourth number, `[x, z, pitch, yaw]`, also
+turns it by `yaw` degrees to the left (anticlockwise seen from above; right if negative), for a
+panorama whose recorded heading is off. Without it nothing changes either. A fifth number,
+`[x, z, pitch, yaw, roll]`, is for a photograph that stands turned clockwise in its cut by `roll`
+degrees (its verticals leaning right at the top), as the panorama's own tilt and roll turn it where the
+car stood on a slope: the views are cut from that panorama turned back by it, level, and the camera
+drawn from, which does not roll, sees them so (the Kenneth Myers Centre's `0Rjk…`, which records a
+tilt of 5.89° and a roll of -2.41°: 4.53°). Only that panorama's pictures change; without it they are
+cut as before, byte for byte.
 
 ### Camera refinement
 
