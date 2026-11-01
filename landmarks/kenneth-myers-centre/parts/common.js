@@ -9,7 +9,8 @@
 // (class 6) within 1.2 m of a roof's edge and below the roof the wall rises to; their median, then the median
 // of those within 0.6 m of it, three times; each wall with the rms of those returns about it and their count.
 // Heights are medians of the roof returns, with their count. The plan is the LiDAR's, not campus.json's
-// (config building.outline_note: that outline lies about 2 m north of the building's front and back).
+// (config building.outline_note: that outline lies 0.27-0.93 m north of the building's street face and is turned
+// against it, its back from 0.88 m south of the building's to 1.15 m north).
 //
 // The west part (west of the porch, x < 0) is not the LiDAR's. Over it the 2024 LiDAR holds temporary works,
 // scaffolding and a temporary roof (config camera_fixes_note: its street face 3.3 m out on the footpath and its
@@ -109,28 +110,54 @@ export const FRONT = {
     // photograph's tips (columns 837, 967, 1131, 1321, 1558) stand 9.93, 9.50, 9.27, 9.30 and 9.35 m, at x 6.94,
     // 10.41, 14.07, 17.57 and 21.11. The first, at the porch's corner, is the taller one in both
     tips: [9.93, 9.5, 9.27, 9.3, 9.35],
+    // their width: the shafts' silhouettes above the coping, against the towers behind (round 2), 0.59-0.75 m
+    // along the face near their foot for the second, third and fourth, seen 4-18 deg off square: 0.52-0.61 m
+    // wide; 0.6. How far the pilasters under them stand out, 0.35, is estimated
+    w: 0.6,
     // the merlons' tops: p90 of the returns along the face's top, 8.02-8.07 m (25-29 returns a metre of x,
     // at x 11, 12, 15, 16, 18 and 19); the crenels and the parapet behind at the body's 7.9
     copingTop: 8.05,
     // the cream coping band's foot, 7.54 m; a cream dentil course under it 7.31-7.54; the small arches of the
-    // corbel table from 6.61 to their crowns at 7.08, six to a bay; the blind arches' cream springers 5.22-5.45,
-    // their openings' crowns 5.80 and their rings' tops 5.99, three to a bay (column 1040, rows 340-440)
-    band: [7.54, 7.95], dentil: [7.31, 7.54], frieze: [6.61, 7.08], springer: 5.33, crown: 5.8,
+    // corbel table from 6.61 to their crowns at 7.08, six to a bay (counted in each bay of the wide view); the
+    // blind arches' cream springers 5.22-5.45, their openings' crowns 5.80 and their rings' tops 5.99, three to a
+    // bay (column 1040, rows 340-440)
+    band: [7.54, 7.95], dentil: [7.31, 7.54], frieze: [6.61, 7.08], perBay: 6, springer: 5.33, crown: 5.8,
+    // where the blind arches come down: behind the areaway's cream wall, which hides the part's foot in the
+    // photograph; estimated
+    archFoot: 0.45,
   },
   // the porch: its coping (the LiDAR's highest at x 3-4, 8.86 m, 20-22 returns; p90 8.74-8.80; the camera's
   // 8.74); its two pilaster blocks, the LiDAR's returns over x 0.06-2.57 (9.2-10.76 m, standing out to z 15.4)
   // and 5.68-7.58 (9.3-10.01 m, out to 15.0), each with two spires as the photograph shows them (columns 580
-  // and 620, 738 and 793: x 0.68 and 2.14, 5.86 and 7.39 on the blocks' fronts); the tips at the LiDAR's
-  // highest, 10.8 and 10.05 (lower bounds)
+  // and 620, 738 and 793 as cut before it was turned level: x 0.68 and 2.14, 5.86 and 7.39 on the blocks'
+  // fronts). The eastern block's tips at the LiDAR's highest, 10.05 (its 8 returns above 9.5 m stand at z
+  // 14.5-15.0, over the spires: a lower bound). The western block's returns above 9.5 m spread back to z 13.7
+  // (median 14.4), behind the block, where the temporary roof ran on: so its tips come from the photograph
+  // instead, cut level, each ray's height over its spire (columns 558 and 599, rows 260 and 252): 9.86 and
+  // 9.85 m (round 2; round 1 took the LiDAR's 10.8). The spires' shafts: their silhouettes 1.00-1.04 m across
+  // near their foot, seen about 45 deg off the block's front: square shafts of 0.5 m
   porch: {
-    blocks: [{ x: [0.0, 2.3], front: 15.3, tip: 10.8, spires: [0.68, 2.14] }, { x: [5.7, 7.6], front: 15.0, tip: 10.05, spires: [5.86, 7.39] }],
-    copingTop: 8.86, band: [8.35, 8.66], frieze: [7.5, 8.0],
+    blocks: [{ x: [0.0, 2.3], front: 15.3, tip: 9.85, spires: [0.68, 2.14] }, { x: [5.7, 7.6], front: 15.0, tip: 10.05, spires: [5.86, 7.39] }],
+    spire: 0.5,
+    // the cream between the porch's merlons and its corbel table, from the photograph through the camera on
+    // the porch's face (z 14.78; columns 640, 655 and 690, where its coping's top reads 8.74): its foot at
+    // 8.11-8.21, 8.16; split into a band and a dentil course under it as on the east part (the split
+    // estimated). The corbel table's small arches from about 7.7 to their crowns about 8.1 (the same columns)
+    copingTop: 8.86, band: [8.35, 8.66], dentil: [8.16, 8.35], frieze: [7.7, 8.1],
     // the door: its opening's crown 3.99 m over x 3.91 and its threshold 0.65 (column 668, rows 465 and 595),
     // centred between the blocks (x 4.0); the opening about 1.6 m wide and the cream surround about 2.6, its
     // top 4.95 (columns 630-720 and 655-705, row 420); three arched windows over it, their crowns 7.0 and sills
-    // 5.1, with cream colonnettes (columns 650-720, rows 345-440)
+    // 5.1, with cream colonnettes (columns 650-720, rows 345-440); the windows' and colonnettes' widths, 0.45
+    // and 0.15 m, are estimated within the photograph's span for the three, about 1.8 m
     door: { threshold: 0.65, open: 1.6, crown: 3.99, outer: 2.6, outerCrown: 4.95 },
-    windows: { sill: 5.1, crown: 7.0, n: 3, w: 0.45 },
+    windows: { sill: 5.1, crown: 7.0, n: 3, w: 0.45, col: 0.15 },
+    // the steps before the door (round 2, the LiDAR: on the door's line, x 3-5, a landing at 0.80-0.67 m to
+    // z 15.6, then a fall south to the street, 0.52 at z 15.9, 0.42 at 16.2, 0.32 at 16.5, 0.17 at 16.8, 0.06
+    // at 17.1, -0.05 at 17.4; walls each side, their returns up to 1.01-1.10 m over x 1.2-2.0 and 0.89-1.05
+    // over x 6.0-7.2, z 15.8-17.2). Round 1 drew a flight running west along the west part's foot: the LiDAR
+    // has only footpath there (-0.71 m, 16 returns), and the door view's coloured risers run across, between
+    // the two walls, down toward the street. Six risers (the door view); the landing at the door's threshold
+    steps: { landing: 15.7, foot: 17.4, n: 6, x: [1.9, 6.4], walls: [[1.2, 1.9], [6.4, 6.9]], wallTop: 1.05 },
   },
   // the west part (round 2), from the aerial and the photograph, the LiDAR's being the temporary works'. Its
   // face on westFront (above). Heights: 0Rjk's wide view (cut level) through its camera, each point of the
@@ -155,11 +182,11 @@ export const FRONT = {
     // tower behind): 7.75. The cream coping band's foot, where the brightness falls under 0.7 of the band's:
     // 7.13-7.24 in eight columns, 7.18 (the same reading gives the east part's 7.44-7.61, where round 1
     // put 7.54). The dentil course under it as on the east part, 0.2 m (estimated)
-    copingTop: 7.75, band: [7.18, 7.65], dentil: [6.98, 7.18],
-    // the corbel table's small arches, from their feet to their crowns: 6.45 to 6.95 m; the blind arches'
-    // cream springers' tops 5.2 and the openings' crowns 5.6 (read against height guides 0.5 m apart drawn
-    // through the camera on the face's line), three to a bay as on the east part. Their foot is hidden by the
-    // cars and the fence in front: estimated as the east part's 0.45 m
+    copingTop: 7.75, band: [7.18, 7.65], dentil: [6.98, 7.18], perBay: 6,
+    // the corbel table's small arches, from their feet to their crowns: 6.45 to 6.95 m, six to a bay (counted
+    // in the wide view); the blind arches' cream springers' tops 5.2 and the openings' crowns 5.6 (read against
+    // height guides 0.5 m apart drawn through the camera on the face's line), three to a bay as on the east
+    // part. Their foot is hidden by the cars and the fence in front: estimated as the east part's 0.45 m
     frieze: [6.45, 6.95], springer: 5.2, crown: 5.6, archFoot: 0.45,
     // the street before it: the LiDAR's ground returns at z 13.8 to 18, beside and beyond the works' deck,
     // fall from -0.79 (x -5 to -1) to -1.13 (-9 to -5) and -1.93 (-13 to -9); the face goes down to -2.0

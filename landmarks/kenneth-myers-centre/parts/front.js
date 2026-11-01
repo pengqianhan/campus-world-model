@@ -102,7 +102,8 @@ function streetFace(b, f, { pilasters, foot, coping: cop, frieze, arches, parape
     const a = edges[i], c = edges[i + 1];
     if (c - a < 0.6) continue;
     if (frieze) {
-      const n = Math.max(1, Math.round((c - a) / frieze.pitch)), w = frieze.w;
+      // the photograph's count to a bay where it gives one (`n`), else as many as fit at `pitch`
+      const n = frieze.n ?? Math.max(1, Math.round((c - a) / frieze.pitch)), w = frieze.w;
       arcade(b, f, a, c, frieze.y0, frieze.y1, spaced(a, c, n).map((s) => [s, w, frieze.y0 + 0.1, frieze.ys]), 0.08);
     }
     if (arches) {
@@ -134,17 +135,17 @@ export function front(b) {
   streetFace(b, E, {
     foot: -2.7, // the areaway along its foot: the ground returns there at -2.6 (the LiDAR's sections)
     pilasters: fe.pilasters.map((x, i) => {
-      let s = sE(x), w = 0.6;
+      let s = sE(x), w = fe.w;
       if (i === 0) s = Math.max(s, w / 2); if (i === fe.pilasters.length - 1) s = Math.min(s, E.L - w / 2);
       return { s, w, d: 0.35, tip: fe.tips[i] };
     }),
     coping: { band: [fe.band[0], M.parapet + 0.05], top: fe.copingTop, dentil: fe.dentil },
-    frieze: { y0: fe.frieze[0] - 0.12, y1: fe.dentil[0], ys: fe.frieze[1] - 0.17, w: 0.34, pitch: 0.58 },
-    arches: { pitch: 0.97, y0: 0.45, y1: fe.frieze[0] - 0.12, ys: fe.springer },
+    frieze: { y0: fe.frieze[0] - 0.12, y1: fe.dentil[0], ys: fe.frieze[1] - 0.17, w: 0.34, n: fe.perBay },
+    arches: { pitch: 0.97, y0: fe.archFoot, y1: fe.frieze[0] - 0.12, ys: fe.springer },
   });
   // ---- the porch: its street face, between its two pilaster blocks, and its east side
   const fp = F.porch, P = face([W.entranceWest, W.porchFront], [W.porchEast, W.porchFront]);
-  const pBand = fp.band, pDentil = [pBand[0] - 0.22, pBand[0] - 0.04];
+  const pBand = fp.band, pDentil = fp.dentil;
   const [bl, br] = fp.blocks.map((k) => ({ s0: k.x[0] - W.entranceWest, s1: k.x[1] - W.entranceWest, d: k.front - W.porchFront, tip: k.tip, spires: k.spires.map((x) => Math.min(Math.max(x - W.entranceWest, k.x[0] - W.entranceWest + 0.28), k.x[1] - W.entranceWest - 0.28)) }));
   streetFace(b, P, {
     range: [bl.s1, br.s0], foot: -0.6, parapet: [M.porch.top, pBand[1]], pilasters: [],
@@ -157,7 +158,7 @@ export function front(b) {
     box(b, P, k.s0, k.s1, -0.6, pBand[1], -0.05, k.d, "brickBrown");
     box(b, P, k.s0 - 0.05, k.s1 + 0.05, pBand[0], pBand[1], k.d - 0.6, k.d + 0.1, "render");
     box(b, P, k.s0 - 0.03, k.s1 + 0.03, pDentil[0], pDentil[1], k.d - 0.3, k.d + 0.06, "render");
-    for (const sp of k.spires) spire(b, P, sp, k.d - 0.3, 0.55, 0.55, pBand[1], k.tip);
+    for (const sp of k.spires) spire(b, P, sp, k.d - 0.3, fp.spire, fp.spire, pBand[1], k.tip);
   }
   const PE = face([W.porchEast, W.porchFront], W.eastFront[0]);
   streetFace(b, PE, {
@@ -176,7 +177,7 @@ export function front(b) {
   slab(b, P, sur, 0, 0.32, "render");
   slab(b, P, archPath(new THREE.Shape(), sc, d.open, d.threshold, ysI), 0.01, 0.02, "void");
   // three arched windows over the door, with cream colonnettes and a cream sill
-  const wn = fp.windows, col = 0.15, total = wn.n * wn.w + (wn.n + 1) * col;
+  const wn = fp.windows, col = wn.col, total = wn.n * wn.w + (wn.n + 1) * col;
   for (let i = 0; i < wn.n; i++) {
     const s = sc - total / 2 + col + wn.w / 2 + i * (wn.w + col);
     slab(b, P, archPath(new THREE.Shape(), s, wn.w, wn.sill, wn.crown - wn.w / 2), 0.01, 0.02, "void");
@@ -197,16 +198,15 @@ export function front(b) {
       return { s, w, d: 0.35, tip: fw.tips[i] };
     }),
     coping: { band: fw.band, top: fw.copingTop, dentil: fw.dentil },
-    frieze: { y0: fw.frieze[0] - 0.12, y1: fw.dentil[0], ys: fw.frieze[1] - 0.17, w: 0.34, pitch: 0.58 },
+    frieze: { y0: fw.frieze[0] - 0.12, y1: fw.dentil[0], ys: fw.frieze[1] - 0.17, w: 0.34, n: fw.perBay },
     arches: { pitch: 0.97, y0: fw.archFoot, y1: fw.frieze[0] - 0.12, ys: fw.springer },
   });
-  // ---- the steps: a landing before the door at its threshold and a flight down westward to the street (the
-  // door view: about seven risers, a cream wall on the landing's east side), as round 1 drew them: z 16.21 to
-  // 17.41 (round 1's street face of the west part, the works', plus 1.2). Sizes estimated, the street's level
-  // from the LiDAR (-0.2 m before the door); their foot goes down with the west part's, as the street falls
-  const th = d.threshold, z0 = W.porchFront, zf = 16.21, z1 = 17.41, xl = W.entranceWest - 0.6, xr = W.entranceWest + br.s0 - 0.1;
-  b.box(xl, xr, fw.foot, th, z0, z1, "brickBrown");
-  const n = 7, rise = (th + 0.2) / n, tread = 0.36;
-  for (let i = 1; i <= n; i++) b.box(xl - tread * i, xl - tread * (i - 1), fw.foot, th - rise * i, zf, z1, "brickBrown");
-  b.box(xr, xr + 0.3, fw.foot, th + 0.9, z0 + br.d, z1, "render");
+  // ---- the steps (common.js FRONT.porch.steps, the LiDAR and the door view): a landing at the door's threshold
+  // between the porch's blocks, then risers down south to the street between two cream walls. Their foot goes
+  // down below the street, as the porch's does
+  const st = fp.steps, th = d.threshold, foot = -1.0, [sx0, sx1] = st.x;
+  b.box(st.walls[0][0], st.walls[1][1], foot, th, W.porchFront, st.landing, "brickBrown");
+  const tread = (st.foot - st.landing) / st.n, rise = th / st.n; // down to the street at the frame's ground
+  for (let i = 1; i < st.n; i++) b.box(sx0, sx1, foot, th - rise * i, st.landing + tread * (i - 1), st.landing + tread * i, "brickBrown");
+  for (const [w0, w1] of st.walls) b.box(w0, w1, foot, st.wallTop, Math.min(bl.d, br.d) + W.porchFront - 0.05, st.foot, "render");
 }
