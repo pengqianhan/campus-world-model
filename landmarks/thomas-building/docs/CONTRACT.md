@@ -38,7 +38,8 @@ them into the model.
   this model draws 110's wall and parapet under it and nothing of the link.
 
 ## Ownership
-- `parts/body.js` (the ranges' walls and parapets), `parts/roofs.js` (the set-back storeys, their roofs,
+- `parts/body.js` (the ranges' walls and parapets), `parts/front.js` (the face to the road and its wrap
+  round the east corner, from `FACADE`), `parts/roofs.js` (the set-back storeys, their roofs,
   the plant room), `parts/stair.js` (the round stair and the flue), `parts/shapes.js` (shared helpers:
   one owner per round, named in the brief). `model.js` and `parts/common.js` are the lead's.
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show
@@ -57,7 +58,11 @@ them into the model.
   never bought), which the sky masks ignore. Their metadata's `copyright` reads "From the Owner, Photo
   by: Google".
 - Measure through a camera fixed from the photograph's own edges against the LiDAR
-  (`streetview.camera_fixes`, its note), never through the recorded one.
+  (`streetview.camera_fixes`, its note), never through the recorded one. `S_C8…`'s is fitted here;
+  `oWaF…`'s place and heading are 110N's fit moved into this frame, its pitch and roll not yet fitted
+  (round 1: its bands drawn about 20 px low at the east corner).
+- 110N (on the site) is drawn in front of this model in the compare (`compare.occluders`): where it hides
+  the north-east end in `oWaF…`'s views, those pixels count in neither the IoU nor the luma.
 - No photograph shows the back, the south-west end square, the courtyard or the roofs: draw them
   plainly at the LiDAR's sizes.
 

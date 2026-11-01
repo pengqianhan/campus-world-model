@@ -12,11 +12,15 @@ size; this page says only what they show. What none of them shows is drawn plain
   from the glass: under each band its underside reads dark; each band's top edge (the LiDAR's ledges at
   2.38, 7.12 and 11.12 m) is a thin lighter line above a broad plain face. The broad parapet band at the
   top, to 15.13 m.
-- **Square concrete piers**, about 1.2-1.3 m wide, standing proud of the bands from the ground to the
-  parapet, about 11.8 m apart (two of them through `S_C8…`'s fixed camera, at u 2.0-3.2 and 13.7-15.05).
-- **The windows**: red-painted steel frames in a grid; the lower storeys' tall panes with dark panels
-  in their lower third; the top storey's panes shorter. Blinds and lab fittings behind the glass make
-  it read light grey more than it reflects the sky.
+- **Square concrete piers**, 1.15 m wide, flush with the bands, from the plinth to the top band, 12.0 m
+  apart (`FACADE.piers`: two through `S_C8…`'s fixed camera, at u 1.72 and 13.72; one behind the tree; one
+  left of the east corner in `oWaF…`'s views).
+- **The windows**: red-painted steel frames in a grid, mullions every 0.58 m; four rows: the ground
+  storey's, short, behind the hedge, reading dark; the second, tallest (2.38-5.45 m), with two transoms
+  and dark panes below the lower one; the third and the top, one transom each. In `S_C8…`'s upper view
+  the rows are the ground storey's (behind the bus shelter), the second and the third. Blinds and lab
+  fittings behind most panes make them read light grey (luma 123-138 at the median) more than they
+  reflect the sky; the dark panes read 59.
 - **The ground floor** behind a raised bed of ivy and a hedge; a bus shelter, a lamp post and a large
   tree in front (not drawn).
 - Beyond the north-east end, `oWaF…` sees the corner of the face to the road and the end, with the same
