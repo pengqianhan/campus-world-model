@@ -3680,6 +3680,15 @@
       "count": 149
     },
     {
+      "file": "landmarks/streetview/tiles/qru8CkT4PN7yNixnCNGSag",
+      "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=qru8CkT4PN7yNixnCNGSag",
+      "fetchedAt": "2026-11-02T09:26:38.960Z",
+      "bytes": 2284351,
+      "sha256": "7ee73b51d2ad9ba3f96c6f22d600fb86f651c3df8eedf068e48ba5905eab4004",
+      "source": "streetview",
+      "count": 143
+    },
+    {
       "file": "landmarks/streetview/tiles/rA70HqrT1rLs_9BPOa1eHw",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=rA70HqrT1rLs_9BPOa1eHw",
       "fetchedAt": "2026-10-21T12:21:50.466Z",
