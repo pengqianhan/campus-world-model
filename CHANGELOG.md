@@ -61,7 +61,7 @@ A change to what the site does or shows adds its line here, and the README's
   until its landmark comes. On a computer without a graphics card, the map over Engineering Block 5
   draws about a quarter slower than before; a lighter model of it is to follow. Every measured
   massing already on the site is unchanged. The other 31 buildings that fail the check keep their
-  blocks, each with its reason (`landmarks/measured/exclusions.json`) (#PR).
+  blocks, each with its reason (`landmarks/measured/exclusions.json`) (#127).
 
 ## 2026-11-01
 
