@@ -83,7 +83,7 @@ It is built to answer two questions a student actually has:
   Extension on Symonds Street the map draws the Thomas Building in detail too: four storeys of
   red-framed window bands between deep bands of warm grey concrete, square piers, and a ground storey
   that steps down toward its north-east end, with a white door and a louvre. Across Symonds Street the
-  Music School is drawn in detail as well: a fan-shaped auditorium with an ochre wall and a tall window,
+  Music School is drawn in detail as well: a fan-shaped auditorium with an ochre wall and a window of four tall lights,
   and a long pale wall with a curved white canopy along the car park beside it, stepping up toward its north
   corner. Eight more University of
   Auckland buildings are drawn near the camera to their LiDAR-measured heights and roofs, now with
@@ -929,13 +929,13 @@ If you represent the University and would like something changed or removed, ple
   whose photographs stand turned about 8° and whose camera is not fitted, shows the window squarer but
   measures nothing. How thick its canopy and roofs are, how deep the auditorium's fascia is, where the
   parapet's lower steps begin and how high its steps stand between the LiDAR's levels, the window's frames,
-  the downpipes and the colour of the walls no photograph shows are estimated, and its card says so. The west corner's glazed roof is drawn as
+  the downpipes, where the auditorium's walls stand on its courtyard and south edges, and the colour of the walls no photograph shows are estimated, and its card says so. The west corner's glazed roof is drawn as
   one plane, the low link at the courtyard's east corner flat (42% of its cells within 0.5 m), and the
   trees by the road, which the LiDAR partly classes as building, are not drawn. What no photograph shows
   is drawn plainly: its faces to the road and to the south and west, the courtyard and the roofs. The
   Overbridge (202) meets it along its south-east and south sides, where the campus map's two outlines
   overlap: the model covers 12% of block 202, whose top the map stands about 3.3 m above the model's
-  door, under the model's roofs there (7.4 to 9.3 m).
+  door, 3.9 m or more under the model's roofs there (7.30 to 9.15 m).
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

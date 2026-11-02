@@ -125,12 +125,14 @@ export function slab(b, plan, bottom, top, material) {
 export const rect = ([u0, u1], [v0, v1]) => [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
 
 /** Walls round the plan from y0 up to `top(x, z)` at each corner (straight between corners), with no
- * top or bottom: for a roof drawn separately whose eaves are not level. */
-export function walls(b, plan, y0, top, material) {
+ * top or bottom: for a roof drawn separately whose eaves are not level. `edges`, when given, draws only the
+ * edges of those indices (edge i runs from corner i to corner i + 1). */
+export function walls(b, plan, y0, top, material, edges = null) {
   const pos = [];
   const turn = area(plan) > 0 ? 1 : -1;
   const foot = typeof y0 === "function" ? y0 : () => y0; // a level foot, or one that follows (x, z)
   for (let i = 0; i < plan.length; i++) {
+    if (edges && !edges.includes(i)) continue;
     let [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length];
     if (turn < 0) [x0, z0, x1, z1] = [x1, z1, x0, z0];
     const t0 = top(x0, z0), t1 = top(x1, z1), f0 = foot(x0, z0), f1 = foot(x1, z1);
@@ -191,7 +193,7 @@ export function lowestPlanes(b, plan, planes, y0, wall, roof, t) {
     planes.forEach(([a2, kx2, kz2], j) => { if (j !== i && facet) facet = clipHalf(facet, a - a2, kx - kx2, kz - kz2); });
     if (!facet) return;
     const top = (x, z) => a + kx * x + kz * z;
-    walls(b, facet, y0, top, wall);
+    walls(b, facet, y0, (x, z) => top(x, z) - t, wall); // to the slab's underside: the slab's own sides above
     slab(b, facet, (x, z) => top(x, z) - t, top, roof);
   });
 }

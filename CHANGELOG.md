@@ -26,7 +26,8 @@ A change to what the site does or shows adds its line here, and the README's
   roofs come from the LINZ 2024 LiDAR; the parapet's upper steps, the canopy's lower edge and the window
   are measured in a Street View photograph through a camera set from the photograph's own edges. How
   thick its canopy and roofs are and how deep its auditorium's fascia is, the size of the window's frames
-  and head and how far they stand out, the downpipes' radius, where the parapet's lower steps begin and how
+  and head and how far they stand out, the downpipes' radius, where its auditorium's walls stand on its courtyard and
+  south edges, where the parapet's lower steps begin and how
   high its steps stand between the LiDAR's levels, and the colour of the walls no photograph shows are
   estimated, and its card says so. On the map it has the map's colours; from a walker's height on a
   computer with a graphics card, its own paint, ochre render, metal roofs and glass. Its faces to the road

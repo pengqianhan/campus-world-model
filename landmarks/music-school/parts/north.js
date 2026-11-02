@@ -6,7 +6,7 @@ import { prism, roof, along } from "./shapes.js";
 const M = MEASURED;
 
 export function north(b) {
-  prism(b, M.north.plan, FOOT, M.north.top - 0.1, "paint");
+  prism(b, M.north.plan, FOOT, M.north.top - 0.12, "paint"); // to the roof slab's underside
   roof(b, M.north.plan, M.north.top, 0.12, "roofGrey");
 }
 
@@ -16,7 +16,9 @@ export function parapet(b) {
   const p = M.parapet, s = p.steps;
   for (let i = 0; i < s.length; i++) {
     const x0 = s[i][0], x1 = i + 1 < s.length ? s[i + 1][0] : p.x[1];
-    b.box(x0, x1 + (i + 1 < s.length ? 0.01 : 0), M.north.top - 0.2, s[i][1], p.z[0], p.z[1] + 0.02, "paint");
+    // each step overlaps the next by 1 cm; the first and last stand 1 cm past the wing's ends, so that no face
+    // of theirs lies in the plane of the roof's or the walls' ends
+    b.box(x0 - (i ? 0 : 0.01), x1 + 0.01, M.north.top - 0.2, s[i][1], p.z[0], p.z[1] + 0.02, "paint");
   }
 }
 
@@ -24,5 +26,5 @@ export function parapet(b) {
 export function canopy(b) {
   const c = M.canopy, top = c.section, t = c.thick;
   const section = [...top, ...top.slice().reverse().map(([z, y]) => [z, y - t])];
-  along(b, section, c.x[0], c.x[1], "roofPale");
+  along(b, section, c.x[0] - 0.01, c.x[1], "roofPale"); // its west end 1 cm past the wall's end
 }

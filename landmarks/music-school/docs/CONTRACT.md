@@ -20,7 +20,9 @@ model.
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the auditorium** to the east: a fan-shaped plan under a grey roof in facets round one high point
     near its south side, which a cone fits (apex (-9.62, 1.18), 12.53 m, falling 0.267 a metre), out to
-    eaves 0.74-0.88 m beyond its walls (the LiDAR's wall returns);
+    eaves 0.74-0.88 m beyond its walls on its four outer faces (the LiDAR's wall returns); on its edges toward
+    the courtyard and the lower roofs south of it the walls stand at the eave line (estimated: too few returns
+    to say);
   - **the north wing** round the courtyard, flat at 5.16 m, with a **parapet** over its face to the car
     park stepping up in rises of about 0.4 m from 5.5 to 8.3 m toward the north corner, and a **curved
     canopy** along that face (4.55 m at the wall, 3.42 m at z 18.0, its lower edge at 2.69 m through the
@@ -37,10 +39,12 @@ model.
 - **Neighbours.** Te Pūtahi Tangata (201, a block on the site) stands 0.44 m from 250's outline at its west
   corner; the model's west corner keeps to 250's returns. The Overbridge (202, a block 3.6 m tall from its
   floor count) runs along the south-east and south sides, its outline overlapping 250's: the model covers
-  12.0% of block 202, under roofs 7.4-9.3 m above 32.7, where block 202's top stands about 0.3 m below
+  12.0% of block 202, under roofs 7.30-9.15 m above 32.7 (the south range's roof at its corner (-8.25, -20.5),
+  its slab's underside 7.15, to the auditorium's highest eave over the block), where block 202's top stands about 0.3 m below
   32.7 by the LiDAR's heights (its ground's median 28.79 m, plus 3.6): neither shows through the other
   there. On the map's ground (round 2, `site` true) block 202's top stands 3.26 m above the model's door,
-  4 m or more below every roof of the model over it (README, "On the site").
+  3.9 m or more below every roof of the model over it, the lowest being the south range's slab's underside at
+  7.15 m (README, "On the site").
 
 ## Ownership
 - `parts/fan.js` (the auditorium; its window, gutter and downpipes), `parts/north.js` (the north wing, the parapet and the canopy),
@@ -54,7 +58,8 @@ model.
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Build time of a part
   ≤ ~300 ms on this machine (the console logs it).
-- Street View: ≤ 1,200 tiles for this building; 143 bought (2026-11-02, `qru8…`).
+- Street View: ≤ 1,200 tiles for this building; 286 bought (2026-11-02): `qru8…`'s 143 and `2LAG…`'s 143
+  (not pinned).
 
 ## References
 - `2LAG…` (2022-09), at the face's south-east end, bought in round 2 for the ochre wall's window: not pinned (its

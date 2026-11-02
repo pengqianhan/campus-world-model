@@ -34,8 +34,9 @@ it. The house east of the car park is not on the campus map and stands more than
 - **Te Pūtahi Tangata (201)**, a block, 0.44 m from 250's outline at the west corner: the model's west
   corner keeps to 250's returns.
 - **The Overbridge (202)**, a block 3.6 m tall by its floor count, along the south-east and south sides:
-  the campus map's two outlines overlap, and the model covers 12.0% of block 202 there, under roofs 7.4 to
-  9.3 m above 32.7 where block 202's top stands about 0.3 m below it by the LiDAR's heights (its ground's
+  the campus map's two outlines overlap, and the model covers 12.0% of block 202 there, under roofs 7.30 to
+  9.15 m above 32.7 (the south range's slab's underside 7.15 at its lowest) where block 202's top stands about
+  0.3 m below it by the LiDAR's heights (its ground's
   median 28.79 m, plus 3.6; the LiDAR's ground in its outline, -3.84 m, gives 0.24 m below). On the site
   each stands on the map's ground, as "On the site" below says.
 
@@ -175,8 +176,11 @@ against 15.39 (p99.9), 80.5% of block 250 and 12.0% of block 202 under the model
 
 ## On the site
 
-`site` is true: `place` writes `placement.json`, and the site draws the model in place of block 250 (80.5% of
-it under the model; its outline takes in the courtyard and a garden). `building.also` is empty: of the campus
+`site` is true: `place` writes `placement.json`, and the site draws the model in place of block 250 (80.8% of
+it under the model, where RUNBOOK A2's criterion 1 asks for 85%: of the 1,220 cells of 0.5 m of its outline
+that the model leaves uncovered, 1,198 hold no building return over 3 m, the open courtyard and a garden, and
+22 hold one, along the south range's south-west eave; the maintainer is asked to accept the shortfall, since
+filling the courtyard would draw what is not there). `building.also` is empty: of the campus
 map's blocks whose centres lie within 80 m, the model covers only block 202's, by 12.0%, where the two campus
 outlines overlap. 250's entry in `landmarks/measured/exclusions.json` (its roof cells covered 77% of its
 outline) has gone: the generator leaves the landmarks on the site alone; `MASSING.md` lists 250 among them
@@ -199,8 +203,9 @@ and counts 39 stand-ins measured.
   below the door's), its top 3.26 m above the model's door: there the map stands it about 3.5 m higher
   against the model than the LiDAR has the bridge (its slatted roof 2.0-2.5 m above 32.7 at most, its deck
   -1 to -0.5). Inside its outline the model has only its walls, from `FOOT` up through the block to the
-  roofs, whose eaves over it stand 7.4 to 7.6 m above the door (the south range's) and 8.6 to 9.2 m (the
-  auditorium's): the block's top lies 4 m or more below every roof over it, so nothing of
+  roofs, which stand 7.30 to 7.57 m above the door over it (the south range's, its slab's underside 7.15 at its
+  lowest) and 8.56 to 9.15 m (the auditorium's eaves): the block's top lies 3.9 m or more below every roof over
+  it, so nothing of
   either shows through the other there; where the block stands inside the model's walls, they hide it, and
   outside them it stands against them, as the bridge does.
 - **The light form** (the map, and the walker views of the basic tier) draws the roofs (`roofGrey`,
@@ -210,3 +215,27 @@ and counts 39 stand-ins measured.
 - **Its card** says "estimated:" and the config's `estimated`. Its sizes come from the LiDAR, and the details of
   its face to the car park and the ochre wall from the photograph through a camera fitted to the LiDAR's edges:
   no `measured_by`.
+
+## The review's fixes (November 2026)
+
+The review of ed5461f found:
+
+- **The courtyard eave east of x 11.4.** 67 building returns, 8.4-9.1 m high, stand past the south range's
+  courtyard edge (z -7) at x 11.8-15.5, their outer edge a line from z -6.91 at x 11.5 to -4.51 at x 14.5: the
+  plan follows it now, to (14.8, -4.28). Block 250 is then 80.8% under the model (80.5% before), and of the
+  1,220 cells it leaves uncovered, 1,198 hold no building return over 3 m.
+- **The north wing's north corner** is square at x 22.4, where its returns are (x 22.36-22.43 in every 0.25 m of
+  z from 14.0 to 16.4, 4.6-8.33 m high); the parapet runs to it. Round 1 cut the corner, and the parapet's last
+  step stood 0.13-0.40 m over nothing.
+- **Faces that coincided** (the same plane, facing the same way, in two materials, which flicker): the ranges'
+  walls ran up through their roof slabs' sides (53.6 m²), the auditorium's fascia lay on its walls on the seven
+  edges where those stand at the eave line (2.7 m²), and the north wing's walls on its roof slab's side (1.6 m²);
+  and smaller ones at the parapet's and the canopy's ends and in the window. Now the walls stop at the slabs'
+  undersides, the fascia is drawn only on the four faces whose walls stand in, the auditorium's other walls run
+  up to the roof's edge themselves, and the ends stand 1 cm apart: built in node, no two triangles of different
+  materials overlap in one plane facing the same way.
+- **The downpipes** run up to the soffit over each.
+
+After the fixes (`run.sh music-school refine compare topview`): IoU in the box 0.940, 0.841 and 0.965, the luma
+as before; from above footprint IoU 0.940, 88% of 5,184 cells within 0.5 m, block 250 80.8% and block 202 12.0%
+under the model; 896 triangles in 5 meshes.

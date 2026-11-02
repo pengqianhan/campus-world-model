@@ -9,7 +9,7 @@ of them shows is drawn plainly at the LiDAR's sizes.
 - **A long wall of pale cream roughcast render**, painted, in full sun: no window on it. Its top steps up
   toward the north corner, in steps of about 0.4 m, from just over the canopy at its south-east end to
   about 8.3 m at the north corner: three steps up to 6.74 m, a long level stretch, four steps up to 8.3 m
-  (risers at x 15.0, 15.88, 16.64 and 17.44), and the long top to the corner.
+  (risers at x 15.0, 16.09, 16.84 and 17.64), and the long top to the corner.
 - **A curved canopy of white corrugated metal** along the whole face, a quarter-round in section, its
   corrugations running down the curve; dark specks on it (dirt). Under it the same render down to the car
   park, a few small fittings (a round lamp, red marks), and a green handrail along the foot.

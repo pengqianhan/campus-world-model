@@ -12,17 +12,19 @@ const apex = [F.apex[0], F.top, F.apex[1]];
 const roofAt = (x, z) => fanHeight(F.plan, apex, cone, x, z);
 
 export function fan(b) {
-  walls(b, F.walls, FOOT, (x, z) => roofAt(x, z) - T / 2, "trim");
+  // the walls up to just under the roof's top: on the four outer faces they stand inside the eaves, under the
+  // roof's underside; on the other edges, at the eave line, they close the roof's edge themselves
+  walls(b, F.walls, FOOT, (x, z) => roofAt(x, z) - 0.01, "trim");
   fanRoof(b, F.plan, apex, cone, "roofGrey");
   fanRoof(b, F.plan, [apex[0], apex[1] - T, apex[2]], (x, z) => cone(x, z) - T, "roofGrey", true);
-  walls(b, F.plan, (x, z) => cone(x, z) - T, cone, "paint");
+  walls(b, F.plan, (x, z) => cone(x, z) - T, cone, "paint", F.eaves); // the fascia, where the walls stand in
 }
 
 /** The ochre wall's window: panes on the wall's face, a white frame of four lights in two rows standing a little
  * out from it, a head over it and a sill under it. */
 export function fanWindow(b) {
   const w = F.window, z = F.walls[2][1], [x0, x1] = w.x, [y0, y1] = w.y, f = w.frame;
-  b.box(x0, x1, y0 + f, y1 - w.head, z - 0.02, z + 0.01, "glassPale");                // the panes, on the face
+  b.box(x0 + 0.01, x1 - 0.01, y0 + f, y1 - w.head - 0.01, z - 0.01, z + 0.01, "glassPale"); // the panes, on the face, inside the jambs
   const front = (a0, a1, b0, b1) => b.box(a0, a1, b0, b1, z - 0.02, z + w.out, "paint");
   front(x0 - f, x1 + f, y1 - w.head, y1);                                             // the head
   front(x0 - f, x1 + f, y0 - 0.02, y0 + f);                                           // the sill
@@ -32,5 +34,5 @@ export function fanWindow(b) {
     const x = x0 + ((x1 - x0) * i) / w.lights;
     front(x - f / 2, x + f / 2, y0, y1 - w.head);
   }
-  for (const [px, pz] of F.pipes) cylinder(b, px, pz + F.pipeR, F.pipeR, FOOT, roofAt(px, pz + 0.5) - T, "paint", 8);
+  for (const [px, pz] of F.pipes) cylinder(b, px, pz + F.pipeR, F.pipeR, FOOT, roofAt(px, pz + F.pipeR) - T, "paint", 8);
 }

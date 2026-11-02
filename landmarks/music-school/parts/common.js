@@ -33,6 +33,10 @@ export const MEASURED = {
     // show too few returns to say, and stay. The plan with those four edges moved in by those amounts:
     walls: [[-2.6, 3.5], [-2.6, 10.66], [-8.66, 15.64], [-17.59, 15.64], [-21.26, 7.52], [-21.26, -2.09], [-19.5, -3.5],
       [-11.0, -3.5], [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.0, 3.0]],
+    // the plan's edges whose walls stand inside the eaves (1 to 4): the fascia is drawn there only; on the other
+    // edges, toward the courtyard and the lower roofs, the walls stand at the eave line (estimated: too few
+    // returns to say)
+    eaves: [1, 2, 3, 4],
     // The window in the ochre wall (round 2), through qru8's fixed camera on the wall's plane (z 15.64): its left
     // edge at x -16.70 (top) and -16.44 (sill), its right at -12.81 and -12.59, so x -16.57 to -12.70; its head's
     // top at 6.91-6.93 m, its sill's foot at 3.30-3.33, its transom at 5.02. Four lights in two rows, as both
@@ -48,9 +52,11 @@ export const MEASURED = {
   // The north wing: a flat roof at 5.16 m (the median of its 946 cells; residuals p10/p50/p90 -0.09/0/+0.67,
   // 88% within 0.5 m), from the face to the car park (z 16.4, where the canopy's returns begin) round the
   // courtyard, whose curved edge is the edge of its returns, to its north-west face (round 1: to x 23.5-24.5,
-  // the edge of its returns, where round 0 stopped at 23.0).
+  // the edge of its returns, where round 0 stopped at 23.0). Its north corner is square, at x 22.4: building
+  // returns over 3 m reach x 22.36-22.43 in every 0.25 m of z from 14.0 to 16.4, 4.6-8.33 m high (the review of
+  // ed5461f; round 1 cut the corner from (21.8, 16.4) to (22.5, 15.5), under the parapet's last step).
   north: {
-    plan: [[1.5, 16.4], [21.8, 16.4], [22.5, 15.5], [23.5, 14.0], [23.5, 9.0], [24.0, 4.5], [24.5, 1.6], [18.4, 1.6], [18.4, -2.6],
+    plan: [[1.5, 16.4], [22.4, 16.4], [22.4, 14.0], [23.5, 14.0], [23.5, 9.0], [24.0, 4.5], [24.5, 1.6], [18.4, 1.6], [18.4, -2.6],
       [14.8, -2.6], [14.5, 3.75], [10.25, 8.5], [8.75, 9.5], [5.25, 10.0], [4.0, 11.0], [2.5, 13.25], [1.5, 15.0]],
     top: 5.16,
   },
@@ -66,7 +72,7 @@ export const MEASURED = {
   // (taken as 16.05-16.4), stepping up toward the north corner in equal rises of about 0.4 m. Its top, the
   // highest return in each 0.5 m of x (1-10 returns each): 5.45-5.69 from x 1.5 to 9.0; 5.83-5.89 to 10.0;
   // 6.16 and 6.35 to 11.0; 6.68-6.80 to 15.0; then 7.07, 7.38, 7.54, 7.69 and 7.99 to 17.5; 8.26-8.45 to
-  // x 22.2. Round 1: from x 15 the photograph shows three risers against the sky, four levels in equal rises
+  // x 22.4, the north wing's square corner. Round 1: from x 15 the photograph shows three risers against the sky, four levels in equal rises
   // from 6.74 to 8.3 (7.13, 7.52, 7.91), and through qru8's fitted camera (config, camera_fixes_note) puts the
   // risers at x 16.09, 16.84 and 17.64 (round 2's camera; round 1's put them at 15.88, 16.64 and 17.44); the
   // first, from 6.74 to 7.13, stands in front of Te Pūtahi Tangata in
@@ -74,7 +80,7 @@ export const MEASURED = {
   // against the ivy and the neighbour behind, not the sky: they are the LiDAR's, in equal rises (5.93 over x
   // 9.0-10.25, 6.33 to 11.0; the risers' x to about 0.25 m). [x where a step begins, its top].
   parapet: {
-    z: [16.05, 16.4], x: [1.5, 22.2],
+    z: [16.05, 16.4], x: [1.5, 22.4],
     steps: [[1.5, 5.52], [9.0, 5.93], [10.25, 6.33], [11.0, 6.74], [15.0, 7.13], [16.09, 7.52], [16.84, 7.91], [17.64, 8.3]],
   },
   // The canopy along the face to the car park, its curved corrugated sheet seen in the photographs: its section
@@ -97,8 +103,11 @@ export const MEASURED = {
   // west end (falling 0.225 a metre to -x) (1,419 cells; residuals p10/p50/p90 -0.28/-0.02/+0.35, 90% within
   // 0.5 m; round 0's gable alone, without the hip: 86%). Its edge toward the north wing is the north wing's, z -2.6
   // (round 0 left a slit 0.4 m wide between them).
+  // Its courtyard eave east of x 11.4 (the review of ed5461f): 67 building returns stand past z -7 at x 11.8 to
+  // 15.5, 8.4-9.1 m high (the slope's height there), their outer edge a line from z -6.91 at x 11.5 to -4.51 at
+  // x 14.5 (each 0.5 m of x's p90; z max -6.82 to -4.35): the plan follows it, from (11.4, -7.0) to (14.8, -4.28).
   south: {
-    plan: [[-17.9, -12.5], [-1.0, -12.5], [-1.0, -7.0], [14.8, -7.0], [14.8, -2.6], [18.4, -2.6], [18.4, -15.0], [16.2, -15.3],
+    plan: [[-17.9, -12.5], [-1.0, -12.5], [-1.0, -7.0], [11.4, -7.0], [14.8, -4.28], [14.8, -2.6], [18.4, -2.6], [18.4, -15.0], [16.2, -15.3],
       [16.6, -19.4], [15.5, -20.5], [-8.25, -20.5], [-12.25, -19.5], [-16.2, -17.6]],
     planes: [[7.432, 0.0161, -0.1529], [14.337, 0.0156, 0.3372], [13.644, 0.225, 0.0986]],
   },
