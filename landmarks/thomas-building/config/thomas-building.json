@@ -1,6 +1,6 @@
 {
  "name": "thomas-building",
- "site": false,
+ "site": true,
  "estimated": "how far its window frames stand out, the height of the plinth under its face to the road, that face's plain end at the south-west, how far behind its piers the ground storey's windows and doors stand toward the north-east end, and that storey round the east corner",
  "building": {
   "id": "110",
@@ -227,7 +227,7 @@
  "door": {
   "x": 4.0,
   "z": 22.6,
-  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the south-east face, the face to the road, near its middle, 0.6-0.9 m out from the wall, where the LiDAR's ground is 36.17 m (15 ground returns within 1 m: 35.96-36.25 for p10-p90): no door the photographs show stands on this face."
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the south-east face, the face to the road, near its middle, 0.6-0.9 m out from the wall, where the LiDAR's ground is 36.17 m (15 ground returns within 1 m: 35.96-36.25 for p10-p90). The photographs show no door there; the white door oWaF's door view shows toward the north-east end (u 23.3-24.9) stands in the ground storey that steps down there (parts/common.js, FACADE.groundNE), on ground about 1.7 m lower, and is not the frame's ground."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

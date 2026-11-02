@@ -36,6 +36,11 @@ function spans(r, ua, ub) {
   return ua >= G.from ? [ne] : [[ua, G.from, y0, y1, VW], ne];
 }
 const inAny = (u0, u1, list) => list.some(([a, b]) => u1 > a + 1e-6 && u0 < b - 1e-6);
+// Toward the north-east end the ground storey's sills stand below the door's ground (y = 0), on the plinth.
+// The site's foot check reads each material's lowest points as a footing (tests/landmarks.test.ts), so the
+// glass, the mullions and the panels there run on down inside the plinth to FOOT, where nothing shows them,
+// as the walls run down into the ground; the sills' frames stay at G.plinth.
+const sunk = (pv, y) => (pv === VG ? FOOT : y);
 
 export function front(b) {
   seed = 110;
@@ -63,16 +68,16 @@ export function front(b) {
     for (const [ua, ub, y0, y1, pv] of spans(r, U0 + F.pierWidth, UW + 0.03)) {
       // the glass, a skin over the range's wall at the windows' plane; the dark panes are glass with no blind
       // (the kit's dark glass reads 21 in the upper view against the photograph's 59, the pale glass about 70)
-      b.box(ua, ub, y0, y1, pv, pv + 0.03, "glassPale");
+      b.box(ua, ub, sunk(pv, y0), y1, pv, pv + 0.03, "glassPale");
       // the frames' horizontals: sill, head, transoms
       const ue = pv === VW ? Math.min(ub, UW + d) : ub;
-      for (const y of [y0, y1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(ua, ue, y, y + fw, pv, pv + d, "roofTile");
+      for (const y of [y0, y1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(ua, ue, y, y + fw, pv, pv + d, "frameRed");
     }
     // round the corner: the ground storey's heights and plane there are G's
     const [e0, e1, eu] = r === 0 ? [G.plinth, G.band, UG] : [...row, UW];
     const ev = r === 0 ? VG : VW;
-    b.box(eu, eu + 0.03, e0, e1, F.wrapTo, ev + 0.03, "glassPale");
-    for (const y of [e0, e1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(eu, eu + d, y, y + fw, F.wrapTo, ev + d, "roofTile");
+    b.box(eu, eu + 0.03, sunk(ev, e0), e1, F.wrapTo, ev + 0.03, "glassPale");
+    for (const y of [e0, e1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(eu, eu + d, y, y + fw, F.wrapTo, ev + d, "frameRed");
     // the panes' tiers between sill, transoms and head; in each pane a blind down (light) or up (the
     // glass), by a seeded draw at the row's share of light panes (FACADE.blinds)
     const [y0, y1] = row;
@@ -82,8 +87,8 @@ export function front(b) {
         if (split && tiers[t] < split) continue;      // the dark panels stay dark
         if (rand() >= F.blinds[r]) continue;
         const ya = tiers[t] + fw / 2, yb = tiers[t + 1] - fw / 2;
-        if (alongU) b.box(p0, p1, ya, yb, VW + 0.03, VW + 0.04, "paint");
-        else b.box(UW + 0.03, UW + 0.04, ya, yb, q0, q1, "paint");
+        if (alongU) b.box(p0, p1, ya, yb, VW + 0.03, VW + 0.04, "blind");
+        else b.box(UW + 0.03, UW + 0.04, ya, yb, q0, q1, "blind");
       }
     };
     // the mullions, bay by bay (none behind a pier, a door, the louvre or a post), and the panes between them
@@ -91,7 +96,7 @@ export function front(b) {
       let last = a;
       for (let u = start; u + w <= bb + 1e-6; u += F.mullion.step) {
         if (r === 0 && inAny(u, u + w, [...G.panels, ...G.posts])) continue;
-        for (const [, , m0, m1, pv] of spans(r, u, u + w)) b.box(u, u + w, m0, m1, pv, pv + d, "roofTile");
+        for (const [, , m0, m1, pv] of spans(r, u, u + w)) b.box(u, u + w, sunk(pv, m0), m1, pv, pv + d, "frameRed");
         if (u - last > 0.1) blind(last, u, 0, 0, true);
         last = u + w;
       }
@@ -100,14 +105,14 @@ export function front(b) {
     // round the corner, from the corner back to the wrap's end, at the same spacing (estimated)
     let last = ev;
     for (let v = ev - F.mullion.step; v - w >= F.wrapTo; v -= F.mullion.step) {
-      b.box(eu, eu + d, e0, e1, v - w, v, "roofTile");
+      b.box(eu, eu + d, sunk(ev, e0), e1, v - w, v, "frameRed");
       blind(0, 0, v, last, false);
       last = v - w;
     }
   });
   // the ground storey's white door and white-framed louvre toward the north-east end (oWaF's door view),
   // drawn as light panels a little in front of the glass
-  for (const [a, c] of G.panels) b.box(a, c, G.plinth, G.band - fw, VG + 0.03, VG + 0.06, "paint");
+  for (const [a, c] of G.panels) b.box(a, c, FOOT, G.band - fw, VG + 0.03, VG + 0.06, "paint");
 }
 
 // a seeded generator (as the kit's rng), so that the same blinds are drawn every time
