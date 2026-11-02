@@ -32,6 +32,11 @@ export function AboutPanel() {
   const buildingsOnly = noIndoor(d);
   const detailed = named(LANDMARKS.flatMap(landmarkBuildings));
   const measured = named(MEASURED.flatMap(landmarkBuildings));
+  // Sources besides the LiDAR that measure some of a landmark's sizes (placement.credit), each with the buildings it measures.
+  const credits = [...new Set(LANDMARKS.map((l) => l.placement.credit).filter((c): c is string => !!c))].map((credit) => ({
+    credit,
+    buildings: named(LANDMARKS.filter((l) => l.placement.credit === credit).flatMap(landmarkBuildings)),
+  }));
 
   return (
     <div class="modal-wrap" onClick={(e) => e.target === e.currentTarget && (panel.value = "none")}>
@@ -86,6 +91,11 @@ export function AboutPanel() {
           {LANDMARKS.length + MEASURED.length > 0 && (
             <Section title={t("about.landmarksTitle")}>
               <p id="landmarks">{t("about.landmarks", { buildings: detailed })}</p>
+              {credits.map(({ credit, buildings }) => (
+                <p class="landmark-credit" key={credit}>
+                  {t("about.landmarksOtherSource", { buildings, credit })}
+                </p>
+              ))}
               {MEASURED.length > 0 && <p id="measured">{t("about.measured", { buildings: measured })}</p>}
               <p id="landmark-links">
                 <a href={LANDMARK_LIDAR} target="_blank" rel="noopener noreferrer">

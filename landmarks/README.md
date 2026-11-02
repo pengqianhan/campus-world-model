@@ -122,6 +122,8 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `scale` | map metres per model metre (1.0001 at the Clock Tower: leave it out) |
 | `door` | the point whose ground is the model's y = 0, in the view frame (`model`) and on the map (`map`) |
 | `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
+| `measuredBy` | only when something besides the LiDAR measures some of the model's sizes: the config's `measured_by`, the words that take the place of "by LiDAR" on the building's card, beginning with "by LiDAR" (the Kenneth Myers Centre: "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph", where the LiDAR holds temporary works) |
+| `credit` | with `measuredBy`: the config's `credit`, that other source's credit and licence, which About gives with the buildings it measures |
 | `estimated` | only when the model draws a height, an extent or a depth that nothing measures (an underside, a roof drawn on from the rest, how far a balcony or a beam stands out, how thick a slab is): the config's `estimated`, the words for it. The building's card says "estimated:" and those words (the Clock Tower East Wing: "the underside of its link toward the Clock Tower (the campus map's storey height)"; 15 Eden Crescent: two parts of its roofs; the Fisher Building: the depths of its balconies and canopy and the thicknesses of its ramp and parapet), unless the config also gives `part`, which the card shows instead. Windows or bays carried on at a measured spacing are placements, not sizes, and the README says so without it |
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
@@ -140,7 +142,7 @@ below), and name the parts in `model.js`'s `STANDS` (`export const STANDS = ["ra
 the test builds them together, alone, and checks their lowest points as well. It cannot find such a
 part by itself, since the site does not hold the LiDAR's ground and canopies, decks and windows stand
 clear of the ground by design.
-The stage needs no LiDAR: it reads `frame.expected`, `door`, `building`, `site`, `part` and `estimated` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door`, `building`, `site`, `part`, `estimated`, `measured_by` and `credit` from the config.
 
 ## On the site
 
@@ -235,7 +237,8 @@ agent and no photograph. All of them share one model and have a data file each:
   where they meet it. When the lowest layer covers less than half of the outline and that would lose
   a roof (its own slopes flattened, or a larger layer under its walls, as where two hips meet in a
   valley), the walls round the outline stop instead at a flat plinth at the lowest eave of all the
-  layers, and every layer stands on it. Roof that no layer draws (a chimney, plant, a tree classed
+  layers, and every layer stands on it; in a building drawn with faces (below), every sloping layer
+  on the plinth has eaves too, where it meets the outline. Roof that no layer draws (a chimney, plant, a tree classed
   as building) is left out. An outline on the campus map that crosses itself keeps its block. On
   Grafton and Newmarket (`DROP_BARE_ON`; `--drop-bare` or `--keep-bare` for a run) a traced piece of a
   layer in which the LiDAR sees no roof cell of that layer is not drawn as a layer, and its data file
@@ -243,7 +246,23 @@ agent and no photograph. All of them share one model and have a data file each:
   campus the rule waits for the maintainer, as it would change one number of 405's in
   `exclusions.json`. A layer above the lowest may still stand in a neighbour's outline where the two
   outlines overlap (904's strip over 902 and 903, 305's layers over 303): a question for the
-  maintainer in the same section.
+  maintainer in the same section. A cell of the outline where the LiDAR sees no roof stands at its
+  nearest layer's height (the maintainer, 2026-11-02).
+- Roofs of several faces and low pitches (`FORMS`; MASSING.md, "The fourth round"): a building that
+  fails the top-view check is measured once more. A layer drawn flat takes a low pitch where planes
+  read from a 2 m neighbourhood, down to 1°, lie nearer the LiDAR's heights than one height does.
+  Then a sloping layer is split into its faces where they lie nearer than the lowest of its planes:
+  its sloping cells by the direction they fall in, in connected pieces on one plane each (two faces
+  that fall the same way at different heights are two). Each face is a mono-pitch over the cells
+  nearest it, traced unsimplified so that neighbouring faces share their edges; the faces of a layer
+  stand on a flat body up to the lowest edge of their roofs, on the plinth. In such a building every
+  sloping layer, a face or not, has eaves where it meets the outline, measured from the LiDAR as the
+  outline's are. The cells of the layer that lie on no face have their own entry under `dropped`. The building is drawn only if it then passes the check with more cells within
+  0.5 m than before; else its block stays, and `exclusions.json` gives both checks. A building that
+  passes without them is not measured again, so its data file is as before. `--no-forms` leaves
+  them out. 405 Engineering Block 5 is drawn by the maintainer's exception (2026-11-02), although it
+  makes the map drawn in software slower than the 15% the loop allows (MASSING.md, "The fourth
+  round").
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof

@@ -64,6 +64,9 @@ the generator makes.
      roof**. Its cells are reported and drawn with the layer nearest them. Those more than 1 m from
      every layer's roof there (`not_drawn_m2`) are left out of the top-view check's share of cells
      within 0.5 m, and its footprint IoU counts those the model stands over as covered.
+   - Since the fourth round, a building that fails the top-view check with these forms is
+     measured once more with two others: a low pitch, and a roof of several faces (see "The fourth
+     round").
 
    Each layer keeps its eave height (the 10th percentile of its edge cells) and its ridge height
    (the 99th percentile of its cells), and each pitched side its slope.
@@ -251,11 +254,11 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110N,
-119, 801, 802 and 804) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+119, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 42. Places where people live keep their blocks here
+leaving out the landmarks and `SOON`, it measures 41. Places where people live keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
@@ -441,7 +444,7 @@ that layer of its own, a 12.9 m² column up to 20.2 m. Since this review the gen
 piece: a traced piece of a layer in which the LiDAR sees no roof cell of that layer is left out
 (`DROP_BARE`), and the data file lists it under `dropped`. Of all the pieces the generator traces
 on the three campuses, seven have no roof cell in the LiDAR, in five buildings: 906's lobe, two
-pieces of 402, two of 405, one of 436 and one of 820; those four keep their blocks. The rule is on
+pieces of 402, two of 405, one of 436 and one of 820; 402, 405 and 436 keep their blocks, and 820 is now drawn as a landmark in place of its block. The rule is on
 for Grafton and Newmarket. On the City campus it would change no data file and no
 reason, only 405's model area in its top view (3863.5 to 3863.2 m²); the City's files are kept byte
 for byte, so it is off there until the maintainer says (`--drop-bare` turns it on for a run). 906's numbers do not change (footprint IoU 0.914, 99.6%
@@ -468,7 +471,8 @@ stand on an outline whose roof cells cover 85% of it or more; it does not say at
 other cells stand. Whether they should stand at the lowest layer's height (or keep the block's)
 instead of their nearest layer's is for the maintainer: it would change the City's massings too.
 (906 and 305 counted for this pull request with a copy of the generator that keeps its masks; the
-others are the review's count, which two reviewers made with scripts of their own.)
+others are the review's count, which two reviewers made with scripts of their own.) **The
+maintainer's answer (2026-11-02):** such cells stay drawn at their nearest layer's height, as now.
 
 **904's strip and overlapping outlines.** 904's outline on the campus map overlaps 903's by
 220.4 m² and 902's by 71.6 m² along its south side (rasterised on a 0.05 m grid). 904's second
@@ -530,6 +534,102 @@ The other 34 keep their blocks, each in `exclusions.json` with its reason:
     1 m past their outlines where the model draws no eave.
   - 529 (footprint IoU 0.920, 86% within 0.5 m) also has a raised part drawn larger than the LiDAR
     shows it, and its west and north edges fall 2 m below the model's roof.
+
+### The fourth round (2026-11-02): roofs of several faces and low pitches
+
+Until this round each layer's roof was flat or the lowest of its planes. That fits one ridge, but
+not two hips side by side, a cross of gables or a sawtooth, and a roof that falls less than 5° was
+drawn flat. Since this round, a building that fails the top-view check is measured once more with
+two more forms (`FORMS` in `massing.py`). A building that passes without them is not measured
+again, so the fourteen data files of the earlier rounds come out byte for byte as before. With
+`--no-forms` the generator measures as before: every data file and `exclusions.json` come out byte
+for byte as `main` has them.
+
+- **A low pitch.** A layer drawn flat is fitted again as in step 5, from planes fitted to each
+  cell's neighbourhood of 2 m (`LOW_R`) in place of 1.2 m, with a cell that slopes 1° (`LOW_DEG`)
+  or more counted as sloping. The pitched roof is kept if it lies nearer the LiDAR's heights than
+  the one height: a smaller mean distance over the layer's cells.
+- **Several faces.** A sloping layer's cells are sorted by the direction they fall in (the peaks of
+  step 5), and each direction's cells are split into connected pieces whose neighbouring cells lie
+  on one plane within 0.3 m (`FACE_STEP`). Two faces that fall the same way at different heights
+  (two hips side by side, the arms of a cross, a sawtooth) are two pieces. Each piece of 4 m² or
+  more is a face, with its own plane. If the faces lie nearer the LiDAR's heights than the lowest
+  of the layer's planes, each face becomes a layer of its own, a mono-pitch over the cells nearest
+  it. Its ring is traced from its cells without simplifying, so neighbouring faces share their
+  edges and no gap opens between them. The faces of one layer stand on a body: a flat layer over
+  all of them, up to the lowest edge of their roofs, so that no wall stands inside the building
+  between two faces. The bodies stand on the plinth of the second round, at the lowest eave of all
+  the layers. In a building with a layer drawn as its faces, every sloping layer on the plinth, a
+  face or not, has eaves where it meets the outline, edge by edge, measured as the outline's are,
+  from the building points along its plane. The cells of the layer that lie on no face (along its
+  ridges, hips and valleys, where they fall no one way, or in pieces under 4 m²) are drawn with the
+  face nearest them, and have their own entry under `dropped`. `measured/model.js` draws each face
+  as any mono-pitch: the shared model does not change.
+- A building measured so is drawn only if it passes the check, with more cells within 0.5 m than
+  without the new forms. Otherwise its block stays, and its entry in `exclusions.json` gives both
+  checks (`measured.forms`, and its reason).
+
+**The buildings that failed the check**, 40 on the three campuses before this round (`main` at
+754fca8: 820, among them then, is a landmark since #126), sorted by their top views:
+
+- **Roofs of several ridges** (16): 110, 118, 130, 132, 212, 215, 216, 219, 225, 226, 322, 423,
+  431, 509, 632 and 908.
+- **A low pitch drawn flat** (4): 902 and 903, and 274 and 803, whose footprints also fail.
+- **Other reasons** (20): 106, 201, 302, 303, 303S, 315, 401, 402, 405, 432, 439, 502, 503, 504,
+  507, 529, 820, 907, 910 and 911: plant, roof lights and parapets that no layer draws, a raised
+  part taken into the roof round it, outlines that take in open ground, trees over the roof, a
+  planted roof, and footprints that differ from the outline (the second and third rounds).
+
+**Eight pass now** and are drawn:
+
+| Building | Before: IoU, within 0.5 m | Footprint IoU | Within 0.5 m | Model − LiDAR p10 / p50 / p90 (m) | Highest, model / LiDAR (m) | Layers | Block |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 130 Pembridge House | 0.920, 89.1% | 0.948 | 93.7% | −0.16 / 0.00 / 0.15 | 11.02 / 12.72 | 22: three layers of hips as 14 faces on their bodies | 7.2 m |
+| 216 Mona | 0.882, 69.9% | 0.904 | 94.9% | −0.13 / 0.01 / 0.14 | 15.00 / 24.90 | 10: a hip roof as 7 faces | 10.8 m |
+| 322 AUSA House | 0.858, 73.5% | 0.947 | 97.2% | −0.10 / 0.00 / 0.13 | 11.67 / 12.65 | 10: two roofs as 4 and 2 faces | 7.2 m |
+| 405 Engineering Block 5 | 0.900, 82.2% | 0.903 | 91.3% | −0.28 / 0.00 / 0.09 | 53.15 / 55.53 | 60: low pitches (1.7° to 7.4°), 13 faces | 32.4 m |
+| 423 Conference Centre | 0.924, 75.9% | 0.950 | 95.1% | −0.09 / 0.00 / 0.10 | 21.31 / 20.41 | 45: its pavilions' roofs as 29 faces | 3.6 m |
+| 431 Fine Arts Studio Block 431 | 0.890, 81.7% | 0.947 | 99.0% | −0.06 / 0.00 / 0.06 | 18.57 / 18.90 | 8: a stepped mono-pitch as 2 faces, a low pitch of 2.9° | 18.0 m |
+| 902 Building 902 | 0.972, 79.3% | 0.971 | 91.9% | −0.37 / 0.00 / 0.03 | 26.75 / 26.74 | 14: low pitches of 3.6° to 5.0°, 6 of them faces | 21.6 m |
+| 903 Building 903 | 0.958, 85.5% | 0.959 | 95.5% | −0.14 / 0.00 / 0.04 | 19.69 / 20.62 | 12: low pitches of 3.8° and 4.4° as 8 faces | 14.4 m |
+
+130 Pembridge House (tier 1) and 405 Engineering Block 5 (tier 2) are stand-ins until their
+landmarks come (see "Which buildings"). **405 is drawn by the maintainer's exception
+(2026-11-02).** It was sorted under "other reasons" and passes narrowly. Its model of 60 layers, at
+9,759 triangles, makes the map drawn in software (SwiftShader) over 405 and 423 23.6% slower than
+`main`'s (233.5 to 288.7 ms a frame, medians of three), where the loop's limit is 15%; on the GPU
+the frame goes from 3.7 to 4.2 ms. With the massings hidden one at a time in that view in
+SwiftShader, a frame took 283 ms with both drawn, 251 ms with 405 hidden, 283 ms with 423 hidden
+and 239 ms with both hidden: the cost is 405's, about 32 ms, and 423 costs about 12 ms only when
+405 is hidden. Standing the faces on bodies did not lower it. A performance task follows, to bring
+405 within 15%: profile it in SwiftShader, then draw only the height of wall that shows, give it
+stand-ins for its shadows, or join the massings cell by cell. 902 and 903 are the two buildings whose outlines 904's
+strip lies in (see "The third round"): the strip now lies on their measured roofs, within 0.2 m
+of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
+shows in patches where it stood above their 14.4 m blocks before.
+
+**The other 31 keep their blocks**, from their top views (`measured/out/<id>-forms.png`):
+
+- Several ridges whose heights now fit, but whose footprint does not: 212 (footprint IoU 0.860,
+  92% within 0.5 m) and 226 (0.805, 93%), where trees classed as building stand over a corner, and
+  225 (0.887, 98%), whose roof reaches past its outline further than the model's eaves.
+- Just under the 90%: 632 Carlton Pines (0.930, 89.6%: one face of a hip drawn about 1 m low, and
+  eaves drawn past the LiDAR's on its east side) and 908 (0.926, 89.8%: the east end of its south
+  wing, where the roof turns, drawn up to 2 m low).
+- Trees classed as building over part of the roof: 118 (0.828, 87%), 215 (0.876, 83%) and 219
+  (0.899, 84%).
+- 110 Thomas Building (0.848, 71%): its outline takes in its courtyard, which the LiDAR sees as
+  ground and the model fills at its lowest layer.
+- 132 and 509: no new form. 84 m² of 132's roof and 73 m² of 509's lie on no smooth plane, so
+  each of their layers has one face at most.
+- Low pitches whose heights now fit: 274 (0.858, 99%) and 803 (0.864, 97%); their footprints
+  differ from their outlines, as before.
+- The other reasons (18): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
+  from 42% to 77%), and none over the limits.
+
+Each of the 31 keeps its reason in `exclusions.json`. 27 of them also give the numbers of the
+check with the new forms (`measured.forms`); 132, 509, 910 and 911 do not, as no new form fits
+them.
 
 ### How the numbers were measured
 

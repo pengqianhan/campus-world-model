@@ -36,6 +36,15 @@ export interface Placement {
    * Clock Tower East Wing's link's underside: the building's card says it is estimated.
    */
   estimated?: string;
+  /**
+   * When something besides the LiDAR measures some of its sizes (its config's `measured_by`), the words that
+   * take the place of "by LiDAR" on the building's card, beginning "by LiDAR": the Kenneth Myers Centre's
+   * west part, over which the LiDAR holds temporary works, is measured in an aerial photograph and a
+   * Street View photograph. Left out, the card says "by LiDAR".
+   */
+  measuredBy?: string;
+  /** With `measuredBy`, the credit of that other source (its config's `credit`), which About gives. */
+  credit?: string;
 }
 
 export interface LandmarkEntry {

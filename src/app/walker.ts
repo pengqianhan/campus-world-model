@@ -225,7 +225,7 @@ export async function lookFrom(name?: string): Promise<Reply> {
     notes: [
       "The walker is a made-up figure on a model of the campus; it stands for no real person.",
       "Doors and entrances are not mapped: a walk to a building ends beside its nearest wall, and inside it keeps to corridors where it can.",
-      "Building heights are estimated from the number of floors, except those of the landmarks and the measured massings, which the LiDAR measures.",
+      "Building heights are estimated from the number of floors, except those of the landmarks and the measured massings, which are measured: by the LiDAR, and where a building's card says so, in part by other sources.",
     ],
     summary: lines.join(" "),
   };

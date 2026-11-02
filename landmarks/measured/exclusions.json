@@ -3,7 +3,7 @@
  "buildings": {
   "106": {
    "name": "George Mason Biology Bldg",
-   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 76 m2; several faces: 5 mono-pitches over 442 m2): footprint IoU 0.950, 90% of cells within 0.5 m",
    "measured": {
     "outline_m2": 701.2,
     "ground": {
@@ -31,12 +31,33 @@
       "model": 18.96,
       "lidar": 20.34
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 2 mono-pitches over 76 m2",
+      "several faces: 5 mono-pitches over 442 m2"
+     ],
+     "check": {
+      "iou": 0.95,
+      "lidar_m2": 787.0,
+      "model_m2": 784.0,
+      "within_0.5m": 0.895,
+      "model_minus_lidar_m": {
+       "p10": -0.06,
+       "p50": 0.01,
+       "p90": 0.11
+      },
+      "highest_m": {
+       "model": 19.46,
+       "lidar": 20.34
+      }
+     }
     }
    }
   },
   "110": {
    "name": "Thomas Building",
-   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 50% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 50% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 502 m2; several faces: 4 mono-pitches over 115 m2; a low pitch: mono, 6.1 degrees, over 8 m2; a low pitch: hip, 3.0 degrees, over 44 m2; a low pitch: mono, 4.7 degrees, over 4 m2; a low pitch: mono, 4.9 degrees, over 8 m2): footprint IoU 0.848, 71% of cells within 0.5 m",
    "measured": {
     "outline_m2": 2231.9,
     "ground": {
@@ -64,12 +85,37 @@
       "model": 22.18,
       "lidar": 27.49
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 3 mono-pitches over 502 m2",
+      "several faces: 4 mono-pitches over 115 m2",
+      "a low pitch: mono, 6.1 degrees, over 8 m2",
+      "a low pitch: hip, 3.0 degrees, over 44 m2",
+      "a low pitch: mono, 4.7 degrees, over 4 m2",
+      "a low pitch: mono, 4.9 degrees, over 8 m2"
+     ],
+     "check": {
+      "iou": 0.848,
+      "lidar_m2": 2391.0,
+      "model_m2": 2566.8,
+      "within_0.5m": 0.711,
+      "model_minus_lidar_m": {
+       "p10": -0.58,
+       "p50": 0.0,
+       "p90": 1.84
+      },
+      "highest_m": {
+       "model": 22.52,
+       "lidar": 27.49
+      }
+     }
     }
    }
   },
   "118": {
    "name": "Lippincott Cottage",
-   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 35 m2): footprint IoU 0.828, 87% of cells within 0.5 m",
    "measured": {
     "outline_m2": 87.6,
     "ground": {
@@ -96,6 +142,26 @@
      "highest_m": {
       "model": 9.75,
       "lidar": 10.55
+     }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 3 mono-pitches over 35 m2"
+     ],
+     "check": {
+      "iou": 0.828,
+      "lidar_m2": 96.2,
+      "model_m2": 94.8,
+      "within_0.5m": 0.872,
+      "model_minus_lidar_m": {
+       "p10": -2.28,
+       "p50": -0.0,
+       "p90": 0.1
+      },
+      "highest_m": {
+       "model": 8.41,
+       "lidar": 10.55
+      }
      }
     }
    }
@@ -252,39 +318,6 @@
     "open_below": 0.52
    }
   },
-  "130": {
-   "name": "Pembridge House",
-   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 376.1,
-    "ground": {
-     "p5": 48.22,
-     "p50": 48.9,
-     "p95": 49.08,
-     "zero": 48.41
-    },
-    "roof_inside_m2": 366.0,
-    "cover": 0.973,
-    "vegetation": 0.049,
-    "open_below": 0.173,
-    "not_drawn_m2": 6.2,
-    "check": {
-     "iou": 0.92,
-     "lidar_m2": 394.0,
-     "model_m2": 377.5,
-     "within_0.5m": 0.891,
-     "model_minus_lidar_m": {
-      "p10": -0.15,
-      "p50": 0.0,
-      "p90": 0.27
-     },
-     "highest_m": {
-      "model": 10.91,
-      "lidar": 12.72
-     }
-    }
-   }
-  },
   "132": {
    "name": "George Fraser Gallery",
    "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
@@ -337,7 +370,7 @@
   },
   "201": {
    "name": "Te Pūtahi Tangata",
-   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 84% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.872 (limit 0.9), 84% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.8 degrees, over 31 m2; a low pitch: mono, 3.9 degrees, over 22 m2; several faces: 2 mono-pitches over 27 m2; a low pitch: mono, 5.9 degrees, over 12 m2; a low pitch: mono, 2.3 degrees, over 21 m2; a low pitch: mono, 4.2 degrees, over 6 m2; a low pitch: mono, 16.0 degrees, over 10 m2; a low pitch: hip, 6.4 degrees, over 157 m2; several faces: 7 mono-pitches over 157 m2; several faces: 2 mono-pitches over 45 m2; a low pitch: mono, 4.2 degrees, over 8 m2; a low pitch: mono, 4.5 degrees, over 37 m2; a low pitch: mono, 7.1 degrees, over 7 m2; a low pitch: mono, 4.3 degrees, over 12 m2): footprint IoU 0.879, 85% of cells within 0.5 m",
    "measured": {
     "outline_m2": 5167.4,
     "ground": {
@@ -364,6 +397,39 @@
      "highest_m": {
       "model": 41.41,
       "lidar": 43.3
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 2.8 degrees, over 31 m2",
+      "a low pitch: mono, 3.9 degrees, over 22 m2",
+      "several faces: 2 mono-pitches over 27 m2",
+      "a low pitch: mono, 5.9 degrees, over 12 m2",
+      "a low pitch: mono, 2.3 degrees, over 21 m2",
+      "a low pitch: mono, 4.2 degrees, over 6 m2",
+      "a low pitch: mono, 16.0 degrees, over 10 m2",
+      "a low pitch: hip, 6.4 degrees, over 157 m2",
+      "several faces: 7 mono-pitches over 157 m2",
+      "several faces: 2 mono-pitches over 45 m2",
+      "a low pitch: mono, 4.2 degrees, over 8 m2",
+      "a low pitch: mono, 4.5 degrees, over 37 m2",
+      "a low pitch: mono, 7.1 degrees, over 7 m2",
+      "a low pitch: mono, 4.3 degrees, over 12 m2"
+     ],
+     "check": {
+      "iou": 0.879,
+      "lidar_m2": 4759.2,
+      "model_m2": 5212.0,
+      "within_0.5m": 0.847,
+      "model_minus_lidar_m": {
+       "p10": -0.5,
+       "p50": -0.0,
+       "p90": 0.25
+      },
+      "highest_m": {
+       "model": 41.41,
+       "lidar": 43.3
+      }
      }
     }
    }
@@ -421,7 +487,7 @@
   },
   "212": {
    "name": "Belgrave",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 7 mono-pitches over 104 m2): footprint IoU 0.860, 92% of cells within 0.5 m",
    "measured": {
     "outline_m2": 120.8,
     "ground": {
@@ -449,12 +515,32 @@
       "model": 13.62,
       "lidar": 19.1
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 7 mono-pitches over 104 m2"
+     ],
+     "check": {
+      "iou": 0.86,
+      "lidar_m2": 147.5,
+      "model_m2": 127.2,
+      "within_0.5m": 0.921,
+      "model_minus_lidar_m": {
+       "p10": -0.13,
+       "p50": 0.0,
+       "p90": 0.11
+      },
+      "highest_m": {
+       "model": 13.3,
+       "lidar": 19.1
+      }
+     }
     }
    }
   },
   "215": {
    "name": "Okareta",
-   "reason": "top-view check: footprint IoU 0.857 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.857 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 6 mono-pitches over 110 m2): footprint IoU 0.876, 83% of cells within 0.5 m",
    "measured": {
     "outline_m2": 155.1,
     "ground": {
@@ -482,45 +568,32 @@
       "model": 14.2,
       "lidar": 23.74
      }
-    }
-   }
-  },
-  "216": {
-   "name": "Mona",
-   "reason": "top-view check: footprint IoU 0.882 (limit 0.9), 70% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 153.5,
-    "ground": {
-     "p5": 32.86,
-     "p50": 33.13,
-     "p95": 36.94,
-     "zero": 32.64
     },
-    "roof_inside_m2": 152.2,
-    "cover": 0.992,
-    "vegetation": 0.041,
-    "open_below": 0.171,
-    "not_drawn_m2": 21.5,
-    "check": {
-     "iou": 0.882,
-     "lidar_m2": 176.2,
-     "model_m2": 155.5,
-     "within_0.5m": 0.699,
-     "model_minus_lidar_m": {
-      "p10": -1.2,
-      "p50": -0.07,
-      "p90": 0.09
-     },
-     "highest_m": {
-      "model": 14.73,
-      "lidar": 24.9
+    "forms": {
+     "roofs": [
+      "several faces: 6 mono-pitches over 110 m2"
+     ],
+     "check": {
+      "iou": 0.876,
+      "lidar_m2": 175.5,
+      "model_m2": 158.0,
+      "within_0.5m": 0.83,
+      "model_minus_lidar_m": {
+       "p10": -3.34,
+       "p50": -0.01,
+       "p90": 0.12
+      },
+      "highest_m": {
+       "model": 14.89,
+       "lidar": 23.74
+      }
      }
     }
    }
   },
   "219": {
    "name": "8 Grafton Road",
-   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 66 m2; several faces: 2 mono-pitches over 16 m2): footprint IoU 0.899, 84% of cells within 0.5 m",
    "measured": {
     "outline_m2": 320.0,
     "ground": {
@@ -548,6 +621,27 @@
       "model": 13.53,
       "lidar": 20.48
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 2 mono-pitches over 66 m2",
+      "several faces: 2 mono-pitches over 16 m2"
+     ],
+     "check": {
+      "iou": 0.899,
+      "lidar_m2": 319.5,
+      "model_m2": 330.5,
+      "within_0.5m": 0.844,
+      "model_minus_lidar_m": {
+       "p10": -1.31,
+       "p50": -0.01,
+       "p90": 0.15
+      },
+      "highest_m": {
+       "model": 13.47,
+       "lidar": 20.48
+      }
+     }
     }
    }
   },
@@ -570,7 +664,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 154 m2): footprint IoU 0.887, 98% of cells within 0.5 m",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -598,12 +692,32 @@
       "model": 6.84,
       "lidar": 7.8
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 4 mono-pitches over 154 m2"
+     ],
+     "check": {
+      "iou": 0.887,
+      "lidar_m2": 188.2,
+      "model_m2": 187.2,
+      "within_0.5m": 0.981,
+      "model_minus_lidar_m": {
+       "p10": -0.09,
+       "p50": -0.01,
+       "p90": 0.09
+      },
+      "highest_m": {
+       "model": 7.27,
+       "lidar": 7.8
+      }
+     }
     }
    }
   },
   "226": {
    "name": "Te Ruawaihanga - Material Culture Studio",
-   "reason": "top-view check: footprint IoU 0.370 (limit 0.9), 25% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.370 (limit 0.9), 25% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 135 m2): footprint IoU 0.805, 93% of cells within 0.5 m",
    "measured": {
     "outline_m2": 166.1,
     "ground": {
@@ -630,6 +744,26 @@
      "highest_m": {
       "model": 7.51,
       "lidar": 17.6
+     }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 4 mono-pitches over 135 m2"
+     ],
+     "check": {
+      "iou": 0.805,
+      "lidar_m2": 186.0,
+      "model_m2": 195.2,
+      "within_0.5m": 0.926,
+      "model_minus_lidar_m": {
+       "p10": -0.08,
+       "p50": 0.01,
+       "p90": 0.15
+      },
+      "highest_m": {
+       "model": 7.85,
+       "lidar": 17.6
+      }
      }
     }
    }
@@ -853,7 +987,7 @@
   },
   "274": {
    "name": "Fale - Media Building",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 4.3 degrees, over 104 m2): footprint IoU 0.858, 99% of cells within 0.5 m",
    "measured": {
     "outline_m2": 118.3,
     "ground": {
@@ -880,6 +1014,26 @@
      "highest_m": {
       "model": 4.41,
       "lidar": 6.93
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 4.3 degrees, over 104 m2"
+     ],
+     "check": {
+      "iou": 0.858,
+      "lidar_m2": 116.5,
+      "model_m2": 118.5,
+      "within_0.5m": 0.99,
+      "model_minus_lidar_m": {
+       "p10": -0.04,
+       "p50": -0.01,
+       "p90": 0.04
+      },
+      "highest_m": {
+       "model": 4.97,
+       "lidar": 6.93
+      }
      }
     }
    }
@@ -936,7 +1090,7 @@
   },
   "302": {
    "name": "Science Centre - Faculty of Science",
-   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 42% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 42% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 17 mono-pitches over 1022 m2; a low pitch: mono, 1.3 degrees, over 5 m2; a low pitch: mono, 5.0 degrees, over 18 m2; a low pitch: mono, 2.3 degrees, over 10 m2; a low pitch: mono, 4.3 degrees, over 4 m2): footprint IoU 0.931, 77% of cells within 0.5 m",
    "measured": {
     "outline_m2": 2706.3,
     "ground": {
@@ -964,12 +1118,36 @@
       "model": 56.45,
       "lidar": 58.28
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 17 mono-pitches over 1022 m2",
+      "a low pitch: mono, 1.3 degrees, over 5 m2",
+      "a low pitch: mono, 5.0 degrees, over 18 m2",
+      "a low pitch: mono, 2.3 degrees, over 10 m2",
+      "a low pitch: mono, 4.3 degrees, over 4 m2"
+     ],
+     "check": {
+      "iou": 0.931,
+      "lidar_m2": 2593.2,
+      "model_m2": 2727.5,
+      "within_0.5m": 0.766,
+      "model_minus_lidar_m": {
+       "p10": -0.47,
+       "p50": -0.0,
+       "p90": 1.43
+      },
+      "highest_m": {
+       "model": 57.53,
+       "lidar": 58.28
+      }
+     }
     }
    }
   },
   "303": {
    "name": "Science Centre - Faculty of Science",
-   "reason": "top-view check: footprint IoU 0.916 (limit 0.9), 84% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.916 (limit 0.9), 84% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.6 degrees, over 12 m2; a low pitch: mono, 2.5 degrees, over 35 m2; a low pitch: mono, 3.1 degrees, over 19 m2; a low pitch: mono, 3.3 degrees, over 10 m2; a low pitch: mono, 2.2 degrees, over 25 m2; a low pitch: mono, 2.2 degrees, over 27 m2; several faces: 2 mono-pitches over 237 m2; a low pitch: mono, 3.3 degrees, over 20 m2; a low pitch: mono, 4.1 degrees, over 6 m2; a low pitch: gable, 5.7 degrees, over 26 m2; a low pitch: mono, 3.0 degrees, over 20 m2; a low pitch: mono, 4.9 degrees, over 4 m2; a low pitch: mono, 2.1 degrees, over 26 m2; a low pitch: mono, 3.3 degrees, over 22 m2; a low pitch: mono, 2.3 degrees, over 37 m2; a low pitch: mono, 4.7 degrees, over 5 m2; a low pitch: hip, 3.6 degrees, over 8 m2): footprint IoU 0.916, 84% of cells within 0.5 m",
    "measured": {
     "outline_m2": 3716.9,
     "ground": {
@@ -997,12 +1175,48 @@
       "model": 45.87,
       "lidar": 48.91
      }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 2.6 degrees, over 12 m2",
+      "a low pitch: mono, 2.5 degrees, over 35 m2",
+      "a low pitch: mono, 3.1 degrees, over 19 m2",
+      "a low pitch: mono, 3.3 degrees, over 10 m2",
+      "a low pitch: mono, 2.2 degrees, over 25 m2",
+      "a low pitch: mono, 2.2 degrees, over 27 m2",
+      "several faces: 2 mono-pitches over 237 m2",
+      "a low pitch: mono, 3.3 degrees, over 20 m2",
+      "a low pitch: mono, 4.1 degrees, over 6 m2",
+      "a low pitch: gable, 5.7 degrees, over 26 m2",
+      "a low pitch: mono, 3.0 degrees, over 20 m2",
+      "a low pitch: mono, 4.9 degrees, over 4 m2",
+      "a low pitch: mono, 2.1 degrees, over 26 m2",
+      "a low pitch: mono, 3.3 degrees, over 22 m2",
+      "a low pitch: mono, 2.3 degrees, over 37 m2",
+      "a low pitch: mono, 4.7 degrees, over 5 m2",
+      "a low pitch: hip, 3.6 degrees, over 8 m2"
+     ],
+     "check": {
+      "iou": 0.916,
+      "lidar_m2": 3437.2,
+      "model_m2": 3718.0,
+      "within_0.5m": 0.837,
+      "model_minus_lidar_m": {
+       "p10": -0.25,
+       "p50": 0.01,
+       "p90": 0.64
+      },
+      "highest_m": {
+       "model": 45.87,
+       "lidar": 48.91
+      }
+     }
     }
    }
   },
   "303S": {
    "name": "Science Centre - Faculty of Science",
-   "reason": "top-view check: footprint IoU 0.938 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.938 (limit 0.9), 89% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.7 degrees, over 115 m2; a low pitch: gable, 4.8 degrees, over 402 m2; several faces: 4 mono-pitches over 402 m2; a low pitch: mono, 2.7 degrees, over 19 m2; a low pitch: mono, 4.9 degrees, over 5 m2; a low pitch: mono, 3.1 degrees, over 26 m2; a low pitch: mono, 2.5 degrees, over 22 m2): footprint IoU 0.949, 86% of cells within 0.5 m",
    "measured": {
     "outline_m2": 973.7,
     "ground": {
@@ -1029,6 +1243,32 @@
      "highest_m": {
       "model": 37.01,
       "lidar": 37.07
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 2.7 degrees, over 115 m2",
+      "a low pitch: gable, 4.8 degrees, over 402 m2",
+      "several faces: 4 mono-pitches over 402 m2",
+      "a low pitch: mono, 2.7 degrees, over 19 m2",
+      "a low pitch: mono, 4.9 degrees, over 5 m2",
+      "a low pitch: mono, 3.1 degrees, over 26 m2",
+      "a low pitch: mono, 2.5 degrees, over 22 m2"
+     ],
+     "check": {
+      "iou": 0.949,
+      "lidar_m2": 974.5,
+      "model_m2": 985.2,
+      "within_0.5m": 0.859,
+      "model_minus_lidar_m": {
+       "p10": -0.69,
+       "p50": -0.0,
+       "p90": 0.05
+      },
+      "highest_m": {
+       "model": 37.07,
+       "lidar": 37.07
+      }
      }
     }
    }
@@ -1069,7 +1309,7 @@
   },
   "315": {
    "name": "Kate Edger Information Commons",
-   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 90% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 90% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 1.7 degrees, over 448 m2; a low pitch: gable, 2.3 degrees, over 152 m2; a low pitch: gable, 7.8 degrees, over 8 m2; a low pitch: hip, 2.7 degrees, over 80 m2; a low pitch: mono, 3.4 degrees, over 10 m2; a low pitch: hip, 4.4 degrees, over 32 m2; a low pitch: mono, 1.8 degrees, over 210 m2; a low pitch: hip, 5.8 degrees, over 16 m2; a low pitch: mono, 2.0 degrees, over 8 m2; a low pitch: hip, 3.8 degrees, over 8 m2): footprint IoU 0.865, 90% of cells within 0.5 m",
    "measured": {
     "outline_m2": 3083.0,
     "ground": {
@@ -1097,6 +1337,35 @@
       "model": 23.9,
       "lidar": 24.57
      }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: hip, 1.7 degrees, over 448 m2",
+      "a low pitch: gable, 2.3 degrees, over 152 m2",
+      "a low pitch: gable, 7.8 degrees, over 8 m2",
+      "a low pitch: hip, 2.7 degrees, over 80 m2",
+      "a low pitch: mono, 3.4 degrees, over 10 m2",
+      "a low pitch: hip, 4.4 degrees, over 32 m2",
+      "a low pitch: mono, 1.8 degrees, over 210 m2",
+      "a low pitch: hip, 5.8 degrees, over 16 m2",
+      "a low pitch: mono, 2.0 degrees, over 8 m2",
+      "a low pitch: hip, 3.8 degrees, over 8 m2"
+     ],
+     "check": {
+      "iou": 0.865,
+      "lidar_m2": 2918.0,
+      "model_m2": 3083.0,
+      "within_0.5m": 0.895,
+      "model_minus_lidar_m": {
+       "p10": -0.29,
+       "p50": -0.0,
+       "p90": 0.12
+      },
+      "highest_m": {
+       "model": 23.9,
+       "lidar": 24.57
+      }
+     }
     }
    }
   },
@@ -1115,39 +1384,6 @@
     "cover": 0.0,
     "vegetation": 0.0,
     "open_below": 0.0
-   }
-  },
-  "322": {
-   "name": "AUSA House",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 74% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 192.8,
-    "ground": {
-     "p5": 41.68,
-     "p50": 42.51,
-     "p95": 43.11,
-     "zero": 41.71
-    },
-    "roof_inside_m2": 190.0,
-    "cover": 0.986,
-    "vegetation": 0.005,
-    "open_below": 0.088,
-    "not_drawn_m2": 5.0,
-    "check": {
-     "iou": 0.858,
-     "lidar_m2": 218.8,
-     "model_m2": 194.2,
-     "within_0.5m": 0.735,
-     "model_minus_lidar_m": {
-      "p10": -0.95,
-      "p50": -0.01,
-      "p90": 0.68
-     },
-     "highest_m": {
-      "model": 13.17,
-      "lidar": 12.65
-     }
-    }
    }
   },
   "331": {
@@ -1169,7 +1405,7 @@
   },
   "401": {
    "name": "Engineering Block 1",
-   "reason": "top-view check: footprint IoU 0.964 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.964 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.0 degrees, over 6 m2; a low pitch: mono, 1.4 degrees, over 6 m2; a low pitch: hip, 3.7 degrees, over 14 m2; a low pitch: mono, 2.0 degrees, over 240 m2; a low pitch: mono, 3.0 degrees, over 9 m2; a low pitch: mono, 3.9 degrees, over 34 m2): footprint IoU 0.964, 87% of cells within 0.5 m",
    "measured": {
     "outline_m2": 2389.9,
     "ground": {
@@ -1197,12 +1433,37 @@
       "model": 41.34,
       "lidar": 41.48
      }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 2.0 degrees, over 6 m2",
+      "a low pitch: mono, 1.4 degrees, over 6 m2",
+      "a low pitch: hip, 3.7 degrees, over 14 m2",
+      "a low pitch: mono, 2.0 degrees, over 240 m2",
+      "a low pitch: mono, 3.0 degrees, over 9 m2",
+      "a low pitch: mono, 3.9 degrees, over 34 m2"
+     ],
+     "check": {
+      "iou": 0.964,
+      "lidar_m2": 2449.8,
+      "model_m2": 2435.5,
+      "within_0.5m": 0.872,
+      "model_minus_lidar_m": {
+       "p10": -0.27,
+       "p50": 0.01,
+       "p90": 0.13
+      },
+      "highest_m": {
+       "model": 41.4,
+       "lidar": 41.48
+      }
+     }
     }
    }
   },
   "402": {
    "name": "Engineering Block 2",
-   "reason": "top-view check: footprint IoU 0.927 (limit 0.9), 87% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.927 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: gable, 4.9 degrees, over 96 m2; a low pitch: mono, 8.7 degrees, over 4 m2): footprint IoU 0.927, 87% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1936.4,
     "ground": {
@@ -1230,38 +1491,26 @@
       "model": 36.0,
       "lidar": 36.94
      }
-    }
-   }
-  },
-  "405": {
-   "name": "Engineering Block 5",
-   "reason": "top-view check: footprint IoU 0.900 (limit 0.9), 82% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 3861.5,
-    "ground": {
-     "p5": 29.66,
-     "p50": 35.38,
-     "p95": 39.41,
-     "zero": 29.56
     },
-    "roof_inside_m2": 3494.2,
-    "cover": 0.905,
-    "vegetation": 0.032,
-    "open_below": 0.089,
-    "not_drawn_m2": 152.2,
-    "check": {
-     "iou": 0.9,
-     "lidar_m2": 3589.5,
-     "model_m2": 3863.5,
-     "within_0.5m": 0.822,
-     "model_minus_lidar_m": {
-      "p10": -0.47,
-      "p50": -0.0,
-      "p90": 0.45
-     },
-     "highest_m": {
-      "model": 51.74,
-      "lidar": 55.53
+    "forms": {
+     "roofs": [
+      "a low pitch: gable, 4.9 degrees, over 96 m2",
+      "a low pitch: mono, 8.7 degrees, over 4 m2"
+     ],
+     "check": {
+      "iou": 0.927,
+      "lidar_m2": 1946.0,
+      "model_m2": 2022.2,
+      "within_0.5m": 0.872,
+      "model_minus_lidar_m": {
+       "p10": -0.48,
+       "p50": -0.01,
+       "p90": 0.16
+      },
+      "highest_m": {
+       "model": 36.0,
+       "lidar": 36.94
+      }
      }
     }
    }
@@ -1367,75 +1616,9 @@
     "open_below": 0.071
    }
   },
-  "423": {
-   "name": "Conference Centre",
-   "reason": "top-view check: footprint IoU 0.924 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 2018.9,
-    "ground": {
-     "p5": 35.51,
-     "p50": 39.95,
-     "p95": 43.49,
-     "zero": 35.37
-    },
-    "roof_inside_m2": 1945.5,
-    "cover": 0.963,
-    "vegetation": 0.01,
-    "open_below": 0.045,
-    "not_drawn_m2": 11.5,
-    "check": {
-     "iou": 0.924,
-     "lidar_m2": 2118.2,
-     "model_m2": 2095.8,
-     "within_0.5m": 0.759,
-     "model_minus_lidar_m": {
-      "p10": -2.73,
-      "p50": -0.02,
-      "p90": 0.11
-     },
-     "highest_m": {
-      "model": 21.31,
-      "lidar": 20.41
-     }
-    }
-   }
-  },
-  "431": {
-   "name": "Fine Arts Studio Block 431",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 82% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 800.8,
-    "ground": {
-     "p5": 32.84,
-     "p50": 33.16,
-     "p95": 38.36,
-     "zero": 32.98
-    },
-    "roof_inside_m2": 774.8,
-    "cover": 0.968,
-    "vegetation": 0.053,
-    "open_below": 0.091,
-    "not_drawn_m2": 8.0,
-    "check": {
-     "iou": 0.89,
-     "lidar_m2": 851.0,
-     "model_m2": 801.5,
-     "within_0.5m": 0.817,
-     "model_minus_lidar_m": {
-      "p10": -1.04,
-      "p50": -0.02,
-      "p90": 0.07
-     },
-     "highest_m": {
-      "model": 18.57,
-      "lidar": 18.9
-     }
-    }
-   }
-  },
   "432": {
    "name": "Fine Arts Studio Block 432",
-   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.3 degrees, over 5 m2): footprint IoU 0.921, 86% of cells within 0.5 m",
    "measured": {
     "outline_m2": 785.0,
     "ground": {
@@ -1462,6 +1645,26 @@
      "highest_m": {
       "model": 17.69,
       "lidar": 17.7
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 3.3 degrees, over 5 m2"
+     ],
+     "check": {
+      "iou": 0.921,
+      "lidar_m2": 854.0,
+      "model_m2": 831.8,
+      "within_0.5m": 0.859,
+      "model_minus_lidar_m": {
+       "p10": -0.73,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 17.69,
+       "lidar": 17.7
+      }
      }
     }
    }
@@ -1534,7 +1737,7 @@
   },
   "439": {
    "name": "Auckland Bioengineering House",
-   "reason": "top-view check: footprint IoU 0.910 (limit 0.9), 88% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.910 (limit 0.9), 88% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 10.2 degrees, over 71 m2; several faces: 2 mono-pitches over 71 m2; a low pitch: mono, 4.2 degrees, over 18 m2): footprint IoU 0.910, 88% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1266.6,
     "ground": {
@@ -1561,6 +1764,28 @@
      "highest_m": {
       "model": 60.05,
       "lidar": 82.74
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: hip, 10.2 degrees, over 71 m2",
+      "several faces: 2 mono-pitches over 71 m2",
+      "a low pitch: mono, 4.2 degrees, over 18 m2"
+     ],
+     "check": {
+      "iou": 0.91,
+      "lidar_m2": 1191.0,
+      "model_m2": 1288.0,
+      "within_0.5m": 0.88,
+      "model_minus_lidar_m": {
+       "p10": -0.48,
+       "p50": -0.02,
+       "p90": 0.05
+      },
+      "highest_m": {
+       "model": 60.05,
+       "lidar": 82.74
+      }
      }
     }
    }
@@ -1685,7 +1910,7 @@
   },
   "502": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 95% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 95% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 1000 m2; a low pitch: mono, 2.7 degrees, over 4 m2): footprint IoU 0.873, 96% of cells within 0.5 m",
    "measured": {
     "outline_m2": 2115.5,
     "ground": {
@@ -1713,12 +1938,33 @@
       "model": 38.21,
       "lidar": 38.45
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 4 mono-pitches over 1000 m2",
+      "a low pitch: mono, 2.7 degrees, over 4 m2"
+     ],
+     "check": {
+      "iou": 0.873,
+      "lidar_m2": 1923.8,
+      "model_m2": 2150.2,
+      "within_0.5m": 0.958,
+      "model_minus_lidar_m": {
+       "p10": -0.06,
+       "p50": -0.01,
+       "p90": 0.05
+      },
+      "highest_m": {
+       "model": 38.21,
+       "lidar": 38.45
+      }
+     }
     }
    }
   },
   "503": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 5.3 degrees, over 339 m2; several faces: 4 mono-pitches over 339 m2; several faces: 4 mono-pitches over 1072 m2; a low pitch: mono, 3.4 degrees, over 5 m2; a low pitch: hip, 3.9 degrees, over 27 m2; several faces: 2 mono-pitches over 27 m2): footprint IoU 0.854, 96% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1945.1,
     "ground": {
@@ -1746,12 +1992,37 @@
       "model": 31.59,
       "lidar": 35.25
      }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: hip, 5.3 degrees, over 339 m2",
+      "several faces: 4 mono-pitches over 339 m2",
+      "several faces: 4 mono-pitches over 1072 m2",
+      "a low pitch: mono, 3.4 degrees, over 5 m2",
+      "a low pitch: hip, 3.9 degrees, over 27 m2",
+      "several faces: 2 mono-pitches over 27 m2"
+     ],
+     "check": {
+      "iou": 0.854,
+      "lidar_m2": 1724.2,
+      "model_m2": 1945.8,
+      "within_0.5m": 0.957,
+      "model_minus_lidar_m": {
+       "p10": -0.05,
+       "p50": 0.0,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 31.77,
+       "lidar": 35.25
+      }
+     }
     }
    }
   },
   "504": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 41 m2; a low pitch: mono, 3.8 degrees, over 10 m2): footprint IoU 0.871, 89% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1132.3,
     "ground": {
@@ -1779,6 +2050,27 @@
       "model": 33.64,
       "lidar": 33.62
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 3 mono-pitches over 41 m2",
+      "a low pitch: mono, 3.8 degrees, over 10 m2"
+     ],
+     "check": {
+      "iou": 0.871,
+      "lidar_m2": 1125.2,
+      "model_m2": 1151.0,
+      "within_0.5m": 0.89,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.0,
+       "p90": 0.21
+      },
+      "highest_m": {
+       "model": 33.64,
+       "lidar": 33.62
+      }
+     }
     }
    }
   },
@@ -1801,7 +2093,7 @@
   },
   "507": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.877 (limit 0.9), 96% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.877 (limit 0.9), 96% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 6.0 degrees, over 59 m2; several faces: 2 mono-pitches over 59 m2; several faces: 2 mono-pitches over 35 m2; a low pitch: hip, 2.6 degrees, over 15 m2): footprint IoU 0.878, 96% of cells within 0.5 m",
    "measured": {
     "outline_m2": 3583.0,
     "ground": {
@@ -1828,6 +2120,29 @@
      "highest_m": {
       "model": 27.96,
       "lidar": 28.14
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: hip, 6.0 degrees, over 59 m2",
+      "several faces: 2 mono-pitches over 59 m2",
+      "several faces: 2 mono-pitches over 35 m2",
+      "a low pitch: hip, 2.6 degrees, over 15 m2"
+     ],
+     "check": {
+      "iou": 0.878,
+      "lidar_m2": 3479.2,
+      "model_m2": 3614.5,
+      "within_0.5m": 0.955,
+      "model_minus_lidar_m": {
+       "p10": -0.21,
+       "p50": -0.0,
+       "p90": 0.1
+      },
+      "highest_m": {
+       "model": 27.96,
+       "lidar": 28.14
+      }
      }
     }
    }
@@ -1934,7 +2249,7 @@
   },
   "529": {
    "name": "2-6 Park Ave",
-   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.2 degrees, over 4 m2; a low pitch: mono, 4.8 degrees, over 25 m2; several faces: 2 mono-pitches over 25 m2; a low pitch: mono, 6.4 degrees, over 5 m2): footprint IoU 0.920, 86% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1364.7,
     "ground": {
@@ -1961,6 +2276,29 @@
      "highest_m": {
       "model": 17.89,
       "lidar": 18.92
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: mono, 3.2 degrees, over 4 m2",
+      "a low pitch: mono, 4.8 degrees, over 25 m2",
+      "several faces: 2 mono-pitches over 25 m2",
+      "a low pitch: mono, 6.4 degrees, over 5 m2"
+     ],
+     "check": {
+      "iou": 0.92,
+      "lidar_m2": 1350.0,
+      "model_m2": 1403.2,
+      "within_0.5m": 0.857,
+      "model_minus_lidar_m": {
+       "p10": -0.43,
+       "p50": -0.01,
+       "p90": 0.23
+      },
+      "highest_m": {
+       "model": 18.26,
+       "lidar": 18.92
+      }
      }
     }
    }
@@ -2156,7 +2494,7 @@
   },
   "632": {
    "name": "Carlton Pines",
-   "reason": "top-view check: footprint IoU 0.867 (limit 0.9), 37% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.867 (limit 0.9), 37% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 9 mono-pitches over 312 m2): footprint IoU 0.930, 90% of cells within 0.5 m",
    "measured": {
     "outline_m2": 356.7,
     "ground": {
@@ -2183,6 +2521,26 @@
      "highest_m": {
       "model": 14.88,
       "lidar": 20.74
+     }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 9 mono-pitches over 312 m2"
+     ],
+     "check": {
+      "iou": 0.93,
+      "lidar_m2": 400.5,
+      "model_m2": 394.2,
+      "within_0.5m": 0.896,
+      "model_minus_lidar_m": {
+       "p10": -0.23,
+       "p50": -0.01,
+       "p90": 0.13
+      },
+      "highest_m": {
+       "model": 14.45,
+       "lidar": 20.74
+      }
      }
     }
    }
@@ -2257,7 +2615,7 @@
   },
   "803": {
    "name": "17 Eden Crescent",
-   "reason": "top-view check: footprint IoU 0.862 (limit 0.9), 94% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.862 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 4.1 degrees, over 53 m2; several faces: 4 mono-pitches over 53 m2; a low pitch: gable, 9.4 degrees, over 11 m2): footprint IoU 0.864, 97% of cells within 0.5 m",
    "measured": {
     "outline_m2": 677.8,
     "ground": {
@@ -2284,6 +2642,28 @@
      "highest_m": {
       "model": 11.36,
       "lidar": 15.25
+     }
+    },
+    "forms": {
+     "roofs": [
+      "a low pitch: hip, 4.1 degrees, over 53 m2",
+      "several faces: 4 mono-pitches over 53 m2",
+      "a low pitch: gable, 9.4 degrees, over 11 m2"
+     ],
+     "check": {
+      "iou": 0.864,
+      "lidar_m2": 736.5,
+      "model_m2": 693.8,
+      "within_0.5m": 0.968,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": -0.0,
+       "p90": 0.11
+      },
+      "highest_m": {
+       "model": 12.93,
+       "lidar": 15.25
+      }
      }
     }
    }
@@ -2320,39 +2700,6 @@
     "cover": 0.71,
     "vegetation": 0.312,
     "open_below": 0.04
-   }
-  },
-  "820": {
-   "name": "Kenneth Myers Centre",
-   "reason": "top-view check: footprint IoU 0.849 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 935.4,
-    "ground": {
-     "p5": 13.29,
-     "p50": 25.09,
-     "p95": 27.1,
-     "zero": 12.48
-    },
-    "roof_inside_m2": 847.0,
-    "cover": 0.907,
-    "vegetation": 0.092,
-    "open_below": 0.006,
-    "not_drawn_m2": 21.5,
-    "check": {
-     "iou": 0.849,
-     "lidar_m2": 914.5,
-     "model_m2": 951.8,
-     "within_0.5m": 0.851,
-     "model_minus_lidar_m": {
-      "p10": -0.48,
-      "p50": 0.0,
-      "p90": 0.23
-     },
-     "highest_m": {
-      "model": 23.12,
-      "lidar": 52.31
-     }
-    }
    }
   },
   "831": {
@@ -2572,75 +2919,9 @@
     "open_below": 0.217
    }
   },
-  "902": {
-   "name": "Building 902",
-   "reason": "top-view check: footprint IoU 0.972 (limit 0.9), 79% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 2638.3,
-    "ground": {
-     "p5": 52.43,
-     "p50": 54.57,
-     "p95": 59.53,
-     "zero": 51.65
-    },
-    "roof_inside_m2": 2633.5,
-    "cover": 0.998,
-    "vegetation": 0.003,
-    "open_below": 0.053,
-    "not_drawn_m2": 24.8,
-    "check": {
-     "iou": 0.972,
-     "lidar_m2": 2719.5,
-     "model_m2": 2675.2,
-     "within_0.5m": 0.793,
-     "model_minus_lidar_m": {
-      "p10": -0.64,
-      "p50": -0.03,
-      "p90": 0.41
-     },
-     "highest_m": {
-      "model": 26.75,
-      "lidar": 26.74
-     }
-    }
-   }
-  },
-  "903": {
-   "name": "Building 903",
-   "reason": "top-view check: footprint IoU 0.958 (limit 0.9), 86% of cells within 0.5 m (limit 90%)",
-   "measured": {
-    "outline_m2": 2635.5,
-    "ground": {
-     "p5": 52.05,
-     "p50": 52.35,
-     "p95": 52.79,
-     "zero": 51.87
-    },
-    "roof_inside_m2": 2560.5,
-    "cover": 0.971,
-    "vegetation": 0.004,
-    "open_below": 0.07,
-    "not_drawn_m2": 16.8,
-    "check": {
-     "iou": 0.958,
-     "lidar_m2": 2617.8,
-     "model_m2": 2636.2,
-     "within_0.5m": 0.855,
-     "model_minus_lidar_m": {
-      "p10": -0.48,
-      "p50": 0.01,
-      "p90": 0.43
-     },
-     "highest_m": {
-      "model": 19.35,
-      "lidar": 20.62
-     }
-    }
-   }
-  },
   "907": {
    "name": "Building 907",
-   "reason": "top-view check: footprint IoU 0.859 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.859 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 1378 m2): footprint IoU 0.872, 77% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1623.6,
     "ground": {
@@ -2668,12 +2949,32 @@
       "model": 12.16,
       "lidar": 12.6
      }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 2 mono-pitches over 1378 m2"
+     ],
+     "check": {
+      "iou": 0.872,
+      "lidar_m2": 1517.2,
+      "model_m2": 1646.0,
+      "within_0.5m": 0.768,
+      "model_minus_lidar_m": {
+       "p10": -0.17,
+       "p50": 0.08,
+       "p90": 0.63
+      },
+      "highest_m": {
+       "model": 12.14,
+       "lidar": 12.6
+      }
+     }
     }
    }
   },
   "908": {
    "name": "Building 908",
-   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 76% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 85 m2; several faces: 2 mono-pitches over 57 m2): footprint IoU 0.926, 90% of cells within 0.5 m",
    "measured": {
     "outline_m2": 455.1,
     "ground": {
@@ -2700,6 +3001,27 @@
      "highest_m": {
       "model": 10.32,
       "lidar": 12.7
+     }
+    },
+    "forms": {
+     "roofs": [
+      "several faces: 3 mono-pitches over 85 m2",
+      "several faces: 2 mono-pitches over 57 m2"
+     ],
+     "check": {
+      "iou": 0.926,
+      "lidar_m2": 482.8,
+      "model_m2": 479.5,
+      "within_0.5m": 0.898,
+      "model_minus_lidar_m": {
+       "p10": -0.5,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 10.82,
+       "lidar": 12.7
+      }
      }
     }
    }

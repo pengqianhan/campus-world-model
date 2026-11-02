@@ -2,11 +2,74 @@
 
 Recon for a possible port, done on 2026-10-25 (New Zealand time) by the method in
 [RECON.md](../../.claude/skills/campus-world-model/RECON.md). It records what Lincoln publishes
-without a sign-in, and on what terms. Nothing here is on the site yet. No fetch script and no data
-file comes with it.
+without a sign-in, and on what terms. No fetch script and no data file came with it. Since the pull
+request of 2026-11-02 the Lincoln campus is on the site in the Buildings form, from OpenStreetMap,
+with only the buildings OpenStreetMap tags as the University's shown as its own ("On the site",
+below). The rest of this report is the recon as it was done, and the OpenStreetMap check of
+2026-10-28.
 
 Path name if the school is added: `/lincoln/` ("Decisions" in `PROGRESS.md`: each school's own
 short name; Lincoln's web domain is `lincoln.ac.nz`). Time zone: Pacific/Auckland.
+
+## On the site (2026-11-02)
+
+On 2026-10-28 the loop took the campus's OpenStreetMap snapshot and the ground under it ("The
+OpenStreetMap check", below): one Overpass request and 12 terrain tiles, whose
+`x-amz-meta-x-imagery-sources` header names LINZ's model only. Nothing was fetched again for the
+site, and no request went to any Lincoln University host. On 2026-11-02 the maintainer decided that
+Lincoln goes on the site with only the buildings OpenStreetMap tags as the University's. The
+maintainer may add the rest later, for example from the University's own campus map, as for
+Waikato; the descriptor (`src/schools/lincoln/school.ts`) leaves room for such a table and holds
+none.
+
+**The rule.** A building is a candidate when it names Lincoln University as its operator
+(`operator=Lincoln University`, unless its `building` value is a home's) or carries
+`building=university`. A candidate is taken when it has a name and no step before leaves it out:
+not a building part, childcare, a ruin, a building under construction, a building mapped as
+disused (`disused=yes`), a bridge, a building that starts above the ground or has no storey above
+it, a building with a `fixme` tag, or a building whose name is another body's (AgResearch). No
+building in the box carries `amenity=university`, and no other tag on a building names the
+University. The campus is the 163 buildings west of Springs Road, south of Ellesmere Junction Road
+and north of latitude -43.6496 (the check below). The rule considers 13 of them, takes 8 and leaves
+out 5, each with its reason in `buildingExclusions`. The other 150 stand among the surroundings,
+with no name.
+
+| Name in OpenStreetMap | Element | Tags that decided it | On the site | Why |
+| --- | --- | --- | --- | --- |
+| Recreation Centre | `way/218953880` | `building=university`, `operator=Lincoln University` | yes | The University's operator, and a name |
+| Ivey Hall | `way/193053945` | `building=university`, `building:levels=3`, `amenity=library` | yes | `building=university` with no operator, and a name; 10.8 m from its levels |
+| Forbes Building | `way/193054016` | `building=university` | yes | The same; 10 m default |
+| Hudson Hall | `way/173022247` | `building=university` | yes | The same; 10 m default |
+| James Stewart Building | `way/219356727` | `building=university` | yes | The same; 10 m default |
+| Landscape Architecture Building | `way/219356731` | `building=university`, `building:levels=2` | yes | The same; 7.2 m from its levels |
+| The Poplars | `way/218959957` | `building=university`, `building:levels=1` | yes | The same; 3.6 m from its levels |
+| Young Farmers Club Hall | `way/193055742` | `building=university`, `old_name=Young Farmers Memorial Hall` | yes | The same; 6.5 m default. Its name is a club's; the tag says it is a university building, and the rule follows the tag (a judgement for the maintainer) |
+| Memorial Hall | `way/193053946` | `building=university`, `disused=yes`, `note=closed following post-earthquake damage and assessment` | no | Mapped as disused: not a building in use. The record keeps its note |
+| AgResearch | `way/1175305051` | `building=university`, `description=Science building, replaced the earthquake-damaged Hilgendorf Wing` | no | Its name is another body's: `building=university` alone does not make it the University's. The record keeps its description |
+| (no name) | `way/218959834` | `building=university`, `building:levels=1` | no | No name to call it by. It joins Ivey Hall's outline |
+| (no name) | `way/218959958` | `building=university`, `building:levels=1` | no | No name to call it by. It stands by The Poplars |
+| (no name) | `way/1426114966` | `building=yes`, `operator=Lincoln University`, `amenity=bicycle_parking` | no | No name to call it by: a bicycle shed |
+
+**Halls of residence and childcare.** The halls of residence that OpenStreetMap names on the
+campus, Centennial Hall (5 outlines), Colombo Hall (3), Lowry Hall (3), Southland Hall (1) and
+Stevens Hall (4), carry `building=yes`, no `operator` and no `building=university`. So the rule
+never considers them: the `building` tag decided it, and a home's `building` value (`dormitory`,
+`house` and the rest) would keep a building out even if it named the University as its operator.
+They stand among the surroundings with no name, and no name of theirs is in the published data (a
+test in `tests/schools/lincoln/data.test.ts` checks it). The same holds for The Quarters, The
+Lodge, Orchard Hall and the Accomodation Office round them, whose tags do not say whether people
+live there. Hudson Hall, Ivey Hall and the Young Farmers Club Hall are halls by name only: their
+tags make them university buildings (`building=university`; Ivey Hall is also `amenity=library`),
+not homes. The box holds no building tagged or named as childcare.
+
+**What the site shows.** One campus, "Lincoln campus", framed 500 m round the median of the 8
+buildings' centres; at 1280 x 800 its opening view labels 6 of the 8 (the Landscape Architecture
+Building and The Poplars give way to their neighbours' labels). Coverage
+(`public/data/lincoln/meta.json`): 8 buildings, all on the map; 5 excluded; heights 0 from a
+`height` tag, 3 from `building:levels`, 5 estimated; 0 rooms, subjects and classes. Every layer
+but the buildings and the ground is `needs-permission`, for the reasons in "Verdicts". The
+calendar file (`data/lincoln/academic-calendar.json`) says `available: false`. The root page names the school "Lincoln University" in Lincoln, with no
+name in te reo Māori: this report gives none, and Lincoln's own site is closed to this project.
 
 ## Verdicts
 
@@ -65,6 +128,67 @@ source and leave them blank.
 - **Floor and room outlines:** no source read publishes them. Whether the campus map page holds an
   interactive map with rooms is not known: a web search did not find one, and the page was not
   requested.
+
+## The OpenStreetMap check (2026-10-28)
+
+On 2026-10-27 the maintainer let the loop run `scripts/fetch-osm.ts` and `scripts/fetch-terrain.ts`
+for every campus in the recon reports. The maintainer also decided that no request goes to any
+Lincoln host. None went.
+
+**How the box was set.** This report read no address. So the box was drawn before the fetch, about
+1.3 km on every side of the point that two public pages give for "Lincoln University": the entry
+on NZ Topo Map (`topomap.co.nz`, a site that shows LINZ's topographic maps; -43.6441, 172.4654) and
+Wikipedia (-43.6444, 172.4686), both found by web search.
+No host was asked. The box is `[-43.6561, 172.4508, -43.6327, 172.4832]` (south, west, north, east),
+2.6 km by 2.6 km. The snapshot's own data then placed the campus: west of Springs Road and south of
+Ellesmere Junction Road, with Farm Road, Engineering Drive, South Drive and three service roads
+named "Lincoln University service road" in it, and the meadow "Research Dairy Farm (Lincoln
+University)" north of Ellesmere Junction Road. The campus buildings with a name or a tag that says
+Lincoln lie 463 m (west) to 1,112 m (east) inside the box's edges. The box's west edge passes
+through a group of farm buildings at the end of a "Lincoln University service road". The snapshot
+does not show what lies west of it.
+
+**What was fetched.** `osm/context-lincoln.json`: 4,029,505 bytes, 4,928 elements (1,780 building
+ways, 3 building relations, 5 building parts), from `overpass-api.de`, OpenStreetMap base
+2026-10-28 06:32 UTC, in **1 request**. The ground: 12 AWS terrain tiles at zoom 14, in **12
+requests**. The `x-amz-meta-x-imagery-sources` header of each tile names LINZ's model only
+(`nzlinz/lds-tile-qh.tif`).
+
+**What the tags say,** counted in the snapshot:
+
+- `operator=Lincoln University`: 2 buildings, the Recreation Centre (`building=university`) and a
+  bicycle shed with no name.
+- `building=university`: 12. 10 have a name: Ivey Hall, Memorial Hall (`disused=yes`, "closed
+  following post-earthquake damage and assessment"), Hudson Hall, Forbes Building, James Stewart
+  Building, Landscape Architecture Building, Young Farmers Club Hall, The Poplars, the Recreation
+  Centre, and "AgResearch", another body's name ("Science building, replaced the earthquake-damaged
+  Hilgendorf Wing").
+- `amenity=university`: none. `fetch-osm.ts` does not ask Overpass for campus outlines, and no
+  building has the tag.
+- No other tag on a building names Lincoln University. Three service roads and the dairy farm's
+  meadow do.
+- 73 buildings have `operator=Bioeconomy Science Institute Maiangi Taiao`. They stand east of
+  Springs Road, by Gerald Street: another body's buildings.
+
+**The campus.** Here the campus is the buildings west of Springs Road, south of Ellesmere Junction
+Road and north of latitude -43.6496, where the houses of the subdivisions to the south start. It
+holds 163 buildings (144 `building=yes`, 12 `university`, 4 `greenhouse`, 1 `construction`, 1
+`garages`, 1 `garage`). 41 have a name, with 29 different names. The tags above pick out 13 of the
+163, and 10 of the 13 have a name. These have a name and no tag that says Lincoln: the Commerce
+Building, Science South, the RFH Building ("Replacement For Hilgendorf"), Waimarie ("University
+research building"), Te Kete Ika - Dining Hall, The Lodge, Orchard Hall, the Accomodation Office (so
+written), the Field Research Centre (2 outlines), the New Zealand Cricket High Performance Centre,
+The BHU Organics Trust and two sheds beside it, and the buildings named Colombo Hall (3), Stevens
+Hall (4), Centennial Hall (5), Lowry Hall (3), Southland Hall and The Quarters round the
+Accomodation Office. Their tags do not say whether people live in them. Many large buildings in the
+middle of the campus have no name.
+
+**Verdict.** The tags do not pick out enough of Lincoln's buildings for a campus map of the
+University. They give 9 named University buildings (10 with "AgResearch"), and leave the Commerce
+Building, Science South, the RFH Building and Waimarie as unnamed surroundings. So Lincoln is not
+built yet. The snapshot and the ground are committed. The maintainer chooses how the University's
+buildings are chosen, as for Waikato (#119). On 2026-11-02 the maintainer chose the tags alone ("On
+the site", above).
 
 ## Layer 1: footprints and surroundings
 
@@ -184,12 +308,13 @@ kept no raw data: counts and conclusions only (see "Request log").
    the host was closed. Both routes are left alone.
 5. **Student systems, not requested:** LUCAS and LEARN, which the guide names. Whether they need a
    sign-in was not checked.
-6. **Overpass for a new area.** Run `scripts/fetch-osm.ts` for the Lincoln campus, in the town of
-   Lincoln, 20 km from Christchurch (by web search only, not confirmed). Not requested here, by the
-   brief.
-7. **Ground heights.** Run `scripts/fetch-terrain.ts` over the campus and read the tiles' source
-   header. Read the capture areas and licences of "Canterbury - Selwyn LiDAR 1m DEM (2023)" and of
-   the 2015 Christchurch and Selwyn DEM (both by web search only, not confirmed).
+6. **Overpass for a new area.** Done on 2026-10-28 ("The OpenStreetMap check"). Run
+   `scripts/fetch-osm.ts` for the Lincoln campus, in the town of Lincoln, 20 km from Christchurch
+   (by web search only, not confirmed). Not requested here, by the brief.
+7. **Ground heights.** The AWS tiles: done on 2026-10-28 ("The OpenStreetMap check"). Run
+   `scripts/fetch-terrain.ts` over the campus and read the tiles' source header. Read the capture
+   areas and licences of "Canterbury - Selwyn LiDAR 1m DEM (2023)" and of the 2015 Christchurch and
+   Selwyn DEM (both by web search only, not confirmed).
 8. **Places to leave blank.** Before any room is named, list Lincoln's halls of residence and
    childcare from the source, so the build leaves them blank. Not checked here: the pages are on
    closed hosts.
