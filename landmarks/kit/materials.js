@@ -296,6 +296,14 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     roofTile: roofPale(0xa04a3a, space),                // red clay tiles (the 2023 aerial and the photographs)
     // the Fisher Building: the brick's shader in a pale tan-orange brick (its photographs)
     brickTan: brick(space, { lo: "0.42, 0.22, 0.11", hi: "0.52, 0.28, 0.14", key: "brick-tan-v1" }),
+    // the Thomas Building: the paint's shader in a warm grey-brown, its board-marked concrete (its photographs)
+    concrete: painted(0xa6907b, 0.75, space),
+    // its red steel window frames: the red tiles' own shader and colour, a material of their own so that the
+    // site's light form draws them with the walls, not as a roof (src/scene/landmarks.ts, LIGHT_ROLE)
+    frameRed: roofPale(0xa04a3a, space),
+    // the blinds behind its panes: the paint's own white, a material of their own so that the light form
+    // draws them with the panes they are seen through (LIGHT_ROLE: glass), not as wall
+    blind: painted(0xf2f0ea, 0.5, space),
   };
   return m;
 }

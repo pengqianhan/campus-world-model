@@ -55,64 +55,6 @@
     }
    }
   },
-  "110": {
-   "name": "Thomas Building",
-   "reason": "top-view check: footprint IoU 0.848 (limit 0.9), 50% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 502 m2; several faces: 4 mono-pitches over 115 m2; a low pitch: mono, 6.1 degrees, over 8 m2; a low pitch: hip, 3.0 degrees, over 44 m2; a low pitch: mono, 4.7 degrees, over 4 m2; a low pitch: mono, 4.9 degrees, over 8 m2): footprint IoU 0.848, 71% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 2231.9,
-    "ground": {
-     "p5": 34.46,
-     "p50": 35.91,
-     "p95": 37.04,
-     "zero": 34.45
-    },
-    "roof_inside_m2": 2182.8,
-    "cover": 0.979,
-    "vegetation": 0.036,
-    "open_below": 0.028,
-    "not_drawn_m2": 84.2,
-    "check": {
-     "iou": 0.848,
-     "lidar_m2": 2391.0,
-     "model_m2": 2566.8,
-     "within_0.5m": 0.5,
-     "model_minus_lidar_m": {
-      "p10": -7.63,
-      "p50": -0.05,
-      "p90": 1.36
-     },
-     "highest_m": {
-      "model": 22.18,
-      "lidar": 27.49
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 3 mono-pitches over 502 m2",
-      "several faces: 4 mono-pitches over 115 m2",
-      "a low pitch: mono, 6.1 degrees, over 8 m2",
-      "a low pitch: hip, 3.0 degrees, over 44 m2",
-      "a low pitch: mono, 4.7 degrees, over 4 m2",
-      "a low pitch: mono, 4.9 degrees, over 8 m2"
-     ],
-     "check": {
-      "iou": 0.848,
-      "lidar_m2": 2391.0,
-      "model_m2": 2566.8,
-      "within_0.5m": 0.711,
-      "model_minus_lidar_m": {
-       "p10": -0.58,
-       "p50": 0.0,
-       "p90": 1.84
-      },
-      "highest_m": {
-       "model": 22.52,
-       "lidar": 27.49
-      }
-     }
-    }
-   }
-  },
   "118": {
    "name": "Lippincott Cottage",
    "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 35 m2): footprint IoU 0.828, 87% of cells within 0.5 m",
