@@ -6,7 +6,7 @@
 import * as THREE from "three";
 import { addWindow, addPinnacle, addCourse, outline, cuspedOutline } from "../../kit/gothic.js";
 import { TOWER_HALF } from "./common.js";
-import { tudor, archBand, ring, shapeOf, pathOf, loft, pedestal, boss, pendant, shield, lantern, faceFrame } from "./centre_kit.js";
+import { tudor, archBand, ring, jambs, shapeOf, pathOf, loft, pedestal, boss, pendant, shield, lantern, faceFrame } from "./centre_kit.js";
 
 // Measured (view frame, metres). The doorway axis is not the tower's: steps, cheek walls and oriel
 // turrets are all symmetric about x = -0.95.
@@ -44,12 +44,13 @@ export function centre(b, x0, x1) {
 /** The mass behind the front wall, leaving a vestibule behind the door, and the flat roof. */
 function body(b, x0, x1) {
   const back = TOWER_HALF, vb = W - 3.2, a = AX - DW / 2 - 0.05, c = AX + DW / 2 + 0.05;
-  b.box(x0, a, 0, 11.0, back, W - 0.6, "smooth");
-  b.box(c, x1, 0, 11.0, back, W - 0.6, "smooth");
-  b.box(a, c, 0, 11.0, back, vb, "smooth");
-  b.box(a, c, LAND + DSPR + 0.45, 11.0, vb, W - 0.6, "smooth"); // vestibule ceiling
+  // (the masses up to the roof slab's underside, and the slab to the parapet's back: their faces lay in each other's)
+  b.box(x0, a, 0, 10.9, back, W - 0.6, "smooth");
+  b.box(c, x1, 0, 10.9, back, W - 0.6, "smooth");
+  b.box(a, c, 0, 10.9, back, vb, "smooth");
+  b.box(a, c, LAND + DSPR + 0.45, 10.9, vb, W - 0.6, "smooth"); // vestibule ceiling
   b.box(a, c, 0, LAND, vb, W, "smooth"); // vestibule floor
-  b.box(x0, x1, 10.9, 11.0, back, W - 0.3, "roof");
+  b.box(x0, x1, 10.9, 11.0, back, W - 0.6, "roof");
   // the vestibule: tiled walls in shade, a timber inner doorway with glazed leaves and a fanlight
   const z = vb + 0.02, top = LAND + DSPR + 0.45;
   b.box(a + 0.02, a + 0.06, LAND, top, vb, W - 0.6, "shade");
@@ -61,7 +62,7 @@ function body(b, x0, x1) {
   b.box(AX - dw / 2, AX + dw / 2, LAND, LAND + dh, zi, zi + 0.005, "iron");
   const bars = [[-dw / 2 - 0.12, -dw / 2, 0, dh + 0.12], [dw / 2, dw / 2 + 0.12, 0, dh + 0.12], [-dw / 2, dw / 2, dh, dh + 0.12],
     [-dw / 2, dw / 2, 2.3, 2.42], [-0.06, 0.06, 0, 2.3], [dw / 2 - 0.1, dw / 2, 0, 2.3], [0.06, dw / 2, 0, 0.7], [0.42, 0.48, 0.7, 2.3], [-0.03, 0.03, 2.42, dh]];
-  for (const [u0, u1, v0, v1] of bars) b.box(AX + u0, AX + u1, LAND + v0, LAND + v1, zi, zi + 0.07, "timber");
+  for (const [u0, u1, v0, v1] of bars) b.box(AX + u0, AX + u1, LAND + v0, LAND + v1, zi + 0.005, zi + 0.07, "timber"); // (from the hall's face out)
   b.box(AX + 0.06, AX + dw / 2, LAND + 0.7, LAND + 2.3, zi + 0.02, zi + 0.025, "glass");
   b.box(AX - dw / 2, AX + dw / 2, LAND + 2.42, LAND + dh, zi + 0.02, zi + 0.025, "glass");
   b.box(AX - dw / 2 - 0.02, AX - dw / 2 + 0.04, LAND, LAND + 2.3, zi + 0.07, zi + 0.85, "timber"); // the open leaf
@@ -76,10 +77,11 @@ function frontWall(b, x0, x1) {
     wins.push({ x: AX + s * 3.1, y: 2.85, w: 0.48, h: 1.75, lights: 1 });
   }
   const s = new THREE.Shape([[x0, 0], [x1, 0], [x1, 11.3], [x0, 11.3]].map(([x, y]) => new THREE.Vector2(x, y)));
-  for (const w of wins) s.holes.push(pathOf(outline(w.w, w.h, w.head ?? "flat", w.k ?? 0.8), w.x, w.y));
-  s.holes.push(pathOf(tudor(DW, DSPR, DRISE), AX, LAND));
+  // (each opening 1 cm clear inside its lining, as kit/gothic.js addWall's `clear`; the door's inside its lining too)
+  for (const w of wins) s.holes.push(pathOf(outline(w.w + 0.02, w.h + 0.01, w.head ?? "flat", w.k ?? 0.8), w.x, w.y - 0.005));
+  s.holes.push(pathOf(tudor(DW + 0.02, DSPR, DRISE), AX, LAND));
   b.slab(s, 0, 0, W, 0.6, "smooth");
-  for (const w of wins) addWindow(b, w, W);
+  for (const w of wins) addWindow(b, { ...w, liningBack: 0.01 }, W);
   // hood moulds with label stops over the upper side windows
   for (const sx of [-1, 1]) {
     const x = AX + sx * SIDE, u = UPPER;
@@ -87,7 +89,8 @@ function frontWall(b, x0, x1) {
   }
   // rock-faced plinth of the side bays and the courses
   for (const [a, c] of [[x0, AX - CHEEK[1]], [AX + CHEEK[1], x1]]) {
-    b.box(a, c, 0, 2.55, W - 0.2, W + 0.08, "ashlar");
+    // (1 cm into the pavilions at its ends, 1 cm under the wall's foot and the course's: it lay in their faces)
+    b.box(a === x0 ? a - 0.01 : a, c === x1 ? c + 0.01 : c, -0.01, 2.54, W - 0.2, W + 0.08, "ashlar");
     addCourse(b, a, c, 2.55, W + 0.08, 0.14, 0.08);
     for (const [p, q] of [[a, AX - TX - THW], [AX + TX + THW, c]]) if (q > p) addCourse(b, Math.max(p, a), Math.min(q, c), 7.2, W, 0.14, 0.1);
   }
@@ -103,13 +106,15 @@ function doorway(b) {
     const lift = (wo - DW) * 0.22;
     const li = (wi - DW) * 0.22, ro = 0.85 * (DRISE + lift * 0.9), ri = 0.85 * (DRISE + li * 0.9);
     const o = tudor(wo, DSPR + lift * 0.4, DRISE + lift * 0.9, ro), n = tudor(wi, DSPR + li * 0.4, DRISE + li * 0.9, ri);
-    b.slab(ring(o, n), AX, y, W + dz, 0.6 + dz, i === orders.length - 1 ? "smooth" : "dressed");
+    // (open at the foot, U-shaped, and their backs 1 cm in front of the wall's: as closed rings their feet and
+    // backs lay in each other's, the threshold's and the wall's)
+    b.slab(jambs(o, n), AX, y, W + dz, 0.59 + dz, i === orders.length - 1 ? "smooth" : "dressed");
   }
   // a hood moulding rising to a point under the carved panel, between the turrets' corbels
   const hoodO = tudor(DW + 1.5, DSPR + 0.3, DRISE + 0.62, 0.85), hoodI = tudor(DW + 1.3, DSPR + 0.28, DRISE + 0.5, 0.75);
   b.slab(archBand(hoodO, hoodI, 0.35), AX, y, W + 0.4, 0.4, "dressed");
   // reveal lining through the wall
-  b.slab(ring(tudor(DW + 0.02, DSPR, DRISE), tudor(DW - 0.06, DSPR - 0.02, DRISE - 0.03)), AX, y, W, 0.6, "dressed");
+  b.slab(jambs(tudor(DW + 0.02, DSPR, DRISE), tudor(DW - 0.06, DSPR - 0.02, DRISE - 0.03)), AX, y, W, 0.58, "dressed");
   // timber frame set back in the opening: posts, transom and the traceried head of six pointed lights
   const zf = W - 0.55, tr = 2.4; // transom height above the landing
   for (const s of [-1, 1]) b.box(AX + s * (DW / 2 - 0.06) - 0.07, AX + s * (DW / 2 - 0.06) + 0.07, y, y + tr, zf - 0.12, zf, "timber");
@@ -168,9 +173,10 @@ function turret(b, cx) {
     // the face's foot is a flat pointed arch from corbel to corbel, the cove showing under it
     const arch = tudor(len - 0.16, 0, TY1 - TY0 - 0.3, 0.25).slice(2).reverse().map((v) => new THREE.Vector2(v.x + len / 2, v.y + TY0 + 0.3));
     const s = new THREE.Shape([new THREE.Vector2(0, TY0 + 0.3), ...arch, new THREE.Vector2(len, TY0 + 0.3), new THREE.Vector2(len, TTOP), new THREE.Vector2(0, TTOP)]);
-    s.holes.push(pathOf(outline(ww, UPPER.h, "pointed", 0.8), len / 2, UPPER.y));
+    // (the opening 1 cm clear inside the window's lining, as in the front wall)
+    s.holes.push(pathOf(outline(ww + 0.02, UPPER.h + 0.01, "pointed", 0.8), len / 2, UPPER.y - 0.005));
     b.slab(s, 0, 0, 0, 0.3, "smooth");
-    addWindow(b, win, 0);
+    addWindow(b, { ...win, liningBack: 0.01 }, 0);
     // blind panel below the window, and the gablet
     b.slab(ring(outline(len - 0.35, UPPER.y - TY1 - 0.45), outline(len - 0.5, UPPER.y - TY1 - 0.6), 0.075), len / 2, TY1 + 0.15, 0.03, 0.03, "dressed");
     // a tall crocketed gablet over the window, its finial at the cornice
@@ -202,9 +208,9 @@ function centrePanel(b) {
   const x0 = AX - CB, x1 = AX + CB, t = CF - W;
   const win = { x: AX, y: UPPER.y, w: 1.75, h: UPPER.h + 0.15, head: "pointed", lights: 3, transoms: [1.45], k: 0.75 };
   const s = new THREE.Shape([[x0, 5.75], [x1, 5.75], [x1, 12.0], [x0, 12.0]].map(([x, y]) => new THREE.Vector2(x, y)));
-  s.holes.push(pathOf(outline(win.w, win.h, "pointed", 0.75), win.x, win.y));
+  s.holes.push(pathOf(outline(win.w + 0.02, win.h + 0.01, "pointed", 0.75), win.x, win.y - 0.005)); // (1 cm clear inside the lining)
   b.slab(s, 0, 0, CF, t + 0.05, "smooth");
-  addWindow(b, win, CF);
+  addWindow(b, { ...win, liningBack: 0.01 }, CF);
   b.slab(archBand(outline(win.w + 0.5, win.h + 0.34, "pointed", 0.75), outline(win.w + 0.28, win.h + 0.2, "pointed", 0.75), 0.25), AX, win.y - 0.12, CF + 0.13, 0.13, "dressed");
   // the carved panel: a moulded frame with two leaning shields, a stem with knots and a ribbon of foliage
   b.slab(ring(outline(2.1, 1.55), outline(1.9, 1.35), 0.1), AX, 5.85, CF + 0.06, 0.06, "dressed");

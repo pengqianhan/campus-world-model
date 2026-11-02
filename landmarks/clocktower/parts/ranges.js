@@ -27,8 +27,8 @@ export function ranges(b) {
   inFrame(b, BUILDING, () => {
     for (const { x0, x1, front, back } of RANGES) {
       const left = x0 < 0;
-      b.box(x0, x1, -0.4, EAVE, back, front - 0.5, "smooth");
-      roof(b, x0, x1, back + 0.4, front - 0.4, EAVE, RIDGE);
+      b.box(x0, x1, -0.42, EAVE, back, front - 0.5, "smooth"); // (its foot 2 cm under the plinths')
+      roof(b, x0, left ? x1 : x1 - 0.01, back + 0.4, front - 0.4, EAVE, RIDGE); // (on the right 1 cm inside the end wall)
       // street wall: bays of two-light windows, square below and pointed above under hoods
       const wins = [], bay = 3.6, len = x1 - x0, n = Math.floor((len - 1.2) / bay), pad = (len - n * bay) / 2;
       for (let i = 0; i < n; i++) {
@@ -36,15 +36,18 @@ export function ranges(b) {
         wins.push({ x, y: 1.6, w: 1.25, h: 2.4, lights: 2, transoms: [1.6], reveal: 0.25 });
         wins.push({ x, y: 5.4, w: 1.2, h: 2.75, head: "pointed", lights: 2, transoms: [1.5], k: 0.8, reveal: 0.25, hood: { off: 0.03, band: 0.1, drop: 0.25 } });
       }
-      addWall(b, [[0, 0], [len, 0], [len, PARAPET], [0, PARAPET]], x0, 0, front, 0.5, wins, "smooth");
-      b.box(x0, x1, -0.4, PLINTH, front - 0.4, front + 0.1, "ashlar");
+      // (the openings 1 cm clear inside the reveals' linings, whose faces the wall's lay in: kit/gothic.js addWall)
+      addWall(b, [[0, 0], [len, 0], [len, PARAPET], [0, PARAPET]], x0, 0, front, 0.5, wins, "smooth", { clear: 0.01 });
+      // (1 cm under the course's foot and the walls' foot; on the left from the end block, which it lay in)
+      b.box(left ? x0 + 5.5 : x0 - 0.01, left ? x1 + 0.01 : x1 - 0.01, -0.41, PLINTH - 0.01, front - 0.4, front + 0.1, "ashlar");
       addCourse(b, x0, x1, PLINTH, front + 0.1, 0.16, 0.06);
       addCourse(b, x0, x1, FLOOR, front, 0.16, 0.08);
       addCourse(b, x0, x1, PARAPET - 0.75, front, 0.22, 0.12);
       b.box(x0, x1, PARAPET - 0.05, PARAPET + 0.12, front - 0.55, front + 0.08, "dressed");
       // shallow pilaster strips between the bays
       const st = [];
-      for (let i = 0; i <= n; i++) { const x = x0 + pad + bay * i; st.push([x - 0.16, x + 0.16, PLINTH, PARAPET - 0.75, front, front + 0.07]); }
+      // (from 1 cm up in the plinth's course to 1 cm up in the cornice's, whose faces their ends lay in)
+      for (let i = 0; i <= n; i++) { const x = x0 + pad + bay * i; st.push([x - 0.16, x + 0.16, PLINTH + 0.01, PARAPET - 0.74, front, front + 0.07]); }
       b.add(boxesGeometry(st), "smooth");
       // back parapet
       b.box(x0, x1, EAVE - 0.3, PARAPET - 0.1, back, back + 0.4, "smooth");
@@ -57,7 +60,7 @@ export function ranges(b) {
         g.translate(0, 0, back - 0.3);
         b.add(g, "roof");
       } else {
-        b.box(x1 - 0.5, x1, -0.4, PARAPET, back, front, "smooth");
+        b.box(x1 - 0.5, x1, -0.42, PARAPET, back, front, "smooth");
       }
     }
   });

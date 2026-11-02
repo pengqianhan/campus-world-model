@@ -246,7 +246,10 @@ export function addWindow(b, win, front) {
   // reveal lining and a slightly proud surround
   if (reveal > 0) {
     const lining = shapeOf(outline(w + 0.04, h + 0.02, head, k), 0, -0.01); lining.holes.push(pathOf(outer));
-    b.slab(lining, x, y, front, reveal, "dressed");
+    // (`liningBack`, from addWall's `clear`: the lining's face that far behind the wall's, which covers its outer edge, and
+    // its back that far in front of the reveal's depth, where a wall as thick as the reveal has its back)
+    const lb = win.liningBack ?? 0;
+    b.slab(lining, x, y, front - lb, reveal - 2 * lb, "dressed");
   }
   if (surround) {
     const s = shapeOf(outline(w + 0.3, h + 0.17, head, k), 0, -0.12); s.holes.push(pathOf(outline(w + 0.02, h + 0.01, head, k)));
@@ -260,13 +263,19 @@ export function addWindow(b, win, front) {
 
 /**
  * A wall facing the street: a polygon (local metres, from its lower left corner at x0, y0) with the
- * windows' openings cut through it, thickness t back from z = front.
+ * windows' openings cut through it, thickness t back from z = front. `clear` (metres, default 0) cuts each
+ * opening that much wider on each side and half as much higher at its sill and its head: inside the window's
+ * reveal lining (2 cm wide, 1 cm at sill and head), so that the wall's faces round the opening lie in none of
+ * the lining's. Without it every wall is as it was.
  */
-export function addWall(b, poly, x0, y0, front, t, windows, material = "ashlar") {
+export function addWall(b, poly, x0, y0, front, t, windows, material = "ashlar", { clear = 0 } = {}) {
   const s = new THREE.Shape(poly.map(([px, py]) => new THREE.Vector2(px, py)));
-  for (const win of windows) s.holes.push(pathOf(outline(win.w, win.h, win.head ?? "flat", win.k ?? 0.8), win.x - x0, win.y - y0));
+  for (const win of windows) {
+    const o = outline(win.w + 2 * clear, win.h + clear, win.head ?? "flat", win.k ?? 0.8);
+    s.holes.push(pathOf(o, win.x - x0, win.y - y0 - clear / 2));
+  }
   b.slab(s, x0, y0, front, t, material);
-  for (const win of windows) if (!win.opening) addWindow(b, win, front);
+  for (const win of windows) if (!win.opening) addWindow(b, clear ? { ...win, liningBack: clear } : win, front);
 }
 
 /** A pinnacle: a square shaft, gablets, a crocketed spirelet and a finial, standing at (x, y, z). */

@@ -68,7 +68,8 @@ function front(b, x0, x1) {
   const wall = new THREE.Shape([
     [x0, -0.4], [x1, -0.4], [x1, SHOULDER], [x1 - 1.6, SHOULDER], [cx, APEX], [x0 + 1.6, SHOULDER], [x0, SHOULDER],
   ].map(([x, y]) => new THREE.Vector2(x, y)));
-  wall.holes.push(new THREE.Path([new THREE.Vector2(bx0, PLINTH + 0.25), new THREE.Vector2(bx1, PLINTH + 0.25), ...arch]));
+  // (the bay's opening from 1 cm down in the plinth's course, whose top its foot lay in)
+  wall.holes.push(new THREE.Path([new THREE.Vector2(bx0, PLINTH + 0.24), new THREE.Vector2(bx1, PLINTH + 0.24), ...arch]));
   b.slab(wall, 0, 0, F, 0.6, "ashlar");
   // the bay: smooth stone set 0.15 back, with its windows
   const bf = F - 0.15, wins = [];
@@ -84,7 +85,7 @@ function front(b, x0, x1) {
     for (const d of [-0.5, 0.5]) lancet(cx + s * gs + d, 0.32, 2.4, 1.2);
   }
   const rel = [[0, 0], [bw, 0], ...arch.map((p) => [p.x - bx0, p.y - PLINTH - 0.25])];
-  addWall(b, rel, bx0, PLINTH + 0.25, bf, 0.45, wins, "smooth");
+  addWall(b, rel, bx0, PLINTH + 0.25, bf, 0.45, wins, "smooth", { clear: 0.01 }); // (openings inside the reveals' linings)
   // a moulded frame round each group of lancets, and one sill under them
   const fr = [];
   for (const [gx, gw] of [[cx, 2.2], [cx - gs, 1.48], [cx + gs, 1.48]]) {
@@ -106,13 +107,13 @@ function front(b, x0, x1) {
   b.slab(new THREE.Shape([...outer, ...inner.reverse()]), 0, 0, F + 0.14, 0.3, "dressed");
   // two slender shafts from the plinth course up through the hood, ending in small pinnacles
   for (const s of [-1, 1]) {
-    shaft(b, cx + s * sx, bf + 0.12, PLINTH + 0.25, 11.4, 0.17);
+    shaft(b, cx + s * sx, bf + 0.12, PLINTH + 0.24, 11.4, 0.17); // (from 1 cm down in the course)
     addPinnacle(b, cx + s * sx, 11.4, bf + 0.12, 0.32, 1.0);
   }
   // reveals of the bay (the piers' inner faces are dressed where they meet the smooth stone)
-  b.add(boxesGeometry([[bx0 - 0.06, bx0 + 0.07, PLINTH + 0.25, CORNICE, bf, F + 0.01], [bx1 - 0.07, bx1 + 0.06, PLINTH + 0.25, CORNICE, bf, F + 0.01]]), "dressed");
+  b.add(boxesGeometry([[bx0 - 0.06, bx0 + 0.07, PLINTH + 0.24, CORNICE, bf, F + 0.01], [bx1 - 0.07, bx1 + 0.06, PLINTH + 0.24, CORNICE, bf, F + 0.01]]), "dressed");
   // plinth, its weathered course, the cornice on the piers
-  b.box(x0 - 0.12, x1 + 0.12, -0.4, PLINTH, F - 0.5, F + 0.12, "ashlar");
+  b.box(x0 - 0.12, x1 + 0.12, -0.41, PLINTH - 0.01, F - 0.5, F + 0.12, "ashlar"); // (1 cm under the course's foot and the walls')
   addCourse(b, x0 - 0.1, x1 + 0.1, PLINTH, F + 0.12, 0.25, 0.1);
   for (const [a, c] of [[x0, bx0 - 0.05], [bx1 + 0.05, x1]]) addCourse(b, a, c, CORNICE - 0.1, F, 0.22, 0.1);
   // gable coping, kneelers, a small cross at the apex
@@ -145,12 +146,12 @@ function outerSide(b, x, side, rangeFront) {
       wins.push({ x: wx, y: GY, w: 0.62, h: 2.75, lights: 1, transoms: [1.75] });
       wins.push({ x: wx, y: UY, w: 0.55, h: 2.45, head: "pointed", k: 0.8, lights: 1, transoms: [1.05], hood: { off: 0.04, band: 0.1, drop: 0.25 } });
     }
-    addWall(b, [[0, 0], [s1 - s0, 0], [s1 - s0, SHOULDER - PLINTH - 0.25], [0, SHOULDER - PLINTH - 0.25]], s0, PLINTH + 0.25, -0.05, 0.55, wins, "smooth");
+    addWall(b, [[0, 0], [s1 - s0, 0], [s1 - s0, SHOULDER - PLINTH - 0.25], [0, SHOULDER - PLINTH - 0.25]], s0, PLINTH + 0.25, -0.05, 0.55, wins, "smooth", { clear: 0.01 });
     // pilaster strips between the bays, plinth and course, cornice on the pier, parapet coping
     const st = [];
     for (let i = 0; i <= n; i++) { const px = s0 + bay * i; st.push([px - 0.14, px + 0.14, PLINTH + 0.25, SHOULDER - 0.6, -0.05, 0.05]); }
     b.add(boxesGeometry(st), "smooth");
-    b.box(0, len, -0.4, PLINTH, -0.5, 0.12, "ashlar");
+    b.box(0, len, -0.41, PLINTH - 0.01, -0.5, 0.12, "ashlar"); // (as the front's plinth)
     addCourse(b, 0, len, PLINTH, 0.12, 0.25, 0.1);
     addCourse(b, c0, c1, CORNICE - 0.1, 0, 0.22, 0.1);
     addCourse(b, s0, s1, SHOULDER - 0.6, 0, 0.18, 0.08);

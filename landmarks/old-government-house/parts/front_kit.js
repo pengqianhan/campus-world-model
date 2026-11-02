@@ -92,28 +92,29 @@ export function sash(acc, f, u, y, w, h, { cols = 3, rows = 2, head = "none", s 
  * An eave bracket (a scrolled console drawn in three steps) on face f at u, its top under the soffit, with a
  * small drop at its foot.
  */
-export function bracket(acc, f, u, top, reach = 0.55, tall = 0.8) {
+export function bracket(acc, f, u, top, reach = 0.55, tall = 0.8, lift = 0) {
   const t = 0.065;
-  fbox(acc, "trim", f, u - t, u + t, top - tall, top, 0, 0.12);
-  fbox(acc, "trim", f, u - t, u + t, top - tall * 0.45, top, 0, 0.3);
-  fbox(acc, "trim", f, u - t, u + t, top - 0.17, top, 0, reach);
+  fbox(acc, "trim", f, u - t, u + t, top - tall, top + lift, 0, 0.12);
+  fbox(acc, "trim", f, u - t, u + t, top - tall * 0.45, top + lift, 0, 0.3);
+  fbox(acc, "trim", f, u - t, u + t, top - 0.17, top + lift, 0, reach);
   fbox(acc, "trim", f, u - t - 0.02, u + t + 0.02, top - tall - 0.08, top - tall, 0, 0.14);
 }
 
 /** Brackets along face f from u0 to u1, about `step` apart, inset from the ends. */
-export function brackets(acc, f, u0, u1, top, step = 1.6, reach, tall) {
+/** (`lift` runs the brackets up past `top` into the soffit over them, where a frieze's top lies at `top`.) */
+export function brackets(acc, f, u0, u1, top, step = 1.6, reach, tall, lift = 0) {
   const n = Math.max(1, Math.round((u1 - u0 - 0.6) / step));
-  for (let i = 0; i <= n; i++) bracket(acc, f, u0 + 0.3 + ((u1 - u0 - 0.6) * i) / n, top, reach, tall);
+  for (let i = 0; i <= n; i++) bracket(acc, f, u0 + 0.3 + ((u1 - u0 - 0.6) * i) / n, top, reach, tall, lift);
 }
 
 /**
  * Brackets in pairs, one either side of each window below (at its centre -+ `gap`), and one 0.3 m in from
  * each end of the face where no pair stands close by: as on the south-east wing in hRE5.
  */
-export function pairedBrackets(acc, f, u0, u1, centres, top, { gap = 0.75, reach = 0.55, tall = 1.1 } = {}) {
+export function pairedBrackets(acc, f, u0, u1, centres, top, { gap = 0.75, reach = 0.55, tall = 1.1, lift = 0 } = {}) {
   const at = centres.flatMap((c) => [c - gap, c + gap]).filter((u) => u > u0 + 0.2 && u < u1 - 0.2);
   for (const e of [u0 + 0.3, u1 - 0.3]) if (at.every((u) => Math.abs(u - e) > 0.5)) at.push(e);
-  for (const u of at) bracket(acc, f, u, top, reach, tall);
+  for (const u of at) bracket(acc, f, u, top, reach, tall, lift);
 }
 
 /**

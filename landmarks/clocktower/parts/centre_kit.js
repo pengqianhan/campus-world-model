@@ -40,6 +40,14 @@ export function ring(outer, inner, dyInner = 0) {
   const s = shapeOf(outer); s.holes.push(pathOf(inner, 0, dyInner)); return s;
 }
 
+/** The band between two outlines that stand on one sill (y = 0), open at the sill: two jambs and the arch over
+ * them, as one U-shaped outline. (A ring of the two would close it with a sill of no height, whose faces lie
+ * in the threshold's.) */
+export function jambs(outer, inner) {
+  const [o0, o1] = [outer[0], outer[1]], [i0, i1] = [inner[0], inner[1]];
+  return new THREE.Shape([V2(i1.x, 0), V2(o1.x, 0), ...archOf(outer), V2(o0.x, 0), V2(i0.x, 0), ...archOf(inner).slice().reverse()]);
+}
+
 /**
  * A lofted solid through closed plan rings [{ y, pts: [[x, z], ...] }] (same point count each), with
  * a bottom and a top cap. Used for corbelling, cornices and caps that follow a polygonal plan.
@@ -70,7 +78,8 @@ export function loft(levels) {
 
 /** A square pedestal with a moulded cornice and a low pyramid cap, standing on y0 to top (cap above). */
 export function pedestal(b, x, z, w, y0, top, mat = "smooth") {
-  b.box(x - w / 2, x + w / 2, y0, top - 0.22, z - w / 2, z + w / 2, mat);
+  // (the body from 1 cm under its foot to the course's underside: its foot and top lay in the landing's and the course's)
+  b.box(x - w / 2, x + w / 2, y0 - 0.01, top - 0.3, z - w / 2, z + w / 2, mat);
   b.box(x - w / 2 - 0.05, x + w / 2 + 0.05, top - 0.3, top - 0.22, z - w / 2 - 0.05, z + w / 2 + 0.05, "dressed");
   b.box(x - w / 2 - 0.09, x + w / 2 + 0.09, top - 0.22, top - 0.1, z - w / 2 - 0.09, z + w / 2 + 0.09, "dressed");
   const cap = new THREE.ConeGeometry((w / 2 + 0.09) * Math.SQRT2, 0.32, 4, 1);
