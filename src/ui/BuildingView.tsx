@@ -252,6 +252,10 @@ export function BuildingView() {
               <small id="height-note" class={landmarkOf(b.id) || measuredOf(b.id) ? "landmark" : undefined}>
                 {landmarkOf(b.id)?.placement.part
                   ? t("building.landmarkPart", { part: landmarkOf(b.id)!.placement.part! })
+                  : landmarkOf(b.id)?.placement.measuredBy
+                    ? landmarkOf(b.id)!.placement.estimated
+                      ? t("building.landmarkByEstimated", { by: landmarkOf(b.id)!.placement.measuredBy!, estimated: landmarkOf(b.id)!.placement.estimated! })
+                      : t("building.landmarkBy", { by: landmarkOf(b.id)!.placement.measuredBy! })
                   : landmarkOf(b.id)?.placement.estimated
                     ? t("building.landmarkEstimated", { estimated: landmarkOf(b.id)!.placement.estimated! })
                     : landmarkOf(b.id)

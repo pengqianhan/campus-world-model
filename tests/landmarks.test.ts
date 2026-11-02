@@ -111,6 +111,24 @@ describe("a landmark's forms", () => {
   }, 120_000);
 });
 
+describe("what measures a landmark", () => {
+  it("is the LiDAR, and where something else measures some of it, the card's words begin with the LiDAR and About has its credit", () => {
+    for (const { name, placement: p } of LANDMARKS) {
+      if (p.measuredBy === undefined) {
+        expect(p.credit, `${name}: a credit without measuredBy`).toBeUndefined();
+        continue;
+      }
+      expect(p.measuredBy, name).toMatch(/^by LiDAR, /);
+      expect(p.credit?.trim(), `${name}: measuredBy without a credit`).toBeTruthy();
+    }
+    // The Kenneth Myers Centre's west part: the LiDAR holds temporary works over it (2024), so the 2023 aerial
+    // and a Street View photograph measure it.
+    const kmc = LANDMARKS.find((l) => l.name === "kenneth-myers-centre")!.placement;
+    expect(kmc.measuredBy).toContain("aerial photograph");
+    expect(kmc.credit).toContain("CC BY 4.0");
+  });
+});
+
 describe("each landmark on the site's ground", () => {
   it("stands at its door with each material's lowest points nowhere more than 0.25 m above the drawn ground", async () => {
     // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the

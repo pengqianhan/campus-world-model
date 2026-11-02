@@ -18,6 +18,24 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Kenneth Myers Centre drawn in detail.** Near the camera the map draws the Kenneth Myers Centre
+  (820) on Shortland Street from code in place of its block: a brick building whose pilasters rise past
+  its parapet into pinnacles, a cream coping over a corbel table of small arches and tall blind arches
+  along its street face, a porch with an arched cream doorway up steps from the street and three arched
+  windows over it, and the radio mast on its roof. Its roofs, its east part and its porch are sized by
+  the LINZ 2024 LiDAR, and what its street face carries is measured in a Street View photograph of it.
+  Over its west part the LiDAR holds scaffolding and a temporary roof, so that part is drawn from the
+  LINZ aerial photograph of 2023 and the Street View photograph instead. The campus map's outline for
+  820 does not follow the building: it lies 0.3 to 0.9 m north of its street face, its back is turned
+  across the building's, and it adds a tail over the lane to its west and a nub over the roofs to its
+  east. The model stands where the LiDAR and the aerial show the building, in place of the block. Its card says what measures it: the LiDAR, and for its west part the aerial
+  photograph and the Street View photograph; About credits the aerial photograph. The height of its west side's parapet and of its west part's dentil course, how far its pilasters, arcades,
+  coping and door surround stand out, its parapets' thickness, the widths of the piers between its blind
+  arches, of its merlons and of the porch's windows and colonnettes, where its blind arches come down, and
+  its radio mast's members are estimated, and its card says so.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its
+  own brick, render and paint. Its sides, its back and its roofs, which no photograph shows, are drawn
+  plainly. A click still opens its floors (#126).
 - **Lincoln World Model, at /lincoln/.** Another school on the site: Lincoln University's Lincoln
   campus, in 3D on the LINZ ground among the streets and buildings round it. Only the buildings
   OpenStreetMap tags as the University's are shown as the University's: a building that names

@@ -281,6 +281,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     roofGreen: roofGreen(0xa4b8a2, space),              // light green corrugated metal (the 2023 aerial)
     // brick and painted render (Old Choral Hall): shader hooks, no textures
     brick: brick(space),                                // red brick, pale joints
+    // the Kenneth Myers Centre: the brick's shader in a browner, duller brick (its photographs)
+    brickBrown: brick(space, { lo: "0.22, 0.105, 0.058", hi: "0.28, 0.14, 0.08", key: "brick-brown-v1" }),
     render: painted(0xc8ae8a, 0.7, space),              // cream painted render: pilasters, columns, bands, cornices
     roofGrey: roofPale(0x7a8088, space),                // mid-grey metal roofs (the 2023 aerial: about 110-150 luma)
     // plain walls for a part drawn as the campus map's estimated block, not as seen (Old Choral Hall's rest):
