@@ -1,7 +1,7 @@
 {
  "name": "thomas-building",
  "site": false,
- "estimated": "how far its window frames stand out, the height of the plinth under its face to the road, and that face's plain end at the south-west",
+ "estimated": "how far its window frames stand out, the height of the plinth under its face to the road, that face's plain end at the south-west, how far behind its piers the ground storey's windows and doors stand toward the north-east end, and that storey round the east corner",
  "building": {
   "id": "110",
   "also": [],
@@ -299,7 +299,7 @@
     "height": 900
    }
   ],
-  "camera_fixes_note": "[x, z, pitch, yaw, roll] (landmarks/README.md). S_C8 (round 1, 2026-10-28): x at its recorded place (no vertical edge of known u to fix it), z, pitch, yaw and roll fitted to the photograph's four horizontal edges in the wide view, the parapet's top against the sky and the three bands' tops over the windows, against the LiDAR's ledges 15.13, 11.12, 7.12 and 2.38 m, between the two piers it sees square (the panorama's stitching seams at about 720 and 1300 px shift a ledge by 10-25 px beyond them); cut again level by its roll, the middle's rms is about 2-3 px. oWaF: where the Thomas Building Extension's round 1 fixed it from its own photograph's edges (110N's config: [31.69, 12.34] in 110N's frame, 0.79 m from the recorded place, turned 2.21 deg left), moved into this frame through both configs' frame.expected (NZTM 238.996, 169.925): x and z, and the yaw, which is the panorama's heading and the same in any frame. Its pitch and roll are not carried over: 110N's views look 64 deg away from these, where a tilted panorama's roll and pitch differ, so they stay the cut's (0, and no roll).",
+  "camera_fixes_note": "[x, z, pitch, yaw, roll] (landmarks/README.md). S_C8 (round 1, 2026-10-28): x at its recorded place (no vertical edge of known u to fix it), z, pitch, yaw and roll fitted to the photograph's four horizontal edges in the wide view, the parapet's top against the sky and the three bands' tops over the windows, against the LiDAR's ledges 15.13, 11.12, 7.12 and 2.38 m, between the two piers it sees square (the panorama's stitching seams at about 720 and 1300 px shift a ledge by 10-25 px beyond them); cut again level by its roll, the middle's rms is about 2-3 px. oWaF: x, z and the yaw where the Thomas Building Extension's round 1 fixed them from its own photograph's edges (110N's config: [31.69, 12.34] in 110N's frame, 0.79 m from the recorded place, turned 2.21 deg left), moved into this frame through both configs' frame.expected (NZTM 238.996, 169.925); the yaw is the panorama's heading and the same in any frame. Its pitch and roll (round 2, 2026-11-02) fitted here to its wide view's own edges against the LiDAR's: the parapet's top against the sky (15.13) and the lower edges of the two upper bands (13.38 and 9.38, the LiDAR's lower ledges), along the face to the road from u 14 to the east corner and on the north-east end round it, 159 points; x, z and the yaw held (left free, the yaw stays at 2.30-2.34). Fitted -0.66 and -1.92 on the round-1 cut, then cut again level by the roll and fitted again twice: -0.48 and -2.4, where a further step changes the rms by less than 0.1 px (4.3 px; over all 14 lines, the band tops too, 6.6 px against 20.6 through round 1's camera). The roll is of the size the panorama's recorded tilt (88.10 deg) and roll (-1.09 deg) give at this view's heading, 132 deg from the car's, though the fit uses the photograph alone. The views need 66 tiles never bought and keep the black half the sky masks ignore.",
   "camera_fixes": {
    "S_C83uV6erL3A0gsWU2LUg": [
     6.37,
@@ -311,8 +311,9 @@
    "oWaFtXI8EGzKeGyT-DYEOA": [
     37.63,
     40.64,
-    0,
-    2.21
+    -0.48,
+    2.21,
+    -2.4
    ]
   }
  },

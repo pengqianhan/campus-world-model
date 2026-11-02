@@ -111,15 +111,38 @@ export const FACADE = {
   // right edge); in the other bays the first stands 0.07 right of the pier, as at u 2.94 (estimated)
   mullion: { from: 2.94, step: 0.58, width: 0.07, starts: { 1.72: 2.94, 13.72: 15.9 } },
   // piers from the ground to the top band, flush with the bands: the front faces' edges through the
-  // camera at u 1.72-2.92 and 13.70-14.84, 12.0 m apart; at that spacing a pier's edges show behind the
-  // tree at u -10.3, and oWaF's view has a pier left of the east corner (its place at the spacing:
-  // estimated, that camera is not fixed). 1.15 m wide.
-  piers: [-10.28, 1.72, 13.72, 25.72],
+  // camera at u 1.72-2.92 and 13.70-14.84, 12.0 m apart, 1.15 m wide; at that spacing a pier's edges show
+  // behind the tree at u -10.3. The pier left of the east corner (round 2), through oWaF's camera fitted
+  // from its own photograph's edges (config, camera_fixes_note): its front face's edges at u 24.82-24.97
+  // and 26.05-26.20 in the upper, wide and door views (rows at 3.6-12.5 m) and 24.83-26.33 at the ground
+  // storey; the LiDAR's returns at the bands' face in the window rows there lie at u 25.0-26.0. Drawn at
+  // u 24.9, 1.3 wide: 11.2 m from the pier before it, not at the 12.0 spacing (round 1 drew it at 25.72).
+  piers: [-10.28, 1.72, 13.72, 24.9],
   pierWidth: 1.15,
-  // the treatment wraps the east corner (oWaF's view: the bands run on round it, over glass) as far as
-  // 110N's link (v 16.4 at u 29.5-29.9: README); the south-west end, in no photograph, closes the recess
-  // with a plain end the width of a pier (estimated)
-  wrapTo: 16.4,
+  pierWidths: [1.15, 1.15, 1.15, 1.3],
+  // the treatment wraps the east corner (oWaF's view: the bands run on round it, over glass, the windows
+  // set back behind them). Round 2: in oWaF's wide view, through its fitted camera, the four bands end on
+  // the north-east end's plane at v 18.98, 18.81, 18.64 and 18.56 (the bottom band to the top; that face
+  // is seen at a slant of about 17 deg, so good to about 0.5 m): v 18.8. From there to 110N's link (v 16.4
+  // at u 29.5-29.9: README) the end is plain wall, as the photograph shows it beside the link's glass. The
+  // south-west end, in no photograph, closes the recess with a plain end the width of a pier (estimated)
+  wrapTo: 18.8,
+  // the ground storey toward the north-east end (round 2), as oWaF's door view shows it from u 17.5 (its
+  // left edge) to the corner and S_C8's wide view from u 17 to 21, each through its fitted camera on the
+  // face's plane. A concrete post at u 16.96-17.49 (S_C8) begins it. The band over it reaches lower than
+  // further south-west (1.46, S_C8's door view): its lower edge reads 1.26-1.28 through S_C8's camera (u
+  // 17.6-21) and 0.76-1.06 through oWaF's (u 23.8-30; the band's top there 2.01-2.35 against the LiDAR's
+  // ledge 2.38, so that camera reads low near the ground), drawn at 1.1 between them, the ledge 2.38 kept
+  // as its top. The windows' sills: -0.27 through S_C8's camera, -0.60 to -0.74 through oWaF's, drawn at
+  // -0.45, the plinth below them; the ground at the grey door round the corner -1.72 (the LiDAR's at the
+  // north-east end: p50 -1.66). Its windows and doors stand only a little behind the pier's face, not at
+  // the recess: in oWaF's upper view the pier's side shows 17 px there (the upper rows' 1.35 m would show
+  // about 55), its edge at v 21.58, and the door shows whole beside the pier: `back` 0.3 (estimated,
+  // 0.2-0.4). On that plane (oWaF's door view): a white door from u 23.3 to the pier, a white-framed louvre
+  // from the pier to 27.25, and a concrete post at 28.4-28.85 between two windows; the post at 17.0-17.5 is
+  // flush with the face, as S_C8's wide view shows it lit. Round the corner the same (estimated: the wide
+  // view shows the end's ground storey only behind a grey door and a sign)
+  groundNE: { from: 17.0, band: 1.1, plinth: -0.45, back: 0.3, panels: [[23.3, 24.9], [26.2, 27.25]], posts: [[17.0, 17.5, 0.3], [28.4, 28.85, 0.15]] },
   // the plinth under the ground storey's windows, at the face, to 0.35 (estimated: the hedge hides it)
   plinth: 0.35,
 };

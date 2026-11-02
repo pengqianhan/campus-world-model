@@ -296,6 +296,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     roofTile: roofPale(0xa04a3a, space),                // red clay tiles (the 2023 aerial and the photographs)
     // the Fisher Building: the brick's shader in a pale tan-orange brick (its photographs)
     brickTan: brick(space, { lo: "0.42, 0.22, 0.11", hi: "0.52, 0.28, 0.14", key: "brick-tan-v1" }),
+    // the Thomas Building: the paint's shader in a warm grey-brown, its board-marked concrete (its photographs)
+    concrete: painted(0xa6907b, 0.75, space),
   };
   return m;
 }
