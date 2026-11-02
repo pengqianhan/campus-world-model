@@ -1515,39 +1515,6 @@
     }
    }
   },
-  "405": {
-   "name": "Engineering Block 5",
-   "reason": "its model passes the top-view check with the roof forms of the fourth round, but its 60 layers make the map drawn in software (SwiftShader) about 14% slower over it, and the view over it and 423 25% slower than with their blocks (the limit is 15%): kept until a lighter model or the maintainer's word (footprint IoU 0.903, 91% of cells within 0.5 m)",
-   "measured": {
-    "outline_m2": 3861.5,
-    "ground": {
-     "p5": 29.66,
-     "p50": 35.38,
-     "p95": 39.41,
-     "zero": 29.56
-    },
-    "roof_inside_m2": 3494.2,
-    "cover": 0.905,
-    "vegetation": 0.032,
-    "open_below": 0.089,
-    "not_drawn_m2": 89.5,
-    "check": {
-     "iou": 0.903,
-     "lidar_m2": 3589.5,
-     "model_m2": 3875.5,
-     "within_0.5m": 0.913,
-     "model_minus_lidar_m": {
-      "p10": -0.28,
-      "p50": 0.0,
-      "p90": 0.09
-     },
-     "highest_m": {
-      "model": 53.15,
-      "lidar": 55.53
-     }
-    }
-   }
-  },
   "408": {
    "name": "UniPress",
    "reason": "the 2024 LiDAR shows no roof on its outline; its block stays, and the campus map's record is for the maintainer to check (decision 10)",

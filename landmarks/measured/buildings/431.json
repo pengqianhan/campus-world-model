@@ -803,8 +803,12 @@
  ],
  "dropped": [
   {
-   "m2": 32.2,
+   "m2": 29.0,
    "why": "roof cells on no smooth plane, or in pieces under 4 m2: drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of the top-view check's share within 0.5 m (not_drawn_m2)"
+  },
+  {
+   "m2": 3.2,
+   "why": "cells of a layer drawn as its faces (FORMS) that lie on no face (along its ridges, hips and valleys, where they fall no one way, or in pieces under 4 m2): drawn with the face nearest them, or the layer nearest their height when no face is nearest; those more than 1 m from every layer's roof are left out of the top-view check's share within 0.5 m (not_drawn_m2)"
   }
  ],
  "measured": {
