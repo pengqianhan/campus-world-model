@@ -258,7 +258,8 @@ agent and no photograph. All of them share one model and have a data file each:
   on the plinth. The building is drawn only if it then passes the check with more cells within
   0.5 m than before; else its block stays, and `exclusions.json` gives both checks. A building that
   passes without them is not measured again, so its data file is as before. `--no-forms` leaves
-  them out.
+  them out. A building in `SLOW` keeps its block though it passes, with its reason: 405 Engineering
+  Block 5, whose model is too slow to draw in software (MASSING.md, "The fourth round").
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof

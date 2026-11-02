@@ -577,27 +577,32 @@ for byte as `main` has them.
   part taken into the roof round it, outlines that take in open ground, trees over the roof, a
   planted roof, and footprints that differ from the outline (the second and third rounds).
 
-**Eight pass now** and are drawn:
+**Eight pass now**, and seven of them are drawn:
 
 | Building | Before: IoU, within 0.5 m | Footprint IoU | Within 0.5 m | Model − LiDAR p10 / p50 / p90 (m) | Highest, model / LiDAR (m) | Layers | Block |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 130 Pembridge House | 0.920, 89.1% | 0.948 | 93.7% | −0.16 / 0.00 / 0.15 | 11.02 / 12.72 | 22: three layers of hips as 14 faces on their bodies | 7.2 m |
 | 216 Mona | 0.882, 69.9% | 0.904 | 94.9% | −0.13 / 0.01 / 0.14 | 15.00 / 24.90 | 10: a hip roof as 7 faces | 10.8 m |
 | 322 AUSA House | 0.858, 73.5% | 0.947 | 97.2% | −0.10 / 0.00 / 0.13 | 11.67 / 12.65 | 10: two roofs as 4 and 2 faces | 7.2 m |
-| 405 Engineering Block 5 | 0.900, 82.2% | 0.903 | 91.3% | −0.28 / 0.00 / 0.09 | 53.15 / 55.53 | 60: low pitches (1.7° to 7.4°), 13 faces | 32.4 m |
+| 405 Engineering Block 5, kept as its block (below) | 0.900, 82.2% | 0.903 | 91.3% | −0.28 / 0.00 / 0.09 | 53.15 / 55.53 | 60: low pitches (1.7° to 7.4°), 13 faces | 32.4 m |
 | 423 Conference Centre | 0.924, 75.9% | 0.950 | 95.1% | −0.09 / 0.00 / 0.10 | 21.31 / 20.41 | 45: its pavilions' roofs as 29 faces | 3.6 m |
 | 431 Fine Arts Studio Block 431 | 0.890, 81.7% | 0.947 | 99.0% | −0.06 / 0.00 / 0.06 | 18.57 / 18.90 | 8: a stepped mono-pitch as 2 faces, a low pitch of 2.9° | 18.0 m |
 | 902 Building 902 | 0.972, 79.3% | 0.971 | 91.9% | −0.37 / 0.00 / 0.03 | 26.75 / 26.74 | 14: low pitches of 3.6° to 5.0°, 6 of them faces | 21.6 m |
 | 903 Building 903 | 0.958, 85.5% | 0.959 | 95.5% | −0.14 / 0.00 / 0.04 | 19.69 / 20.62 | 12: low pitches of 3.8° and 4.4° as 8 faces | 14.4 m |
 
-130 Pembridge House (tier 1) and 405 Engineering Block 5 (tier 2) are stand-ins until their
-landmarks come (see "Which buildings"). 405 was sorted under "other reasons": its low pitches and
-faces bring it over the limits, narrowly. 902 and 903 are the two buildings whose outlines 904's
+130 Pembridge House (tier 1) is a stand-in until its landmark comes (see "Which buildings").
+**405 Engineering Block 5** (tier 2, sorted under "other reasons") passes too, narrowly, but keeps
+its block (`SLOW` in `massing.py`): its model of 60 layers, at 9,759 triangles, makes the map drawn
+in software (SwiftShader) about 14% slower over it, and the map over it and 423 25% slower than
+with their blocks, where the limit is 15% (the GPU's frame does not change). Hiding the massings
+one by one in that view found the cost in 405 (about 33 ms of a 283 ms frame) and not in 423
+(about 3 ms); the bodies under the faces did not lower it. A lighter model, or the maintainer's
+word, can bring it back. 902 and 903 are the two buildings whose outlines 904's
 strip lies in (see "The third round"): the strip now lies on their measured roofs, within 0.2 m
 of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
 shows in patches where it stood above their 14.4 m blocks before.
 
-**The other 32 keep their blocks**, from their top views (`measured/out/<id>-forms.png`):
+**The other 31 keep their blocks** too, from their top views (`measured/out/<id>-forms.png`):
 
 - Several ridges whose heights now fit, but whose footprint does not: 212 (footprint IoU 0.860,
   92% within 0.5 m) and 226 (0.805, 93%), where trees classed as building stand over a corner, and
@@ -609,14 +614,15 @@ shows in patches where it stood above their 14.4 m blocks before.
   (0.899, 84%).
 - 110 Thomas Building (0.848, 71%): its outline takes in its courtyard, which the LiDAR sees as
   ground and the model fills at its lowest layer.
-- 132 and 509: no new form, because most of their roof lies on no smooth plane (84 m² of 132's
-  layers' cells, 73 m² of 509's): each layer has one face at most.
+- 132 and 509: no new form. 84 m² of 132's roof and 73 m² of 509's lie on no smooth plane, so
+  each of their layers has one face at most.
 - Low pitches whose heights now fit: 274 (0.858, 99%) and 803 (0.864, 97%); their footprints
   differ from their outlines, as before.
-- The other reasons (19): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
+- The other reasons (18): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
   from 42% to 77%), and none over the limits.
 
-Every one of the 32 keeps its reason in `exclusions.json`, with the numbers of both checks.
+Each of the 31 keeps its reason in `exclusions.json`, with the numbers of both checks; 405 has its
+own reason and the numbers of its check with the new forms.
 
 ### How the numbers were measured
 
