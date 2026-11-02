@@ -119,6 +119,11 @@ KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the 
                "644 and 645, have residential floors and whose reception in 645 is an Accommodation Reception on the "
                "campus map), though its own floors are marked unmapped: kept until the maintainer decides"}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
+# Buildings that pass the top-view check but whose model is too slow to draw for now (the fourth round, 2026-11-02):
+# their block stays, with the check's numbers, until a lighter model or the maintainer's word.
+SLOW = {"405": "its model passes the top-view check with the roof forms of the fourth round, but its 60 layers make "
+               "the map drawn in software (SwiftShader) about 14% slower over it, and the view over it and 423 25% "
+               "slower than with their blocks (the limit is 15%): kept until a lighter model or the maintainer's word"}
 
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
 CHILDCARE = re.compile(r"child|\bk[oō]hanga\b|early learning|\bECE\b|kindergarten|cr[eè]che", re.I)
@@ -1099,6 +1104,9 @@ def main():
                             why += (f"; with the roof forms of the fourth round ({'; '.join(data2['forms'])}): footprint IoU "
                                     f"{c2['iou']:.3f}, {c2['within_0.5m']:.0%} of cells within 0.5 m")
         why = policy or why
+        if not why and bid in SLOW:
+            c = data["check"]
+            why = f"{SLOW[bid]} (footprint IoU {c['iou']:.3f}, {c['within_0.5m']:.0%} of cells within 0.5 m)"
         if why:
             rec.pop("skip", None)
             ex[bid] = {"name": name, "reason": why, **({"measured": rec} if rec else {})}
