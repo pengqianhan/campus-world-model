@@ -606,7 +606,7 @@ def measure(b, P, others, campus_origin, forms=False):
     # The roof forms of the fourth round (FORMS), only when asked: each layer takes a low pitch where that fits
     # its cells better than one height, and then its faces, each its own mono-pitch, where they fit its cells
     # better than the lowest of its planes. "Better": a smaller mean distance from the LiDAR's heights.
-    split, changed, fit_low, face = False, [], None, set()
+    split, changed, fit_low, face, groups = False, [], None, set(), []
     for k in list(layers) if forms else []:
         mk = lab == k; ij = np.argwhere(mk); h = H[mk] - zero
         X = cx[ij[:, 1]] - centre[0]; Y = cy[ij[:, 0]] - centre[1]
@@ -628,7 +628,7 @@ def measure(b, P, others, campus_origin, forms=False):
         _, (fi, fj) = distance_transform_edt(F == 0, return_indices=True)
         pl = np.array([p for _, p in fs])[F[fi, fj][mk] - 1]
         if float(np.mean(np.abs(pl[:, 2] + pl[:, 0] * X + pl[:, 1] * Y - h))) >= e_k: continue
-        lab[mk] = 0; layers.remove(k); del info[k]
+        lab[mk] = 0; layers.remove(k); del info[k]; groups.append(list(range(n + 1, n + 1 + len(fs))))
         for c, p in fs:
             n += 1; lab[ij[c, 0], ij[c, 1]] = n; layers.append(n); face.add(n)
             info[n] = {"form": "mono", "planes": [p], "slope": math.degrees(math.atan(math.hypot(p[0], p[1]))),
@@ -689,10 +689,13 @@ def measure(b, P, others, campus_origin, forms=False):
 
     def traced(k):
         # the faces of a layer (FORMS) tile it: each is traced from its cells unclosed and unsimplified, so that
-        # neighbouring faces share their edges, with no gap between them down to the plinth
-        mk = binary_fill_holes(full == k if k in face else binary_closing(full == k, iterations=1)) & Cin
+        # neighbouring faces share their edges, with no gap between them; a tuple of faces is the body under them
+        ks = list(k) if isinstance(k, tuple) else [k]
+        whole = np.isin(full, ks)
+        plain_ = all(q in face for q in ks)
+        mk = binary_fill_holes(whole if plain_ else binary_closing(whole, iterations=1)) & Cin
         for ring in trace(mk, cx, cy):
-            plain = simplify(ring, 0.0 if k in face else SIMPLIFY)
+            plain = simplify(ring, 0.0 if plain_ else SIMPLIFY)
             ring = snap(plain, outer)
             # snapping can fold a ring over itself; then the traced edge stays as it is
             ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
@@ -701,8 +704,8 @@ def measure(b, P, others, campus_origin, forms=False):
             ring = ccw(ring)
             # a piece in which the LiDAR sees no roof cell of this layer: every cell of it came to the layer only as
             # the nearest (906's lobe over open ground); with DROP_BARE it is not drawn as a layer
-            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & (full == k)).any():
-                bare.add((k, round(float(area(ring)), 1)))
+            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & whole).any():
+                bare.add((ks[0], round(float(area(ring)), 1)))
                 continue
             yield ring
 
@@ -738,16 +741,26 @@ def measure(b, P, others, campus_origin, forms=False):
     # too, stands on it as traced. A sloping roof whose planes reach below the plinth's top has its walls
     # rise from that top, and those parts of its planes stay inside the plinth.
     # A layer drawn as its faces (FORMS) always stands on the plinth: its faces are pieces of one roof.
+    # The faces of one layer stand on a body: a flat layer over all of them, up to the lowest edge of their roofs,
+    # so that no wall stands inside the building between two faces from the plinth up.
     if small and (flattened or lost > info[base]["m2"]) or split:
-        ups = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in layers for ring in traced(k)]
+        ups = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in layers if k not in face
+               for ring in traced(k)]
+        for g in groups:
+            fu = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in g for ring in traced(k)]
+            if not fu: continue
+            hb = min(u["wall"] for u in fu)
+            ups += [layer_record([ring], {"form": "flat", "height": hb, "m2": sum(info[k]["m2"] for k in g)}, 0.0, 0.0, levels, centre)
+                    for ring in traced(tuple(g))]
+            ups += [{**u, "on": hb} for u in fu]
         e = min(info[k]["low"] for k in layers)
         if ups and e >= FLOOR:
             out = [layer_record(rings, {"form": "flat", "height": e, "m2": float(Cin.sum() * A)}, -1.0, eaves_at(e), levels, centre)]
             y0 = out[0]["wall"]
             for u in ups:
-                u["y0"] = y0
-                if u["roof"] != "flat" and u["wall"] <= y0 + 0.05 < u["ridge"] - 0.2:
-                    u["wall"] = round(y0 + 0.05, 2)
+                u["y0"] = max(y0, u.pop("on")) if "on" in u else y0
+                if u["roof"] != "flat" and u["wall"] <= u["y0"] + 0.05 < u["ridge"] - 0.2:
+                    u["wall"] = round(u["y0"] + 0.05, 2)
                     u["storey"], u["storeys"] = storeys(u["wall"], levels)
                 if stands(u): out.append(u)
     for k, a in sorted(bare):
