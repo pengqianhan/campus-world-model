@@ -115,11 +115,12 @@ function front(b, x0, x1) {
   // plinth, its weathered course, the cornice on the piers
   b.box(x0 - 0.12, x1 + 0.12, -0.41, PLINTH - 0.01, F - 0.5, F + 0.12, "ashlar"); // (1 cm under the course's foot and the walls')
   addCourse(b, x0 - 0.1, x1 + 0.1, PLINTH, F + 0.12, 0.25, 0.1);
-  for (const [a, c] of [[x0, bx0 - 0.05], [bx1 + 0.05, x1]]) addCourse(b, a, c, CORNICE - 0.1, F, 0.22, 0.1);
+  // (their inner ends 1 cm short of the bay's sides, which their lower mouldings' ends lay in)
+  for (const [a, c] of [[x0, bx0 - 0.06], [bx1 + 0.06, x1]]) addCourse(b, a, c, CORNICE - 0.1, F, 0.22, 0.1);
   // gable coping, kneelers, a small cross at the apex
   const top = [[x0, SHOULDER], [x0 + 1.6, SHOULDER], [cx, APEX], [x1 - 1.6, SHOULDER], [x1, SHOULDER]];
   for (let i = 0; i < top.length - 1; i++) coping(b, top[i], top[i + 1], F);
-  for (const x of [x0 + 1.6, x1 - 1.6]) b.box(x - 0.25, x + 0.25, SHOULDER - 0.05, SHOULDER + 0.42, F - 0.6, F + 0.12, "dressed");
+  for (const x of [x0 + 1.6, x1 - 1.6]) b.box(x - 0.25, x + 0.25, SHOULDER - 0.05, SHOULDER + 0.42, F - 0.59, F + 0.12, "dressed"); // (backs 1 cm in front of the wall's)
   b.add(boxesGeometry([
     [cx - 0.22, cx + 0.22, APEX + 0.1, APEX + 0.5, F - 0.45, F],
     [cx - 0.07, cx + 0.07, APEX + 0.5, APEX + 1.15, F - 0.3, F - 0.16],
@@ -149,7 +150,8 @@ function outerSide(b, x, side, rangeFront) {
     addWall(b, [[0, 0], [s1 - s0, 0], [s1 - s0, SHOULDER - PLINTH - 0.25], [0, SHOULDER - PLINTH - 0.25]], s0, PLINTH + 0.25, -0.05, 0.55, wins, "smooth", { clear: 0.01 });
     // pilaster strips between the bays, plinth and course, cornice on the pier, parapet coping
     const st = [];
-    for (let i = 0; i <= n; i++) { const px = s0 + bay * i; st.push([px - 0.14, px + 0.14, PLINTH + 0.25, SHOULDER - 0.6, -0.05, 0.05]); }
+    // (up 1 cm into the cornice's upper moulding, past its lower one's top)
+    for (let i = 0; i <= n; i++) { const px = s0 + bay * i; st.push([px - 0.14, px + 0.14, PLINTH + 0.25, SHOULDER - 0.59, -0.05, 0.05]); }
     b.add(boxesGeometry(st), "smooth");
     b.box(0, len, -0.41, PLINTH - 0.01, -0.5, 0.12, "ashlar"); // (as the front's plinth)
     addCourse(b, 0, len, PLINTH, 0.12, 0.25, 0.1);
@@ -181,6 +183,6 @@ export function pavilion(b, x0in, x1in) {
     outerSide(b, xo, out, rangeFront);
     // the inner side's plinth, from the front back to the recessed centre
     const xs = xi - out * 0.12;
-    b.box(Math.min(xi, xs), Math.max(xi, xs), -0.4, PLINTH, 12.0, FRONT, "ashlar");
+    b.box(Math.min(xi, xs), Math.max(xi, xs), -0.41, PLINTH - 0.01, 12.0, FRONT, "ashlar"); // (as the front's plinth)
   });
 }

@@ -61,9 +61,9 @@ function body(b, x0, x1) {
   const dw = 1.8, dh = 3.0, zi = z + 0.01;
   b.box(AX - dw / 2, AX + dw / 2, LAND, LAND + dh, zi, zi + 0.005, "iron");
   const bars = [[-dw / 2 - 0.12, -dw / 2, 0, dh + 0.12], [dw / 2, dw / 2 + 0.12, 0, dh + 0.12], [-dw / 2, dw / 2, dh, dh + 0.12],
-    [-dw / 2, dw / 2, 2.3, 2.42], [-0.06, 0.06, 0, 2.3], [dw / 2 - 0.1, dw / 2, 0, 2.3], [0.06, dw / 2, 0, 0.7], [0.42, 0.48, 0.7, 2.3], [-0.03, 0.03, 2.42, dh]];
+    [-dw / 2, dw / 2, 2.3, 2.42], [-0.06, 0.06, 0, 2.3], [dw / 2 - 0.1, dw / 2, 0, 2.3], [0.06, dw / 2, 0, 0.7], [0.42, 0.48, 0.7, 2.3], [-0.03, 0.03, 2.41, dh + 0.01]]; // (the fanlight's bar 1 cm into the transom and the head, past the glass's edges)
   for (const [u0, u1, v0, v1] of bars) b.box(AX + u0, AX + u1, LAND + v0, LAND + v1, zi + 0.005, zi + 0.07, "timber"); // (from the hall's face out)
-  b.box(AX + 0.06, AX + dw / 2, LAND + 0.7, LAND + 2.3, zi + 0.02, zi + 0.025, "glass");
+  b.box(AX + 0.06, AX + dw / 2 - 0.01, LAND + 0.7, LAND + 2.3, zi + 0.02, zi + 0.025, "glass"); // (inside the frame's edge)
   b.box(AX - dw / 2, AX + dw / 2, LAND + 2.42, LAND + dh, zi + 0.02, zi + 0.025, "glass");
   b.box(AX - dw / 2 - 0.02, AX - dw / 2 + 0.04, LAND, LAND + 2.3, zi + 0.07, zi + 0.85, "timber"); // the open leaf
 }
@@ -76,7 +76,7 @@ function frontWall(b, x0, x1) {
     wins.push({ x: AX + s * SIDE, y: UPPER.y, w: SW, h: UPPER.h, head: "pointed", lights: 3, transoms: [1.45], k: 0.78 });
     wins.push({ x: AX + s * 3.1, y: 2.85, w: 0.48, h: 1.75, lights: 1 });
   }
-  const s = new THREE.Shape([[x0, 0], [x1, 0], [x1, 11.3], [x0, 11.3]].map(([x, y]) => new THREE.Vector2(x, y)));
+  const s = new THREE.Shape([[x0, 0], [x1, 0], [x1, 11.29], [x0, 11.29]].map(([x, y]) => new THREE.Vector2(x, y)));
   // (each opening 1 cm clear inside its lining, as kit/gothic.js addWall's `clear`; the door's inside its lining too)
   for (const w of wins) s.holes.push(pathOf(outline(w.w + 0.02, w.h + 0.01, w.head ?? "flat", w.k ?? 0.8), w.x, w.y - 0.005));
   s.holes.push(pathOf(tudor(DW + 0.02, DSPR, DRISE), AX, LAND));
@@ -117,7 +117,8 @@ function doorway(b) {
   b.slab(jambs(tudor(DW + 0.02, DSPR, DRISE), tudor(DW - 0.06, DSPR - 0.02, DRISE - 0.03)), AX, y, W, 0.58, "dressed");
   // timber frame set back in the opening: posts, transom and the traceried head of six pointed lights
   const zf = W - 0.55, tr = 2.4; // transom height above the landing
-  for (const s of [-1, 1]) b.box(AX + s * (DW / 2 - 0.06) - 0.07, AX + s * (DW / 2 - 0.06) + 0.07, y, y + tr, zf - 0.12, zf, "timber");
+  // (the posts' outer faces on the opening's, not 1 cm out in the lining's; their feet 1 cm down in the threshold)
+  for (const s of [-1, 1]) b.box(AX + s * (DW / 2 - 0.06) - (s < 0 ? 0.06 : 0.07), AX + s * (DW / 2 - 0.06) + (s < 0 ? 0.07 : 0.06), y - 0.01, y + tr, zf - 0.12, zf, "timber");
   b.box(AX - DW / 2, AX + DW / 2, y + tr - 0.02, y + tr + 0.14, zf - 0.14, zf, "timber");
   const lights = 6, lw = (DW - 0.24) / lights, headSil = tr + 0.14;
   const plate = new THREE.Shape(archOfHead(headSil));
@@ -239,7 +240,7 @@ function centrePanel(b) {
 function parapet(b, x0, x1) {
   for (const [a, c] of [[x0, AX - TX - THW], [AX + TX + THW, x1]]) {
     addCourse(b, a, c, 11.15, W, 0.16, 0.1);
-    b.box(a, c, 11.3, PARA - 0.1, W - 0.35, W, "smooth");
+    b.box(a, c, 11.31, PARA - 0.1, W - 0.35, W, "smooth"); // (on the course's top, 11.31, not 1 cm down in it)
     b.box(a, c, PARA - 0.1, PARA, W - 0.4, W + 0.06, "dressed");
     const x = AX + Math.sign(a + c - 2 * AX) * SIDE;
     boss(b, x, 11.75, W + 0.05, 0.2);
@@ -260,7 +261,7 @@ function steps(b) {
     const g = new THREE.ExtrudeGeometry(cop, { depth: STEP_END - W, bevelEnabled: false }); g.translate(xm, 2.45, W);
     b.add(g, "dressed");
     pedestal(b, xm, 15.2, 0.95, 0, 3.3);
-    pedestal(b, xm, STEP_END - 0.45, 0.9, 0, 2.75);
+    pedestal(b, xm, STEP_END - 0.46, 0.9, 0, 2.75); // (its face 1 cm behind the last step's)
     // handrail along the inner face of the cheek wall
     const rx = xi - s * 0.12;
     const len = Math.hypot(STEP_END - LAND_END, LAND), ang = Math.atan2(LAND, STEP_END - LAND_END);
@@ -275,10 +276,11 @@ function steps(b) {
 function porch(b) {
   const p0 = AX + CHEEK[1] + 0.15, p1 = 4.75, zf = 14.9, top = 4.4;
   for (const [a, c] of [[p0, p0 + 0.9], [p1 - 0.5, p1]]) b.box(a, c, 0, top - 0.3, zf - 0.7, zf, "smooth");
-  b.box(p1 - 0.5, p1, 0, top - 0.3, W, zf - 0.62, "smooth"); // side wall toward the pavilion
-  b.box(p0 - 0.1, p1 + 0.1, top - 0.3, top, W, zf + 0.1, "smooth");
+  // (the side wall, the slab and the fascia from 1 cm in the front wall: at its face their backs lay in the window's surround's)
+  b.box(p1 - 0.5, p1, 0, top - 0.3, W - 0.01, zf - 0.62, "smooth"); // side wall toward the pavilion
+  b.box(p0 - 0.1, p1 + 0.1, top - 0.3, top, W - 0.01, zf + 0.1, "smooth");
   b.box(p0 - 0.12, p1 + 0.12, top - 0.32, top - 0.06, zf + 0.1, zf + 0.14, "iron");
-  b.box(p0 - 0.14, p0 - 0.1, top - 0.32, top - 0.06, W, zf + 0.14, "iron");
+  b.box(p0 - 0.15, p0 - 0.11, top - 0.32, top - 0.06, W - 0.01, zf + 0.14, "iron"); // (1 cm out from the small window's surround)
   // the glazed lift lobby under it
   b.box(p0 + 0.7, p1 - 0.6, 0, 2.6, W + 1.2, W + 1.25, "iron");
   b.box(p0 + 0.75, p0 + 1.6, 0.2, 2.4, W + 1.25, W + 1.27, "glass");

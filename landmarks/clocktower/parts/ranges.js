@@ -28,7 +28,7 @@ export function ranges(b) {
     for (const { x0, x1, front, back } of RANGES) {
       const left = x0 < 0;
       b.box(x0, x1, -0.42, EAVE, back, front - 0.5, "smooth"); // (its foot 2 cm under the plinths')
-      roof(b, x0, left ? x1 : x1 - 0.01, back + 0.4, front - 0.4, EAVE, RIDGE); // (on the right 1 cm inside the end wall)
+      roof(b, x0 + 0.01, x1 - 0.01, back + 0.4, front - 0.4, EAVE, RIDGE); // (1 cm inside the end walls, whose faces its ends lay in)
       // street wall: bays of two-light windows, square below and pointed above under hoods
       const wins = [], bay = 3.6, len = x1 - x0, n = Math.floor((len - 1.2) / bay), pad = (len - n * bay) / 2;
       for (let i = 0; i < n; i++) {
@@ -43,7 +43,7 @@ export function ranges(b) {
       addCourse(b, x0, x1, PLINTH, front + 0.1, 0.16, 0.06);
       addCourse(b, x0, x1, FLOOR, front, 0.16, 0.08);
       addCourse(b, x0, x1, PARAPET - 0.75, front, 0.22, 0.12);
-      b.box(x0, x1, PARAPET - 0.05, PARAPET + 0.12, front - 0.55, front + 0.08, "dressed");
+      b.box(x0 + 0.01, x1 - 0.01, PARAPET - 0.05, PARAPET + 0.12, front - 0.55, front + 0.08, "dressed"); // (its ends 1 cm in from the wall's)
       // shallow pilaster strips between the bays
       const st = [];
       // (from 1 cm up in the plinth's course to 1 cm up in the cornice's, whose faces their ends lay in)
