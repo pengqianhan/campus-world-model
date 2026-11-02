@@ -98,8 +98,10 @@ function cornerBlock(b, sx, sz) {
     const e = inner ? 0.01 : 0; // (on the inner faces 1 cm short of the ends, whose faces lay in the blocks')
     b.box(-L / 2 + e, L / 2 - e, BLOCK_TOP - 0.3, BLOCK_TOP - 0.12, -0.2, 0.12, "dressed");
     const gw = (inner ? vis : L) - 0.35;
-    // (its top the coping's underside, 1 cm lower: drawn through other points, its top lay along the coping's top near the foot)
-    const gs = new THREE.Shape(gablePts(gw, gw > 1.5 ? 0.75 : 0.5, 10, -0.14 * 0.15 - 0.01));
+    // (its first two points at each foot 3 cm lower, under the coping: its top lay along the coping's top there)
+    const gp = gablePts(gw, gw > 1.5 ? 0.75 : 0.5, 8, 0);
+    for (const i of [0, 1, gp.length - 2, gp.length - 1]) gp[i].y -= 0.03;
+    const gs = new THREE.Shape(gp);
     b.slab(gs, o, BLOCK_TOP - 0.12, 0.0, 0.3, "smooth");
     const cp = new Part(); gableCoping(cp, gw, gw > 1.5 ? 0.75 : 0.5, 0.14, BLOCK_TOP - 0.12, 0.08, 0.26);
     cp.stamp(b, new THREE.Matrix4().multiplyMatrices(b.matrix, new THREE.Matrix4().makeTranslation(o, 0, 0)));
