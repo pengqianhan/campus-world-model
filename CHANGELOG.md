@@ -58,8 +58,7 @@ A change to what the site does or shows adds its line here, and the README's
   side, a cross of gables, a sawtooth) as its faces, and a roof that falls less than 5° with its
   low pitch, where its roof drawn flat or with one ridge fails the check against the LiDAR from
   above. Pembridge House and Engineering Block 5 are buildings planned as landmarks; each stands in
-  until its landmark comes. On a computer without a graphics card, the map over Engineering Block 5
-  draws about a quarter slower than before; a lighter model of it is to follow. Every measured
+  until its landmark comes. Every measured
   massing already on the site is unchanged. The other 31 buildings that fail the check keep their
   blocks, each with its reason (`landmarks/measured/exclusions.json`) (#127).
 
@@ -68,9 +67,9 @@ A change to what the site does or shows adds its line here, and the README's
 - **Measured massings draw only the walls that show.** A wall of a measured massing that stands
   against another part of the same building is now drawn only for the height that shows above it,
   and not at all where it is hidden. Engineering Block 5, a tower of 60 parts, has half as much wall
-  to draw: on a computer without a graphics card the map over it now draws about 15% slower than with
-  its old block, where it was about a quarter slower. At the shaded foot of some walls, the shadow now
-  lets light through in small patches (#PR).
+  to draw: on a computer without a graphics card the map over it draws about 12% slower than with its
+  old block, within the project's 15%, where it was about a quarter slower. The walls as they were
+  still cast the shadows, from a copy that only the shadow map draws (#PR).
 
 ## 2026-11-01
 
