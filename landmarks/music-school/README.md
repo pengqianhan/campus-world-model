@@ -90,8 +90,9 @@ Each change measured in the LiDAR or in the photograph through its fitted camera
 - **The canopy's lower edge**, where the white sheet meets the shaded wall under it: 2.69 m on its outer edge
   (z 18.4), the same row in every column of the wide view from u 1100 to 1450; round 0 carried its curve on to
   2.9 m. Its top now runs 0.1 m into the wall it meets.
-- **The walls in white paint** (the kit's `paint`): the luma's median 244-245 against the photograph's
-  247-248, where round 0's `render` read 220-223. The auditorium keeps `trim`, the ochre of its wall. The
+- **The walls in white paint** (the kit's `paint`): through round 0's camera, changing nothing else, the
+  luma's median read 244-245 against the photograph's 245-248, where `render` read 220-223 (through the
+  fixed camera, below: 244-245 against 247-248). The auditorium keeps `trim`, the ochre of its wall. The
   walls no photograph shows take the same paint (estimated).
 - **The roofs south and west of the courtyard**, each the lowest of a few planes fitted together to its
   region's cells: the south range a gable along x hipped at its west end (ridge 9.65 m at z -14; 91% of its
@@ -103,7 +104,10 @@ Each change measured in the LiDAR or in the photograph through its fitted camera
   wide that round 0 left between the north wing and the south range closed.
 - **Not drawn**: the 102 building returns 11-14 m high along the north-west block's outer edge, which stand
   among 139 returns of high vegetation (the trees by the road); the west corner's glazed roof in panes; the
-  ochre wall's window; the ivy, the cars, the crane and the neighbours.
+  ochre wall's window, which `qru8…` sees at 16-19° to the wall, too slant to place (through the camera,
+  on the plane of the LiDAR's eave at z 16.4, it spans x -15.0 to -11.1 and y 3.4 to 7.0, but each 0.1 m that
+  the wall stands behind its eave moves it 0.3 m along it); the ivy, the cars, the crane and the
+  neighbours.
 
 Against the photograph (`run.sh music-school refine compare topview`): IoU in the box 0.937, 0.840 and 0.964
 over the wide, upper and door views, a mean of 0.914 (sky in the box 0.517, 0.320 and 0.059: in the door
@@ -115,3 +119,8 @@ range's ridge 9.65 (9.67 at x 5), the south-east part's 10.24 (10.15 at x -11, z
 10.27 (10.20 at x 22, z -9.5), the west corner 13.27 (13.62 at its corner). From above: footprint IoU 0.935,
 88% of cells within 0.5 m, the highest point 15.14 against 15.39 (p99.9), 80.7% of block 250 and 12.0% of
 block 202 under the model. 692 triangles in 4 meshes (`paint`, `trim`, `roofGrey`, `roofPale`).
+
+Still different: the ochre wall's two corners land 10 px (its corner at x -8.2) and 20 px (its west end at
+x -18.2) off the photograph's, which put them at x -7.4 and -16.0 on the LiDAR's eave line (z 16.4): its
+walls likely stand behind its eaves, which the LiDAR's roof returns trace. The shadow the viewer's default
+light casts under the canopy is broader and darker than the photograph's.
