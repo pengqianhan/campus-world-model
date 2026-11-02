@@ -17,7 +17,8 @@ export function slab(b) {
   // the mass, its roof and the raised middle of the right half
   // the ground storey stands back behind its glazing on Alfred Street (1.5) and at the south-east end (0.9)
   b.box(u0 + IN, u1 - IN, 5.0, S.roof, w0 + IN, w1 - IN, "paint");
-  b.box(u0 + IN, u1 - 0.9, FOOT, 5.0, w0 + IN, w1 - 1.5, "paint");
+  // (up 1 cm into the mass above, past the low block's glazing's head, whose top it stands in)
+  b.box(u0 + IN, u1 - 0.9, FOOT, 5.01, w0 + IN, w1 - 1.5, "paint");
   b.box(u0 + IN + 0.3, u1 - IN - 0.3, S.roof - 0.05, S.roof + 0.02, w0 + IN + 0.3, w1 - IN - 0.3, "roofPale");
   b.box(S.raised.u[0], S.raised.u[1], S.roof, S.raised.top, S.raised.w[0], S.raised.w[1], "paint");
   // a parapet round the roof
@@ -38,7 +39,10 @@ export function slab(b) {
   glazing(b, face("z", w1, 1, C.u[1], u1), M.ground.frontRight - 0.2, 5.0, { inset: 1.2, bay: 3.0 });
   // the south-east end: ribbons above the ground floor, which is glazed between dark piers (the entrance)
   ribbons(b, face("x", u1, 1, E.back, E.frontRight), 5.0, top, S.floors, { deep: 0.6 });
-  glazing(b, face("x", u1, 1, w0, w1), M.ground.seEnd, 5.0, { inset: 0.6, bay: 4.4 });
+  // (the band's sill and head between the piers, as at the low block's end: parts/podium.js. Where it crosses the
+  // low block's end pier and the glazing on Alfred Street, the tops of all three lay at 5.0: the glass runs 1 cm on
+  // up into the floor above, and the head stops 2 mm under it)
+  glazing(b, face("x", u1, 1, w0, w1), M.ground.seEnd, 4.998, { inset: 0.6, bay: 4.4, between: 0.9, over: 0.012 });
   piers(b, face("x", u1, 1, w0, w1), FOOT, 5.0, { bay: 4.4 });
   // the north-west end above the podium: ribbons too (Qaci's upper view)
   ribbons(b, face("x", E.nw, -1, E.back, E.frontLeft), P.top, top, S.floors, { deep: u0 + IN - E.nw });

@@ -34,8 +34,9 @@ export function tris(b, list, material) {
  * door's frame at each: its two jambs, a little heavier than a mullion, and its head at the transom. */
 function ribbon(b, w, front) {
   const { x, y, w: W, h, reveal = 0.15, frame = 0.06, bay = 1.3 } = w;
-  const zf = front - reveal, zg = zf - 0.02, list = [];
-  b.box(x - W / 2, x + W / 2, y, y + h, zg - 0.01, zg, "glassPale");
+  const zf = front - reveal, zg = zf - 0.02, list = [], e = frame / 2;
+  // the pane's edges stop half the frame's width inside it, under the frame: none of its faces lies in a face of the frame
+  b.box(x - W / 2 + e, x + W / 2 - e, y + e, y + h - e, zg - 0.01, zg, "glassPale");
   list.push([x - W / 2, x - W / 2 + frame, y, y + h, zf - 0.05, zf], [x + W / 2 - frame, x + W / 2, y, y + h, zf - 0.05, zf]);
   list.push([x - W / 2, x + W / 2, y, y + frame, zf - 0.05, zf], [x - W / 2, x + W / 2, y + h - frame, y + h, zf - 0.05, zf]);
   const n = Math.max(1, Math.round(W / bay));

@@ -65,7 +65,8 @@ function spaced(s0, s1, n) {
  * a brick pyramid, and a small cream cap at the tip. */
 function spire(b, f, s, tc, w, dep, base, tip) {
   const shaftTop = base + 0.6 * (tip - base);
-  box(b, f, s - w / 2, s + w / 2, base - 0.02, shaftTop, tc - dep / 2, tc + dep / 2, "brickBrown");
+  // (the shaft's top 1 cm under the ring's, inside it, so that the two tops do not lie in one plane)
+  box(b, f, s - w / 2, s + w / 2, base - 0.02, shaftTop - 0.01, tc - dep / 2, tc + dep / 2, "brickBrown");
   box(b, f, s - w / 2 - 0.04, s + w / 2 + 0.04, shaftTop - 0.08, shaftTop, tc - dep / 2 - 0.04, tc + dep / 2 + 0.04, "render");
   const h = tip - 0.12 - shaftTop, r = (w / 2) * Math.SQRT2 * 0.95;
   const cone = new THREE.ConeGeometry(r, h, 4, 1);
@@ -76,25 +77,33 @@ function spire(b, f, s, tc, w, dep, base, tip) {
   cap.applyMatrix4(f.m); b.add(cap, "render");
 }
 
-/** A pilaster `w` wide and `d` proud centred on s, from y0 to the coping, and its spire above to `tip`. */
+/** A pilaster `w` wide and `d` proud centred on s, from y0 to the coping, and its spire above to `tip` (the
+ * pilaster's top 1 cm under the coping's, inside the spire's shaft, which starts 2 cm under it: so the two tops
+ * do not lie in one plane). */
 function pilaster(b, f, s, w, d, y0, coping, tip) {
-  box(b, f, s - w / 2, s + w / 2, y0, coping, -0.05, d, "brickBrown");
+  box(b, f, s - w / 2, s + w / 2, y0, coping - 0.01, -0.05, d, "brickBrown");
   spire(b, f, s, (d - 0.05) / 2, w, d + 0.05, coping, tip);
 }
 
-/** The coping along a face from s0 to s1: a cream band, merlons on it, and a dentil course under it. */
-function coping(b, f, s0, s1, band, top, dentil) {
-  box(b, f, s0, s1, band[0], band[1], -MERLON.t, 0.1, "render");
+/** The coping along a face from s0 to s1: a cream band, merlons on it, and a dentil course under it. `ends` stops
+ * the band and the dentils 1 cm short of an end where a pilaster stands flush with it ([start, end]): inside the
+ * pilaster, their ends do not lie in its side. */
+function coping(b, f, s0, s1, band, top, dentil, ends = [false, false]) {
+  const a = s0 + (ends[0] ? 0.01 : 0), c = s1 - (ends[1] ? 0.01 : 0);
+  box(b, f, a, c, band[0], band[1], -MERLON.t, 0.1, "render");
   const n = Math.max(1, Math.floor((s1 - s0) / MERLON.pitch));
   for (const s of spaced(s0, s1, n)) box(b, f, s - MERLON.w / 2, s + MERLON.w / 2, band[1] - 0.01, top, -MERLON.t + 0.02, 0.08, "render");
-  if (dentil) box(b, f, s0, s1, dentil[0], dentil[1], 0, 0.06, "render");
+  if (dentil) box(b, f, a, c, dentil[0], dentil[1], 0, 0.06, "render");
 }
 
 /** A street face: its pilasters (s, width, proud, tip), its coping, the corbel table and the blind arches. */
 function streetFace(b, f, { pilasters, foot, coping: cop, frieze, arches, parapet, range }) {
   const [s0, s1] = range ?? [0, f.L];
-  if (parapet) box(b, f, s0, s1, parapet[0], parapet[1], -0.3, 0, "brickBrown");
-  coping(b, f, s0, s1, cop.band, cop.top, cop.dentil);
+  // the parapet up to the coping's foot: the coping's band, deeper than it, stands in front of it from there
+  // (where it ran on up to the band's top, its top and its ends lay in the band's)
+  if (parapet) box(b, f, s0, s1, parapet[0], Math.min(parapet[1], cop.band[0]), -0.3, 0, "brickBrown");
+  const flush = (s) => pilasters.some((p) => Math.abs(p.s - p.w / 2 - s) < 1e-6 || Math.abs(p.s + p.w / 2 - s) < 1e-6);
+  coping(b, f, s0, s1, cop.band, cop.top, cop.dentil, [flush(s0), flush(s1)]);
   for (const p of pilasters) pilaster(b, f, p.s, p.w, p.d, foot, cop.band[1], p.tip);
   // each bay between two pilasters (or a pilaster and the face's end)
   const edges = [s0, ...pilasters.flatMap((p) => [p.s - p.w / 2, p.s + p.w / 2]), s1];
@@ -153,11 +162,12 @@ export function front(b) {
     frieze: { y0: fp.frieze[0] - 0.12, y1: pDentil[0], ys: fp.frieze[1] - 0.17, w: 0.34, pitch: 0.58 },
   });
   // the two blocks: brick to the coping, a cream coping with merlons round their fronts, a spire at each
-  // front corner
+  // front corner (the brick's top 1 cm under the coping's, which it lay in)
   for (const k of [bl, br]) {
-    box(b, P, k.s0, k.s1, -0.6, pBand[1], -0.05, k.d, "brickBrown");
+    box(b, P, k.s0, k.s1, -0.6, pBand[1] - 0.01, -0.05, k.d, "brickBrown");
     box(b, P, k.s0 - 0.05, k.s1 + 0.05, pBand[0], pBand[1], k.d - 0.6, k.d + 0.1, "render");
-    box(b, P, k.s0 - 0.03, k.s1 + 0.03, pDentil[0], pDentil[1], k.d - 0.3, k.d + 0.06, "render");
+    // (the dentils' back no further in than the porch's face: behind it, their top lay in the parapet's)
+    box(b, P, k.s0 - 0.03, k.s1 + 0.03, pDentil[0], pDentil[1], Math.max(k.d - 0.3, 0), k.d + 0.06, "render");
     for (const sp of k.spires) spire(b, P, sp, k.d - 0.3, fp.spire, fp.spire, pBand[1], k.tip);
   }
   const PE = face([W.porchEast, W.porchFront], W.eastFront[0]);
@@ -205,7 +215,8 @@ export function front(b) {
   // between the porch's blocks, then risers down south to the street between two cream walls. Their foot goes
   // down below the street, as the porch's does
   const st = fp.steps, th = d.threshold, foot = -1.0, [sx0, sx1] = st.x;
-  b.box(st.walls[0][0], st.walls[1][1], foot, th, W.porchFront, st.landing, "brickBrown");
+  // (between the walls, whose faces and feet its ends lay in where it ran on under them)
+  b.box(st.walls[0][1], st.walls[1][0], foot, th, W.porchFront, st.landing, "brickBrown");
   const tread = (st.foot - st.landing) / st.n, rise = th / st.n; // down to the street at the frame's ground
   for (let i = 1; i < st.n; i++) b.box(sx0, sx1, foot, th - rise * i, st.landing + tread * (i - 1), st.landing + tread * i, "brickBrown");
   for (const [w0, w1] of st.walls) {

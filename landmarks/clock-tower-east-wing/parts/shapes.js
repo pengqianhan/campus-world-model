@@ -76,7 +76,8 @@ function window_(b, w, front) {
   for (let k = 1; k <= n; k++) { const yy = y + frame + ((spring - frame * 1.5) * k) / (n + 1); list.push([x - W / 2, x + W / 2, yy - 0.015, yy + 0.015, zg, zg + 0.02]); }
   b.add(boxesGeometry(list), "paint");
   // the sill, of the wall's stone
-  b.box(x - W / 2 - 0.1, x + W / 2 + 0.1, y - 0.12, y, front - 0.05, front + 0.08, "dressed");
+  // (from the wall's face out: inside the opening its top lay in the opening's floor)
+  b.box(x - W / 2 - 0.1, x + W / 2 + 0.1, y - 0.12, y, front, front + 0.08, "dressed");
 }
 
 /** A beam of section w x h from point p to point q (each [x, y, z]), its width horizontal. */

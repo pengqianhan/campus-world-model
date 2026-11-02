@@ -182,7 +182,8 @@ export function body(b) {
   // the back, sloping up to it; flat between, under it
   const street = clip(plan, 1, 6.0, "above"), back = clip(plan, 1, -6.0, "below");
   const middle = clip(clip(plan, 1, 6.0, "below") ?? [], 1, -6.0, "above");
-  const y0 = M.body.eave - 0.1;
+  // from the eaves up, on the walls' top (where they began 0.1 m lower, their sides lay in the walls' faces)
+  const y0 = M.body.eave;
   slopedPrism(b, street && clip(street, 0, R.flatFrom, "below"), y0, (x, z) => R.street[0] + R.street[1] * z, "roofGrey");
   slopedPrism(b, street && clip(street, 0, R.flatFrom, "above"), y0, () => R.flat, "roofGrey");
   slopedPrism(b, back, y0, (x, z) => R.back[0] + R.back[1] * z, "roofGrey");
@@ -206,10 +207,11 @@ export function body(b) {
   face(b, from, LEN, 0.0, DEEP, FOOT, BASE.tiles, "timber");
   face(b, from, LEN, 0.0, DEEP + 0.01, BASE.tiles, BASE.white, "paint");
   face(b, from, LEN, 0.0, DEEP + 0.04, BASE.white, BASE.sill, "render");
-  // the steps up to the doors, grey: a landing in the opening at the threshold, two steps out to STEPS_OUT
+  // the steps up to the doors, grey: a landing in the opening at the threshold (between the base's ends, whose
+  // faces it would lie in if it ran on into them), two steps out to STEPS_OUT
   for (const [d, s] of [[OPEN.C, OPEN.C.s], [OPEN.A, OPEN.A.s]]) {
     const rise = (d.foot - FOOTPATH) / 3, w = 0.1;
-    face(b, s[0] - w, s[1] + w, 0.0, DEEP, FOOT, d.foot, "grey");
+    face(b, s[0], s[1], 0.0, DEEP, FOOT, d.foot, "grey");
     face(b, s[0] - w, s[1] + w, DEEP, DEEP + (STEPS_OUT - DEEP) / 2, FOOT, d.foot - rise, "grey");
     face(b, s[0] - w, s[1] + w, DEEP + (STEPS_OUT - DEEP) / 2, STEPS_OUT, FOOT, d.foot - 2 * rise, "grey");
   }
@@ -241,12 +243,14 @@ export function panels(b) {
   panelsBetween(b, ROWS[1][1], FACE_TOP, []);
 }
 
-/** A window on the windows' plane from s0 to s1 and y0 to y1: its pane, in a red frame. */
-function window(b, s0, s1, y0, y1) {
-  face(b, s0, s1, 0.0, 0.02, y0, y1, "glass");
+/** A window on the windows' plane from s0 to s1 and y0 to y1: its pane, in a red frame. The pane's edges stop
+ * half the frame's width inside it, under the frame, so that none of its faces lies in one of the frame's; where
+ * the opening's floor stands at y0 (`lift` 0.01), the sill stands 1 cm above it, not in its plane. */
+function window(b, s0, s1, y0, y1, lift = 0) {
+  face(b, s0 + 0.035, s1 - 0.035, 0.0, 0.02, y0 + 0.035, y1 - 0.035, "glass");
   face(b, s0, s0 + 0.07, -0.02, 0.08, y0, y1, "roofTile");
   face(b, s1 - 0.07, s1, -0.02, 0.08, y0, y1, "roofTile");
-  face(b, s0, s1, -0.02, 0.1, y0 - 0.08, y0, "roofTile");
+  face(b, s0, s1, -0.02, 0.1, y0 - 0.08, y0 + lift, "roofTile");
   face(b, s0, s1, -0.02, 0.08, y1 - 0.07, y1, "roofTile");
 }
 
@@ -254,9 +258,10 @@ function window(b, s0, s1, y0, y1) {
 export function windows(b) {
   ROWS.forEach(([y0, y1], row) => {
     const half = WINDOWS[row].wide / 2;
-    for (const c of centres(row).out) window(b, c - half, c + half, y0, y1);
+    // the ground row's openings stand on the sill band (BASE.sill), the upper row's on their own sills
+    for (const c of centres(row).out) window(b, c - half, c + half, y0, y1, row === 0 ? 0.01 : 0);
   });
-  window(b, TALL.s[0], TALL.s[1], TALL.y[0], TALL.y[1]);
+  window(b, TALL.s[0], TALL.s[1], TALL.y[0], TALL.y[1], 0.01);
   // C: the leaf, and the glazed light over it in a red frame
   const C = OPEN.C;
   face(b, C.s[0], C.s[1], -0.02, 0.04, C.foot, C.leaf, "timber");
@@ -264,9 +269,11 @@ export function windows(b) {
   // B: the louvre's dark blades on a dark backing (on the wall's face, not in its plane) and the green hood
   // under it
   const B = OPEN.B;
+  // (the blades run 1 cm into the opening's sides, past the backing's ends; the hood's back stands 1 cm out
+  // from the wall, where its ends, 3 cm into the sides, lay in the panels' backs)
   face(b, B.s[0], B.s[1], 0.0, 0.01, B.louvre[0], B.louvre[1], "iron");
-  for (let y = B.louvre[0] + 0.06; y < B.louvre[1] - 0.04; y += 0.12) face(b, B.s[0], B.s[1], -0.05, 0.03, y, y + 0.03, "roofGrey");
-  face(b, B.s[0] - 0.03, B.s[1] + 0.03, 0.0, DEEP + 0.08, B.hood[0], B.hood[1], "roofGreen");
+  for (let y = B.louvre[0] + 0.06; y < B.louvre[1] - 0.04; y += 0.12) face(b, B.s[0] - 0.01, B.s[1] + 0.01, -0.05, 0.03, y, y + 0.03, "roofGrey");
+  face(b, B.s[0] - 0.03, B.s[1] + 0.03, 0.01, DEEP + 0.08, B.hood[0], B.hood[1], "roofGreen");
   // A: the leaf with its glazed panel (the pane on the wall's face, behind the leaf's), under a red head
   // (the leaf's material: OPEN)
   const A = OPEN.A, p = A.pane;
@@ -277,13 +284,14 @@ export function windows(b) {
   face(b, p.s[0], p.s[1], 0.0, 0.02, p.y[0], p.y[1], "glass");
   face(b, A.s[0], A.s[1], -0.02, 0.06, A.leaf, A.head, "roofTile");
   // the band of windows under the canopy: dark glass over the panels' top from its red post at the
-  // north-west end to the south-east corner, red mullions
-  face(b, BAND.from, LEN, 0.0, 0.02, FACE_TOP - 0.05, BAND.y1, "glass");
-  face(b, BAND.from, BAND.from + BAND.post, 0.0, 0.07, FACE_TOP - 0.05, BAND.y1, "roofTile");
+  // north-west end to the south-east corner, red mullions: the glass from the panels' top, the post and the
+  // mullions from its face out (so that no face of either lies in one of the other's or the panels')
+  face(b, BAND.from, LEN, 0.0, 0.02, FACE_TOP, BAND.y1, "glass");
+  face(b, BAND.from, BAND.from + BAND.post, 0.02, 0.07, FACE_TOP - 0.05, BAND.y1, "roofTile");
   const n = Math.floor((LEN - 0.3 - BAND.first) / BAND.bay);
   const back = Math.floor((BAND.first - BAND.from - BAND.post - 0.3) / BAND.bay);
   for (let k = -back; k <= n; k++) {
     const s = BAND.first + k * BAND.bay;
-    face(b, s - 0.04, s + 0.04, 0.0, 0.07, FACE_TOP - 0.05, BAND.y1, "roofTile");
+    face(b, s - 0.04, s + 0.04, 0.02, 0.07, FACE_TOP - 0.05, BAND.y1, "roofTile");
   }
 }

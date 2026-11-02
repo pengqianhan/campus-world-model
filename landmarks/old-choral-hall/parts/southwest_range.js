@@ -59,9 +59,11 @@ const FOOT = -0.6;                       // walls and plinths reach down to here
 function steelWindow(acc, u0, u1, y0, y1, { set = 0.12, cols = 4, lo = 4, hi = 2, tr = 0.7, reveal = "render", mull = 0.06 } = {}) {
   const d = -set, f = 0.05, bar = 0.022;
   acc.quad("glassPale", u0, u1, y0, y1, d - 0.02);
-  acc.box(reveal, u0 - 0.03, u0, y0, y1, d - 0.02, 0.0);
-  acc.box(reveal, u1, u1 + 0.03, y0, y1, d - 0.02, 0.0);
-  acc.box(reveal, u0 - 0.03, u1 + 0.03, y1, y1 + 0.03, d - 0.02, 0.0);
+  // (the reveals stop 1 cm behind the wall's face and run 1 cm down past the sill, inside the wall: in its face and
+  // at the sill they lay in the wall's faces)
+  acc.box(reveal, u0 - 0.03, u0, y0 - 0.01, y1, d - 0.02, -0.01);
+  acc.box(reveal, u1, u1 + 0.03, y0 - 0.01, y1, d - 0.02, -0.01);
+  acc.box(reveal, u0 - 0.03, u1 + 0.03, y1, y1 + 0.03, d - 0.02, -0.01);
   acc.box("paint", u0, u0 + f, y0, y1, d - 0.02, d + 0.02);
   acc.box("paint", u1 - f, u1, y0, y1, d - 0.02, d + 0.02);
   acc.box("paint", u0, u1, y1 - f, y1, d - 0.02, d + 0.02);
@@ -129,8 +131,9 @@ function range(acc) {
   const holes = [];
   for (let k = 0; k < 10; k++) {
     const u = bay(k), g0 = u - GLASS_W / 2, g1 = u + GLASS_W / 2;
-    // ground floor: the window in its architrave
-    holes.push([g0, g1, H.gf.glass[0], H.gf.glass[1]]);
+    // ground floor: the window in its architrave (the brick's opening 1 cm wider and higher than the glass, inside
+    // the cream reveals: at the glass's edge, the brick's sides lay in the reveals')
+    holes.push([g0 - 0.01, g1 + 0.01, H.gf.glass[0], H.gf.glass[1] + 0.01]);
     steelWindow(acc, g0, g1, H.gf.glass[0], H.gf.glass[1], { cols: 4, lo: 4, hi: 2, tr: 0.68 });
     gfCase(acc, u, GLASS_W);
     // first floor: the window on its sill block on the band
@@ -144,8 +147,9 @@ function range(acc) {
   // the plinth: cream, from below the footpath to the floor, a moulded top
   acc.box("render", r0, r1, FOOT, H.plinth - 0.12, -0.3, 0.07);
   acc.box("render", r0, r1, H.plinth - 0.12, H.plinth, -0.3, 0.1);
-  // the first floor's sill band, and the cream band through the brick at the level of the upper panes
-  acc.box("render", r0, r1, H.band[0], H.band[1], -0.1, 0.06);
+  // the first floor's sill band (its ends 1 cm into the pavilions' pilasters, past the wall's), and the cream band
+  // through the brick at the level of the upper panes
+  acc.box("render", r0 - 0.01, r1 + 0.01, H.band[0], H.band[1], -0.1, 0.06);
   const up = H.ff.upper, bh = [];
   for (let k = 0; k < 10; k++) bh.push([bay(k) - GLASS_W / 2 - 0.04, bay(k) + GLASS_W / 2 + 0.04, up[0], up[1]]);
   wallWithHoles(acc, "render", r0, r1, up[0], up[1], 0, 0.03, bh);
@@ -178,16 +182,18 @@ function pavilion(b, acc, P, { door = false, cornerRight = false } = {}) {
   // the bay between the pilasters, brick, with its openings
   const b0 = u0 + pil, b1 = u1 - pil;
   const winW = 1.21 * S, w0 = c - winW / 2, w1 = c + winW / 2;
-  const holes = [[w0, w1, H.ff.sill, H.arch[1]]];
+  // (the windows' openings in the brick 1 cm wider, and the lower one 1 cm higher, than the windows, inside their
+  // cream reveals and surrounds, as in the range)
+  const holes = [[w0 - 0.01, w1 + 0.01, H.ff.sill, H.arch[1]]];
   if (door) holes.push([c - 0.8, c + 0.8, base, 5.9]);
-  else holes.push([w0, w1, H.gf.glass[0], H.gf.glass[1]]);
+  else holes.push([w0 - 0.01, w1 + 0.01, H.gf.glass[0], H.gf.glass[1] + 0.01]);
   wallWithHoles(acc, "brick", b0, b1, base, H.arch[1], bayD - 0.3, bayD, holes);
-  // the bands across the bay (as the range's), set on the recessed face
-  acc.box("render", b0, b1, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
+  // the bands across the bay (as the range's), set on the recessed face, 1 cm past its ends
+  acc.box("render", b0 - 0.01, b1 + 0.01, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
   acc.box("render", w0 - 0.15, w1 + 0.15, H.band[1], H.ff.sill, bayD, bayD + 0.12);
   // the upper window, three lights, to the frieze, in a cream surround (sides and sill; the frieze is its head)
-  acc.box("render", w0 - 0.18, w0, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
-  acc.box("render", w1, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w0 - 0.18, w0, H.ff.sill - 0.01, H.arch[1] + 0.01, bayD - 0.05, bayD + 0.05); // (1 cm past the brick's sill and top)
+  acc.box("render", w1, w1 + 0.18, H.ff.sill - 0.01, H.arch[1] + 0.01, bayD - 0.05, bayD + 0.05);
   acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill - 0.08, H.ff.sill + 0.02, bayD - 0.05, bayD + 0.08);
   acc.box("void", w0, w1, H.ff.sill, H.arch[1], bayD - 0.3, bayD - 0.2);   // behind the glass (0.14 in)
   {
@@ -200,7 +206,7 @@ function pavilion(b, acc, P, { door = false, cornerRight = false } = {}) {
     const sub = new Acc();
     gfCase(sub, c, 1.6, { door: true });
     sub.box("void", c - 0.8, c + 0.8, base, 5.9, -0.3, -0.12);
-    sub.box("paint", c - 0.78, c + 0.78, base, 5.25, -0.14, -0.1);
+    sub.box("paint", c - 0.78, c + 0.78, base, 5.25, -0.12, -0.1); // (its back on the dark inside's face, not in it)
     sub.quad("glassPale", c - 0.68, c - 0.08, base + 1.0, 5.0, -0.095);
     sub.quad("glassPale", c + 0.08, c + 0.68, base + 1.0, 5.0, -0.095);
     sub.box("paint", c - 0.02, c + 0.02, base, 5.25, -0.1, -0.08);
@@ -220,7 +226,7 @@ function pavilion(b, acc, P, { door = false, cornerRight = false } = {}) {
   }
   // the giant columns in antis
   for (const u of [cl, cr]) {
-    column(b, acc, u, d - r, base, H.cap, r, { seg: 18, top: 0.88 });
+    column(b, acc, u, d - r, base - 0.01, H.cap, r, { seg: 18, top: 0.88 }); // (from 1 cm down in its pedestal: its plinth reaches into the bay's brick, whose foot it lay in)
     acc.box("render", u - r * 1.25, u + r * 1.25, foot, base, d - r * 2.3, d + 0.06); // its pedestal block
   }
   // the entablature blocks over each pilaster-and-column pair, the frieze across the pavilion
@@ -295,11 +301,12 @@ function graftonFace(b) {
     acc.box("render", a, e, foot, H.arch[1], -0.3, d - 0.05);
   }
   const b0 = xc + pil, b1 = x1 - pil, winW = Math.min(1.21 * S, b1 - b0 - 2 * r - 0.6), w0 = c - winW / 2, w1 = c + winW / 2;
-  wallWithHoles(acc, "brick", b0, b1, base, H.arch[1], bayD - 0.3, bayD, [[w0, w1, H.ff.sill, H.arch[1]], [w0, w1, H.gf.glass[0], H.gf.glass[1]]]);
-  acc.box("render", b0, b1, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
+  // (the openings and the band as in the pavilions)
+  wallWithHoles(acc, "brick", b0, b1, base, H.arch[1], bayD - 0.3, bayD, [[w0 - 0.01, w1 + 0.01, H.ff.sill, H.arch[1]], [w0 - 0.01, w1 + 0.01, H.gf.glass[0], H.gf.glass[1] + 0.01]]);
+  acc.box("render", b0 - 0.01, b1 + 0.01, H.band[0], H.band[1], bayD - 0.1, bayD + 0.06);
   acc.box("render", w0 - 0.15, w1 + 0.15, H.band[1], H.ff.sill, bayD, bayD + 0.12);
-  acc.box("render", w0 - 0.18, w0, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
-  acc.box("render", w1, w1 + 0.18, H.ff.sill, H.arch[1], bayD - 0.05, bayD + 0.05);
+  acc.box("render", w0 - 0.18, w0, H.ff.sill - 0.01, H.arch[1] + 0.01, bayD - 0.05, bayD + 0.05); // (1 cm past the brick's sill and top)
+  acc.box("render", w1, w1 + 0.18, H.ff.sill - 0.01, H.arch[1] + 0.01, bayD - 0.05, bayD + 0.05);
   acc.box("render", w0 - 0.18, w1 + 0.18, H.ff.sill - 0.08, H.ff.sill + 0.02, bayD - 0.05, bayD + 0.08);
   acc.box("void", w0, w1, H.ff.sill, H.arch[1], bayD - 0.3, bayD - 0.2);
   acc.box("void", w0, w1, H.gf.glass[0], H.gf.glass[1], bayD - 0.3, bayD - 0.2);
@@ -314,7 +321,7 @@ function graftonFace(b) {
   sub.box("render", w0 - 0.24, w1 + 0.24, H.gf.sill, H.gf.glass[0], 0, 0.15);
   shift(sub, acc, bayD);
   for (const u of [cl, cr]) {
-    column(b, acc, u, d - r, base, H.cap, r, { seg: 18, top: 0.88 });
+    column(b, acc, u, d - r, base - 0.01, H.cap, r, { seg: 18, top: 0.88 }); // (from 1 cm down in its pedestal: its plinth reaches into the bay's brick, whose foot it lay in)
     acc.box("render", u - r * 1.25, u + r * 1.25, foot, base, d - r * 2.3, d + 0.06);
   }
   for (const [a, e] of [[xc, cl + r * 1.3], [cr - r * 1.3, x1]]) {
@@ -342,7 +349,9 @@ function backEnd(b) {
   // e8T_ (2022-09) shows, next to the pavilion's pilaster, a first-floor window like the range's and a
   // smaller ground-floor window in a cream surround
   const wu = ub - pil - 1.5, g0 = wu - GLASS_W / 2, g1 = wu + GLASS_W / 2, s0 = wu - 0.5, s1 = wu + 0.5, sy = [5.6, H.gf.glass[1]];
-  wallWithHoles(acc, "brick", ua, ub - pil, H.plinth, H.cornice[0], -0.4, 0, [[g0, g1, H.ff.sill, H.ff.top], [s0, s1, sy[0], sy[1]]]);
+  // (the brick up to the frieze's foot, and the small window's opening 1 cm wider and
+  // higher, inside its reveals, as in the range)
+  wallWithHoles(acc, "brick", ua, ub - pil, H.plinth, H.arch[1], -0.4, 0, [[g0, g1, H.ff.sill, H.ff.top], [s0 - 0.01, s1 + 0.01, sy[0], sy[1] + 0.01]]);
   steelWindow(acc, g0, g1, H.ff.sill, H.ff.top, { cols: 4, lo: 4, hi: 2, tr: 0.68, reveal: "brick" });
   acc.box("render", g0 - 0.12, g1 + 0.12, H.band[1], H.ff.sill - 0.08, 0, 0.1);
   acc.box("render", g0 - 0.16, g1 + 0.16, H.ff.sill - 0.08, H.ff.sill, 0, 0.15);
@@ -352,7 +361,7 @@ function backEnd(b) {
   acc.box("render", s0 - 0.16, s1 + 0.16, sy[1], sy[1] + 0.16, 0, 0.08);
   acc.box("render", s0 - 0.22, s1 + 0.22, sy[0] - 0.22, sy[0], 0, 0.14);
   acc.box("render", ua, ub, FOOT, H.plinth, -0.3, 0.1);
-  acc.box("render", ua, ub - pil, H.band[0], H.band[1], -0.1, 0.06);
+  acc.box("render", ua + 0.01, ub - pil + 0.01, H.band[0], H.band[1], -0.1, 0.06);
   wallWithHoles(acc, "render", ua, ub - pil, H.ff.upper[0], H.ff.upper[1], 0, 0.03, [[g0 - 0.04, g1 + 0.04, H.ff.upper[0], H.ff.upper[1]]]);
   rusticated(acc, ub - pil, ub, H.plinth, H.cap - 0.35, PAV_D, { course: 0.42, joint: 0.07, deep: 0.05 });
   acc.box("render", ub - pil, ub, H.cap - 0.35, H.arch[1], 0, PAV_D + 0.06);

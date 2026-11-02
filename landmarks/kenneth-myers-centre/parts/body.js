@@ -51,7 +51,8 @@ export function body(b) {
   const westX = (z) => WW0[0] + ((z - WW0[1]) / (WW1[1] - WW0[1])) * (WW1[0] - WW0[0]);
   prism(b, [WW1, [e1[0], W.back], [e1[0] - t, W.back + t], [westX(W.back + t) + t, W.back + t]], M.roof, M.parapet, "brickBrown");
   // the west side's: no photograph shows it and the LiDAR there is the works': as high as the west part's
-  // coping band, as the east side's (7.83) stands under its face's (7.95) (estimated)
+  // coping band, as the east side's (7.83) stands under its face's (7.95) (estimated); 1 cm under it, as its end
+  // runs under the band's back, whose top it lay in
   const wz = WF0[1] - 0.3;
-  prism(b, [WW1, [westX(W.back + t) + t, W.back + t], [westX(wz) + t, wz], [westX(wz), wz]], M.roof, F.west.band[1], "brickBrown");
+  prism(b, [WW1, [westX(W.back + t) + t, W.back + t], [westX(wz) + t, wz], [westX(wz), wz]], M.roof, F.west.band[1] - 0.01, "brickBrown");
 }

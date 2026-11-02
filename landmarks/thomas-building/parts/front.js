@@ -39,8 +39,8 @@ const inAny = (u0, u1, list) => list.some(([a, b]) => u1 > a + 1e-6 && u0 < b - 
 // Toward the north-east end the ground storey's sills stand below the door's ground (y = 0), on the plinth.
 // The site's foot check reads each material's lowest points as a footing (tests/landmarks.test.ts), so the
 // glass, the mullions and the panels there run on down inside the plinth to FOOT, where nothing shows them,
-// as the walls run down into the ground; the sills' frames stay at G.plinth.
-const sunk = (pv, y) => (pv === VG ? FOOT : y);
+// as the walls run down into the ground (and past it by 1, 2 and 3 cm, so that no two of their feet and the
+// plinth's lie in one plane); the sills' frames stay at G.plinth.
 
 export function front(b) {
   seed = 110;
@@ -53,36 +53,46 @@ export function front(b) {
     b.box(UW, U1, z0, z1, F.wrapTo, VW, C);
     if (z1 !== G.plinth) { b.box(G.from, U1, z0, z1, VW, V1, C); continue; }
     // the plinth toward the north-east end, lower before the white door, which comes down to the ground
+    // (the middle piece 1 cm into its neighbours, so that its ends lie in none of the white door's faces)
     const [d0, d1] = G.door.u;
     b.box(G.from, d0, z0, z1, VW, V1, C);
-    b.box(d0, d1, z0, G.door.foot, VW, V1, C);
+    b.box(d0 - 0.01, d1 + 0.01, z0, G.door.foot, VW, V1, C);
     b.box(d1, U1, z0, z1, VW, V1, C);
   }
-  // the plain end at the south-west and the piers, from the plinth to the top band
-  b.box(U0, U0 + F.pierWidth, F.plinth, top, VW, V1, C);
-  F.piers.forEach((p, i) => b.box(p, p + F.pierWidths[i], plinthAt(p), top, VW, V1, C));
+  // the plain end at the south-west and the piers, from the plinth to the top band (1 cm into each, so that
+  // their tops and feet lie in none of the frames')
+  b.box(U0, U0 + F.pierWidth, F.plinth, top + 0.01, VW, V1, C);
+  F.piers.forEach((p, i) => b.box(p, p + F.pierWidths[i], plinthAt(p) - 0.01, top + 0.01, VW, V1, C));
   // toward the north-east end the ground storey's plane, VG, stands in front of the range's wall: fill
-  // between them, along the face and round the corner; its posts between the windows, on that plane
+  // between them, along the face and round the corner; its posts between the windows, on that plane (1 cm
+  // into the plinth and the band, past the sill's foot and the head's top)
   b.box(G.from, UG, G.plinth, G.band, VW, VG - 0.01, C);
   b.box(UW, UG - 0.01, G.plinth, G.band, F.wrapTo, VG, C);
-  for (const [a, c, t] of G.posts) b.box(a, c, G.plinth, G.band, VG, VG + t, C);
+  for (const [a, c, t] of G.posts) b.box(a, c, G.plinth - 0.01, G.band + 0.01, VG, VG + t, C);
 
+  // The glass is a skin 2 cm thick, 1 cm in front of the range's wall and the piers' backs; the frames stand from
+  // 2 cm in front of them, through the glass, to `d`; the glass's edges stop inside the frames, the plain end, the
+  // fill or the corner's glass, and below the ground storey on VG it and the mullions run down past FOOT by 1 and
+  // 2 cm: so no face of the glass, the frames or the concrete lies in a face of another of them. What shows, the
+  // glass's face and the frames', stands where it stood.
   const d = F.frameDepth, w = F.mullion.width, fw = F.frame;
   F.rows.forEach((row, r) => {
     const split = F.dark.row === r ? F.dark.top : null;
     for (const [ua, ub, y0, y1, pv] of spans(r, U0 + F.pierWidth, UW + 0.03)) {
       // the glass, a skin over the range's wall at the windows' plane; the dark panes are glass with no blind
       // (the kit's dark glass reads 21 in the upper view against the photograph's 59, the pale glass about 70)
-      b.box(ua, ub, sunk(pv, y0), y1, pv, pv + 0.03, "glassPale");
+      const ga = ua === G.from ? ua + 0.02 : ua - 0.01, gb = ub === G.from || ub === UG ? ub + 0.01 : ub - 0.005;
+      b.box(ga, gb, pv === VG ? FOOT - 0.01 : y0 + fw / 2, y1 - fw / 2, pv + 0.01, pv + 0.03, "glassPale");
       // the frames' horizontals: sill, head, transoms
-      const ue = pv === VW ? Math.min(ub, UW + d) : ub;
-      for (const y of [y0, y1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(ua, ue, y, y + fw, pv, pv + d, "frameRed");
+      const ua2 = ua === G.from ? ua + 0.01 : ua;
+      const ue = ub === G.from ? ub + 0.01 : ub === UG ? ub + 0.02 : pv === VW ? Math.min(ub, UW + d) - 0.01 : ub;
+      for (const y of [y0, y1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(ua2, ue, y, y + fw, pv + 0.02, pv + d, "frameRed");
     }
     // round the corner: the ground storey's heights and plane there are G's
     const [e0, e1, eu] = r === 0 ? [G.plinth, G.band, UG] : [...row, UW];
     const ev = r === 0 ? VG : VW;
-    b.box(eu, eu + 0.03, sunk(ev, e0), e1, F.wrapTo, ev + 0.03, "glassPale");
-    for (const y of [e0, e1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(eu, eu + d, y, y + fw, F.wrapTo, ev + d, "frameRed");
+    b.box(eu + 0.01, eu + 0.03, ev === VG ? FOOT - 0.01 : e0 + fw / 2, e1 - fw / 2, F.wrapTo - 0.01, ev + 0.03, "glassPale");
+    for (const y of [e0, e1 - fw, F.transoms[r], F.transoms2[r]].filter((y) => y != null)) b.box(eu + 0.02, eu + d, y, y + fw, F.wrapTo, ev + d, "frameRed");
     // the panes' tiers between sill, transoms and head; in each pane a blind down (light) or up (the
     // glass), by a seeded draw at the row's share of light panes (FACADE.blinds)
     const [y0, y1] = row;
@@ -101,7 +111,7 @@ export function front(b) {
       let last = a;
       for (let u = start; u + w <= bb + 1e-6; u += F.mullion.step) {
         if (r === 0 && inAny(u, u + w, [...G.panels, ...G.posts])) continue;
-        for (const [, , m0, m1, pv] of spans(r, u, u + w)) b.box(u, u + w, sunk(pv, m0), m1, pv, pv + d, "frameRed");
+        for (const [, , m0, m1, pv] of spans(r, u, u + w)) b.box(u, u + w, pv === VG ? FOOT - 0.02 : m0, m1, pv + 0.02, pv + d, "frameRed");
         if (u - last > 0.1) blind(last, u, 0, 0, true);
         last = u + w;
       }
@@ -110,14 +120,15 @@ export function front(b) {
     // round the corner, from the corner back to the wrap's end, at the same spacing (estimated)
     let last = ev;
     for (let v = ev - F.mullion.step; v - w >= F.wrapTo; v -= F.mullion.step) {
-      b.box(eu, eu + d, sunk(ev, e0), e1, v - w, v, "frameRed");
+      b.box(eu + 0.02, eu + d, ev === VG ? FOOT - 0.02 : e0, e1, v - w, v, "frameRed");
       blind(0, 0, v, last, false);
       last = v - w;
     }
   });
   // the ground storey's white door and white-framed louvre toward the north-east end (oWaF's door view),
   // drawn as light panels a little in front of the glass
-  for (const [a, c] of G.panels) b.box(a, c, FOOT, G.band - fw, VG + 0.03, VG + 0.06, "paint");
+  // (down past FOOT by 3 cm, below the glass's and the mullions' feet)
+  for (const [a, c] of G.panels) b.box(a, c, FOOT - 0.03, G.band - fw, VG + 0.03, VG + 0.06, "paint");
 }
 
 // a seeded generator (as the kit's rng), so that the same blinds are drawn every time

@@ -22,20 +22,26 @@ function slab(z0, z1, cut, t) {
   return [...top, ...bottom.reverse()];
 }
 
-/** The walls' section: from y0 up to the roof's underside between the walls. */
+/** The walls' section: from y0 up to the roof's underside between the walls, on it exactly: through the slab's own
+ * corners (slab() above), and straight between them as it is. Where the walls ran 1 cm up into the slab, their
+ * ends lay in the slab's ends at x 16.0 and 18.6. */
 function walls(y0, cut) {
-  const [z0, z1] = M.top.z, pts = [[z0, y0]];
-  for (let i = 0; i <= PIECES; i++) {
-    const z = z0 + (z1 - z0) * (i / PIECES);
-    pts.push([z, topRoof(z, cut) - SLAB + 0.01]);
-  }
-  pts.push([z1, y0]);
+  const [z0, z1] = M.top.z, [e0, e1] = M.top.eaves;
+  const zAt = (i) => e0 + (e1 - e0) * (i / PIECES), under = (z) => topRoof(z, cut) - SLAB;
+  const on = (z) => {
+    const t = ((z - e0) / (e1 - e0)) * PIECES, i = Math.min(PIECES - 1, Math.floor(t));
+    return under(zAt(i)) + (t - i) * (under(zAt(i + 1)) - under(zAt(i)));
+  };
+  const pts = [[z0, y0], [z0, on(z0)]];
+  for (let i = 0; i <= PIECES; i++) if (zAt(i) > z0 && zAt(i) < z1) pts.push([zAt(i), under(zAt(i))]);
+  pts.push([z1, on(z1)], [z1, y0]);
   return pts;
 }
 
 export function top(b) {
-  const T = M.top, cut = T.cut, y0 = M.roofs.flat - 0.1;
-  // the walls, from inside the roofs below to the curved roof, and to its cut crown past x 16.0
+  const T = M.top, cut = T.cut, y0 = M.roofs.flat;
+  // the walls, from the roofs below (on the flat one, where they began 0.1 m lower, their faces lay in its sides;
+  // in the sloping ones beside it) to the curved roof, and to its cut crown past x 16.0
   along(b, walls(y0, Infinity), T.x[0], cut.from, "paint");
   along(b, walls(y0, cut.y), cut.from, T.x[1], "paint");
   // the roof: its curve from eave to eave, overhanging the walls, and its cut crown at the north-west end

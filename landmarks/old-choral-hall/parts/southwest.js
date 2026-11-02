@@ -32,6 +32,7 @@ export function southwest(b) {
   b.add(g, "roofGrey");
   b.matrix = null;
   // the corner pavilion's mass behind its Grafton Road face (view frame), from the range back to x -10.3,
-  // stopping behind the face's recessed bay (0.6 m in, 0.3 m thick) so that its windows show
-  b.box(-17.6, -10.3, -1.2, 13.95, 15.6, 21.1, "render");
+  // stopping behind the face's recessed bay (0.6 m in, 0.3 m thick) so that its windows show; under the roof, 1 cm
+  // below the brick mass's top, which it lay in
+  b.box(-17.6, -10.3, -1.2, 13.94, 15.6, 21.1, "render");
 }

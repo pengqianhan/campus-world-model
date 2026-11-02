@@ -12,16 +12,20 @@ export function tower(b) {
   // the brick core: the outline with the wing's faces set back by the balconies' depth (parts/wing.js), and
   // the slot's recess cut into its south-west corner (parts/slot.js)
   const plan = notched(M.tower.plan, M.slot.corner).plan;
-  prism(b, inset(plan, M.wing.edges, M.wing.deep), FOOT, M.tower.top, "brickTan");
+  // the walls up to the roof slab's underside: the slab's own sides above (where the walls ran on up to
+  // M.tower.top, their faces lay in the slab's sides, behind the top band)
+  prism(b, inset(plan, M.wing.edges, M.wing.deep), FOOT, M.tower.top + 0.02 - 0.3, "brickTan");
   roof(b, plan, M.tower.top + 0.02, 0.3, "roofGrey");
 }
 
 export function shaft(b) {
   const plan = notched(M.shaft.plan, M.slot.shaftCorner).plan;
-  prism(b, plan, M.tower.top, M.shaft.top, "brickTan");
+  // from the tower's roof's top to its own roof slab's underside, and its parapet from that slab's top, so that
+  // no face of the brick lies in a side of either slab
+  prism(b, plan, M.tower.top + 0.03, M.shaft.top - 0.3, "brickTan");
   roof(b, plan, M.shaft.top, 0.3, "roofGrey");
   // its parapet, standing on the walls' line, inside the outline
-  for (let i = 0; i < plan.length; i++) edgeBox(b, plan, i, 0, 1, -0.25, 0, M.shaft.top, M.shaft.parapet, "brickTan");
+  for (let i = 0; i < plan.length; i++) edgeBox(b, plan, i, 0, 1, -0.25, 0, M.shaft.top + 0.01, M.shaft.parapet, "brickTan");
 }
 
 /** The floor bands, cream as MGAo's photograph shows them (round 1 drew them white): on the tower to its

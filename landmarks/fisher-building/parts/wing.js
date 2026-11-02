@@ -16,7 +16,8 @@ export function wing(b) {
     // the pale wall behind the balconies, a skin over the brick core
     edgeBox(b, plan, i, 0, 1, -deep, -deep + 0.04, f, M.tower.top - fascia, "render");
     for (let y = f; y < M.tower.top - fascia; y += f) {
-      edgeBox(b, plan, i, -0.02, 1.02, -deep, 0.0, y - 0.15, y + 0.15, "paint");
+      // (its back 1 cm into the skin, so that it lies in none of the skin's faces)
+      edgeBox(b, plan, i, -0.02, 1.02, -deep + 0.01, 0.0, y - 0.15, y + 0.15, "paint");
       edgeBox(b, plan, i, 0, 1, -0.12, -0.04, y + 0.15 + f * 0.35, Math.min(y + f - 0.15, M.tower.top - fascia), "timber");
     }
     // the red tile fascia under the roof's edge
