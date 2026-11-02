@@ -99,7 +99,11 @@ function front(b, x0, x1) {
   for (const s of [-1, 1]) for (const d of [-0.3, 0.3, -0.7, 0.7]) fil.push(cx + s * gs + d);
   for (const x of fil) fr.push([x - 0.04, x + 0.04, P0, P1, bf, bf + 0.06]);
   // blind tracery under the hood: fillets rising from the lancets to the arch
-  for (const [x, y0] of [[cx - 0.64, UY + 2.5], [cx + 0.64, UY + 2.5], [cx - gs, UY + 2.85], [cx + gs, UY + 2.85]]) fr.push([x - 0.035, x + 0.035, y0, CORNICE + rise * 0.8 - Math.abs(x - cx) * 0.2, bf, bf + 0.05]);
+  // (the side groups' tops came out under their feet, an inside-out box whose back lay in the bay's face: drawn the right way out where it stood)
+  for (const [x, y0] of [[cx - 0.64, UY + 2.5], [cx + 0.64, UY + 2.5], [cx - gs, UY + 2.85], [cx + gs, UY + 2.85]]) {
+    const y1 = CORNICE + rise * 0.8 - Math.abs(x - cx) * 0.2;
+    fr.push([x - 0.035, x + 0.035, Math.min(y0, y1), Math.max(y0, y1), bf, bf + 0.05]);
+  }
   b.add(boxesGeometry(fr), "dressed");
   // the great hood over the bay, landing on the cornice either side
   const off = 0.04, band = 0.2;
@@ -155,7 +159,10 @@ function outerSide(b, x, side, rangeFront) {
     b.add(boxesGeometry(st), "smooth");
     b.box(0, len, -0.41, PLINTH - 0.01, -0.5, 0.12, "ashlar"); // (as the front's plinth)
     addCourse(b, 0, len, PLINTH, 0.12, 0.25, 0.1);
-    addCourse(b, c0, c1, CORNICE - 0.1, 0, 0.22, 0.1);
+    // the cornice on the pier, as addCourse(b, c0, c1, CORNICE - 0.1, 0, 0.22, 0.1), its lower moulding from the last strip's side
+    // (it began inside the strip, whose face lay in its own)
+    b.box(c0 - 0.1, c1 + 0.1, CORNICE - 0.1, CORNICE + 0.12, -0.2, 0.1, "dressed");
+    b.box(side > 0 ? c0 - 0.05 : s1 + 0.14, side > 0 ? s0 - 0.14 : c1 + 0.05, CORNICE - 0.21, CORNICE - 0.1, -0.2, 0.05, "dressed");
     addCourse(b, s0, s1, SHOULDER - 0.6, 0, 0.18, 0.08);
     b.box(-0.08, len + 0.08, SHOULDER, SHOULDER + 0.24, -0.66, 0.08, "dressed");
   });

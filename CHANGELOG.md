@@ -24,8 +24,7 @@ A change to what the site does or shows adds its line here, and the README's
   screen cannot tell which of two such faces is in front, so they flickered as the camera moved, on the map
   and from a walker's height. Now the hidden face of each pair stops short, stands inside its neighbour, or
   stands a centimetre back, and what shows stands where it stood, to the centimetre; a test checks every
-  landmark on the site for faces closer than the map can tell apart. In the Clock Tower five small patches
-  are left, 0.13 m² in all (#PR).
+  landmark on the site for faces closer than the map can tell apart (#PR).
 
 ## 2026-11-02
 

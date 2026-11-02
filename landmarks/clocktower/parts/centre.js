@@ -76,7 +76,8 @@ function frontWall(b, x0, x1) {
     wins.push({ x: AX + s * SIDE, y: UPPER.y, w: SW, h: UPPER.h, head: "pointed", lights: 3, transoms: [1.45], k: 0.78 });
     wins.push({ x: AX + s * 3.1, y: 2.85, w: 0.48, h: 1.75, lights: 1 });
   }
-  const s = new THREE.Shape([[x0, 0], [x1, 0], [x1, 11.29], [x0, 11.29]].map(([x, y]) => new THREE.Vector2(x, y)));
+  // (its west end 2 cm into the pavilion, past the side window's sill, whose end lay in it, and the plinth's)
+  const s = new THREE.Shape([[x0 - 0.02, 0], [x1, 0], [x1, 11.29], [x0 - 0.02, 11.29]].map(([x, y]) => new THREE.Vector2(x, y)));
   // (each opening 1 cm clear inside its lining, as kit/gothic.js addWall's `clear`; the door's inside its lining too)
   for (const w of wins) s.holes.push(pathOf(outline(w.w + 0.02, w.h + 0.01, w.head ?? "flat", w.k ?? 0.8), w.x, w.y - 0.005));
   s.holes.push(pathOf(tudor(DW + 0.02, DSPR, DRISE), AX, LAND));
@@ -197,7 +198,7 @@ function turret(b, cx) {
     b.matrix = null;
   }
   // a slim shaft up the prow from the pendant to the pinnacle, and pinnacles at the apex and the corners
-  b.box(cx - 0.11, cx + 0.11, TY0 + 0.3, TTOP + 0.75, W + TD - 0.12, W + TD + 0.08, "dressed");
+  b.box(cx - 0.11, cx + 0.11, TY0 + 0.29, TTOP + 0.75, W + TD - 0.12, W + TD + 0.08, "dressed"); // (its foot 1 cm under the faces', which lay in it)
   addPinnacle(b, cx, TTOP + 0.75, W + TD - 0.1, 0.42, 2.75);
   for (const s of [-1, 1]) addPinnacle(b, cx + s * (THW - 0.12), TTOP + 0.75, W + 0.05, 0.3, 1.9);
   // a roof over the turret
