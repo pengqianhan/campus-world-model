@@ -158,7 +158,9 @@ describe("each landmark on the site's ground", () => {
         // Each mesh that comes down to the ground at the door (y = 0) or below, at its own lowest points; the parts
         // in STANDS, at their lowest points wherever they are. The kit's Builder joins a model's parts into one
         // mesh a material, so this is a material's foot, not a part's: give every part the same foot (Old
-        // Government House's take FOOT from common.js).
+        // Government House's take FOOT from common.js). "Lowest" is within 4 cm of the material's lowest point,
+        // so that a part sunk a few centimetres deeper than its neighbours of the same material (a plinth 1 cm into
+        // the ground, as the coinciding-faces test asks) does not hide their feet.
         let worst = -Infinity;
         let at = "";
         for (const m of meshes) {
@@ -168,7 +170,7 @@ describe("each landmark on the site's ground", () => {
           const p = m.geometry.getAttribute("position");
           for (let i = 0; i < p.count; i++) {
             v.fromBufferAttribute(p, i).applyMatrix4(m.matrixWorld);
-            if (v.y > foot + 0.01) continue;
+            if (v.y > foot + 0.04) continue;
             v.applyMatrix4(l.group.matrixWorld);
             const gap = v.y - terrain.height(v.x, -v.z);
             if (gap > worst) [worst, at] = [gap, `${m.parent?.name ?? ""}/${m.name}`];
