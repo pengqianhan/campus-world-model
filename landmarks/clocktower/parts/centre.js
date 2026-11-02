@@ -138,9 +138,13 @@ function doorway(b) {
   // a low iron gate across part of the landing, left of the door (seen in the photographs)
 }
 
-/** The door head above the transom at height sill, as a closed outline (local to the door axis). */
+/**
+ * The door head above the transom at height sill, as a closed outline (local to the door axis). (Its arch 1 cm under
+ * the opening's, inside the lining: at the apex, where the lining's outer arch meets the opening's, its top lay in
+ * the lining's.)
+ */
 function archOfHead(sill) {
-  const arch = tudor(DW, DSPR, DRISE).slice(2);
+  const arch = tudor(DW, DSPR, DRISE).slice(2).map((p) => new THREE.Vector2(p.x, p.y - 0.01));
   return [new THREE.Vector2(DW / 2, sill), ...arch, new THREE.Vector2(-DW / 2, sill)];
 }
 

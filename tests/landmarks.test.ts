@@ -203,10 +203,12 @@ const COINCIDE = (2 * (9000 - 10)) / 2 ** 24;
 const OVERLAP = 0.001;
 
 /**
- * Pairs of triangles of different materials that face the same way (within 1°), lie closer than `sep` apart and
- * overlap: by material pair, their overlapping area and one point of the largest overlap, in the model's frame. The
- * triangles are put into classes by the way they face, and each class into a grid in its own plane, so that only
- * triangles near each other in one plane are compared.
+ * Pairs of triangles of different materials that face the same way, lie closer than `sep` apart and overlap: by
+ * material pair, their overlapping area and one point of the largest overlap, in the model's frame. The triangles are
+ * put into classes by the way they face (each within 1° of its class's first), and each class into a grid in its own
+ * plane, so that only triangles near each other are compared. A class's triangles meet those of its own class and
+ * those of every later class whose first lies within 3° of its own: every two triangles that face within 1° of each
+ * other are compared, whichever classes they fell into (and some up to 5° apart), each pair once.
  */
 function coinciding(model: Object3D, sep: number): Map<string, { area: number; at: number[]; big: number }> {
   model.updateMatrixWorld(true);
@@ -283,9 +285,28 @@ function coinciding(model: Object3D, sep: number): Map<string, { area: number; a
     }
     return out;
   };
+  // The later classes whose first triangles face within 3° of each class's (a bin of 0.02 is at least 1.1°).
+  const cos3 = Math.cos((3 * Math.PI) / 180);
+  const later = (c: number) => {
+    const r = classes[c]!.n;
+    const q = r.map((x) => Math.round(x / 0.02));
+    const out: number[] = [];
+    for (let a = -3; a <= 3; a++)
+      for (let b = -3; b <= 3; b++)
+        for (let d = -3; d <= 3; d++)
+          for (const i of byKey.get(`${q[0]! + a},${q[1]! + b},${q[2]! + d}`) ?? []) {
+            const s = classes[i]!.n;
+            if (i > c && s[0]! * r[0]! + s[1]! * r[1]! + s[2]! * r[2]! > cos3) out.push(i);
+          }
+    return out;
+  };
   const found = new Map<string, { area: number; at: number[]; big: number }>();
-  for (const { n: r, tris } of classes) {
-    if (new Set(tris.map((t) => mat[t])).size < 2) continue;
+  const seen = new Set<number>();
+  for (let c = 0; c < classes.length; c++) {
+    const { n: r, tris } = classes[c]!;
+    const others = later(c).flatMap((i) => classes[i]!.tris);
+    const mats = new Set(tris.map((t) => mat[t]));
+    if (mats.size < 2 && others.every((t) => mats.has(mat[t]))) continue;
     // Two directions in the class's plane.
     const ax = Math.abs(r[1]!) < 0.9 ? [0, 1, 0] : [1, 0, 0];
     const u0 = [r[1]! * ax[2]! - r[2]! * ax[1]!, r[2]! * ax[0]! - r[0]! * ax[2]!, r[0]! * ax[1]! - r[1]! * ax[0]!];
@@ -294,53 +315,56 @@ function coinciding(model: Object3D, sep: number): Map<string, { area: number; a
     const v = [r[1]! * u[2]! - r[2]! * u[1]!, r[2]! * u[0]! - r[0]! * u[2]!, r[0]! * u[1]! - r[1]! * u[0]!];
     const dot = (a: number[], t: number, k: number) => a[0]! * P(t, k, 0) + a[1]! * P(t, k, 1) + a[2]! * P(t, k, 2);
     const flat = new Map<number, { poly: number[][]; w: number; box: number[] }>();
-    const grid = new Map<number, number[]>();
-    for (const t of tris) {
+    const lay = (t: number) => {
       const poly = [0, 1, 2].map((k) => [dot(u, t, k), dot(v, t, k)]);
       if (area(poly) < 0) poly.reverse();
       const us = poly.map((p) => p[0]!);
       const vs = poly.map((p) => p[1]!);
       const box = [Math.min(...us), Math.max(...us), Math.min(...vs), Math.max(...vs)];
       flat.set(t, { poly, w: (dot(r, t, 0) + dot(r, t, 1) + dot(r, t, 2)) / 3, box });
+      return box;
+    };
+    const cells = (box: number[], fn: (k: number) => void) => {
       for (let i = Math.floor(box[0]! / 2); i <= Math.floor(box[1]! / 2); i++)
-        for (let j = Math.floor(box[2]! / 2); j <= Math.floor(box[3]! / 2); j++) into(grid, i * 100003 + j, t);
-    }
+        for (let j = Math.floor(box[2]! / 2); j <= Math.floor(box[3]! / 2); j++) fn(i * 100003 + j);
+    };
+    const grid = new Map<number, number[]>();
+    for (const t of tris) cells(lay(t), (k) => into(grid, k, t));
     // How far along r the plane of triangle t lies from the point (a, b) of the class's plane.
     const along = (t: number, [a, b]: number[]) => {
       const n = [nrm[t * 3]!, nrm[t * 3 + 1]!, nrm[t * 3 + 2]!];
       const at = [0, 1, 2].map((k) => a! * u[k]! + b! * v[k]!);
       return (n[0]! * (P(t, 0, 0) - at[0]!) + n[1]! * (P(t, 0, 1) - at[1]!) + n[2]! * (P(t, 0, 2) - at[2]!)) / (n[0]! * r[0]! + n[1]! * r[1]! + n[2]! * r[2]!);
     };
-    const seen = new Set<number>();
-    for (const list of grid.values())
-      for (let a = 0; a < list.length; a++)
-        for (let b = a + 1; b < list.length; b++) {
-          const [i, j] = [list[a]!, list[b]!];
-          if (mat[i] === mat[j]) continue;
-          const [A, B] = [flat.get(i)!, flat.get(j)!];
-          if (A.box[1]! <= B.box[0]! || B.box[1]! <= A.box[0]! || A.box[3]! <= B.box[2]! || B.box[3]! <= A.box[2]!) continue;
-          // Within 1° the planes' offsets at the triangles' centres differ by no more than this.
-          const span = Math.max(A.box[1]! - A.box[0]!, A.box[3]! - A.box[2]!, B.box[1]! - B.box[0]!, B.box[3]! - B.box[2]!);
-          if (Math.abs(A.w - B.w) > sep + span * 0.035) continue;
-          const key = Math.min(i, j) * T + Math.max(i, j);
-          if (seen.has(key)) continue;
-          seen.add(key);
-          const poly = clip(A.poly, B.poly);
-          if (poly.length < 3) continue;
-          const s = area(poly);
-          if (s < 1e-7) continue;
-          // Apart by sep or more anywhere in the overlap: told apart.
-          if (poly.some((p) => Math.abs(along(i, p) - along(j, p)) >= sep)) continue;
-          const pair = [names[mat[i]!]!, names[mat[j]!]!].sort().join("/");
-          const f = found.get(pair) ?? { area: 0, at: [], big: 0 };
-          f.area += s;
-          if (s > f.big) {
-            const c = [poly.reduce((x, p) => x + p[0]!, 0) / poly.length, poly.reduce((x, p) => x + p[1]!, 0) / poly.length];
-            const h = along(i, c);
-            [f.big, f.at] = [s, [0, 1, 2].map((k) => +(c[0]! * u[k]! + c[1]! * v[k]! + h * r[k]!).toFixed(2))];
-          }
-          found.set(pair, f);
-        }
+    const pair = (i: number, j: number) => {
+      if (mat[i] === mat[j]) return;
+      const [A, B] = [flat.get(i)!, flat.get(j)!];
+      if (A.box[1]! <= B.box[0]! || B.box[1]! <= A.box[0]! || A.box[3]! <= B.box[2]! || B.box[3]! <= A.box[2]!) return;
+      // Within 5° of r the planes' offsets at the triangles' centres differ by no more than this.
+      const span = Math.max(A.box[1]! - A.box[0]!, A.box[3]! - A.box[2]!, B.box[1]! - B.box[0]!, B.box[3]! - B.box[2]!);
+      if (Math.abs(A.w - B.w) > sep + span * 0.09) return;
+      const key = Math.min(i, j) * T + Math.max(i, j);
+      if (seen.has(key)) return;
+      seen.add(key);
+      const poly = clip(A.poly, B.poly);
+      if (poly.length < 3) return;
+      const s = area(poly);
+      if (s < 1e-7) return;
+      // Apart by sep or more anywhere in the overlap: told apart.
+      if (poly.some((p) => Math.abs(along(i, p) - along(j, p)) >= sep)) return;
+      const which = [names[mat[i]!]!, names[mat[j]!]!].sort().join("/");
+      const f = found.get(which) ?? { area: 0, at: [], big: 0 };
+      f.area += s;
+      if (s > f.big) {
+        const mid = [poly.reduce((x, p) => x + p[0]!, 0) / poly.length, poly.reduce((x, p) => x + p[1]!, 0) / poly.length];
+        const h = along(i, mid);
+        [f.big, f.at] = [s, [0, 1, 2].map((k) => +(mid[0]! * u[k]! + mid[1]! * v[k]! + h * r[k]!).toFixed(2))];
+      }
+      found.set(which, f);
+    };
+    // the class's own pairs, then each of its triangles with each near later class's
+    for (const list of grid.values()) for (let a = 0; a < list.length; a++) for (let b = a + 1; b < list.length; b++) pair(list[a]!, list[b]!);
+    for (const j of others) cells(lay(j), (k) => { for (const i of grid.get(k) ?? []) pair(i, j); });
   }
   return found;
 }
