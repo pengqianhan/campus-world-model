@@ -170,7 +170,7 @@ export function pavilion(b, x0in, x1in) {
     b.box(x0 + 0.5, x1 - 0.5, -0.4, ROOF_EAVE, BACK + 0.5, FRONT - 0.55, "ashlar");
     const xo = out < 0 ? x0 : x1, xi = out < 0 ? x1 : x0;
     b.box(Math.min(xi, xi + out * 0.6), Math.max(xi, xi + out * 0.6), -0.4, SHOULDER, BACK, FRONT - 0.55, "ashlar"); // inner side
-    b.box(Math.min(xo, xo - out * 0.6), Math.max(xo, xo - out * 0.6), -0.4, SHOULDER, BACK, rangeFront, "ashlar"); // outer side behind the range
+    b.box(Math.min(xo, xo - out * 0.6), Math.max(xo, xo - out * 0.6), -0.4, SHOULDER, BACK, rangeFront - 0.02, "ashlar"); // outer side behind the range (its end 2 cm behind the range's face, which it lay in, past the course's)
     b.box(x0, x1, -0.4, SHOULDER, BACK, BACK + 0.6, "ashlar");
     b.box(x0 - 0.08, x0 + 0.62, SHOULDER, SHOULDER + 0.24, BACK, FRONT - 0.5, "dressed");
     b.box(x1 - 0.62, x1 + 0.08, SHOULDER, SHOULDER + 0.24, BACK, FRONT - 0.5, "dressed");
