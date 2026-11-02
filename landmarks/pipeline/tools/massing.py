@@ -22,6 +22,8 @@ Run from the repository root, with the pipeline's Python:
       data/raw/landmarks/, logged in data/sources.json); nothing else is fetched
   --drop-bare, --keep-bare   whether a traced piece of a layer with no roof cell of it in the LiDAR is left out
       (DROP_BARE_ON: on for Grafton and Newmarket, off for the City campus until the maintainer decides)
+  --no-forms   leaves out the roof forms of the fourth round (FORMS: low pitches and roofs of several faces, tried
+      only for a building that fails the top-view check without them), as the generator measured before them
 """
 import json, math, os, re, subprocess, sys
 from collections import deque
@@ -69,6 +71,15 @@ SNAP = 0.75          # m: a layer's edge this near the outline goes onto it
 MIN_OVERHANG = 0.2   # m: a smaller overhang is a wall on the outline
 SLAB = 0.3           # m: the edge of a flat roof that overhangs its walls
 FACE_MIN = 0.04      # a face of a sloping roof: at least this share of its sloping cells (a hipped end too)
+# The roof forms of the fourth round (MASSING.md, "The fourth round"), tried only for a building whose roof as
+# above fails the top-view check (FORMS; --no-forms leaves them out): a low pitch, read from a wider
+# neighbourhood (LOW_R) down to LOW_DEG, where one height fits worse; and several faces, each its own
+# mono-pitch, where the lowest of the layer's planes fits worse. A face's neighbouring cells lie on its plane
+# within FACE_STEP.
+FORMS = True
+LOW_DEG = 1.0        # degrees
+LOW_R = 2.0          # m
+FACE_STEP = 0.3      # m
 # The limits (MASSING.md, decision 3): below any of them the block stays.
 COVER_MIN, VEG_MAX, OPEN_MAX, IOU_MIN, WITHIN_MIN = 0.85, 0.15, 0.5, 0.90, 0.90
 STOREY_MIN, STOREY_MAX = 2.4, 4.5
@@ -340,11 +351,11 @@ def components(good, H, step):
     return lab, k
 
 
-def cell_planes(roof, H, cx, cy):
-    """For each roof cell, a plane fitted to the roof cells within PLANE_R of it that stand within STEP of
+def cell_planes(roof, H, cx, cy, radius=PLANE_R):
+    """For each roof cell, a plane fitted to the roof cells within `radius` of it that stand within STEP of
     it: slope (deg), downhill direction (radians, east = 0, north = pi/2) and the RMS residual (m)."""
-    r = int(math.ceil(PLANE_R / RES))
-    offs = [(a, c) for a in range(-r, r + 1) for c in range(-r, r + 1) if math.hypot(a * RES, c * RES) <= PLANE_R + 1e-9]
+    r = int(math.ceil(radius / RES))
+    offs = [(a, c) for a in range(-r, r + 1) for c in range(-r, r + 1) if math.hypot(a * RES, c * RES) <= radius + 1e-9]
     fit = np.full(roof.shape + (3,), np.nan)
     ny, nx = roof.shape
     for i, j in zip(*np.nonzero(roof)):
@@ -380,25 +391,10 @@ def fit_plane(x, y, z, gx=None, gy=None):
     return coef
 
 
-def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
-    """The roof of one layer: flat (with its height), or its sloping sides as planes, each fitted to the
-    cells that fall that way (z = z0 + gx (x - centre x) + gy (y - centre y), above zero). The roof is the
-    lowest of its planes at each point: one plane is a mono-pitch, two opposite a gable, more a hip."""
-    slope, down = fit[ij[:, 0], ij[:, 1], 0], fit[ij[:, 0], ij[:, 1], 1]
-    ok = ~np.isnan(slope)
-    if ok.sum() < 8: return None, "too few cells for a plane"
-    h = H[ij[:, 0], ij[:, 1]] - zero
-    if (slope[ok] < FLAT_DEG).mean() >= 0.6: return {"form": "flat", "height": float(np.median(h))}, ""
-    # a roof that one plane under 5 degrees holds within 0.3 m nearly everywhere is flat too, though its
-    # cells tilt (ribs, plant, a membrane laid to falls)
-    x = cx[ij[:, 1]] - centre[0]; y = cy[ij[:, 0]] - centre[1]
-    z0, gx, gy = fit_plane(x, y, h)
-    if math.hypot(gx, gy) < math.tan(math.radians(FLAT_DEG)) and (np.abs(z0 + gx * x + gy * y - h) <= 0.3).mean() >= 0.7:
-        return {"form": "flat", "height": float(np.median(h))}, ""
-    sl = ok & (slope >= FLAT_DEG) & (slope <= 70)
-    # the directions the roof falls in: the peaks of a circular histogram of the cells' downhill
-    # directions, 10 degrees a bin; each sloping cell goes with the peak within 40 degrees of it
-    d = np.nan_to_num(down)
+def fall_directions(d, sl):
+    """The directions a roof falls in: the peaks of a circular histogram of its sloping cells' downhill
+    directions `d` (`sl`), 10 degrees a bin, each from FACE_MIN of those cells and 40 degrees or more from a
+    larger one."""
     hist = np.bincount((np.degrees(d[sl]) % 360 // 10).astype(int), minlength=36).astype(float)
     sm = sum(np.roll(hist, k) * w for k, w in ((-2, 1), (-1, 2), (0, 3), (1, 2), (2, 1))) / 9
     tot = max(1.0, float(sl.sum()))
@@ -407,6 +403,29 @@ def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
     keep = []
     for pk in peaks:
         if all(abs((pk - q + math.pi) % (2 * math.pi) - math.pi) > math.radians(40) for q in keep): keep.append(pk)
+    return keep, tot
+
+
+def roof_form(fit, H, ij, cx, cy, centre, zero, axis, flat_deg=FLAT_DEG):
+    """The roof of one layer: flat (with its height), or its sloping sides as planes, each fitted to the
+    cells that fall that way (z = z0 + gx (x - centre x) + gy (y - centre y), above zero). The roof is the
+    lowest of its planes at each point: one plane is a mono-pitch, two opposite a gable, more a hip. A cell
+    sloping less than `flat_deg` is flat (FLAT_DEG; LOW_DEG for a low pitch)."""
+    slope, down = fit[ij[:, 0], ij[:, 1], 0], fit[ij[:, 0], ij[:, 1], 1]
+    ok = ~np.isnan(slope)
+    if ok.sum() < 8: return None, "too few cells for a plane"
+    h = H[ij[:, 0], ij[:, 1]] - zero
+    if (slope[ok] < flat_deg).mean() >= 0.6: return {"form": "flat", "height": float(np.median(h))}, ""
+    # a roof that one plane under 5 degrees holds within 0.3 m nearly everywhere is flat too, though its
+    # cells tilt (ribs, plant, a membrane laid to falls)
+    x = cx[ij[:, 1]] - centre[0]; y = cy[ij[:, 0]] - centre[1]
+    z0, gx, gy = fit_plane(x, y, h)
+    if math.hypot(gx, gy) < math.tan(math.radians(flat_deg)) and (np.abs(z0 + gx * x + gy * y - h) <= 0.3).mean() >= 0.7:
+        return {"form": "flat", "height": float(np.median(h))}, ""
+    sl = ok & (slope >= flat_deg) & (slope <= 70)
+    # each sloping cell goes with the direction within 40 degrees of it that the roof falls in
+    d = np.nan_to_num(down)
+    keep, tot = fall_directions(d, sl)
     x = cx[ij[:, 1]] - centre[0]; y = cy[ij[:, 0]] - centre[1]
     turn = np.array([np.abs((d - q + math.pi) % (2 * math.pi) - math.pi) for q in keep]) if keep else np.zeros((0, len(d)))
     near = np.argmin(turn, 0) if keep else np.zeros(len(d), int)
@@ -416,7 +435,7 @@ def roof_form(fit, H, ij, cx, cy, centre, zero, axis):
         if m.sum() < 8 or m.sum() < FACE_MIN * tot: continue
         t = np.tan(np.radians(slope[m]))
         z0, gx, gy = fit_plane(x[m], y[m], h[m], -t * np.cos(d[m]), -t * np.sin(d[m]))
-        if math.degrees(math.atan(math.hypot(gx, gy))) < max(FLAT_DEG, 0.5 * float(np.median(slope[m]))): continue
+        if math.degrees(math.atan(math.hypot(gx, gy))) < max(flat_deg, 0.5 * float(np.median(slope[m]))): continue
         planes.append([round(float(gx), 4), round(float(gy), 4), round(float(z0), 3)]); dirs.append(math.atan2(-gy, -gx))
     if not planes: return {"form": "flat", "height": float(np.median(h))}, ""
     # then each plane again from the cells it fits best (within 0.5 m), three times
@@ -438,6 +457,42 @@ def roof_at(planes, x, y):
     return np.min([p[2] + p[0] * x + p[1] * y for p in planes], axis=0)
 
 
+def faces(fit, H, ij, cx, cy, centre, zero, min_deg):
+    """The faces of one layer's roof (FORMS): its cells that slope `min_deg` to 70 degrees, by the direction
+    they fall in (fall_directions), split into connected pieces whose neighbouring cells lie on one plane
+    within FACE_STEP, each of MIN_PIECE or more, with its plane. Two faces that fall the same way at different
+    heights (two hips side by side, the arms of a cross, a sawtooth) are two pieces. [(cells of ij, plane)]."""
+    slope, down = fit[ij[:, 0], ij[:, 1], 0], fit[ij[:, 0], ij[:, 1], 1]
+    sl = ~np.isnan(slope) & (slope >= min_deg) & (slope <= 70)
+    if sl.sum() < 8: return []
+    d = np.nan_to_num(down)
+    keep, _ = fall_directions(d, sl)
+    if not keep: return []
+    turn = np.array([np.abs((d - q + math.pi) % (2 * math.pi) - math.pi) for q in keep])
+    near = np.argmin(turn, 0)
+    x = cx[ij[:, 1]] - centre[0]; y = cy[ij[:, 0]] - centre[1]; h = H[ij[:, 0], ij[:, 1]] - zero
+    t = np.tan(np.radians(np.nan_to_num(slope)))
+    gx_, gy_ = -t * np.cos(d), -t * np.sin(d)
+    out = []
+    for k in range(len(keep)):
+        m = sl & (near == k) & (turn[k] <= math.radians(40))
+        if m.sum() < 8: continue
+        # the height each cell's plane would have at the centre, under the direction's median gradient: one face
+        # keeps one such height from cell to cell, however steep it is
+        z0 = h - float(np.median(gx_[m])) * x - float(np.median(gy_[m])) * y
+        grid = np.zeros(H.shape, bool); grid[ij[m, 0], ij[m, 1]] = True
+        Z = np.zeros(H.shape); Z[ij[m, 0], ij[m, 1]] = z0[m]
+        lab, n = components(grid, Z, FACE_STEP)
+        on = lab[ij[:, 0], ij[:, 1]]
+        for p in range(1, n + 1):
+            c = m & (on == p)
+            if c.sum() * RES * RES < MIN_PIECE: continue
+            a, gx, gy = fit_plane(x[c], y[c], h[c], gx_[c], gy_[c])
+            if math.degrees(math.atan(math.hypot(gx, gy))) < min_deg: continue
+            out.append((c, [round(float(gx), 4), round(float(gy), 4), round(float(a), 3)]))
+    return out
+
+
 def along(ring, step=0.25):
     pts = []
     for k in range(len(ring)):
@@ -447,7 +502,7 @@ def along(ring, step=0.25):
     return np.array(pts)
 
 
-def measure(b, P, others, campus_origin):
+def measure(b, P, others, campus_origin, forms=False):
     rings = [ccw(decode(b["outline"][0]))] + [ccw(decode(r))[::-1] for r in b["outline"][1:]]
     outer = rings[0]
     x0, y0 = np.floor(outer.min(0) - 3); x1, y1 = np.ceil(outer.max(0) + 3)
@@ -548,16 +603,57 @@ def measure(b, P, others, campus_origin):
         form["m2"] = a; form["inside"] = int((mk & Cin).sum())
         form["low"] = float(np.percentile(hk, 10))
         info[k] = form; layers.append(k)
-    rough = roof & Cin & ~np.isin(lab, layers)
+    # The roof forms of the fourth round (FORMS), only when asked: each layer takes a low pitch where that fits
+    # its cells better than one height, and then its faces, each its own mono-pitch, where they fit its cells
+    # better than the lowest of its planes. "Better": a smaller mean distance from the LiDAR's heights.
+    split, changed, fit_low, face, groups = False, [], None, set(), []
+    offface = np.zeros(H.shape, bool)     # cells of a layer drawn as its faces that lie on no face
+    for k in list(layers) if forms else []:
+        mk = lab == k; ij = np.argwhere(mk); h = H[mk] - zero
+        X = cx[ij[:, 1]] - centre[0]; Y = cy[ij[:, 0]] - centre[1]
+        def error(f):
+            return float(np.mean(np.abs((f["height"] if f["form"] == "flat" else roof_at(f["planes"], X, Y)) - h)))
+        f = info[k]; e_k = error(f); fl, deg = fit, FLAT_DEG
+        if f["form"] == "flat":
+            if fit_low is None: fit_low = cell_planes(roof, H, cx, cy, LOW_R)
+            low, _ = roof_form(fit_low, H, ij, cx, cy, centre, zero, 0.0, LOW_DEG)
+            if low is None or low["form"] == "flat" or error(low) >= e_k: continue
+            low.update(m2=f["m2"], inside=f["inside"], low=f["low"])
+            info[k] = f = low; e_k = error(low); fl, deg = fit_low, LOW_DEG
+            changed.append(f"a low pitch: {f['form']}, {f['slope']:.1f} degrees, over {f['m2']:.0f} m2")
+        fs = faces(fl, H, ij, cx, cy, centre, zero, deg)
+        if len(fs) < 2: continue
+        # each cell of the layer with its nearest face, as the cells round them go below
+        F = np.zeros(H.shape, int)
+        for q, (c, _) in enumerate(fs): F[ij[c, 0], ij[c, 1]] = q + 1
+        _, (fi, fj) = distance_transform_edt(F == 0, return_indices=True)
+        pl = np.array([p for _, p in fs])[F[fi, fj][mk] - 1]
+        if float(np.mean(np.abs(pl[:, 2] + pl[:, 0] * X + pl[:, 1] * Y - h))) >= e_k: continue
+        offface |= mk & (F == 0)
+        lab[mk] = 0; layers.remove(k); del info[k]; groups.append(list(range(n + 1, n + 1 + len(fs))))
+        for c, p in fs:
+            n += 1; lab[ij[c, 0], ij[c, 1]] = n; layers.append(n); face.add(n)
+            info[n] = {"form": "mono", "planes": [p], "slope": math.degrees(math.atan(math.hypot(p[0], p[1]))),
+                       "m2": float(c.sum() * A), "inside": int(Cin[ij[c, 0], ij[c, 1]].sum()), "low": float(np.percentile(h[c], 10))}
+        split = True
+        changed.append(f"several faces: {len(fs)} mono-pitches over {f['m2']:.0f} m2")
+    rough = roof & Cin & ~np.isin(lab, layers) & ~offface
     if rough.sum() * A >= MIN_PIECE:
         dropped.append({"m2": round(float(rough.sum() * A), 1), "why": "roof cells on no smooth plane, or in pieces under 4 m2: "
                         "drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of "
                         "the top-view check's share within 0.5 m (not_drawn_m2)"})
+    if (offface & Cin).any():
+        dropped.append({"m2": round(float((offface & Cin).sum() * A), 1), "why": "cells of a layer drawn as its faces (FORMS) "
+                        "that lie on no face (along its ridges, hips and valleys, where they fall no one way, or in pieces "
+                        "under 4 m2): drawn with the face nearest them, or the layer nearest their height when no face is "
+                        "nearest; those more than 1 m from every layer's roof are left out of the top-view check's share "
+                        "within 0.5 m (not_drawn_m2)"})
     if not layers: return rec, None, "no layer of smooth roof of 4 m2 or more"
     layers.sort(key=lambda k: info[k]["low"])
 
     # every cell of the outline goes with a layer: a roof cell on no smooth plane with the layer within
-    # 4 m whose roof is nearest its height there, any other cell with its nearest layer
+    # 4 m whose roof is nearest its height there, any other cell with its nearest layer; a cell nearest a face
+    # (FORMS) stays with that face, so that a face is one piece (a chimney on it is not a hole in it)
     known = np.isin(lab, layers)
     _, (ii, jj) = distance_transform_edt(~known, return_indices=True)
     full = np.where(Cin, lab[ii, jj], 0)
@@ -565,11 +661,12 @@ def measure(b, P, others, campus_origin):
     if loose.any():
         X = CX[loose] - centre[0]; Y = CY[loose] - centre[1]; h = H[loose] - zero
         best = np.full(len(h), np.inf); pick = full[loose].copy()
+        held = np.isin(pick, list(face))
         for k in layers:
             near = distance_transform_edt(lab != k)[loose] * RES <= 4.0
             f = info[k]
             off = np.abs(h - (f["height"] if f["form"] == "flat" else roof_at(f["planes"], X, Y)))
-            take = near & (off < best)
+            take = near & (off < best) & ~held
             best[take] = off[take]; pick[take] = k
         full[loose] = pick
     # roof that no layer draws to its height: a cell on no smooth plane more than 1 m from every layer's
@@ -599,9 +696,14 @@ def measure(b, P, others, campus_origin):
     bare = set()     # (layer, m2) of the pieces DROP_BARE leaves out
 
     def traced(k):
-        mk = binary_fill_holes(binary_closing(full == k, iterations=1)) & Cin
+        # the faces of a layer (FORMS) tile it: each is traced from its cells unclosed and unsimplified, so that
+        # neighbouring faces share their edges, with no gap between them; a tuple of faces is the body under them
+        ks = list(k) if isinstance(k, tuple) else [k]
+        whole = np.isin(full, ks)
+        plain_ = all(q in face for q in ks)
+        mk = binary_fill_holes(whole if plain_ else binary_closing(whole, iterations=1)) & Cin
         for ring in trace(mk, cx, cy):
-            plain = simplify(ring, SIMPLIFY)
+            plain = simplify(ring, 0.0 if plain_ else SIMPLIFY)
             ring = snap(plain, outer)
             # snapping can fold a ring over itself; then the traced edge stays as it is
             ring = despike(np.round(ring, 2)) if len(ring) >= 3 else ring
@@ -610,8 +712,8 @@ def measure(b, P, others, campus_origin):
             ring = ccw(ring)
             # a piece in which the LiDAR sees no roof cell of this layer: every cell of it came to the layer only as
             # the nearest (906's lobe over open ground); with DROP_BARE it is not drawn as a layer
-            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & (full == k)).any():
-                bare.add((k, round(float(area(ring)), 1)))
+            if DROP_BARE and not (contains([ring], cells).reshape(ny, nx) & Cin & roof & whole).any():
+                bare.add((ks[0], round(float(area(ring)), 1)))
                 continue
             yield ring
 
@@ -621,6 +723,18 @@ def measure(b, P, others, campus_origin):
 
     def eaves_at(h):
         return edge_eaves(xy[B & (np.abs(z - zero - h) <= 0.6)], outer)
+
+    def face_eaves(ring, f):
+        # In a building with a layer drawn as its faces (FORMS), every sloping layer on the plinth (each face, and any
+        # other sloping layer) has eaves too, edge by edge as the outline's (edge_eaves), from the building points
+        # within 0.6 m of its plane, on the edges of its ring that lie on the outline; 0 elsewhere
+        if not split or f["form"] == "flat": return 0.0
+        e = edge_eaves(xy[B & (np.abs(z - zero - roof_at(f["planes"], xy[:, 0] - centre[0], xy[:, 1] - centre[1])) <= 0.6)], ring)
+        if not isinstance(e, list): return 0.0
+        nxt = np.roll(ring, -1, axis=0)
+        on = edge_distance([outer], np.vstack([ring, nxt, (ring + nxt) / 2])).reshape(3, -1).max(0) <= 0.1
+        e = [v if o else 0.0 for v, o in zip(e, on)]
+        return e if any(e) else 0.0
 
     out.append(layer_record(rings, bi, -1.0, eaves_at(eave0), levels, centre))
     lost = 0.0
@@ -635,16 +749,27 @@ def measure(b, P, others, campus_origin):
     # all the layers (the 10th percentile of each one's roof), with its eaves, and every layer, the lowest
     # too, stands on it as traced. A sloping roof whose planes reach below the plinth's top has its walls
     # rise from that top, and those parts of its planes stay inside the plinth.
-    if small and (flattened or lost > info[base]["m2"]):
-        ups = [layer_record([ring], info[k], 0.0, 0.0, levels, centre) for k in layers for ring in traced(k)]
+    # A layer drawn as its faces (FORMS) always stands on the plinth: its faces are pieces of one roof.
+    # The faces of one layer stand on a body: a flat layer over all of them, up to the lowest edge of their roofs,
+    # so that no wall stands inside the building between two faces from the plinth up.
+    if small and (flattened or lost > info[base]["m2"]) or split:
+        ups = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in layers if k not in face
+               for ring in traced(k)]
+        for g in groups:
+            fu = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in g for ring in traced(k)]
+            if not fu: continue
+            hb = min(u["wall"] for u in fu)
+            ups += [layer_record([ring], {"form": "flat", "height": hb, "m2": sum(info[k]["m2"] for k in g)}, 0.0, 0.0, levels, centre)
+                    for ring in traced(tuple(g))]
+            ups += [{**u, "on": hb} for u in fu]
         e = min(info[k]["low"] for k in layers)
         if ups and e >= FLOOR:
             out = [layer_record(rings, {"form": "flat", "height": e, "m2": float(Cin.sum() * A)}, -1.0, eaves_at(e), levels, centre)]
             y0 = out[0]["wall"]
             for u in ups:
-                u["y0"] = y0
-                if u["roof"] != "flat" and u["wall"] <= y0 + 0.05 < u["ridge"] - 0.2:
-                    u["wall"] = round(y0 + 0.05, 2)
+                u["y0"] = max(y0, u.pop("on")) if "on" in u else y0
+                if u["roof"] != "flat" and u["wall"] <= u["y0"] + 0.05 < u["ridge"] - 0.2:
+                    u["wall"] = round(u["y0"] + 0.05, 2)
                     u["storey"], u["storeys"] = storeys(u["wall"], levels)
                 if stands(u): out.append(u)
     for k, a in sorted(bare):
@@ -665,6 +790,8 @@ def measure(b, P, others, campus_origin):
         "dropped": dropped,
         "measured": {k: rec[k] for k in ("outline_m2", "roof_inside_m2", "cover", "vegetation", "open_below", "not_drawn_m2")},
     }
+    # the roof forms of the fourth round that this building takes (FORMS), in a key that only they add
+    if changed: data["forms"] = changed
     rec["skip"] = np.c_[CX[skip], CY[skip]]
     return rec, data, None
 
@@ -755,7 +882,7 @@ def layer_record(rings, li, y0, over, levels, centre):
 
 # ---- the check from above ----------------------------------------------------------------------------------
 
-def topview(b, data, P, others, skip=None):
+def topview(b, data, P, others, skip=None, tag=""):
     """The model and the LiDAR as heightmaps on a 0.5 m grid (as tools/topview.py does for a landmark):
     footprint IoU, model minus LiDAR heights on the cells both cover, and a picture."""
     os.makedirs(WORK, exist_ok=True)
@@ -817,7 +944,7 @@ def topview(b, data, P, others, skip=None):
          "model_minus_lidar_m": {k: round(float(np.percentile(diff, q)), 2) for k, q in (("p10", 10), ("p50", 50), ("p90", 90))} if both.any() else None,
          "highest_m": {"model": round(float(model[M].max() - zero), 2) if M.any() else None,
                        "lidar": round(float(lidar[L & np.isfinite(lidar)].max() - zero), 2) if (L & np.isfinite(lidar)).any() else None}}
-    picture(b["id"], np.where(L, lidar - zero, np.nan), np.where(M, model - zero, np.nan))
+    picture(b["id"] + tag, np.where(L, lidar - zero, np.nan), np.where(M, model - zero, np.nan))
     for f in (src, tri): os.remove(f)
     return r
 
@@ -859,7 +986,7 @@ def landmark_buildings():
 
 def options(argv):
     """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, --drop-bare or --keep-bare
-    (DROP_BARE), and building ids."""
+    (DROP_BARE), --no-forms (FORMS), and building ids."""
     args, campus, flags = [], "city", set()
     it = iter(argv)
     for a in it:
@@ -868,7 +995,7 @@ def options(argv):
         elif a.startswith("--"): flags.add(a)
         else: args.append(a)
     if campus not in CAMPUS_TILES: sys.exit(f"--campus: one of {', '.join(CAMPUS_TILES)}")
-    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare"}
+    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare", "--no-forms"}
     if unknown: sys.exit(f"unknown option {', '.join(sorted(unknown))}")
     if {"--drop-bare", "--keep-bare"} <= flags: sys.exit("--drop-bare or --keep-bare, not both")
     return campus, flags, args
@@ -887,8 +1014,9 @@ def fetch_tiles(tiles):
 
 
 def main():
-    global CAMPUS, TILES, DROP_BARE
+    global CAMPUS, TILES, DROP_BARE, FORMS
     CAMPUS, flags, ask = options(sys.argv[1:])
+    FORMS = "--no-forms" not in flags
     TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
     DROP_BARE = "--drop-bare" in flags or (DROP_BARE_ON[CAMPUS] and "--keep-bare" not in flags)
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
@@ -966,6 +1094,19 @@ def main():
             rec["check"] = c
             if c["iou"] < IOU_MIN or c["within_0.5m"] < WITHIN_MIN:
                 why = f"top-view check: footprint IoU {c['iou']:.3f} (limit {IOU_MIN}), {c['within_0.5m']:.0%} of cells within 0.5 m (limit {WITHIN_MIN:.0%})"
+                # Only now the roof forms of the fourth round (FORMS): a building measured with them is drawn if it
+                # passes the check with more cells within 0.5 m than without them; else its block stays, as before.
+                if FORMS and not policy:
+                    rec2, data2, why2 = measure(b, P, others, origin, forms=True)
+                    if data2 and not why2 and data2.get("forms"):
+                        c2 = topview(b, data2, P, others, rec2.pop("skip", None), "-forms")
+                        if c2["iou"] >= IOU_MIN and c2["within_0.5m"] >= WITHIN_MIN and c2["within_0.5m"] > c["within_0.5m"]:
+                            data2["check"] = rec2["check"] = c2
+                            rec, data, why = rec2, data2, None
+                        else:
+                            rec["forms"] = {"roofs": data2["forms"], "check": c2}
+                            why += (f"; with the roof forms of the fourth round ({'; '.join(data2['forms'])}): footprint IoU "
+                                    f"{c2['iou']:.3f}, {c2['within_0.5m']:.0%} of cells within 0.5 m")
         why = policy or why
         if why:
             rec.pop("skip", None)

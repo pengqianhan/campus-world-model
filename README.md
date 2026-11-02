@@ -79,7 +79,10 @@ It is built to answer two questions a student actually has:
   whose pilasters rise past its parapet into pinnacles, a cream coping over a row of small arches and
   tall blind arches, a porch with an arched cream doorway and three arched windows over it, and the
   radio mast on its roof. Over its west part the LiDAR of 2024 holds scaffolding, so that part is drawn
-  from an aerial photograph of 2023 and a Street View photograph instead.
+  from an aerial photograph of 2023 and a Street View photograph instead. Eight more University of
+  Auckland buildings are drawn near the camera to their LiDAR-measured heights and roofs, now with
+  roofs of several ridges and low pitches: Pembridge House, Mona, AUSA House, Engineering Block 5,
+  the Conference Centre, Fine Arts Studio Block 431, and Buildings 902 and 903 at Newmarket.
 - **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
   balconies and canopy are, and how thick its ramp and parapet are.
 - **2026-10-28:** On Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower
@@ -761,7 +764,7 @@ If you represent the University and would like something changed or removed, ple
   Extension (110N) and the Kenneth Myers Centre (820) are the exceptions: their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph). The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
