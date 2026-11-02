@@ -25,10 +25,13 @@ A change to what the site does or shows adds its line here, and the README's
   ground storey steps down, with a white door and a white-framed louvre, and the bands run round the
   east corner onto its end. Its heights come from the LINZ 2024 LiDAR; its window rows, frames, piers,
   corner and ground storey are measured in two Street View photographs through cameras set from the
-  photographs' own edges. How far its frames stand out, how high the plinth under its face to the road
-  is, its face's plain end at the south-west, how far behind its piers the ground storey's windows,
-  doors and posts stand toward the north-east end, and that storey round the east corner are estimated,
-  and its card says so.
+  photographs' own edges. How far its frames stand out and how thick their members are, where the
+  mullions stand in the bays no photograph sees square, its second row's upper transom, which panes have
+  blinds, how high the plinth under its face to the road is, its face's plain end at the south-west, how
+  far behind its piers the ground storey's windows, doors and posts stand toward the north-east end, that
+  storey round the east corner, and how thick its roofs are are estimated, and its card says so. Where
+  the Thomas Building Extension's glazed link meets it, its north-east parapet is left out, so that the
+  link's roof covers that stretch on the map.
   On the map it has the map's colours, its red window frames with the walls and its blinds with the
   panes; from a walker's height on a computer with a graphics card, its own warm grey concrete, red
   frames and glass. Its back, its south-west end, the courtyard and its roofs, which no photograph shows,

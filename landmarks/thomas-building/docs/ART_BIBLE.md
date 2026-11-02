@@ -26,8 +26,8 @@ size; this page says only what they show. What none of them shows is drawn plain
   reflect the sky; the dark panes read 59.
 - **The ground floor** behind a raised bed of ivy and a hedge; a bus shelter, a lamp post and a large
   tree in front (not drawn). Toward the north-east end, past a concrete post at u 17, the ground falls and
-  the ground storey stands lower and taller: its band reaches down to about 1.1 m and its sills to -0.45,
-  on a plinth over a lawn; a white glazed door and a white-framed louvre stand beside the pier, then
+  the ground storey stands lower and taller: its band reaches down to about 1.27 m and its sills to
+  -0.27, on a plinth down to a lawn, the white door down to the ground before it (-0.65); a white glazed door and a white-framed louvre stand beside the pier, then
   windows and a concrete post, only a little behind the piers' face.
 - Beyond the north-east end, `oWaF…` sees the corner of the face to the road and the end: the bands run
   round onto the end over windows set back behind them, as far as v 18.8, then a plain wall, then the

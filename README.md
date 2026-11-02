@@ -474,11 +474,13 @@ white door and a white-framed louvre beside a pier, and the bands run round the 
 end. Its heights come from the LiDAR, where its returns gather on the parapets' tops, the ledges, the
 gutters and the roofs; the window rows, the frames, the piers, the corner and the ground storey are
 measured in two Street View photographs through their cameras, which are set from the photographs' own
-edges against the LiDAR's. How far its frames stand out, and how far its ground storey's windows, doors
-and posts stand behind its piers there, are estimated. Counted inside the rectangle the model fills on
-the screen, its silhouette has an IoU of 0.855 to 1.000 over the six views of the two panoramas, though
+edges against the LiDAR's. What nothing measures is estimated, and its card names it: among other things
+how far its frames stand out, and how far its ground storey's windows, doors and posts stand behind its
+piers there. Where 110N's glazed link meets it, its north-east parapet is left out, so that the link's
+roof covers that stretch. Counted inside the rectangle the model fills on
+the screen, its silhouette has an IoU of 0.848 to 1.000 over the six views of the two panoramas, though
 in five of them the face fills that rectangle (photographed sky is 0 to 10% of it), so the IoU there
-says little; the brightness of its concrete and windows is within 5 of the photographs' in each view. From above its outline covers the LiDAR's with an IoU of 0.87, the LiDAR's
+says little; the brightness of its concrete and windows is within 4 of the photographs' in each view. From above its outline covers the LiDAR's with an IoU of 0.87, the LiDAR's
 counting scattered returns in the courtyard, and on 76% of the cells both cover it is within 0.5 m of
 the LiDAR's height. What no photograph shows is drawn plainly: its back, its south-west end, the
 courtyard and the roofs.
@@ -881,11 +883,15 @@ If you represent the University and would like something changed or removed, ple
   panoramas see it: one its face to the road whole, the other its east corner and the ground storey
   beside it at a slant; their cameras are set from the photographs' own edges against the LiDAR's. Its
   heights come from the LiDAR, its window rows, frames, piers and ground storey from the photographs.
-  The two photographs differ by 0.2 to 0.5 m on the ground storey's band and sills toward its north-east
-  end, and they are drawn between them. Which panes have blinds is drawn by a seeded draw at the share
-  the photographs show; how far its frames stand out, and how far its ground storey's windows, doors and
-  posts stand behind its piers there, are estimated, and the ledge along its bands' lower edges is not
-  drawn. What no
+  Toward its north-east end one photograph's camera reads the ground storey 0.2 to 0.5 m low, as it reads
+  the ground there below the LiDAR's; the storey is drawn at the other's heights, whose camera reads the
+  ground as the LiDAR does. Which panes have blinds is drawn by a seeded draw at the share the photographs
+  show; that, how far its frames stand out and how thick their members are, how far its ground storey's
+  windows, doors and posts stand behind its piers there and how thick its roofs are, among others, are
+  estimated, and its card says so; the ledge along its bands' lower edges is not drawn. The site stands
+  each landmark on the map's ground at its own door, which puts the Thomas Building 0.62 m higher against
+  the Thomas Building Extension than the LiDAR has them: where the extension's glazed link meets it, its
+  north-east parapet is left out, so that the link's roof covers that stretch. What no
   photograph shows is drawn plainly: its back, its south-west end, the courtyard and the roofs. The
   map's ground (the 8 m elevation model) lies up to 4.2 m above the ground at its door by its west
   corner and 2.1 to 2.8 m above it at its round stair, where the LiDAR's ground is within about 1 m of

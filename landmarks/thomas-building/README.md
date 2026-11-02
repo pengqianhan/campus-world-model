@@ -33,7 +33,14 @@ the ring at each (`outline_note`), and `campus_outline` keeps the map's ring.
 ground of 34.6 m, 51.3-51.8 m NZVD) runs over 110's north-east parapet (15.13 m above 36.17, 51.30 m
 NZVD) and ends at u 29.5-29.9 of this model's axes, v -4.6 to 16.4, where 110's gutter begins. The link
 is 110N's, as its config says: neither this model nor this building's selection of points takes any of
-it. This model draws 110's end wall and parapet under the link; 110N's model draws the link over them.
+it. This model draws 110's end wall under the link and 110N's model draws the link over it. Its
+north-east parapet is left out where the link crosses it, v -5.1 to 15.9 (`MEASURED.link`): the site
+stands each landmark on the map's ground at its own door, 31.058 m at this one's and 28.866 m at 110N's,
+2.19 m apart where the two configs' LiDAR grounds are 1.57 m apart, so on the site 110 stands 0.62 m
+higher against 110N than the LiDAR has it. There the link's roof spans u 29.50-35.47, v -5.09 to 15.80
+of this model's axes at y 14.75-14.86, below the parapet's top (15.13), where at the LiDAR's heights it
+is 15.47, above it. Without the parapet there, the link's roof covers that stretch at either height,
+and the link's glass end, its render side and its wall against 110 close the space under it.
 From the east corner the face to the road's bands run round onto the end, over windows set back behind
 them, as far as v 18.8, where they end in `oWaF…`'s wide view (round 2; round 1 carried them to the
 link); from there to the link at v 16.4 the end is plain wall. On the site the two models stand side by
@@ -94,7 +101,10 @@ lower through a camera whose pitch and roll are not yet fitted.
 Estimated (the config's `estimated`, for the card), no photograph or return giving them: how far the frames stand out (0.12 m), the plinth's top
 (0.35 m, behind the hedge), the second row's upper transom (4.45 m, read to about 0.1 m), the plain end at
 the south-west (a pier's width: no photograph shows that end square), the first mullion in the bays the
-camera does not see square. The other faces are round 0's massing at the LiDAR's sizes: no photograph
+camera does not see square. Round 2's review added to `estimated` what else nothing measures: the
+frames' members (0.07 m), where the mullions stand in the other bays (the measured 0.58 m carried on),
+which panes have blinds (a seeded draw at the share the photographs show) and the roofs' thickness over
+the set-back storeys' walls (0.25 m). The other faces are round 0's massing at the LiDAR's sizes: no photograph
 shows the back, the south-west end or the courtyard, and they are plain walls.
 
 Against the photographs: IoU in the box 0.895, 1.000 and 1.000 over `S_C8…`'s wide, upper and door views
@@ -128,13 +138,17 @@ LiDAR, every size in `parts/common.js` with its source:
   wall from there to 110N's link.
 - **The ground storey toward the north-east end**, as `oWaF…`'s door and wide views and `S_C8…`'s wide
   view show it from u 17 to the corner: a concrete post at u 17.0-17.5 where it begins; the band over it
-  reaching down to 1.1 m (its lower edge reads 1.26-1.28 through `S_C8…`'s camera and 0.76-1.06 through
-  `oWaF…`'s, which reads the band's top 0.03-0.37 below the LiDAR's ledge there), where further
-  south-west it starts at 1.46; the windows' sills at -0.45 (-0.27 and -0.60 to -0.74 through the two
-  cameras), on a plinth; a white door from u 23.3 to the pier, a white-framed louvre from the pier to
-  27.25 and a concrete post at 28.4-28.85. Its windows and doors stand only a little behind the piers'
-  face: in the upper view the pier's side shows 17 px there, where the upper rows' 1.35 m recess would
-  show about 55, so 0.3 m (estimated, 0.2-0.4).
+  reaching down to 1.27 m, where further south-west it starts at 1.46; the windows' sills at -0.27, on a
+  plinth down to the ground; a white door from u 23.3 to the pier, down to the ground before it (-0.65),
+  a white-framed louvre from the pier to 27.25 and a concrete post at 28.4-28.85. The heights are
+  `S_C8…`'s (band 1.26-1.28, sills -0.27), whose camera reads the plinth's foot at -0.65 where the
+  LiDAR's ground before it is -0.61 (58 returns, u 17-23). `oWaF…`'s reads low near the ground: the
+  white door's threshold at -1.10 to -1.16 where the LiDAR's ground before it is -0.65 (14 returns, p10
+  -0.78, p90 -0.60), the ledge 2.38 at 2.01-2.35, the band's lower edge at 0.76-1.06 and the sills at
+  -0.60 to -0.74. (Round 2 first drew 1.1 and -0.45, between the two cameras; the review of fd2b84f
+  found the LiDAR's ground at the white door.) Its windows and doors stand only a little behind the
+  piers' face: in the upper view the pier's side shows 17 px there, where the upper rows' 1.35 m recess
+  would show about 55, so 0.3 m (estimated, 0.2-0.4).
 - **A warm concrete** (`concrete` in the kit: the paint's shader in 0xa6907b). In `S_C8…`'s upper view
   the bands now read RGB 118/107/97 against the photograph's 114/98/90 (round 1's `grey`: 98/108/120),
   the piers 121/109/99 against 115/105/97. The plant room, the set-back storeys and the round stair, which
@@ -148,13 +162,13 @@ from the windows, the first flush with the face as `S_C8…` shows it lit), and 
 east corner, where the wide view shows only a grey door and a sign; and where the ground storey's lower
 band and sills begin is the post `S_C8…` shows at u 17.0-17.5.
 
-Against the photographs (`run.sh thomas-building refine compare topview`): IoU in the box 0.895, 1.000
-and 1.000 over `S_C8…`'s wide, upper and door views (sky in the box 0.095, 0 and 0) and 0.855, 1.000
-and 0.980 over `oWaF…`'s (0.354, 0 and 0.020), a mean of 0.955; where the box holds little sky a plain
-block scores as high, so the strips show the likeness. The luma's median within 5 of the photographs'
-in every view (109-110 against 107-114). From above, unchanged: footprint IoU 0.868, 76% of cells
-within 0.5 m, the highest point 25.7 against 25.0 (the flue), block 110 85.0% under the model. 9,716
-triangles in 7 meshes (`concrete`, `grey`, `roofGrey`, `glassPale`, `frameRed`, `blind`, `paint`).
+Against the photographs (`run.sh thomas-building refine compare topview`, after the review's fixes):
+IoU in the box 0.894, 1.000 and 1.000 over `S_C8…`'s wide, upper and door views (sky in the box 0.095, 0
+and 0) and 0.848, 1.000 and 0.980 over `oWaF…`'s (0.349, 0 and 0.020), a mean of 0.954; where the box
+holds little sky a plain block scores as high, so the strips show the likeness. The luma's median within
+4 of the photographs' in every view (109-110 against 107-114). From above, unchanged: footprint IoU 0.868, 76% of cells
+within 0.5 m, the highest point 25.7 (the flue, its highest return 25.77; the LiDAR's p99.9 is 25.0),
+block 110 85.0% under the model. 9,752 triangles in 7 meshes (`concrete`, `grey`, `roofGrey`, `glassPale`, `frameRed`, `blind`, `paint`).
 
 ## On the site
 
@@ -165,13 +179,14 @@ link, and 110N is a landmark of its own. 110's entry in `landmarks/measured/excl
 outline holds the courtyard) has gone: the generator leaves the landmarks on the site alone.
 
 - **The door** stays at (4.0, 22.6), the foot of the face to the road near its middle, where the frame's
-  ground (36.17 m) is measured; the white door toward the north-east end stands on ground about 1.7 m
-  lower. On the map the model stands on the map's ground there.
+  ground (36.17 m) is measured; the white door toward the north-east end stands on ground 0.65 m lower
+  (the LiDAR's, p50 of 14 returns before it), the grey door round the east corner on ground 1.7 m lower
+  (-1.77). On the map the model stands on the map's ground at (4.0, 22.6).
 - **The foot.** Stood as the site stands it, every part's walls go down to `FOOT` (-2.0 m), below the
   map's ground everywhere under it: under the face to the road the drawn ground lies 1.06 m below to
   1.59 m above the door's ground, and under the whole model up to 4.2 m above it, by the west corner
   (2.1 to 2.8 m at the round stair), where the LiDAR's ground is within about 1 m of the door's: walls
-  there are buried deeper, and none hangs. Toward the north-east end the ground storey's sills stand at -0.45 on the plinth; the foot
+  there are buried deeper, and none hangs. Toward the north-east end the ground storey's sills stand at -0.27 on the plinth; the foot
   check reads materials, not parts, so the glass, the mullions and the panels there run on down inside
   the plinth to `FOOT`, where nothing shows them. `tests/landmarks.test.ts` passes.
 - **The light form** (the map, and the walker views of the basic tier) draws the frames (`frameRed`)

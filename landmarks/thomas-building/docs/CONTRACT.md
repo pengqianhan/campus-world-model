@@ -25,7 +25,8 @@ them into the model.
   - **behind the parapets** a gutter at 14.26 m and over each range a storey set back from it, under
     roofs that rise to 18-20.5 m: a ridge over the back range, sawtooths over the range to the road and
     the south-west range, two slopes and a valley over the north-east range;
-  - **a plant room** at the east corner to 23.46 m (the building's highest returns 25.1 m);
+  - **a plant room** at the east corner to 23.46 m (its highest returns 25.11 m; the building's highest
+    is the flue's, 25.77 m);
   - **a round stair** at the south-west end, half outside the end wall, its roof at 16.6 m, where the
     Overbridge (129) lands; a flue beside it to 25.7 m;
   - **the ground**: -0.88 to +0.44 along the face to the road, down to -1.83 at the north-east end;
@@ -35,7 +36,12 @@ them into the model.
 - **Where it meets 110N** (the Thomas Building Extension, its own landmark): 110N's glazed link reaches
   the north-east end at u 29.5-29.9, v -4.6 to 16.4 in this frame, its roof (17.04 m above 34.6, i.e.
   51.64 m NZVD) running over 110's parapet (15.13 m above 36.17, 51.30 m NZVD). The link is 110N's:
-  this model draws 110's wall and parapet under it and nothing of the link.
+  this model draws 110's wall under it and nothing of the link, and leaves out its north-east parapet
+  where the link crosses it (v -5.1 to 15.9, `MEASURED.link`). On the site each landmark stands on the
+  map's ground at its own door (31.058 m here, 28.866 m at 110N's: 2.19 m apart, where the LiDAR's are
+  1.57 m apart), so 110 stands 0.62 m higher against 110N than the LiDAR has it, and the link's roof
+  (y 14.75-14.86 in this frame) would sit below that parapet's top (15.13); without it the link's roof
+  covers the end at either height.
 
 ## Ownership
 - `parts/body.js` (the ranges' walls and parapets), `parts/front.js` (the face to the road and its wrap
