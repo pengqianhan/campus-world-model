@@ -153,11 +153,14 @@ export const FRONT = {
     windows: { sill: 5.1, crown: 7.0, n: 3, w: 0.45, col: 0.15 },
     // the steps before the door (round 2, the LiDAR: on the door's line, x 3-5, a landing at 0.80-0.67 m to
     // z 15.6, then a fall south to the street, 0.52 at z 15.9, 0.42 at 16.2, 0.32 at 16.5, 0.17 at 16.8, 0.06
-    // at 17.1, -0.05 at 17.4; walls each side, their returns up to 1.01-1.10 m over x 1.2-2.0 and 0.89-1.05
-    // over x 6.0-7.2, z 15.8-17.2). Round 1 drew a flight running west along the west part's foot: the LiDAR
+    // at 17.1, -0.05 at 17.4; a wall each side, over x 1.2-2.0 and 6.3-7.0: their returns stand at 0.96-1.10 m
+    // over z 15.8-16.4 (west 1.01, 1.10, 0.96, 1.02; east 0.89, 1.05, 0.90), at 0.84 and 0.77 by z 16.7-16.85,
+    // and beyond z 16.9 there is ground (-0.26 at z 17.0, -0.41 at 17.4 on the west; 0.23 at 17.0 on the
+    // east): drawn 1.05 m high to z 16.4, then 0.8 to 16.9, as the door view's right wall steps down toward
+    // the street). Round 1 drew a flight running west along the west part's foot: the LiDAR
     // has only footpath there (-0.71 m, 16 returns), and the door view's coloured risers run across, between
     // the two walls, down toward the street. Six risers (the door view); the landing at the door's threshold
-    steps: { landing: 15.7, foot: 17.4, n: 6, x: [1.9, 6.4], walls: [[1.2, 1.9], [6.4, 6.9]], wallTop: 1.05 },
+    steps: { landing: 15.7, foot: 17.4, n: 6, x: [1.9, 6.4], walls: [[1.2, 1.9], [6.4, 6.9]], wallTops: [[16.4, 1.05], [16.9, 0.8]] },
   },
   // the west part (round 2), from the aerial and the photograph, the LiDAR's being the temporary works'. Its
   // face on westFront (above). Heights: 0Rjk's wide view (cut level) through its camera, each point of the

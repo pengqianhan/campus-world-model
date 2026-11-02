@@ -139,9 +139,9 @@
  "door": {
   "x": 4.0,
   "z": 17.6,
-  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The footpath at the foot of the steps before the door, on the door's centre line (x 4.0, parts/common.js FRONT.porch.door), 0.2 m beyond the steps' walls (FRONT.porch.steps: their last riser at z 17.1, their walls to 17.4), where the LiDAR's ground is -0.03 m (median of the ground returns over x 4 to 5, z 17 to 18); the frame's ground, 25.5 m, is the street's."
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The footpath at the foot of the steps before the door, on the door's centre line (x 4.0, parts/common.js FRONT.porch.door), 0.5 m beyond the steps' last riser (FRONT.porch.steps: their last riser at z 17.1, their walls to 16.9), where the LiDAR's ground is -0.03 m (median of the ground returns over x 4 to 5, z 17 to 18); the frame's ground, 25.5 m, is the street's."
  },
- "estimated": "the height of its west side's parapet and of its west part's dentil course; how far its pilasters, arcades, coping and door surround stand out, and its parapets' thickness; the widths of the piers between its blind arches, of its merlons and of the porch's windows and colonnettes; where its blind arches come down, hidden by the areaway and the cars; and its radio mast's members",
+ "estimated": "the height of its west side's parapet and of its west part's dentil course; how far its pilasters, arcades, coping and door surround stand out, and its parapets' thickness; the widths of the piers between its blind arches, of its merlons and of the porch's windows and colonnettes; where the porch's cream divides between its band and its dentil course; where its blind arches come down, hidden by the areaway and the cars; and its radio mast's members",
  "measured_by": "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph",
  "credit": "the Auckland Central 0.06 m Urban Aerial Photos (2023), sourced from LINZ and licensed by Auckland Council for re-use under the Creative Commons Attribution 4.0 International licence (CC BY 4.0)",
  "origin": {

@@ -208,5 +208,8 @@ export function front(b) {
   b.box(st.walls[0][0], st.walls[1][1], foot, th, W.porchFront, st.landing, "brickBrown");
   const tread = (st.foot - st.landing) / st.n, rise = th / st.n; // down to the street at the frame's ground
   for (let i = 1; i < st.n; i++) b.box(sx0, sx1, foot, th - rise * i, st.landing + tread * (i - 1), st.landing + tread * i, "brickBrown");
-  for (const [w0, w1] of st.walls) b.box(w0, w1, foot, st.wallTop, Math.min(bl.d, br.d) + W.porchFront - 0.05, st.foot, "render");
+  for (const [w0, w1] of st.walls) {
+    let z = Math.min(bl.d, br.d) + W.porchFront - 0.05; // from the porch's blocks, stepping down toward the street
+    for (const [z1, top] of st.wallTops) { b.box(w0, w1, foot, top, z, z1, "render"); z = z1; }
+  }
 }

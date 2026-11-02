@@ -21,12 +21,15 @@ bearing of most of the walls, points west-south-west and x is minus it); y up fr
 street before the door; z south-south-east, toward Shortland Street; the mean of the building's returns
 above 8 m at x = z = 0.
 
-**The campus map's outline for 820 is up to about 1 m off the building.** Taken to the LiDAR's grid, it
-lies north of the street face that the model draws by 0.84 to 0.93 m before the west part, 0.27 to 0.54 m
-before the porch and 0.66 to 0.72 m before the east part, and is turned against the building: its back
-stands 0.88 m south of the building's back at x -13 and 1.15 m north of it at x 19, and the two shapes'
-centroids are 1.1 m apart. It adds a tail on the west and a nub on the east over lower roofs. (Round 1
-measured it against the LiDAR's face at z 16.2, which was the temporary works', and wrote about 2 m.) The outline is the University's and is not changed here:
+**The campus map's outline for 820 does not follow the building.** Taken to the LiDAR's grid, it lies
+north of the street face that the model draws by 0.84 to 0.93 m before the west part, 0.27 to 0.54 m before
+the porch and 0.66 to 0.72 m before the east part, and is turned against the building: its back stands
+0.88 m south of the building's back at x -13 and 1.15 m north of it at x 19. Its edge by the porch stands at
+x 1.3 to 1.5, where the porch's western block begins at x 0.0. It adds a tail over the lane to the west,
+reaching x -21.6 and z -18.9 (6.1 m beyond the west wall, 6.3 m beyond the back), and a nub over the roofs
+to the east, reaching x 27.1 (5.6 m beyond the east wall); the two shapes' centroids are 1.1 m apart.
+(Round 1 measured it against the LiDAR's face at z 16.2, which was the temporary works', and wrote about
+2 m north.) The outline is the University's and is not changed here:
 `building.campus_outline` keeps it, and the model, drawn where the LiDAR and the aerial show the
 building, stands in place of block 820, of which it covers 90.2% from above. The data stage chooses the
 building's points by a ring traced from the LiDAR instead (`building.outline`, `outline_note`).
