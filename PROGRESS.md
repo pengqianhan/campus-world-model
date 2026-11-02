@@ -821,5 +821,5 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    instead of their nearest layer's; that would change the City's massings. **Answered
    (2026-11-02): they stay drawn at their nearest layer's height, as now.** Since the fourth round
    of measured massings (2026-11-02), 902 and 903 are measured massings too: 904's strip now lies on
-   their measured roofs, within about 0.1 m of them, and its rim shows in patches; the questions
+   their measured roofs, within 0.2 m of them, and its rim shows in patches; the questions
    about overlapping outlines and the City's rule for pieces with no roof stay open.
