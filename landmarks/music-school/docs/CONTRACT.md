@@ -23,7 +23,7 @@ model.
     eaves 0.74-0.88 m beyond its walls (the LiDAR's wall returns);
   - **the north wing** round the courtyard, flat at 5.16 m, with a **parapet** over its face to the car
     park stepping up in rises of about 0.4 m from 5.5 to 8.3 m toward the north corner, and a **curved
-    canopy** along that face (4.55 m at the wall, 3.42 m 1.5 m out, its lower edge at 2.69 m through the
+    canopy** along that face (4.55 m at the wall, 3.42 m at z 18.0, its lower edge at 2.69 m through the
     camera);
   - **the south range**, a low gable along x hipped at its west end (ridge near z -14, 9.65 m), **the
     south-east part** between it and the auditorium, a gable along z (ridge near x -11, 10.1-10.4 m) with a
@@ -37,7 +37,7 @@ model.
 - **Neighbours.** Te Pūtahi Tangata (201, a block on the site) stands 0.44 m from 250's outline at its west
   corner; the model's west corner keeps to 250's returns. The Overbridge (202, a block 3.6 m tall from its
   floor count) runs along the south-east and south sides, its outline overlapping 250's: the model covers
-  12.5% of block 202, under roofs 7.9-9.7 m above 32.7, where block 202's top stands about 0.4 m above
+  12.0% of block 202, under roofs 7.4-9.3 m above 32.7, where block 202's top stands about 0.3 m below
   32.7 by the LiDAR's heights (its ground's median 28.79 m, plus 3.6): neither shows through the other
   there. How the two stand on the map's own ground is to be checked before `site` is set.
 

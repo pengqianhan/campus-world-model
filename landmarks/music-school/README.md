@@ -33,8 +33,9 @@ it. The house east of the car park is not on the campus map and stands more than
 - **Te Pūtahi Tangata (201)**, a block, 0.44 m from 250's outline at the west corner: the model's west
   corner keeps to 250's returns.
 - **The Overbridge (202)**, a block 3.6 m tall by its floor count, along the south-east and south sides:
-  the campus map's two outlines overlap, and the model covers 12.5% of block 202 there, under roofs 7.9 to
-  9.7 m above 32.7 where block 202's top stands about 0.4 m above it by the LiDAR's heights. How the two
+  the campus map's two outlines overlap, and the model covers 12.0% of block 202 there (round 1), under roofs 7.4 to
+  9.3 m above 32.7 where block 202's top stands about 0.3 m below it by the LiDAR's heights (its ground's
+  median 28.79 m, plus 3.6; the LiDAR's ground in its outline, -3.84 m, gives 0.24 m below). How the two
   stand on the map's own ground, each at its own, is to be checked before `site` is set.
 
 ## References
