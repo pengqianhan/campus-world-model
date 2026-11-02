@@ -3032,6 +3032,15 @@
       "count": 6
     },
     {
+      "file": "landmarks/streetview/tiles/2LAGNlzN8kUs6TN3wdhYNA",
+      "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=2LAGNlzN8kUs6TN3wdhYNA",
+      "fetchedAt": "2026-11-02T10:10:42.553Z",
+      "bytes": 2273495,
+      "sha256": "31104839623feb9878fcacea5b77e13d117074712aa1e4707116c3aafcd7c432",
+      "source": "streetview",
+      "count": 143
+    },
+    {
       "file": "landmarks/streetview/tiles/2St21qiEOk8993u6C5giCA",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=2St21qiEOk8993u6C5giCA",
       "fetchedAt": "2026-10-21T21:04:18.586Z",

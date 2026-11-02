@@ -42,7 +42,7 @@ model.
   there. How the two stand on the map's own ground is to be checked before `site` is set.
 
 ## Ownership
-- `parts/fan.js` (the auditorium), `parts/north.js` (the north wing, the parapet and the canopy),
+- `parts/fan.js` (the auditorium; its window, gutter and downpipes), `parts/north.js` (the north wing, the parapet and the canopy),
   `parts/ranges.js` (the south range, the south-east part and its stack, the low link, the north-west block
   and the west corner),
   `parts/shapes.js` (shared helpers: one owner per round, named in the brief). `model.js` and
@@ -56,14 +56,16 @@ model.
 - Street View: ≤ 1,200 tiles for this building; 143 bought (2026-11-02, `qru8…`).
 
 ## References
+- `2LAG…` (2022-09), at the face's south-east end, bought in round 2 for the ochre wall's window: not pinned (its
+  photographs stand turned about 8° in the cut, its camera is not fitted); nothing is measured through it.
 - `qru8…` (2022-09), in the car park 9.3 m out from the face to the car park, near its north end: that
   face whole, from the north corner to the canopy's south-east end, with cars before its foot, and the
   auditorium's ochre wall beyond it at a slant. Its metadata's `copyright` reads "From the Owner, Photo
   by: Google".
 - Measure through the camera fixed from the photograph's own edges against the LiDAR
   (`streetview.camera_fixes`, its note), never through the recorded one: its pitch and roll from the
-  parapet's treads against the sky, its yaw the recorded heading, its x where the risers it shows fit the
-  LiDAR's returns on the parapet's top. `refine.keep_fixes` keeps it.
+  parapet's treads against the sky, its yaw and x from the ochre wall's two corners on the LiDAR's wall lines.
+  `refine.keep_fixes` keeps it.
 - No photograph shows the road side (north-west), the south-east side, the courtyard or the roofs: draw
   them plainly at the LiDAR's sizes.
 

@@ -13,8 +13,9 @@ of them shows is drawn plainly at the LiDAR's sizes.
 - **A curved canopy of white corrugated metal** along the whole face, a quarter-round in section, its
   corrugations running down the curve; dark specks on it (dirt). Under it the same render down to the car
   park, a few small fittings (a round lamp, red marks), and a green handrail along the foot.
-- **The auditorium beyond it**, to the left: a taller wall painted ochre-yellow, with a tall window
-  near its left end and a light gutter along its top, under a grey roof.
+- **The auditorium beyond it**, to the left: a taller wall painted ochre-yellow, its walls under the eaves of
+  a grey roof with a light gutter along them; in its face to the car park, near its west end, a window of four
+  tall lights in two rows in a white frame under a white head; white downpipes at that face's two corners.
 - Over the parapet, a mass of ivy and shrubs on the courtyard side (not drawn), and far behind it Te
   Pūtahi Tangata under construction with a crane (a neighbour, not drawn).
 

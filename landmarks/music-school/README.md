@@ -43,15 +43,18 @@ it. The house east of the car park is not on the campus map and stands more than
 `qru8…` (Google, 2022-09), in the car park 9.3 m out from the face to the car park near its north end, sees
 that face whole, from the north corner to the canopy's south-east end, and the auditorium's ochre wall
 beyond it at a slant; its 143 tiles were bought for this building on 2026-11-02, through the ledger.
-`2LAG…` (2022-09), which also sees this face, was not bought. Their metadata's `copyright` reads "From the
-Owner, Photo by: Google".
+`2LAG…` (2022-09), at the face's south-east end, was bought in round 2 (143 tiles, 2026-11-02, through the
+ledger) for a squarer view of the ochre wall's window; its photographs stand turned about 8° in the cut and its
+camera is not fitted, so it is not pinned and nothing is measured or scored through it. Their metadata's
+`copyright` reads "From the Owner, Photo by: Google".
 
 Its camera is set in `streetview.camera_fixes` (`camera_fixes_note`), never the recorded one: its pitch and
 roll fitted to the photograph's own edges in the wide view, the parapet's treads against the sky, each a
 level line at its height on the parapet's face (the long top at the LiDAR's 8.3 m and three treads below it
 in equal rises to the LiDAR's 6.74); the views cut again level by the roll. Level lines on one face cannot
-tell the yaw from the roll, nor place the camera along the face: the yaw is held at the recorded heading,
-and x is set where the risers the photograph shows best fit the LiDAR's returns on the parapet's top.
+tell the yaw from the roll, nor place the camera along the face: round 1 held the yaw at the recorded
+heading and set x where the risers best fit the LiDAR's returns on the parapet's top; round 2 fits the yaw and x
+to two vertical edges of known place, the ochre wall's corners on the LiDAR's wall lines.
 
 ## Round 0 (November 2026, the lead)
 
@@ -130,3 +133,41 @@ block 202 under the model. 728 triangles in 4 meshes (`paint`, `trim`, `roofGrey
 
 Still different: the shadow the viewer's default light casts under the canopy is broader and darker than the
 photograph's; the ochre wall's window is not drawn (above).
+
+## Round 2 (November 2026, one builder)
+
+From round 1's list, each change measured in the photograph through its fitted camera or in the LiDAR, every size
+in `parts/common.js` with its source:
+
+- **The camera's yaw and x**, from the ochre wall's two corners, vertical edges whose place the LiDAR's wall
+  returns give (x -8.66 and -17.59 on z 15.64), eight points in the wide view, with the treads as before: x 19.12
+  (sd 0.13) and yaw -0.22° (sd 0.08), the corners 0.6 px rms; with x held at round 1's 18.96 the yaw is -0.32°,
+  and with all five free x 19.24, z 27.48, pitch -0.14°, yaw -0.40°, roll -0.37°, each within about 1.5 sd of the
+  four held. The cut does not change (byte-identical pictures). Through it the risers land at x 16.09, 16.84 and
+  17.64 (round 1: 15.88, 16.64, 17.44).
+- **The ochre wall's window**, through that camera on the wall's plane (z 15.64): x -16.57 to -12.70, its sill's
+  foot at 3.30 m, its head's top at 6.92, its transom at 5.02; four lights in two rows, as both photographs show.
+  The wall's z holds to 0.1 m, which moves the window 0.2-0.45 m along it at `qru8…`'s slant of 16-19°; through the
+  same camera the wall's west end lands at x -17.45, where its returns put it at -17.59. The panes are drawn on the
+  wall's face; the frames' and head's sizes and how far they stand out are estimated.
+- **The gutter and the downpipes**: the fascia round the auditorium's eaves in white paint, as the photographs
+  show its gutter (0.2 m deep, estimated), and white downpipes at the ochre wall's two corners (their radius
+  estimated). In the wide view the window, the corners and the downpipes land on the photograph's.
+- **`2LAG…`**, bought for a squarer view of the window: it shows the four lights and the head (the house before
+  it hides the lower row), but its photographs stand turned about 8° in the cut, its camera is not fitted, and the
+  refine stage does not correct it (14% sky round the silhouette): it is not pinned. Pinned for one compare
+  through its recorded camera, its views gave IoU in the box 0.738, 0.708 and 0.801 and luma medians 244 against
+  231-232: the same wall reads 231-232 in its photographs and 245-248 in `qru8…`'s, a difference of exposure.
+- **The west corner**: its edge toward the south range moved to where its returns rise above the range's roof
+  (x 16.2-16.6, where round 1 had 15.5): 70% of its cells within 0.5 m of its plane, 60% before; the south range
+  then 90% (1,419 cells). Neither two planes nor a hip of four fits the west corner better: a fifth of its returns
+  fall 1 m or more below the plane, between the glazing bars of the roof the 2023 aerial shows there, which the
+  model does not draw. The north-west block (81%) and the low link (42%) fit no better with more planes or a
+  second level: left as they are.
+- **The shadow under the canopy** is the viewer's light, not the model: left as it is.
+
+Against the photograph (`run.sh music-school refine compare topview`, `qru8…`'s camera fixed): IoU in the box 0.940,
+0.841 and 0.965 (sky in the box 0.518, 0.321 and 0.059), a mean of 0.915; the luma's median 245, 244 and 244
+against 248, 248 and 247. From above: footprint IoU 0.936, 88% of cells within 0.5 m, the highest point 15.14
+against 15.39 (p99.9), 80.5% of block 250 and 12.0% of block 202 under the model. 906 triangles in 5 meshes
+(`paint`, `trim`, `roofGrey`, `roofPale`, `glassPale`).
