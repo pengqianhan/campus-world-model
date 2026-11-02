@@ -35,7 +35,7 @@ A change to what the site does or shows adds its line here, and the README's
   On the map it has the map's colours, its red window frames with the walls and its blinds with the
   panes; from a walker's height on a computer with a graphics card, its own warm grey concrete, red
   frames and glass. Its back, its south-west end, the courtyard and its roofs, which no photograph shows,
-  are drawn plainly. A click still opens its floors (#PR).
+  are drawn plainly. A click still opens its floors (#129).
 - **The Kenneth Myers Centre drawn in detail.** Near the camera the map draws the Kenneth Myers Centre
   (820) on Shortland Street from code in place of its block: a brick building whose pilasters rise past
   its parapet into pinnacles, a cream coping over a corbel table of small arches and tall blind arches
