@@ -32,7 +32,7 @@ A change to what the site does or shows adds its line here, and the README's
   estimated, and its card says so. On the map it has the map's colours; from a walker's height on a
   computer with a graphics card, its own paint, ochre render, metal roofs and glass. Its faces to the road
   and to the south and west, the courtyard and its roofs, which no photograph shows, are drawn plainly. A
-  click still opens its floors (#PR).
+  click still opens its floors (#130).
 - **The Thomas Building drawn in detail.** Near the camera the map draws the Thomas Building (110) on
   Symonds Street from code in place of its block, beside the Thomas Building Extension: four ranges of
   board-marked concrete round a courtyard, and along its face to the road four storeys of red-framed
