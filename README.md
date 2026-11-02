@@ -927,9 +927,9 @@ If you represent the University and would like something changed or removed, ple
   photograph's own edges against the LiDAR's. Its heights and roofs come from the LiDAR, the parapet's
   upper steps, the canopy's lower edge and the ochre wall's window from the photograph. A second panorama,
   whose photographs stand turned about 8° and whose camera is not fitted, shows the window squarer but
-  measures nothing. How thick its canopy and roofs are, where the parapet's lower steps begin and how high
-  its steps stand between the LiDAR's levels, the window's frames, the downpipes and the colour of the
-  walls no photograph shows are estimated, and its card says so. The west corner's glazed roof is drawn as
+  measures nothing. How thick its canopy and roofs are, how deep the auditorium's fascia is, where the
+  parapet's lower steps begin and how high its steps stand between the LiDAR's levels, the window's frames,
+  the downpipes and the colour of the walls no photograph shows are estimated, and its card says so. The west corner's glazed roof is drawn as
   one plane, the low link at the courtyard's east corner flat (42% of its cells within 0.5 m), and the
   trees by the road, which the LiDAR partly classes as building, are not drawn. What no photograph shows
   is drawn plainly: its faces to the road and to the south and west, the courtyard and the roofs. The
