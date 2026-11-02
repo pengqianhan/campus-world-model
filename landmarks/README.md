@@ -237,7 +237,8 @@ agent and no photograph. All of them share one model and have a data file each:
   where they meet it. When the lowest layer covers less than half of the outline and that would lose
   a roof (its own slopes flattened, or a larger layer under its walls, as where two hips meet in a
   valley), the walls round the outline stop instead at a flat plinth at the lowest eave of all the
-  layers, and every layer stands on it. Roof that no layer draws (a chimney, plant, a tree classed
+  layers, and every layer stands on it; in a building drawn with faces (below), every sloping layer
+  on the plinth has eaves too, where it meets the outline. Roof that no layer draws (a chimney, plant, a tree classed
   as building) is left out. An outline on the campus map that crosses itself keeps its block. On
   Grafton and Newmarket (`DROP_BARE_ON`; `--drop-bare` or `--keep-bare` for a run) a traced piece of a
   layer in which the LiDAR sees no roof cell of that layer is not drawn as a layer, and its data file
@@ -253,13 +254,15 @@ agent and no photograph. All of them share one model and have a data file each:
   Then a sloping layer is split into its faces where they lie nearer than the lowest of its planes:
   its sloping cells by the direction they fall in, in connected pieces on one plane each (two faces
   that fall the same way at different heights are two). Each face is a mono-pitch over the cells
-  nearest it, traced unsimplified so that neighbouring faces share their edges, with eaves where it
-  meets the outline; the faces of a layer stand on a flat body up to the lowest edge of their roofs,
-  on the plinth. The building is drawn only if it then passes the check with more cells within
+  nearest it, traced unsimplified so that neighbouring faces share their edges; the faces of a layer
+  stand on a flat body up to the lowest edge of their roofs, on the plinth. In such a building every
+  sloping layer, a face or not, has eaves where it meets the outline, measured from the LiDAR as the
+  outline's are. The cells of the layer that lie on no face have their own entry under `dropped`. The building is drawn only if it then passes the check with more cells within
   0.5 m than before; else its block stays, and `exclusions.json` gives both checks. A building that
   passes without them is not measured again, so its data file is as before. `--no-forms` leaves
-  them out. A building in `SLOW` keeps its block though it passes, with its reason: 405 Engineering
-  Block 5, whose model is too slow to draw in software (MASSING.md, "The fourth round").
+  them out. 405 Engineering Block 5 is drawn by the maintainer's exception (2026-11-02), although it
+  makes the map drawn in software slower than the 15% the loop allows (MASSING.md, "The fourth
+  round").
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
