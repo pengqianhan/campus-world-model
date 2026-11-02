@@ -241,7 +241,8 @@ The review of ed5461f found:
   to its top along the facet there, wherever no wall runs along the roof's edge, and those walls run up to the top
   edge. A check in node of every edge of every roof slab of the model, in columns 1 cm apart: each is closed by a
   wall or a fascia from its underside to its top, with no opening over 1 mm (at 5de3f2a, 31.4 m of edge were
-  open: 200 mm at those two ends, 10 mm along the five edges toward the lower roofs).
+  open: the full 200 mm at those two ends, and a 10 mm slit along the rest of those two edges and the six edges
+  toward the lower roofs and the courtyard).
 - **The downpipes** run up to the soffit over each.
 
 After the fixes (`run.sh music-school refine compare topview`): IoU in the box 0.940, 0.841 and 0.965, the luma
