@@ -13,6 +13,7 @@
 import { BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Sphere, Vector3, type Material, type Object3D } from "three";
 import { landmarkBuildings, type LandmarkEntry, type Placement } from "../app/landmarks.ts";
 import type { FacadeSpec } from "./geometry.ts";
+import { SHADOW_ONLY_LAYER } from "./layers.ts";
 
 export type LandmarkForm = "light" | "full";
 export type TextureQuality = "high" | "low";
@@ -246,11 +247,29 @@ export class Landmark {
     if (!this.measured) return;
     for (const form of this.group.children) {
       for (const mesh of form.children as Mesh[]) {
-        const m = this.host.dress?.(this.buildings[0]!, mesh.userData.role as "walls" | "roof");
-        if (m) mesh.material = m;
+        const role = mesh.userData.role === "shadow" ? "walls" : (mesh.userData.role as "walls" | "roof");
+        const m = this.host.dress?.(this.buildings[0]!, role);
+        if (m && mesh.userData.role === "shadow") this.shadowOnly(m);
+        else if (m) mesh.material = m;
       }
     }
   }
+
+  /**
+   * The material of a measured massing's walls before the cut, which only the shadow map draws
+   * (SHADOW_ONLY_LAYER): in a frame that draws the shadow map the view's pass draws it too, in this
+   * material, which writes no colour and no depth, and which a pass that draws the scene in a material
+   * of its own does not replace (`allowOverride` false; the AO pass leaves the mesh out, `noAO`). In
+   * the shadow map it is drawn as `walls` would be (three.js makes the shadow's material from its side
+   * and shadowSide).
+   */
+  private shadowOnly(walls: Material): Material {
+    const m = (this.shadowMaterial ??= new MeshBasicMaterial({ colorWrite: false, depthWrite: false, allowOverride: false }));
+    m.side = walls.side;
+    m.shadowSide = walls.shadowSide;
+    return m;
+  }
+  private shadowMaterial?: MeshBasicMaterial;
 
   /**
    * The full form's textures, once the geometry has come: the kit's textures are its stone's, so a
@@ -297,6 +316,7 @@ export class Landmark {
       normalMap?.dispose();
       m.dispose();
     }
+    this.shadowMaterial?.dispose();
   }
 
   private fetch(request: LandmarkRequest): void {
@@ -323,7 +343,8 @@ export class Landmark {
         // Its walls and roofs in its block's materials, whichever the view draws now.
         const id = this.buildings[0]!;
         const role = (part: Part) => (part.material === "roof" ? "roof" : "walls");
-        this.place("light", this.form((part) => this.host.dress?.(id, role(part)) ?? this.lights.get(id)![role(part)]));
+        const material = (part: Part) => this.host.dress?.(id, role(part)) ?? this.lights.get(id)![role(part)];
+        this.place("light", this.form((part) => (part.material === "shadow" ? this.shadowOnly(material(part)) : material(part))));
         return;
       }
       // Each building's part in its own colours: one material a group.
@@ -378,6 +399,12 @@ export class Landmark {
       // A click finds the blocks, not the landmark's hundred thousand triangles.
       mesh.raycast = () => {};
       mesh.userData.noPick = true;
+      if (part.material === "shadow") {
+        mesh.layers.set(SHADOW_ONLY_LAYER);
+        // Left out of a pass that draws the scene in a material of its own: the walker views' AO
+        // (street/effects.ts) would draw it with the walls' depth and no normals.
+        mesh.userData.noAO = true;
+      }
       g.add(mesh);
       if (depthFirst && !(mesh.material as Material).transparent) {
         const twin = new Mesh(part.geometry, DEPTH_ONLY);

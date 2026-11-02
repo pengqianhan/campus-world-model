@@ -262,11 +262,21 @@ agent and no photograph. All of them share one model and have a data file each:
   passes without them is not measured again, so its data file is as before. `--no-forms` leaves
   them out. 405 Engineering Block 5 is drawn by the maintainer's exception (2026-11-02), although it
   makes the map drawn in software slower than the 15% the loop allows (MASSING.md, "The fourth
-  round").
+  round"). Since the walls inside it are no longer drawn it is at that limit (MASSING.md, "The speed
+  of a many-layered massing").
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
-  rim on flat roofs, and the street look's facade data. `pipeline/tools/massing_triangles.mjs`
+  rim on flat roofs, and the street look's facade data. A layer's walls are drawn only where no
+  other layer of the building hides them: a wall against a taller layer only for the height that
+  shows above it (from 5 cm behind the layer, so that no seam opens where they meet), after the party walls of mrdoob's slop-newyork (MIT; MASSING.md, "The speed of a
+  many-layered massing"), so that a tower of many layers has no walls inside it for a renderer to
+  rasterise for nothing. Roofs are not cut. The walls as they were before the cut still cast the
+  shadows, as a third mesh of positions only (`shadow`) on a layer that only a frame drawing the
+  shadow map lets through (`src/scene/layers.ts`), drawn there in a material that writes no colour
+  and no depth and that no pass may swap for its own (`allowOverride` false, `userData.noAO`): the
+  shadow map is drawn from the faces turned away from the sun, and without the walls inside, the
+  shadow at the shaded foot of a wall let light through in patches. `pipeline/tools/massing_triangles.mjs`
   gives its triangles to the top-view check: footprint IoU 0.90 or more against the LiDAR, and 90%
   of the cells both cover within 0.5 m (cells of roof that no layer draws are left out of the
   heights).

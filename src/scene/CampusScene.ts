@@ -63,6 +63,7 @@ import { GROUND, RAIL_WIDTH, ROAD_EDGE_WIDTH, ROAD_WIDTH, type GroundKind } from
 import type { TreeSpec } from "./street/crowns.ts";
 import { LANDMARKS, MEASURED } from "../app/landmarks.ts";
 import { Landmark, type Cover, type LandmarkForm, type MassingStyle } from "./landmarks.ts";
+import { SHADOW_ONLY_LAYER } from "./layers.ts";
 
 export interface Selection {
   building?: string;
@@ -2481,13 +2482,25 @@ export class CampusScene {
 
   /** A frame of the scene, with an open floor below the ground drawn through it. */
   private draw(): void {
+    // In a frame that draws the shadow map again, the camera lets through what only the shadow map
+    // draws (layers.ts): three.js's shadow pass draws what the view camera's layers let through.
+    const camera = this.activeCamera;
+    const shadows = this.renderer.shadowMap.enabled && this.renderer.shadowMap.needsUpdate;
+    if (shadows) camera.layers.enable(SHADOW_ONLY_LAYER);
+    try {
+      this.drawWith(camera);
+    } finally {
+      camera.layers.disable(SHADOW_ONLY_LAYER);
+    }
+  }
+
+  private drawWith(camera: OrthographicCamera | PerspectiveCamera): void {
     // A walker view has a look of its own. From a walker's height the ground hides what lies under
     // it, as it does on a street, so the floor under the ground is not drawn through it there.
     if (this.street.active) {
       this.street.render();
       return;
     }
-    const camera = this.activeCamera;
     this.renderer.render(this.scene, camera);
     if (!this.openBelowGround) return;
     // The open floor again, over the picture, and then the ground over that, see-through.

@@ -47,8 +47,9 @@ async function answer(ask: LandmarkRequest): Promise<void> {
       if (!load) throw new Error(`no landmark ${ask.name}`);
       const [build, data] = await Promise.all([load(), measured ? measuredData().then((all) => all[measured.building]) : undefined]);
       if (measured && !data) throw new Error(`no measured massing for ${measured.building}`);
-      // A measured massing has walls and roofs only, which the page draws in its block's materials.
-      const materials = measured ? { walls: new MeshBasicMaterial(), roof: new MeshBasicMaterial() } : (geometryMaterials() as Record<string, Material>);
+      // A measured massing has walls and roofs only, which the page draws in its block's materials, and
+      // its walls before they were cut, which only the shadow map draws (landmarks/measured/model.js).
+      const materials = measured ? { walls: new MeshBasicMaterial(), roof: new MeshBasicMaterial(), shadow: new MeshBasicMaterial() } : (geometryMaterials() as Record<string, Material>);
       const names = new Map(Object.entries(materials).map(([k, m]) => [m as Material, k]));
       // The parts log how long each took, for the landmark viewer; here that is noise. A part that
       // fails is still reported, as an error.
