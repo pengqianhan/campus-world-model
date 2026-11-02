@@ -201,7 +201,8 @@ describe("measured massings", () => {
       for (let t = 0; t < idx.count; t += 3) {
         const v = [0, 1, 2].map((k) => idx.getX(t + k));
         if (!v.every((i) => Math.abs(p.getX(i) - at) < 1e-6 && p.getY(i) <= top + 1e-6)) continue;
-        const [a, b, c] = v.map((i) => [p.getY(i), p.getZ(i)] as const);
+        const q = v.map((i) => [p.getY(i), p.getZ(i)] as const);
+        const [a, b, c] = [q[0]!, q[1]!, q[2]!];
         area += Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])) / 2;
         low = Math.min(low, ...v.map((i) => p.getY(i)));
       }
