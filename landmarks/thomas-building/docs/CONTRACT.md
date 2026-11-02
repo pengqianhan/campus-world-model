@@ -59,8 +59,8 @@ them into the model.
   by: Google".
 - Measure through a camera fixed from the photograph's own edges against the LiDAR
   (`streetview.camera_fixes`, its note), never through the recorded one. `S_C8…`'s is fitted here;
-  `oWaF…`'s place and heading are 110N's fit moved into this frame, its pitch and roll not yet fitted
-  (round 1: its bands drawn about 20 px low at the east corner).
+  `oWaF…`'s place and heading are 110N's fit moved into this frame, its pitch and roll fitted here (round
+  2: -0.48° and -2.4°, from its wide view's own edges).
 - 110N (on the site) is drawn in front of this model in the compare (`compare.occluders`): where it hides
   the north-east end in `oWaF…`'s views, those pixels count in neither the IoU nor the luma.
 - No photograph shows the back, the south-west end square, the courtyard or the roofs: draw them
@@ -76,3 +76,11 @@ them into the model.
   camera; say which in a comment, and say "estimated" where neither shows it.
 - Real or absent: what no photograph shows is plain wall, not invented windows.
 - No people, no cars, no bus shelter, no tree, no sign: they are in the photographs, not in the model.
+- Materials: `concrete` for the concrete the photographs show (the ranges' walls, the parapets, the face
+  to the road), `grey` for what they do not show close (the set-back storeys, the plant room, the round
+  stair), `frameRed` for the red steel frames and `blind` for the blinds behind the panes (so that the
+  site's light form draws them with the walls and with the panes: `LIGHT_ROLE`), `glassPale`, and `paint`
+  for the doors, the louvre and the flue.
+- Walls go down to `FOOT`. On the site the foot check reads each material's lowest points, so where a
+  storey's sills stand below the door's ground on a plinth (toward the north-east end), its glass,
+  mullions and panels run on down inside the plinth to `FOOT`, unseen.

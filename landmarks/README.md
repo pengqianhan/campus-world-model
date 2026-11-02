@@ -191,10 +191,13 @@ needs:
   render and timber, glass, slate, clay tiles and metal"): change them if the new building is of
   another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
-  (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `roofTile`, `glass`, `glassPale`, `iron` and
-  `void`)
+  (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `roofTile`, `glass`, `glassPale`, `blind`,
+  `iron` and `void`)
   but that is a roof, a pane or an opening, its part there. Every other material is drawn as wall
-  in the light form, so on the map a roof in a new material takes the wall colour until it is listed;
+  in the light form, so on the map a roof in a new material takes the wall colour until it is listed.
+  A material the light form would read wrongly gets a key of its own with the same shader and colour:
+  the Thomas Building's red window frames are `frameRed`, not `roofTile` (a roof), and its blinds
+  `blind`, which it draws with the panes, not `paint` (wall);
 - in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
   estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,

@@ -18,6 +18,21 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Thomas Building drawn in detail.** Near the camera the map draws the Thomas Building (110) on
+  Symonds Street from code in place of its block, beside the Thomas Building Extension: four ranges of
+  board-marked concrete round a courtyard, and along its face to the road four storeys of red-framed
+  window bands set back behind deep concrete bands, between square piers; toward its north-east end its
+  ground storey steps down, with a white door and a white-framed louvre, and the bands run round the
+  east corner onto its end. Its heights come from the LINZ 2024 LiDAR; its window rows, frames, piers,
+  corner and ground storey are measured in two Street View photographs through cameras set from the
+  photographs' own edges. How far its frames stand out, how high the plinth under its face to the road
+  is, its face's plain end at the south-west, how far behind its piers the ground storey's windows,
+  doors and posts stand toward the north-east end, and that storey round the east corner are estimated,
+  and its card says so.
+  On the map it has the map's colours, its red window frames with the walls and its blinds with the
+  panes; from a walker's height on a computer with a graphics card, its own warm grey concrete, red
+  frames and glass. Its back, its south-west end, the courtyard and its roofs, which no photograph shows,
+  are drawn plainly. A click still opens its floors (#PR).
 - **The Kenneth Myers Centre drawn in detail.** Near the camera the map draws the Kenneth Myers Centre
   (820) on Shortland Street from code in place of its block: a brick building whose pilasters rise past
   its parapet into pinnacles, a cream coping over a corbel table of small arches and tall blind arches
