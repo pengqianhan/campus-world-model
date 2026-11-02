@@ -68,6 +68,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-03:** the landmarks drawn in detail no longer flicker where two of their faces met in one
+  plane, such as a wall in its roof's edge or a pane's edge in its frame, on the map or from a walker's
+  height; in the Clock Tower a few small patches are left.
 - **2026-11-02:** another school, at [/lincoln/](https://campusworldmodel.com/lincoln/): Lincoln
   University's Lincoln campus, from OpenStreetMap. Only buildings OpenStreetMap tags as the
   University's (its `operator` tag, or `building=university`) and names are shown as the

@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-03
+
+### Fixed
+
+- **No more flicker where two faces of a landmark met.** In twelve of the landmarks drawn in detail, faces
+  of two materials lay in one plane over the same patch: a wall's face in its roof slab's side, a pane's
+  edge in its frame's, a plinth's top in its moulding's, the backs of glass and frames on one plane. The
+  screen cannot tell which of two such faces is in front, so they flickered as the camera moved, on the map
+  and from a walker's height. Now the hidden face of each pair stops short, stands inside its neighbour, or
+  stands a centimetre back, and what shows stands where it stood, to the centimetre; a test checks every
+  landmark on the site for faces closer than the map can tell apart. In the Clock Tower five small patches
+  are left, 0.13 m² in all (#PR).
+
 ## 2026-11-02
 
 ### Added
