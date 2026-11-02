@@ -10,7 +10,9 @@ building.id and building.also (the campus map's buildings whose blocks the model
 and site (true puts the landmark on the site, which finds every placement.json that says so),
 and part, when only a part of the building is drawn in detail (the building's card says which part, and
 that the rest keeps its estimated height), and estimated, the words for a size of the model that nothing
-measures (the building's card says it is estimated); needs no LiDAR, so it runs in a fresh clone.
+measures (the building's card says it is estimated), and measured_by and credit, when something besides the
+LiDAR measures some of its sizes: the words that take the place of "by LiDAR" on its card, and the credit of
+that other source, which About gives; needs no LiDAR, so it runs in a fresh clone.
   python -I ../pipeline/tools/data/place.py [--config config/<name>.json]
 """
 import json, math, os, sys
@@ -70,6 +72,17 @@ if estimated is not None:
     if not isinstance(estimated, str) or not estimated.strip():
         sys.exit(f"place: estimated is {estimated!r}: the words for the size that nothing measures, or none when every size is measured")
     placement["estimated"] = estimated
+measured_by, credit = cfg.get("measured_by"), cfg.get("credit")
+if (measured_by is None) != (credit is None):
+    sys.exit("place: measured_by and credit go together: what besides the LiDAR measures the model, and that source's credit")
+if measured_by is not None:
+    for k, v in (("measured_by", measured_by), ("credit", credit)):
+        if not isinstance(v, str) or not v.strip():
+            sys.exit(f"place: {k} is {v!r}: words, or leave both out when the LiDAR measures every size")
+    if not measured_by.startswith("by LiDAR"):
+        sys.exit(f"place: measured_by is {measured_by!r}: it begins \"by LiDAR\", as the card's words do, and says what else measures it")
+    placement["measuredBy"] = measured_by
+    placement["credit"] = credit
 dst = os.path.join(common.ROOT, "placement.json")
 with open(dst, "w", encoding="utf-8", newline="\n") as f:
     json.dump(placement, f, indent=1)

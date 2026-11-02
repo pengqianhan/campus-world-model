@@ -122,6 +122,8 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `scale` | map metres per model metre (1.0001 at the Clock Tower: leave it out) |
 | `door` | the point whose ground is the model's y = 0, in the view frame (`model`) and on the map (`map`) |
 | `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
+| `measuredBy` | only when something besides the LiDAR measures some of the model's sizes: the config's `measured_by`, the words that take the place of "by LiDAR" on the building's card, beginning with "by LiDAR" (the Kenneth Myers Centre: "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph", where the LiDAR holds temporary works) |
+| `credit` | with `measuredBy`: the config's `credit`, that other source's credit and licence, which About gives with the buildings it measures |
 | `estimated` | only when the model draws a height, an extent or a depth that nothing measures (an underside, a roof drawn on from the rest, how far a balcony or a beam stands out, how thick a slab is): the config's `estimated`, the words for it. The building's card says "estimated:" and those words (the Clock Tower East Wing: "the underside of its link toward the Clock Tower (the campus map's storey height)"; 15 Eden Crescent: two parts of its roofs; the Fisher Building: the depths of its balconies and canopy and the thicknesses of its ramp and parapet), unless the config also gives `part`, which the card shows instead. Windows or bays carried on at a measured spacing are placements, not sizes, and the README says so without it |
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
@@ -140,7 +142,7 @@ below), and name the parts in `model.js`'s `STANDS` (`export const STANDS = ["ra
 the test builds them together, alone, and checks their lowest points as well. It cannot find such a
 part by itself, since the site does not hold the LiDAR's ground and canopies, decks and windows stand
 clear of the ground by design.
-The stage needs no LiDAR: it reads `frame.expected`, `door`, `building`, `site`, `part` and `estimated` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door`, `building`, `site`, `part`, `estimated`, `measured_by` and `credit` from the config.
 
 ## On the site
 
