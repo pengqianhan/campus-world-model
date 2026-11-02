@@ -26,6 +26,13 @@ export const MEASURED = {
     plan: [[-2.6, 3.5], [-2.6, 11.8], [-8.2, 16.4], [-18.2, 16.4], [-22.0, 8.0], [-22.0, -1.5], [-19.5, -3.5], [-11.0, -3.5],
       [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.0, 3.0]],
     apex: [-9.62, 1.18], top: 12.53, fall: 0.267,
+    // Its walls stand inside those eaves (round 1): the LiDAR's wall returns 0.5-7 m up lie inside the plan's
+    // outer edges by 0.88 m (p50 of 71 returns; p10-p90 0.73-1.09) on the edge from (-2.6, 11.8) to (-8.2, 16.4),
+    // 0.76 m (169; 0.69-0.84) on the face to the car park (the ochre wall, at z 15.64; its returns' z p50 15.63),
+    // 0.87 m (215) and 0.74 m (349) on the two west edges; the edges toward the courtyard and the lower roofs
+    // show too few returns to say, and stay. The plan with those four edges moved in by those amounts:
+    walls: [[-2.6, 3.5], [-2.6, 10.66], [-8.66, 15.64], [-17.59, 15.64], [-21.26, 7.52], [-21.26, -2.09], [-19.5, -3.5],
+      [-11.0, -3.5], [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.0, 3.0]],
   },
   // The north wing: a flat roof at 5.16 m (the median of its 946 cells; residuals p10/p50/p90 -0.09/0/+0.67,
   // 88% within 0.5 m), from the face to the car park (z 16.4, where the canopy's returns begin) round the

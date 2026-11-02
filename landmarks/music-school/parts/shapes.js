@@ -129,11 +129,12 @@ export const rect = ([u0, u1], [v0, v1]) => [[u0, v0], [u1, v0], [u1, v1], [u0, 
 export function walls(b, plan, y0, top, material) {
   const pos = [];
   const turn = area(plan) > 0 ? 1 : -1;
+  const foot = typeof y0 === "function" ? y0 : () => y0; // a level foot, or one that follows (x, z)
   for (let i = 0; i < plan.length; i++) {
     let [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length];
     if (turn < 0) [x0, z0, x1, z1] = [x1, z1, x0, z0];
-    const t0 = top(x0, z0), t1 = top(x1, z1);
-    pos.push(x0, y0, z0, x0, t0, z0, x1, y0, z1, x1, y0, z1, x0, t0, z0, x1, t1, z1);
+    const t0 = top(x0, z0), t1 = top(x1, z1), f0 = foot(x0, z0), f1 = foot(x1, z1);
+    pos.push(x0, f0, z0, x0, t0, z0, x1, f1, z1, x1, f1, z1, x0, t0, z0, x1, t1, z1);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
@@ -143,10 +144,10 @@ export function walls(b, plan, y0, top, material) {
 
 /** A roof of planes from each edge of the plan up to one apex [x, y, z] inside it, the eaves at
  * `top(x, z)` at each corner: a pyramid when they are level, a cone of facets round the apex when
- * `top` falls with the distance from it. */
-export function fanRoof(b, plan, apex, top, material) {
+ * `top` falls with the distance from it. `under` draws it facing down, as the roof's underside. */
+export function fanRoof(b, plan, apex, top, material, under = false) {
   const pos = [];
-  const turn = area(plan) > 0 ? 1 : -1;
+  const turn = (area(plan) > 0 ? 1 : -1) * (under ? -1 : 1); // the underside faces down
   for (let i = 0; i < plan.length; i++) {
     let [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length];
     if (turn < 0) [x0, z0, x1, z1] = [x1, z1, x0, z0];
@@ -193,4 +194,17 @@ export function lowestPlanes(b, plan, planes, y0, wall, roof, t) {
     walls(b, facet, y0, top, wall);
     slab(b, facet, (x, z) => top(x, z) - t, top, roof);
   });
+}
+
+/** The height at (x, z) of the roof fanRoof draws over the plan (its facet there, a plane through two eave
+ * corners and the apex), or of `top` where (x, z) lies in no facet. */
+export function fanHeight(plan, apex, top, x, z) {
+  for (let i = 0; i < plan.length; i++) {
+    const [ax, az] = plan[i], [bx, bz] = plan[(i + 1) % plan.length], [cx, cz] = [apex[0], apex[2]];
+    const d = (bz - cz) * (ax - cx) + (cx - bx) * (az - cz);
+    const l1 = ((bz - cz) * (x - cx) + (cx - bx) * (z - cz)) / d, l2 = ((cz - az) * (x - cx) + (ax - cx) * (z - cz)) / d;
+    const l3 = 1 - l1 - l2;
+    if (l1 >= -1e-6 && l2 >= -1e-6 && l3 >= -1e-6) return l1 * top(ax, az) + l2 * top(bx, bz) + l3 * apex[1];
+  }
+  return top(x, z);
 }

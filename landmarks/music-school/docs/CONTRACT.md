@@ -19,7 +19,8 @@ model.
   32.7, under `min_above` (3 m): none of its returns is selected.
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the auditorium** to the east: a fan-shaped plan under a grey roof in facets round one high point
-    near its south side, which a cone fits (apex (-9.79, 1.31), 12.50 m, falling 0.268 a metre);
+    near its south side, which a cone fits (apex (-9.62, 1.18), 12.53 m, falling 0.267 a metre), out to
+    eaves 0.74-0.88 m beyond its walls (the LiDAR's wall returns);
   - **the north wing** round the courtyard, flat at 5.16 m, with a **parapet** over its face to the car
     park stepping up in rises of about 0.4 m from 5.5 to 8.3 m toward the north corner, and a **curved
     canopy** along that face (4.55 m at the wall, 3.42 m 1.5 m out, its lower edge at 2.69 m through the
