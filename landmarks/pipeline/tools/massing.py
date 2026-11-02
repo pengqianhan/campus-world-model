@@ -119,11 +119,6 @@ KEEP = {**{i: "Waipapa Marae: culturally significant; its block stays until the 
                "644 and 645, have residential floors and whose reception in 645 is an Accommodation Reception on the "
                "campus map), though its own floors are marked unmapped: kept until the maintainer decides"}
 RESIDENTIAL = "decision 6, a place where people live: kept until the maintainer decides"
-# Buildings that pass the top-view check but whose model is too slow to draw for now (the fourth round, 2026-11-02):
-# their block stays, with the check's numbers, until a lighter model or the maintainer's word.
-SLOW = {"405": "its model passes the top-view check with the roof forms of the fourth round, but its 60 layers make "
-               "the map drawn in software (SwiftShader) about 14% slower over it, and the view over it and 423 25% "
-               "slower than with their blocks (the limit is 15%): kept until a lighter model or the maintainer's word"}
 
 # A childcare centre by its name, when no floor is marked so (841 Nicholls Lane ECE was not, before PR #69)
 CHILDCARE = re.compile(r"child|\bk[oō]hanga\b|early learning|\bECE\b|kindergarten|cr[eè]che", re.I)
@@ -612,6 +607,7 @@ def measure(b, P, others, campus_origin, forms=False):
     # its cells better than one height, and then its faces, each its own mono-pitch, where they fit its cells
     # better than the lowest of its planes. "Better": a smaller mean distance from the LiDAR's heights.
     split, changed, fit_low, face, groups = False, [], None, set(), []
+    offface = np.zeros(H.shape, bool)     # cells of a layer drawn as its faces that lie on no face
     for k in list(layers) if forms else []:
         mk = lab == k; ij = np.argwhere(mk); h = H[mk] - zero
         X = cx[ij[:, 1]] - centre[0]; Y = cy[ij[:, 0]] - centre[1]
@@ -633,6 +629,7 @@ def measure(b, P, others, campus_origin, forms=False):
         _, (fi, fj) = distance_transform_edt(F == 0, return_indices=True)
         pl = np.array([p for _, p in fs])[F[fi, fj][mk] - 1]
         if float(np.mean(np.abs(pl[:, 2] + pl[:, 0] * X + pl[:, 1] * Y - h))) >= e_k: continue
+        offface |= mk & (F == 0)
         lab[mk] = 0; layers.remove(k); del info[k]; groups.append(list(range(n + 1, n + 1 + len(fs))))
         for c, p in fs:
             n += 1; lab[ij[c, 0], ij[c, 1]] = n; layers.append(n); face.add(n)
@@ -640,11 +637,17 @@ def measure(b, P, others, campus_origin, forms=False):
                        "m2": float(c.sum() * A), "inside": int(Cin[ij[c, 0], ij[c, 1]].sum()), "low": float(np.percentile(h[c], 10))}
         split = True
         changed.append(f"several faces: {len(fs)} mono-pitches over {f['m2']:.0f} m2")
-    rough = roof & Cin & ~np.isin(lab, layers)
+    rough = roof & Cin & ~np.isin(lab, layers) & ~offface
     if rough.sum() * A >= MIN_PIECE:
         dropped.append({"m2": round(float(rough.sum() * A), 1), "why": "roof cells on no smooth plane, or in pieces under 4 m2: "
                         "drawn with the layer nearest them; those more than 1 m from every layer's roof are left out of "
                         "the top-view check's share within 0.5 m (not_drawn_m2)"})
+    if (offface & Cin).any():
+        dropped.append({"m2": round(float((offface & Cin).sum() * A), 1), "why": "cells of a layer drawn as its faces (FORMS) "
+                        "that lie on no face (along its ridges, hips and valleys, where they fall no one way, or in pieces "
+                        "under 4 m2): drawn with the face nearest them, or the layer nearest their height when no face is "
+                        "nearest; those more than 1 m from every layer's roof are left out of the top-view check's share "
+                        "within 0.5 m (not_drawn_m2)"})
     if not layers: return rec, None, "no layer of smooth roof of 4 m2 or more"
     layers.sort(key=lambda k: info[k]["low"])
 
@@ -722,8 +725,9 @@ def measure(b, P, others, campus_origin, forms=False):
         return edge_eaves(xy[B & (np.abs(z - zero - h) <= 0.6)], outer)
 
     def face_eaves(ring, f):
-        # A face of a layer drawn as its faces (FORMS) has eaves too, edge by edge as the outline's (edge_eaves), from
-        # the building points within 0.6 m of its plane, on the edges of its ring that lie on the outline; 0 elsewhere
+        # In a building with a layer drawn as its faces (FORMS), every sloping layer on the plinth (each face, and any
+        # other sloping layer) has eaves too, edge by edge as the outline's (edge_eaves), from the building points
+        # within 0.6 m of its plane, on the edges of its ring that lie on the outline; 0 elsewhere
         if not split or f["form"] == "flat": return 0.0
         e = edge_eaves(xy[B & (np.abs(z - zero - roof_at(f["planes"], xy[:, 0] - centre[0], xy[:, 1] - centre[1])) <= 0.6)], ring)
         if not isinstance(e, list): return 0.0
@@ -1104,9 +1108,6 @@ def main():
                             why += (f"; with the roof forms of the fourth round ({'; '.join(data2['forms'])}): footprint IoU "
                                     f"{c2['iou']:.3f}, {c2['within_0.5m']:.0%} of cells within 0.5 m")
         why = policy or why
-        if not why and bid in SLOW:
-            c = data["check"]
-            why = f"{SLOW[bid]} (footprint IoU {c['iou']:.3f}, {c['within_0.5m']:.0%} of cells within 0.5 m)"
         if why:
             rec.pop("skip", None)
             ex[bid] = {"name": name, "reason": why, **({"measured": rec} if rec else {})}
