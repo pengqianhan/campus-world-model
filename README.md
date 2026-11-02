@@ -82,7 +82,10 @@ It is built to answer two questions a student actually has:
   from an aerial photograph of 2023 and a Street View photograph instead. Beside the Thomas Building
   Extension on Symonds Street the map draws the Thomas Building in detail too: four storeys of
   red-framed window bands between deep bands of warm grey concrete, square piers, and a ground storey
-  that steps down toward its north-east end, with a white door and a louvre. Eight more University of
+  that steps down toward its north-east end, with a white door and a louvre. Across Symonds Street the
+  Music School is drawn in detail as well: a fan-shaped auditorium with an ochre wall and a window of four tall lights,
+  and a long pale wall with a curved white canopy along the car park beside it, stepping up toward its north
+  corner. Eight more University of
   Auckland buildings are drawn near the camera to their LiDAR-measured heights and roofs, now with
   roofs of several ridges and low pitches: Pembridge House, Mona, AUSA House, Engineering Block 5,
   the Conference Centre, Fine Arts Studio Block 431, and Buildings 902 and 903 at Newmarket. They
@@ -490,12 +493,34 @@ courtyard and the roofs.
 | ![The Thomas Building from the road, drawn from code](docs/landmarks/thomas-building-front.jpg) | ![The Thomas Building from above, drawn from code](docs/landmarks/thomas-building-above.jpg) |
 | ![The Thomas Building on the map, drawn from code in the map's colours](docs/landmarks/thomas-building-map.jpg) | ![The Thomas Building from the road, through the walker's eyes](docs/landmarks/thomas-building-eyes.jpg) |
 
+The thirteenth is the Music School (250) on Symonds Street, beside a car park: a fan-shaped auditorium
+under a grey roof of facets round one high point, and ranges of rendered walls round an open courtyard.
+Along its face to the car park a long wall of pale render, with no window, carries a curved canopy of white
+corrugated metal and steps up toward its north corner in rises of about 0.4 m; beyond it the auditorium's
+ochre wall has a window of four tall lights in two rows and white downpipes at its corners. Its heights and
+roofs come from the LiDAR, each roof fitted to its returns (70% to 94% of each roof's cells within 0.5 m
+of the fit, but 42% for the low link at the courtyard's east corner); the parapet's upper steps, the canopy's lower edge and the window are measured in a Street View
+photograph through its camera, which is set from the photograph's own edges against the LiDAR's. What
+nothing measures is estimated, and its card names it: among other things how thick its canopy and roofs
+are and where the parapet's lower steps begin. Counted inside the rectangle the model fills on the screen,
+its silhouette has an IoU of 0.84 to 0.97 over the three views of the panorama, though in the door view the
+face fills that rectangle (photographed sky is 6% of it), so the IoU there says little; the brightness of
+its render is within 4 of the photograph's in each view. From above its outline covers the LiDAR's with
+an IoU of 0.94, and on 88% of the cells both cover it is within 0.5 m of the LiDAR's height. What no
+photograph shows is drawn plainly: its faces to the road and to the south and west, the courtyard and the
+roofs.
+
+| | |
+| --- | --- |
+| ![The Music School from the car park beside it, drawn from code](docs/landmarks/music-school-front.jpg) | ![The Music School from above, drawn from code](docs/landmarks/music-school-above.jpg) |
+| ![The Music School on the map, drawn from code in the map's colours](docs/landmarks/music-school-map.jpg) | ![The Music School from the car park beside it, through the walker's eyes](docs/landmarks/music-school-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
 in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802; the Fisher Building in
 place of 804; the Thomas Building Extension in place of 110N; the Kenneth Myers Centre in place of 820;
-the Thomas Building in place of 110) when
+the Thomas Building in place of 110; the Music School in place of 250) when
 the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
@@ -679,8 +704,8 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, and the Thomas Building (110), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/` and `landmarks/thomas-building/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
-| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre and the Thomas Building were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110) and the Music School (250), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/` and `landmarks/music-school/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/` | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -791,7 +816,8 @@ If you represent the University and would like something changed or removed, ple
   105S), Old Government House (102), the General Library (109), the range of Old Choral Hall
   (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden
   Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building
-  Extension (110N), the Kenneth Myers Centre (820) and the Thomas Building (110) are the exceptions:
+  Extension (110N), the Kenneth Myers Centre (820), the Thomas Building (110) and the Music School (250)
+  are the exceptions:
   their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph). The
   measured massings (About lists them) are measured too: their
@@ -896,6 +922,20 @@ If you represent the University and would like something changed or removed, ple
   map's ground (the 8 m elevation model) lies up to 4.2 m above the ground at its door by its west
   corner and 2.1 to 2.8 m above it at its round stair, where the LiDAR's ground is within about 1 m of
   it, and hides the foot of its walls there.
+- **The Music School is seen from the car park beside it only.** One Street View panorama sees its face to the
+  car park whole and the auditorium's ochre wall beyond it at a slant; its camera is set from the
+  photograph's own edges against the LiDAR's. Its heights and roofs come from the LiDAR, the parapet's
+  upper steps, the canopy's lower edge and the ochre wall's window from the photograph. A second panorama,
+  whose photographs stand turned about 8° and whose camera is not fitted, shows the window squarer but
+  measures nothing. How thick its canopy and roofs are, how deep the auditorium's fascia is, where the
+  parapet's lower steps begin and how high its steps stand between the LiDAR's levels, the window's frames,
+  the downpipes, where the auditorium's walls stand on its courtyard and south edges, and the colour of the walls no photograph shows are estimated, and its card says so. The west corner's glazed roof is drawn as
+  one plane, the low link at the courtyard's east corner flat (42% of its cells within 0.5 m), and the
+  trees by the road, which the LiDAR partly classes as building, are not drawn. What no photograph shows
+  is drawn plainly: its faces to the road and to the south and west, the courtyard and the roofs. The
+  Overbridge (202) meets it along its south-east and south sides, where the campus map's two outlines
+  overlap: the model covers 12% of block 202, whose top the map stands about 3.3 m above the model's
+  door, 3.9 m or more under the model's roofs there (7.30 to 9.15 m).
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
