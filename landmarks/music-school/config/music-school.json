@@ -1,6 +1,7 @@
 {
  "name": "music-school",
  "site": false,
+ "estimated": "how thick its canopy and its roofs are, where the lower steps of its parapet to the car park begin (to about 0.25 m), and the colour of the walls no photograph shows",
  "building": {
   "id": "250",
   "also": [],
@@ -436,7 +437,17 @@
     "width": 1200,
     "height": 900
    }
-  ]
+  ],
+  "camera_fixes_note": "[x, z, pitch, yaw, roll] (landmarks/README.md). qru8 (round 1, 2026-11-02): z, pitch and roll fitted to the photograph's own edges in the wide view, the parapet's treads against the sky, each a level line on the parapet's face (z 16.42) at its height: the long top at 8.3 m (the LiDAR's, x 17.5-22.2: 8.26-8.45) and the three treads below it, which the photograph shows as four levels in equal rises between the LiDAR's 6.74 (x 11-15) and 8.3, so 7.13, 7.52 and 7.91 (the LiDAR's highest returns in 0.5 m bins over x 15-17.5: 7.07-7.99). Level lines on one face cannot tell the yaw from the roll, so the yaw is held at the recorded heading (0): fitted on the first cut -1.12 and +2.27 (rms 0.7 px over 318 points), cut again level by the roll and fitted again: pitch -0.02, roll +0.02, rms 2.8 px over 330 points (0.3-0.9 px on the three upper treads; a few columns of the lowest, against Te Pūtahi Tangata behind it, are off by more). The panorama records a tilt of 87.99 deg and a roll of -0.85 deg, at this view's 53 deg off the car's heading of the same size, though the fit uses the photograph alone. Level lines cannot place x either: it is set where the risers between the treads, which the photograph shows at x 16.28, 17.04 and 17.84 through the recorded x (19.36), best fit the LiDAR's returns on the parapet's top (27 returns over x 14.5-19.5 at z 15.7-16.9: their median distance from the steps' tops 0.07 m with the camera 0.2 to 0.6 m toward -x, 0.17 m at the recorded x): 0.4 m toward -x, 18.96, which puts the risers at x 15.88, 16.64 and 17.44.",
+  "camera_fixes": {
+   "qru8CkT4PN7yNixnCNGSag": [
+    18.96,
+    27.32,
+    -1.12,
+    0.0,
+    2.27
+   ]
+  }
  },
  "refine": {
   "position_m": 3,
@@ -448,6 +459,7 @@
   "prior": 0.01,
   "min_gain": 0.01,
   "min_sky": 0.2,
-  "max_solid": 0.5
+  "max_solid": 0.5,
+  "keep_fixes": true
  }
 }

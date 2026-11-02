@@ -164,3 +164,33 @@ export function cylinder(b, x, z, r, y0, y1, material, n = 32) {
   g.translate(x, (y0 + y1) / 2, z);
   b.add(g, material);
 }
+
+/** The part of the plan where a + kx x + kz z <= 0: the plan clipped by that half-plane, or null when
+ * nothing is left. */
+export function clipHalf(plan, a, kx, kz) {
+  const f = ([x, z]) => a + kx * x + kz * z;
+  const out = [];
+  for (let i = 0; i < plan.length; i++) {
+    const p = plan[i], q = plan[(i + 1) % plan.length], fp = f(p), fq = f(q);
+    if (fp <= 0) out.push(p);
+    if ((fp <= 0) !== (fq <= 0)) {
+      const t = fp / (fp - fq);
+      out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]);
+    }
+  }
+  return out.length >= 3 ? out : null;
+}
+
+/** A roof that is the lowest of the planes [a, kx, kz] (h = a + kx x + kz z) over the plan, as one facet a
+ * plane (the plan clipped to where that plane is the lowest), each with its walls from y0 and a roof slab
+ * `t` thick. */
+export function lowestPlanes(b, plan, planes, y0, wall, roof, t) {
+  planes.forEach(([a, kx, kz], i) => {
+    let facet = plan;
+    planes.forEach(([a2, kx2, kz2], j) => { if (j !== i && facet) facet = clipHalf(facet, a - a2, kx - kx2, kz - kz2); });
+    if (!facet) return;
+    const top = (x, z) => a + kx * x + kz * z;
+    walls(b, facet, y0, top, wall);
+    slab(b, facet, (x, z) => top(x, z) - t, top, roof);
+  });
+}

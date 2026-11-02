@@ -17,66 +17,95 @@ export const FOOT = -4.5;
 export const MEASURED = {
   // The auditorium to the east: a fan-shaped plan under a roof of grey metal in facets round one high point
   // near its south side (the 2023 aerial shows the facets' seams running out from it). A cone fits it: the
-  // apex at (-9.79, 1.31), 12.50 m, falling 0.268 a metre with the distance from it (1,227 cells, residuals
-  // p10/p50/p90 -0.09/+0.01/+0.11, 92% within 0.5 m). Its plan from the edges of its returns above 7.3 m
-  // (0.5 m mask, closed, simplified), its south side where the cone's heights end against the ranges' lower
-  // roofs (at z -0.5 to -2).
+  // apex at (-9.62, 1.18), 12.53 m, falling 0.267 a metre with the distance from it (1,247 cells, residuals
+  // p10/p50/p90 -0.10/+0.01/+0.11, 94% within 0.5 m). Its plan from the edges of its returns above 7.3 m
+  // (0.5 m mask, closed, simplified); its south side where the cone's heights end against the lower roofs
+  // south of it (round 1: at z -3.5 west of x -11, where round 0 put it at -2, and round to the low link at
+  // the courtyard's east corner).
   fan: {
-    plan: [[-2.6, -0.5], [-2.6, 11.8], [-8.2, 16.4], [-18.2, 16.4], [-22.0, 8.0], [-22.0, -0.5], [-20.0, -2.0], [-12.5, -2.0], [-11.0, -0.5]],
-    apex: [-9.79, 1.31], top: 12.5, fall: 0.268,
+    plan: [[-2.6, 3.5], [-2.6, 11.8], [-8.2, 16.4], [-18.2, 16.4], [-22.0, 8.0], [-22.0, -1.5], [-19.5, -3.5], [-11.0, -3.5],
+      [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.0, 3.0]],
+    apex: [-9.62, 1.18], top: 12.53, fall: 0.267,
   },
-  // The north wing: a flat roof at 5.16 m (the median of its 917 cells; residuals p10/p50/p90 -0.09/0/+0.41,
-  // 89% within 0.5 m), from the face to the car park (z 16.4, where the canopy's returns begin) round the
-  // courtyard, whose curved edge is the edge of its returns.
+  // The north wing: a flat roof at 5.16 m (the median of its 946 cells; residuals p10/p50/p90 -0.09/0/+0.67,
+  // 88% within 0.5 m), from the face to the car park (z 16.4, where the canopy's returns begin) round the
+  // courtyard, whose curved edge is the edge of its returns, to its north-west face (round 1: to x 23.5-24.5,
+  // the edge of its returns, where round 0 stopped at 23.0).
   north: {
-    plan: [[1.5, 16.4], [21.8, 16.4], [23.0, 14.0], [23.0, 1.6], [18.4, 1.6], [18.4, -2.6], [15.0, -2.6], [14.5, 3.75],
-      [10.25, 8.5], [8.75, 9.5], [5.25, 10.0], [4.0, 11.0], [2.5, 13.25], [1.5, 15.0]],
+    plan: [[1.5, 16.4], [21.8, 16.4], [22.5, 15.5], [23.5, 14.0], [23.5, 9.0], [24.0, 4.5], [24.5, 1.6], [18.4, 1.6], [18.4, -2.6],
+      [14.8, -2.6], [14.5, 3.75], [10.25, 8.5], [8.75, 9.5], [5.25, 10.0], [4.0, 11.0], [2.5, 13.25], [1.5, 15.0]],
     top: 5.16,
   },
+  // The low link at the courtyard's east corner, between the auditorium and the south range: flat at 5.02 m
+  // (the median of its 93 cells; only 42% within 0.5 m: lower roofs at about 4 m and the edges of the higher
+  // ones fall in it).
+  link: {
+    plan: [[-5.5, 1.0], [-4.0, 3.0], [-2.6, 3.5], [-1.0, 1.5], [1.5, -1.5], [1.5, -5.5], [0.5, -7.0], [-1.0, -7.0], [-1.0, -6.5],
+      [-2.0, -5.0], [-3.0, -3.0], [-4.5, -1.0]],
+    top: 5.02,
+  },
   // The parapet on the face to the car park: a thin wall over the north wing's edge, its returns at z 15.8-16.5
-  // (taken as 16.05-16.4), stepping up toward the north corner. Its top, the highest return in each 0.5 m of x
-  // (1-10 returns each): 5.45-5.69 from x 1.5 to 9.0, then 5.83, 6.16, 6.35 to 6.73 at x 11.0; 6.68-6.80 to
-  // x 15.0; then 7.07, 7.38, 7.54, 7.69, 7.99 to 8.29 at x 17.5; 8.26-8.45 to x 22.2. Drawn as those steps,
-  // [x where a step begins, its top].
+  // (taken as 16.05-16.4), stepping up toward the north corner in equal rises of about 0.4 m. Its top, the
+  // highest return in each 0.5 m of x (1-10 returns each): 5.45-5.69 from x 1.5 to 9.0; 5.83-5.89 to 10.0;
+  // 6.16 and 6.35 to 11.0; 6.68-6.80 to 15.0; then 7.07, 7.38, 7.54, 7.69 and 7.99 to 17.5; 8.26-8.45 to
+  // x 22.2. Round 1: from x 15 the photograph shows three risers against the sky, four levels in equal rises
+  // from 6.74 to 8.3 (7.13, 7.52, 7.91), and through qru8's fitted camera (config, camera_fixes_note) puts the
+  // risers at x 15.88, 16.64 and 17.44; the first, from 6.74 to 7.13, stands in front of Te Pūtahi Tangata in
+  // the photograph and is placed at x 15.0 by the LiDAR's bins. Below 6.74 the photograph shows the steps
+  // against the ivy and the neighbour behind, not the sky: they are the LiDAR's, in equal rises (5.93 over x
+  // 9.0-10.25, 6.33 to 11.0; the risers' x to about 0.25 m). [x where a step begins, its top].
   parapet: {
     z: [16.05, 16.4], x: [1.5, 22.2],
-    steps: [[1.5, 5.52], [9.0, 5.85], [10.0, 6.16], [10.5, 6.35], [11.0, 6.74], [15.0, 7.07], [15.5, 7.38], [16.0, 7.54],
-      [16.5, 7.69], [17.0, 7.99], [17.5, 8.3]],
+    steps: [[1.5, 5.52], [9.0, 5.93], [10.25, 6.33], [11.0, 6.74], [15.0, 7.13], [15.88, 7.52], [16.64, 7.91], [17.44, 8.3]],
   },
   // The canopy along the face to the car park, its curved corrugated sheet seen in the photographs: its section
   // from the medians of its returns over x 3-20 in 0.25 m strips of z: 4.55 at z 16.5, 4.47, 4.39, 4.26, 4.07,
   // 3.75 and 3.42 at z 18.0. It ends where its returns end, x 1.5 to 21.8 and z 18.4 (the outline's edge,
-  // 18.21-18.45); the last point of the section, (18.4, 2.9), carries the curve on to that edge (estimated).
+  // 18.21-18.45). Its lower edge, where the white sheet meets the shaded wall under it, stands at 2.69 m on
+  // z 18.4 through qru8's fitted camera (round 1: the same row, 594-603, in each column of the wide view from
+  // u 1100 to 1450; round 0 carried the curve on to 2.9, estimated). Its top runs 0.1 m into the wall, so that
+  // the two meet with no gap.
   canopy: {
     x: [1.5, 21.8],
-    section: [[16.4, 4.6], [16.75, 4.47], [17.0, 4.39], [17.25, 4.26], [17.5, 4.07], [17.75, 3.75], [18.0, 3.42], [18.4, 2.9]],
+    section: [[16.3, 4.6], [16.4, 4.6], [16.75, 4.47], [17.0, 4.39], [17.25, 4.26], [17.5, 4.07], [17.75, 3.75], [18.0, 3.42], [18.4, 2.69]],
     thick: 0.08, // the sheet and its frame (estimated)
   },
-  // The south range: a low-pitched gable along x, its ridge at z -14.04, 9.65 m, falling 0.120 a metre to the
-  // courtyard side (+z) and 0.339 to the south-west (1,460 cells; residuals p10/p50/p90 -0.29/-0.04/+0.47, 86%
-  // within 0.5 m). The 2023 aerial shows it pale.
+  // The ranges south and west of the courtyard (round 1): each roof the lowest of a few planes
+  // [a, kx, kz] (h = a + kx x + kz z), fitted together to its region's cells: a gable where two planes meet
+  // in a ridge, a hip where a third cuts its end.
+  // The south range, from the west corner's block to the south-east part: a gable along x, its ridge near
+  // z -14 (9.6-9.7 m), falling 0.153 a metre toward the courtyard and 0.335 to the south-west, hipped at its
+  // west end (falling 0.225 a metre to -x) (1,406 cells; residuals p10/p50/p90 -0.27/-0.02/+0.35, 91% within
+  // 0.5 m; round 0's gable alone, without the hip: 86%). Its edge toward the north wing is the north wing's, z -2.6
+  // (round 0 left a slit 0.4 m wide between them).
   south: {
-    plan: [[-10.5, -7.0], [14.8, -7.0], [14.8, -3.0], [18.4, -3.0], [18.4, -15.0], [15.5, -15.5], [15.5, -20.5], [-0.75, -20.5], [-10.5, -20.5]],
-    ridge: -14.04, top: 9.65, fallIn: 0.12, fallOut: 0.339,
+    plan: [[-17.9, -12.5], [-1.0, -12.5], [-1.0, -7.0], [14.8, -7.0], [14.8, -2.6], [18.4, -2.6], [18.4, -15.0], [15.5, -15.5],
+      [15.5, -20.5], [-8.25, -20.5], [-12.25, -19.5], [-16.2, -17.6]],
+    planes: [[7.432, 0.0161, -0.1529], [14.304, 0.0155, 0.3353], [13.644, 0.225, 0.0986]],
   },
-  // The south-east part, between the auditorium and the south range: a gable along z, its ridge at x -10.25,
-  // 10.06 m, falling 0.266 a metre to +x and 0.181 to -x (773 cells; residuals p10/p90 -1.05/+1.00, 70% within
-  // 0.5 m: its hips are not yet drawn).
+  // The south-east part, between the auditorium and the south range: a gable along z, its ridge near x -11
+  // (10.1-10.4 m), falling 0.221 a metre to -x and 0.197 to +x (741 cells; residuals p10/p50/p90
+  // -0.16/-0.02/+0.41, 88% within 0.5 m; round 0: 70%).
   southeast: {
-    plan: [[-21.5, -2.0], [-12.5, -2.0], [-11.0, -0.5], [-2.6, -0.5], [-2.6, -4.5], [-1.0, -5.25], [1.0, -7.0], [-10.5, -7.0], [-10.5, -20.5],
-      [-16.5, -17.75], [-21.0, -5.75]],
-    ridge: -10.25, top: 10.06, fallPlus: 0.266, fallMinus: 0.181,
+    plan: [[-17.9, -12.5], [-20.9, -4.6], [-19.5, -3.5], [-11.0, -3.5], [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.5, -1.0],
+      [-3.0, -3.0], [-2.0, -5.0], [-1.0, -6.5], [-1.0, -12.5]],
+    planes: [[13.241, 0.2207, 0.0735], [7.526, -0.1973, -0.0783]],
   },
-  // The north-west block: one plane, h = 7.778 + 0.0358 x - 0.1797 z (358 cells; residuals p10/p50/p90
-  // -0.53/+0.01/+0.23, 81% within 0.5 m).
+  // A stack on the south-east part's ridge: 33 returns above 14 m in x -9.32 to -7.54, z -12.03 to -10.33, their
+  // median 15.14 m (p90 16.17, the highest 16.28: the building's highest point).
+  stack: { x: [-9.32, -7.54], z: [-12.03, -10.33], top: 15.14 },
+  // The north-west block: one plane (358 cells; residuals p10/p50/p90 -0.53/+0.01/+0.23, 81% within 0.5 m).
+  // Along its outer edge, x 24-26.3, 102 building returns 11-14 m high stand among 139 of high vegetation:
+  // the trees along the road, not drawn.
   northwest: {
     plan: [[18.4, 1.6], [24.5, 1.6], [26.5, -1.75], [27.0, -5.75], [25.5, -10.5], [18.4, -10.5]],
-    plane: [7.778, 0.0358, -0.1797],
+    planes: [[7.778, 0.0358, -0.1797]],
   },
-  // The west corner: one plane, h = 2.021 + 0.2661 x - 0.2988 z (219 cells, 60% within 0.5 m: the 2023 aerial
-  // shows a glazed roof there, which round 0 does not draw).
+  // The west corner: one plane, rising to the corner (219 cells, 60% within 0.5 m: the 2023 aerial shows a
+  // glazed roof there in panes, which the model does not draw).
   west: {
-    plan: [[15.5, -15.5], [18.4, -15.0], [18.4, -10.5], [25.5, -10.5], [23.5, -12.25], [24.0, -15.25], [23.5, -18.25], [21.25, -20.0], [15.5, -20.5]],
-    plane: [2.021, 0.2661, -0.2988],
+    plan: [[15.5, -15.5], [18.4, -15.0], [18.4, -10.5], [25.5, -10.5], [23.5, -12.25], [24.0, -15.25], [23.5, -18.25], [21.25, -20.0],
+      [15.5, -20.5]],
+    planes: [[2.021, 0.2661, -0.2988]],
   },
 };

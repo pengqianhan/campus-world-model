@@ -21,11 +21,14 @@ model.
   - **the auditorium** to the east: a fan-shaped plan under a grey roof in facets round one high point
     near its south side, which a cone fits (apex (-9.79, 1.31), 12.50 m, falling 0.268 a metre);
   - **the north wing** round the courtyard, flat at 5.16 m, with a **parapet** over its face to the car
-    park stepping up from 5.5 to 8.3 m toward the north corner, and a **curved canopy** along that face
-    (4.55 m at the wall, 3.42 m 1.5 m out);
-  - **the south range**, a low gable along x (ridge z -14.04, 9.65 m), **the south-east part** between it
-    and the auditorium, a gable along z (ridge x -10.25, 10.06 m), **the north-west block** and **the west
-    corner**, single planes (the west corner's glazed roof is not yet drawn);
+    park stepping up in rises of about 0.4 m from 5.5 to 8.3 m toward the north corner, and a **curved
+    canopy** along that face (4.55 m at the wall, 3.42 m 1.5 m out, its lower edge at 2.69 m through the
+    camera);
+  - **the south range**, a low gable along x hipped at its west end (ridge near z -14, 9.65 m), **the
+    south-east part** between it and the auditorium, a gable along z (ridge near x -11, 10.1-10.4 m) with a
+    stack on it to 15.14 m, **the low link** at the courtyard's east corner (5.02 m), **the north-west block**
+    and **the west corner**, single planes (the west corner's glazed roof is not drawn); each roof the lowest
+    of its planes, fitted to the LiDAR;
   - **the courtyard**, open, with an amphitheatre and trees (not drawn: the top view counts no return
     there above 3 m);
   - **the ground**: -0.96 to +1.03 before the face to the car park, +1.4 to +2.1 along the road to the
@@ -39,7 +42,8 @@ model.
 
 ## Ownership
 - `parts/fan.js` (the auditorium), `parts/north.js` (the north wing, the parapet and the canopy),
-  `parts/ranges.js` (the south range, the south-east part, the north-west block and the west corner),
+  `parts/ranges.js` (the south range, the south-east part and its stack, the low link, the north-west block
+  and the west corner),
   `parts/shapes.js` (shared helpers: one owner per round, named in the brief). `model.js` and
   `parts/common.js` are the lead's.
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show
@@ -55,8 +59,10 @@ model.
   face whole, from the north corner to the canopy's south-east end, with cars before its foot, and the
   auditorium's ochre wall beyond it at a slant. Its metadata's `copyright` reads "From the Owner, Photo
   by: Google".
-- Measure through a camera fixed from the photograph's own edges against the LiDAR
-  (`streetview.camera_fixes`, its note), never through the recorded one.
+- Measure through the camera fixed from the photograph's own edges against the LiDAR
+  (`streetview.camera_fixes`, its note), never through the recorded one: its pitch and roll from the
+  parapet's treads against the sky, its yaw the recorded heading, its x where the risers it shows fit the
+  LiDAR's returns on the parapet's top. `refine.keep_fixes` keeps it.
 - No photograph shows the road side (north-west), the south-east side, the courtyard or the roofs: draw
   them plainly at the LiDAR's sizes.
 

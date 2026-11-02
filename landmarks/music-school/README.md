@@ -45,6 +45,13 @@ beyond it at a slant; its 143 tiles were bought for this building on 2026-11-02,
 `2LAG…` (2022-09), which also sees this face, was not bought. Their metadata's `copyright` reads "From the
 Owner, Photo by: Google".
 
+Its camera is set in `streetview.camera_fixes` (`camera_fixes_note`), never the recorded one: its pitch and
+roll fitted to the photograph's own edges in the wide view, the parapet's treads against the sky, each a
+level line at its height on the parapet's face (the long top at the LiDAR's 8.3 m and three treads below it
+in equal rises to the LiDAR's 6.74); the views cut again level by the roll. Level lines on one face cannot
+tell the yaw from the roll, nor place the camera along the face: the yaw is held at the recorded heading,
+and x is set where the risers the photograph shows best fit the LiDAR's returns on the parapet's top.
+
 ## Round 0 (November 2026, the lead)
 
 The massing from the LiDAR, each region of the plan fitted to its returns' medians in 0.5 m cells
@@ -62,3 +69,49 @@ door views (sky in the box 0.490, 0.245 and 0.128). The luma's median 220-223 ag
 (`run.sh music-school topview`): footprint IoU 0.934, 84% of cells within 0.5 m of the LiDAR's height,
 the highest point 13.68 against 15.39 (p99.9), 78.5% of block 250 under the model (its outline holds the
 courtyard and a garden) and 12.5% of block 202. 557 triangles in 4 meshes.
+
+## Round 1 (November 2026, one builder)
+
+Each change measured in the LiDAR or in the photograph through its fitted camera, every size in
+`parts/common.js` with its source:
+
+- **The camera** (above): pitch -1.12°, roll +2.27°, the recorded heading, z 27.32 (0.38 m nearer the face
+  than recorded), x 18.96 (0.40 m toward -x): 0.7 px rms over 318 points on the first cut, and on the views
+  cut again level, pitch -0.02° and roll +0.02° more, 0.3 to 0.9 px on the three upper treads. The refine
+  stage keeps it (`refine.keep_fixes`); it would move it 0.69 m toward the face, 0.50 m up and 0.75° down, for an IoU
+  of 0.893 where it starts at 0.881. Through it the auditorium's ochre wall's top against the sky reads 7.98 to 8.41 m along
+  x -17.7 to -8.5, where the cone gives 7.92 to 8.46.
+- **The parapet's steps**: from x 15 the photograph shows three risers against the sky, four levels in equal
+  rises of 0.39 m from 6.74 to 8.3, and through the camera puts the risers at x 15.88, 16.64 and 17.44
+  (round 0 drew the LiDAR's five levels in 0.5 m bins, 7.07 to 7.99). The first riser of the four, from
+  6.74, stands before Te Pūtahi Tangata in the photograph, and the three lower steps, from 5.52, before the
+  ivy and that building: they keep the LiDAR's bins, in equal rises (estimated where they begin, to about
+  0.25 m).
+- **The canopy's lower edge**, where the white sheet meets the shaded wall under it: 2.69 m on its outer edge
+  (z 18.4), the same row in every column of the wide view from u 1100 to 1450; round 0 carried its curve on to
+  2.9 m. Its top now runs 0.1 m into the wall it meets.
+- **The walls in white paint** (the kit's `paint`): the luma's median 244-245 against the photograph's
+  247-248, where round 0's `render` read 220-223. The auditorium keeps `trim`, the ochre of its wall. The
+  walls no photograph shows take the same paint (estimated).
+- **The roofs south and west of the courtyard**, each the lowest of a few planes fitted together to its
+  region's cells: the south range a gable along x hipped at its west end (ridge 9.65 m at z -14; 91% of its
+  cells within 0.5 m, 86% as round 0's gable), the south-east part a gable along z (ridge near x -11, 10.1 to
+  10.4 m; 88%, 70% before), its south boundary moved to where the auditorium's cone ends (z -3.5 west of
+  x -11); the low link at the courtyard's east corner, flat at 5.02 m, which round 0 left out; the stack on
+  the south-east part's ridge, 33 returns above 14 m, drawn to their median, 15.14 m (its highest return
+  16.28 m); the north wing carried to the edge of its returns on its north-west side; and the slit 0.4 m
+  wide that round 0 left between the north wing and the south range closed.
+- **Not drawn**: the 102 building returns 11-14 m high along the north-west block's outer edge, which stand
+  among 139 returns of high vegetation (the trees by the road); the west corner's glazed roof in panes; the
+  ochre wall's window; the ivy, the cars, the crane and the neighbours.
+
+Against the photograph (`run.sh music-school refine compare topview`): IoU in the box 0.937, 0.840 and 0.964
+over the wide, upper and door views, a mean of 0.914 (sky in the box 0.517, 0.320 and 0.059: in the door
+view the face fills the box, so a plain block scores as high; the strips show the steps and the canopy
+landing on the photograph's). The luma's median 245, 244 and 244 against 248, 248 and 247. Heights against
+the LiDAR: the parapet's top 8.3 (its returns 8.26-8.45), the north wing's roof 5.16 (the median of its
+returns 5.16), the auditorium's apex 12.53 (its returns within 1 m: p90 12.55, highest 12.57), the south
+range's ridge 9.65 (9.67 at x 5), the south-east part's 10.24 (10.15 at x -11, z -7), the north-west block
+10.27 (10.20 at x 22, z -9.5), the west corner 13.27 (13.62 at its corner). From above: footprint IoU 0.935,
+88% of cells within 0.5 m, the highest point 15.14 against 15.39 (p99.9), 80.7% of block 250 and 12.0% of
+block 202 under the model. 692 triangles in 4 meshes (`paint`, `trim`, `roofGrey`, `roofPale`).
