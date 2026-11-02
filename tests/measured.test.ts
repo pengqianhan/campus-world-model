@@ -177,6 +177,44 @@ describe("measured massings", () => {
     }
   });
 
+  it("draws a layer's walls only where no other layer of the building hides them", () => {
+    // Two flat layers side by side, 10 m and 20 m tall, sharing the edge x = 10.
+    const layer = (x0: number, x1: number, wall: number) => ({
+      rings: [[[x0, 0], [x1, 0], [x1, 10], [x0, 10]]],
+      y0: -1,
+      roof: "flat",
+      eave: wall,
+      wall,
+      ridge: wall,
+      overhang: 0,
+      storey: 3,
+      storeys: 3,
+    });
+    const data = { place: { building: "test", centre: [0, 0], door: [0, 0] }, layers: [layer(0, 10, 10), layer(10, 20, 20)] };
+    const walls = (build({}, undefined, data).children as Mesh[]).find((m) => m.name === "walls")!;
+    const p = walls.geometry.getAttribute("position");
+    const idx = walls.geometry.index!;
+    // The area of wall in the plane x = at, up to `top` (the roofs; their rims stand above them).
+    const wallIn = (at: number, top = 20) => {
+      let area = 0;
+      let low = Infinity;
+      for (let t = 0; t < idx.count; t += 3) {
+        const v = [0, 1, 2].map((k) => idx.getX(t + k));
+        if (!v.every((i) => Math.abs(p.getX(i) - at) < 1e-6 && p.getY(i) <= top + 1e-6)) continue;
+        const [a, b, c] = v.map((i) => [p.getY(i), p.getZ(i)] as const);
+        area += Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])) / 2;
+        low = Math.min(low, ...v.map((i) => p.getY(i)));
+      }
+      return { area, low };
+    };
+    // Between them, only the taller layer's wall above the lower roof: 10 m long, 10 m high.
+    expect(wallIn(10).area).toBeCloseTo(100, 6);
+    expect(wallIn(10).low).toBeCloseTo(10, 6);
+    // The outer walls in full, from the foot at -1 m.
+    expect(wallIn(0, 10).area).toBeCloseTo(110, 4);
+    expect(wallIn(20).area).toBeCloseTo(210, 4);
+  });
+
   it("each stands on the map's ground at its door, in the map's frame about its centre", () => {
     const host = { loading: () => {}, prepare: async () => {}, ready: () => {} };
     for (const entry of MEASURED) {
