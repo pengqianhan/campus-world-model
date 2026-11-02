@@ -6,14 +6,20 @@
 // materials on the site: the map's palette on the map, the facades drawn by rule in the walker views.
 // A layer's walls are drawn only where no other layer of the building hides them (`cut`), so that a
 // building of many layers side by side has no walls inside it for a renderer to rasterise for nothing.
+// The walls as they were before the cut still cast the shadows, from a mesh that only the shadow map
+// draws (`shadow`, on SHADOW_ONLY_LAYER): the shadow map is drawn from the faces turned away from the
+// sun, and the walls inside the building were such faces, without which the shadow at the shaded foot
+// of a wall lets light through in patches.
 //
-// build(materials, only, data, style) returns a Group of two meshes, `walls` and `roof`, in the
+// build(materials, only, data, style) returns a Group of three meshes, `walls`, `roof` and `shadow`
+// (positions only, the walls before the cut, casting the shadows the walls do not), in the
 // building's frame: metres east of the building's centre (place.centre) along x, up along y from
 // ground.zero, and south along z. `style` gives the blocks' tints, rim and bay, and the facade the
 // walker views draw the building's walls with (src/scene/CampusScene.ts); without it the model has
 // the same shape in plain white, which is all the top-view check reads (massing_triangles.mjs).
 import { BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial } from "three";
 import { MeshBuilder } from "../../src/scene/geometry.ts";
+import { SHADOW_ONLY_LAYER } from "../../src/scene/layers.ts";
 
 const WHITE = [1, 1, 1];
 const DEFAULT_STYLE = { bay: 3.2, rim: 0.9, tints: { roof: WHITE, wall: WHITE, rim: WHITE, plinth: WHITE } };
@@ -36,6 +42,15 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
   const mb = new MeshBuilder(true, true, true);
   // Each layer's walls are drawn only where no other layer of the building hides them (see `hidden`).
   const solids = layers.map(solid);
+  // The walls' triangles as they were before the cut, for the shadows: `toShadow` adds those added since
+  // the last call, `drawnOnly` passes over the ones drawn in their place.
+  const uncut = [];
+  let seen = 0;
+  const toShadow = () => {
+    for (let i = seen; i < mb.indices.length; i++) uncut.push(mb.indices[i]);
+    seen = mb.indices.length;
+  };
+  const drawnOnly = () => (seen = mb.indices.length);
 
   layers.forEach((l, k) => {
     const hides = (a, b, n, from) => hidden(solids, k, a, b, n, from);
@@ -58,7 +73,9 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     const start = mb.indices.length;
     if (textured > l.y0 + 0.01) mb.extrude(rings, l.y0, textured, tints.roof, tints.wall, capped && !plain, { storey: l.storey, bay, roofGroup: true, plinth });
     if (plain) mb.extrude(rings, textured, l.wall, tints.roof, tints.wall, capped, { roofGroup: true });
+    toShadow();
     cut(mb, start, hides);
+    drawnOnly();
 
     const outer = l.local[0];
     // The layers whose roof is as high as this one or higher: where one meets this edge, no rim.
@@ -74,7 +91,8 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
       // it is the lowest, over the outline and the eaves round it. The walls rise to it.
       const planes = l.planes;
       const height = (x, y) => Math.min(...planes.map(([gx, gy, z0]) => z0 + gx * x + gy * y));
-      for (const ring of l.local) wallsUp(mb, ring, planes, height, l.wall, tints.wall, hides);
+      toShadow();
+      for (const ring of l.local) wallsUp(mb, ring, planes, height, l.wall, tints.wall, hides, toShadow, drawnOnly);
       const edge = l.overhang ? outset(outer, l.eaves ?? l.overhang) : outer;
       planes.forEach(([gx, gy, z0], i) => {
         let region = edge;
@@ -86,6 +104,7 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     }
   });
 
+  toShadow();
   const g = mb.build();
   const group = new Group();
   const roles = [materials.walls ?? new MeshBasicMaterial(), materials.roof ?? new MeshBasicMaterial()];
@@ -95,10 +114,21 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
     one.setIndex(new BufferAttribute(g.index.array.slice(part.start, part.start + part.count), 1));
     const mesh = new Mesh(one, roles[part.materialIndex ?? i]);
     mesh.name = part.materialIndex === 1 ? "roof" : "walls";
-    mesh.castShadow = true;
+    // The walls' shadows come from `shadow`, below.
+    mesh.castShadow = mesh.name === "roof";
     mesh.receiveShadow = true;
     group.add(mesh);
   });
+  // The walls before the cut, positions only, sharing the builder's: what the shadow map draws.
+  const before = new BufferGeometry();
+  before.setAttribute("position", g.attributes.position);
+  before.setIndex(uncut);
+  const shadow = new Mesh(before, materials.shadow ?? new MeshBasicMaterial({ colorWrite: false, depthWrite: false }));
+  shadow.name = "shadow";
+  shadow.castShadow = true;
+  shadow.receiveShadow = false;
+  shadow.layers.set(SHADOW_ONLY_LAYER);
+  group.add(shadow);
   return group;
 }
 
@@ -124,7 +154,7 @@ function clip(ring, a, b, c) {
  * The walls of a ring from the lowest edge of a sloping roof (`from`) up to the roof: the ends of a
  * gable, and the side of a mono-pitch. Each wall is cut where another plane of the roof takes over.
  */
-function wallsUp(mb, ring, planes, height, from, color, hides) {
+function wallsUp(mb, ring, planes, height, from, color, hides, toShadow, drawnOnly) {
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % ring.length];
@@ -153,10 +183,17 @@ function wallsUp(mb, ring, planes, height, from, color, hides) {
         [q[0], Math.max(from, hq), q[1]],
         [p[0], Math.max(from, hp), p[1]],
       ];
-      // Drawn from the lowest height to which the layers beside it hide it, all along it.
+      // In the shadows as it was; drawn from the lowest height to which the layers beside it hide it,
+      // all along it.
+      const start = mb.indices.length;
+      mb.facet(wall, color);
+      toShadow();
       const h = Math.min(...hides(p, q, n, from).map(([, , up]) => up));
-      if (h >= Math.max(hp, hq) - 1e-3) continue;
-      mb.facet(h > from + 1e-3 ? above(wall, h) : wall, color);
+      if (h > from + 1e-3) {
+        mb.indices.length = start;
+        if (h < Math.max(hp, hq) - 1e-3) mb.facet(above(wall, h), color);
+        drawnOnly();
+      }
     }
   }
 }

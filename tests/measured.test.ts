@@ -6,6 +6,7 @@ import type { Mesh } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, MEASURED, landmarkBuildings, measuredOf } from "../src/app/landmarks.ts";
 import { Landmark } from "../src/scene/landmarks.ts";
+import { SHADOW_ONLY_LAYER } from "../src/scene/layers.ts";
 import type { CampusData } from "../src/shared/types.ts";
 // @ts-expect-error plain JavaScript: the shared model of the measured massings
 import { build } from "../landmarks/measured/model.js";
@@ -140,8 +141,14 @@ describe("measured massings", () => {
   it("the shared model draws each one as walls and roofs, at the heights its data gives", () => {
     for (const { file, data } of DATA) {
       const group = build({}, undefined, data);
-      const meshes = group.children as Mesh[];
-      expect(meshes.map((m) => m.name).sort(), file).toEqual(["roof", "walls"]);
+      const all = group.children as Mesh[];
+      expect(all.map((m) => m.name).sort(), file).toEqual(["roof", "shadow", "walls"]);
+      // The walls before the cut cast the walls' shadows, from a layer that only the shadow map draws.
+      const shadow = all.find((m) => m.name === "shadow")!;
+      expect(shadow.layers.mask, file).toBe(1 << SHADOW_ONLY_LAYER);
+      expect(Object.keys(shadow.geometry.attributes), file).toEqual(["position"]);
+      expect(all.map((m) => `${m.name}:${m.castShadow}`).sort(), file).toEqual(["roof:true", "shadow:true", "walls:false"]);
+      const meshes = all.filter((m) => m !== shadow);
       let top = -Infinity;
       let bottom = Infinity;
       for (const m of meshes) {
