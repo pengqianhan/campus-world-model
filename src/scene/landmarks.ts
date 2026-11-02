@@ -257,12 +257,14 @@ export class Landmark {
 
   /**
    * The material of a measured massing's walls before the cut, which only the shadow map draws
-   * (SHADOW_ONLY_LAYER): in a frame that draws the shadow map the view's pass draws it too, so it
-   * writes neither colour nor depth there; in the shadow map it is drawn as `walls` would be (three.js
-   * makes the shadow's material from its side and shadowSide).
+   * (SHADOW_ONLY_LAYER): in a frame that draws the shadow map the view's pass draws it too, in this
+   * material, which writes no colour and no depth, and which a pass that draws the scene in a material
+   * of its own does not replace (`allowOverride` false; the AO pass leaves the mesh out, `noAO`). In
+   * the shadow map it is drawn as `walls` would be (three.js makes the shadow's material from its side
+   * and shadowSide).
    */
   private shadowOnly(walls: Material): Material {
-    const m = (this.shadowMaterial ??= new MeshBasicMaterial({ colorWrite: false, depthWrite: false }));
+    const m = (this.shadowMaterial ??= new MeshBasicMaterial({ colorWrite: false, depthWrite: false, allowOverride: false }));
     m.side = walls.side;
     m.shadowSide = walls.shadowSide;
     return m;
@@ -397,7 +399,12 @@ export class Landmark {
       // A click finds the blocks, not the landmark's hundred thousand triangles.
       mesh.raycast = () => {};
       mesh.userData.noPick = true;
-      if (part.material === "shadow") mesh.layers.set(SHADOW_ONLY_LAYER);
+      if (part.material === "shadow") {
+        mesh.layers.set(SHADOW_ONLY_LAYER);
+        // Left out of a pass that draws the scene in a material of its own: the walker views' AO
+        // (street/effects.ts) would draw it with the walls' depth and no normals.
+        mesh.userData.noAO = true;
+      }
       g.add(mesh);
       if (depthFirst && !(mesh.material as Material).transparent) {
         const twin = new Mesh(part.geometry, DEPTH_ONLY);

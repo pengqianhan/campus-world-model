@@ -123,8 +123,10 @@ export function build(materials, only, data, style = DEFAULT_STYLE) {
   const before = new BufferGeometry();
   before.setAttribute("position", g.attributes.position);
   before.setIndex(uncut);
-  const shadow = new Mesh(before, materials.shadow ?? new MeshBasicMaterial({ colorWrite: false, depthWrite: false }));
+  const shadow = new Mesh(before, materials.shadow ?? new MeshBasicMaterial({ colorWrite: false, depthWrite: false, allowOverride: false }));
   shadow.name = "shadow";
+  // Not in a pass that draws the scene in a material of its own (the walker views' AO, street/effects.ts).
+  shadow.userData.noAO = true;
   shadow.castShadow = true;
   shadow.receiveShadow = false;
   shadow.layers.set(SHADOW_ONLY_LAYER);
@@ -191,7 +193,7 @@ function wallsUp(mb, ring, planes, height, from, color, hides, toShadow, drawnOn
       const h = Math.min(...hides(p, q, n, from).map(([, , up]) => up));
       if (h > from + 1e-3) {
         mb.indices.length = start;
-        if (h < Math.max(hp, hq) - 1e-3) mb.facet(above(wall, h), color);
+        if (h < Math.max(hp, hq) - 1e-3) mb.facet(h - OVERLAP > from ? above(wall, h - OVERLAP) : wall, color);
         drawnOnly();
       }
     }
@@ -215,6 +217,11 @@ function above(points, h) {
 
 /** Metres out from a wall where the layers beside it are looked for. */
 const BEYOND = 0.001;
+/**
+ * Metres a wall cut where another layer hides it reaches on behind that layer, down and along, so
+ * that no seam opens where the two meet: before the cut the walls ran on past each other.
+ */
+const OVERLAP = 0.05;
 
 /**
  * A layer as a solid, for `hidden`: from its foot up to its roof (the top of its walls, the top of
@@ -325,8 +332,8 @@ function cut(mb, start, hides) {
     }
     const pieces = [];
     for (const [t0, t1, up] of hides([P[3 * v], -P[3 * v + 2]], [P[3 * (v + 1)], -P[3 * (v + 1) + 2]], [N[3 * v], -N[3 * v + 2]], from)) {
-      // The foot of each piece: as it was, or where it is hidden to, or past the top: hidden.
-      const foot = up <= from + 1e-3 ? from : up >= to - 1e-3 ? to : up;
+      // The foot of each piece: as it was, or OVERLAP below where it is hidden to, or past the top: hidden.
+      const foot = up <= from + 1e-3 ? from : up >= to - 1e-3 ? to : Math.max(from, up - OVERLAP);
       const last = pieces.at(-1);
       if (last && last[2] === foot) last[1] = t1;
       else pieces.push([t0, t1, foot]);
@@ -334,6 +341,13 @@ function cut(mb, start, hides) {
     if (pieces.length === 1 && pieces[0][2] === from) {
       kept.push(...quad);
       continue;
+    }
+    // Where a piece meets one hidden further up, it runs on OVERLAP behind it (at most half its length).
+    const len = Math.hypot(P[3 * (v + 1)] - P[3 * v], P[3 * (v + 1) + 2] - P[3 * v + 2]);
+    for (let k = 0; k + 1 < pieces.length; k++) {
+      const [p, q] = [pieces[k], pieces[k + 1]];
+      if (p[2] < q[2]) p[1] = q[0] = q[0] + Math.min(OVERLAP / len, (q[1] - q[0]) / 2);
+      else if (p[2] > q[2]) p[1] = q[0] = p[1] - Math.min(OVERLAP / len, (p[1] - p[0]) / 2);
     }
     pieces.forEach(([t0, t1, foot], k) => {
       if (foot >= to) return;

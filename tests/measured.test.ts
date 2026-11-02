@@ -2,7 +2,7 @@
 // building the shared model can draw, within the limits the maintainer set, and no building is drawn
 // by two models.
 import fs from "node:fs";
-import type { Mesh } from "three";
+import type { Material, Mesh } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, MEASURED, landmarkBuildings, measuredOf } from "../src/app/landmarks.ts";
 import { Landmark } from "../src/scene/landmarks.ts";
@@ -147,6 +147,9 @@ describe("measured massings", () => {
       const shadow = all.find((m) => m.name === "shadow")!;
       expect(shadow.layers.mask, file).toBe(1 << SHADOW_ONLY_LAYER);
       expect(Object.keys(shadow.geometry.attributes), file).toEqual(["position"]);
+      // Never drawn by a pass that draws the scene in a material of its own (the walker views' AO).
+      expect(shadow.userData.noAO, file).toBe(true);
+      expect((shadow.material as Material).allowOverride, file).toBe(false);
       expect(all.map((m) => `${m.name}:${m.castShadow}`).sort(), file).toEqual(["roof:true", "shadow:true", "walls:false"]);
       const meshes = all.filter((m) => m !== shadow);
       let top = -Infinity;
@@ -215,9 +218,10 @@ describe("measured massings", () => {
       }
       return { area, low };
     };
-    // Between them, only the taller layer's wall above the lower roof: 10 m long, 10 m high.
-    expect(wallIn(10).area).toBeCloseTo(100, 6);
-    expect(wallIn(10).low).toBeCloseTo(10, 6);
+    // Between them, only the taller layer's wall above the lower roof, from 5 cm behind it (OVERLAP),
+    // so that no seam opens where they meet: 10 m long, 10.05 m high.
+    expect(wallIn(10).area).toBeCloseTo(100.5, 4);
+    expect(wallIn(10).low).toBeCloseTo(9.95, 4);
     // The outer walls in full, from the foot at -1 m.
     expect(wallIn(0, 10).area).toBeCloseTo(110, 4);
     expect(wallIn(20).area).toBeCloseTo(210, 4);
