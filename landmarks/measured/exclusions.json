@@ -710,23 +710,6 @@
     }
    }
   },
-  "250": {
-   "name": "Music School",
-   "reason": "roof cells cover 77% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 1587.1,
-    "ground": {
-     "p5": 28.8,
-     "p50": 32.48,
-     "p95": 34.49,
-     "zero": 28.94
-    },
-    "roof_inside_m2": 1229.2,
-    "cover": 0.774,
-    "vegetation": 0.107,
-    "open_below": 0.102
-   }
-  },
   "251": {
    "name": "Tanenuiarangi - Meeting House",
    "reason": "Waipapa Marae: culturally significant; its block stays until the maintainer has asked the people it belongs to (decision 7)",

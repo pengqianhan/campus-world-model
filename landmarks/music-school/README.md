@@ -7,7 +7,8 @@ it is built with, the pipeline, the viewer and how to run them are shared by eve
 [`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=music-school&view=orbit`
-  with the repository root served on port 8765. `site` is false: the site draws block 250 as before.
+  with the repository root served on port 8765. `site` is true (round 2): the site draws it in
+  place of block 250 ("On the site", below).
 - Run its pipeline: `landmarks/pipeline/run.sh music-school [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
@@ -33,10 +34,10 @@ it. The house east of the car park is not on the campus map and stands more than
 - **Te Pūtahi Tangata (201)**, a block, 0.44 m from 250's outline at the west corner: the model's west
   corner keeps to 250's returns.
 - **The Overbridge (202)**, a block 3.6 m tall by its floor count, along the south-east and south sides:
-  the campus map's two outlines overlap, and the model covers 12.0% of block 202 there (round 1), under roofs 7.4 to
+  the campus map's two outlines overlap, and the model covers 12.0% of block 202 there, under roofs 7.4 to
   9.3 m above 32.7 where block 202's top stands about 0.3 m below it by the LiDAR's heights (its ground's
-  median 28.79 m, plus 3.6; the LiDAR's ground in its outline, -3.84 m, gives 0.24 m below). How the two
-  stand on the map's own ground, each at its own, is to be checked before `site` is set.
+  median 28.79 m, plus 3.6; the LiDAR's ground in its outline, -3.84 m, gives 0.24 m below). On the site
+  each stands on the map's ground, as "On the site" below says.
 
 ## References
 
@@ -171,3 +172,41 @@ Against the photograph (`run.sh music-school refine compare topview`, `qru8…`'
 against 248, 248 and 247. From above: footprint IoU 0.936, 88% of cells within 0.5 m, the highest point 15.14
 against 15.39 (p99.9), 80.5% of block 250 and 12.0% of block 202 under the model. 906 triangles in 5 meshes
 (`paint`, `trim`, `roofGrey`, `roofPale`, `glassPale`).
+
+## On the site
+
+`site` is true: `place` writes `placement.json`, and the site draws the model in place of block 250 (80.5% of
+it under the model; its outline takes in the courtyard and a garden). `building.also` is empty: of the campus
+map's blocks whose centres lie within 80 m, the model covers only block 202's, by 12.0%, where the two campus
+outlines overlap. 250's entry in `landmarks/measured/exclusions.json` (its roof cells covered 77% of its
+outline) has gone: the generator leaves the landmarks on the site alone; `MASSING.md` lists 250 among them
+and counts 39 stand-ins measured.
+
+- **The door** stays at (7.0, 19.0), the foot of the face to the car park, 0.6 m out from the canopy's edge,
+  where the frame's ground (32.7 m; the LiDAR's 32.68) is measured. On the map the model stands on the map's
+  ground there, 25.83 m (the 8 m elevation model, whose heights are not the LiDAR's).
+- **The foot.** Stood as the site stands it, every part's walls go down to `FOOT` (-4.5 m), below the map's
+  ground everywhere under them: under the auditorium the drawn ground lies 1.5 m below to 0.1 m below the
+  door's, under the north wing 0.3 m below to 1.8 m above, under the ranges 1.1 m below to 2.5 m above, so the
+  walls' foot lies 3.0 m or more below the drawn ground everywhere, and none hangs. The LiDAR's ground falls to -3.9 m along the
+  south-east side, where the map's lies only about 1.5 m below the door's: the map raises the ground there
+  and buries the walls deeper. The canopy, the roofs, the parapet and the window's panes stand clear of the
+  ground by design. `tests/landmarks.test.ts` passes.
+- **Te Pūtahi Tangata (201)** is a block 39.6 m tall by its floor count, standing on the map's ground (its
+  footing's base 27.10 m, 1.27 m above the door's); no point of the model lies inside its outline, and its
+  wall stands 0.44 m off 250's outline at the west corner, beside the model's west corner.
+- **The Overbridge (202)** is a block 3.6 m tall by its floor count, on its footing's base (25.49 m, 0.34 m
+  below the door's), its top 3.26 m above the model's door: there the map stands it about 3.5 m higher
+  against the model than the LiDAR has the bridge (its slatted roof 2.0-2.5 m above 32.7 at most, its deck
+  -1 to -0.5). Inside its outline the model has only its walls, from `FOOT` up through the block to the
+  roofs, whose eaves over it stand 7.4 to 7.6 m above the door (the south range's) and 8.6 to 9.2 m (the
+  auditorium's): the block's top lies 4 m or more below every roof over it, so nothing of
+  either shows through the other there; where the block stands inside the model's walls, they hide it, and
+  outside them it stands against them, as the bridge does.
+- **The light form** (the map, and the walker views of the basic tier) draws the roofs (`roofGrey`,
+  `roofPale`, the canopy among them) as roofs and the window's panes (`glassPale`) as panes, all in
+  `LIGHT_ROLE` already; the paint and the ochre render are walls. No new material: About's words for the
+  landmarks' materials (painted render, glass and metal among them) cover it.
+- **Its card** says "estimated:" and the config's `estimated`. Its sizes come from the LiDAR, and the details of
+  its face to the car park and the ochre wall from the photograph through a camera fitted to the LiDAR's edges:
+  no `measured_by`.

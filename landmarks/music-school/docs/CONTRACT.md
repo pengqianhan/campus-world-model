@@ -39,7 +39,8 @@ model.
   floor count) runs along the south-east and south sides, its outline overlapping 250's: the model covers
   12.0% of block 202, under roofs 7.4-9.3 m above 32.7, where block 202's top stands about 0.3 m below
   32.7 by the LiDAR's heights (its ground's median 28.79 m, plus 3.6): neither shows through the other
-  there. How the two stand on the map's own ground is to be checked before `site` is set.
+  there. On the map's ground (round 2, `site` true) block 202's top stands 3.26 m above the model's door,
+  4 m or more below every roof of the model over it (README, "On the site").
 
 ## Ownership
 - `parts/fan.js` (the auditorium; its window, gutter and downpipes), `parts/north.js` (the north wing, the parapet and the canopy),

@@ -1,6 +1,6 @@
 {
  "name": "music-school",
- "site": false,
+ "site": true,
  "estimated": "how thick its canopy and its roofs are, how deep the auditorium's fascia is, the size of its window's frames and head and how far they stand out, the radius of its downpipes, where the lower steps of its parapet to the car park begin (to about 0.25 m), how high the steps between the LiDAR's levels stand (equal rises), and the colour of the walls no photograph shows",
  "building": {
   "id": "250",

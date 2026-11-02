@@ -18,6 +18,20 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Music School drawn in detail.** Near the camera the map draws the Music School (250) on Symonds
+  Street from code in place of its block: a fan-shaped auditorium under a grey roof of facets round one
+  high point, its ochre wall with a window of four tall lights in two rows and white downpipes, and
+  ranges of rendered walls round an open courtyard; along its face to the car park a long pale wall
+  carries a curved canopy of white corrugated metal and steps up toward its north corner. Its heights and
+  roofs come from the LINZ 2024 LiDAR; the parapet's upper steps, the canopy's lower edge and the window
+  are measured in a Street View photograph through a camera set from the photograph's own edges. How
+  thick its canopy and roofs are and how deep its auditorium's fascia is, the size of the window's frames
+  and head and how far they stand out, the downpipes' radius, where the parapet's lower steps begin and how
+  high its steps stand between the LiDAR's levels, and the colour of the walls no photograph shows are
+  estimated, and its card says so. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own paint, ochre render, metal roofs and glass. Its faces to the road
+  and to the south and west, the courtyard and its roofs, which no photograph shows, are drawn plainly. A
+  click still opens its floors (#PR).
 - **The Thomas Building drawn in detail.** Near the camera the map draws the Thomas Building (110) on
   Symonds Street from code in place of its block, beside the Thomas Building Extension: four ranges of
   board-marked concrete round a courtyard, and along its face to the road four storeys of red-framed
