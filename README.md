@@ -96,32 +96,6 @@ It is built to answer two questions a student actually has:
   a graphics card.
 - **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
   balconies and canopy are, and how thick its ramp and parapet are.
-- **2026-10-28:** On Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower
-  with a cream band at each floor, a slot of windows up its corner, balconies down one side, a red tile
-  canopy over its entrance and the ramp to it from the street. Three more schools, from OpenStreetMap:
-  at [/uc/](https://campusworldmodel.com/uc/),
-  57 buildings of the University of Canterbury's Ilam and Dovedale campuses and its Arts Centre
-  location; at [/massey/](https://campusworldmodel.com/massey/), 55 buildings of Massey
-  University's Manawatū, Auckland and Wellington campuses; and at
-  [/waikato/](https://campusworldmodel.com/waikato/), 53 buildings of the University of Waikato's
-  Hamilton campus, chosen with the University's own campus map, which also names by their block
-  codes the 17 that OpenStreetMap leaves unnamed. Each building has its name and height and how the
-  height was found; their rooms, class times, dates and course lists are not shown, and the site
-  says why. The root page names each school in te reo Māori too, where the school's own words give
-  the name. On Eden Crescent the map draws 15 Eden Crescent in detail, next to 9 Eden Crescent: a
-  long white two-storey building, its
-  windows deep in square openings in two rows over a base of tiles, under a roof that slopes up to a
-  top storey with a curved roof. Four more University of Auckland buildings are drawn near the camera
-  to their
-  LiDAR-measured heights and roofs: Building 240, and three buildings planned as landmarks, Alfred
-  Nathan House, the Science Centre's 305 and 67 Symonds Street, until their own landmarks come. On the
-  Grafton and Newmarket campuses five buildings are drawn the same way: 93 Grafton Road, the Ray Meyer
-  Building, Buildings 904 and 909, and Structures Hall. A
-  walker can pass under the Clock Tower East Wing's link toward the Clock Tower, which was drawn as
-  solid stone on the footway under it; its card and 15 Eden Crescent's say what of them is estimated.
-  On Symonds Street the map draws the Thomas Building Extension in detail: a curved building, three
-  storeys of glass curtain wall over a white rendered base, beside a face of board-marked concrete,
-  joined to the Thomas Building by a glazed link.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
