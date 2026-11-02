@@ -69,7 +69,7 @@ A change to what the site does or shows adds its line here, and the README's
   against another part of the same building is now drawn only for the height that shows above it,
   and not at all where it is hidden. Engineering Block 5, a tower of 60 parts, has half as much wall
   to draw, and on a computer without a graphics card the map over it draws about 4% faster. The walls
-  as they were still cast the shadows, from a copy that only the shadow map draws (#PR).
+  as they were still cast the shadows, from a copy that only the shadow map draws (#128).
 
 ## 2026-11-01
 
