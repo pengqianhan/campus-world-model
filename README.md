@@ -82,7 +82,9 @@ It is built to answer two questions a student actually has:
   from an aerial photograph of 2023 and a Street View photograph instead. Eight more University of
   Auckland buildings are drawn near the camera to their LiDAR-measured heights and roofs, now with
   roofs of several ridges and low pitches: Pembridge House, Mona, AUSA House, Engineering Block 5,
-  the Conference Centre, Fine Arts Studio Block 431, and Buildings 902 and 903 at Newmarket.
+  the Conference Centre, Fine Arts Studio Block 431, and Buildings 902 and 903 at Newmarket. They
+  draw only the walls that show, so the map over Engineering Block 5 is faster on a computer without
+  a graphics card.
 - **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
   balconies and canopy are, and how thick its ramp and parapet are.
 - **2026-10-28:** On Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower

@@ -260,13 +260,20 @@ agent and no photograph. All of them share one model and have a data file each:
   outline's are. The cells of the layer that lie on no face have their own entry under `dropped`. The building is drawn only if it then passes the check with more cells within
   0.5 m than before; else its block stays, and `exclusions.json` gives both checks. A building that
   passes without them is not measured again, so its data file is as before. `--no-forms` leaves
-  them out. 405 Engineering Block 5 is drawn by the maintainer's exception (2026-11-02), although it
-  makes the map drawn in software slower than the 15% the loop allows (MASSING.md, "The fourth
-  round").
+  them out. 405 Engineering Block 5 is drawn by the maintainer's exception (2026-11-02): it made the
+  map drawn in software 23.6% slower, where the loop allows 15%, and since the walls inside it are
+  no longer drawn it is at the limit, 15.1% (MASSING.md, "The fourth round" and "The speed of a
+  many-layered massing").
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
-  rim on flat roofs, and the street look's facade data. `pipeline/tools/massing_triangles.mjs`
+  rim on flat roofs, and the street look's facade data. A layer's walls are drawn only where no
+  other layer of the building hides them: a wall against a taller layer only for the height that
+  shows above it, after the party walls of mrdoob's slop-newyork (MIT; MASSING.md, "The speed of a
+  many-layered massing"), so that a tower of many layers has no walls inside it for a renderer to
+  rasterise for nothing. Roofs are not cut. As the shadow map is drawn from the faces turned away
+  from the sun, which those walls were, the shadow at the shaded foot of some walls now lets light
+  through in patches. `pipeline/tools/massing_triangles.mjs`
   gives its triangles to the top-view check: footprint IoU 0.90 or more against the LiDAR, and 90%
   of the cells both cover within 0.5 m (cells of roof that no layer draws are left out of the
   heights).

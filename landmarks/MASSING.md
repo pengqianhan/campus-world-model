@@ -601,9 +601,9 @@ landmarks come (see "Which buildings"). **405 is drawn by the maintainer's excep
 the frame goes from 3.7 to 4.2 ms. With the massings hidden one at a time in that view in
 SwiftShader, a frame took 283 ms with both drawn, 251 ms with 405 hidden, 283 ms with 423 hidden
 and 239 ms with both hidden: the cost is 405's, about 32 ms, and 423 costs about 12 ms only when
-405 is hidden. Standing the faces on bodies did not lower it. A performance task follows, to bring
-405 within 15%: profile it in SwiftShader, then draw only the height of wall that shows, give it
-stand-ins for its shadows, or join the massings cell by cell. 902 and 903 are the two buildings whose outlines 904's
+405 is hidden. Standing the faces on bodies did not lower it. The performance task that followed
+(see "The speed of a many-layered massing", below) brought it to the limit: 15.1% in fresh
+browsers, at most 13.9% by its paired table. 902 and 903 are the two buildings whose outlines 904's
 strip lies in (see "The third round"): the strip now lies on their measured roofs, within 0.2 m
 of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
 shows in patches where it stood above their 14.4 m blocks before.
@@ -630,6 +630,121 @@ shows in patches where it stood above their 14.4 m blocks before.
 Each of the 31 keeps its reason in `exclusions.json`. 27 of them also give the numbers of the
 check with the new forms (`measured.forms`); 132, 509, 910 and 911 do not, as no new form fits
 them.
+
+### The speed of a many-layered massing (2026-11-02)
+
+405 Engineering Block 5 is a tower of 60 layers, most of them side by side from the plinth at 9 m
+to its roof at 48 to 53 m. Each layer's walls went from its foot to its roof, so most of the
+tower's 65,922 m² of wall stood inside it, against another layer. This round measured where the
+time goes before it changed anything, and then changed only `measured/model.js`.
+
+**Where the time goes**, over 405 and 423 (`showCampus([54, -131], 200)`, 1440x900; how, below).
+First, each build or variant in a fresh browser, medians of three; the machine was slower in this
+round than in the fourth (8c1e4fc's frame 270.7 ms against 233.5), so compare within a table:
+
+| Build or variant | SwiftShader, ms a frame | The same with the shadow map drawn | GPU, ms | Calls, triangles |
+| --- | --- | --- | --- | --- |
+| 8c1e4fc: 405's block | 270.7 | 335.1 | 2.85 | 71, 953,107 |
+| 4ca93a4: 405 drawn | 298.5 | 397.1 | 2.66 | 69, 968,278 |
+| 4ca93a4, 405 hidden in the page | 282.2 | | 2.42 | |
+| 4ca93a4, 405's walls hidden | 283.0 | | 2.48 | |
+| 4ca93a4, 405's roofs hidden | 331.6 | | 2.59 | |
+| 4ca93a4, 405 casting no shadow | | 398.5 | 3.39 against 3.42 | |
+| Walls cut, a wall at a time, 2 cm out | 292.5 | 350.5 | 2.60 | 69, 964,934 |
+| The same, a gap under 0.6 m taken as closed | 281.8 | 337.5 | 2.56 | 69, 963,378 |
+| 405's flat layers within 5 cm of each other merged (the walls between them gone) | 307.6 | 368.6 | 2.64 | 69, 968,190 |
+
+Fresh browsers differ by more than some of these changes (4ca93a4's three frames: 286.3, 298.5
+and 338.4 ms), so the geometries were then compared in one page: each was asked of the site's
+own worker and put in 405's meshes in turn, four rounds in each of three fresh browsers, and the
+difference to 4ca93a4's geometry taken round by round:
+
+| 405's geometry | SwiftShader, ms a frame | Paired difference, ms | GPU, ms | Triangles: walls + roofs |
+| --- | --- | --- | --- | --- |
+| 4ca93a4 | 329.9 | 0 | 2.60 | 8,116 + 1,643 |
+| Walls cut piece by piece (the change below) | 318.3 | −13.3 | 2.58 | 7,695 + 1,643 |
+| The same, roofs drawn highest first | 316.7 | −14.1 | 2.57 | 7,695 + 1,643 |
+| The same, a gap under 0.6 m taken as closed | 302.5 | −25.7 | 2.54 | 5,777 + 1,643 |
+| 405 hidden | 279.7 | −52.1 | 2.38 | none |
+
+What the numbers say:
+
+- **Shadows are not where the time goes.** The map draws its shadow map again only when something
+  changes (`shadowMap.autoUpdate` is off), so a steady frame does not draw it. In a frame that does,
+  405 casting no shadow saved nothing (398.5 against 397.1 ms). Stand-ins for its shadows would not
+  help.
+- **The walls are.** Hiding 405's walls saves as much as hiding all of it (283.0 against 282.2 ms).
+  Hiding its roofs costs time instead (331.6 ms): the roofs hide most of the walls inside, which are
+  then drawn in full. In software, walls that never show still cost time: cutting them away
+  (below) saves 13.3 ms.
+- **Merging layers barely changes anything.** Of the walls, only 1,171 m² stand between two of
+  405's flat layers within 5 cm of each other: the tower's layers differ in height or slope.
+- **Half the walls stand against another layer.** 32,086 m² of the 65,922 m² stand where another
+  layer of the building fills the space just outside them. Cut away, they take 13.3 ms off a frame.
+- **Most of the rest stand along narrow gaps.** The generator simplifies each layer's outline on its
+  own (`SIMPLIFY`, 0.25 m), so two layers that share an edge in the LiDAR's cells leave a gap of up
+  to about 0.6 m between them, or overlap. A gap's walls show, a little, from above and where the
+  gap meets the outline, so they stay. Taken as closed they would take another 12 ms off, but the
+  gap would then open into the building.
+
+**The change.** `measured/model.js` draws each layer's walls only where no other layer of the
+building hides them, after the party walls of mrdoob's slop-newyork (a city drawn with three.js,
+MIT), which draw a wall that stands against a taller neighbour only for the height that shows
+above it; no code is taken from it.
+Along each wall, `hidden` finds the pieces where the layers 1 mm outside it fill the space above
+its foot, one on another, and to what height (a sloping roof counts at the lower end of each
+piece). `cut` drops a wall hidden all the way up, and draws a wall hidden in part again over each
+piece that shows, from the height it is hidden to. The new points take the values the wall's own
+points carry where they were (texture and facade coordinates), and a piece's sides have a point
+at each height where its neighbours' feet are, so no seam opens. The walls up to a sloping roof
+are cut to the lowest such height along them. The roofs do not change, nor does anything in the
+data files.
+
+- 405: walls 65,922 → 33,836 m², triangles 9,759 → 9,338 (walls cut in pieces add triangles
+  where whole walls go). 423: 8,921 → 6,366 m², 6,390 → 5,358 triangles. Every other measured
+  massing loses the walls inside it too (130: 2,378 → 1,658 m²; 619: 18,906 → 13,206 m²).
+- No wall that shows goes. On 4ca93a4's walls, every random point whose outside is open lies on a
+  wall of the new model, in the same plane, facing the same way (405: 19,880 such points of 37,217;
+  423, 130, 103, 902, 903 and 619 too, none missing). The top-view check's heightmap of every
+  measured massing is the same cell for cell (walls stand upright, so the check never read them),
+  so the check's numbers in the data files stand.
+- **The shadows change a little.** The map's shadow map is drawn from the faces turned away from the
+  sun (three.js's default for one-sided materials), and the walls inside a building were such faces:
+  the shadow at the foot of a wall on the far side from the sun found them, well nearer the sun than
+  the ground or roof it falls on. Without them it finds only that wall, at the depth of what it falls
+  on, and within about a metre of the wall's foot the shadow lets light through in patches. On the
+  map zoomed over 405 and 423 (GPU, 1280x800), 2,767 pixels differ from 4ca93a4's, at most 59/255,
+  all inside the massings' boxes: light patches along the shaded foot of 405's east walls (4ca93a4
+  has two such patches there; the change has a row of them). Over 103, 236 pixels differ
+  (at most 22/255); over 130, 196 (at most 9/255); over Newmarket's 902 and 903, 1,009 (at most
+  57/255); all inside the boxes. The map's eight far vantages are the same pixel for pixel (no
+  measured massing is drawn from there). A walker's eyes facing 405 differ in 42 pixels by more than
+  16/255, on 405's walls; elsewhere by at most 4/255, the walker views' own run-to-run difference.
+
+**After**, over 405 and 423, fresh browsers, medians of three, the builds in turn (two pairs, so the
+change was measured twice):
+
+| Build | SwiftShader, ms a frame | With the shadow map drawn | GPU, ms | Calls, triangles |
+| --- | --- | --- | --- | --- |
+| 8c1e4fc: 405's block | 254.4 (240.2, 257.3, 254.4) | 311.8 | 2.40 | 71, 953,107 |
+| This change | 292.9 (294.0, 292.9, 291.6) | 349.4 | 2.62 | 69, 966,831 |
+| 4ca93a4: 405 drawn | 298.8 (289.1, 298.8, 341.7) | 407.3 | 2.66 | 69, 968,278 |
+| This change | 287.5 (283.1, 287.5, 322.3) | 343.5 | 2.67 | 69, 966,831 |
+
+Against 405's block the map drawn in software is 15.1% slower (the loop's limit is 15%), and the
+GPU frame 0.22 ms slower (limit 1.0 ms). By the paired table, 405 costs 38.8 ms a frame with the
+change against 52.1 ms without, which over the 279.7 ms of a frame without 405 is at most 13.9%
+(405's block costs a little too). The change is therefore at the limit, not clearly within it: the
+maintainer's exception for 405 stands until the maintainer says otherwise.
+
+**What is left.** Two things, each beyond the massings' own code or data as they stand:
+
+- The narrow gaps between layers. Simplifying the edge two layers share once, for both, in
+  `massing.py` would close them and let their walls go too (about 12 ms more in the paired table);
+  that changes every data file of a building of several layers, and what shows inside the gaps.
+- The light patches at the shaded foot of a wall. Only the page can give a mesh a stand-in that the
+  shadow cameras alone draw (slop-newyork's second idea: casters with position-only proxies for the
+  shadow pass); `measured/model.js` hands the page meshes, not layers. That is shared scene code.
 
 ### How the numbers were measured
 
