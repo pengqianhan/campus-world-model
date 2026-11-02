@@ -1,7 +1,7 @@
 {
  "name": "thomas-building",
  "site": true,
- "estimated": "how far its window frames stand out, the height of the plinth under its face to the road, that face's plain end at the south-west, how far behind its piers the ground storey's windows, doors and posts stand toward the north-east end, and that storey round the east corner",
+ "estimated": "how far its window frames stand out and how thick their members are, where the mullions stand in the bays no photograph sees square, its second row's upper transom, which panes have blinds, the height of the plinth under its face to the road, that face's plain end at the south-west, how far behind its piers the ground storey's windows, doors and posts stand toward the north-east end, that storey round the east corner, and how thick its roofs are",
  "building": {
   "id": "110",
   "also": [],
@@ -227,7 +227,7 @@
  "door": {
   "x": 4.0,
   "z": 22.6,
-  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the south-east face, the face to the road, near its middle, 0.6-0.9 m out from the wall, where the LiDAR's ground is 36.17 m (15 ground returns within 1 m: 35.96-36.25 for p10-p90). The photographs show no door there; the white door oWaF's door view shows toward the north-east end (u 23.3-24.9) stands in the ground storey that steps down there (parts/common.js, FACADE.groundNE), on ground about 1.7 m lower, and is not the frame's ground."
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The foot of the south-east face, the face to the road, near its middle, 0.6-0.9 m out from the wall, where the LiDAR's ground is 36.17 m (15 ground returns within 1 m: 35.96-36.25 for p10-p90). The photographs show no door there; the white door oWaF's door view shows toward the north-east end (u 23.3-24.9) stands on ground 0.65 m lower (14 ground returns before it, v 21.8-24: p50 -0.65, p10 -0.78, p90 -0.60), in the ground storey that steps down there (parts/common.js, FACADE.groundNE); the grey door round the east corner on ground 1.7 m lower (-1.77, 16 returns at u 31-33.5)."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

@@ -24,7 +24,11 @@ export function parapets(b) {
   b.box(o.u[0], o.u[1], y0, y1, o.v[1] - w.se, o.v[1], "concrete");
   b.box(o.u[0], o.u[1], y0, y1, o.v[0], o.v[0] + w.nw, "concrete");
   b.box(o.u[0], o.u[0] + w.sw, y0, y1, o.v[0], o.v[1], "concrete");
-  b.box(o.u[1] - w.ne, o.u[1], y0, y1, o.v[0], o.v[1], "concrete");
+  // the north-east end's, but where 110N's link crosses it (common.js, MEASURED.link): there the link's
+  // roof covers the end, whichever stands higher on the site
+  const L = M.link.v;
+  b.box(o.u[1] - w.ne, o.u[1], y0, y1, o.v[0], L[0], "concrete");
+  b.box(o.u[1] - w.ne, o.u[1], y0, y1, L[1], o.v[1], "concrete");
   b.box(c.u[0] - n.sw, c.u[1] + n.ne, y0, y1, c.v[1], c.v[1] + n.se, "concrete");
   b.box(c.u[0] - n.sw, c.u[1] + n.ne, y0, y1, c.v[0] - n.nw, c.v[0], "concrete");
   b.box(c.u[0] - n.sw, c.u[0], y0, y1, c.v[0], c.v[1], "concrete");

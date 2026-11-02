@@ -4,7 +4,7 @@
 import { MEASURED } from "./common.js";
 import { rect, slab } from "./shapes.js";
 
-const M = MEASURED, G = M.parapet.gutter, T = 0.25; // the roof's own thickness over its walls
+const M = MEASURED, G = M.parapet.gutter, T = 0.25; // the roof's own thickness over its walls (estimated)
 
 /** A set-back storey over the plan, its walls from the gutter, its roof the plane `top`. */
 function storey(b, plan, top) {

@@ -59,14 +59,22 @@ export const MEASURED = {
     ne: { v: [-19.0, 18.5], a: { u: [18.25, 22.25], at: 18.5, y: 17.17, k: 0.28 }, valley: { u: [22.25, 23.5], y: 17.3 },
       b: { u: [23.5, 28.1], at: 23.75, y: 18.47, k: -0.43 } },
   },
-  // The plant room at the east corner: 268 returns above 20 m in u 19.2 to 24.0, v 8.3 to 14.5, their
-  // median 23.46 m (p90 24.99, the building's highest 25.11).
-  plant: { u: [19.2, 24.0], v: [8.3, 14.5], top: 23.46 },
+  // The plant room at the east corner: 268 returns above 20 m, in the building's axes u 19.61 to 24.14 and
+  // v 7.93 to 13.84 (p1-p99; min-max 19.36-24.18 and 7.86-14.07), their median 23.46 m (p90 24.99, its
+  // highest 25.11; the building's highest is the flue's, 25.77). Round 0 took x 19.2-24.0, z 8.3-14.5 in
+  // the view frame and drew them as u, v (fixed in round 2's review).
+  plant: { u: [19.61, 24.14], v: [7.93, 13.84], top: 23.46 },
   // The round stair at the south-west end, where the Overbridge (129) lands: its flat roof's 368 returns
   // (16.53-17.44 m, median 16.60) reach u -35.58 and v 5.59 to 13.64: a circle of radius 4.0 about
   // (-31.6, 9.6), half outside the end wall. Beside it a flue: 19 returns 18-27 m high in u -30.8 to
   // -29.6, v 7.9 to 9.2, to 25.77 m.
   stair: { u: -31.6, v: 9.6, r: 4.0, top: 16.6 },
+  // 110N's glazed link, as the site stands both landmarks (each on the map's ground at its own door: 31.058 m
+  // at this one's, 28.866 at 110N's, 2.19 m apart where the two configs' LiDAR grounds, 36.17 and 34.6, are
+  // 1.57 apart): in these axes its roof spans u 29.50-35.47, v -5.09 to 15.80, at y 14.75-14.86, below the
+  // north-east parapet's top (15.13); at the LiDAR's heights it is 15.47, above it. The parapet is left out
+  // where the link crosses it (body.js), so that the link's roof covers that stretch at either height.
+  link: { v: [-5.1, 15.9] },
   flue: { u: [-30.8, -29.6], v: [7.9, 9.2], top: 25.7 },
 };
 
@@ -97,6 +105,9 @@ export const FACADE = {
   transoms2: [null, 4.45, null, null],
   // the frames stand out from the glass (estimated: no photograph looks along the face)
   frameDepth: 0.12,
+  // the frames' members, mullions, sills, heads and transoms, 0.07 m (estimated: the photographs show them
+  // thin, a few pixels, at 16-23 m)
+  frame: 0.07,
   // blinds and lab fittings behind most panes make them read light grey: in S_C8's upper view the panes
   // of the top row and of the third row's upper tiers read luma 123-138 at the median and 169-188 at the
   // p90, the dark panels 59, the bands 105; about two panes in three are light in the rows above the
@@ -109,7 +120,7 @@ export const FACADE = {
   // beyond the second pier (15.90 to 21.94, 11 more); elsewhere the same spacing (estimated)
   // `starts`: the first mullion of a bay where the camera reads it (the bay that begins at that pier's
   // right edge); in the other bays the first stands 0.07 right of the pier, as at u 2.94 (estimated)
-  mullion: { from: 2.94, step: 0.58, width: 0.07, starts: { 1.72: 2.94, 13.72: 15.9 } },
+  mullion: { from: 2.94, step: 0.58, width: 0.07, starts: { 1.72: 2.94, 13.72: 15.9 } },   // width: FACADE.frame
   // piers from the ground to the top band, flush with the bands: the front faces' edges through the
   // camera at u 1.72-2.92 and 13.70-14.84, 12.0 m apart, 1.15 m wide; at that spacing a pier's edges show
   // behind the tree at u -10.3. The pier left of the east corner (round 2), through oWaF's camera fitted
@@ -127,22 +138,26 @@ export const FACADE = {
   // at u 29.5-29.9: README) the end is plain wall, as the photograph shows it beside the link's glass. The
   // south-west end, in no photograph, closes the recess with a plain end the width of a pier (estimated)
   wrapTo: 18.8,
-  // the ground storey toward the north-east end (round 2), as oWaF's door view shows it from u 17.5 (its
-  // left edge) to the corner and S_C8's wide view from u 17 to 21, each through its fitted camera on the
-  // face's plane. A concrete post at u 16.96-17.49 (S_C8) begins it. The band over it reaches lower than
-  // further south-west (1.46, S_C8's door view): its lower edge reads 1.26-1.28 through S_C8's camera (u
-  // 17.6-21) and 0.76-1.06 through oWaF's (u 23.8-30; the band's top there 2.01-2.35 against the LiDAR's
-  // ledge 2.38, so that camera reads low near the ground), drawn at 1.1 between them, the ledge 2.38 kept
-  // as its top. The windows' sills: -0.27 through S_C8's camera, -0.60 to -0.74 through oWaF's, drawn at
-  // -0.45, the plinth below them; the ground at the grey door round the corner -1.72 (the LiDAR's at the
-  // north-east end: p50 -1.66). Its windows and doors stand only a little behind the pier's face, not at
-  // the recess: in oWaF's upper view the pier's side shows 17 px there (the upper rows' 1.35 m would show
-  // about 55), its edge at v 21.58, and the door shows whole beside the pier: `back` 0.3 (estimated,
-  // 0.2-0.4). On that plane (oWaF's door view): a white door from u 23.3 to the pier, a white-framed louvre
-  // from the pier to 27.25, and a concrete post at 28.4-28.85 between two windows; the post at 17.0-17.5 is
-  // flush with the face, as S_C8's wide view shows it lit. Round the corner the same (estimated: the wide
-  // view shows the end's ground storey only behind a grey door and a sign)
-  groundNE: { from: 17.0, band: 1.1, plinth: -0.45, back: 0.3, panels: [[23.3, 24.9], [26.2, 27.25]], posts: [[17.0, 17.5, 0.3], [28.4, 28.85, 0.15]] },
+  // the ground storey toward the north-east end (round 2, and its review), as oWaF's door view shows it
+  // from u 17.5 (its left edge) to the corner and S_C8's wide view from u 17 to 21, each through its fitted
+  // camera on the face's plane. A concrete post at u 16.96-17.49 (S_C8) begins it. S_C8's camera reads the
+  // ground there as the LiDAR has it: the plinth's foot at -0.65, the LiDAR's ground before it -0.61 (p50 of
+  // 58 class-2 returns at u 17-23, v 21.8-24). oWaF's reads low near the ground: the white door's threshold
+  // at -1.10 to -1.16 where the LiDAR's ground before it is -0.65 (14 returns, p10 -0.78, p90 -0.60), and
+  // the ledge 2.38 at 2.01-2.35. So the heights are S_C8's: the band over it from 1.27 (1.26-1.28; oWaF's
+  // 0.76-1.06 read 0.2-0.5 low), where further south-west it starts at 1.46 (S_C8's door view), its top the
+  // LiDAR's ledge 2.38; the windows' sills at -0.27 (oWaF's -0.60 to -0.74), on a plinth down to the ground
+  // (-0.61 before u 17-23, -0.71 before the louvre, -1.04 before the windows at u 27.3-30.9); the white door
+  // down to the LiDAR's ground before it, -0.65. Its windows and doors stand only a little behind the
+  // pier's face, not at the recess: in oWaF's upper view the pier's side shows 17 px there (the upper rows'
+  // 1.35 m would show about 55), its edge at v 21.58, and the door shows whole beside the pier: `back` 0.3
+  // (estimated, 0.2-0.4). On that plane (oWaF's door view): a white door from u 23.3 to the pier, a
+  // white-framed louvre from the pier to 27.25, and a concrete post at 28.4-28.85 between two windows, 0.15
+  // out from them (estimated); the post at 17.0-17.5 is flush with the face, as S_C8's wide view shows it
+  // lit. Round the corner the same (estimated: the wide view shows the end's ground storey only behind a
+  // grey door and a sign, on ground at -1.73, p50 of 61 returns at u 31-33.5)
+  groundNE: { from: 17.0, band: 1.27, plinth: -0.27, back: 0.3, door: { u: [23.3, 24.9], foot: -0.65 },
+    panels: [[23.3, 24.9], [26.2, 27.25]], posts: [[17.0, 17.5, 0.3], [28.4, 28.85, 0.15]] },
   // the plinth under the ground storey's windows, at the face, to 0.35 (estimated: the hedge hides it)
   plinth: 0.35,
 };

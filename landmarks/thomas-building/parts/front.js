@@ -50,8 +50,13 @@ export function front(b) {
   const layers = [[FOOT, F.plinth, FOOT, G.plinth], ...F.bands.map(([y0, y1], i) => (i === 0 ? [y0, y1, G.band, y1] : [y0, y1, y0, y1]))];
   for (const [y0, y1, z0, z1] of layers) {
     b.box(U0, G.from, y0, y1, VW, V1, C);
-    b.box(G.from, U1, z0, z1, VW, V1, C);
     b.box(UW, U1, z0, z1, F.wrapTo, VW, C);
+    if (z1 !== G.plinth) { b.box(G.from, U1, z0, z1, VW, V1, C); continue; }
+    // the plinth toward the north-east end, lower before the white door, which comes down to the ground
+    const [d0, d1] = G.door.u;
+    b.box(G.from, d0, z0, z1, VW, V1, C);
+    b.box(d0, d1, z0, G.door.foot, VW, V1, C);
+    b.box(d1, U1, z0, z1, VW, V1, C);
   }
   // the plain end at the south-west and the piers, from the plinth to the top band
   b.box(U0, U0 + F.pierWidth, F.plinth, top, VW, V1, C);
@@ -62,7 +67,7 @@ export function front(b) {
   b.box(UW, UG - 0.01, G.plinth, G.band, F.wrapTo, VG, C);
   for (const [a, c, t] of G.posts) b.box(a, c, G.plinth, G.band, VG, VG + t, C);
 
-  const d = F.frameDepth, w = F.mullion.width, fw = 0.07;
+  const d = F.frameDepth, w = F.mullion.width, fw = F.frame;
   F.rows.forEach((row, r) => {
     const split = F.dark.row === r ? F.dark.top : null;
     for (const [ua, ub, y0, y1, pv] of spans(r, U0 + F.pierWidth, UW + 0.03)) {
