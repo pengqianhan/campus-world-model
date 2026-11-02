@@ -32,6 +32,17 @@ A change to what the site does or shows adds its line here, and the README's
   campus maps, key dates and course pages, is closed to this project by its `robots.txt`, and the
   site says so. The accent and the map's colours are the project's own; none is taken from Lincoln
   (#125).
+- **Eight more measured massings: roofs of several faces and low pitches.** Near the camera, 130
+  Pembridge House, 216 Mona, 322 AUSA House, 405 Engineering Block 5, 423 Conference Centre and
+  431 Fine Arts Studio Block 431 on the City campus, and Buildings 902 and 903 on the Newmarket
+  campus, are drawn from the LINZ 2024 LiDAR in place of their blocks, as the other measured
+  massings are. The program that measures them now draws a roof of several ridges (hips side by
+  side, a cross of gables, a sawtooth) as its faces, and a roof that falls less than 5° with its
+  low pitch, where its roof drawn flat or with one ridge fails the check against the LiDAR from
+  above. Pembridge House and Engineering Block 5 are buildings planned as landmarks; each stands in
+  until its landmark comes. Every measured massing already on the site is unchanged. The other 32
+  buildings that fail the check keep their blocks, each with its reason
+  (`landmarks/measured/exclusions.json`) (#PR).
 
 ## 2026-11-01
 

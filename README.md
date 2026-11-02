@@ -74,7 +74,10 @@ It is built to answer two questions a student actually has:
   University's, 8 of them, each with its name and height and how the height was found; Memorial
   Hall, mapped as disused, and the building named AgResearch are left out, and the campus's other
   buildings stand among the surroundings, with no name. Its rooms, class times, dates and course list are not shown, and
-  the site says why.
+  the site says why. Eight more University of Auckland buildings are drawn near the camera to their
+  LiDAR-measured heights and roofs, now with roofs of several ridges and low pitches: Pembridge
+  House, Mona, AUSA House, Engineering Block 5, the Conference Centre, Fine Arts Studio Block 431,
+  and Buildings 902 and 903 at Newmarket.
 - **2026-11-01:** the Fisher Building's card says which of its sizes are estimated: how deep its
   balconies and canopy are, and how thick its ramp and parapet are.
 - **2026-10-28:** On Waterloo Quadrant the map draws the Fisher Building in detail: a tan brick tower
@@ -730,7 +733,7 @@ If you represent the University and would like something changed or removed, ple
   Crescent (801), 15 Eden Crescent (802), the Fisher Building (804) and the Thomas Building
   Extension (110N) are the exceptions: their models are drawn to sizes measured from LiDAR. The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Three of them,
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the

@@ -243,7 +243,20 @@ agent and no photograph. All of them share one model and have a data file each:
   campus the rule waits for the maintainer, as it would change one number of 405's in
   `exclusions.json`. A layer above the lowest may still stand in a neighbour's outline where the two
   outlines overlap (904's strip over 902 and 903, 305's layers over 303): a question for the
-  maintainer in the same section.
+  maintainer in the same section. A cell of the outline where the LiDAR sees no roof stands at its
+  nearest layer's height (the maintainer, 2026-11-02).
+- Roofs of several faces and low pitches (`FORMS`; MASSING.md, "The fourth round"): a building that
+  fails the top-view check is measured once more. A layer drawn flat takes a low pitch where planes
+  read from a 2 m neighbourhood, down to 1°, lie nearer the LiDAR's heights than one height does.
+  Then a sloping layer is split into its faces where they lie nearer than the lowest of its planes:
+  its sloping cells by the direction they fall in, in connected pieces on one plane each (two faces
+  that fall the same way at different heights are two). Each face is a mono-pitch over the cells
+  nearest it, traced unsimplified so that neighbouring faces share their edges, with eaves where it
+  meets the outline; the faces of a layer stand on a flat body up to the lowest edge of their roofs,
+  on the plinth. The building is drawn only if it then passes the check with more cells within
+  0.5 m than before; else its block stays, and `exclusions.json` gives both checks. A building that
+  passes without them is not measured again, so its data file is as before. `--no-forms` leaves
+  them out.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof

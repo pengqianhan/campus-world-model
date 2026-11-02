@@ -64,6 +64,9 @@ the generator makes.
      roof**. Its cells are reported and drawn with the layer nearest them. Those more than 1 m from
      every layer's roof there (`not_drawn_m2`) are left out of the top-view check's share of cells
      within 0.5 m, and its footprint IoU counts those the model stands over as covered.
+   - Since the fourth round, a building that fails the top-view check with these forms is
+     measured once more with two others: a low pitch, and a roof of several faces (see "The fourth
+     round").
 
    Each layer keeps its eave height (the 10th percentile of its edge cells) and its ridge height
    (the 99th percentile of its cells), and each pitched side its slope.
@@ -468,7 +471,8 @@ stand on an outline whose roof cells cover 85% of it or more; it does not say at
 other cells stand. Whether they should stand at the lowest layer's height (or keep the block's)
 instead of their nearest layer's is for the maintainer: it would change the City's massings too.
 (906 and 305 counted for this pull request with a copy of the generator that keeps its masks; the
-others are the review's count, which two reviewers made with scripts of their own.)
+others are the review's count, which two reviewers made with scripts of their own.) **The
+maintainer's answer (2026-11-02):** such cells stay drawn at their nearest layer's height, as now.
 
 **904's strip and overlapping outlines.** 904's outline on the campus map overlaps 903's by
 220.4 m² and 902's by 71.6 m² along its south side (rasterised on a 0.05 m grid). 904's second

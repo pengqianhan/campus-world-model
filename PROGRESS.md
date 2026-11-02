@@ -818,4 +818,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    north-west edge where the LiDAR has no point of classes 2 to 6. The City's massings do the same since
    #79 and #108 (305: 10.0 of 28.5 m²; in all 72.25 of the fourteen's 191.0 m²; MASSING.md, "The third
    round"). Say whether such cells should stand at the lowest layer's height (or keep the block's)
-   instead of their nearest layer's; that would change the City's massings.
+   instead of their nearest layer's; that would change the City's massings. **Answered
+   (2026-11-02): they stay drawn at their nearest layer's height, as now.** Since the fourth round
+   of measured massings (2026-11-02), 902 and 903 are measured massings too: 904's strip now lies on
+   their measured roofs, within about 0.1 m of them, and its rim shows in patches; the questions
+   about overlapping outlines and the City's rule for pieces with no roof stay open.
