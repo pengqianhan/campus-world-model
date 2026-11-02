@@ -15,7 +15,7 @@ const E = 0.06;
 
 /** A flat roof slab over [x0, x1] x [z0, z1] at height `top`: the roof, its fascia and the dark line. The fascia
  * runs round the roof's four edges ([x0, x1, z0, z1] boxes in plan), or only along the pieces `edges` gives: where
- * the next roof or the higher middle room runs on, the photographs show one roof, and a fascia there stood inside
+ * the next roof runs on at its height or the higher middle room rises, a fascia there stood inside
  * the neighbour, its faces in the neighbour's. `from` starts the slab that much before x0, under its neighbour's
  * edge. */
 function flatRoof(b, x0, x1, z0, z1, top, edges = null, from = 0) {
