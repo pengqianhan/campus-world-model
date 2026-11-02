@@ -4,7 +4,7 @@
 // LiDAR's wall returns do, under the roof's underside and a white fascia and gutter round its edge. In the
 // ochre wall, its window (round 2); at that wall's corners, two white downpipes.
 import { FOOT, MEASURED } from "./common.js";
-import { walls, fanRoof, fanHeight, cylinder } from "./shapes.js";
+import { walls, segmentWalls, uncovered, fanRoof, fanHeight, cylinder } from "./shapes.js";
 
 const F = MEASURED.fan, T = 0.2; // the roof's own thickness at its eaves, the fascia's depth (estimated)
 const cone = (x, z) => F.top - F.fall * Math.hypot(x - F.apex[0], z - F.apex[1]);
@@ -12,12 +12,15 @@ const apex = [F.apex[0], F.top, F.apex[1]];
 const roofAt = (x, z) => fanHeight(F.plan, apex, cone, x, z);
 
 export function fan(b) {
-  // the walls up to just under the roof's top: on the four outer faces they stand inside the eaves, under the
-  // roof's underside; on the other edges, at the eave line, they close the roof's edge themselves
-  walls(b, F.walls, FOOT, (x, z) => roofAt(x, z) - 0.01, "trim");
+  // the walls up to the roof's top: on the four outer faces they stand inside the eaves, under the roof's
+  // underside; where they stand at the eave line, they close the roof's edge themselves, up to its top edge
+  walls(b, F.walls, FOOT, roofAt, "trim");
   fanRoof(b, F.plan, apex, cone, "roofGrey");
   fanRoof(b, F.plan, [apex[0], apex[1] - T, apex[2]], (x, z) => cone(x, z) - T, "roofGrey", true);
-  walls(b, F.plan, (x, z) => cone(x, z) - T, cone, "paint", F.eaves); // the fascia, where the walls stand in
+  // the fascia wherever no wall runs along the roof's edge: the four faces whose walls stand in, the end of the
+  // west face's next edge and the end of the courtyard face's edge beyond them
+  // from the underside to the top of the roof's facet there (along an edge, straight between the eave corners)
+  segmentWalls(b, F.plan, uncovered(F.plan, F.walls), (x, z) => roofAt(x, z) - T, roofAt, "paint");
 }
 
 /** The ochre wall's window: panes on the wall's face, a white frame of four lights in two rows standing a little

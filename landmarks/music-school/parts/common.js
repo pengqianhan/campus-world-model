@@ -30,13 +30,12 @@ export const MEASURED = {
     // outer edges by 0.88 m (p50 of 71 returns; p10-p90 0.73-1.09) on the edge from (-2.6, 11.8) to (-8.2, 16.4),
     // 0.76 m (169; 0.69-0.84) on the face to the car park (the ochre wall, at z 15.64; its returns' z p50 15.63),
     // 0.87 m (215) and 0.74 m (349) on the two west edges; the edges toward the courtyard and the lower roofs
-    // show too few returns to say, and stay. The plan with those four edges moved in by those amounts:
-    walls: [[-2.6, 3.5], [-2.6, 10.66], [-8.66, 15.64], [-17.59, 15.64], [-21.26, 7.52], [-21.26, -2.09], [-19.5, -3.5],
+    // show too few returns to say, and stay. The plan with those four edges moved in by those amounts (the corner
+    // at (-21.26, -2.092) on the next edge's line, to the millimetre):
+    walls: [[-2.6, 3.5], [-2.6, 10.66], [-8.66, 15.64], [-17.59, 15.64], [-21.26, 7.52], [-21.26, -2.092], [-19.5, -3.5],
       [-11.0, -3.5], [-10.0, -1.5], [-8.0, 0.0], [-5.5, 1.0], [-4.0, 3.0]],
-    // the plan's edges whose walls stand inside the eaves (1 to 4): the fascia is drawn there only; on the other
-    // edges, toward the courtyard and the lower roofs, the walls stand at the eave line (estimated: too few
-    // returns to say)
-    eaves: [1, 2, 3, 4],
+    // On the other edges, toward the courtyard and the lower roofs, the walls stand at the eave line (estimated:
+    // too few returns to say); the fascia is drawn where no wall runs along the roof's edge (parts/fan.js).
     // The window in the ochre wall (round 2), through qru8's fixed camera on the wall's plane (z 15.64): its left
     // edge at x -16.70 (top) and -16.44 (sill), its right at -12.81 and -12.59, so x -16.57 to -12.70; its head's
     // top at 6.91-6.93 m, its sill's foot at 3.30-3.33, its transom at 5.02. Four lights in two rows, as both

@@ -231,11 +231,19 @@ The review of ed5461f found:
   walls ran up through their roof slabs' sides (53.6 m²), the auditorium's fascia lay on its walls on the seven
   edges where those stand at the eave line (2.7 m²), and the north wing's walls on its roof slab's side (1.6 m²);
   and smaller ones at the parapet's and the canopy's ends and in the window. Now the walls stop at the slabs'
-  undersides, the fascia is drawn only on the four faces whose walls stand in, the auditorium's other walls run
-  up to the roof's edge themselves, and the ends stand 1 cm apart: built in node, no two triangles of different
-  materials overlap in one plane facing the same way.
+  undersides, the auditorium's fascia is drawn where no wall runs along its roof's edge, its walls at the eave
+  line run up to the roof's top edge themselves, and the ends stand 1 cm apart: built in node, no two triangles of
+  different materials overlap in one plane facing the same way.
+- **The auditorium's roof closed all round** (the lead's read of 1d386d0): with the fascia on the four inset faces
+  only, the roof's 0.2 m edge stood open for 0.95 m at the end of the west face's next edge (from (-22, -1.5),
+  where its wall starts only at (-21.26, -2.09)) and for 1.14 m at the end of its courtyard face (z 10.66 to 11.8),
+  and the walls at the eave line stopped 1 cm under the roof's top. Now the fascia runs, from the roof's underside
+  to its top along the facet there, wherever no wall runs along the roof's edge, and those walls run up to the top
+  edge. A check in node of every edge of every roof slab of the model, in columns 1 cm apart: each is closed by a
+  wall or a fascia from its underside to its top, with no opening over 1 mm (at 5de3f2a, 31.4 m of edge were
+  open: 200 mm at those two ends, 10 mm along the five edges toward the lower roofs).
 - **The downpipes** run up to the soffit over each.
 
 After the fixes (`run.sh music-school refine compare topview`): IoU in the box 0.940, 0.841 and 0.965, the luma
 as before; from above footprint IoU 0.940, 88% of 5,184 cells within 0.5 m, block 250 80.8% and block 202 12.0%
-under the model; 896 triangles in 5 meshes.
+under the model; 900 triangles in 5 meshes (896 at 1d386d0, 906 before the review).

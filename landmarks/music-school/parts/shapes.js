@@ -144,6 +144,49 @@ export function walls(b, plan, y0, top, material, edges = null) {
   b.add(g, material);
 }
 
+/** Walls along parts of the plan's edges: `segments` [[i, t0, t1], ...], edge i (from corner i to corner i + 1)
+ * from t0 to t1 of its length (0 to 1), from y0 (a number or a function of (x, z)) up to `top(x, z)`, facing
+ * out of the plan as `walls` does. */
+export function segmentWalls(b, plan, segments, y0, top, material) {
+  const pos = [];
+  const turn = area(plan) > 0 ? 1 : -1;
+  const foot = typeof y0 === "function" ? y0 : () => y0;
+  for (const [i, s0, s1] of segments) {
+    const [ax, az] = plan[i], [bx, bz] = plan[(i + 1) % plan.length];
+    let [x0, z0] = [ax + (bx - ax) * s0, az + (bz - az) * s0], [x1, z1] = [ax + (bx - ax) * s1, az + (bz - az) * s1];
+    if (turn < 0) [x0, z0, x1, z1] = [x1, z1, x0, z0];
+    const t0 = top(x0, z0), t1 = top(x1, z1), f0 = foot(x0, z0), f1 = foot(x1, z1);
+    pos.push(x0, f0, z0, x0, t0, z0, x1, f1, z1, x1, f1, z1, x0, t0, z0, x1, t1, z1);
+  }
+  if (!pos.length) return;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  b.add(g, material);
+}
+
+/** The parts of each edge of `plan` that no edge of `inner` runs along (an edge of `inner` on the same line,
+ * within 1 mm): [[i, t0, t1], ...], as segmentWalls takes them. */
+export function uncovered(plan, inner) {
+  const out = [];
+  for (let i = 0; i < plan.length; i++) {
+    const [ax, az] = plan[i], [bx, bz] = plan[(i + 1) % plan.length];
+    const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz), ux = dx / L, uz = dz / L;
+    const on = ([x, z]) => Math.abs((x - ax) * uz - (z - az) * ux) < 1e-3;
+    const along = ([x, z]) => ((x - ax) * ux + (z - az) * uz) / L;
+    const cover = [];
+    for (let j = 0; j < inner.length; j++) {
+      const p = inner[j], q = inner[(j + 1) % inner.length];
+      if (on(p) && on(q)) { const s = along(p), t = along(q); cover.push([Math.max(0, Math.min(s, t)), Math.min(1, Math.max(s, t))]); }
+    }
+    cover.sort((a, b) => a[0] - b[0]);
+    let t = 0;
+    for (const [s0, s1] of cover) { if (s0 > t + 1e-6) out.push([i, t, s0]); t = Math.max(t, s1); }
+    if (t < 1 - 1e-6) out.push([i, t, 1]);
+  }
+  return out;
+}
+
 /** A roof of planes from each edge of the plan up to one apex [x, y, z] inside it, the eaves at
  * `top(x, z)` at each corner: a pyramid when they are level, a cone of facets round the apex when
  * `top` falls with the distance from it. `under` draws it facing down, as the roof's underside. */
