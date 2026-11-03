@@ -23,7 +23,8 @@ const STREET = 1;
 
 /**
  * Where the street face's layers stop at the north-west: 9 Eden Crescent's (801) street end. Its model,
- * as the site stands both (each on the map's ground at its own door), has its south-east corner at x 18.42
+ * as the site places both (on the ground they share, which moves them only up and down: src/scene/landmarks.ts,
+ * standHeights), has its south-east corner at x 18.42
  * and its face at z 11.73 in this frame (801's z -9.6, the end's edge in 801's LiDAR), 0.13 m in front of
  * this plan's edge and 0.48 m along it from the plan's corner, which campus.json gives both buildings. This
  * building's LiDAR has 801's returns above 9 m on the face's line (within 0.3 m of it) to s 0.27 and none of
@@ -96,9 +97,10 @@ const FOOTPATH = -0.95;
  * - C, a red fire door (about 140, 75, 68): s 2.75-3.70, its threshold at -0.3, its leaf to 1.59 and a
  *   glazed light over it to the head at 2.18; three steps down to the footpath, their foot 0.4-1.1 m out
  *   from the edge.
- * The street lies 0.95 m below the frame's ground, and the site's ground (the 8 m elevation model) 1.3 m
- * below it there, so whatever comes down below y = 0 here without reaching the ground stands 0.6-0.9 m above
- * that ground at its lowest points, which tests/landmarks.test.ts refuses for every material that comes
+ * The street lies 0.95 m below the frame's ground, and the site's ground (the 8 m elevation model) about
+ * 0.85 m below it there (1.3 m until 2026-11-03, when the site stood 802 on the ground it shares with 801,
+ * 0.448 m lower), so whatever comes down below y = 0 here without reaching the ground stands up to 0.45 m
+ * above that ground at its lowest points (0.6-0.9 m before), which tests/landmarks.test.ts refuses for every material that comes
  * down to y = 0, at the material's own lowest points. The two doors' leaves are drawn in the kit's dark
  * timber, the base's material, which reaches the ground there and whose colour (about 115-155, 77-111,
  * 48-75 across its grain) is near their red-brown; in the kit's red they would fail it. The case is not

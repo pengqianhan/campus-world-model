@@ -190,7 +190,11 @@ outline holds the courtyard) has gone: the generator leaves the landmarks on the
   map's ground everywhere under it: under the face to the road the drawn ground lies 0.75 m below to
   1.90 m above the door's ground, and under the whole model up to 4.5 m above it, by the west corner
   (2.4 to 3.1 m at the round stair; each 0.31 m more than before 2026-11-03), where the LiDAR's ground is within about 1 m of the door's: walls
-  there are buried deeper, and none hangs. Toward the north-east end the ground storey's sills stand at -0.27 on the plinth; the foot
+  there are buried deeper, and none hangs. On the windows' plane of the face to the road (v 20.43) the
+  ground storey's windows (sills 0.46, heads 1.46) are wholly under the drawn ground for 10.5 m from the
+  south-west end (u -29.1 to -18.6; 2.9 m, to -26.2, before 2026-11-03), where it stands 1.90 m above
+  y = 0 (1.59 before), and partly as far as u 3.6 (-3.7 before); the white door's foot (-0.65) stands
+  0.16 to 0.22 m in it (0.09 to 0.15 m clear of it before). Toward the north-east end the ground storey's sills stand at -0.27 on the plinth; the foot
   check reads materials, not parts, so the glass, the mullions and the panels there run on down inside
   the plinth to `FOOT`, where nothing shows them. `tests/landmarks.test.ts` passes.
 - **The light form** (the map, and the walker views of the basic tier) draws the frames (`frameRed`)
