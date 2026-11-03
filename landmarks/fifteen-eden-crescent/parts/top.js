@@ -32,16 +32,20 @@ function walls(y0, cut) {
     const t = ((z - e0) / (e1 - e0)) * PIECES, i = Math.min(PIECES - 1, Math.floor(t));
     return under(zAt(i)) + (t - i) * (under(zAt(i + 1)) - under(zAt(i)));
   };
-  const pts = [[z0, y0], [z0, on(z0)]];
+  // (their long faces from the flat roof up; below it, down to 1 cm under the roofs' foot, 1 cm in: there the flat
+  // roof's sides lie in the long faces' plane, and the end walls close the storey down to the roofs' foot where it
+  // stands out past the plan below)
+  const f = M.roofs.flat, e = 0.01;
+  const pts = [[z0 + e, y0], [z0 + e, f], [z0, f], [z0, on(z0)]];
   for (let i = 0; i <= PIECES; i++) if (zAt(i) > z0 && zAt(i) < z1) pts.push([zAt(i), under(zAt(i))]);
-  pts.push([z1, on(z1)], [z1, y0]);
+  pts.push([z1, on(z1)], [z1, f], [z1 - e, f], [z1 - e, y0]);
   return pts;
 }
 
 export function top(b) {
-  const T = M.top, cut = T.cut, y0 = M.roofs.flat;
-  // the walls, from the roofs below (on the flat one, where they began 0.1 m lower, their faces lay in its sides;
-  // in the sloping ones beside it) to the curved roof, and to its cut crown past x 16.0
+  const T = M.top, cut = T.cut, y0 = M.body.eave - 0.01;
+  // the walls, from 1 cm under the roofs' foot (the walls' top below) to the curved roof, and to its cut crown past
+  // x 16.0
   along(b, walls(y0, Infinity), T.x[0], cut.from, "paint");
   along(b, walls(y0, cut.y), cut.from, T.x[1], "paint");
   // the roof: its curve from eave to eave, overhanging the walls, and its cut crown at the north-west end
