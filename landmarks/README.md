@@ -125,7 +125,7 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
 | `measuredBy` | only when something besides the LiDAR measures some of the model's sizes: the config's `measured_by`, the words that take the place of "by LiDAR" on the building's card, beginning with "by LiDAR" (the Kenneth Myers Centre: "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph", where the LiDAR holds temporary works) |
 | `credit` | with `measuredBy`: the config's `credit`, that other source's credit and licence, which About gives with the buildings it measures |
-| `estimated` | only when the model draws a height, an extent or a depth that nothing measures (an underside, a roof drawn on from the rest, how far a balcony or a beam stands out, how thick a slab is): the config's `estimated`, the words for it. The building's card says "estimated:" and those words (the Clock Tower East Wing: "the underside of its link toward the Clock Tower, as high as a walker on the site needs to pass under it"; 15 Eden Crescent: two parts of its roofs; the Fisher Building: the depths of its balconies and canopy and the thicknesses of its ramp and parapet), unless the config also gives `part`, which the card shows instead. Windows or bays carried on at a measured spacing are placements, not sizes, and the README says so without it |
+| `estimated` | only when the model draws a height, an extent or a depth that nothing measures (an underside, a roof drawn on from the rest, how far a balcony or a beam stands out, how thick a slab is): the config's `estimated`, the words for it. The building's card says "estimated:" and those words (the Clock Tower East Wing: "the underside of its link toward the Clock Tower (the campus map's storey height)"; 15 Eden Crescent: two parts of its roofs; the Fisher Building: the depths of its balconies and canopy and the thicknesses of its ramp and parapet), unless the config also gives `part`, which the card shows instead. Windows or bays carried on at a measured spacing are placements, not sizes, and the README says so without it |
 
 The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), and
 the two can be metres apart, by a different amount at each door. A landmark alone stands its y = 0 on
@@ -134,15 +134,19 @@ campus map's, of `building` and `also`) come within 2 m of each other, taken tra
 ground instead (the maintainer, 2026-11-03): each stands its y = 0 at its own `ground` plus the group's
 offset, the mean over its members of the map's ground at `door.map` minus `ground`, so that their
 heights against each other are the LiDAR's and neither shows through the other where they meet
-(`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). Three pairs do, and
-against the map's ground at its own door the Clock Tower stands 2.534 m higher and its East Wing 2.534 m
-lower, 9 Eden Crescent 0.448 m higher and 15 Eden Crescent 0.448 m lower, the Thomas Building 0.311 m
-lower and its Extension 0.311 m higher. The nearest two landmarks that do not touch stand 18 m apart.
-Either way a model's y = 0 can stand metres off the map's ground under it: its walls go down below
-y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch; the
-Clock Tower's 2.6 m further than its parts draw them, `carryDown` in its `model.js`), so that their
-foot is nowhere more than 0.25 m above it, and where the map's ground stands above y = 0 the model
-stands in it (the East Wing, whose face to the car park stands 2.3 to 3.0 m deep in it). `tests/landmarks.test.ts` checks that for every landmark on the site, at
+(`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
+when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
+the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
+models can mend. Three pairs touch; the nearest two landmarks that do not stand 18 m apart. Two pairs
+share: against the map's ground at its own door 9 Eden Crescent stands 0.448 m higher and 15 Eden
+Crescent 0.448 m lower (a span of 0.90 m), the Thomas Building 0.311 m lower and its Extension 0.311 m
+higher (0.62 m). The Clock Tower and its East Wing (5.07 m) each stand on the map's ground at its own
+door, as before: at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's, at the East
+Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its wing than the LiDAR
+does. Any limit from 0.90 to 5.07 m gives these groups. Either way a model's walls go down below
+y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so
+that their foot is nowhere more than 0.25 m above it. `tests/landmarks.test.ts` stands each landmark as
+the site does and checks that for every landmark on the site, at
 the lowest points of each material's mesh that reaches y = 0 (the kit joins a model's parts by
 material, so a part with a higher foot can hide behind another): give every part's walls the same
 foot, as Old Government House's parts take `FOOT` from `common.js`. A part that stands on ground

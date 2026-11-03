@@ -57,9 +57,9 @@ placement = {
             "true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model "
             "at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks "
             "whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the "
-            "LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground` "
-            "(src/scene/landmarks.ts, standHeights). It stands in place of the blocks of `building` and of the "
-            "buildings in `also`.",
+            "LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground`, when those "
+            "differences span 2 m or less (src/scene/landmarks.ts, standHeights). It stands in place of the "
+            "blocks of `building` and of the buildings in `also`.",
     "site": site,
     "building": cfg["building"]["id"],
     "also": cfg["building"].get("also", []),
