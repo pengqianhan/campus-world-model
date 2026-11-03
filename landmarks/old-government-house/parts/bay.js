@@ -30,14 +30,16 @@ function balconyBay(a, [x0, x1, z0, z1, end]) {
   const xe = end < 0 ? x0 : x1, xw = end < 0 ? x1 : x0, out = (v) => (end < 0 ? -v : v);
   // a parapet on the open sides, to the cornice
   a.box("boards", x0, x1, floor, c0, z1 - 0.3, z1);
-  a.box("boards", xe, xe - out(0.3), floor, c0, z0, z1);
+  a.box("boards", xe, xe - out(0.31), floor, c0, z0, z1); // (0.31: at 0.3 its inner face lay in the wing's corner board's)
   // the cornice: ochre, deep on the open sides (hRE5: a strong shadow under it), on a bed moulding
-  a.box("trim", xe + out(0.25), xe - out(0.3), c0 + 0.1, c1, z0, z1 + 0.25);
-  a.box("trim", xe, xw, c0 + 0.1, c1, z1 - 0.3, z1 + 0.25);
-  a.box("trim", xe + out(0.12), xe - out(0.3), c0 - 0.12, c0 + 0.1, z0, z1 + 0.12);
-  a.box("trim", xe, xw, c0 - 0.12, c0 + 0.1, z1 - 0.3, z1 + 0.12);
-  a.box("trim", xe + out(0.05), xe - out(0.3), c0 - 0.3, c0 - 0.12, z0, z1 + 0.05);
-  a.box("trim", xe, xw, c0 - 0.3, c0 - 0.12, z1 - 0.3, z1 + 0.05);
+  // (each layer's back 1 cm in front of the parapet's, and its ends 1 cm into its neighbours: they lay in the
+  // parapet's faces)
+  a.box("trim", xe + out(0.25), xe - out(0.29), c0 + 0.1, c1, z0 + 0.05, z1 + 0.25);
+  a.box("trim", xe - out(0.01), xw - out(0.01), c0 + 0.1, c1, z1 - 0.29, z1 + 0.25);
+  a.box("trim", xe + out(0.12), xe - out(0.29), c0 - 0.12, c0 + 0.1, z0 + 0.05, z1 + 0.12);
+  a.box("trim", xe - out(0.01), xw - out(0.01), c0 - 0.12, c0 + 0.1, z1 - 0.29, z1 + 0.12);
+  a.box("trim", xe + out(0.05), xe, c0 - 0.3, c0 - 0.12, z0 + 0.05, z1 + 0.05);  // (the bed moulding from the parapet's face out)
+  a.box("trim", xe, xw, c0 - 0.3, c0 - 0.12, z1, z1 + 0.05);
   // the balustrade on top, set back from the cornice's edge as the LiDAR's rails stand
   const zEnd = z1 + df + RAIL.postD, xFront = xe + end * (de + RAIL.postD);   // the outer edges of the other run
   balustrade(a, face("z", z1, 1), Math.min(xFront, xw), Math.max(xFront, xw), c1, rail, df, RAIL);
@@ -46,7 +48,7 @@ function balconyBay(a, [x0, x1, z0, z1, end]) {
   const win = { cols: 3, rows: 3, s: 0.2 };
   for (const u of [0.2, 0.5, 0.8].map((t) => x0 + (x1 - x0) * t)) sash(a, face("z", z1, 1), u, 1.25, 1.1, 2.5, win);
   sash(a, face("x", xe, end), (z0 + z1) / 2 + 0.15, 1.25, 0.95, 2.5, win);
-  a.box("trim", xe - 0.25, xe + 0.25, BASE, c0 - 0.3, z1 - 0.25, z1 + 0.05);
+  a.box("trim", xe - 0.25, xe + 0.25, BASE - 0.01, c0 - 0.3, z1 - 0.25, z1 + 0.05);
 }
 
 // The fire-escape in hRE5 (painted pale grey, so drawn in paint), in the corner between the south-east wing's front and the front range's end
@@ -57,14 +59,14 @@ const STAIR = { x: [-18.5, -17.2], z: [MB.se.z[0], 5.05], deck: 7.2, foot: { z: 
 
 function fireStair(a) {
   const { x: [x0, x1], z: [z0, z1], deck, foot, width: [w0, w1] } = STAIR, I = "paint";  // pale grey paint in the photograph
-  a.box(I, x0, x1, deck - 0.06, deck, z0, z1);                                        // the landing's plate
+  a.box(I, x0, x1, deck - 0.06, deck, z0 + 0.01, z1);                                 // the landing's plate (1 cm off the wing's face)
   a.box(I, x0, x1, deck - 0.2, deck - 0.06, z1 - 0.05, z1);                           // its edge
   for (const x of [x0 + 0.1, x1 - 0.15]) bar(a, I, [x, deck - 1.0, z0], [x, deck - 0.1, z1 - 0.05], 0.06); // struts
   // the railing: posts at the outer corners, a top rail and a middle rail on the open sides
   const posts = [[x0 + 0.03, z0 + 0.03], [x0 + 0.03, z1 - 0.03], [w0 - 0.03, z1 - 0.03]];
   for (const [x, z] of posts) a.box(I, x - 0.025, x + 0.025, deck, deck + 1.0, z - 0.025, z + 0.025);
   for (const y of [deck + 0.5, deck + 0.98]) {
-    a.box(I, x0, x0 + 0.05, y - 0.025, y + 0.025, z0, z1);
+    a.box(I, x0, x0 + 0.05, y - 0.025, y + 0.025, z0 + 0.01, z1);
     a.box(I, x0, w0, y - 0.025, y + 0.025, z1 - 0.05, z1);
   }
   // the stair: two stringers and two handrails from the landing's front to the floor, treads between
@@ -93,8 +95,8 @@ export const LOW = { room: { x: [-34.2, -23.5], z: [-9.5, -3.8], eaves: [-34.5, 
 function lowRange(a) {
   const { room: r, end: e, lean: l } = LOW;
   a.box("boards", r.x[0], r.x[1], BASE, r.top, r.z[0], r.z[1]);
-  a.box("paint", r.eaves[0], r.x[1], r.top, r.eave, r.eaves[2], r.eaves[3]);
-  a.box("paint", r.eaves[0] + 2.5, r.x[1], r.top, r.eave, r.eaves[3], -3.05);   // a gutter: the LiDAR's eave at 3.0-3.4 reaches z -3.0
+  a.box("paint", r.eaves[0], r.x[1] + 0.01, r.top, r.eave, r.eaves[2], r.eaves[3]);
+  a.box("paint", r.eaves[0] + 2.5, r.x[1] + 0.01, r.top, r.eave, r.eaves[3], -3.05);   // a gutter: the LiDAR's eave at 3.0-3.4 reaches z -3.0
   hip(a, ...r.eaves, r.eave, r.ridge);
   a.box("boards", e.x[0], e.x[1], BASE, e.top, e.z[0], e.z[1]);
   a.box("paint", e.eaves[0], e.eaves[1], e.top, e.top + 0.2, e.eaves[2], e.eaves[3]);
@@ -117,9 +119,9 @@ function lowRange(a) {
 export const NW_LOBBY = { x: [22.65, 25.4], z: [-4.6, 0.8], top: 5.35 };
 function nwPorch(a) {
   const { x: [x0, x1], z: [z0, z1], top } = NW_LOBBY;
-  a.box("boards", x0, x1 - 0.3, BASE, top - 0.4, z0 + 0.3, z1 - 0.3);
+  a.box("boards", x0 - 0.01, x1 - 0.3, BASE, top - 0.4, z0 + 0.3, z1 - 0.3); // (1 cm into the wing, past its windows' surrounds)
   a.box("trim", x0, x1, top - 0.4, top - 0.1, z0, z1);
-  a.box("roofPale", x0, x1 - 0.05, top - 0.1, top, z0 + 0.05, z1 - 0.05);
+  a.box("roofPale", x0, x1 - 0.05, top - 0.1, top - 0.01, z0 + 0.05, z1 - 0.05);
   sash(a, face("x", x1 - 0.3, 1), (z0 + z1) / 2, 0.75, 1.5, 3.0, { door: true });
 }
 
@@ -139,7 +141,7 @@ export const PORCH = { half: (M.porch.x[1] - M.porch.x[0]) / 2, z: [MIDDLE.z, M.
 export function porch(b) {
   const a = new Acc(), { axis } = MIDDLE, { half, z: [z0, z1], eave, ridge, floor } = PORCH;
   const xo = half - 0.45, zf = z1 - 0.5;                               // the outer pillars' centres, the front row's
-  a.box("boards", axis - xo - 0.3, axis + xo + 0.3, BASE, floor, z0, zf + 0.3);
+  a.box("boards", axis - xo - 0.3, axis + xo + 0.3, BASE, floor, z0 - 0.01, zf + 0.3); // (1 cm into the wall)
   for (let i = 1; i <= 3; i++) a.box("boards", axis - 1.6, axis + 1.6, BASE, floor - 0.2 * i, zf + 0.3, zf + 0.3 + 0.32 * i);
   const pillars = [];
   for (const s of [-1, 1]) pillars.push([axis + s * xo, zf], [axis + s * 1.15, zf], [axis + s * xo, (z0 + zf) / 2 + 0.2]);
@@ -152,7 +154,7 @@ export function porch(b) {
   // the entablature round the three open sides, a ceiling under the roof, the roof with a pediment to the lawn
   a.box("trim", axis - xo - 0.3, axis + xo + 0.3, 3.85, 4.35, zf - 0.3, zf + 0.3);
   for (const s of [-1, 1]) a.box("trim", axis + s * xo - 0.3, axis + s * xo + 0.3, 3.85, 4.35, z0, zf);
-  a.box("paint", axis - half, axis + half, 4.35, eave, z0, z1);
+  a.box("paint", axis - half, axis + half, 4.35, eave, z0 - 0.01, z1 - 0.01); // (1 cm into the wall and back from the pediment's face)
   gableZ(a, axis, half, z0, z1, eave, ridge, { setback: 0.35 });
   a.flush(b);
 }

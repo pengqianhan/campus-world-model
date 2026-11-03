@@ -52,8 +52,9 @@ export function curtain(b) {
   pathBox(b, M.plan, p, 0, p.length, -0.05, 0.3, C.beam[0], C.beam[1], "iron");
   for (const [y0, y1] of C.heads) pathBox(b, M.plan, p, 0, p.length, -0.05, 0.08, y0, y1, HEAD);
   for (const [y0, y1] of C.transoms) pathBox(b, M.plan, p, 0, p.length, -0.05, 0.12, y0, y1, "iron");
-  // the fins between the panes, from the beam to the eave: slim, of green glass (their depth estimated)
-  for (let s = C.fins.from; s < p.length; s += C.fins.step) pathBox(b, M.plan, p, s - 0.03, s + 0.03, -0.05, 0.2, C.beam[1], M.eave, "glass");
+  // the fins between the panes, from the beam to the eave: slim, of green glass (their depth estimated); their backs,
+  // inside the glass, 1 cm in front of the heads' and transoms' backs, so that no face of a fin lies in one of theirs
+  for (let s = C.fins.from; s < p.length; s += C.fins.step) pathBox(b, M.plan, p, s - 0.03, s + 0.03, -0.04, 0.2, C.beam[1], M.eave, "glass");
 }
 
 /** The base's openings: the service doors and side lights, three small windows. */

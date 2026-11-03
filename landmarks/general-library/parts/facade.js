@@ -30,7 +30,8 @@ export function prism(b, f, pts, d0, d1, material) {
 /**
  * Ribbon windows: from y0 to y1, a band of glazing between spandrels at each floor level in `floors`
  * (a spandrel `sp` high at each level, standing 0.12 m proud of the face and reaching `deep` m back
- * into it, to the mass), the glass 0.25 m in, with dark mullions every `bay` metres.
+ * into it, to the mass), the glass 0.25 m in, with dark mullions every `bay` metres: the mullions stand on the
+ * glass's face, so that none of their faces lies in one of the glass's (they ran 1 cm into it).
  */
 export function ribbons(b, f, y0, y1, floors, { sp = 1.1, bay = 1.6, frame = "iron", glass = "glassPale", wall = "paint", deep = 0.3 } = {}) {
   const lv = [y0, ...floors.filter((y) => y > y0 + 0.5 && y < y1 - 0.5), y1];
@@ -43,21 +44,32 @@ export function ribbons(b, f, y0, y1, floors, { sp = 1.1, bay = 1.6, frame = "ir
     const n = Math.max(1, Math.round((f.a1 - f.a0) / bay));
     for (let k = 0; k <= n; k++) {
       const a = f.a0 + ((f.a1 - f.a0) * k) / n;
-      bars.push(faceBox(f, a - 0.05, a + 0.05, s1, lv[i + 1], -0.25, -0.15));
+      bars.push(faceBox(f, a - 0.05, a + 0.05, s1, lv[i + 1], -0.24, -0.15));
     }
-    bars.push(faceBox(f, f.a0, f.a1, (s1 + lv[i + 1]) / 2 + 0.3, (s1 + lv[i + 1]) / 2 + 0.38, -0.25, -0.17));
+    bars.push(faceBox(f, f.a0, f.a1, (s1 + lv[i + 1]) / 2 + 0.3, (s1 + lv[i + 1]) / 2 + 0.38, -0.24, -0.17));
   }
   b.add(boxesGeometry(walls), wall);
   if (panes.length) b.add(boxesGeometry(panes), glass);
   if (bars.length) b.add(boxesGeometry(bars), frame);
 }
 
-/** A plain glazed band from y0 to y1, set `inset` into the face, with mullions every `bay` metres. */
-export function glazing(b, f, y0, y1, { inset = 0.3, bay = 1.8, frame = "iron", glass = "glassPale", a0 = f.a0, a1 = f.a1 } = {}) {
-  b.add(boxesGeometry([faceBox(f, a0, a1, y0, y1, -inset - 0.03, -inset)]), glass);
+/** A plain glazed band from y0 to y1, set `inset` into the face, with mullions every `bay` metres. With `between`,
+ * the width of piers() standing at the mullions' places with the same `bay` (and `inset` its depth), the sill and the
+ * head run in each bay between the piers and no mullion is drawn: inside the piers, their faces lay in the piers'.
+ * `over` runs the glass on up past y1 into what stands over it. */
+export function glazing(b, f, y0, y1, { inset = 0.3, bay = 1.8, frame = "iron", glass = "glassPale", a0 = f.a0, a1 = f.a1, between = 0, over = 0 } = {}) {
+  b.add(boxesGeometry([faceBox(f, a0, a1, y0, y1 + over, -inset - 0.03, -inset)]), glass);
   const n = Math.max(1, Math.round((a1 - a0) / bay)), bars = [];
-  for (let k = 0; k <= n; k++) { const a = a0 + ((a1 - a0) * k) / n; bars.push(faceBox(f, a - 0.06, a + 0.06, y0, y1, -inset, -inset + 0.12)); }
-  bars.push(faceBox(f, a0, a1, y0, y0 + 0.12, -inset, -inset + 0.12), faceBox(f, a0, a1, y1 - 0.12, y1, -inset, -inset + 0.12));
+  const at = (k) => a0 + ((a1 - a0) * k) / n;
+  if (between) {
+    for (let k = 0; k < n; k++) {
+      const p = at(k) + between / 2, q = at(k + 1) - between / 2;
+      bars.push(faceBox(f, p, q, y0, y0 + 0.12, -inset, -inset + 0.12), faceBox(f, p, q, y1 - 0.12, y1, -inset, -inset + 0.12));
+    }
+  } else {
+    for (let k = 0; k <= n; k++) bars.push(faceBox(f, at(k) - 0.06, at(k) + 0.06, y0, y1, -inset, -inset + 0.12));
+    bars.push(faceBox(f, a0, a1, y0, y0 + 0.12, -inset, -inset + 0.12), faceBox(f, a0, a1, y1 - 0.12, y1, -inset, -inset + 0.12));
+  }
   b.add(boxesGeometry(bars), frame);
 }
 

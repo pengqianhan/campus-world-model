@@ -42,7 +42,8 @@ export function range(b) {
   // the tile roof over the front of the range, its eaves a little proud of the walls, and the flat roof
   // behind it, a little lower than its back eave
   roofX(b, R.x[0] - 0.3, R.x[1] + 0.3, R.back, R.z[1] + 0.3, R.eave, R.ridge, R.ridgeZ, R.hip, "roofTile");
-  b.box(R.x[0] - 0.1, R.x[1] + 0.1, R.flat - 0.15, R.flat, R.z[0] - 0.1, R.back + 0.2, "roofGrey");
+  // (to the body's back: where it ran 0.2 m on under the tile roof, its top lay in the body's)
+  b.box(R.x[0] - 0.1, R.x[1] + 0.1, R.flat - 0.15, R.flat, R.z[0] - 0.1, R.back, "roofGrey");
 }
 
 export function backs(b) {

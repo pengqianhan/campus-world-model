@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-03
+
+### Fixed
+
+- **No more flicker where two faces of a landmark met.** In twelve of the landmarks drawn in detail, faces
+  of two materials lay in one plane over the same patch: a wall's face in its roof slab's side, a pane's
+  edge in its frame's, a plinth's top in its moulding's, the backs of glass and frames on one plane. The
+  screen cannot tell which of two such faces is in front, so they flickered as the camera moved, on the map
+  and from a walker's height. Now the hidden face of each pair stops short, stands inside its neighbour, or
+  stands a centimetre back, and what shows stands where it stood, to the centimetre. One thing shown is gone:
+  across Maclaurin Chapel's flat roof, where the near end's roof met the walk-ways', a white edge and its
+  dark line rose through the two roofs, which are at one height, and showed from above as a dark band 12 cm
+  wide; the edge now stops under the roof, white, with no dark line, and closes the space under it as
+  before. A test checks every landmark on the site for faces closer than the map can tell apart (#131).
+
 ## 2026-11-02
 
 ### Added

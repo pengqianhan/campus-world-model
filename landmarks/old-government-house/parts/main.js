@@ -15,7 +15,7 @@ const BASE = FOOT;                         // walls start below the ground (comm
 
 /** Under a column of quoins, from the walls' foot up to the first stone: plain, the first stone's footprint (front_kit quoins). */
 function quoinFoot(a, cx, cz, sx, sz, { long = 0.75, short = 0.45, proud = 0.05 } = {}) {
-  a.box("trim", cx - sx * short, cx + sx * proud, BASE, 0, cz - sz * long, cz + sz * proud);
+  a.box("trim", cx - sx * short, cx + sx * proud, BASE - 0.01, 0, cz - sz * long, cz + sz * proud);
 }
 // the front range: wall faces (0.4 m in from the cornice's edge at the ends, 0.3 at the back, 0.45 at the
 // front), the cornice's top, the roof behind the balustrade
@@ -52,7 +52,7 @@ const spread = (u0, u1, n, edge) => Array.from({ length: n }, (_, i) => (n === 1
 
 function frontRange(a) {
   const { x: [x0, x1], z: [z0, z1], top, cornice } = FRONT;
-  a.box("boards", x0, x1, BASE, top, z0, z1);
+  a.box("boards", x0, x1, BASE, top - 0.01, z0, z1); // (1 cm under the moulding's top, inside it: its top lay in the moulding's)
   // the cornice all round (deeper at the back, where the roof comes down to it) and a moulding under it; at
   // the back, from x 7.9 to 14.0, it stops at the wall, over the flat roof behind (the LiDAR: 9.2-9.3 m from
   // z -1.5 back there, the cornice's 10.7 at z -2.0 either side)
@@ -91,7 +91,7 @@ function frontRange(a) {
 
 function middleBay(a) {
   const { x: [x0, x1], z: zf, axis, half, ridge } = MIDDLE, z1 = FRONT.z[1], { top, cornice } = FRONT;
-  a.box("boards", x0, x1, BASE, top, z1 - 0.2, zf);
+  a.box("boards", x0, x1, BASE, top - 0.01, z1 - 0.2, zf); // (as the front range's)
   a.box("trim", x0 - 0.4, x1 + 0.4, top, cornice, z1, zf + 0.45);
   a.box("trim", x0 - 0.18, x1 + 0.18, top - 0.3, top, z1, zf + 0.2);
   a.box("trim", x0 - 0.06, x1 + 0.06, FLOOR[0], FLOOR[1], z1, zf + 0.06);
@@ -130,7 +130,7 @@ function wing(a, w, end) {
   a.box("boards", x0 - 0.03, x1 + 0.03, top - 0.32, top, z0 - 0.03, z1 + 0.03);
   hip(a, ex0, ex1, ez0, ez1, eave, ridge);
   // corner boards: ochre, but white on the south-east wing, whose corner hRE5 shows plain
-  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, BASE, top, 0.3, 0.05, se ? "paint" : "trim");
+  for (const [cx, sx] of [[x0, -1], [x1, 1]]) for (const [cz, sz] of [[z0, -1], [z1, 1]]) cornerBoard(a, cx, cz, sx, sz, BASE - 0.01, top + 0.02, 0.3, 0.05, se ? "paint" : "trim");
   const fEnd = face("x", se ? x0 : x1, end), fFront = face("z", z1, 1), fBack = face("z", z0, -1);
   const fIn = face("x", se ? x1 : x0, -end);
   const open = se ? [x0, FRONT.x[0]] : [FRONT.x[1], x1];             // the wing's front not covered by the front range
@@ -140,10 +140,11 @@ function wing(a, w, end) {
   const wb = spread(x0, x1, 2, 2.0), wi = spread(z0, -4.25, 2, 1.3);
   if (se) {
     const { upper: U, stair: T, balcony: L } = SE_LOOK, six = { cols: 3, rows: 2, s: U.s };
-    pairedBrackets(a, fEnd, z0, z1, zs, top);
-    pairedBrackets(a, fFront, open[0], open[1], xs, top);
-    brackets(a, fBack, x0, x1, top, 1.6, undefined, tall);
-    brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall);
+    // (the brackets 1 cm up into the soffit: at `top` their tops lay in the frieze's)
+    pairedBrackets(a, fEnd, z0, z1, zs, top, { lift: 0.01 });
+    pairedBrackets(a, fFront, open[0], open[1], xs, top, { lift: 0.01 });
+    brackets(a, fBack, x0, x1, top, 1.6, undefined, tall, 0.01);
+    brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall, 0.01);
     for (const u of zs) sash(a, fEnd, u, U.y, U.w, U.h, six);
     sash(a, fEnd, T.z, T.y, T.w, T.h, { cols: 3, rows: 3, s: T.s });
     for (const u of xs) {
@@ -156,10 +157,10 @@ function wing(a, w, end) {
     return;
   }
   // the north-west wing, seen in no photograph: two floors as the front range's
-  brackets(a, fEnd, z0, z1, top, 1.6, undefined, tall);
-  brackets(a, fFront, open[0], open[1], top, 1.6, undefined, tall);
-  brackets(a, fBack, x0, x1, top, 1.6, undefined, tall);
-  brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall);
+  brackets(a, fEnd, z0, z1, top, 1.6, undefined, tall, 0.01);
+  brackets(a, fFront, open[0], open[1], top, 1.6, undefined, tall, 0.01);
+  brackets(a, fBack, x0, x1, top, 1.6, undefined, tall, 0.01);
+  brackets(a, fIn, z0, zIn, top, 1.6, undefined, tall, 0.01);
   for (const u of zs) {
     sash(a, fEnd, u, WUPPER.y, 1.0, WUPPER.h, { cols: 3, rows: 2 });
     sash(a, fEnd, u, GROUND.y, 1.1, GROUND.h, { cols: 3, rows: 3 });
@@ -171,11 +172,11 @@ function wing(a, w, end) {
 
 function rearWing(a) {
   const { x: [x0, x1], z: [z0, z1], eaves: [ex0, ex1, ez0], top, eave, ridge } = REAR;
-  a.box("boards", x0, x1, BASE, top, z0, z1);
-  a.box("paint", ex0, ex1, top, eave, ez0, z1);
+  a.box("boards", x0, x1, BASE, top, z0, z1 + 0.01); // (1 cm into the front range, past its windows' surrounds)
+  a.box("paint", ex0, ex1, top, eave, ez0, z1 + 0.01);
   // hipped at the back; its front hip runs into the front range's roof and is hidden there
   hip(a, ex0, ex1, ez0, 5.1, eave, ridge);
-  for (const [cx, sx] of [[x0, -1], [x1, 1]]) cornerBoard(a, cx, z0, sx, -1, BASE, top);
+  for (const [cx, sx] of [[x0, -1], [x1, 1]]) cornerBoard(a, cx, z0, sx, -1, BASE - 0.01, top + 0.01);
   const fb = face("z", z0, -1), fx = face("x", x1, 1);
   brackets(a, fb, x0, x1, top);
   brackets(a, fx, z0, FLATS[2][2], top);
