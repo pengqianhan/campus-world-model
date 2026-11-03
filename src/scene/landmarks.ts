@@ -134,6 +134,17 @@ export interface LandmarkHost {
  */
 export const SHARED_GROUND = 2;
 
+/**
+ * The most, in metres, that a group's offsets (the map's ground at each member's door minus the LiDAR's
+ * there) may span for the group to share one ground (standHeights). Sharing moves each member by up to half
+ * the span. The three groups on the site span 0.62 m (110 and 110N), 0.90 m (801 and 802) and 5.07 m (the
+ * Clock Tower and its East Wing): at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's and
+ * at the East Wing's about right, so a shared ground would stand both 2.5 m off their real ground, where the
+ * fault is the map's ground, not the models (the maintainer chose this, 2026-11-03). Any limit from 0.90 to
+ * 5.07 m gives the same groups today.
+ */
+export const SHARED_SPREAD = 2;
+
 /** What standHeights needs of a landmark: where it stands, and whether it is a measured massing. */
 export interface Standing {
   placement: Placement;
@@ -151,7 +162,8 @@ export interface Standing {
  * transitively, form a group and share one ground: each stands its y = 0 at its own LiDAR ground plus the
  * group's offset, the mean over its members of the map's ground at the door minus the LiDAR's there. So
  * their heights against each other are the LiDAR's, and where they meet, neither shows through the other.
- * A measured massing, and a landmark whose placement has no `ground`, is in no group.
+ * A group whose offsets span more than SHARED_SPREAD stands each member as one alone. A measured massing,
+ * and a landmark whose placement has no `ground`, is in no group.
  */
 export function standHeights(
   landmarks: readonly Standing[],
@@ -183,7 +195,10 @@ export function standHeights(
   const stand = [...own];
   for (const members of groups.values()) {
     if (members.length < 2) continue;
-    const offset = members.reduce((s, j) => s + own[j]! - landmarks[j]!.placement.ground!, 0) / members.length;
+    // A group whose offsets span more than SHARED_SPREAD stands each member on the map's ground at its own door.
+    const offsets = members.map((j) => own[j]! - landmarks[j]!.placement.ground!);
+    if (Math.max(...offsets) - Math.min(...offsets) > SHARED_SPREAD) continue;
+    const offset = offsets.reduce((s, o) => s + o, 0) / members.length;
     for (const j of members) stand[j] = landmarks[j]!.placement.ground! + offset;
   }
   return stand;

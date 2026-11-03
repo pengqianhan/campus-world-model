@@ -17,13 +17,6 @@ export const MEASURED = {
   rangesFront: [6.1, 6.75], rangesBack: [-9.8, -8.7], rangesEave: 9.1, rangesParapet: 9.9, rangesRidge: 11.6,
 };
 
-// How much lower everything the parts draw below the door's level goes (model.js, carryDown): the walls'
-// feet, at 0 and -0.4, and the steps', at 0. On the site the Clock Tower stands on the ground it shares
-// with its East Wing (src/scene/landmarks.ts, standHeights), its y = 0 2.53 m above the map's ground at
-// the door and its feet 1.9 to 2.7 m above the map's ground under them: carried this much lower they
-// stand in it, nowhere more than 0.25 m above it (tests/landmarks.test.ts).
-export const FOOT = -2.6;
-
 export const EAVE = 9.8, RIDGE = 13.3; // the gabled pavilions
 export const PAV_FRONT = 17.0, PAV_BACK = -14.0;
 export const PAV_LEFT = [-16.0, -6.5], PAV_RIGHT = [6.0, 16.5];

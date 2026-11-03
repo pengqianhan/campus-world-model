@@ -39,15 +39,6 @@ shared by every landmark: [`../README.md`](../README.md).
 - Seen from above on the map (0.5 m grid, 2026-10-21), the model covers 95% of building 105's block
   and 94% of 105S's, and 0.3% of 119's (the East Wing, which it touches). So it stands in place of
   105 and 105S.
-- On the map it stands on the ground it shares with the East Wing, whose outline it touches (since
-  2026-11-03; `standHeights` in `src/scene/landmarks.ts`, `../README.md`, "Placement"): its y = 0 at the
-  door's LiDAR ground, 45.8 m, plus the two landmarks' mean of the map's ground at the door minus the
-  LiDAR's, -2.312 m, so at 43.488 m, 2.534 m higher than the map's ground at its own door (40.954 m), and
-  the two stand at the LiDAR's heights against each other. The map's ground lies 2.27 to 3.12 m below
-  y = 0 all round it (0.59 m below to 0.26 m above before), so everything the parts draw below the
-  door's level goes 2.6 m lower (`FOOT` in `parts/common.js`, `carryDown` in `model.js`): the walls'
-  feet to -2.6 and -3.0 m and the steps' to -2.6 m. On the site 2.3 to 3.1 m of its walls, and of the
-  steps' base, show below the door's level.
 
 ## Round 1 (October 2026)
 

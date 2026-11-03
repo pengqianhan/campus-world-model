@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { Box3, Vector3, type Mesh, type Object3D } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
-import { Landmark, SHARED_GROUND, standHeights, type LandmarkRequest, type Standing } from "../src/scene/landmarks.ts";
+import { Landmark, SHARED_GROUND, SHARED_SPREAD, standHeights, type LandmarkRequest, type Standing } from "../src/scene/landmarks.ts";
 import { decodeRing, type Ring } from "../src/shared/geo.ts";
 import { Terrain } from "../src/scene/terrain.ts";
 import { massing } from "../src/shared/massing.ts";
@@ -151,16 +151,16 @@ describe("landmarks side by side on one ground (standHeights)", () => {
     standHeights(list, (id) => list.find((l) => l.id === id)?.ring, (east) => east);
 
   it("stands the members of a group at heights that differ exactly as their LiDAR grounds do, on the mean of the map's ground less theirs", () => {
-    // Two squares that touch: the map's ground at their doors is 5 and 15, the LiDAR's 7 and 13.
-    const [a, b] = heights([at("a", 0, 7), at("b", 10, 13)]);
-    expect(b! - a!).toBeCloseTo(13 - 7, 12);
-    // The offset is the mean of (5 - 7) and (15 - 13): 0.
-    expect(a).toBeCloseTo(7, 12);
-    expect(b).toBeCloseTo(13, 12);
+    // Two squares that touch: the map's ground at their doors is 5 and 15, the LiDAR's 6 and 14.5.
+    const [a, b] = heights([at("a", 0, 6), at("b", 10, 14.5)]);
+    expect(b! - a!).toBeCloseTo(14.5 - 6, 12);
+    // The offset is the mean of (5 - 6) and (15 - 14.5): -0.25.
+    expect(a).toBeCloseTo(5.75, 12);
+    expect(b).toBeCloseTo(14.25, 12);
     // Up to SHARED_GROUND apart they share it; further, each stands on the map's ground at its own door.
-    const near = heights([at("a", 0, 7), at("b", 10 + SHARED_GROUND, 13)]);
-    expect(near[1]! - near[0]!).toBeCloseTo(6, 12);
-    expect(heights([at("a", 0, 7), at("b", 10 + SHARED_GROUND + 0.01, 13)])).toEqual([5, 15.01 + SHARED_GROUND]);
+    const near = heights([at("a", 0, 6), at("b", 10 + SHARED_GROUND, 16.5)]);
+    expect(near[1]! - near[0]!).toBeCloseTo(10.5, 12);
+    expect(heights([at("a", 0, 6), at("b", 10 + SHARED_GROUND + 0.01, 16.5)])).toEqual([5, 15.01 + SHARED_GROUND]);
   });
 
   it("stands a landmark in no group on the map's ground at its door, exactly as before", () => {
@@ -169,11 +169,11 @@ describe("landmarks side by side on one ground (standHeights)", () => {
   });
 
   it("joins groups through their members: three in a row share one ground though the ends are far apart", () => {
-    const [a, b, c] = heights([at("a", 0, 1), at("b", 10, 2), at("c", 20, 3)]);
-    // The map's ground at the doors is 5, 15 and 25: the offset is the mean of 4, 13 and 22.
-    expect(a).toBeCloseTo(1 + 13, 12);
-    expect(b).toBeCloseTo(2 + 13, 12);
-    expect(c).toBeCloseTo(3 + 13, 12);
+    const [a, b, c] = heights([at("a", 0, 4.5), at("b", 10, 14), at("c", 20, 23.5)]);
+    // The map's ground at the doors is 5, 15 and 25: the offset is the mean of 0.5, 1 and 1.5.
+    expect(a).toBeCloseTo(4.5 + 1, 12);
+    expect(b).toBeCloseTo(14 + 1, 12);
+    expect(c).toBeCloseTo(23.5 + 1, 12);
   });
 
   it("leaves out of every group a landmark without a ground, and a measured massing", () => {
@@ -184,15 +184,25 @@ describe("landmarks side by side on one ground (standHeights)", () => {
     expect(heights([at("a", 0, 7), at("b", 10), at("c", 20, 30)])).toEqual([5, 15, 25]);
   });
 
+  it("shares the ground only when the group's offsets span SHARED_SPREAD or less; a wider group stands as each alone", () => {
+    // Offsets -1 and +1: a span of 2, within the limit, so they share the mean, 0.
+    expect(heights([at("a", 0, 6), at("b", 10, 14)])).toEqual([6, 14]);
+    expect(SHARED_SPREAD).toBe(2);
+    // Offsets -1 and +1.01: a span of 2.01, and -2 and +2: each stands on the map's ground at its own door.
+    expect(heights([at("a", 0, 6), at("b", 10, 13.99)])).toEqual([5, 15]);
+    expect(heights([at("a", 0, 7), at("b", 10, 13)])).toEqual([5, 15]);
+  });
+
   it("on the site, groups only the landmarks that stand side by side", () => {
     const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
     const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/uoa/terrain/central.json", "utf8")) as TerrainData]);
     const h = standHeights(LANDMARKS, siteOutline(campus), (x, y) => terrain.height(x, y));
     const shared = LANDMARKS.filter((l, k) => h[k] !== terrain.height(...(l.placement.door.map as [number, number]))).map((l) => l.name);
-    expect(shared).toEqual(["clock-tower-east-wing", "clocktower", "fifteen-eden-crescent", "nine-eden-crescent", "thomas-building", "thomas-building-extension"]);
-    // Within each pair, the two stand as far apart as their LiDAR grounds.
+    // The Clock Tower and its East Wing touch, but their offsets span 5.07 m (SHARED_SPREAD): each stands as before.
+    expect(shared).toEqual(["fifteen-eden-crescent", "nine-eden-crescent", "thomas-building", "thomas-building-extension"]);
+    // Within each pair that shares, the two stand as far apart as their LiDAR grounds.
     const of = (name: string) => LANDMARKS.findIndex((l) => l.name === name);
-    for (const [p, q] of [["clocktower", "clock-tower-east-wing"], ["nine-eden-crescent", "fifteen-eden-crescent"], ["thomas-building", "thomas-building-extension"]] as const) {
+    for (const [p, q] of [["nine-eden-crescent", "fifteen-eden-crescent"], ["thomas-building", "thomas-building-extension"]] as const) {
       expect(h[of(p)]! - h[of(q)]!, `${p} and ${q}`).toBeCloseTo(LANDMARKS[of(p)]!.placement.ground! - LANDMARKS[of(q)]!.placement.ground!, 9);
     }
   });

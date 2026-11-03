@@ -71,48 +71,28 @@ empty. The door is the foot of the stair tower's face toward the car park, where
 the model meets the map's ground. The walls go down to `FOOT`, -1.0 m: the LiDAR ground falls to
 -0.86 m behind the range and rises about 3 m under the link.
 
-Since 2026-11-03 the wing stands on the ground it shares with the Clock Tower, whose outline it touches
-(`standHeights` in `src/scene/landmarks.ts`; `../README.md`, "Placement"): its y = 0 at its LiDAR ground,
-40.0 m, plus the two landmarks' mean of the map's ground at the door minus the LiDAR's, -2.312 m, so at
-37.688 m on the map, 2.534 m lower than the map's ground at its own door (40.222 m), and the two stand at
-the LiDAR's heights against each other. The map's ground stands above y = 0 all round it: 2.3 to 3.0 m
-along the face to the car park and the lawn, 1.8 to 2.5 m at the south-east end, 1.8 to 3.0 m at the back
-and 2.4 to 3.0 m at the link's end; there the walls stand in it, and the ground storey's windows toward the
-car park are under the map's ground (before, the map's ground was -0.8 to +0.5 m round it).
-
 Since 2026-10-28 the link stands from 3.6 m up, but for the space the campus map has under its east
 third, which goes down to `FOOT`, as the map's blocks drew them. The campus map has the link on its
 floor "1"; its floor "G" has only a "Non Usable Area" under the link's east third (x -24.8 to -19.8)
 and leaves the rest open, so the walk map, made from each building's ground floor, lets a walker
 through there, and OpenStreetMap has a footway through a building passage (x -27.3 to -28.2). Drawn
 down to `FOOT` all along until then, the link was solid stone on that footway: a walker walked into
-it, and the view from behind them filled with its plain face. The 3.6 m was the campus map's storey
+it, and the view from behind them filled with its plain face. The 3.6 m is the campus map's storey
 height, where its block for the link starts: nothing measures the underside. On the site the passage
-stood on the 8 m elevation model's ground, 0.1 to 0.5 m over the door's, so 3.1 to 3.5 m stayed under
-the link.
-
-Since the wing stands on the ground it shares with the Clock Tower (above), the map's ground under the
-link's open parts is 2.64 to 2.96 m over the door's level in this frame, as the LiDAR's ground is along
-the link's back edge (2.7 to 2.9 m; 0.8 to 1.8 m on its lawn side), and 3.6 m would have left 0.64 to
-0.96 m under the link. Its underside now stands at 6.35 m, as high as a walker needs and no higher
-(estimated, `parts/common.js`, `MEASURED.link.under`): the figure is 1.75 m tall on 0.25 m of ground paint
-(`src/scene/walkers.ts`), and the camera behind it, 7.5 m back and 16 degrees up, is 3.82 m over its
-ground and 7.21 m behind it, so that while the walker crosses the link's 5.4 m the camera's line to its
-head passes the near edge 3.36 m over the ground; over the highest ground under the link that is 6.32 m.
-So 3.39 to 3.71 m stay under it, and over the passage the link is 0.2 m deep, 0.05 m of stone under the
-0.15 m roof slab: the real passage is lower than the one drawn, and its shape is not known.
+stands on the 8 m elevation model's ground, 0.1 to 0.5 m over the door's, so 3.1 to 3.5 m stay under
+the link. The LiDAR's ground there is higher, 2.7 to 2.9 m over the door's along the link's back
+edge and 0.8 to 1.8 m on its lawn side: the real passage is lower than the one drawn, and its shape
+is not known.
 
 ## Limits
 
 - What no photograph shows is plain stone wall: the back, the ends, the two blocks at the back and the
   link. The grey of the roofs behind the pavilions' gables comes from the aerial. The open ground
-  under the link comes from the campus map's floors and from OpenStreetMap, and its underside, 6.35 m up,
-  from what a walker on the site needs, not from a photograph or the LiDAR (above).
+  under the link and its underside, 3.6 m up, come from the campus map's floors and storey height
+  and from OpenStreetMap, not from a photograph or the LiDAR (above).
 - The link ends at x -33, where the Clock Tower's model, which leaves out 105S's nose, stands 0.7 to
   7.3 m back but for 0.2 m at the link's back corner; the campus map's block for the link runs on to
-  105S's outline. Over open ground, its end shows that gap from below. Since 2026-11-03 the two stand at
-  the LiDAR's heights against each other; before, the map stood the Clock Tower 5.07 m lower against the
-  wing than the LiDAR has it.
+  105S's outline. Over open ground, its end shows that gap from below.
 - The east pavilion's gable front is half hidden by the basalt wall in every photograph: the one upper
   and two lower windows that show are as the west pavilion's, and the rest is drawn after it.
 - The windows' glazing patterns (geometric bars, leaded fanlights) are drawn as plain white bars.
