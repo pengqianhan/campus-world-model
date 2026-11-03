@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   0.45 m lower, the Thomas Building 0.31 m lower and its Extension 0.31 m higher, and the Thomas
   Building's parapet runs on under its Extension's glass link again. Where the map's ground is too far
   off the LiDAR's at one of the two doors, as at the Clock Tower's, the two stand as before, and so does
-  every other building (#PR).
+  every other building (#132).
 
 ### Fixed
 
