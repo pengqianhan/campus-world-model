@@ -63,7 +63,7 @@ function body(b, x0, x1) {
   const bars = [[-dw / 2 - 0.12, -dw / 2, 0, dh + 0.12], [dw / 2, dw / 2 + 0.12, 0, dh + 0.12], [-dw / 2, dw / 2, dh, dh + 0.12],
     [-dw / 2, dw / 2, 2.3, 2.42], [-0.06, 0.06, 0, 2.3], [dw / 2 - 0.1, dw / 2, 0, 2.3], [0.06, dw / 2, 0, 0.7], [0.42, 0.48, 0.7, 2.3], [-0.03, 0.03, 2.41, dh + 0.01]]; // (the fanlight's bar 1 cm into the transom and the head, past the glass's edges)
   for (const [u0, u1, v0, v1] of bars) b.box(AX + u0, AX + u1, LAND + v0, LAND + v1, zi + 0.005, zi + 0.07, "timber"); // (from the hall's face out)
-  b.box(AX + 0.06, AX + dw / 2 - 0.01, LAND + 0.7, LAND + 2.29, zi + 0.02, zi + 0.025, "glass"); // (inside the frame's edge and 1 cm under its rail)
+  b.box(AX + 0.06, AX + dw / 2 - 0.01, LAND + 0.7, LAND + 2.31, zi + 0.02, zi + 0.025, "glass"); // (inside the frame's edge and 1 cm up into its rail, past the stile's top)
   b.box(AX - dw / 2, AX + dw / 2, LAND + 2.42, LAND + dh, zi + 0.02, zi + 0.025, "glass");
   b.box(AX - dw / 2 - 0.02, AX - dw / 2 + 0.04, LAND, LAND + 2.3, zi + 0.07, zi + 0.85, "timber"); // the open leaf
 }
