@@ -901,7 +901,7 @@ If you represent the University and would like something changed or removed, ple
   map's ground (the 8 m elevation model) lies up to 4.5 m above the ground at its door by its west
   corner and 2.4 to 3.1 m above it at its round stair, where the LiDAR's ground is within about 1 m of
   it, and hides the foot of its walls there; on its face to the road it covers the ground storey's
-  windows wholly for 10.5 m from the south-west end and partly for 22 m more.
+  windows wholly for 9.4 m past the pier at its south-west end and partly for 22 m more.
 - **The Music School is seen from the car park beside it only.** One Street View panorama sees its face to the
   car park whole and the auditorium's ochre wall beyond it at a slant; its camera is set from the
   photograph's own edges against the LiDAR's. Its heights and roofs come from the LiDAR, the parapet's
