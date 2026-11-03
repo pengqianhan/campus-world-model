@@ -47,7 +47,15 @@ export const MEASURED = {
   // (`linkGround`, campus.json's ring taken into this frame), so the walk map, made from ground floors,
   // leaves the rest open, and OpenStreetMap has a footway through a building passage there (way
   // 918249408, x -27.3 to -28.2). The link stands from `under`, with `linkGround` down to the ground, as
-  // the map's blocks drew them.
-  link: { x: [-33.0, -17.8], z: [-4.3, 1.1], top: 6.55, under: 3.6 },
+  // the map's blocks drew them. `under` was the map's storey height, 3.6 m, until the site stood the wing
+  // on the ground it shares with the Clock Tower (src/scene/landmarks.ts, standHeights, 2026-11-03): there
+  // the map's ground under the link's open parts is at 2.64-2.96 m in this frame (as the LiDAR's along its
+  // back edge, 2.7-2.9), and 3.6 m would leave 0.64-0.96 m under it. It is now as high as a walker needs
+  // (src/scene/walkers.ts and CampusScene's camera behind it): the figure is 1.75 m tall on 0.25 m of
+  // ground paint, and the camera behind it, 7.5 m back and 16 deg up, is 3.82 m over its ground and 7.21 m
+  // behind it, so that across the link's 5.4 m its line to the walker's head passes the near edge 3.36 m
+  // over the ground; 3.36 m over the highest ground under it is 6.32, and `under` is 6.35, 0.05 m below the
+  // roof's slab. Nothing measures it (estimated).
+  link: { x: [-33.0, -17.8], z: [-4.3, 1.1], top: 6.55, under: 6.35 },
   linkGround: { x: [-24.82, -19.8], z: [-4.3, 0.83] },
 };

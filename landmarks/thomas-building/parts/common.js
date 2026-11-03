@@ -69,11 +69,13 @@ export const MEASURED = {
   // (-31.6, 9.6), half outside the end wall. Beside it a flue: 19 returns 18-27 m high in u -30.8 to
   // -29.6, v 7.9 to 9.2, to 25.77 m.
   stair: { u: -31.6, v: 9.6, r: 4.0, top: 16.6 },
-  // 110N's glazed link, as the site stands both landmarks (each on the map's ground at its own door: 31.058 m
-  // at this one's, 28.866 at 110N's, 2.19 m apart where the two configs' LiDAR grounds, 36.17 and 34.6, are
-  // 1.57 apart): in these axes its roof spans u 29.50-35.47, v -5.09 to 15.80, at y 14.75-14.86, below the
-  // north-east parapet's top (15.13); at the LiDAR's heights it is 15.47, above it. The parapet is left out
-  // where the link crosses it (body.js), so that the link's roof covers that stretch at either height.
+  // 110N's glazed link, as the site stands both landmarks: on one ground (src/scene/landmarks.ts, standHeights,
+  // 2026-11-03), at the LiDAR's heights against each other. In these axes its roof spans u 29.50-35.47,
+  // v -5.09 to 15.80, at y 15.37-15.47, 0.24 m over the north-east parapet's top (15.13), which runs on under
+  // it (body.js): the LiDAR's lowest returns of the link's roof, 51.3 m NZVD, are at the parapet's top. From
+  // 2026-11-02 to 2026-11-03, while each landmark stood on the map's ground at its own door and 110 stood
+  // 0.62 m higher against 110N, the roof stood at 14.75-14.86, below the parapet's top, and the parapet was
+  // left out over v -5.1 to 15.9 (this range).
   link: { v: [-5.1, 15.9] },
   flue: { u: [-30.8, -29.6], v: [7.9, 9.2], top: 25.7 },
 };
