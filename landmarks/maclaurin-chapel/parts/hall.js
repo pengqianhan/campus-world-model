@@ -48,22 +48,24 @@ export function hall(b) {
   gable(b, R.x[0], R.x[1], R.z[0], R.z[1], R.eave, R.ridge, R.ridgeZ, "roofGreen");
   // the flat roofs: over the near end, the walk-ways and the far end (a little lower), the fascia along their outer
   // edges and along the walk-ways' ends over the lower far end; none where a roof runs on into the next at its
-  // height or meets the middle room. There the near end's and the far end's edges over the walk-ways are closed
-  // below the slab: white, from the fascia's foot up to the near slab's underside and into the far slab, with no
-  // dark line, so that no hollow under a roof shows and none of their faces lies in a slab's (on main the full
-  // fascias there, with their dark lines, made a dark band 12 cm wide across the roof, seen from above)
+  // height or meets the middle room. Under the walk-ways' ends the near end's edge is closed below the slab,
+  // white, from the fascia's foot to the slab's underside, with no dark line: one flat roof runs on over it (on
+  // main the full fascias there, their faces in the slabs', made a dark band 12 cm wide across the roof, seen
+  // from above). The far end's edge runs its whole length with its fascia and dark line, as before, 1 cm out from
+  // its slab, which starts 1 cm under the walk-ways' edge, and it is closed below the slab to the walk-ways'
+  // fascias; so no hollow under a roof shows and none of their faces lies in a slab's
   const [nx0, nx1] = [near.x[0], mid.x[0]], [nz0, nz1] = near.z, [wa, wb] = H.walks.z, [mx0, mx1] = mid.x;
   flatRoof(b, nx0, nx1, nz0, nz1, H.top, [[nx0 - E, nx1, nz1, nz1 + E], [nx0 - E, nx1 + E, nz0 - E, nz0], [nx0 - E, nx0, nz0, nz1],
     [nx1, nx1 + E, nz0, wa[0]]]);
   flatRoof(b, mx0, mx1, wa[0], wa[1], H.top, [[mx0, mx1 + E, wa[0] - E, wa[0]], [mx1, mx1 + E, wa[0], wa[1]]]);
   flatRoof(b, mx0, mx1, wb[0], wb[1], H.top, [[mx0, mx1 + E, wb[1], wb[1] + E], [mx1, mx1 + E, wb[0], wb[1]]]);
   const [fx0, fx1] = far.x, [fz0, fz1] = far.z;
-  // (the far end's slab starts 1 cm under the walk-ways' edge, and its fascia beyond them 1 cm further out)
+  // (the far end's slab starts 1 cm under the walk-ways' edge, and its fascia 1 cm further out)
   flatRoof(b, fx0, fx1, fz0, fz1, H.farTop, [[fx0 - E - 0.01, fx1 + E, fz1, fz1 + E], [fx0 + E, fx1 + E, fz0 - E, fz0], [fx1, fx1 + E, fz0, fz1],
-    [fx0 - E - 0.01, fx0 - 0.01, wb[1] + E, fz1]], 0.01);
+    [fx0 - E - 0.01, fx0 - 0.01, fz0 - E, fz1]], 0.01);
   b.add(boxesGeometry([
     [nx1, nx1 + E, H.top - FASCIA, H.top - 0.06, wa[0], wa[1]], [nx1, nx1 + E, H.top - FASCIA, H.top - 0.06, wb[0], nz1],
-    [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.045, fz0 - E, wa[1]], [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.045, wb[0], wb[1] + E],
+    [fx0 - 0.01, fx0 + E, H.farTop - FASCIA, H.farTop - 0.07, fz0 - E, wa[1]], [fx0 - 0.01, fx0 + E, H.farTop - FASCIA, H.farTop - 0.07, wb[0], wb[1] + E],
   ]), "paint");
   // the street side: the entrance in the near end, a glazed screen set back under the flat roof (the LiDAR
   // sees the ground under the roof's front metre), the roof's front fascia there dark timber, not white,

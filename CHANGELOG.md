@@ -25,9 +25,9 @@ A change to what the site does or shows adds its line here, and the README's
   and from a walker's height. Now the hidden face of each pair stops short, stands inside its neighbour, or
   stands a centimetre back, and what shows stands where it stood, to the centimetre. One thing shown is gone:
   across Maclaurin Chapel's flat roof, where the near end's roof met the walk-ways', a white edge and its
-  dark line, seen from above as a dark band 12 cm wide, stood inside the two roofs, which are at one height,
-  and is no longer drawn. A test checks every landmark on the site for faces closer than the map can tell
-  apart (#PR).
+  dark line rose through the two roofs, which are at one height, and showed from above as a dark band 12 cm
+  wide; the edge now stops under the roof, white, with no dark line, and closes the space under it as
+  before. A test checks every landmark on the site for faces closer than the map can tell apart (#PR).
 
 ## 2026-11-02
 
