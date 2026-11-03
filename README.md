@@ -68,6 +68,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-03:** buildings drawn in detail that touch now stand at the heights the LiDAR gives them
+  against each other: the Clock Tower 2.5 m higher than before and its East Wing 2.5 m lower, so that the
+  wing's ground storey toward the car park stands in the map's ground; 9 and 15 Eden Crescent and the
+  Thomas Building and its Extension by less than half a metre.
 - **2026-11-02:** another school, at [/lincoln/](https://campusworldmodel.com/lincoln/): Lincoln
   University's Lincoln campus, from OpenStreetMap. Only buildings OpenStreetMap tags as the
   University's (its `operator` tag, or `building=university`) and names are shown as the

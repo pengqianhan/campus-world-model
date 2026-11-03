@@ -64,8 +64,9 @@ them and measures the openings and the doors again:
 - **The north-west end of the street face.** Two red-brown fire doors with their steps, one with a
   glazed panel and one under a glazed light, a louvre over a small green hood, a tall window over the
   second door and a band of windows under the canopy, each sized through the camera. The street lies
-  0.95 m below the frame's ground, and the site's ground 1.3 m below it there, so whatever comes down
-  below y = 0 there without reaching the ground would stand 0.6-0.9 m above it, which
+  0.95 m below the frame's ground, and the site's ground 0.85 m below it there (1.3 m until 2026-11-03,
+  when the site stood the model on the ground it shares with 801, 0.448 m lower: "On the site"), so
+  whatever comes down below y = 0 there without reaching the ground would stand above it, which
   `tests/landmarks.test.ts` refuses for every material that comes down to y = 0. The doors' leaves are
   drawn in the kit's dark timber, the base's material, which reaches the ground and whose colour is near
   their red-brown. The red-framed glazed case under the hood (a sprinkler inlet's) is measured and not
@@ -125,8 +126,17 @@ of windows, its base and its doors) come from the photographs, as the LiDAR does
 The model covers 99.9% of block 802 and no other block within 80 m by half or more, so `building.also`
 is empty. The door is the foot of the plan's south-east tip on the lane along the building's south-east
 end, where the LiDAR ground is 17.19 m (-0.16 to -0.06 m from `ground` within a metre of it): there the
-model's y is 0 and the map's ground meets it. No street door's foot is at y = 0: Eden Crescent's
-footpath lies 0.55 to 1.06 m below it along the street face, and the walls go down to `FOOT`, -1.2 m.
+model's y is 0. No street door's foot is at y = 0: Eden Crescent's footpath lies 0.55 to 1.06 m below
+it along the street face, and the walls go down to `FOOT`, -1.2 m.
+
+Since 2026-11-03 the site stands the model on the ground it shares with 801, whose outline it touches
+(`standHeights` in `src/scene/landmarks.ts`; `../README.md`, "Placement"): its y = 0 at its LiDAR ground,
+17.3 m, plus the two landmarks' mean of the map's ground at the door minus the LiDAR's, +3.428 m, so at
+20.728 m on the map, 0.448 m lower than the map's ground at its own door, and the two stand at the LiDAR's
+heights against each other. The map's ground under its walls now lies from 0.88 m below to 1.25 m above
+y = 0 (from 1.33 m below to 0.81 m above before), along the street side from 0.88 m below to 0.49 m
+above, so the doors' steps there stand partly in it; the walls still reach below it everywhere
+(`tests/landmarks.test.ts`).
 
 ## Limits
 

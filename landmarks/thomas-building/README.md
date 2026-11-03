@@ -33,14 +33,17 @@ the ring at each (`outline_note`), and `campus_outline` keeps the map's ring.
 ground of 34.6 m, 51.3-51.8 m NZVD) runs over 110's north-east parapet (15.13 m above 36.17, 51.30 m
 NZVD) and ends at u 29.5-29.9 of this model's axes, v -4.6 to 16.4, where 110's gutter begins. The link
 is 110N's, as its config says: neither this model nor this building's selection of points takes any of
-it. This model draws 110's end wall under the link and 110N's model draws the link over it. Its
-north-east parapet is left out where the link crosses it, v -5.1 to 15.9 (`MEASURED.link`): the site
-stands each landmark on the map's ground at its own door, 31.058 m at this one's and 28.866 m at 110N's,
-2.19 m apart where the two configs' LiDAR grounds are 1.57 m apart, so on the site 110 stands 0.62 m
-higher against 110N than the LiDAR has it. There the link's roof spans u 29.50-35.47, v -5.09 to 15.80
-of this model's axes at y 14.75-14.86, below the parapet's top (15.13), where at the LiDAR's heights it
-is 15.47, above it. Without the parapet there, the link's roof covers that stretch at either height,
-and the link's glass end, its render side and its wall against 110 close the space under it.
+it. This model draws 110's end wall under the link and 110N's model draws the link over it, and its
+north-east parapet runs on under the link. Since 2026-11-03 the site stands the two on one ground
+(`standHeights` in `src/scene/landmarks.ts`; `../README.md`, "Placement"), each at its LiDAR ground plus
+their mean of the map's ground at the door minus the LiDAR's (-5.423 m): this one at 30.747 m, 0.311 m
+lower than the map's ground at its door, and 110N 0.311 m higher, so the two stand at the LiDAR's
+heights against each other. There the link's roof spans u 29.50-35.47, v -5.09 to 15.80 of this model's
+axes at y 15.37-15.47, 0.24 m over the parapet's top (15.13); the LiDAR's lowest returns of the roof,
+51.3 m NZVD, are at the parapet's top. From #129 (2026-11-02) until then each landmark stood on the
+map's ground at its own door, 110 0.62 m higher against 110N than the LiDAR has it, the link's roof at
+y 14.75-14.86, below the parapet's top, and the parapet was left out where the link crosses it, v -5.1
+to 15.9 (`MEASURED.link`). The map's ground now stands 0.31 m higher against this model all round it.
 From the east corner the face to the road's bands run round onto the end, over windows set back behind
 them, as far as v 18.8, where they end in `oWaF…`'s wide view (round 2; round 1 carried them to the
 link); from there to the link at v 16.4 the end is plain wall. On the site the two models stand side by
@@ -181,11 +184,12 @@ outline holds the courtyard) has gone: the generator leaves the landmarks on the
 - **The door** stays at (4.0, 22.6), the foot of the face to the road near its middle, where the frame's
   ground (36.17 m) is measured; the white door toward the north-east end stands on ground 0.65 m lower
   (the LiDAR's, p50 of 14 returns before it), the grey door round the east corner on ground 1.7 m lower
-  (-1.77). On the map the model stands on the map's ground at (4.0, 22.6).
+  (-1.77). On the map the model stood on the map's ground at (4.0, 22.6) until 2026-11-03; since then it
+  stands on the ground it shares with 110N, 0.311 m lower ("Where it meets the Thomas Building Extension").
 - **The foot.** Stood as the site stands it, every part's walls go down to `FOOT` (-2.0 m), below the
-  map's ground everywhere under it: under the face to the road the drawn ground lies 1.06 m below to
-  1.59 m above the door's ground, and under the whole model up to 4.2 m above it, by the west corner
-  (2.1 to 2.8 m at the round stair), where the LiDAR's ground is within about 1 m of the door's: walls
+  map's ground everywhere under it: under the face to the road the drawn ground lies 0.75 m below to
+  1.90 m above the door's ground, and under the whole model up to 4.5 m above it, by the west corner
+  (2.4 to 3.1 m at the round stair; each 0.31 m more than before 2026-11-03), where the LiDAR's ground is within about 1 m of the door's: walls
   there are buried deeper, and none hangs. Toward the north-east end the ground storey's sills stand at -0.27 on the plinth; the foot
   check reads materials, not parts, so the glass, the mullions and the panels there run on down inside
   the plinth to `FOOT`, where nothing shows them. `tests/landmarks.test.ts` passes.

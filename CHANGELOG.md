@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-03
+
+### Changed
+
+- **Buildings drawn in detail side by side stand on one ground.** Where two buildings drawn from code
+  touch, they now stand at the heights the LiDAR gives them against each other, on a ground they share,
+  instead of each on the map's own ground at its door, which is a metre or more off the LiDAR's and by a
+  different amount at each door. The Clock Tower stands 2.5 m higher than before and its East Wing 2.5 m
+  lower, 9 Eden Crescent 0.45 m higher and 15 Eden Crescent 0.45 m lower, the Thomas Building 0.31 m
+  lower and its Extension 0.31 m higher; every other building stands where it stood. The Clock Tower's
+  walls and steps reach down to the ground under them, the East Wing's ground storey stands in the ground
+  toward the car park, the underside of its link to the Clock Tower is raised so that a walker still
+  passes under it, and the Thomas Building's parapet runs on under its Extension's glass link again
+  (#PR).
+
 ## 2026-11-02
 
 ### Added

@@ -138,10 +138,16 @@ The model covers 99.3% of block 110N and 0.9% of the Thomas Building's block (11
 it, and no other block within 80 m by 0.5% or more, so `building.also` is empty. The door is the foot of
 the curve on its east side, 0.9 m out from the wall, where the LiDAR's ground is +0.01 m from `ground`
 (-0.02 to +0.05 within a metre): no door stands there; the service doors the photographs show have their
-sills at 0.13-0.17 m, over a forecourt 0.13-0.26 m below `ground`. The site stands the model on its own
-ground at the door (its 10 m elevation grid, 28.87 m there), which lies from 0.04 m below to 2.87 m above
-that under the model's walls; the walls go down to `FOOT`, -1.6 m, and stood as the site stands it no
-mesh's foot is above the drawn ground (the highest, the doors' sills, 0.11 m below it).
+sills at 0.13-0.17 m, over a forecourt 0.13-0.26 m below `ground`. Until 2026-11-03 the site stood the
+model on its own ground at the door (its 10 m elevation grid, 28.87 m there), which lies from 0.04 m below
+to 2.87 m above that under the model's walls; the walls go down to `FOOT`, -1.6 m, and no mesh's foot was
+above the drawn ground (the highest, the doors' sills, 0.11 m below it). Since then it stands on the
+ground it shares with the Thomas Building (110), whose outline its link meets (`standHeights` in
+`src/scene/landmarks.ts`; `../README.md`, "Placement"): its y = 0 at its LiDAR ground, 34.6 m, plus the two
+landmarks' mean of the map's ground at the door minus the LiDAR's, -5.423 m, so at 29.177 m on the map,
+0.311 m higher, and the two stand at the LiDAR's heights against each other (110's parapet runs under the
+link's roof again: its README). The drawn ground now lies from 0.35 m below to 2.56 m above y = 0 under
+the walls, which still reach below it everywhere, and the doors' sills stand 0.20 m over it.
 
 ## Limits
 
