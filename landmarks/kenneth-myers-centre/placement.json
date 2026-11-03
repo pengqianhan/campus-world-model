@@ -1,5 +1,5 @@
 {
- "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place of the blocks of `building` and of the buildings in `also`.",
+ "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground` (src/scene/landmarks.ts, standHeights). It stands in place of the blocks of `building` and of the buildings in `also`.",
  "site": true,
  "building": "820",
  "also": [],
@@ -23,6 +23,7 @@
    599.883
   ]
  },
+ "ground": 25.5,
  "estimated": "the height of its west side's parapet and of its west part's dentil course; how far its pilasters, arcades, coping and door surround stand out, and its parapets' thickness; the widths of the piers between its blind arches, of its merlons and of the porch's windows and colonnettes; where the porch's cream divides between its band and its dentil course; where its blind arches come down, hidden by the areaway and the cars; and its radio mast's members",
  "measuredBy": "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph",
  "credit": "the Auckland Central 0.06 m Urban Aerial Photos (2023), sourced from LINZ and licensed by Auckland Council for re-use under the Creative Commons Attribution 4.0 International licence (CC BY 4.0)"

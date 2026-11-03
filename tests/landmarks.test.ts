@@ -2,7 +2,8 @@ import fs from "node:fs";
 import { Box3, Vector3, type Mesh, type Object3D } from "three";
 import { describe, expect, it } from "vitest";
 import { LANDMARKS, landmarkBuildings, landmarkOf } from "../src/app/landmarks.ts";
-import { Landmark, type LandmarkRequest } from "../src/scene/landmarks.ts";
+import { Landmark, SHARED_GROUND, standHeights, type LandmarkRequest, type Standing } from "../src/scene/landmarks.ts";
+import { decodeRing, type Ring } from "../src/shared/geo.ts";
 import { Terrain } from "../src/scene/terrain.ts";
 import { massing } from "../src/shared/massing.ts";
 import type { CampusData, TerrainData } from "../src/shared/types.ts";
@@ -129,14 +130,86 @@ describe("what measures a landmark", () => {
   });
 });
 
+/** A building's outline on the campus map, its outer ring, as CampusScene.standLandmarks gives it to standHeights. */
+function siteOutline(campus: CampusData): (id: string) => Ring | undefined {
+  return (id) => {
+    const b = campus.buildings.find((x) => x.id === id);
+    return b && !b.offMap && b.outline[0] ? decodeRing(b.outline[0]) : undefined;
+  };
+}
+
+describe("landmarks side by side on one ground (standHeights)", () => {
+  // Squares on a ground that rises 1 m a metre east, each with its door at its middle.
+  const square = (x: number, y: number, w = 10): Ring => [[x, y], [x + w, y], [x + w, y + w], [x, y + w]];
+  const at = (id: string, x: number, ground?: number, measured = false): Standing & { id: string; ring: Ring } => ({
+    id,
+    ring: square(x, 0),
+    measured,
+    placement: { building: id, centre: [x + 5, 5], rotationY: 0, scale: 1, door: { model: [0, 0], map: [x + 5, 5] }, ...(ground === undefined ? {} : { ground }) },
+  });
+  const heights = (list: ReturnType<typeof at>[]) =>
+    standHeights(list, (id) => list.find((l) => l.id === id)?.ring, (east) => east);
+
+  it("stands the members of a group at heights that differ exactly as their LiDAR grounds do, on the mean of the map's ground less theirs", () => {
+    // Two squares that touch: the map's ground at their doors is 5 and 15, the LiDAR's 7 and 13.
+    const [a, b] = heights([at("a", 0, 7), at("b", 10, 13)]);
+    expect(b! - a!).toBeCloseTo(13 - 7, 12);
+    // The offset is the mean of (5 - 7) and (15 - 13): 0.
+    expect(a).toBeCloseTo(7, 12);
+    expect(b).toBeCloseTo(13, 12);
+    // Up to SHARED_GROUND apart they share it; further, each stands on the map's ground at its own door.
+    const near = heights([at("a", 0, 7), at("b", 10 + SHARED_GROUND, 13)]);
+    expect(near[1]! - near[0]!).toBeCloseTo(6, 12);
+    expect(heights([at("a", 0, 7), at("b", 10 + SHARED_GROUND + 0.01, 13)])).toEqual([5, 15.01 + SHARED_GROUND]);
+  });
+
+  it("stands a landmark in no group on the map's ground at its door, exactly as before", () => {
+    const list = [at("a", 0, 7), at("b", 40, 13)];
+    expect(heights(list)).toEqual([5, 45]);
+  });
+
+  it("joins groups through their members: three in a row share one ground though the ends are far apart", () => {
+    const [a, b, c] = heights([at("a", 0, 1), at("b", 10, 2), at("c", 20, 3)]);
+    // The map's ground at the doors is 5, 15 and 25: the offset is the mean of 4, 13 and 22.
+    expect(a).toBeCloseTo(1 + 13, 12);
+    expect(b).toBeCloseTo(2 + 13, 12);
+    expect(c).toBeCloseTo(3 + 13, 12);
+  });
+
+  it("leaves out of every group a landmark without a ground, and a measured massing", () => {
+    // Without a ground, b stands on the map's ground at its door, and a alone is in no group: so does a.
+    expect(heights([at("a", 0, 7), at("b", 10)])).toEqual([5, 15]);
+    expect(heights([at("a", 0, 7), at("b", 10, 13, true)])).toEqual([5, 15]);
+    // Nor does one between two others join them: a and c are 10 m apart.
+    expect(heights([at("a", 0, 7), at("b", 10), at("c", 20, 30)])).toEqual([5, 15, 25]);
+  });
+
+  it("on the site, groups only the landmarks that stand side by side", () => {
+    const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
+    const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/uoa/terrain/central.json", "utf8")) as TerrainData]);
+    const h = standHeights(LANDMARKS, siteOutline(campus), (x, y) => terrain.height(x, y));
+    const shared = LANDMARKS.filter((l, k) => h[k] !== terrain.height(...(l.placement.door.map as [number, number]))).map((l) => l.name);
+    expect(shared).toEqual(["clock-tower-east-wing", "clocktower", "fifteen-eden-crescent", "nine-eden-crescent", "thomas-building", "thomas-building-extension"]);
+    // Within each pair, the two stand as far apart as their LiDAR grounds.
+    const of = (name: string) => LANDMARKS.findIndex((l) => l.name === name);
+    for (const [p, q] of [["clocktower", "clock-tower-east-wing"], ["nine-eden-crescent", "fifteen-eden-crescent"], ["thomas-building", "thomas-building-extension"]] as const) {
+      expect(h[of(p)]! - h[of(q)]!, `${p} and ${q}`).toBeCloseTo(LANDMARKS[of(p)]!.placement.ground! - LANDMARKS[of(q)]!.placement.ground!, 9);
+    }
+  });
+});
+
 describe("each landmark on the site's ground", () => {
   it("stands at its door with each material's lowest points nowhere more than 0.25 m above the drawn ground", async () => {
     // The site's ground (the 8 m elevation model) can be a metre or more off the LiDAR's, which the
     // models are measured to; ordinary blocks get a footing for it (terrain.ts), a landmark its walls.
     const terrain = new Terrain([JSON.parse(fs.readFileSync("public/data/uoa/terrain/central.json", "utf8")) as TerrainData]);
-    for (const entry of LANDMARKS) {
+    // Each stands as the site stands it (CampusScene.standLandmarks): on the map's ground at its door, or on the
+    // ground it shares with the landmarks beside it.
+    const campus = JSON.parse(fs.readFileSync("public/data/uoa/campus.json", "utf8")) as CampusData;
+    const heights = standHeights(LANDMARKS, siteOutline(campus), (x, y) => terrain.height(x, y));
+    for (const [k, entry] of LANDMARKS.entries()) {
       const l = new Landmark(entry, host);
-      l.stand(terrain.height(...(entry.placement.door.map as [number, number])));
+      l.stand(heights[k]!);
       l.group.updateMatrixWorld(true);
       const { build, STANDS } = (await import(`../landmarks/${entry.name}/model.js`)) as {
         build: (m: unknown, only?: string[]) => Object3D;

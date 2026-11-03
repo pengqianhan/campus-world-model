@@ -27,6 +27,12 @@ export interface Placement {
   /** The foot of its entrance: model x and z, and map metres east and north. The model's y = 0 is the ground there. */
   door: { model: number[]; map: number[] };
   /**
+   * The LiDAR's ground at the door, metres NZVD2016 (its config's `ground`): the height the model's y = 0 is
+   * measured from. Landmarks that stand side by side share one ground through it (standHeights in
+   * src/scene/landmarks.ts); without it a landmark stands on the map's ground at its door.
+   */
+  ground?: number;
+  /**
    * When only a part of the building is drawn in detail, the words for that part (its config's `part`):
    * the rest keeps the map's estimated block, and the building's card says so.
    */

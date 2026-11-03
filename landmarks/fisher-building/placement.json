@@ -1,5 +1,5 @@
 {
- "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place of the blocks of `building` and of the buildings in `also`.",
+ "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground` (src/scene/landmarks.ts, standHeights). It stands in place of the blocks of `building` and of the buildings in `also`.",
  "site": true,
  "building": "804",
  "also": [],
@@ -23,5 +23,6 @@
    380.187
   ]
  },
+ "ground": 29.1,
  "estimated": "how deep its balconies and its canopy are, how much of each storey the balconies' louvres fill, and how thick its ramp's deck and side and its parapet are"
 }

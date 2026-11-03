@@ -12,6 +12,7 @@
 // the walker views, so that it looks like the blocks round it.
 import { BufferAttribute, BufferGeometry, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, Sphere, Vector3, type Material, type Object3D } from "three";
 import { landmarkBuildings, type LandmarkEntry, type Placement } from "../app/landmarks.ts";
+import { pointInRing, type Pt, type Ring } from "../shared/geo.ts";
 import type { FacadeSpec } from "./geometry.ts";
 import { SHADOW_ONLY_LAYER } from "./layers.ts";
 
@@ -123,6 +124,98 @@ export interface LandmarkHost {
   dress?: (building: string, role: "walls" | "roof") => Material | undefined;
 }
 
+/**
+ * How near, in metres, the outlines of two landmarks drawn from code come for the two to stand on one
+ * ground (standHeights). On the site only three pairs come this near, and in each the outlines touch or
+ * overlap: the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), and the
+ * Thomas Building and its Extension (110, 110N). The nearest two landmarks that do not touch, the General
+ * Library (109) and Old Choral Hall (104), stand 18 m apart: each of those can stand on the map's own
+ * ground without a step or an overlap between them that a camera could see.
+ */
+export const SHARED_GROUND = 2;
+
+/** What standHeights needs of a landmark: where it stands, and whether it is a measured massing. */
+export interface Standing {
+  placement: Placement;
+  measured?: boolean;
+}
+
+/**
+ * The height on the map at which each landmark's y = 0 stands, in the order given.
+ *
+ * A model is measured from the LiDAR's ground at its door (its config's `ground`, `placement.ground`), and
+ * the map's ground is another elevation model (the 8 m LINZ DEM), a metre or more off it, by a different
+ * amount at each door. Alone, a landmark stands its y = 0 on the map's ground at its door, so that it meets
+ * the ground there. Landmarks drawn from code whose outlines (each building's in `building` and `also`,
+ * the outer ring of `outline`, in map metres east and north) come within SHARED_GROUND of each other, taken
+ * transitively, form a group and share one ground: each stands its y = 0 at its own LiDAR ground plus the
+ * group's offset, the mean over its members of the map's ground at the door minus the LiDAR's there. So
+ * their heights against each other are the LiDAR's, and where they meet, neither shows through the other.
+ * A measured massing, and a landmark whose placement has no `ground`, is in no group.
+ */
+export function standHeights(
+  landmarks: readonly Standing[],
+  outline: (building: string) => Ring | undefined,
+  groundAt: (east: number, north: number) => number,
+): number[] {
+  const own = landmarks.map((l) => groundAt(l.placement.door.map[0]!, l.placement.door.map[1]!));
+  const shares = landmarks.map((l) => !l.measured && typeof l.placement.ground === "number");
+  const rings = landmarks.map((l, i) => {
+    if (!shares[i]) return [];
+    const ids = [l.placement.building, ...(l.placement.also ?? [])];
+    return ids.map((id) => outline(id)).filter((r): r is Ring => !!r && r.length > 2);
+  });
+  // The groups, by union and find over each pair whose outlines come near enough.
+  const root = landmarks.map((_, i) => i);
+  const find = (i: number): number => (root[i] === i ? i : (root[i] = find(root[i]!)));
+  for (let i = 0; i < landmarks.length; i++) {
+    for (let j = i + 1; j < landmarks.length; j++) {
+      if (rings[i]!.some((a) => rings[j]!.some((b) => ringGap(a, b) <= SHARED_GROUND))) root[find(i)] = find(j);
+    }
+  }
+  const groups = new Map<number, number[]>();
+  landmarks.forEach((_, i) => {
+    if (!rings[i]!.length) return;
+    const g = groups.get(find(i));
+    if (g) g.push(i);
+    else groups.set(find(i), [i]);
+  });
+  const stand = [...own];
+  for (const members of groups.values()) {
+    if (members.length < 2) continue;
+    const offset = members.reduce((s, j) => s + own[j]! - landmarks[j]!.placement.ground!, 0) / members.length;
+    for (const j of members) stand[j] = landmarks[j]!.placement.ground! + offset;
+  }
+  return stand;
+}
+
+/** The distance between two rings, metres: 0 where one stands in the other or their edges cross. */
+export function ringGap(a: Ring, b: Ring): number {
+  if (a.some((p) => pointInRing(p, b)) || b.some((p) => pointInRing(p, a))) return 0;
+  let best = Infinity;
+  for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
+    for (let k = 0, l = b.length - 1; k < b.length; l = k++) {
+      if (crosses(a[j]!, a[i]!, b[l]!, b[k]!)) return 0;
+      best = Math.min(best, toSegment(a[i]!, b[l]!, b[k]!), toSegment(b[k]!, a[j]!, a[i]!));
+    }
+  }
+  return best;
+}
+
+/** Distance from a point to a segment. */
+function toSegment(p: Pt, a: Pt, b: Pt): number {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1)));
+  return Math.hypot(a[0] + t * dx - p[0], a[1] + t * dy - p[1]);
+}
+
+/** Whether two segments cross. */
+function crosses(a: Pt, b: Pt, c: Pt, d: Pt): boolean {
+  const side = (p: Pt, q: Pt, r: Pt) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+  return side(a, b, c) * side(a, b, d) < 0 && side(c, d, a) * side(c, d, b) < 0;
+}
+
 /** One mesh of the model, shared by both forms. */
 interface Part {
   material: string;
@@ -206,9 +299,9 @@ export class Landmark {
     return [dx * c - dz * s, dx * s + dz * c];
   }
 
-  /** Stands the model on the ground at its door, `ground` metres up. */
-  stand(ground: number): void {
-    this.group.position.y = ground;
+  /** Stands the model's y = 0 at `height` metres up: the map's ground at its door, or its group's (standHeights). */
+  stand(height: number): void {
+    this.group.position.y = height;
   }
 
   /** Squashes it to `k` of its height, as its neighbours sink while a building is open. */
