@@ -63,7 +63,7 @@ export function hall(b) {
     [fx0 - E - 0.01, fx0 - 0.01, wb[1] + E, fz1]], 0.01);
   b.add(boxesGeometry([
     [nx1, nx1 + E, H.top - FASCIA, H.top - 0.06, wa[0], wa[1]], [nx1, nx1 + E, H.top - FASCIA, H.top - 0.06, wb[0], nz1],
-    [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.03, fz0 - E, wa[1]], [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.03, wb[0], wb[1] + E],
+    [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.045, fz0 - E, wa[1]], [fx0 - E, fx0 + E, H.farTop - FASCIA, H.farTop - 0.045, wb[0], wb[1] + E],
   ]), "paint");
   // the street side: the entrance in the near end, a glazed screen set back under the flat roof (the LiDAR
   // sees the ground under the roof's front metre), the roof's front fascia there dark timber, not white,

@@ -32,9 +32,10 @@ function walls(y0, cut) {
     const t = ((z - e0) / (e1 - e0)) * PIECES, i = Math.min(PIECES - 1, Math.floor(t));
     return under(zAt(i)) + (t - i) * (under(zAt(i + 1)) - under(zAt(i)));
   };
-  // (their long faces from the flat roof up; below it, down to 1 cm under the roofs' foot, 1 cm in: there the flat
+  // (their long faces from the flat roof up; below it, down to 2 cm under the roofs' foot, 1 cm in: there the flat
   // roof's sides lie in the long faces' plane, and the end walls close the storey down to the roofs' foot where it
-  // stands out past the plan below)
+  // stands out past the plan below; 2 cm, so that their foot and the roofs' lie further apart than a walker's
+  // camera fails to tell at its reach, though both are hidden inside the storey below)
   const f = M.roofs.flat, e = 0.01;
   const pts = [[z0 + e, y0], [z0 + e, f], [z0, f], [z0, on(z0)]];
   for (let i = 0; i <= PIECES; i++) if (zAt(i) > z0 && zAt(i) < z1) pts.push([zAt(i), under(zAt(i))]);
@@ -43,8 +44,8 @@ function walls(y0, cut) {
 }
 
 export function top(b) {
-  const T = M.top, cut = T.cut, y0 = M.body.eave - 0.01;
-  // the walls, from 1 cm under the roofs' foot (the walls' top below) to the curved roof, and to its cut crown past
+  const T = M.top, cut = T.cut, y0 = M.body.eave - 0.02;
+  // the walls, from 2 cm under the roofs' foot (the walls' top below) to the curved roof, and to its cut crown past
   // x 16.0
   along(b, walls(y0, Infinity), T.x[0], cut.from, "paint");
   along(b, walls(y0, cut.y), cut.from, T.x[1], "paint");

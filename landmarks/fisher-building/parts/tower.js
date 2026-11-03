@@ -35,7 +35,9 @@ export function shaft(b) {
     const p = plan[i], q = plan[(i + 1) % plan.length];
     return onTower(p) && onTower(q) && onTower([(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]);
   });
-  prism(b, inset(plan, shared, 0.01), M.tower.top, M.tower.top + 0.04, "brickTan");
+  // (its top 3 cm over the slab's top, inside the shaft, so that the two lie further apart than a walker's camera
+  // fails to tell at its reach)
+  prism(b, inset(plan, shared, 0.01), M.tower.top, M.tower.top + 0.06, "brickTan");
   roof(b, plan, M.shaft.top, 0.3, "roofGrey");
   // its parapet, standing on the walls' line, inside the outline
   for (let i = 0; i < plan.length; i++) edgeBox(b, plan, i, 0, 1, -0.25, 0, M.shaft.top + 0.01, M.shaft.parapet, "brickTan");
