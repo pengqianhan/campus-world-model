@@ -5,8 +5,9 @@ north. The map (public/data/uoa/campus.json) uses metres east and north of the s
 equirectangular projection, true north. The two frames differ: at the Clock Tower by 4.2 m and 1.06 deg.
 So this stage takes the frame's centre and axes through longitude and latitude to the map, and the
 site needs only placement.json.
-Reads the config's frame.expected (the frame that the model and the cameras use), door,
-building.id and building.also (the campus map's buildings whose blocks the model stands in place of),
+Reads the config's frame.expected (the frame that the model and the cameras use), door, ground (the LiDAR's
+ground at the door, NZVD2016, which the model's y = 0 is measured from: the site stands landmarks that stand side
+by side on one ground through it), building.id and building.also (the campus map's buildings whose blocks the model stands in place of),
 and site (true puts the landmark on the site, which finds every placement.json that says so),
 and part, when only a part of the building is drawn in detail (the building's card says which part, and
 that the rest keeps its estimated height), and estimated, the words for a size of the model that nothing
@@ -43,6 +44,9 @@ if abs((bz - bx - 90 + 180) % 360 - 180) > 0.1:
              "and no turn puts it on the map")
 door = cfg["door"]
 dm = to_map(*local(door["x"], door["z"]))
+ground = cfg.get("ground")
+if isinstance(ground, bool) or not isinstance(ground, (int, float)):
+    sys.exit(f"place: ground is {ground!r}: the LiDAR's ground at the door, metres NZVD2016, which the model's y = 0 stands on")
 site = cfg.get("site", False)
 if not isinstance(site, bool):
     sys.exit(f"place: site is {site!r}: true puts the landmark on the site, false or no site leaves it off")
@@ -51,8 +55,11 @@ placement = {
     "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py "
             "from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, "
             "true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model "
-            "at (centre[0], ground at door.map, -centre[1]) and turn it by rotationY about y. It stands in place "
-            "of the blocks of `building` and of the buildings in `also`.",
+            "at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks "
+            "whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the "
+            "LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground`, when those "
+            "differences span 2 m or less (src/scene/landmarks.ts, standHeights). It stands in place of the "
+            "blocks of `building` and of the buildings in `also`.",
     "site": site,
     "building": cfg["building"]["id"],
     "also": cfg["building"].get("also", []),
@@ -61,6 +68,7 @@ placement = {
     "rotationY": round((math.pi / 2 - math.radians(bx)) % (2 * math.pi), 6),
     "scale": round(math.dist(c, px) / STEP, 6),
     "door": {"model": [door["x"], door["z"]], "map": [r3(dm[0]), r3(dm[1])]},
+    "ground": ground,
 }
 part = cfg.get("part")
 if part is not None:

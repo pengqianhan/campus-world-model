@@ -130,16 +130,32 @@ latitude to the map's frame and writes `<name>/placement.json`:
 | `rotationY` | radians about the scene's y axis (x east, y up, z south) that turn the model onto the map |
 | `scale` | map metres per model metre (1.0001 at the Clock Tower: leave it out) |
 | `door` | the point whose ground is the model's y = 0, in the view frame (`model`) and on the map (`map`) |
+| `ground` | the config's `ground`: the LiDAR's ground at the door, metres NZVD2016, from which the model's y = 0 is measured. The site stands landmarks side by side on one ground through it (below) |
 | `part` | only when a part of the building is drawn in detail: the config's `part`, the words for that part. The building's card names it and says that the rest keeps its estimated height (Old Choral Hall: "Its range on Symonds Street") |
 | `measuredBy` | only when something besides the LiDAR measures some of the model's sizes: the config's `measured_by`, the words that take the place of "by LiDAR" on the building's card, beginning with "by LiDAR" (the Kenneth Myers Centre: "by LiDAR, its west part by an aerial photograph of 2023 and a Street View photograph", where the LiDAR holds temporary works) |
 | `credit` | with `measuredBy`: the config's `credit`, that other source's credit and licence, which About gives with the buildings it measures |
 | `estimated` | only when the model draws a height, an extent or a depth that nothing measures (an underside, a roof drawn on from the rest, how far a balcony or a beam stands out, how thick a slab is): the config's `estimated`, the words for it. The building's card says "estimated:" and those words (the Clock Tower East Wing: "the underside of its link toward the Clock Tower (the campus map's storey height)"; 15 Eden Crescent: two parts of its roofs; the Fisher Building: the depths of its balconies and canopy and the thicknesses of its ramp and parapet), unless the config also gives `part`, which the card shows instead. Windows or bays carried on at a measured spacing are placements, not sizes, and the README says so without it |
 
-The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), so
-a model stood on the map takes its height from the map's own ground at `door.map`, not from `ground`.
-The two can be a metre or more apart: a model's walls go down below y = 0 as far as the map's ground
-falls under it (Old Government House's to 1.6 m below its porch), so that their foot is nowhere
-more than 0.25 m above it. `tests/landmarks.test.ts` checks that for every landmark on the site, at
+The map's ground comes from another elevation model (the 8 m LINZ DEM) than `ground` (the LiDAR), and
+the two can be metres apart, by a different amount at each door. A landmark alone stands its y = 0 on
+the map's own ground at `door.map`, so that it meets the ground there. Landmarks whose outlines (the
+campus map's, of `building` and `also`) come within 2 m of each other, taken transitively, share one
+ground instead (the maintainer, 2026-11-03): each stands its y = 0 at its own `ground` plus the group's
+offset, the mean over its members of the map's ground at `door.map` minus `ground`, so that their
+heights against each other are the LiDAR's and neither shows through the other where they meet
+(`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
+when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
+the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
+models can mend. Three pairs touch; the nearest two landmarks that do not stand 18 m apart. Two pairs
+share: against the map's ground at its own door 9 Eden Crescent stands 0.448 m higher and 15 Eden
+Crescent 0.448 m lower (a span of 0.90 m), the Thomas Building 0.311 m lower and its Extension 0.311 m
+higher (0.62 m). The Clock Tower and its East Wing (5.07 m) each stand on the map's ground at its own
+door, as before: at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's, at the East
+Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its wing than the LiDAR
+does. Any limit from 0.90 to 5.07 m gives these groups. Either way a model's walls go down below
+y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so
+that their foot is nowhere more than 0.25 m above it. `tests/landmarks.test.ts` stands each landmark as
+the site does and checks that for every landmark on the site, at
 the lowest points of each material's mesh that reaches y = 0 (the kit joins a model's parts by
 material, so a part with a higher foot can hide behind another): give every part's walls the same
 foot, as Old Government House's parts take `FOOT` from `common.js`. A part that stands on ground
@@ -151,7 +167,7 @@ below), and name the parts in `model.js`'s `STANDS` (`export const STANDS = ["ra
 the test builds them together, alone, and checks their lowest points as well. It cannot find such a
 part by itself, since the site does not hold the LiDAR's ground and canopies, decks and windows stand
 clear of the ground by design.
-The stage needs no LiDAR: it reads `frame.expected`, `door`, `building`, `site`, `part`, `estimated`, `measured_by` and `credit` from the config.
+The stage needs no LiDAR: it reads `frame.expected`, `door`, `ground`, `building`, `site`, `part`, `estimated`, `measured_by` and `credit` from the config.
 
 ## On the site
 
@@ -329,7 +345,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | data | `tools/data/fetch_lidar.py` | config `lidar` | `data/lidar/*.laz` (skipped if present, symlinked from a mirror dir, else fetched once into `data/raw/landmarks/` and linked) |
 | | `tools/data/measure.py` | LiDAR tiles, config | `data/<name>_pts.npy` (x, y, z, class in local m), `_ring.json` (E0, N0, crop box, outline), `_frame.json`, `_plan_frame.png`, `_front_elevation.png` |
 | | `tools/data/heightmap.py` | points, LINZ aerial (whole public tiles, fetched once into `data/raw/landmarks/`) | `data/<name>_aerial.tif` (cached crop), `_heightmap_vs_aerial.jpg` |
-| place | `tools/data/place.py` | config `frame.expected`, `door`, `building`, `site` | `placement.json` |
+| place | `tools/data/place.py` | config `frame.expected`, `door`, `ground`, `building`, `site` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views, config `sky_mask` | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |

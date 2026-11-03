@@ -83,9 +83,20 @@ see them.
 The model covers 99.6% of block 801 and 1.7% of block 802 (15 Eden Crescent), no other block within
 80 m by half, so `building.also` is empty. The door is the foot of the street end's north-west corner
 on Eden Crescent's footway, where the LiDAR ground is 17.54 m (-0.09 to -0.03 m from `ground` within a
-metre of it): there the model's y is 0 and the map's ground meets it. The street falls south-east along
-the end, to -0.6 m at the entrance and -1.0 m at the south-east corner, and the ground rises to +4.3 m
-at the far end: the walls go down to `FOOT`, -1.3 m.
+metre of it): there the model's y is 0. The street falls south-east along the end, to -0.6 m at the
+entrance and -1.0 m at the south-east corner, and the ground rises to +4.3 m at the far end: the walls go
+down to `FOOT`, -1.3 m.
+
+Since 2026-11-03 the site stands the model on the ground it shares with 802, whose outline it touches
+(`standHeights` in `src/scene/landmarks.ts`; `../README.md`, "Placement"): its y = 0 at its LiDAR ground,
+17.6 m, plus the two landmarks' mean of the map's ground at the door minus the LiDAR's, +3.428 m, so at
+21.028 m on the map, 0.448 m higher than the map's ground at its own door, and the two stand at the
+LiDAR's heights against each other. Along the street end the map's ground now lies 0.36 to 1.11 m below
+y = 0 (0.09 m above to 0.66 m below before), lower than the LiDAR's street: the vehicle way and the
+glazed corner, which meet the street, come down 0.35 m further than the photographs and the LiDAR place
+their feet (`SITE` in `parts/block.js`: to -1.1 and -0.75 m, under the viewer's street), and meet the
+map's ground; the entrance's glazing, whose foot the photograph shows at -0.35 m, above the street,
+stays there, 0.36 to 0.67 m over the map's ground, with the white wall under it.
 
 ## Limits
 

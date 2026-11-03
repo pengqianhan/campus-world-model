@@ -11,6 +11,12 @@ import { wall, facing } from "./shapes.js";
 
 const T = 0.35; // the street end's thickness
 const STREET = -0.75; // the street at the end's foot (the LiDAR: -0.72), where the vehicle way opens
+// On the site 801 stands on the ground it shares with 802 (src/scene/landmarks.ts, standHeights), and the map's
+// ground before the end lies lower than the LiDAR's street: at the vehicle way 0.29-0.34 m below STREET, at the
+// glazed corner 0.06-0.26 m below its glass's foot (-0.4). The two that meet the street, the vehicle way and the
+// glazed corner, come down this much further, so that they meet the site's ground too; in the viewer it is under
+// the street. The entrance's glazing, whose foot the photograph shows above the street, stays where it is.
+const SITE = 0.35;
 
 export function block(b) {
   const B = M.block, S = M.street, R = B.terrace, [s0, s1] = R.z;
@@ -53,10 +59,10 @@ export function block(b) {
     for (const [y0, y1] of [lo, up]) wins.push(span(S.leftWin, P1[0], y0, y1), span(P1[1], P2[0], y0, y1));
     wins.push(span(P2[1], S.rightWin, up[0], up[1]), span(P2[1], cu.z1, cu.y[0], cu.y[1], { transom: cu.transom - cu.y[0] }));
     // downstairs: the vehicle way (open, dark inside), the entrance with its doors, the glazed corner
-    wins.push(span(S.vehicle.z[0], S.vehicle.z[1], STREET, S.vehicle.head, { open: true }));
+    wins.push(span(S.vehicle.z[0], S.vehicle.z[1], STREET - SITE, S.vehicle.head, { open: true }));
     const e = S.entrance;
     wins.push(span(P1[1], P2[0], e.y[0], e.y[1], { bay: 1.05, posts: e.doors }));
-    wins.push(span(S.corner.z[0], S.corner.z[1], S.corner.y[0], S.corner.y[1], { bay: 1.2 }));
+    wins.push(span(S.corner.z[0], S.corner.z[1], S.corner.y[0] - SITE, S.corner.y[1], { bay: 1.2 }));
     wall(b, [[0, 0], [W, 0], [W, top - FOOT], [0, top - FOOT]], z0, FOOT, F - R, T, wins);
     // the glazed canopy over the corner, standing out from the bay to its far edge past the end
     const c = S.canopy;

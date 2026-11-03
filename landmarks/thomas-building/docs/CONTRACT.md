@@ -36,12 +36,12 @@ them into the model.
 - **Where it meets 110N** (the Thomas Building Extension, its own landmark): 110N's glazed link reaches
   the north-east end at u 29.5-29.9, v -4.6 to 16.4 in this frame, its roof (17.04 m above 34.6, i.e.
   51.64 m NZVD) running over 110's parapet (15.13 m above 36.17, 51.30 m NZVD). The link is 110N's:
-  this model draws 110's wall under it and nothing of the link, and leaves out its north-east parapet
-  where the link crosses it (v -5.1 to 15.9, `MEASURED.link`). On the site each landmark stands on the
-  map's ground at its own door (31.058 m here, 28.866 m at 110N's: 2.19 m apart, where the LiDAR's are
-  1.57 m apart), so 110 stands 0.62 m higher against 110N than the LiDAR has it, and the link's roof
-  (y 14.75-14.86 in this frame) would sit below that parapet's top (15.13); without it the link's roof
-  covers the end at either height.
+  this model draws 110's wall under it and nothing of the link; its north-east parapet runs on under
+  the link. On the site the two stand on one ground (since 2026-11-03, `standHeights` in
+  `src/scene/landmarks.ts`), at the LiDAR's heights against each other, and the link's roof (y 15.37-15.47
+  in this frame) passes 0.24 m over that parapet's top (15.13). While each stood on the map's ground at
+  its own door (#129 to 2026-11-03), 110 stood 0.62 m higher against 110N, the roof at y 14.75-14.86, and
+  the parapet was left out where the link crosses it (v -5.1 to 15.9, `MEASURED.link`).
 
 ## Ownership
 - `parts/body.js` (the ranges' walls and parapets), `parts/front.js` (the face to the road and its wrap

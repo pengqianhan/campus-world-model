@@ -16,6 +16,17 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-11-03
 
+### Changed
+
+- **Buildings drawn in detail side by side stand on one ground.** Where two buildings drawn from code
+  touch, they now stand at the heights the LiDAR gives them against each other, on a ground they share,
+  instead of each on the map's own ground at its door, which is a metre or more off the LiDAR's and by a
+  different amount at each door: 9 Eden Crescent stands 0.45 m higher than before and 15 Eden Crescent
+  0.45 m lower, the Thomas Building 0.31 m lower and its Extension 0.31 m higher, and the Thomas
+  Building's parapet runs on under its Extension's glass link again. Where the map's ground is too far
+  off the LiDAR's at one of the two doors, as at the Clock Tower's, the two stand as before, and so does
+  every other building (#132).
+
 ### Fixed
 
 - **No more flicker where two faces of a landmark met.** In twelve of the landmarks drawn in detail, faces

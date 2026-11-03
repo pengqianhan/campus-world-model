@@ -70,7 +70,9 @@ It is built to answer two questions a student actually has:
 
 - **2026-11-03:** the landmarks drawn in detail no longer flicker where two of their faces met in one
   plane, such as a wall in its roof's edge or a pane's edge in its frame, on the map or from a walker's
-  height.
+  height. 9 and 15 Eden Crescent, and the Thomas Building and its Extension, drawn in detail side by
+  side, now stand at the heights the LiDAR gives them against each other, each pair moved by less than
+  half a metre; the Clock Tower and its East Wing stand as before.
 - **2026-11-02:** another school, at [/lincoln/](https://campusworldmodel.com/lincoln/): Lincoln
   University's Lincoln campus, from OpenStreetMap. Only buildings OpenStreetMap tags as the
   University's (its `operator` tag, or `building=university`) and names are shown as the
@@ -855,6 +857,11 @@ If you represent the University and would like something changed or removed, ple
   3.5 m, 3.5 to 4.1 m above the LiDAR's, and by the street face at its north-west end, about 1 m above
   it on about 2 m². What no photograph shows is drawn plainly: its back, its ends and the walls of its
   top storey, and its roofs are grey.
+  The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
+  and a red-framed glazed case near its north-west end is measured and not drawn: it stands on a street
+  0.95 m below the building's ground, where the map's ground lies about 0.85 m below it, a little above
+  the street. Its panels are drawn without their joints, its base's tiles and its two red-brown doors in
+  a dark timber.
 - **The Thomas Building Extension is seen from Symonds Street only.** Two Street View panoramas see its
   flat south-east face and the first 25 m of its curve; their cameras are set from the photographs' own
   edges, 0.8 and 1.3 m from where the panoramas record them. Its roofs' heights come from the LiDAR, its
@@ -864,10 +871,6 @@ If you represent the University and would like something changed or removed, ple
   north-west wall, the link's sides and the roofs. The University banner on its concrete face and the
   creeper on its base are not drawn, and how far the beam under its glass and the glass's fins stand
   out is estimated.
-  The street face's windows beyond its first 14 m from the north-west keep the spacing measured there,
-  and a red-framed glazed case near its north-west end is measured and not drawn: it stands on a street
-  a metre below the building's ground, where the map's ground is lower still. Its panels are drawn
-  without their joints, its base's tiles and its two red-brown doors in a dark timber.
 - **The Kenneth Myers Centre is seen from Shortland Street only, and its west part not by the LiDAR.**
   One Street View panorama sees its street face whole; its camera is set from the photograph's own
   edges, 1.1 m from where the panorama records it, and its views are cut turned level by 4.5°. Over the
@@ -892,13 +895,13 @@ If you represent the University and would like something changed or removed, ple
   show; that, how far its frames stand out and how thick their members are, how far its ground storey's
   windows, doors and posts stand behind its piers there and how thick its roofs are, among others, are
   estimated, and its card says so; the ledge along its bands' lower edges is not drawn. The site stands
-  each landmark on the map's ground at its own door, which puts the Thomas Building 0.62 m higher against
-  the Thomas Building Extension than the LiDAR has them: where the extension's glazed link meets it, its
-  north-east parapet is left out, so that the link's roof covers that stretch. What no
-  photograph shows is drawn plainly: its back, its south-west end, the courtyard and the roofs. The
-  map's ground (the 8 m elevation model) lies up to 4.2 m above the ground at its door by its west
-  corner and 2.1 to 2.8 m above it at its round stair, where the LiDAR's ground is within about 1 m of
-  it, and hides the foot of its walls there.
+  it and the Thomas Building Extension on one ground, at the LiDAR's heights against each other: the
+  extension's glazed link's roof passes 0.24 m over its north-east parapet, which runs on under it. What
+  no photograph shows is drawn plainly: its back, its south-west end, the courtyard and the roofs. The
+  map's ground (the 8 m elevation model) lies up to 4.5 m above the ground at its door by its west
+  corner and 2.4 to 3.1 m above it at its round stair, where the LiDAR's ground is within about 1 m of
+  it, and hides the foot of its walls there; on its face to the road it covers the ground storey's
+  windows wholly for 9.4 m past the pier at its south-west end and partly for 22 m more.
 - **The Music School is seen from the car park beside it only.** One Street View panorama sees its face to the
   car park whole and the auditorium's ochre wall beyond it at a slant; its camera is set from the
   photograph's own edges against the LiDAR's. Its heights and roofs come from the LiDAR, the parapet's
@@ -923,7 +926,12 @@ If you represent the University and would like something changed or removed, ple
   its west side is estimated from a photograph.
 - **Landmarks stand on the map's ground, which is not the LiDAR's.** A landmark stands at the
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
-  than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Under Old Government House the
+  than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Landmarks side by side share one
+  ground instead, at the LiDAR's heights against each other: 9 and 15 Eden Crescent stand 0.45 m, and
+  the Thomas Building and its Extension 0.31 m, off the map's ground at their doors. The Clock Tower and
+  its East Wing do not, as the map's ground at their doors is off the LiDAR's by amounts 5.07 m apart:
+  each stands on the map's ground at its own door, and their heights against each other are not the
+  LiDAR's (the map stands the Clock Tower 5.07 m lower against the wing). Under Old Government House the
   map's ground rises 2.75 m from end to end, more than the LiDAR's: its north-west end stands up to
   1.2 m too deep, and some of its ground-floor windows there are partly under the drawn ground. By the
   Fisher Building the map's ground on Waterloo Quadrant lies about 3 m below the LiDAR's: the side of

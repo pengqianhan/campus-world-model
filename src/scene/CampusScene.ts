@@ -62,7 +62,7 @@ import { PART, STYLE, STYLES, buildingSeed, cityStoreys, facadeCode, facadeStyle
 import { GROUND, RAIL_WIDTH, ROAD_EDGE_WIDTH, ROAD_WIDTH, type GroundKind } from "./street/roads.ts";
 import type { TreeSpec } from "./street/crowns.ts";
 import { LANDMARKS, MEASURED } from "../app/landmarks.ts";
-import { Landmark, type Cover, type LandmarkForm, type MassingStyle } from "./landmarks.ts";
+import { Landmark, standHeights, type Cover, type LandmarkForm, type MassingStyle } from "./landmarks.ts";
 import { SHADOW_ONLY_LAYER } from "./layers.ts";
 
 export interface Selection {
@@ -684,9 +684,17 @@ export class CampusScene {
     this.needsRender = true;
   }
 
-  /** Stands each landmark on the ground at its door, where its model's y = 0 is. */
+  /**
+   * Stands each landmark's y = 0 on the ground at its door, or, where landmarks stand side by side, on
+   * the ground they share (standHeights).
+   */
   private standLandmarks(): void {
-    for (const l of this.landmarks) l.stand(this.groundAt(...l.door));
+    const outline = (id: string) => {
+      const b = this.buildings.get(id);
+      return b && !b.offMap && b.outline[0] ? decodeRing(b.outline[0]) : undefined;
+    };
+    const heights = standHeights(this.landmarks, outline, (x, y) => this.groundAt(x, y));
+    this.landmarks.forEach((l, i) => l.stand(heights[i]!));
     this.needsLandmarks = true;
   }
 
