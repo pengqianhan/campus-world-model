@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   across Maclaurin Chapel's flat roof, where the near end's roof met the walk-ways', a white edge and its
   dark line rose through the two roofs, which are at one height, and showed from above as a dark band 12 cm
   wide; the edge now stops under the roof, white, with no dark line, and closes the space under it as
-  before. A test checks every landmark on the site for faces closer than the map can tell apart (#PR).
+  before. A test checks every landmark on the site for faces closer than the map can tell apart (#131).
 
 ## 2026-11-02
 
