@@ -33,9 +33,8 @@ function walls(y0, cut) {
     return under(zAt(i)) + (t - i) * (under(zAt(i + 1)) - under(zAt(i)));
   };
   // (their long faces from the flat roof up; below it, down to 2 cm under the roofs' foot, 1 cm in: there the flat
-  // roof's sides lie in the long faces' plane, and the end walls close the storey down to the roofs' foot where it
-  // stands out past the plan below; 2 cm, so that their foot and the roofs' lie further apart than a walker's
-  // camera fails to tell at its reach, though both are hidden inside the storey below)
+  // roof's sides lie in the long faces' plane. The foot is 2 cm under the roofs' foot, which a walker's camera tells
+  // apart out to about 260 m; both are hidden inside the storey below)
   const f = M.roofs.flat, e = 0.01;
   const pts = [[z0 + e, y0], [z0 + e, f], [z0, f], [z0, on(z0)]];
   for (let i = 0; i <= PIECES; i++) if (zAt(i) > z0 && zAt(i) < z1) pts.push([zAt(i), under(zAt(i))]);
@@ -46,8 +45,18 @@ function walls(y0, cut) {
 export function top(b) {
   const T = M.top, cut = T.cut, y0 = M.body.eave - 0.02;
   // the walls, from 2 cm under the roofs' foot (the walls' top below) to the curved roof, and to its cut crown past
-  // x 16.0
+  // x 16.0. At the south-east back corner the storey stands out past the plan below, where no roof stands beside
+  // its back face: there a strip fills the 1 cm set-in (open, it left a slot 1 cm wide at the end), as far as the
+  // plan below first reaches the back face's line
+  const [bz] = T.z, plan = M.body.plan;
+  const reach = Math.min(...plan.flatMap((p, i) => {
+    const q = plan[(i + 1) % plan.length];
+    if ((p[1] - bz) * (q[1] - bz) > 0 || p[1] === q[1]) return [];
+    const x = p[0] + ((q[0] - p[0]) * (bz - p[1])) / (q[1] - p[1]);
+    return x > T.x[0] ? [x] : [];
+  }));
   along(b, walls(y0, Infinity), T.x[0], cut.from, "paint");
+  b.box(T.x[0], reach, y0, M.roofs.flat, bz, bz + 0.01, "paint");
   along(b, walls(y0, cut.y), cut.from, T.x[1], "paint");
   // the roof: its curve from eave to eave, overhanging the walls, and its cut crown at the north-west end
   along(b, slab(T.eaves[0], T.eaves[1], Infinity, SLAB), T.roofX[0], cut.from, "roofGrey");

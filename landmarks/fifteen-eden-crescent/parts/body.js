@@ -243,13 +243,15 @@ export function panels(b) {
   panelsBetween(b, ROWS[1][1], FACE_TOP, []);
 }
 
-/** A window on the windows' plane from s0 to s1 and y0 to y1: its pane, in a red frame. The pane's edges stop
- * half the frame's width inside it, under the frame, so that none of its faces lies in one of the frame's; where
- * the opening's floor stands at y0 (`lift` 0.01), the sill stands 1 cm above it, not in its plane. */
+/** A window on the windows' plane from s0 to s1 and y0 to y1: its pane, in a red frame. The pane's sides and head
+ * stop half the frame's width inside it, under the frame, and its foot stands on the sill frame's top, so that
+ * none of its faces lies in one of the frame's; where the opening's floor stands at y0 (`lift` 0.01), the sill
+ * stands 1 cm above it, not in its plane. The side frames run down through the sill frame, so that the pane's
+ * foot lies in none of their feet. */
 function window(b, s0, s1, y0, y1, lift = 0) {
-  face(b, s0 + 0.035, s1 - 0.035, 0.0, 0.02, y0 + 0.035, y1 - 0.035, "glass");
-  face(b, s0, s0 + 0.07, -0.02, 0.08, y0, y1, "roofTile");
-  face(b, s1 - 0.07, s1, -0.02, 0.08, y0, y1, "roofTile");
+  face(b, s0 + 0.035, s1 - 0.035, 0.0, 0.02, y0 + lift, y1 - 0.035, "glass");
+  face(b, s0, s0 + 0.07, -0.02, 0.08, y0 - 0.08, y1, "roofTile");
+  face(b, s1 - 0.07, s1, -0.02, 0.08, y0 - 0.08, y1, "roofTile");
   face(b, s0, s1, -0.02, 0.1, y0 - 0.08, y0 + lift, "roofTile");
   face(b, s0, s1, -0.02, 0.08, y1 - 0.07, y1, "roofTile");
 }
