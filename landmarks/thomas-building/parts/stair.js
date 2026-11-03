@@ -7,6 +7,6 @@ const M = MEASURED;
 
 export function stair(b) {
   const s = M.stair, f = M.flue;
-  cylinder(b, s.u, s.v, s.r, FOOT, s.top, "grey");
+  cylinder(b, s.u, s.v, s.r, FOOT - 0.01, s.top, "grey"); // its foot 1 cm under the body's, which it stands in
   b.box(f.u[0], f.u[1], 14.0, f.top, f.v[0], f.v[1], "paint");
 }

@@ -40,8 +40,9 @@ export function slot(b) {
   // below the first floor the corner is brick
   prism(b, plan.slice(k, k + 5), FOOT, f - 0.15, "brickTan");
   // the white frames beside the recess, 0.1 m proud: from its edges to the frames' outer edges in the photograph
-  edgeBox(b, plan, iB, 1 - (onB - R.onB) / len(iB), 1, -0.02, 0.1, f, top, "paint");
-  edgeBox(b, plan, iC, 0, (onC - R.onC) / len(iC), -0.02, 0.1, f, top, "paint");
+  // (from the wall's face out: running 2 cm into the wall, their ends lay in the recess's sides)
+  edgeBox(b, plan, iB, 1 - (onB - R.onB) / len(iB), 1, 0.0, 0.1, f, top, "paint");
+  edgeBox(b, plan, iC, 0, (onC - R.onC) / len(iC), 0.0, 0.1, f, top, "paint");
   for (let y = f; y < M.shaft.top - 1.0; y += f) {
     // a pane in each storey on the recess's two back walls, and a white sill filling the recess below it
     edgeBox(b, plan, k + 1, -0.02, 1.02, 0.0, 0.03, y + 0.45, Math.min(y + f - 0.35, top), "glass");

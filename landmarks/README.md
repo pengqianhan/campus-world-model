@@ -22,6 +22,15 @@ The many plain buildings are drawn by a program instead, as **measured massings*
   Add options and exports with defaults; keep what an existing call produces. Check each landmark
   after a kit change: the viewer with `?quality=low` and `?mask=1` draws the same picture every time,
   so its screenshots before and after the change must be identical.
+- **Faces of two materials never share a plane.** Where two faces of different materials face the same
+  way and overlap within 1.07 mm (two steps of the map's depth buffer), no camera of the site can tell
+  which is in front, and they flicker. Let the hidden one stop short of the other, stand inside a
+  neighbour, or stand back a centimetre: a wall up to its roof slab's underside, a pane's edges under
+  its frame, a fascia only where no wall runs along the edge, a part's foot or top a centimetre into
+  the part below or above it. `tests/landmarks.test.ts` ("each landmark on the site's faces") checks
+  every landmark on the site and names the pair, the area and a point; its comment gives the cameras'
+  depth steps. The kit's `addWall` takes `clear` (default 0) to cut its openings a centimetre clear
+  inside their windows' reveal linings.
 
 ## A landmark's files
 

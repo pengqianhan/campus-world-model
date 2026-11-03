@@ -123,7 +123,7 @@ function flat(k, x0, x1, z0, z1, h, over = 0.12, base = FOOT) {
 
 /** Corner boards (ochre) at the four corners of a wall box. */
 function corners(k, x0, x1, z0, z1, y0, y1, t = 0.1) {
-  for (const x of [x0, x1]) for (const z of [z0, z1]) k.trim.push([x - t, x + t, y0, y1, z - t, z + t]);
+  for (const x of [x0, x1]) for (const z of [z0, z1]) k.trim.push([x - t, x + t, y0 - 0.01, y1 - 0.01, z - t, z + t]); // (1 cm below the walls' foot and top)
 }
 
 /**
@@ -133,12 +133,15 @@ function corners(k, x0, x1, z0, z1, y0, y1, t = 0.1) {
  * the gutter to y = to (the ground, or a lower roof), with a short neck back to the wall.
  */
 function eave(k, axis, a0, a1, C, out, e, wall, pipes = [], to = FOOT) {
-  boxAC(k, "paint", axis, a0, a1, e - 0.26, e - 0.02, C - out * 0.17, C - out * 0.13);   // fascia
-  boxAC(k, "paint", axis, a0, a1, e - 0.21, e - 0.03, C - out * 0.13, C + out * 0.005);  // gutter
-  boxAC(k, "paint", axis, a0, a1, e - 0.3, e - 0.26, wall, C - out * 0.17);              // boxed soffit
+  // (1 cm in from the ends, where walls end; the soffit from 1 cm inside the wall, the pipes from 1 cm under their foot:
+  // where they met them, their faces lay in the walls')
+  boxAC(k, "paint", axis, a0 + 0.01, a1 - 0.01, e - 0.26, e - 0.02, C - out * 0.17, C - out * 0.13);   // fascia
+  boxAC(k, "paint", axis, a0 + 0.01, a1 - 0.01, e - 0.21, e - 0.03, C - out * 0.13, C + out * 0.005);  // gutter
+  // boxed soffit, where the fascia stands out from the wall (else it lies inside the wall, its ends in the wall's)
+  if (out * (C - out * 0.17 - wall) > 0) boxAC(k, "paint", axis, a0 + 0.01, a1 - 0.01, e - 0.3, e - 0.26, wall - out * 0.01, C - out * 0.17);
   for (const a of pipes) {
     boxAC(k, "paint", axis, a - 0.045, a + 0.045, e - 0.32, e - 0.2, wall + out * 0.02, C - out * 0.06);
-    boxAC(k, "paint", axis, a - 0.045, a + 0.045, to, e - 0.2, wall + out * 0.02, wall + out * 0.11);
+    boxAC(k, "paint", axis, a - 0.045, a + 0.045, to - 0.01, e - 0.2, wall + out * 0.02, wall + out * 0.11);
   }
 }
 
@@ -157,7 +160,7 @@ function sashes(k, n, f, us, y, hh, w = 1.0) {
     const l = u - w / 2, r = u + w / 2, top = y + hh, mid = y + hh / 2, t = 0.05, bar = 0.03;
     box("trim", l - 0.13, r + 0.13, y - 0.08, top + 0.14, -0.02, 0.05);   // surround
     box("trim", l - 0.2, r + 0.2, y - 0.16, y - 0.04, -0.02, 0.13);       // sill
-    box("glassPale", l, r, y, top, 0.05, 0.065);
+    box("glassPale", l, r, y, top, 0.05, 0.06);                            // (to the sash's back, not into it)
     const d0 = 0.06, d1 = 0.085;
     box("paint", l, l + t, y, top, d0, d1); box("paint", r - t, r, y, top, d0, d1);   // sash stiles
     box("paint", l, r, y, y + t, d0, d1); box("paint", l, r, top - t, top, d0, d1);   // bottom and top rails
@@ -184,7 +187,7 @@ function southRange(b) {
   const R = 9.45, eave0 = 5.72, V = 6.62, wv = 6.25, A1 = 18.05, a1 = 17.7;
   const A0 = [southU(-7.4, -V), southU(-7.4, V)];
   const { top, wall } = gable(k, "x", { A0, A1, C0: -V, C1: V, cr: 0, R, e0: eave0, e1: eave0, a0: -5.1, a1, c0: -wv, c1: wv });
-  for (const [u, v] of [[wall[0](-wv), -wv], [wall[0](wv), wv], [a1, -wv], [a1, wv]]) k.trim.push([u - 0.1, u + 0.1, FOOT, top, v - 0.1, v + 0.1]);
+  for (const [u, v] of [[wall[0](-wv), -wv], [wall[0](wv), wv], [a1, -wv], [a1, wv]]) k.trim.push([u - 0.1, u + 0.1, FOOT - 0.01, top - 0.01, v - 0.1, v + 0.1]);
   for (const [u, t] of [[0, 10.5], [6.18, 10.6], [12.2, 10.7]]) chimney(k, u, 0, 0.9, 1.0, 8.6, t);
   sashes(k, "z-", -wv, [-3.6, -0.8, 2.0, 4.8, 7.6, 10.4, 13.2, 16.0], 1.4, 2.3, 1.0);   // the south face
   // the courtyard face: one tall window onto the light well, and above the flat roofs at 3.65 a row on
@@ -252,7 +255,7 @@ function courtyard(k) {
 function eastRanges(k) {
   // east range: a gable along x, its east end a gable askew like the walls' points (22.0 to 22.3)
   const { top: eTop, wall: eWall } = gable(k, "x", { A0: 15.9, A1: E.end, C0: E.z[0], C1: E.z[1], cr: -18.1, R: E.ridge, e0: E.eave, e1: E.eave, a0: 15.4, a1: 21.9, c0: -21.35, c1: -14.85, ends: [false, true] });
-  for (const z of [-21.35, -14.85]) k.trim.push([eWall[1](z) - 0.1, eWall[1](z) + 0.1, FOOT, eTop, z - 0.1, z + 0.1]);
+  for (const z of [-21.35, -14.85]) k.trim.push([eWall[1](z) - 0.1, eWall[1](z) + 0.1, FOOT - 0.01, eTop - 0.01, z - 0.1, z + 0.1]);
   for (const z of [-15.9, -20.5]) sashes(k, "x+", eWall[1](z), [z], 1.5, 1.9, 0.95);
   // the flat gutter between it and the north-east block
   k.boards.push([15.4, eWall[1](-14.85), FOOT, 4.55, -14.85, -13.95]);
@@ -266,9 +269,11 @@ function eastRanges(k) {
   flat(k, 21.9, 23.0, -19.6, -17.0, 3.9, 0.05);
   // north-east block: two low storeys, flat roof behind a parapet on its south and north-west sides
   const [x0, x1] = NE.x, [z0, z1] = NE.z, pz = z0 + 0.4, px = x1 - 0.6;
-  k.boards.push([x0, x1, FOOT, 7.6, z0, z1]);
-  k.roofPale.push([x0, px, 7.6, 7.75, z0, z1]);
-  k.boards.push([16.0, x1, 7.6, NE.parapet - 0.1, z0, pz], [px, x1, 7.6, NE.parapet - 0.1, z0, z1]);
+  // (1 cm on into the wing at z1; the roof 1 cm in from the parapet's face and the parapet from 1 cm down in the
+  // walls, where their faces lay in each other's)
+  k.boards.push([x0, x1, FOOT, 7.6, z0, z1 + 0.01]);
+  k.roofPale.push([x0 + 0.01, px, 7.6, 7.75, z0 + 0.01, z1 + 0.01]);
+  k.boards.push([16.0, x1, 7.59, NE.parapet - 0.1, z0, pz], [px, x1, 7.59, NE.parapet - 0.1, z0, z1]);
   k.paint.push([15.95, x1 + 0.05, NE.parapet - 0.1, NE.parapet, z0 - 0.05, pz + 0.05], [px - 0.05, x1 + 0.05, NE.parapet - 0.1, NE.parapet, z0 - 0.05, z1]);
   corners(k, x0, x1, z0, z1, FOOT, NE.parapet - 0.1);
   sashes(k, "z-", z0, [17.2, 19.4, 21.6], 5.0, 1.7, 0.95);

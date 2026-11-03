@@ -64,7 +64,7 @@ function cornerRib() {
   const p = new Part();
   p.box(-0.32, 0.32, FOOT, EAVE - 0.15, -0.35, 0.08, "smooth");
   p.box(-0.17, 0.17, FOOT + 0.5, EAVE - 0.3, 0.08, 0.17, "dressed");
-  for (const y of [17.25, 22.2]) p.box(-0.36, 0.36, y, y + 0.16, -0.35, 0.22, "dressed");
+  for (const y of [17.25, 22.2]) p.box(-0.36, 0.36, y, y + 0.16, -0.34, 0.22, "dressed"); // (their backs 1 cm in front of the rib's)
   p.box(-0.42, 0.42, EAVE - 0.25, EAVE + 0.35, -0.45, 0.42, "dressed");
   crossPinnacle(0.46, PIN_TOP - EAVE - 0.35, 5, 0.14).into(p, new THREE.Matrix4().makeTranslation(0, EAVE + 0.35, 0));
   return p;
@@ -76,8 +76,8 @@ function cornerBlock(b, sx, sz) {
   const plan = [[2.3, 2.3], [6.2, 2.3], [6.7, 2.8], [6.7, 6.3], [6.1, 6.9], [2.9, 6.9], [2.3, 6.3]];
   const pts = plan.map(([u, v]) => [sx * u, sz * v]);
   const shape = new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
-  const g = new THREE.ExtrudeGeometry(shape, { depth: BLOCK_TOP - FOOT, bevelEnabled: false });
-  g.rotateX(-Math.PI / 2); g.translate(0, FOOT, 0); b.add(g, "smooth");
+  const g = new THREE.ExtrudeGeometry(shape, { depth: BLOCK_TOP - FOOT + 0.02, bevelEnabled: false });
+  g.rotateX(-Math.PI / 2); g.translate(0, FOOT - 0.02, 0); b.add(g, "smooth"); // (2 cm under FOOT: its foot lay in the pilasters' and the copings')
   // a low roof inside the parapet
   const inset = new THREE.Shape(plan.map(([u, v]) => new THREE.Vector2(sx * (u + (u > 4 ? -0.35 : 0.35)), -sz * (v + (v > 4 ? -0.35 : 0.35)))));
   const r = new THREE.ExtrudeGeometry(inset, { depth: 0.7, bevelEnabled: false });
@@ -95,9 +95,13 @@ function cornerBlock(b, sx, sz) {
     const vis = inner ? 2.5 : L;
     const o = inner ? centreOffset(x0, z0, x1, z1, nx, nz, vis) : 0;
     // parapet course and a flared gablet over each face
-    b.box(-L / 2, L / 2, BLOCK_TOP - 0.3, BLOCK_TOP - 0.12, -0.2, 0.12, "dressed");
+    const e = inner ? 0.01 : 0; // (on the inner faces 1 cm short of the ends, whose faces lay in the blocks')
+    b.box(-L / 2 + e, L / 2 - e, BLOCK_TOP - 0.3, BLOCK_TOP - 0.12, -0.2, 0.12, "dressed");
     const gw = (inner ? vis : L) - 0.35;
-    const gs = new THREE.Shape(gablePts(gw, gw > 1.5 ? 0.75 : 0.5, 8, 0));
+    // (its first two points at each foot 3 cm lower, under the coping: its top lay along the coping's top there)
+    const gp = gablePts(gw, gw > 1.5 ? 0.75 : 0.5, 8, 0);
+    for (const i of [0, 1, gp.length - 2, gp.length - 1]) gp[i].y -= 0.03;
+    const gs = new THREE.Shape(gp);
     b.slab(gs, o, BLOCK_TOP - 0.12, 0.0, 0.3, "smooth");
     const cp = new Part(); gableCoping(cp, gw, gw > 1.5 ? 0.75 : 0.5, 0.14, BLOCK_TOP - 0.12, 0.08, 0.26);
     cp.stamp(b, new THREE.Matrix4().multiplyMatrices(b.matrix, new THREE.Matrix4().makeTranslation(o, 0, 0)));
@@ -123,7 +127,7 @@ function cornerBlock(b, sx, sz) {
   for (let i = 1; i < plan.length; i++) {
     const [u, v] = plan[i];
     const du = u > 4 ? -0.12 : 0.12, dv = v > 4 ? -0.12 : 0.12, x = sx * (u + du), z = sz * (v + dv);
-    b.box(x - 0.26, x + 0.26, FOOT, BLOCK_TOP + 0.1, z - 0.26, z + 0.26, "dressed");
+    b.box(x - 0.26, x + 0.26, FOOT - 0.01, BLOCK_TOP + 0.1, z - 0.26, z + 0.26, "dressed"); // (its foot 1 cm under the block's)
     small.stamp(b, new THREE.Matrix4().makeTranslation(x, BLOCK_TOP + 0.1, z));
   }
   crossPinnacle(0.5, 4.4, 4).stamp(b, new THREE.Matrix4().makeTranslation(sx * 3.9, BLOCK_TOP + 0.1, sz * 3.9));
@@ -143,8 +147,8 @@ export function tower(b) {
   for (const [sx, sz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) cornerBlock(b, sx, sz);
 
   // the octagonal shaft: a dark core, then eight pierced faces and eight corner ribs
-  const core = new THREE.CylinderGeometry((A - 0.5) / Math.cos(Math.PI / 8), (A - 0.5) / Math.cos(Math.PI / 8), EAVE - FOOT, 8);
-  core.rotateY(Math.PI / 8 + TURN); core.translate(0, (FOOT + EAVE) / 2, 0); b.add(core, "iron");
+  const core = new THREE.CylinderGeometry((A - 0.5) / Math.cos(Math.PI / 8), (A - 0.5) / Math.cos(Math.PI / 8), EAVE - 0.2 - FOOT, 8); // to the deck's underside (at EAVE its top lay in the deck's)
+  core.rotateY(Math.PI / 8 + TURN); core.translate(0, (FOOT + EAVE - 0.2) / 2, 0); b.add(core, "iron");
   const deck = new THREE.CylinderGeometry(A / Math.cos(Math.PI / 8), A / Math.cos(Math.PI / 8), 0.2, 8);
   deck.rotateY(Math.PI / 8 + TURN); deck.translate(0, EAVE - 0.1, 0); b.add(deck, "smooth");
   const cardinal = shaftFace(true, 0), diagonal = shaftFace(false, 0);
