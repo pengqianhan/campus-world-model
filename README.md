@@ -514,6 +514,11 @@ of AUSA House (322) next to it beyond the campus map's outline of that building,
 cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly: its faces
 to the north-west and south-east, its south-west end and its roofs.
 
+| | |
+| --- | --- |
+| ![The Kate Edger Information Commons from the north-east, drawn from code](docs/landmarks/kate-edger-information-commons-front.jpg) | ![The Kate Edger Information Commons from above, drawn from code](docs/landmarks/kate-edger-information-commons-above.jpg) |
+| ![The Kate Edger Information Commons on the map, drawn from code in the map's colours](docs/landmarks/kate-edger-information-commons-map.jpg) | ![The Kate Edger Information Commons from the north-east, by the Old Choral Hall, through the walker's eyes](docs/landmarks/kate-edger-information-commons-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
