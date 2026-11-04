@@ -3,13 +3,14 @@
 // stops the others. `only` (the viewer's ?only=southeast,upper) builds just those parts. Every landmark's model.js
 // exports build(materials, only), which returns a Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
-import { southeast, upper } from "./parts/southeast.js";
+import { southeast, upper, facade } from "./parts/southeast.js";
 import { northwest, northeast, wings } from "./parts/northwest.js";
 import { atrium, low } from "./parts/atrium.js";
 
 const PARTS = {
   southeast: (b) => southeast(b),
   upper: (b) => upper(b),
+  facade: (b) => facade(b),
   northwest: (b) => northwest(b),
   northeast: (b) => northeast(b),
   wings: (b) => wings(b),

@@ -25,5 +25,9 @@ at the LiDAR's sizes.
 ## Light
 - A bright day with white cloud: the north-east faces in soft light, the sky blue where it shows through the
   trees.
-- The viewer's light is the shared default (estimated). Round 0 draws the walls pale grey: much lighter than the
-  reference (the building's luma median 238 in the render against 140), which the rounds bring down.
+- The faces seen are in soft light, with no shadow cast on them or on the court: the config's `light` puts the
+  viewer's sun behind the building from Alfred Street (estimated: the photograph does not show where it is) and
+  sets the exposure by the luma. Round 0 drew the walls pale grey in the shared default light, the building's luma
+  median 238 against the reference's 140; round 1, with the building's own materials, 138 against 140 (the
+  screens 173 against 171, the mesh 119 against 115, the strip's wall 195 against 198; the corner's green glazing
+  88 against about 60, the frames in front of it not drawn).

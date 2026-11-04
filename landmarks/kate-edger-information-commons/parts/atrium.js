@@ -1,6 +1,6 @@
-// The atrium between the two ranges (parts/common.js, MEASURED.atrium): a glazed roof from range to range and
-// its glazed end toward the court (estimated: the LiDAR sees little of the glass); and the low roof between the
-// ranges south-west of it (MEASURED.low).
+// The atrium between the two ranges (parts/common.js, MEASURED.atrium): its glazed roof from range to range, open
+// at its north-east end, and its floor; the raised part over it (MEASURED.bridge); south-west of the glass, the
+// roof between the ranges at 7.7 m (MEASURED.link); and the low roof between them beyond (MEASURED.low).
 import { FOOT, MEASURED } from "./common.js";
 import { prism, block } from "./shapes.js";
 
@@ -9,13 +9,11 @@ const M = MEASURED;
 export function atrium(b) {
   const a = M.atrium;
   prism(b, a.plan, a.top - 0.2, a.top, "glassPale");
-  // its end toward the court: a pane across from range to range, its ends inside both, its top and its face 5 cm
-  // into the roof's and its foot 5 cm over the ranges' (still below the ground), so that no face of the pane lies in
-  // the plane of another's
-  const [p0, p1] = [a.plan[0], a.plan[a.plan.length - 1]];
-  b.box(p0[0] + 0.05, p0[0] + 0.15, FOOT + 0.05, a.top - 0.15, p0[1], p1[1], "glassPale");
+  prism(b, a.floor.plan, a.floor.top - 0.3, a.floor.top, "claddingPale");
+  block(b, M.bridge.plan, a.top - 0.3, M.bridge.top, "claddingPale", "roofGrey");
 }
 
 export function low(b) {
-  block(b, M.low.plan, FOOT, M.low.top, "renderGrey", "roofGrey");
+  block(b, M.link.plan, FOOT, M.link.top, "claddingPale", "roofGrey");
+  block(b, M.low.plan, FOOT, M.low.top, "claddingPale", "roofGrey");
 }

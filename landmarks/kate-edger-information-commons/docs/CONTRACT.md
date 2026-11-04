@@ -19,29 +19,48 @@ model.
   - **the south-east range**, flat at 15.93 m, its north-east face at x -31.0 and set back to x -28.0 by the
     atrium; on it **the upper strip** (20.10 m, its north-east end at x -25.45), **the upper block** south-west of
     it (19.25 m) and **plant** beyond (18.6-20.3 m, one block at 19.6 in round 0);
-  - **the north-west range**, flat at 15.80 m, its **north-east end** higher (16.6 m, its face at x -34.2), with
-    **the end over the court** beyond it (14.2 m; how far down it reaches the LiDAR cannot say: round 0 draws it
-    to `FOOT`), **the raised part** on its roof (19.0 m), a **lower wing** at its south-west corner (11.7 m) and
-    another on its face to the north-west (about 9.8 m);
-  - **the atrium** between the ranges, glazed (few returns; a line of them at 13.3-13.7 m along it): round 0
-    draws a flat glazed roof at 13.5 m and a glazed end toward the court (estimated); south-west of it, between
-    the ranges, **a low roof** at 4.2 m;
+  - **the north-west range**, flat at 15.80 m, its **north-east end** higher (16.6 m, its face at x -35.2 and then
+    on a slant to (-31.2, 17.5)), with **the end over the court** (the prow) beyond it: its rim at 12.8 m, out to
+    x -41.8 at its tip, and a glazed roof light within the rim (returns both at 11.6-12.0 and at 14.1-14.5 m in
+    every cell: 14.2 m). How far down the prow reaches the LiDAR cannot say; the photograph shows the court and
+    the building behind under it, its lower edge falling in a curve to about 5.1 m: round 1 draws its underside
+    sloping from 12.4 m at its south-east side to 5.1 m 2.1 m in, and level beyond (estimated: the camera is out by
+    about 1 m sideways at that edge of the photograph). Under its tip, a glazed **canopy** at 3.3 m (returns at
+    3.0-3.5 m). **The raised part** on the range's roof (19.0 m), a **lower wing** at its south-west corner
+    (11.7 m) and another on its face to the north-west (about 9.8 m);
+  - **the atrium** between the ranges: open at its north-east end (x -28 to -22: only its floor near 0.0 m, and the
+    photograph's mesh panels with no roof's edge across them), then glazed (few returns; some at 13.5 m at both ends,
+    no fall): a flat glazed roof at 13.5 m from x -22 to 9.6 and a floor at 0.0 m (estimated under the glass);
+    over it at x 2 to 8 **a raised part** (18.3 m; how far down it reaches is not seen); south-west of the glass,
+    between the ranges, **a roof at 7.7 m** (x 9.4 to 18) and beyond it **a low roof** at 4.2 m;
   - **the ground**: -3.5 in the sunken court at the north-east end, near -0.4 on Alfred Street beyond it, +0.2
     to +4.1 on the north-west side and at the south-west end; walls go down to `FOOT` (-4.5 m).
+- What the photograph shows, through its fitted camera (`parts/common.js`, `faces`): the south-east range's
+  north-east face behind pale silver screens from 3.7 m to its roof, green-tinted glazing under them; its corner
+  glazed in green from 2.9 m; its face to the atrium's open end under grey mesh panels from 4.2 m, over
+  green-tinted glazing; a dark shopfront across the atrium's end at the court's level; the prow's glass; the north-
+  east end's face glazed, green under the prow.
 - Not drawn yet: a lower roof near 10 m in the south-east range's north-east corner (x -30 to -27), the roofs'
-  falls and parapets, a raised part over the atrium at x 2 to 8 (returns at 18.5 m), the canopies at about 4.3 m
-  along the north-west face and at the south-west end.
+  falls and parapets, the roof at 11.8 m between the prow and the north-east end (x -36 to -31, a slot along the
+  end's face), the prow's curves (its face and its lower edge drawn straight), the frames, white columns and the
+  diagonal strut, the canopies at about 4.3 m along the north-west face and at the south-west end.
 
 ## Ownership
-- `parts/southeast.js` (the south-east range and what stands on it), `parts/northwest.js` (the north-west range,
-  its north-east end and the end over the court, the raised part, the two lower wings), `parts/atrium.js` (the
-  atrium's glazed roof and end, the low roof), `parts/shapes.js` (shared helpers: one owner per round, named in
-  the brief). `model.js` and `parts/common.js` are the lead's.
+- `parts/southeast.js` (the south-east range and what stands on it, and its faces seen from Alfred Street),
+  `parts/northwest.js` (the north-west range, its north-east end and the prow, the canopy, the raised part, the
+  two lower wings), `parts/atrium.js` (the atrium's glazed roof and floor, the raised part over it, the roofs
+  between the ranges south-west of it), `parts/shapes.js` (shared helpers: one owner per round, named in the
+  brief). `model.js` and `parts/common.js` are the lead's.
+- The materials (`landmarks/kit/materials.js`): the pale grey cladding `claddingPale`, the screens
+  `screenSilver` and `screenGrey`, the green-tinted glazing `glassGreen` (round 1, this building's own), and the
+  kit's `glassPale` (the prow, the roof light, the canopy, the atrium's roof), `glass` (the shopfront) and
+  `roofGrey`. On the site, `glassGreen` needs its part in `LIGHT_ROLE` (`src/scene/landmarks.ts`).
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 
 ## Budget (tier 2: the site runs in a browser, phones too)
-- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 484 triangles, 3 draw calls.
+- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 484 triangles, 3 draw calls;
+  round 1: 812 triangles, 7 draw calls.
   Build time of a part ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
@@ -56,8 +75,10 @@ model.
 ## How to render and compare
 - `landmarks/pipeline/run.sh kate-edger-information-commons photo refine compare topview` (from the repository
   root, with `PORT` serving it): the strips in `out/pipeline/compare/`, the metrics in its `metrics.md`, the top
-  view in `out/topview/`. The black outside the photograph in its level cut is ignored (its mask's `inside`). GPU
-  steps only under `~/.campus-loop/gpu.lock`.
+  view in `out/topview/`. The black outside the photograph in its level cut is ignored (its mask's `inside`). The
+  config's `sky_mask` closes the bare branches before the sky (`branches_deg`) and keeps the pale screens and walls
+  from passing for cloud (`pale_tint`); its `light` gives the viewer the photograph's soft light. GPU steps only
+  under `~/.campus-loop/gpu.lock`.
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a reference through its fitted camera; say
