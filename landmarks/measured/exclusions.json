@@ -1232,68 +1232,6 @@
     "open_below": 0.11
    }
   },
-  "315": {
-   "name": "Kate Edger Information Commons",
-   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 90% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 1.7 degrees, over 448 m2; a low pitch: gable, 2.3 degrees, over 152 m2; a low pitch: gable, 7.8 degrees, over 8 m2; a low pitch: hip, 2.7 degrees, over 80 m2; a low pitch: mono, 3.4 degrees, over 10 m2; a low pitch: hip, 4.4 degrees, over 32 m2; a low pitch: mono, 1.8 degrees, over 210 m2; a low pitch: hip, 5.8 degrees, over 16 m2; a low pitch: mono, 2.0 degrees, over 8 m2; a low pitch: hip, 3.8 degrees, over 8 m2): footprint IoU 0.865, 90% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 3083.0,
-    "ground": {
-     "p5": 37.94,
-     "p50": 41.11,
-     "p95": 45.31,
-     "zero": 37.97
-    },
-    "roof_inside_m2": 2768.5,
-    "cover": 0.898,
-    "vegetation": 0.047,
-    "open_below": 0.08,
-    "not_drawn_m2": 14.0,
-    "check": {
-     "iou": 0.865,
-     "lidar_m2": 2918.0,
-     "model_m2": 3083.0,
-     "within_0.5m": 0.895,
-     "model_minus_lidar_m": {
-      "p10": -0.29,
-      "p50": -0.01,
-      "p90": 0.17
-     },
-     "highest_m": {
-      "model": 23.9,
-      "lidar": 24.57
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: hip, 1.7 degrees, over 448 m2",
-      "a low pitch: gable, 2.3 degrees, over 152 m2",
-      "a low pitch: gable, 7.8 degrees, over 8 m2",
-      "a low pitch: hip, 2.7 degrees, over 80 m2",
-      "a low pitch: mono, 3.4 degrees, over 10 m2",
-      "a low pitch: hip, 4.4 degrees, over 32 m2",
-      "a low pitch: mono, 1.8 degrees, over 210 m2",
-      "a low pitch: hip, 5.8 degrees, over 16 m2",
-      "a low pitch: mono, 2.0 degrees, over 8 m2",
-      "a low pitch: hip, 3.8 degrees, over 8 m2"
-     ],
-     "check": {
-      "iou": 0.865,
-      "lidar_m2": 2918.0,
-      "model_m2": 3083.0,
-      "within_0.5m": 0.895,
-      "model_minus_lidar_m": {
-       "p10": -0.29,
-       "p50": -0.0,
-       "p90": 0.12
-      },
-      "highest_m": {
-       "model": 23.9,
-       "lidar": 24.57
-      }
-     }
-    }
-   }
-  },
   "316": {
    "name": "Food Container",
    "reason": "roof cells cover 0% of the outline (limit 85%)",

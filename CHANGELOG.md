@@ -14,6 +14,26 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-05
+
+### Added
+
+- **The Kate Edger Information Commons drawn in detail.** Near the camera the map draws the Kate Edger
+  Information Commons (315) on Alfred Street from code in place of its block: two long ranges of pale grey
+  cladding with a glass-roofed atrium between them, open to the sunken court at its north-east end; on the
+  south-east range's end to the street, pale silver metal screens over green-tinted glazing, and grey mesh
+  panels over the atrium's open end; and over the court the north-west range's glazed end, open beneath it,
+  with a roof light along it and a glass canopy under its tip. Its sizes come from the LINZ 2024 LiDAR, with
+  the parapets round its north-west range and the screened plant on its south-east range's roof. The heights
+  of its screens, glazing and shopfront toward Alfred Street are estimated in a photograph, through a camera
+  fitted to points measured on it against the LiDAR, and its card says so, with its roofs, drawn flat, the
+  underside of its end over the court, the atrium's glazed roof and floor, and the colour of the walls and
+  roofs no photograph shows. On the map it has the map's colours; from a walker's height on a computer with
+  a graphics card, its own cladding, metal screens and glass. Its faces to the north-west and south-east,
+  its south-west end and its roofs, which the photograph does not show, are drawn plainly. Its entrances
+  are down in the sunken court, which the map's ground does not have: it stands at Alfred Street's
+  footpath, and the map's ground covers the court's storey (#PR).
+
 ## 2026-11-03
 
 ### Changed

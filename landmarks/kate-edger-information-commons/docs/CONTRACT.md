@@ -71,7 +71,8 @@ model.
 - The materials (`landmarks/kit/materials.js`): the pale grey cladding `claddingPale`, the screens
   `screenSilver` and `screenGrey`, the green-tinted glazing `glassGreen` (round 1, this building's own), and the
   kit's `glassPale` (the prow, the roof light, the canopy, the atrium's roof), `glass` (the shopfront) and
-  `roofGrey`. On the site, `glassGreen` needs its part in `LIGHT_ROLE` (`src/scene/landmarks.ts`).
+  `roofGrey`. On the site `glassGreen` is the light form's glass (`LIGHT_ROLE`, `src/scene/landmarks.ts`); the
+  cladding and the screens are its walls.
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 
