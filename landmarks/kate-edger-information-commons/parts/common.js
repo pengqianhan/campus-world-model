@@ -1,7 +1,7 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/kate-edger-information-commons_pts.npy: building 315's
 // returns more than 3 m above the frame's ground and within 1.5 m of building.outline) in the view frame of
 // config/kate-edger-information-commons.json: x is -axis (south-west, along the two long ranges), y up from
-// the frame's ground (41.5 m NZVD2016, the median ground in the crop box: provisional until `door` is set),
+// the frame's ground (41.5 m NZVD2016, the median ground in the crop box, and the ground at `door`),
 // z is toStreet (north-west, toward the Student Commons); the frame's centre at x = z = 0. Owned by the lead:
 // read, do not edit. Measured 2026-11-04 (baseline, round 0; round 1 the same day; the check 2026-11-05).
 //
@@ -107,9 +107,12 @@ export const MEASURED = {
   // x 22 to 28, z 14.5 to 23. Where a part meets another, its plan runs 0.1-0.3 m into the other's, so that no two
   // walls stand face to face with a slit between them, or in one plane.
   corner: { plan: [[21.9, 14.8], [21.9, 23.0], [28.0, 23.0], [28.0, 14.3]], top: 11.7 },
-  // The lower wing on the north-west range's face to the north-west: about 9.8 m (its columns' medians 9.16-10.32),
-  // x -17 to -10, out to z 31.5.
-  wing: { plan: [[-17.0, 17.8], [-17.0, 27.0], [-14.5, 31.5], [-10.0, 31.5], [-10.0, 24.7], [-11.9, 24.7], [-11.9, 17.8]], top: 9.8 },
+  // Not drawn: the roofs before the range's face to the north-west from x -17 to -10, out to z 31.5 (round 0's lower
+  // wing, flat at 9.8 m). They are AUSA House's (building 322, a measured massing on the site): its hipped roof runs
+  // on beyond the campus map's ring of it toward this range (the rings lie 2-4 m north-west of the LiDAR's walls), its
+  // slopes unbroken from 11.5 m at the ridge to 9.0 at the eaves, and the wing stood 2.5 m into 322's ring (9.2% of
+  // its block, where its massing stands). Nor the flat roof at 7.8 m against the face (x -14.5 to -12, z 17.8 to
+  // 20.5), whose building neither the LiDAR nor the photograph shows (step 7, placing it on the map).
   // The atrium between the ranges (round 1: its returns at least 0.6 m inside its edges, by 2 m of x). From x -28 to
   // -22 only its floor, near 0.0 m, and nothing over it; the photograph sees the south-east range's mesh panels there
   // with no roof's edge across them: open. From x -22 to 9.6 a few returns at 13.5 m at both ends (glass: no fall

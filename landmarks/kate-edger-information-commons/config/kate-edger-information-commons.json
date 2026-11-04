@@ -1,7 +1,7 @@
 {
  "name": "kate-edger-information-commons",
  "site": false,
- "estimated": "every roof drawn flat at its median (their falls left out; the north-west range's parapets 0.5 m wide, their cells 0.5-1 m); the underside of the end over the court (the prow): from the photograph at its edge, where the fitted camera is out by about 1 m, level 0.45 m under its roof south-east of z 7.2, falling to 5.1 m at z 9.1; its north-east face at z 7.0, on its curve; the atrium's glazed roof (from the few returns along it) and its floor under the glass; how far down the raised part over the atrium reaches; how far the mesh panels run along the face to the atrium (the prow hides the rest); the ground (provisional, until door is set); the light (the photograph's soft light, its sun not read from it); the colours of the walls and roofs not seen in the photograph",
+ "estimated": "every roof drawn flat at its median (their falls left out; the north-west range's parapets 0.5 m wide, their cells 0.5-1 m); the underside of the end over the court (the prow): from the photograph at its edge, where the fitted camera is out by about 1 m, level 0.45 m under its roof south-east of z 7.2, falling to 5.1 m at z 9.1; its north-east face at z 7.0, on its curve; the atrium's glazed roof (from the few returns along it) and its floor under the glass; how far down the raised part over the atrium reaches; how far the mesh panels run along the face to the atrium (the prow hides the rest); the light (the photograph's soft light, its sun not read from it); the colours of the walls and roofs not seen in the photograph",
  "light": {
   "sunaz": 200,
   "sunel": 35,
@@ -223,9 +223,9 @@
  "crop_margin": 25,
  "ground": 41.5,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -42.0,
+  "z": 19.75,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The footpath of Alfred Street before the north-west side of the end over the court (the prow), 4.4 m north-east of that side's corner, where the LiDAR's ground is 41.50 m (21 ground returns within 1 m: 41.43-41.57 for p10-p90), the frame's ground. No wall's foot stands on that ground: at the north-west range's face to the north-west it is 0.21 m higher (x -25, z 19). The entrances the photograph shows are at the sunken court's level, 3.5 m lower (the shopfront across the atrium's end and the entrance under the prow's tip), down steps from this footpath; the map's ground has no court (2.41 m above the LiDAR's there), so a door in the court would stand the model's street level 3.4 m above the map's street."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -278,5 +278,5 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 38.0, p95 45.2: the site falls about 7 m); set to the ground at the door at step 7"
+ "ground_note": "the LiDAR's ground at the door (door.note), which is the median LiDAR ground (class 2) in the crop box (p5 38.0, p95 45.2: the site falls about 7 m) that the model was measured from"
 }

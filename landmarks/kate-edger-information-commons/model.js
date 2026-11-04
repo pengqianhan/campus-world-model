@@ -4,7 +4,7 @@
 // exports build(materials, only), which returns a Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
 import { southeast, upper, facade } from "./parts/southeast.js";
-import { northwest, northeast, wings } from "./parts/northwest.js";
+import { northwest, northeast, wing } from "./parts/northwest.js";
 import { atrium, low } from "./parts/atrium.js";
 
 const PARTS = {
@@ -13,7 +13,7 @@ const PARTS = {
   facade: (b) => facade(b),
   northwest: (b) => northwest(b),
   northeast: (b) => northeast(b),
-  wings: (b) => wings(b),
+  wing: (b) => wing(b),
   atrium: (b) => atrium(b),
   low: (b) => low(b),
 };

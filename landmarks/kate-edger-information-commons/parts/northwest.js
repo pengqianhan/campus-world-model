@@ -1,9 +1,10 @@
 // The north-west range (parts/common.js, MEASURED.northwest), its higher north-east end and the end that stands
-// out over the court beyond it, the raised part on its roof, and its two lower wings. Round 0: flat-topped
-// blocks at the LiDAR's heights, plain walls. Round 1: the end over the court (the prow) glazed and open under it,
-// its underside sloping up to its south-east side, with its roof light; the glazed canopy under its tip; the
+// out over the court beyond it, the raised part on its roof, and its lower wing at its south-west corner. Round 0:
+// flat-topped blocks at the LiDAR's heights, plain walls. Round 1: the end over the court (the prow) glazed and open
+// under it, its underside sloping up to its south-east side, with its roof light; the glazed canopy under its tip; the
 // north-east end's face glazed (the photograph shows glass in frames over the prow and under it). The check after
 // it: the range's parapets; the prow's plan from the LiDAR's cells, its roof under its rim, its roof light's plan.
+// Placing it on the map: the lower wing on its face to the north-west left out (AUSA House's roofs: parts/common.js).
 import { FOOT, MEASURED } from "./common.js";
 import { band, block, clipZ, panel, prism, prismBetween } from "./shapes.js";
 
@@ -47,6 +48,6 @@ export function northeast(b) {
   prism(b, M.canopy.plan, M.canopy.top - t, M.canopy.top, "glassPale");
 }
 
-export function wings(b) {
-  for (const k of ["corner", "wing"]) block(b, M[k].plan, FOOT, M[k].top, "claddingPale", "roofGrey");
+export function wing(b) {
+  block(b, M.corner.plan, FOOT, M.corner.top, "claddingPale", "roofGrey");
 }

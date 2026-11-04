@@ -8,8 +8,11 @@ model.
 
 ## Frame and sizes
 - View frame, metres: **x** south-west (the frame's `-axis`, along the two long ranges), **y** up from the
-  frame's ground (41.5 m NZVD2016, the median ground in the crop box: provisional until `door` is set), **z**
-  north-west (`toStreet`, toward the Student Commons); the frame's centre at x = z = 0.
+  frame's ground (41.5 m NZVD2016, the median ground in the crop box), **z** north-west (`toStreet`, toward the
+  Student Commons); the frame's centre at x = z = 0. `door` (-42.0, 19.75) is on Alfred Street's footpath, 4.4 m
+  north-east of the end of the prow's north-west side, where the LiDAR's ground is the frame's (41.50 m): no wall's foot stands
+  on it, and the entrances the photograph shows are in the sunken court, 3.5 m lower, which the map's ground does not
+  have (the config's `door.note`).
   `config/kate-edger-information-commons.json`, `frame`: the axis is the bearing of most of the walls. The two
   ranges run along x; the south-east range's face to the south-east does not (about 5° off), nor do the ranges'
   edges on the atrium: their plans follow the LiDAR.
@@ -31,8 +34,10 @@ model.
     about 1 m sideways at that edge of the photograph). Beyond its tip six building returns at its rim's height
     among a tree's are not drawn: the 2023 aerial, allowing for its lean, and the photograph put the corner at the
     plan's tip. Under its tip, a glazed **canopy** at 3.3 m (returns at 3.0-3.5 m). **The raised part** on the
-    range's roof (19.0 m), a **lower wing** at its south-west corner (11.7 m) and another on its face to the
-    north-west (about 9.8 m);
+    range's roof (19.0 m) and a **lower wing** at its south-west corner (11.7 m). Not 315's: the roofs before its
+    face to the north-west from x -17 to -10 (drawn as a lower wing at 9.8 m until step 7) are AUSA House's (322, a
+    measured massing on the site), whose hipped roof runs on beyond the campus map's ring of it toward this range, its slopes
+    unbroken from 11.5 m to 9.0;
   - **the atrium** between the ranges: open at its north-east end (x -28 to -22: only its floor near 0.0 m, and the
     photograph's mesh panels with no roof's edge across them), then glazed (few returns; some at 13.5 m at both ends,
     no fall): a flat glazed roof at 13.5 m from x -22 to 9.6 and a floor at 0.0 m (estimated under the glass);
@@ -48,15 +53,19 @@ model.
 - Not drawn yet: a lower roof near 10 m in the south-east range's north-east corner (x -30 to -27), the roofs'
   falls, the north-west range's strip along its face to the north-west (16.1-16.2 m, x -11 to 21) and the slot at
   14.5 m before it, the prow's lower edge as a curve (drawn as a slope), the frames, white columns and the diagonal
-  strut, the canopies at about 4.3 m along the north-west face and at the south-west end.
+  strut, the canopies at about 4.3 m along the north-west face and at the south-west end, a flat roof at 7.8 m against
+  the north-west face (x -14.5 to -12, z 17.8 to 20.5) whose building neither the LiDAR nor the photograph shows.
 - The check (after round 1): `out/topview` and each part's cells against the LiDAR. The main block under the model
   93.1%, footprint IoU 0.893; the highest point 20.35 m against the LiDAR's 20.48 (p99.9); every part's top, the
   parapet and the plant's screens within 0.5 m of the median of their cells (the parapet 16.55 against 16.4-16.6).
+  Placed on the map (step 7), without the wing that was AUSA House's: block 315 under the model 91.8%, footprint IoU
+  0.881 (the LiDAR's cells within 1.5 m of 315's ring take in 322's roof beyond its ring), block 322 under it 0%
+  (9.2% with the wing); no other block within 80 m: `building.also` is empty.
 
 ## Ownership
 - `parts/southeast.js` (the south-east range and what stands on it, and its faces seen from Alfred Street),
   `parts/northwest.js` (the north-west range and its parapet, its north-east end and the prow, the canopy, the
-  raised part, the two lower wings), `parts/atrium.js` (the atrium's glazed roof and floor, the raised part over it, the roofs
+  raised part, the lower wing), `parts/atrium.js` (the atrium's glazed roof and floor, the raised part over it, the roofs
   between the ranges south-west of it), `parts/shapes.js` (shared helpers: one owner per round, named in the
   brief). `model.js` and `parts/common.js` are the lead's.
 - The materials (`landmarks/kit/materials.js`): the pale grey cladding `claddingPale`, the screens
@@ -68,7 +77,8 @@ model.
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 484 triangles, 3 draw calls;
-  round 1: 812 triangles, 7 draw calls; after the check: 1,208 triangles, 7 draw calls.
+  round 1: 812 triangles, 7 draw calls; after the check: 1,208 triangles, 7 draw calls; placed on the map: 1,160
+  triangles, 7 draw calls.
   Build time of a part ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
