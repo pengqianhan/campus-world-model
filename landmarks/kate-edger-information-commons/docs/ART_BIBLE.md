@@ -20,7 +20,8 @@ at the LiDAR's sizes.
 
 ## From above (the 2023 aerial, the LiDAR)
 - Two long ranges with flat grey roofs and plant on them, the atrium's glazed roof between them, widest at the
-  north-east end.
+  north-east end. The north-west range's roof within a parapet; at the south-west end of the south-east range's,
+  the plant within screens; on the prow, a long glazed roof light (the LiDAR's heights: `docs/CONTRACT.md`).
 
 ## Light
 - A bright day with white cloud: the north-east faces in soft light, the sky blue where it shows through the
@@ -30,4 +31,4 @@ at the LiDAR's sizes.
   sets the exposure by the luma. Round 0 drew the walls pale grey in the shared default light, the building's luma
   median 238 against the reference's 140; round 1, with the building's own materials, 138 against 140 (the
   screens 173 against 171, the mesh 119 against 115, the strip's wall 195 against 198; the corner's green glazing
-  88 against about 60, the frames in front of it not drawn).
+  88 against about 60, the frames in front of it not drawn); after the check, 142 against 141.

@@ -12,11 +12,15 @@ export function southeast(b) {
   block(b, M.southeast.plan, FOOT, M.southeast.top, "claddingPale", "roofGrey");
 }
 
-/** The upper strip, the upper block and the plant: each from 0.3 m below the range's roof, so that its foot is
- * inside the range. */
+/** The upper strip, the upper block and the plant (its four screens and the unit within them): each from 0.3 m
+ * below the range's roof, so that its foot is inside the range. */
 export function upper(b) {
-  const y0 = M.southeast.top - 0.3;
-  for (const k of ["strip", "block", "plant"]) block(b, M[k].plan, y0, M[k].top, "claddingPale", "roofGrey");
+  const y0 = M.southeast.top - 0.3, S = M.plant.screens;
+  for (const k of ["strip", "block"]) block(b, M[k].plan, y0, M[k].top, "claddingPale", "roofGrey");
+  b.box(S.x0, S.x1, y0, S.top, S.z1 - S.t, S.z1, "claddingPale");
+  b.box(S.x0, S.x1, y0, S.top, S.z0, S.z0 + S.t, "claddingPale");
+  for (const x of [S.x0, S.x1 - S.t]) b.box(x, x + S.t, y0, S.top, S.z0 + S.t, S.z1 - S.t, "claddingPale");
+  block(b, M.plant.unit.plan, y0, M.plant.unit.top, "claddingPale", "roofGrey");
 }
 
 /** The north-east end's faces. Each pane and screen stands 3 cm or more before its wall and its top 5 cm under
