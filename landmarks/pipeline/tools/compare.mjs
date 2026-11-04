@@ -3,10 +3,11 @@
 // (silhouette IoU, luminance and colour; tools/metrics.py) into <out>/metrics.{json,md}.
 //   node ../pipeline/tools/compare.mjs --out out/<you> [--match tower] [--query "only=tower"] [--no-metrics]
 // (in the landmark's folder; ../pipeline/run.sh <name> compare runs it there).
-// Cameras: refs/streetview/views_refined.json (tools/refine_cameras.mjs) when present, else views.json.
+// Cameras: <refs>/views_refined.json (tools/refine_cameras.mjs) when present, else views.json, where <refs> is
+// refs/<the config's `refs`>, refs/streetview where it names none (page.mjs).
 // Needs the page served from the repository root on $PORT (default 8765; run.sh starts a server).
 import { chromium } from "playwright";
-import { CONFIG, TOOLS, viewer } from "./page.mjs";
+import { CONFIG, REFS, TOOLS, viewer } from "./page.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -14,12 +15,12 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const out = arg("--out", "out/compare"), match = arg("--match", ""), query = arg("--query", ""), metrics = !process.argv.includes("--no-metrics");
 const PY = process.env.PY ?? "python3";
 fs.mkdirSync(out, { recursive: true });
-const refined = fs.existsSync("refs/streetview/views_refined.json");
+const refined = fs.existsSync(`${REFS}/views_refined.json`);
 const camFile = refined ? "views_refined.json" : "views.json";
 const views = [
-  ...JSON.parse(fs.readFileSync(`refs/streetview/${camFile}`, "utf8")).map((v) => ({ ...v, ref: `refs/streetview/${v.file}`, camera: v.refine?.applied ? "refined" : "street view" })),
+  ...JSON.parse(fs.readFileSync(`${REFS}/${camFile}`, "utf8")).map((v) => ({ ...v, ref: `${REFS}/${v.file}`, camera: v.refine?.applied ? "refined" : v.photo_fit ? "photo fit" : "street view" })),
 ].filter((v) => v.file.includes(match));
-console.log(`cameras from refs/streetview/${camFile}`);
+console.log(`cameras from ${REFS}/${camFile}`);
 const browser = await chromium.launch({ channel: process.env.CHROME_CHANNEL ?? "chrome", args: ["--enable-gpu", "--ignore-gpu-blocklist", "--use-angle=vulkan", "--enable-features=Vulkan"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 1067 } });
 page.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") console.log("[page]", m.text()); });

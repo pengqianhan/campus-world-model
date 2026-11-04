@@ -15,6 +15,9 @@ if (path.resolve(process.cwd(), "..") !== path.join(ROOT, "landmarks") || !fs.ex
   console.error(`run the tools in a landmark's folder (landmarks/<name>/, with config/<name>.json), or through landmarks/pipeline/run.sh <name>`);
   process.exit(2);
 }
+/** The folder of the reference views (views.json, views_refined.json, masks/): refs/<the config's `refs`>, and
+ * refs/streetview where the config names none. */
+export const REFS = `refs/${JSON.parse(fs.readFileSync(CONFIG, "utf8")).refs ?? "streetview"}`;
 const SERVER = `http://localhost:${process.env.PORT ?? 8765}`;
 /** The landmark's folder as the pages see it: references and masks are loaded from here. */
 export const HERE = `${SERVER}/landmarks/${NAME}/`;
