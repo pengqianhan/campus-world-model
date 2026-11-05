@@ -1,59 +1,57 @@
-// The tower (parts/common.js, MEASURED.tower and .low). Round 0: its walls up to its main roof, the parapets along
-// its south-west and north-east faces, the lower roofs at 46.7 m along its south-east and north-west ends and over
-// the annex north of it, at the LiDAR's heights; plain pale walls, grey roofs. Round 1 (the LiDAR's cells): the main
-// roof's band of three ramps and its court, the two lower roofs' ramps up to the south-west face and their upstands
-// along the faces, the plant on the main roof, the parapets as wide as the cells have them.
-import { FOOT, MEASURED } from "./common.js";
-import { block, inside, prism, slopedPrism } from "./shapes.js";
+// The tower (parts/common.js, MEASURED.tower and .low), drawn in its own frame (a toward the north-east from its
+// south-west face, b toward the north-west from its south-east face): its walls up to the lower roofs' height, the
+// main roof's two planes, the band across its middle (a court, three sawtooth ramps, a block and a slot), the
+// parapets and the raised strip along the north-east face, the plant; the two lower roofs at its ends, each with its
+// ramp up to the south-west parapet, its upstand along the face and, at the south-east end, a slab; the annex north of
+// it. Plain pale walls, grey roofs. What stands on a roof starts inside the walls under it, and a roof's plate
+// (1 cm thick) leaves out what stands on it, so that no two faces of different materials lie in one plane.
+import { FOOT, MEASURED, towerAt, towerRect as rect } from "./common.js";
+import { block, prism, slopedPrism } from "./shapes.js";
 
-const M = MEASURED, WALL = "claddingPale", ROOF = "roofGrey", PLANT = "grey";
-
-/** The point of the tower's side from corner `a` to corner `b` (its plan's) where z = `z`, or where x = `x`. */
-function onSide(a, b, z) {
-  const [p, q] = [M.tower.plan[a], M.tower.plan[b]], t = (z - p[1]) / (q[1] - p[1]);
-  return [p[0] + t * (q[0] - p[0]), z];
-}
-function onSideX(a, b, x) {
-  const [p, q] = [M.tower.plan[a], M.tower.plan[b]], t = (x - p[0]) / (q[0] - p[0]);
-  return [x, p[1] + t * (q[1] - p[1])];
-}
-const rect = ([x0, x1], [z0, z1]) => [[x0, z0], [x1, z0], [x1, z1], [x0, z1]];
-// a plate of roof 1 cm thick on a plan, so that its top is apart from the walls' top under it
-const plate = (b, plan, y, holes = []) => prism(b, plan, y, y + 0.01, ROOF, holes);
+const T = MEASURED.tower, L = MEASURED.low, WALL = "claddingPale", ROOF = "roofGrey", PLANT = "grey";
+const NW = 44.35, [B0, B1] = T.main.b, [N0, N1] = T.band.b;
+// a and b of a point [x, z] of the view frame
+const ab = (x, z) => [(x - T.corner[0]) * T.a[0] + (z - T.corner[1]) * T.a[1], (x - T.corner[0]) * T.b[0] + (z - T.corner[1]) * T.b[1]];
+// a height that runs linearly from h0 at a0 (or b0) to h1 at a1 (b1), for slopedPrism
+const alongA = (a0, h0, a1, h1) => (x, z) => h0 + ((ab(x, z)[0] - a0) / (a1 - a0)) * (h1 - h0);
+const alongB = (b0, h0, b1, h1) => (x, z) => h0 + ((ab(x, z)[1] - b0) / (b1 - b0)) * (h1 - h0);
+// a roof's plate, 1 cm thick
+const plate = (b, plan, y = L.roof) => prism(b, plan, y, y + 0.01, ROOF);
+// the foot of what stands on a roof: inside the walls under it
+const SUNK = L.roof - 0.3;
 
 export function tower(b) {
-  const T = M.tower, L = M.low, [s, w, n, e] = T.plan, top = T.roof + 0.01;
-  // each end's edge of the main roof: z0 (z1) south-west of xs (xn), z0b (z1b) north-east of it
-  const [z0, z0b, xs] = T.ends.se, [z1, z1b, xn] = T.ends.nw;
-  // the walls up to the lower roofs' height over the whole plan
-  prism(b, T.plan, FOOT, L.roof, WALL);
-  // the main roof between the two ends, less the band across it
-  const main = [onSide(0, 1, z0), onSide(0, 1, z1), [xn, z1], [xn, z1b], onSide(3, 2, z1b), onSide(3, 2, z0b), [xs, z0b], [xs, z0]];
-  const hole = rect(T.band.x, T.band.z);
-  prism(b, main, L.roof, T.roof, WALL, [hole]);
-  plate(b, main, T.roof, [hole]);
-  // the band: its court at the lower roofs' height, and the three ramps on it
-  plate(b, hole, L.roof);
-  for (const [x0, x1] of T.band.ramps)
-    slopedPrism(b, rect([x0, x1], T.band.z), L.roof + 0.01, (x) => T.band.low + ((x - x0) / (x1 - x0)) * (T.band.high - T.band.low), WALL, ROOF);
-  // the two ends: each a lower roof north-east of its ramp, and the ramp rising south-west to the south-west face
-  const ends = [
-    [L.se, [onSideX(3, 0, L.se.x), [L.se.x, z0], [xs, z0], [xs, z0b], main[5], e], [s, main[0], [L.se.x, z0], onSideX(3, 0, L.se.x)]],
-    [L.nw, [[L.nw.x, z1], onSideX(1, 2, L.nw.x), n, main[4], [xn, z1b], [xn, z1]], [main[1], w, onSideX(1, 2, L.nw.x), [L.nw.x, z1]]],
-  ];
-  for (const [E, low, ramp] of ends) {
-    plate(b, low, L.roof);
-    const x1 = Math.max(...ramp.map(([x]) => x)), [h0, h1] = E.ramp;
-    slopedPrism(b, ramp, L.roof, (x) => h0 + ((x - E.x) / (x1 - E.x)) * (h1 - h0), WALL, ROOF);
-  }
-  // the upstands along the south-east and north-west faces
-  const U = L.upstand;
-  prism(b, inside(onSideX(3, 0, L.se.upstand[0]), onSideX(3, 0, L.se.upstand[1]), U.width), L.roof + 0.015, U.top, WALL);
-  prism(b, inside(onSideX(1, 2, L.nw.upstand[1]), onSideX(1, 2, L.nw.upstand[0]), U.width), L.roof + 0.015, U.top, WALL);
-  // the parapets, from just above the roof's top (so that their faces do not lie in the plate's)
-  prism(b, inside(main[0], main[1], T.parapet.width[0]), top + 0.005, T.parapet.sw, WALL);
-  prism(b, inside(main[4], main[5], T.parapet.width[1]), top + 0.005, T.parapet.ne, WALL);
-  // the plant
-  for (const P of T.plant) prism(b, rect(P.x, P.z), top + 0.005, P.top, PLANT);
+  const ne = T.ne, sw = T.parapet.sw.width, pa = T.parapet.ne.a, sa = T.strip.a;
+  // the walls up to the lower roofs' height, the north-east face stepping out between the ends
+  prism(b, [[0, 0], [ne.ends, 0], [ne.ends, B0], [ne.main, B0], [ne.main, B1], [ne.ends, B1], [ne.ends, NW], [0, NW]].map(([a, c]) => towerAt(a, c)), FOOT, L.roof, WALL);
+  // the main roof's two planes, falling from its ends to the band
+  slopedPrism(b, rect([sw, sa], [B0, N0]), L.roof, alongB(B0, T.roof.end, N0, T.roof.band), WALL, ROOF);
+  slopedPrism(b, rect([sw, sa], [N1, B1]), L.roof, alongB(N1, T.roof.band, B1, T.roof.end), WALL, ROOF);
+  // the band: the main roof south-west of the court, the plate under the court, the gutters and the slot, the ramps,
+  // the block
+  const N = T.band;
+  slopedPrism(b, rect([sw, N.sw.a], [N0, N1]), L.roof, alongA(sw, N.sw.top[0], N.sw.a, N.sw.top[1]), WALL, ROOF);
+  plate(b, rect([N.sw.a, pa], [N0, N1]));
+  for (const [a0, a1] of N.ramps) slopedPrism(b, rect([a0, a1], N.rampB), L.roof + 0.005, alongA(a0, N.high, a1, N.low), WALL, ROOF);
+  block(b, rect(N.island.a, N.rampB), L.roof + 0.005, N.island.top, WALL, ROOF);
+  // the parapet along the south-west face, the raised strip and the parapet along the north-east face
+  prism(b, rect([0, sw], [0, NW]), SUNK, T.parapet.sw.top, WALL);
+  for (const span of [[B0, N0], [N1, B1]]) block(b, rect([sa, pa], span), SUNK, T.strip.top, WALL, ROOF);
+  prism(b, rect([pa, ne.main], [B0, B1]), SUNK, T.parapet.ne.top, WALL);
+  // the plant, from inside the main roof
+  for (const P of T.plant) prism(b, rect(P.a, P.b), T.roof.band - 0.5, P.top, PLANT);
+
+  // the south-east end: its ramp, its upstand along the face, the slab beyond it, the plate between
+  const se = L.se;
+  slopedPrism(b, rect([sw, se.ramp.a], [0, B0]), L.roof, alongA(0, se.ramp.h[0], 1, se.ramp.h[0] + se.ramp.h[1]), WALL, ROOF);
+  prism(b, rect(se.upstand.a, [0, se.upstand.width]), SUNK, L.upstand, WALL);
+  block(b, rect([se.slab.a, ne.ends], [0, B0]), SUNK, se.slab.top, WALL, ROOF);
+  plate(b, rect([se.ramp.a, se.slab.a], [se.upstand.width, B0]));
+  // the north-west end: its ramp, its upstand, the plate round the upstand's end
+  const nw = L.nw, u0 = NW - nw.upstand.width, [ua0, ua1] = nw.upstand.a;
+  slopedPrism(b, rect([sw, nw.ramp.a], [B1, NW]), L.roof, alongA(0, nw.ramp.h[0], 1, nw.ramp.h[0] + nw.ramp.h[1]), WALL, ROOF);
+  prism(b, rect([ua0, ua1], [u0, NW]), SUNK, L.upstand, WALL);
+  plate(b, [[nw.ramp.a, B1], [ne.ends, B1], [ne.ends, NW], [ua1, NW], [ua1, u0], [nw.ramp.a, u0]].map(([a, c]) => towerAt(a, c)));
+  // the annex north of the tower
   block(b, L.annex, FOOT, L.roof, WALL, ROOF);
 }

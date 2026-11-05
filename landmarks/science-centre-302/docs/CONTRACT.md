@@ -14,34 +14,40 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 - The building's own returns only. campus.json's ring of 302 lies 2 to 6 m outside the LiDAR's walls on the
   north-east side, where it runs into the neighbouring block's returns: the plans follow the LiDAR.
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
-  - **the tower**, a rectangle 44.35 m along its south-west face and 38.8 m along its south-east face, its main
-    roof at 50.2 m, parapets at about 51.5-51.7 m along its south-west and north-east faces;
-  - **lower roofs at 46.7 m**: a strip along the south-east end (north-east of x 6.5), a strip along the
-    north-west end (north-east of x 9), and a small **annex** north of the tower (x -17.2 to -9.3, to z 32);
+  - **the tower**, a rectangle 44.35 m along its south-west face and 39 m along its south-east face, turned 3.93
+    degrees from the frame; its roofs all run square with its own faces, so the tower is drawn in its own frame
+    (`a` from its south-west face toward the north-east, `b` from its south-east face toward the north-west,
+    `towerAt` and `towerRect` in `parts/common.js`). Its north-east face steps out 0.8 m between the lower roofs;
+  - **its main roof**, from b 4.55 to 39.7, falling from 50.8 m at its ends to 50.1 m at a **band** across its
+    middle (b 16.5 to 28.0): from the south-west, a court at 46.7 m, three sawtooth ramps rising toward the
+    south-west from 46.72 to 50.6 m, a block at 51.1 m and a slot; a parapet along the south-west face (51.5 m)
+    and a raised strip along the north-east face (51.3 m, its parapet 51.8 m); four boxes of plant (53.0-53.25 m);
+  - **lower roofs at 46.7 m** along the south-east and north-west ends, each rising in a ramp from the south-west
+    parapet, an upstand at 48.0 m along each face, and a small **annex** north of the tower;
   - **the lower block** before the tower's south-west face, its top flat at 25.5 m (its edge 26.0), its outer
-    face leaning away from the tower's: 15 m out at the south end, at the tower at the west end;
+    face leaning away from the tower's: 15 m out at the south end, at the tower at the west end; from its two ends
+    its **screens** run on along the tower's end faces, 1.7 and 2 m deep, to 26.0 m;
   - **the ground**: +0.2 to +1.4 along the south-east face, about 0 along the north-east, -2.8 to -4.1 along the
     north-west, -5.1 to +1.1 before the south-west face, where Symonds Street falls; walls go down to `FOOT`
     (-6.5 m).
-  - Not drawn yet (round 0): rooftop plant above 52.5 m over the main roof (z -16 to -14 and 10 to 13), a band
-    across the main roof (z -7 to 4) where the returns fall in four sloping strips down to 46.7, and the ends of
-    the two strips of lower roof south-west of x 6.5 and 9, whose returns slope between the two roofs.
 - What the photograph shows, through its fitted camera (`refs/photos/views.json`): the building from the street
   corner to its south. The tower's south-west face in horizontal bands of pale glass and the south-east face in
   vertical brown fins; before them the lower block's two faces of dark, folded screens, a tall glazed triangle in
-  its south-west face; at the street, glazing under a canopy.
+  its south-west face; at the street, glazing under a canopy. The dark screen runs on behind the trees along the
+  tower's south-east face, where the LiDAR has the screen.
 
 ## Ownership
 - `parts/tower.js` (the tower, its lower roofs, the annex), `parts/block.js` (the lower block), `parts/shapes.js`
   (shared helpers: one owner per round, named in the brief). `model.js` and `parts/common.js` are the lead's.
-- The materials: the kit's `claddingPale` (the tower's walls, round 0), `screenGrey` (the lower block's walls,
-  round 0) and `roofGrey` (the roofs: grey in the 2023 aerial).
+- The materials: the kit's `claddingPale` (the tower's walls, round 0), `screenGrey` (the lower block's walls and
+  screens, round 0), `roofGrey` (the roofs: grey in the 2023 aerial) and `grey` (the plant, round 1).
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 
 ## Budget (tier 2: the site runs in a browser, phones too)
-- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw calls.
-  Build time of a part ≤ ~300 ms on this machine (the console logs it).
+- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw
+  calls; round 1's shape 378 and 4; step 6: 464 and 4. Build time of a part ≤ ~300 ms on this machine (the
+  console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
 ## References
@@ -62,6 +68,15 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   side), 60% of the cells within 0.5 m of the LiDAR's height (the band of sloping strips and the strips' ends
   drawn at the main roof), the highest point 51.7 m against the LiDAR's 53.9 (p99.9, the plant); block 302 under
   the model 80.2%.
+- Round 1's shape (the roofs at the cells' heights, drawn square with the frame): IoU 0.578 (0.907 in the box),
+  luma 150; the top view 81% of the cells within 0.5 m, the model's heights minus the LiDAR's p10/p50/p90
+  -0.41/0.03/0.62.
+- Step 6 (each part against the cells, the roofs redrawn in the tower's frame, the screens): IoU 0.581 (0.912 in the
+  box), luma 150 against 153; the top view: footprint IoU 0.845 (2,300 m² of the LiDAR's 2,709), 90% of the cells
+  within 0.5 m, p10/p50/p90 -0.39/0.00/0.09, the highest point 53.25 m against 53.9; block 302 under the model
+  84.0%. What is left: cells at the faces and edges; the plant, whose units stand apart with gaps between them
+  that the boxes fill; the main roof rising 0.6 m toward the south-west parapet in its last few metres; the
+  slot's openings.
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a reference through its fitted camera; say
