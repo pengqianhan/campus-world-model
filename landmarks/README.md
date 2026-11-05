@@ -1,7 +1,8 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs. The site draws the landmarks whose
+LiDAR and checked against Street View photographs (the Kate Edger Information Commons against another
+photograph of it: `"refs": "photos"`, under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
@@ -146,7 +147,7 @@ heights against each other are the LiDAR's and neither shows through the other w
 (`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
 when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
 the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
-models can mend. Three pairs touch; the nearest two landmarks that do not stand 18 m apart. Two pairs
+models can mend. Three pairs touch; the nearest two landmarks that do not stand 17 m apart. Two pairs
 share: against the map's ground at its own door 9 Eden Crescent stands 0.448 m higher and 15 Eden
 Crescent 0.448 m lower (a span of 0.90 m), the Thomas Building 0.311 m lower and its Extension 0.311 m
 higher (0.62 m). The Clock Tower and its East Wing (5.07 m) each stand on the map's ground at its own
@@ -216,8 +217,8 @@ needs:
   render and timber, glass, slate, clay tiles and metal"): change them if the new building is of
   another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
-  (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `roofTile`, `glass`, `glassPale`, `blind`,
-  `iron` and `void`)
+  (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `roofTile`, `glass`, `glassPale`, `glassGreen`,
+  `blind`, `iron` and `void`)
   but that is a roof, a pane or an opening, its part there. Every other material is drawn as wall
   in the light form, so on the map a roof in a new material takes the wall colour until it is listed.
   A material the light form would read wrongly gets a key of its own with the same shader and colour:
@@ -348,10 +349,16 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | place | `tools/data/place.py` | config `frame.expected`, `door`, `ground`, `building`, `site` | `placement.json` |
 | refs | `tools/streetview_collect.py` | frame, points, cached tiles, `refs/streetview/metadata.json` | `refs/streetview/<pano>_{wide,tower,door}.jpg`, `views.json` (camera per view), `index.json`, `metadata.json` |
 | | `tools/sky_mask.py` | the reference views, config `sky_mask` | `refs/streetview/masks/<view>.png` (0 sky, 128 ignore, 255 solid) |
+| photo (only when named) | `tools/photo_camera.py`, then `tools/sky_mask.py` | `refs/photos/<photo>` and the points picked on it, `<photo>.points.json`, the data stage's points | `refs/photos/views.json` (a camera per photograph, with its `photo_fit`), `<photo>_level.jpg` and `_level_inside.png` (the photograph as the viewer's camera sees it, and where it lies in that cut), `out/photo_camera/<photo>.png`, the masks |
 | refine | `tools/refine_cameras.mjs` + `viewer/mask.html` | views, masks, the model (`model.js`) | `refs/streetview/views_refined.json`, `out/refine/report.{json,md}`, `*_outline.jpg` |
 | compare | `tools/compare.mjs` | the viewer, `views_refined.json` (else `views.json`) | `$OUT/<view>.png`, `<view>_strip.jpg` (reference, render, overlay), `labels/`, `views_used.json`, then metrics |
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
 | topview | `tools/topview.mjs` + `tools/topview.py` | the model (`model.js`), the data stage's points | `out/topview/triangles.bin`, `metrics.json`, `metrics.md`, `topview.png` |
+
+With `"refs": "photos"` in the config (the Kate Edger Information Commons), refine, compare, metrics,
+`sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of `refs/streetview/`, refine keeps each
+`photo_fit` camera as it keeps `camera_fixes`, and the refs stage makes only the masks. `refs/photos/` is
+gitignored (`landmarks/.gitignore` keeps every `refs/` folder local).
 
 `$OUT` defaults to `out/pipeline/compare`. `compare.mjs` keeps its command line
 (`--out`, `--match`, `--query`); `--no-metrics` skips the silhouette renders and the metrics. Other

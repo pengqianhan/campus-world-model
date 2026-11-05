@@ -1,8 +1,8 @@
 """Metrics stage: per view, how well the render matches the reference photograph.
   python -I ../pipeline/tools/metrics.py <compare out dir>
 Reads <dir>/views_used.json (written by tools/compare.mjs: per view the reference, the render and the
-model's label image from viewer/mask.html) and the sky masks (refs/streetview/masks, made by
-tools/sky_mask.py; computed on the fly for a reference without one). Writes <dir>/metrics.json and
+model's label image from viewer/mask.html) and the sky masks (masks/ beside the references: refs/streetview/masks,
+or the config's `refs`; made by tools/sky_mask.py; computed on the fly for a reference without one). Writes <dir>/metrics.json and
 <dir>/metrics.md:
   iou          silhouette overlap above the cut height (model building vs photo solid; pixels the
                photo marks as trees/cars/people/dark glass and model pixels below the cut are left out)
@@ -17,8 +17,9 @@ tools/sky_mask.py; computed on the fly for a reference without one). Writes <dir
                counts them) that the photograph shows as sky: what the IoU in the box can tell. A plain
                block filling the box scores 1 - sky_in_box there, a baseline a drawn model has to beat to
                show likeness by that number; near 0, any model that fills its box scores high
-  corrected    whether the view's camera was corrected: refined (refine applied) or set by the config's
-               streetview.camera_fixes (`camera_fix` in the views file compare.mjs read)
+  corrected    whether the view's camera was corrected: refined (refine applied), set by the config's
+               streetview.camera_fixes (`camera_fix` in the views file compare.mjs read), or a photograph's
+               camera fitted to points picked on it (`photo_fit`, tools/photo_camera.py)
 and in the summary the means of `iou_box` over all views and of `iou`, `iou_box` and `sky_in_box` over
 the corrected views. These keys come after the others; the others are as they
 were before the box was added.
@@ -32,7 +33,8 @@ from sky_mask import classify
 ROOT = os.getcwd()  # the landmark's folder: every stage runs there
 out = sys.argv[1]
 used = json.load(open(os.path.join(out, "views_used.json")))
-SV = os.path.join(ROOT, "refs", "streetview")
+# the folder of the references compare.mjs drew (the config's `refs`; refs/streetview where it names none)
+SV = os.path.join(ROOT, os.path.dirname(used[0]["ref"]) if used else os.path.join("refs", "streetview"))
 # the cameras compare.mjs drew from: views_refined.json when present, else views.json
 cams = {}
 for fn in ("views.json", "views_refined.json"):
@@ -43,7 +45,7 @@ rows = []
 for u in used:
     lab = np.asarray(Image.open(u["label"]).convert("RGB")); H, W = lab.shape[:2]
     ref = Image.open(u["ref"]).convert("RGB").resize((W, H), Image.BILINEAR)
-    mpath = os.path.join(ROOT, "refs", "streetview", "masks", os.path.basename(u["ref"]).rsplit(".", 1)[0] + ".png")
+    mpath = os.path.join(ROOT, os.path.dirname(u["ref"]), "masks", os.path.basename(u["ref"]).rsplit(".", 1)[0] + ".png")
     mk = np.asarray(Image.open(mpath).resize((W, H), Image.NEAREST)) if os.path.exists(mpath) else classify(np.asarray(ref))
     ref = np.asarray(ref, np.float32); ren = np.asarray(Image.open(u["render"]).convert("RGB").resize((W, H), Image.BILINEAR), np.float32)
     # blue: a neighbour of the config's compare.occluders in front (viewer/mask.js); left out with the ground
@@ -71,10 +73,11 @@ for u in used:
         nb = int(vb.sum()); sky_box = round(float(((mk[box[1]:box[3], box[0]:box[2]] < 64) & vb).sum() / nb), 4) if nb else None
     cam = cams.get(u["file"], {})
     fixed, refined = bool(cam.get("camera_fix")), u.get("camera") == "refined"
+    fitted = bool(cam.get("photo_fit"))  # a photograph's camera, fitted by tools/photo_camera.py
     rows.append({"view": u["file"], "iou": None if iou is None else round(iou, 4), "region_px": int(region.sum()),
                  "lum_ref": lr, "lum_render": ln, "rgb_ref": cr, "rgb_render": cn, "camera": u.get("camera", "views.json"),
-                 "box": box, "iou_box": iou_box, "sky_in_box": sky_box, "corrected": fixed or refined,
-                 "correction": " and ".join(w for w, on in (("camera_fixes", fixed), ("refined", refined)) if on) or None})
+                 "box": box, "iou_box": iou_box, "sky_in_box": sky_box, "corrected": fixed or fitted or refined,
+                 "correction": " and ".join(w for w, on in (("camera_fixes", fixed), ("photo_fit", fitted), ("refined", refined)) if on) or None})
 ious = [r["iou"] for r in rows if r["iou"] is not None]
 summary = {"views": len(rows), "iou_mean": round(float(np.mean(ious)), 4) if ious else None}
 for k in ("lum_ref", "lum_render", "rgb_ref", "rgb_render"):

@@ -91,6 +91,7 @@ const LIGHT_ROLE: Record<string, keyof LightMaterials> = {
   roofTile: "roof",
   glass: "glass",
   glassPale: "glass",
+  glassGreen: "glass",
   blind: "glass",
   iron: "openings",
   void: "openings",
@@ -128,9 +129,9 @@ export interface LandmarkHost {
  * How near, in metres, the outlines of two landmarks drawn from code come for the two to stand on one
  * ground (standHeights). On the site only three pairs come this near, and in each the outlines touch or
  * overlap: the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), and the
- * Thomas Building and its Extension (110, 110N). The nearest two landmarks that do not touch, the General
- * Library (109) and Old Choral Hall (104), stand 18 m apart: each of those can stand on the map's own
- * ground without a step or an overlap between them that a camera could see.
+ * Thomas Building and its Extension (110, 110N). The nearest two landmarks that do not touch, the Kate Edger
+ * Information Commons (315) and Old Choral Hall (104), stand 17 m apart: each of those can stand on the
+ * map's own ground without a step or an overlap between them that a camera could see.
  */
 export const SHARED_GROUND = 2;
 

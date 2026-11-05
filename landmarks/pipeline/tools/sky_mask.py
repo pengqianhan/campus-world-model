@@ -3,7 +3,10 @@ The sky is clear blue (pale near the sun): it is found by colour and smoothness;
 where it touches clear-blue sky. Trees (green, orange leaves, dark trunks), dark glass and shadow are
 'ignore': they are neither model nor sky. Everything else (cream stone, lit or in shade) is 'solid'.
 Output: refs/streetview/masks/<view>.png, 0 = sky, 128 = ignore, 255 = solid. Skips masks newer than
-their photo unless --force.
+their photo unless --force. Option (config "refs", left out: "streetview"): the folder of refs/ whose views
+are masked, refs/<refs>/masks/ the masks' (refs/photos for photographs placed by tools/photo_camera.py).
+A view with a <view>_inside.png beside it (tools/photo_camera.py's level cut of a photograph, which lies inside
+a larger black cut) is masked within it: the sky must reach the photograph's top, and outside is 'ignore'.
 Option (config "sky_mask", left out: none): "branches_deg": r. Bare winter branches in front of the sky
 make it rough, so most of it fails the smoothness test and counts as solid. With r, the photograph is
 also classified a second time after a grey closing of each channel with a disc of r degrees (in pixels:
@@ -28,7 +31,9 @@ SV = os.path.join(ROOT, "refs", "streetview")
 CONFIG = os.environ.get("CONFIG") or os.path.join("config", os.path.basename(ROOT) + ".json")
 
 
-def classify(rgb, pale_tint=0):
+def classify(rgb, pale_tint=0, inside=None):
+    """inside (a boolean image, or None for the whole picture): where a photograph lies in a larger cut
+    (tools/photo_camera.py); the sky must reach the photograph's own top, and outside it is 'ignore'."""
     f = rgb.astype(np.float32); r, g, b = f[..., 0], f[..., 1], f[..., 2]
     lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
     mx, mn = f.max(-1), f.min(-1); sat = (mx - mn) / np.maximum(mx, 1)
@@ -43,9 +48,16 @@ def classify(rgb, pale_tint=0):
     pale |= haze
     cand = blue | pale
     lab, n = ndi.label(cand)
-    top = np.zeros(n + 1, bool); top[np.unique(lab[:3])] = True; top[0] = False
+    if inside is None:  # the picture's top rows, and its upper half
+        at_top, upper = lab[:3], np.arange(lum.shape[0])[:, None] < lum.shape[0] * 0.5
+    else:  # the photograph's own, column by column: 8 rows (its edge is blurred by the cut), and its upper half
+        rows, H = np.arange(lum.shape[0])[:, None], lum.shape[0]
+        first = np.where(inside.any(0), inside.argmax(0), H)[None]
+        last = np.where(inside.any(0), H - inside[::-1].argmax(0), 0)[None]
+        at_top, upper = lab[inside & (rows < first + 8)], rows < (first + last) / 2
+    top = np.zeros(n + 1, bool); top[np.unique(at_top)] = True; top[0] = False
     hasblue = np.zeros(n + 1, bool); hasblue[np.unique(lab[blue])] = True; hasblue[0] = False
-    sky = (top & hasblue)[lab] | (top[lab] & pale & (lab > 0) & (np.arange(lum.shape[0])[:, None] < lum.shape[0] * 0.5))
+    sky = (top & hasblue)[lab] | (top[lab] & pale & (lab > 0) & upper)
     sky = ndi.binary_closing(sky, iterations=2) | sky
     # blue that does not reach the top (sky between branches, reflections in glass, cars) is ambiguous
     island = (blue | haze) & ~sky
@@ -53,6 +65,8 @@ def classify(rgb, pale_tint=0):
     veg = ndi.binary_dilation(veg, iterations=2)
     out = np.full(lum.shape, 255, np.uint8)
     out[veg | island] = 128; out[sky] = 0
+    if inside is not None:
+        out[~inside] = 128
     return out
 
 
@@ -64,10 +78,10 @@ def close_branches(rgb, r):
     return np.stack([ndi.grey_closing(rgb[..., k], footprint=disc) for k in range(3)], -1)
 
 
-def mask(rgb, branches_px=0, pale_tint=0):
-    out = classify(rgb, pale_tint)
+def mask(rgb, branches_px=0, pale_tint=0, inside=None):
+    out = classify(rgb, pale_tint, inside)
     if branches_px > 0:
-        out[classify(close_branches(rgb, branches_px), pale_tint) == 0] = 0
+        out[classify(close_branches(rgb, branches_px), pale_tint, inside) == 0] = 0
     return out
 
 
@@ -75,8 +89,11 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("files", nargs="*"); ap.add_argument("--force", action="store_true"); ap.add_argument("--debug")
     ap.add_argument("--config", default=CONFIG)
     a = ap.parse_args()
-    opt = (json.load(open(a.config, encoding="utf-8")) if os.path.exists(a.config) else {}).get("sky_mask", {})
+    cfg = json.load(open(a.config, encoding="utf-8")) if os.path.exists(a.config) else {}
+    opt = cfg.get("sky_mask", {})
     deg, tint = opt.get("branches_deg", 0), opt.get("pale_tint", 0)
+    # the config's `refs`: the folder of refs/ whose views are masked (refs/streetview where it names none)
+    SV = os.path.join(ROOT, "refs", cfg.get("refs", "streetview"))
     views ={v["file"]: v for v in json.load(open(os.path.join(SV, "views.json")))} if deg else {}
     files = a.files or sorted(glob.glob(os.path.join(SV, "*_*.jpg")))
     os.makedirs(os.path.join(SV, "masks"), exist_ok=True)
@@ -86,7 +103,10 @@ if __name__ == "__main__":
         if not a.force and os.path.exists(o) and os.path.getmtime(o) > os.path.getmtime(f): continue
         rgb = np.asarray(Image.open(f).convert("RGB"))
         v = views.get(os.path.basename(f))
-        m = mask(rgb, round(deg * v["height"] / v["vfov"]) if v else 0, tint); Image.fromarray(m).save(o); n += 1
+        # a photograph's level cut (tools/photo_camera.py) comes with where the photograph lies in it
+        ins = os.path.splitext(f)[0] + "_inside.png"
+        ins = np.asarray(Image.open(ins).convert("L")) > 127 if os.path.exists(ins) else None
+        m = mask(rgb, round(deg * v["height"] / v["vfov"]) if v else 0, tint, ins); Image.fromarray(m).save(o); n += 1
         if a.debug:
             os.makedirs(a.debug, exist_ok=True)
             vis = rgb.copy(); vis[m == 0] = (vis[m == 0] * 0.3 + np.array([0, 0, 255]) * 0.7).astype(np.uint8); vis[m == 128] = (vis[m == 128] * 0.4 + np.array([255, 0, 255]) * 0.6).astype(np.uint8)

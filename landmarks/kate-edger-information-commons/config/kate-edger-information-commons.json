@@ -1,0 +1,282 @@
+{
+ "name": "kate-edger-information-commons",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; its roofs, drawn flat, and how wide the parapets round its north-west range are; the underside of its end over the sunken court, and that end's curve at its tip; the glazed roof over the atrium and the floor under it; how far down the raised part over the atrium reaches; how far the mesh panels run along its face to the atrium; and the colour of the walls and roofs no photograph shows",
+ "light": {
+  "sunaz": 200,
+  "sunel": 35,
+  "exposure": 1.8,
+  "note": "estimated: the photograph's light is soft (no shadow cast on the faces or on the court, bright cloud), so the viewer's sun stands behind the building from Alfred Street (200 deg round, 35 deg up), which leaves the north-east and north-west faces in open shade."
+ },
+ "sky_mask": {
+  "branches_deg": 1.0,
+  "pale_tint": 30,
+  "note": "the photograph's sky over the building is seen through bare plane trees: without the closing, the sky between their branches (white cloud, not smooth) counts as solid."
+ },
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
+ "building": {
+  "id": "315",
+  "also": [],
+  "title": "Kate Edger Information Commons, University of Auckland",
+  "note": "outline: building 315's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 315 by its id.",
+  "outline": [
+   [
+    28.7,
+    -13.7
+   ],
+   [
+    25.9,
+    -11.3
+   ],
+   [
+    25.2,
+    -12.1
+   ],
+   [
+    16.6,
+    -5.1
+   ],
+   [
+    17.2,
+    -4.4
+   ],
+   [
+    3.8,
+    6.5
+   ],
+   [
+    5.7,
+    8.9
+   ],
+   [
+    2.7,
+    11.3
+   ],
+   [
+    3.3,
+    12.1
+   ],
+   [
+    2.1,
+    13.0
+   ],
+   [
+    12.6,
+    26.0
+   ],
+   [
+    11.9,
+    26.5
+   ],
+   [
+    9.2,
+    23.2
+   ],
+   [
+    7.4,
+    24.7
+   ],
+   [
+    13.4,
+    32.2
+   ],
+   [
+    14.6,
+    31.3
+   ],
+   [
+    16.8,
+    34.1
+   ],
+   [
+    18.2,
+    32.9
+   ],
+   [
+    24.6,
+    40.9
+   ],
+   [
+    24.2,
+    41.6
+   ],
+   [
+    26.5,
+    47.7
+   ],
+   [
+    27.0,
+    48.1
+   ],
+   [
+    32.0,
+    46.1
+   ],
+   [
+    35.8,
+    42.8
+   ],
+   [
+    48.7,
+    58.7
+   ],
+   [
+    48.2,
+    59.2
+   ],
+   [
+    45.8,
+    56.2
+   ],
+   [
+    43.7,
+    57.9
+   ],
+   [
+    47.6,
+    62.7
+   ],
+   [
+    50.8,
+    60.1
+   ],
+   [
+    51.1,
+    60.6
+   ],
+   [
+    59.3,
+    57.5
+   ],
+   [
+    60.4,
+    59.4
+   ],
+   [
+    62.7,
+    58.6
+   ],
+   [
+    61.6,
+    56.7
+   ],
+   [
+    62.6,
+    56.2
+   ],
+   [
+    50.2,
+    33.7
+   ],
+   [
+    52.3,
+    35.3
+   ],
+   [
+    54.3,
+    39.0
+   ],
+   [
+    60.2,
+    34.2
+   ],
+   [
+    64.0,
+    37.1
+   ],
+   [
+    64.8,
+    36.5
+   ],
+   [
+    62.5,
+    33.7
+   ],
+   [
+    65.2,
+    31.5
+   ],
+   [
+    67.4,
+    34.3
+   ],
+   [
+    76.2,
+    27.2
+   ],
+   [
+    36.9,
+    -21.5
+   ],
+   [
+    28.2,
+    -14.5
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 41.5,
+ "door": {
+  "x": -42.0,
+  "z": 19.75,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The footpath of Alfred Street before the north-west side of the end over the court (the prow), 4.4 m north-east of that side's corner, where the LiDAR's ground is 41.50 m (21 ground returns within 1 m: 41.43-41.57 for p10-p90), the frame's ground. No wall's foot stands on that ground: at the north-west range's face to the north-west it is 0.21 m higher (x -25, z 19). The entrances the photograph shows are at the sunken court's level, 3.5 m lower (the shopfront across the atrium's end and the entrance under the prow's tip), down steps from this footpath; the map's ground has no court (2.41 m above the LiDAR's there), so a door in the court would stand the model's street level 3.4 m above the map's street."
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3,
+  "tower_above": 3,
+  "spine_below": 30,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    39.26110032848694,
+    17.698719877676453
+   ],
+   "axis": [
+    0.6927250991418744,
+    0.721201731153552
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (door.note), which is the median LiDAR ground (class 2) in the crop box (p5 38.0, p95 45.2: the site falls about 7 m) that the model was measured from"
+}

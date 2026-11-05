@@ -1,0 +1,61 @@
+// Shapes the parts share: a plan [[x, z], ...] raised between two heights, and a block with its flat roof.
+import * as THREE from "three";
+
+/** The plan raised from y0 to y1: its walls and both ends, in `material`. */
+export function prism(b, plan, y0, y1, material) {
+  // A shape in (x, -z) extruded along +z, then turned so that the extrusion runs up y.
+  const s = new THREE.Shape(plan.map(([x, z]) => new THREE.Vector2(x, -z)));
+  const g = new THREE.ExtrudeGeometry(s, { depth: y1 - y0, bevelEnabled: false });
+  g.rotateX(-Math.PI / 2);
+  g.translate(0, y0, 0);
+  b.add(g, material);
+}
+
+/** The plan raised from lo(x, z) to hi(x, z): a prism whose foot and top need not be level. Each should be linear in
+ * x and z over the plan, so that both ends stay flat. */
+export function prismBetween(b, plan, lo, hi, material) {
+  const s = new THREE.Shape(plan.map(([x, z]) => new THREE.Vector2(x, -z)));
+  const g = new THREE.ExtrudeGeometry(s, { depth: 1, bevelEnabled: false });
+  g.rotateX(-Math.PI / 2);
+  const p = g.getAttribute("position");
+  for (let i = 0; i < p.count; i++) {
+    const [x, z] = [p.getX(i), p.getZ(i)];
+    p.setY(i, p.getY(i) < 0.5 ? lo(x, z) : hi(x, z));
+  }
+  g.computeVertexNormals();
+  b.add(g, material);
+}
+
+/** A panel `t` thick hung `off` before the face from plan point a to plan point c: n is the face's outward unit
+ * normal [x, z]; from y0 to y1. */
+export function panel(b, a, c, n, off, t, y0, y1, material) {
+  const at = (p, d) => [p[0] + n[0] * d, p[1] + n[1] * d];
+  prism(b, [at(a, off), at(c, off), at(c, off + t), at(a, off + t)], y0, y1, material);
+}
+
+/** Bands `width` wide just inside the plan along `run`, a line of points on its edges, from y0 to y1 (a parapet). */
+export function band(b, plan, run, width, y0, y1, material) {
+  const s = Math.sign(plan.reduce((a, p, i) => { const q = plan[(i + 1) % plan.length]; return a + p[0] * q[1] - q[0] * p[1]; }, 0));
+  for (let i = 0; i + 1 < run.length; i++) {
+    const [a, c] = [run[i], run[i + 1]], l = Math.hypot(c[0] - a[0], c[1] - a[1]);
+    panel(b, a, c, [-s * (c[1] - a[1]) / l, s * (c[0] - a[0]) / l], 0, width, y0, y1, material);  // the inward normal
+  }
+}
+
+/** The part of the plan on one side of the line z = c: `above` keeps z >= c. The plan should cross it twice. */
+export function clipZ(plan, c, above) {
+  const keep = (p) => (above ? p[1] >= c : p[1] <= c), out = [];
+  for (let i = 0; i < plan.length; i++) {
+    const [a, q] = [plan[i], plan[(i + 1) % plan.length]];
+    if (keep(a)) out.push(a);
+    if (keep(a) !== keep(q)) out.push([a[0] + (q[0] - a[0]) * (c - a[1]) / (q[1] - a[1]), c]);
+  }
+  return out;
+}
+
+/** A block: walls round the plan from y0 to the underside of its roof, and the roof, `t` thick, with its top at
+ * `top`. */
+export function block(b, plan, y0, top, wall, roof, t = 0.15) {
+  prism(b, plan, y0, top - t, wall);
+  prism(b, plan, top - t, top + 0.01, roof);
+}
