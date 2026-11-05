@@ -86,21 +86,29 @@ Each part's 0.5 m cells against the model's own heights: the aisles, the middles
 within 0.5 m on 96 to 100% of their cells, the raised corner on 57%. The LiDAR's returns over the corner
 above 21.4 m bound an octagon, the corners of a square cut, the north-east one most, along the diagonal; the
 pyramid over the whole square stood up to a metre high over the cut corners and in the angle of the L. The
-corner's roof is drawn now as the lowest of one plane per side of the octagon, each rising 0.65 a metre from
-its eave (21.3 to 21.9 m), flat at the top at 23.8 m (fitted to the returns: an rms of 0.20 m, 90% within
-0.08); under it the square at the aisles' tops, a roof at 20.95 m in the angle of the L, and the two middles
-running on under it over the cut corners. The aisles' step on the face to the courtyard is at the stair's
+corner's roof is drawn now as the lowest of one plane for each of six sides of the octagon, each rising 0.65 a
+metre from its eave (21.3 to 21.9 m), flat at the top at 23.8 m (fitted to the returns: an rms of 0.20 m, 90%
+within 0.08); the short north-east and south-east sides have no plane of their own (no return lies on one),
+their edges where the slopes beside them meet them, at up to 22.3 m. Under it the square at the aisles' tops, a
+roof at 20.95 m in the angle of the L, and the two middles running on under it over the cut corners. The aisles' step on the face to the courtyard is at the stair's
 slot, where the cells have it. The corner's cells are within 0.5 m on 96%, the whole building's on 98%; the
 highest point 23.8 m against 23.86; footprint IoU 0.898. Silhouette IoU 0.899, 0.930 in the box; the luma
 median 141 against 133. 6,589 triangles, 9 draw calls; no two faces in one plane.
+
+The review (November 2026) found two holes under the ends of the aisles' roofs, where they rise above the
+walls' tops to the step (up to 0.5 m² each, seen from the angle of the L), and a sliver of the street wing's
+middle's open end standing outside the corner's roof: each end is closed now (`aisles()` in `parts/wings.js`,
+`hipRoof()` in `parts/shapes.js`), 6,603 triangles.
 
 ## On the map (step 7)
 
 - **The door** is on the path along the north-east wing's north-west face at (-18.6, -10.9), 1.45 m out from
   its eave, where the LiDAR's ground is the frame's (32.90 m; 12 returns within 1 m, 32.86 to 32.96 from p10
   to p90). The entrance the photograph shows, at the stair's foot on the courtyard, stands on ground 0.21 to
-  0.36 m higher, and 32.9 m is nowhere within 33 m of it. So, as for the Kate Edger Information Commons, the
-  door is where the frame's ground is, every height is kept, and `door.note` says where the entrance is.
+  0.36 m higher, and the nearest level ground at 32.9 m is this path, 33 m off (14 m south-east of the entrance
+  the ground returns within 1 m have a median of 32.9 but span half a metre). So, as for the Kate Edger
+  Information Commons, the door is where the frame's ground is, every height is kept, and `door.note` says where
+  the entrance is.
 - `building.also` is empty (block 207, 1.2%).
 
 ## On the site

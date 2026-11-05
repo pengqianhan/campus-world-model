@@ -206,7 +206,7 @@
  "door": {
   "x": -18.6,
   "z": -10.9,
-  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The path along the north-east wing's north-west face, 1.45 m out from its eave's front, under the low covering the LiDAR shows there at 3.2-3.8 m, where the LiDAR's ground is 32.90 m (12 ground returns within 1 m: 32.86-32.96 for p10-p90), the frame's ground. The entrance the photograph shows, at the stair's foot on the courtyard, stands on ground 0.21-0.36 m higher (32.90 is nowhere within 33 m of it: the courtyard falls from 33.15-33.26 at the face to 33.01-33.05 6 m out), so a door there would stand the model about 0.25 m above the LiDAR's ground."
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The path along the north-east wing's north-west face, 1.45 m out from its eave's front, under the low covering the LiDAR shows there at 3.2-3.8 m, where the LiDAR's ground is 32.90 m (12 ground returns within 1 m: 32.86-32.96 for p10-p90), the frame's ground. The entrance the photograph shows, at the stair's foot on the courtyard, stands on ground 0.21-0.36 m higher (the courtyard falls from 33.15-33.26 at the face to 33.01-33.05 6 m out, and the nearest level ground at 32.90 is this path, 33 m off: 14 m south-east of the entrance the ground returns within 1 m have a median of 32.90 but span half a metre, p10-p90 32.49-33.06), so a door there would stand the model about 0.25 m above the LiDAR's ground."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

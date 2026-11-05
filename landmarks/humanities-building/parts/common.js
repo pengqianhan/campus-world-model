@@ -71,7 +71,8 @@ export const MEASURED = {
   // to (0.4, 5.5) (each side where the outermost returns stop, in 16 directions). Its roof is the lowest of one plane
   // per side, each rising 0.65 a metre inward from that side's eave, and flat at the top at 23.8 m (fitted to the 803
   // returns more than 0.3 m inside the sides: rms 0.20 m, 90% within 0.08; the highest returns' p99.9 23.86). The
-  // eaves of the north and east sides are left out: no return lies on their planes (the roof's edge there is the
+  // eaves of the short north-east and south-east sides (z -1.45 and x 0.4) are left out: no return lies on their
+  // planes (the roof's edge there is the
   // planes beside them, 22.3 and 22.25 at the highest: the returns' 22.0-22.5). Its walls at its eaves' fronts (no
   // overhang: the LiDAR cannot see one), from below the aisles' tops.
   corner: { plan: [[-10.95, 0.35], [-9.15, -1.45], [-6.55, -1.45], [0.4, 5.5], [0.4, 7.8], [-1.6, 9.8], [-9.15, 9.8], [-10.95, 8.0]],

@@ -61,16 +61,17 @@ export function loft(b, outer, inner, material, closed = false) {
 }
 
 /** A roof over [x0, x1] x [z0, z1] with its eaves at `eave` and its ridge at `ridge`: along x on z = `at`
- * (`along` "x") or along z on x = `at` ("z"). Each end hipped back by its hip, in metres; the first end (x0 or z0)
- * with a hip of 0 is left open, for an end inside another part, and the second's gable is drawn on both sides. */
+ * (`along` "x") or along z on x = `at` ("z"). Each end hipped back by its hip, in metres; an end with a hip of 0
+ * has a gable, drawn on both sides (review, round 1: the street wing's middle's end in the corner was left open,
+ * and a sliver of it stood outside the corner's roof). */
 export function hipRoof(b, [x0, x1], [z0, z1], eave, ridge, along, at, [hip0, hip1], material) {
   const e = (x, z) => [x, eave, z];
   if (along === "x") {
     const r0 = [x0 + hip0, ridge, at], r1 = [x1 - hip1, ridge, at];
-    loft(b, [e(x0, z0), e(x1, z0), e(x1, z1), e(x0, z1)], [r0, r1, r1, r0], material, hip0 > 0);
+    loft(b, [e(x0, z0), e(x1, z0), e(x1, z1), e(x0, z1)], [r0, r1, r1, r0], material, true);
   } else {
     const r0 = [at, ridge, z0 + hip0], r1 = [at, ridge, z1 - hip1];
-    loft(b, [e(x1, z0), e(x1, z1), e(x0, z1), e(x0, z0)], [r0, r1, r1, r0], material, hip0 > 0);
+    loft(b, [e(x1, z0), e(x1, z1), e(x0, z1), e(x0, z0)], [r0, r1, r1, r0], material, true);
   }
 }
 

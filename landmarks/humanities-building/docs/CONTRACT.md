@@ -9,8 +9,9 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 - View frame, metres: **x** south-east (the frame's `-axis`, along the street wing), **y** up from the frame's
   ground (32.9 m NZVD2016, the median ground in the crop box, and the LiDAR's ground at the config's `door`: on the
   path along the north-east wing's north-west face; the courtyard before the entrance is 0.21-0.36 m higher, and
-  nowhere within 33 m of it at 32.9), **z** south-west (`toStreet`, toward the courtyard and Symonds Street); the
-  frame's centre at x = z = 0.
+  the nearest level ground at 32.9 is the path, 33 m off: 14 m south-east of it the ground returns within a metre
+  have a median of 32.9 but span half a metre), **z** south-west (`toStreet`, toward the courtyard and Symonds
+  Street); the frame's centre at x = z = 0.
   `config/humanities-building.json`, `frame`: the axis is the bearing of most of the walls; both wings are square
   to it.
 - The building's own returns only. campus.json's ring of 206 takes in the courtyard south-west of the street wing
@@ -25,10 +26,11 @@ code. Photographs are **references only**; nothing is traced or sampled from the
     18.2-19.1 m to eaves at 16.8 m, 17.3 m along the street wing's south-west face north-west of the stair's slot
     (x -1.0; 0.3 m further forward there) and along the north-west end;
   - over the corner where the wings meet, **a raised roof on eight sides** (step 6: an octagon from x -10.95 to
-    0.4 and z -1.45 to 9.8, the corners of a square cut, the north-east one most, along the diagonal), each side's
-    slope rising 0.65 a metre from its eave (21.3-21.9 m) to a flat top at 23.8 m (one plane per side fitted to
-    the returns); in the angle of the L, north-east of its diagonal side, a roof at 20.95 m, and beyond it the inner
-    faces' corner filled at 20.7 m;
+    0.4 and z -1.45 to 9.8, the corners of a square cut, the north-east one most, along the diagonal), six of its
+    sides' slopes rising 0.65 a metre from their eaves (21.3-21.9 m) to a flat top at 23.8 m (one plane for each of
+    the six, fitted to the returns; the short north-east and south-east sides have none, no return lying on such a
+    plane, and their edges are where the slopes beside them meet them, at up to 22.3 m); in the angle of the L,
+    north-east of its diagonal side, a roof at 20.95 m, and beyond it the inner faces' corner filled at 20.7 m;
   - at the street wing's south-east end, where the ground is 8 m lower, **the low block**: its eaves at 6.2 m and
     a ridge at 7.8 m, hipped at its south-east end;
   - **the ground**: about +0.2 in the courtyard and along the north-west end, -1.7 to 0 along the north-east wing's
@@ -36,7 +38,8 @@ code. Photographs are **references only**; nothing is traced or sampled from the
     down to `FOOT` (-8.5 m).
 - What the photograph shows, through its fitted camera (`refs/photos/views.json`): the street wing's south-west
   face from the courtyard. Four bands of buff brick between ribbons of windows (the bands' edges, from the LiDAR,
-  at 3.00/4.68, 6.48/8.19, 9.96/11.75 and 13.45/14.33 m south-east of the stair's slot, the floors 3.5 m apart),
+  at 3.00/4.68, 6.48/8.19, 9.96/11.75 and 13.45 m south-east of the stair's slot, the floors 3.5 m apart; the top
+  band's upper edge is under the eave, where the LiDAR cannot see it),
   the windows' frames dark, most of their panes behind film in vertical stripes of red, orange and yellow; the part
   north-west of the slot 0.3 m forward, its bands' corners cut at its south-east end; a slot at x -1.0 to 0.5 for the
   stair, glazed in dark red frames; the entrance at the ground in the slot's foot; the eaves' fascia dark red.
@@ -69,7 +72,8 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 273 triangles, 3 draw calls; round 1: 6,357
-  triangles, 9 draw calls; step 6: 6,589 triangles, 9 draw calls.
+  triangles, 9 draw calls; step 6: 6,589 triangles, 9 draw calls; the review's round 1: 6,603 (the aisles' roofs'
+  two ends and the street wing's middle's end in the corner closed), 9 draw calls.
   Build time of a part ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 

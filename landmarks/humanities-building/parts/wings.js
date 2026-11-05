@@ -36,7 +36,8 @@ function eaveEdge(b, eave, wall, wallTop, depth, material) {
 }
 
 /** The aisles: their roofs from the eaves to the step, the fascia and soffit, and the outer walls under them. The
- * walls' line runs on at both ends into the middles' blocks, so that no slit is left where they meet. */
+ * walls' line runs on at both ends into the middles' blocks, so that no slit is left where they meet; the roofs'
+ * two ends, which rise above the walls' tops to the step, are closed under their edges. */
 export function aisles(b) {
   const E = M.eave, wall = inset(E.map(([x, , z]) => [x, z]), M.overhang), tops = E.map(([, y]) => y - M.fascia + 0.05);
   // the south-west face's two parts (the eave's points 3 to 6): the wall at the glazing, the bands before it
@@ -44,6 +45,18 @@ export function aisles(b) {
   loft(b, E, M.aisleTop, ROOF);
   eaveEdge(b, E, wall, tops, M.fascia, ROOF);
   curtain(b, [[19.4, 3.1], ...wall, [-3.9, -24.0]], [tops[0], ...tops, tops[tops.length - 1]], FOOT, WALL);
+  // each end (review, round 1: from the angle of the L, a hole up to 0.5 m2 under each): a wall under the edge
+  // from the eave's point to its top at the step, down to the fascia's foot, facing away from the aisle; and the
+  // soffit's end under it, back to the wall, and the soffit's last length, drawn both ways (the wall runs just
+  // outside the edge at the north-east wing's end, so that a sliver of the soffit stands out past the roof there)
+  for (const [i, j] of [[0, 1], [E.length - 1, E.length - 2]]) {
+    const [e, t, f] = [E[i], M.aisleTop[i], E[j]], y = e[1] - M.fascia, away = [2 * e[0] - f[0], 2 * e[2] - f[2]];
+    tris(b, [[[e[0], y, e[2]], [t[0], y, t[2]], t], [[e[0], y, e[2]], t, e]], WALL, () => away);
+    const [ei, ej] = [[e[0], y, e[2]], [f[0], f[1] - M.fascia, f[2]]], [wi, wj] = [i, j].map((k) => [wall[k][0], tops[k], wall[k][1]]);
+    const end = [ei, wi, [t[0], y, t[2]]];
+    tris(b, [end], ROOF, "down");
+    tris(b, [end, [ei, ej, wj], [ei, wj, wi]], ROOF, "up");
+  }
 }
 
 /** A middle: its walls up to its eaves, its roof, and its eaves' fascia and soffit round the roof's rectangle. */
