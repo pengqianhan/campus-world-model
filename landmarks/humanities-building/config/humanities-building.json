@@ -1,6 +1,7 @@
 {
  "name": "humanities-building",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; how far its windows stand back behind its brick bands, how wide their panes are and which of them have the striped film; the roofs in the angle of its L, drawn flat; and the colour of the walls and roofs no photograph shows",
  "sky_mask": {
   "branches_deg": 1.0,
   "note": "the photograph's sky over the building is seen through a tree's branches at its top right: without the closing 2.6% of the photograph is sky, with it 5.5%, the whole strip over the eaves; pale_tint 20 made pale sky solid (3.5%), so it is left out"

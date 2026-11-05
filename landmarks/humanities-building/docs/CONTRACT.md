@@ -62,7 +62,8 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   shader in a pale buff; estimated on the faces no reference shows) and the film's `filmRed`, `filmOrange` and
   `filmYellow`; the kit's `glass` (the panes), `iron` (the windows' frames), `frameRed` (the slot's frames),
   `roofTile` (the roofs, red clay tiles in the 2023 aerial) and `roofGrey` (the low block's roof, estimated). On the
-  site the film is the light form's glass (`LIGHT_ROLE`, `src/scene/landmarks.ts`, at step 8).
+  site the film is the light form's glass (`LIGHT_ROLE`, `src/scene/landmarks.ts`); the brick and the slot's red
+  frames are its walls.
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 

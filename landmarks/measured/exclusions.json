@@ -393,23 +393,6 @@
     "open_below": 0.196
    }
   },
-  "206": {
-   "name": "Humanities Building",
-   "reason": "roof cells cover 77% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 1646.5,
-    "ground": {
-     "p5": 24.77,
-     "p50": 29.33,
-     "p95": 33.3,
-     "zero": 24.84
-    },
-    "roof_inside_m2": 1265.8,
-    "cover": 0.767,
-    "vegetation": 0.1,
-    "open_below": 0.133
-   }
-  },
   "207": {
    "name": "CLL Building",
    "reason": "roof cells cover 74% of the outline (limit 85%)",
