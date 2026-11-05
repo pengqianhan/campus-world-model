@@ -209,6 +209,22 @@ function glassPale(space) {
 }
 
 /**
+ * Green-tinted glazing (the Kate Edger Information Commons): glassPale's glass, the sky it reflects, over rooms
+ * behind tinted green and darker than glassPale's (its photograph: the glazing about 60 luma, R 50 G 68 B 66).
+ */
+function glassGreen(space) {
+  const m = new THREE.MeshPhysicalMaterial({ color: 0x1a1f22, roughness: 0.12, metalness: 0, ior: 1.52, envMapIntensity: 1.2, specularIntensity: 1 });
+  m.userData.metres = 2;
+  return hook(m, "glassGreen-v1", /* glsl */ `
+  {
+    vec3 P = vWPos, N = normalize(vWNrm);
+    float side = abs(N.x) > abs(N.z) ? P.z : P.x;
+    float rooms = wn(vec3(side * 0.9, P.y * 1.3, 3.0));
+    diffuseColor.rgb = mix(vec3(0.016, 0.035, 0.032), vec3(0.040, 0.062, 0.056), smoothstep(0.35, 0.85, rooms));
+  }`, {}, undefined, space);
+}
+
+/**
  * Red brick (Old Choral Hall): courses 0.086 m high (a 76 mm brick and its 10 mm joint), bricks 0.23 m
  * long, each course set half a brick along from the one below, on every wall whatever way it faces.
  * Pale mortar joints, a little brick-to-brick variation, a faint broad unevenness. The joints fade to
@@ -304,6 +320,14 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     // the blinds behind its panes: the paint's own white, a material of their own so that the light form
     // draws them with the panes they are seen through (LIGHT_ROLE: glass), not as wall
     blind: painted(0xf2f0ea, 0.5, space),
+    // the Kate Edger Information Commons: the paint's shader in three greys (its photograph): its pale grey
+    // cladding, and its metal screens, the pale silver perforated screens and the grey mesh panels hung before
+    // its glazing
+    claddingPale: painted(0xc4c6c6, 0.6, space),
+    screenSilver: painted(0xa8aaaa, 0.5, space),
+    screenGrey: painted(0x6c6e6c, 0.6, space),
+    // and its green-tinted glazing: glassPale's glass over darker rooms tinted green
+    glassGreen: glassGreen(space),
   };
   return m;
 }

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Landmark pipeline: data -> refs -> refine -> compare -> metrics, for one landmark (a folder in landmarks/).
 # Each stage is idempotent and runs in the landmark's folder.
-#   landmarks/pipeline/run.sh <name> [data|place|refs|refine|compare|metrics|topview|all] ...      (default: all)
+#   landmarks/pipeline/run.sh <name> [data|place|refs|photo|refine|compare|metrics|topview|all] ...      (default: all)
+# photo (only when named): the cameras of photographs in refs/photos from points picked on them (tools/photo_camera.py),
+# and their sky masks; with the config's "refs": "photos", refs makes the masks only.
 # Environment:
 #   CONFIG=config/<name>.json       building config, in the landmark's folder
 #   PY=python3                      Python with numpy laspy[lazrs] pyproj scipy pillow matplotlib rasterio
@@ -49,6 +51,13 @@ stage_data() {
 stage_place() { echo "== place"; py "$T/data/place.py" --config "$CONFIG"; }
 stage_refs() {
   echo "== refs"
+  # The config's `refs` other than streetview: photographs, whose views the photo stage makes; only their masks here.
+  # (Read first, so that a config that cannot be read stops the run.)
+  local refs
+  refs=$(py -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("refs", "streetview"))' "$CONFIG")
+  if [[ $refs != streetview ]]; then
+    py "$T/sky_mask.py" --config "$CONFIG"; return
+  fi
   # Offline means no fetch at all, so ALLOW_FETCH goes online (metadata still comes from the snapshots).
   if [[ -f refs/streetview/metadata.json && -z "${REFS_ONLINE:-}" && "${ALLOW_FETCH:-}" != 1 ]]; then
     py "$T/streetview_collect.py" --config "$CONFIG" --offline
@@ -58,6 +67,7 @@ stage_refs() {
   fi
   py "$T/sky_mask.py" --config "$CONFIG"
 }
+stage_photo() { echo "== photo"; py "$T/photo_camera.py" --config "$CONFIG"; py "$T/sky_mask.py" --config "$CONFIG"; }
 stage_refine() { echo "== refine"; server; CONFIG=$CONFIG node "$T/refine_cameras.mjs" --config "$CONFIG"; }
 stage_compare() { echo "== compare"; server; CONFIG=$CONFIG node "$T/compare.mjs" --out "$OUT" ${QUERY:+--query "$QUERY"}; }
 stage_topview() { echo "== topview"; server; CONFIG=$CONFIG PY=$PY node "$T/topview.mjs"; }
@@ -70,8 +80,8 @@ stage_metrics() {
 [[ $# -eq 0 ]] && set -- all
 for s in "$@"; do
   case $s in
-    data|place|refs|refine|compare|metrics|topview) "stage_$s" ;;
+    data|place|refs|photo|refine|compare|metrics|topview) "stage_$s" ;;
     all) stage_data; stage_refs; stage_refine; stage_compare ;;  # compare runs the metrics too
-    *) echo "unknown stage $s (data|place|refs|refine|compare|metrics|topview|all)"; exit 2 ;;
+    *) echo "unknown stage $s (data|place|refs|photo|refine|compare|metrics|topview|all)"; exit 2 ;;
   esac
 done

@@ -39,10 +39,12 @@ camera.position.fromArray(cam.position);
 camera.lookAt(new THREE.Vector3().fromArray(cam.target));
 let refImage = null;  // ?sv=<view file> sets it: the overlay needs a reference to lay over the picture
 if (params.get("sv")) {
-  const v = (await (await fetch(`${DIR}refs/streetview/views.json`)).json()).find((v) => v.file === params.get("sv"));
+  // the views of the config's `refs` folder (refs/streetview where it names none)
+  const refs = `${DIR}refs/${config.refs ?? "streetview"}/`;
+  const v = (await (await fetch(`${refs}views.json`)).json()).find((v) => v.file === params.get("sv"));
   camera.position.fromArray(v.position); camera.lookAt(new THREE.Vector3().fromArray(v.target));
   camera.fov = v.vfov; camera.updateProjectionMatrix();
-  refImage = `${DIR}refs/streetview/${v.file}`;
+  refImage = `${refs}${v.file}`;
 }
 if (params.get("pos")) {
   camera.position.fromArray(params.get("pos").split(",").map(Number));

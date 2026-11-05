@@ -20,7 +20,7 @@
     {
       "file": "landmarks/aerial/auckland-central_2023_0.06m/BA32_2000_1902.tiff",
       "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_1902.tiff",
-      "fetchedAt": "2026-10-21T11:52:42.417Z",
+      "fetchedAt": "2026-11-04T01:41:57.790Z",
       "bytes": 592763910,
       "sha256": "52e7b808645b40649931f89e8e9f1b4969133925e62e3166694ca61e44a1dd12",
       "source": "linz-aerial"
