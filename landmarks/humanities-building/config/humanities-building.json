@@ -203,9 +203,9 @@
  "crop_margin": 25,
  "ground": 32.9,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -18.6,
+  "z": -10.9,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The path along the north-east wing's north-west face, 1.45 m out from its eave's front, under the low covering the LiDAR shows there at 3.2-3.8 m, where the LiDAR's ground is 32.90 m (12 ground returns within 1 m: 32.86-32.96 for p10-p90), the frame's ground. The entrance the photograph shows, at the stair's foot on the courtyard, stands on ground 0.21-0.36 m higher (32.90 is nowhere within 33 m of it: the courtyard falls from 33.15-33.26 at the face to 33.01-33.05 6 m out), so a door there would stand the model about 0.25 m above the LiDAR's ground."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

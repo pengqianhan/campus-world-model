@@ -1,6 +1,6 @@
 // Shapes the parts share: a plan [[x, z], ...] raised between two heights, a block with its flat roof, triangles
-// facing a given way, the surface between two lines of points (a roof's slopes from its eaves to its ridge), and a
-// line of points moved inward.
+// facing a given way, the surface between two lines of points (a roof's slopes from its eaves to its ridge), a roof
+// of planes over a convex plan, and a line of points moved inward.
 import * as THREE from "three";
 
 /** The plan raised from y0 to y1: its walls and both ends, in `material`. */
@@ -74,10 +74,39 @@ export function hipRoof(b, [x0, x1], [z0, z1], eave, ridge, along, at, [hip0, hi
   }
 }
 
-/** A pyramid over [x0, x1] x [z0, z1], its eaves at `eave` and its apex [x, y, z]. */
-export function pyramid(b, [x0, x1], [z0, z1], eave, apex, material) {
-  const e = (x, z) => [x, eave, z];
-  loft(b, [e(x0, z0), e(x1, z0), e(x1, z1), e(x0, z1)], [apex, apex, apex, apex], material, true);
+/** The part of a convex plan [[x, z], ...] where c + cx x + cz z <= 0, for `line` [c, cx, cz]. */
+function clip(plan, [c, cx, cz]) {
+  const f = ([x, z]) => c + cx * x + cz * z, out = [];
+  plan.forEach((p, i) => {
+    const q = plan[(i + 1) % plan.length], fp = f(p), fq = f(q);
+    if (fp <= 0) out.push(p);
+    if ((fp < 0 && fq > 0) || (fp > 0 && fq < 0)) { const t = fp / (fp - fq); out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]); }
+  });
+  return out;
+}
+
+/** A roof over a convex plan [[x, z], ...]: at each point the lowest of the planes [a, u, v] (the height a + u x +
+ * v z), each plane drawn where it is the lowest. Returns the roof's edge: for each side of the plan, its points
+ * [x, y, z] from its first corner to the next, with a point wherever the plane over it changes. */
+export function envelope(b, plan, planes, material) {
+  const list = [], at = ([a, u, v], [x, z]) => a + u * x + v * z;
+  planes.forEach((P, i) => {
+    let part = plan;
+    planes.forEach((Q, j) => { if (j !== i && part.length) part = clip(part, [P[0] - Q[0], P[1] - Q[1], P[2] - Q[2]]); });
+    const pt = (p) => [p[0], at(P, p), p[1]];
+    for (let k = 1; k + 1 < part.length; k++) list.push([pt(part[0]), pt(part[k]), pt(part[k + 1])]);
+  });
+  tris(b, list, material, "up");
+  const low = (p) => Math.min(...planes.map((P) => at(P, p)));
+  return plan.map((p, i) => {
+    const q = plan[(i + 1) % plan.length], ts = [0, 1], on = (t) => [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
+    planes.forEach((P, j) => planes.forEach((Q, k) => {
+      if (k <= j) return;
+      const f0 = at(P, p) - at(Q, p), f1 = at(P, q) - at(Q, q);
+      if ((f0 < 0 && f1 > 0) || (f0 > 0 && f1 < 0)) ts.push(f0 / (f0 - f1));
+    }));
+    return ts.sort((s, t) => s - t).map((t) => { const r = on(t); return [r[0], low(r), r[1]]; });
+  });
 }
 
 /** An open line of plan points [[x, z], ...] moved `d` to its left (inward, for a line that runs round a building

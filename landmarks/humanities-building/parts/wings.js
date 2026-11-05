@@ -4,19 +4,20 @@
 // walls in buff brick (estimated where the photograph does not show them), and on the street wing's south-west face
 // the walls at the windows' glazing, set back behind its bands (parts/facade.js).
 import { FOOT, MEASURED } from "./common.js";
-import { hipRoof, inset, loft, prism, pyramid, tris } from "./shapes.js";
+import { block, envelope, hipRoof, inset, loft, prism, tris } from "./shapes.js";
 
 const M = MEASURED;
 const WALL = "brickBuff", ROOF = "roofTile";
 
-/** Upright quads between points [x, z] of a line, from y0 to each point's top, each facing away from the line's
- * left (the line runs round the building with it on its left). */
+/** Upright quads between points [x, z] of a line, from y0 (a height, or one per point) to each point's top, each
+ * facing away from the line's left (the line runs round the building with it on its left). */
 function curtain(b, line, tops, y0, material) {
+  const foot = (i) => (Array.isArray(y0) ? y0[i] : y0);
   for (let i = 0; i + 1 < line.length; i++) {
     const [p, q] = [line[i], line[i + 1]], l = Math.hypot(q[0] - p[0], q[1] - p[1]);
     if (l < 1e-6) continue;
     const out = [(q[1] - p[1]) / l, -(q[0] - p[0]) / l];
-    const a = [p[0], y0, p[1]], c = [q[0], y0, q[1]], ct = [q[0], tops[i + 1], q[1]], at = [p[0], tops[i], p[1]];
+    const a = [p[0], foot(i), p[1]], c = [q[0], foot(i + 1), q[1]], ct = [q[0], tops[i + 1], q[1]], at = [p[0], tops[i], p[1]];
     tris(b, [[a, c, ct], [a, ct, at]], material, (m) => [m[0] + out[0] * 10, m[1] + out[1] * 10]);
   }
 }
@@ -57,13 +58,24 @@ function middle(b, P, along) {
 export const street = (b) => middle(b, M.street, "x");
 export const northeast = (b) => middle(b, M.northeast, "z");
 
-/** The raised corner: its walls, its pyramid and its eaves; and the fill in the angle of the L, flat. */
+/** The raised corner: the block under it at the aisles' tops, its roof of eight slopes and a flat top, its walls
+ * and fascia at the roof's edge; the roof in the angle of the L beside it; and the fill there, flat. */
 export function corner(b) {
-  const C = M.corner, { x: [x0, x1], z: [z0, z1] } = C.roof, F = M.fill;
-  prism(b, C.plan, FOOT, C.eave, WALL);
-  pyramid(b, C.roof.x, C.roof.z, C.eave, C.apex, ROOF);
-  const rect = [[x0, C.eave, z0], [x1, C.eave, z0], [x1, C.eave, z1], [x0, C.eave, z1], [x0, C.eave, z0]];
-  eaveEdge(b, rect, [...C.plan, C.plan[0]], Array(5).fill(C.eave - M.fascia + 0.05), M.fascia, ROOF);
+  const C = M.corner, F = M.fill, n = C.plan.length;
+  block(b, C.base.plan, FOOT, C.base.top, WALL, ROOF);
+  block(b, C.inner.plan, C.inner.foot, C.inner.top, WALL, ROOF);
+  // each side's plane: its eave on the side, rising `slope` a metre inward
+  const planes = [[C.top, 0, 0]];
+  for (const [i, e] of Object.entries(C.eaves)) {
+    const [p, q] = [C.plan[+i], C.plan[(+i + 1) % n]], l = Math.hypot(q[0] - p[0], q[1] - p[1]);
+    const u = (-(q[1] - p[1]) / l) * C.slope, v = ((q[0] - p[0]) / l) * C.slope;
+    planes.push([e - u * p[0] - v * p[1], u, v]);
+  }
+  for (const side of envelope(b, C.plan, planes, ROOF)) {
+    const line = side.map(([x, , z]) => [x, z]), tops = side.map(([, y]) => y), under = tops.map((y) => y - M.fascia);
+    curtain(b, line, under, C.foot, WALL);
+    curtain(b, line, tops, under, ROOF);
+  }
   prism(b, F.plan, FOOT, F.top - 0.25, WALL);
   prism(b, F.roof, F.top - 0.3, F.top, ROOF);
 }

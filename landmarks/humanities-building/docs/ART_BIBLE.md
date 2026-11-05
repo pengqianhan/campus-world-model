@@ -18,8 +18,8 @@ this page says only what the building shows. What it does not show is drawn plai
 
 ## From above (the 2023 aerial, the LiDAR)
 - An L of red clay-tiled roofs with hips: a higher middle along each wing and a lower roof round their outer sides,
-  a raised square with a pyramid over the corner, and a low block at the street wing's south-east end (its roof's
-  colour estimated: grey).
+  a raised roof on eight sides over the corner, flat at its top, and a low block at the street wing's south-east end
+  (its roof's colour estimated: grey).
 
 ## Light
 - A bright day with white cloud and blue sky; the face in soft light, no shadow under its bands, the trees on the
