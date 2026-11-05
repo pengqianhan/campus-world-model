@@ -23,20 +23,38 @@ export const MEASURED = {
   // the annex's). The south-west face 44.35 m long, the south-east face 38.8 m, both 3.9-4.2 degrees off the frame.
   tower: {
     plan: [[19.05, -24.37], [22.09, 19.88], [-16.64, 22.70], [-19.68, -21.55]],
-    // the main roof (the returns over x -13 to 13, z -12 to 9: p50 49.87, p90 50.30)
-    roof: 50.2,
-    // the parapets along the south-west face (x 17.5-21: p90 51.3, p99 51.6) and the north-east face (x -20 to -16.5:
-    // p90 51.73, p99 51.84), from z -19.5 to 16.8, where the lower roofs begin
-    parapet: { sw: 51.5, ne: 51.7, width: 0.6, z: [-19.5, 16.8] },
+    // The faces in 1 m strips (the outermost returns, p1 or p99) lie within 0.5 m of these lines but the north-east
+    // face's middle, 0.6-0.9 m further out from z -18 to -9 (round 1).
+    // The main roof, from z -19.75 to 16 (round 1, the p90 of each 1 m cell; its ends step: north-east of x -4.5
+    // the lower roof runs on to z -18.6, the cells at z -19 46.7-47.2; north-east of x 7 the main roof runs on to
+    // z 16.8, the cells at z 16 50.8 there and 46.7-47.9 south-west of it): 50.1 in its middle (z -2 to 6),
+    // rising to 50.8 toward both ends, drawn flat between; its parapets: along the south-west face, 1.6 m wide (the
+    // cells from x 19 to the face, 51.5), and along the north-east face a raised strip 3.5 m wide (the cells from the
+    // face to x -15.5: 51.2-51.8).
+    roof: 50.45,
+    parapet: { sw: 51.5, ne: 51.35, width: [1.6, 3.5] },
+    ends: { se: [-19.75, -18.6, -4.5], nw: [16.0, 16.8, 7.0] },
+    // Across the main roof from z -6.8 to 4.6 a band (round 1): three ramps, each rising south-west from 46.9 to
+    // 50.6 m (the cells along x: 46.6-47.3 at x -13, -6 and 0, rising 0.6-0.8 a metre to 50.5-50.7 at x -7, -1 and
+    // 6), and south-west of them a court at the lower roofs' height (x 7 to 11: 46.7) to x 12.
+    band: { z: [-6.8, 4.6], ramps: [[-13, -6.5], [-6.5, -0.5], [-0.5, 6.5]], low: 46.9, high: 50.6, x: [-13, 12] },
+    // Plant on the main roof (round 1: the 1 m cells above 52.5 m, 52.9-54.0 m; to 53.2-53.4).
+    plant: [
+      { x: [-8, -1], z: [-15, -13], top: 53.3 }, { x: [3, 13], z: [-16, -14], top: 53.4 },
+      { x: [-8, 0], z: [11.5, 14], top: 53.2 }, { x: [4, 14], z: [11, 13], top: 53.4 },
+    ],
   },
   // The lower roofs at 46.7 m (p10-p90 46.64-47.98 over the south-east strip, 46.64-46.74 over the north-west strip,
-  // 46.05-46.99 over the annex): along the south-east end from the face to z -19.5, south-west of x 6.5 the strip
-  // rising to the main roof (its returns 46.7-49.9); along the north-west end from z 16.8 to the face, north-east of
-  // x 9; and the annex north of the tower (x -17.2 to -9.3, to z 32).
+  // 46.05-46.99 over the annex): along the south-east end, from the face to z -19.75, north-east of x 9.5; along the
+  // north-west end, from z 16.8 to the face, north-east of x 13.5; and the annex north of the tower (x -17.2 to -9.3,
+  // to z 32). South-west of x 9.5 and 13.5 each strip rises in a ramp to the south-west face (round 1: the cells 47.3
+  // at x 10 to 51.3-51.5 at x 18-19; 47.9 at x 14 to 51.5 at x 20). Along the south-east face from x -14 to 9 and
+  // the north-west face from x -9 to 13, an upstand 1.2 m wide at 48.0 (the cells next to the faces: 47.9-48.1).
   low: {
     roof: 46.7,
-    se: [[6.5, -23.456], [6.5, -19.5], [-19.539, -19.5], [-19.68, -21.55]],
-    nw: [[9.0, 16.8], [9.0, 20.83], [-16.64, 22.70], [-17.045, 16.8]],
+    se: { x: 9.5, ramp: [47.3, 51.3], upstand: [-14, 9] },
+    nw: { x: 13.5, ramp: [47.9, 51.5], upstand: [-9, 13] },
+    upstand: { top: 48.0, width: 1.2 },
     annex: [[-17.2, 21.0], [-9.3, 20.5], [-9.6, 31.5], [-16.6, 32.0]],
   },
   // The lower block before the tower's south-west face: the hull of its returns at its top (69.5-72 m elevation:
