@@ -52,7 +52,10 @@ stage_place() { echo "== place"; py "$T/data/place.py" --config "$CONFIG"; }
 stage_refs() {
   echo "== refs"
   # The config's `refs` other than streetview: photographs, whose views the photo stage makes; only their masks here.
-  if [[ $(py -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("refs", "streetview"))' "$CONFIG") != streetview ]]; then
+  # (Read first, so that a config that cannot be read stops the run.)
+  local refs
+  refs=$(py -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8")).get("refs", "streetview"))' "$CONFIG")
+  if [[ $refs != streetview ]]; then
     py "$T/sky_mask.py" --config "$CONFIG"; return
   fi
   # Offline means no fetch at all, so ALLOW_FETCH goes online (metadata still comes from the snapshots).

@@ -507,7 +507,8 @@ a glass canopy under its tip. Its heights come from the LiDAR, with the parapets
 and the screened plant on its south-east range's roof; the heights of its screens, glazing, mesh panels and
 shopfront, and of the lower edge of its end over the court, are estimated in a photograph from Alfred Street,
 through a camera fitted to points picked on it whose places the LiDAR measures. What nothing measures is
-estimated, and its card names it: among other things its roofs, drawn flat, and the rest of the underside of
+estimated, and its card names it: among other things its roofs, drawn flat at the LiDAR's heights without
+their falls, and the rest of the underside of
 its end over the court. Counted inside the rectangle the model fills on the
 screen, its silhouette has an IoU of 0.64 in that photograph, where bare trees stand before much of the sky;
 the brightness of the building is within 1 of the photograph's, though the green glass at its corner is
@@ -953,9 +954,10 @@ If you represent the University and would like something changed or removed, ple
   picked on the photograph whose places the LiDAR measures, and is out by about 1 m sideways at the
   photograph's edge, where the end over the court is. Its heights come from the LiDAR; the heights of the
   screens, the glazing, the mesh panels and the shopfront, and of the lower edge of the end over the court,
-  are estimated in the photograph. Its roofs, drawn flat, the rest of the underside of the end over the
-  court, the atrium's glazed roof and floor, and the colour of the walls and roofs no photograph shows are
-  estimated with nothing to measure them, and its card says so. The green glass at its corner is drawn brighter than
+  are estimated in the photograph. Its roofs are drawn flat at the LiDAR's heights, their falls left out,
+  and the atrium's glazed roof with no fall; the rest of the underside of the end over the court, the
+  atrium's floor under the glass and the colour of the walls and roofs no photograph shows are estimated,
+  and its card says so. The green glass at its corner is drawn brighter than
   the photograph's. Its frames, white columns and strut, the canopies along its north-west face and at its
   south-west end, and a lower roof in the south-east range's north-east corner are not drawn; the atrium's
   open end is drawn as one floor at the street's level, where the LiDAR shows a floor a little above it

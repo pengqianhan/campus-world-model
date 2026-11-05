@@ -11,7 +11,8 @@ them are shared by every landmark: [`../README.md`](../README.md).
   ("On the site", below).
 - Run its pipeline: `landmarks/pipeline/run.sh kate-edger-information-commons [stage ...]`. Its reference is
   read from `refs/photos/` (the config's `"refs": "photos"`), which a fresh clone does not have: `photo`,
-  `refine` and `compare` need it, `data`, `place` and `topview` do not.
+  `refs` (its masks, and so the default `all`), `refine` and `compare` need it, `data`, `place` and
+  `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
 ## The frame
