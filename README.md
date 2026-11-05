@@ -964,7 +964,10 @@ If you represent the University and would like something changed or removed, ple
   3.8 m, is not drawn. The campus map's outline of block 206 takes in the courtyard, where there is no
   building: the model covers 73% of it. The model stands at a point on the path along the north-east
   wing's north-west face where the LiDAR's ground is the model's; the courtyard before the entrance is
-  0.2 to 0.36 m higher.
+  0.2 to 0.36 m higher. The CLL Building's lowest storey, which the campus map runs up to the face south-east
+  of the entrance, keeps its block and stands 3.3 m above the model's ground there, before the lowest
+  ribbon of windows the photograph shows above the courtyard: the map's ground is 2.6 m below the LiDAR's
+  at the door.
 - **The Kate Edger Information Commons is seen from Alfred Street only.** One photograph sees its end to
   the street from under the trees there: the south-east range's screened face and green corner, the
   atrium's open end and the north-west range's end over the sunken court. Its camera is fitted to points

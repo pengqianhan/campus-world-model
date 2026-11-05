@@ -29,7 +29,12 @@ on the north-west side: the plans follow the LiDAR's walls.
 ## Neighbours on the map
 
 - **The CLL Building (207)**: 1.2% of its block under the model, so `building.also` is empty. No other block
-  of the campus map within 80 m lies under it.
+  of the campus map within 80 m lies under it. 207's lowest storey, the first floor of its plan, runs on the
+  map up to the street wing's face south-east of the entrance (its ring 0.1 to 0.4 m behind the glazing from x
+  1.9 to 19.8) and round its south-east corner. The site draws it 3.3 m above the model's ground there (the
+  map's ground is 2.6 m below the LiDAR's at the door), so from the courtyard it stands before the brick base
+  and the lowest ribbon of windows south-east of the entrance, where the photograph shows them above the
+  courtyard; block 206 hid it before.
 - **Block 206 itself** is 72.8% under the model, short of the 85% asked: its ring takes in the courtyard.
 
 ## The reference
