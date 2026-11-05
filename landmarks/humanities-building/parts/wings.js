@@ -1,11 +1,13 @@
 // The two wings (parts/common.js, MEASURED): the aisles round their outer faces, the street wing's and the
 // north-east wing's middles, the raised corner where they meet and the fill in the angle of the L. Round 0: the
-// roofs' slopes, steps and hips at the LiDAR's heights, eaves with a fascia and a soffit, plain walls.
+// roofs' slopes, steps and hips at the LiDAR's heights, eaves with a fascia and a soffit, plain walls. Round 1: the
+// walls in buff brick (estimated where the photograph does not show them), and on the street wing's south-west face
+// the walls at the windows' glazing, set back behind its bands (parts/facade.js).
 import { FOOT, MEASURED } from "./common.js";
 import { hipRoof, inset, loft, prism, pyramid, tris } from "./shapes.js";
 
 const M = MEASURED;
-const WALL = "render", ROOF = "roofTile";
+const WALL = "brickBuff", ROOF = "roofTile";
 
 /** Upright quads between points [x, z] of a line, from y0 to each point's top, each facing away from the line's
  * left (the line runs round the building with it on its left). */
@@ -36,6 +38,8 @@ function eaveEdge(b, eave, wall, wallTop, depth, material) {
  * walls' line runs on at both ends into the middles' blocks, so that no slit is left where they meet. */
 export function aisles(b) {
   const E = M.eave, wall = inset(E.map(([x, , z]) => [x, z]), M.overhang), tops = E.map(([, y]) => y - M.fascia + 0.05);
+  // the south-west face's two parts (the eave's points 3 to 6): the wall at the glazing, the bands before it
+  for (const i of [3, 4, 5, 6]) wall[i][1] -= M.faces.recess;
   loft(b, E, M.aisleTop, ROOF);
   eaveEdge(b, E, wall, tops, M.fascia, ROOF);
   curtain(b, [[19.4, 3.1], ...wall, [-3.9, -24.0]], [tops[0], ...tops, tops[tops.length - 1]], FOOT, WALL);

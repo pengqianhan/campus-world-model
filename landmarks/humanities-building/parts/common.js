@@ -78,4 +78,24 @@ export const MEASURED = {
   // ridge's cells 7.21 at x 34, 6.38 at x 37).
   low: { plan: [[21.8, 0.8], [34.6, 0.8], [38.0, 3.1], [38.0, 10.4], [35.1, 13.35], [22.6, 13.35], [21.8, 12.0]], eave: 6.2,
     ridge: [[21.8, 7.8, 7.25], [33.5, 7.8, 7.25]] },
+  // The street wing's south-west face, the one the photograph shows (round 1). Its brick bands, from the LiDAR's
+  // returns on the face (the bands' lower and upper edges, p3 and p97: south-east of the stair 3.00/4.68,
+  // 6.48/8.19, 9.96/11.75 and 13.45; north-west of it 3.02/4.75, 6.56/8.21, 9.99/11.73 and 13.55), their face at the
+  // walls' line (z 15.82 and 16.15: the returns' p90 15.84-15.88 and 16.08-16.12); the top band's upper edge, hidden
+  // from the LiDAR under the eave, read off the photograph through its fitted camera (the luma step from window to
+  // brick, cast onto the face's plane: 14.71-15.18 south-east of the stair, 14.8 drawn; 15.02-15.26 north-west of it,
+  // 15.1 drawn); under the lowest windows a brick base to 0.9 m (the photograph: the step from window to brick at
+  // 0.80-0.90, behind the planter, estimated). Between the bands, ribbons of windows set back by `recess` (estimated:
+  // neither the LiDAR nor the photograph gives it), their panes `module` wide (estimated from the photograph's rhythm,
+  // 1.3-1.4 m), two of every three with the film over them (estimated: the photograph's panes are filmed in no rule
+  // the eye can follow). The stair's slot from the LiDAR (round 0's step: x -1.0 to 0.5); the entrance at its foot
+  // from the photograph (its sides at x -2.0 and 1.3 on the face, its top at the LiDAR's returns at 3.2-3.6 m: 3.3).
+  faces: {
+    recess: 0.25, module: 1.4,
+    right: { x: [0.5, 19.9], z: 15.82, bands: [[FOOT, 0.9], [3.00, 4.68], [6.48, 8.19], [9.96, 11.75], [13.45, 14.8]], top: 16.83 },
+    // (its bands' north-west ends cut along the corner's 45 degrees, `mitre`, so that none stands out of it)
+    left: { x: [-13.55, -1.0], z: 16.15, bands: [[FOOT, 0.9], [3.02, 4.75], [6.56, 8.21], [9.99, 11.73], [13.55, 15.1]], top: 17.28, mitre: true },
+    slot: { x: [-1.0, 0.5] },
+    entrance: { x: [-2.0, 1.3], top: 3.3 },
+  },
 };

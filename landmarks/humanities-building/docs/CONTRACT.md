@@ -36,21 +36,33 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   windows' frames dark, most of their panes behind film in vertical stripes of red, orange and yellow; the part
   north-west of x -1.3 0.3 m forward, its bands' corners cut at its south-east end; a slot at x -1.0 to 0.5 for the
   stair, glazed in dark red frames; the entrance at the ground in the slot's foot; the eaves' fascia dark red.
-- Not drawn yet: the windows and the bands, the stair's slot, the entrance, the eaves' depth and fascia as the
-  photograph shows them, the pyramid's true shape, the inner corner's roofs, a low strip of returns at 3-5 m along
-  the north-east wing's north-west face (x -22 to -18).
+- Round 1 draws that face (`parts/facade.js`, `MEASURED.faces`): the bands at the LiDAR's heights, the top band's
+  upper edge read off the photograph through its fitted camera (14.8 m south-east of the stair, 15.1 north-west of
+  it: the LiDAR cannot see it under the eave), a brick base under the lowest windows to 0.9 m; the ribbons of
+  windows set back 0.25 m behind the bands (estimated), panes 1.4 m wide (estimated from the photograph's rhythm), two
+  of every three under the film (estimated: the photograph's are filmed in no rule); the slot glazed in red frames;
+  the entrance at its foot (its sides at x -2.0 and 1.3 read off the photograph, its top at the LiDAR's 3.3 m). The
+  other faces stay plain brick: no reference shows them.
+- Not drawn yet: the north-west part's bands' corners cut at the slot, the slot's depth (about 1 m: drawn flush),
+  the patterned glass in it, the eaves' depth and fascia as the photograph shows them, the pyramid's true shape, the
+  inner corner's roofs, a low strip of returns at 3-5 m along the north-east wing's north-west face (x -22 to -18).
 
 ## Ownership
 - `parts/wings.js` (the aisles, the two middles, the raised corner and the fill in the angle of the L),
-  `parts/low.js` (the low block), `parts/shapes.js` (shared helpers: one owner per round, named in the brief).
+  `parts/low.js` (the low block), `parts/facade.js` (the street wing's south-west face: its bands, windows, slot and
+  entrance), `parts/shapes.js` (shared helpers: one owner per round, named in the brief).
   `model.js` and `parts/common.js` are the lead's.
-- The materials (`landmarks/kit/materials.js`): round 0 uses the kit's `render` (walls), `roofTile` (the roofs,
-  red clay tiles in the 2023 aerial) and `roofGrey` (the low block's roof, estimated).
+- The materials (`landmarks/kit/materials.js`): this building's own (round 1) `brickBuff` (the walls, the brick's
+  shader in a pale buff; estimated on the faces no reference shows) and the film's `filmRed`, `filmOrange` and
+  `filmYellow`; the kit's `glass` (the panes), `iron` (the windows' frames), `frameRed` (the slot's frames),
+  `roofTile` (the roofs, red clay tiles in the 2023 aerial) and `roofGrey` (the low block's roof, estimated). On the
+  site the film is the light form's glass (`LIGHT_ROLE`, `src/scene/landmarks.ts`, at step 8).
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 
 ## Budget (tier 2: the site runs in a browser, phones too)
-- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 273 triangles, 3 draw calls.
+- Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 273 triangles, 3 draw calls; round 1: 6,357
+  triangles, 9 draw calls.
   Build time of a part ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
@@ -66,11 +78,15 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 - `landmarks/pipeline/run.sh humanities-building refine compare topview` (from the repository root, with `PORT`
   serving it): the strip in `out/pipeline/compare/`, the metrics in its `metrics.md`, the top view in
   `out/topview/`. The black outside the photograph in its level cut is ignored (its mask's `inside`). The config's
-  `sky_mask` closes the branches over the eaves (`branches_deg`). GPU steps only under `~/.campus-loop/gpu.lock`.
+  `sky_mask` closes the branches over the eaves (`branches_deg`); its `light` gives the viewer the photograph's soft
+  light. GPU steps only under `~/.campus-loop/gpu.lock`.
 - Round 0: silhouette IoU 0.905 (0.936 in the model's box) through the fitted camera; the building's luma median
   130 against the photograph's 133. The top view: footprint IoU 0.898, 93% of the cells within 0.5 m of the
   LiDAR's height, the highest point 23.9 m against the LiDAR's 23.86 (p99.9); block 206 under the model 72.8% (its
   ring takes in the courtyard), block 207 1.2%.
+- Round 1: silhouette IoU 0.900 (0.931 in the box); the building's luma median 141 against 133 (p10-p90 45-153
+  against 95-184), its mean colour 135/110/92 against 148/136/124 (the photograph's trees before the face are green);
+  the top view as round 0's.
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a reference through its fitted camera; say

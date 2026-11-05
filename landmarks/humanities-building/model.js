@@ -5,6 +5,7 @@
 import { Builder } from "../kit/gothic.js";
 import { aisles, street, northeast, corner } from "./parts/wings.js";
 import { low } from "./parts/low.js";
+import { facade } from "./parts/facade.js";
 
 const PARTS = {
   aisles: (b) => aisles(b),
@@ -12,6 +13,7 @@ const PARTS = {
   northeast: (b) => northeast(b),
   corner: (b) => corner(b),
   low: (b) => low(b),
+  facade: (b) => facade(b),
 };
 
 export function build(materials, only) {

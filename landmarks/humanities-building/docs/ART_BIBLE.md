@@ -22,7 +22,10 @@ this page says only what the building shows. What it does not show is drawn plai
   colour estimated: grey).
 
 ## Light
-- A bright day with white cloud and blue sky; the face in soft light, the trees on the left lit from behind. Round 0
-  draws the walls in the kit's cream render under the shared default light: the building's luma median 130 against
-  the photograph's 133 (its p10-p90 127-132 against 95-184: plain walls, none of the windows' dark and the
-  brick's light).
+- A bright day with white cloud and blue sky; the face in soft light, no shadow under its bands, the trees on the
+  left lit from behind: the config's `light` puts the viewer's sun behind the building from the courtyard
+  (estimated: the photograph does not show where it is) and sets the exposure by the luma. Round 0 drew the walls in
+  the kit's cream render under the shared default light: the building's luma median 130 against the photograph's
+  133 (its p10-p90 127-132 against 95-184: plain walls, none of the windows' dark and the brick's light). Round 1,
+  with the bands, the windows and the film: 141 against 133 (p10-p90 45-153 against 95-184); the buff brick warmed
+  until it read as the photograph's under the sky's blue light.

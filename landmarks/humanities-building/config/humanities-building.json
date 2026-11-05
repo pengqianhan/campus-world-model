@@ -262,5 +262,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 24.4, p95 37.2: the site falls about 13 m); set to the ground at the door at step 7"
+ "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 24.4, p95 37.2: the site falls about 13 m); set to the ground at the door at step 7",
+ "light": {
+  "sunaz": 60,
+  "sunel": 35,
+  "exposure": 1.2,
+  "note": "estimated: the photograph's light is soft (no shadow under the bands, bright cloud), so the viewer's sun stands behind the building from the courtyard (60 deg round, 35 deg up), which leaves the south-west face in open shade; the exposure from the building's luma (its median 141 against the photograph's 133 at 1.2, 144 at 1.25)."
+ }
 }
