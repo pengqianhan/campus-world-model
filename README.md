@@ -518,6 +518,11 @@ within 8 of the photograph's. From above its outline covers the LiDAR's with an 
 cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn in
 plain brick: its other faces.
 
+| | |
+| --- | --- |
+| ![The Humanities Building from its courtyard, drawn from code](docs/landmarks/humanities-building-front.jpg) | ![The Humanities Building from above, drawn from code](docs/landmarks/humanities-building-above.jpg) |
+| ![The Humanities Building on the map, drawn from code in the map's colours](docs/landmarks/humanities-building-map.jpg) | ![The Humanities Building from its courtyard, through the walker's eyes](docs/landmarks/humanities-building-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
