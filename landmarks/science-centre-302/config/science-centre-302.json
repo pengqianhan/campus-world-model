@@ -156,9 +156,9 @@
  "crop_margin": 25,
  "ground": 45.0,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": 32.15,
+  "z": -11.86,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The pavement of Symonds Street before the lower block's glazed ground storey, 1.5 m out from its south-west face and 15 m north-west of its south corner, where the LiDAR's ground is 45.01 m (12 ground returns within 1 m: 44.93-45.03 for p10-p90), the frame's ground. The pavement falls along the face from 46.0 m at the south corner, where the glazed corner meets the street, to 42.6 m at the west end, so a door at the corner would stand the model about 1 m above the LiDAR's ground."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -209,7 +209,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 39.7, p95 46.9: the site falls about 7 m); set to the ground at the door at step 7",
+ "ground_note": "the LiDAR's ground at the door (door.note), which is the median LiDAR ground (class 2) in the crop box (p5 39.7, p95 46.9: the site falls toward the north-west) that the model was measured from",
  "light": {
   "sunaz": 10,
   "sunel": 35,
