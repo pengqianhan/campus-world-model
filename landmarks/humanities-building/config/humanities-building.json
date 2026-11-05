@@ -263,7 +263,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 24.4, p95 37.2: the site falls about 13 m); set to the ground at the door at step 7",
+ "ground_note": "the LiDAR's ground at the door (door.note), which is the median LiDAR ground (class 2) in the crop box (p5 24.4, p95 37.2: the site falls about 13 m) that the model was measured from",
  "light": {
   "sunaz": 60,
   "sunel": 35,

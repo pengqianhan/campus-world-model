@@ -1,8 +1,8 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs (the Kate Edger Information Commons against another
-photograph of it: `"refs": "photos"`, under "Stages"). The site draws the landmarks whose
+LiDAR and checked against Street View photographs (the Kate Edger Information Commons and the Humanities
+Building each against another photograph of it: `"refs": "photos"`, under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
@@ -218,7 +218,7 @@ needs:
   another;
 - for each material of the model that `LIGHT_ROLE` in `src/scene/landmarks.ts` does not list yet
   (it lists `roof`, `roofPale`, `roofGrey`, `roofGreen`, `roofTile`, `glass`, `glassPale`, `glassGreen`,
-  `blind`, `iron` and `void`)
+  `filmRed`, `filmOrange`, `filmYellow`, `blind`, `iron` and `void`)
   but that is a roof, a pane or an opening, its part there. Every other material is drawn as wall
   in the light form, so on the map a roof in a new material takes the wall colour until it is listed.
   A material the light form would read wrongly gets a key of its own with the same shader and colour:
@@ -355,10 +355,11 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
 | topview | `tools/topview.mjs` + `tools/topview.py` | the model (`model.js`), the data stage's points | `out/topview/triangles.bin`, `metrics.json`, `metrics.md`, `topview.png` |
 
-With `"refs": "photos"` in the config (the Kate Edger Information Commons), refine, compare, metrics,
-`sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of `refs/streetview/`, refine keeps each
-`photo_fit` camera as it keeps `camera_fixes`, and the refs stage makes only the masks. `refs/photos/` is
-gitignored (`landmarks/.gitignore` keeps every `refs/` folder local).
+With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building),
+refine, compare, metrics, `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
+`refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
+makes only the masks. `refs/photos/` is gitignored (`landmarks/.gitignore` keeps every `refs/` folder
+local).
 
 `$OUT` defaults to `out/pipeline/compare`. `compare.mjs` keeps its command line
 (`--out`, `--match`, `--query`); `--no-metrics` skips the silhouette renders and the metrics. Other

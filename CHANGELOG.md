@@ -25,12 +25,12 @@ A change to what the site does or shows adds its line here, and the README's
   street wing's face to the courtyard, four bands of buff brick between ribbons of windows, most of their
   panes behind film in stripes of red, orange and yellow, a glazed slot for the stair in dark red frames,
   and the entrance at its foot. Its sizes come from the LINZ 2024 LiDAR; the upper edge of its top brick
-  band and the sides of its entrance are estimated in a photograph, through a camera fitted to points
-  measured on it against the LiDAR, and its card says so, with how far its windows stand back, how wide
-  their panes are and which of them have the film, the roofs in the angle of its L, drawn flat, and the
-  colour of the walls and roofs no photograph shows. On the map it has the map's colours; from a walker's
-  height on a computer with a graphics card, its own brick, film and glass. Its other faces, which the
-  photograph does not show, are drawn in plain brick (#PR).
+  band, the sill of its lowest windows and the sides of its entrance are estimated in a photograph,
+  through a camera fitted to points measured on it against the LiDAR, and its card says so, with how far
+  its windows stand back, how wide their panes are and which of them have the film, the roofs in the angle
+  of its L, drawn flat, and the colour of the walls and roofs no photograph shows. On the map it has the
+  map's colours; from a walker's height on a computer with a graphics card, its own brick, film and glass.
+  Its other faces, which the photograph does not show, are drawn in plain brick (#PR).
 
 ## 2026-11-05
 

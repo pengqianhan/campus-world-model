@@ -7,7 +7,7 @@ import { FOOT, MEASURED } from "./common.js";
 import { block, envelope, hipRoof, inset, loft, prism, tris } from "./shapes.js";
 
 const M = MEASURED;
-const WALL = "brickBuff", ROOF = "roofTile";
+const WALL = "brickBuff", ROOF = "roofTile", FLAT = "roofGrey";
 
 /** Upright quads between points [x, z] of a line, from y0 (a height, or one per point) to each point's top, each
  * facing away from the line's left (the line runs round the building with it on its left). */
@@ -72,11 +72,13 @@ export const street = (b) => middle(b, M.street, "x");
 export const northeast = (b) => middle(b, M.northeast, "z");
 
 /** The raised corner: the block under it at the aisles' tops, its roof of eight slopes and a flat top, its walls
- * and fascia at the roof's edge; the roof in the angle of the L beside it; and the fill there, flat. */
+ * and fascia at the roof's edge; the roof in the angle of the L beside it; and the fill there, flat. The two flat
+ * roofs in the angle of the L are grey, not tiled (the 2023 aerial: light grey, its median 157-163/156-160/165-169,
+ * where the tiled roofs round them are pink; review, round 1). */
 export function corner(b) {
   const C = M.corner, F = M.fill, n = C.plan.length;
   block(b, C.base.plan, FOOT, C.base.top, WALL, ROOF);
-  block(b, C.inner.plan, C.inner.foot, C.inner.top, WALL, ROOF);
+  block(b, C.inner.plan, C.inner.foot, C.inner.top, WALL, FLAT);
   // each side's plane: its eave on the side, rising `slope` a metre inward
   const planes = [[C.top, 0, 0]];
   for (const [i, e] of Object.entries(C.eaves)) {
@@ -90,5 +92,5 @@ export function corner(b) {
     curtain(b, line, tops, under, ROOF);
   }
   prism(b, F.plan, FOOT, F.top - 0.25, WALL);
-  prism(b, F.roof, F.top - 0.3, F.top, ROOF);
+  prism(b, F.roof, F.top - 0.3, F.top, FLAT);
 }

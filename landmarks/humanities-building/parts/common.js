@@ -47,7 +47,9 @@ export const MEASURED = {
   ],
   // The walls stand back from the eave's front by the overhang: 0.4-0.5 m on the south-west face (its walls at z
   // 15.9 and 16.1), 0.55 at the north-east end, 0.4 at the north-west end; on the north-east wing's north-west face
-  // the returns 3-14 m up reach the eave's line (something proud of the wall there: round 1). 0.45 everywhere.
+  // the returns 3-14 m up reach the eave's line (something proud of the wall there: round 1). 0.45 everywhere
+  // (estimated on that face). The fascia's depth is estimated (not read off the photograph yet: docs/CONTRACT.md,
+  // "Not drawn yet").
   overhang: 0.45,
   fascia: 0.35,
   // The street wing's middle: its roof from its inner face (the eave's front at z 2.4, 2.17-2.51) to the step
