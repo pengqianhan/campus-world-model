@@ -58,6 +58,23 @@ export const MEASURED = {
       { a: [7.5, 16.5], b: [7.5, 10.0], top: 53.25 }, { a: [20.0, 28.0], b: [7.5, 10.0], top: 53.0 },
       { a: [7.5, 16.5], b: [34.5, 37.0], top: 53.25 }, { a: [20.0, 28.0], b: [34.5, 36.5], top: 53.0 },
     ],
+    // The south-west face, the one the photograph shows in full (step 5): ribbons of glass, one a storey, between
+    // bands of pale ribbed metal, and above them a band of tall slats. The LiDAR's returns on the face (a -1.0 to
+    // 0.3, b 3-41) lie in thin layers, the sills and heads of the ribbons (each pair 1.87-1.93 m apart, a storey
+    // 4.22-4.23 m): 30.27/32.14, 34.49/36.40, 38.72/40.64, 42.95/44.88, and a ledge at 46.69 under the slats; the
+    // lowest ribbon, just above the lower block's roof, a storey below (26.04/27.91, estimated); that the glass lies
+    // between each pair's sill and head is the photograph's (its ribbons a little under half the storey). The glass
+    // stands back `recess` behind the metal (estimated: the sills' returns reach 0.3 m out of the face). The slats,
+    // `slat.width` wide and `slat.depth` deep every `slat.step` (estimated from the photograph's rhythm, 36-38 across
+    // the face).
+    sw: {
+      recess: 0.25, ribbons: [[26.04, 27.91], [30.27, 32.14], [34.49, 36.40], [38.72, 40.64], [42.95, 44.88]],
+      ledge: 46.69, slat: { width: 0.3, depth: 0.15, step: 1.2 },
+    },
+    // The south-east face: brown (the photograph), from the lower block's screen up; north-east of a flat stretch, a
+    // row of deep brown fins (estimated, all of them: the LiDAR has almost no returns on the face, and the photograph
+    // sees it end on: where the fins start, how far apart, how deep and how thick).
+    se: { fins: { from: 9.0, step: 1.5, depth: 0.6, width: 0.15 } },
   },
   // The lower roofs at 46.7 m (p10-p90 46.64-46.74), along the south-east end (b 0 to 4.55) and the north-west end
   // (b 39.7 to 44.35), and over the annex north of the tower (in the view frame: x -17.2 to -9.3, to z 32). Each end
@@ -84,6 +101,11 @@ export const MEASURED = {
     top: 25.5,
     screens: [{ a: [-0.5, 26.0], b: [44.35, 46.3] }, { a: [-2.0, 26.0], b: [-1.7, 0] }],
     screenTop: 26.0,
+    // The glazed corner (step 5), read off the photograph through its fitted camera: the glass's edges (the luma step
+    // from the glass to the black frame, its rows 420-520 px) cast onto the two faces' planes. On the south-west face
+    // from 17.0 m at the south corner falling 0.513 a metre, on the south face from 17.0 falling 0.449 (the two
+    // lines meet at the corner within 0.01 m); down to the foot (estimated below the canopy and behind the trees).
+    glass: { top: 17.0, sw: 0.513, s: 0.449 },
   },
 };
 

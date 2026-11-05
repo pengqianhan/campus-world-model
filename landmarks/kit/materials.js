@@ -328,6 +328,10 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     screenGrey: painted(0x6c6e6c, 0.6, space),
     // and its green-tinted glazing: glassPale's glass over darker rooms tinted green
     glassGreen: glassGreen(space),
+    // the Science Centre (302): the paint's shader in two more colours (its photograph): the near-black folded
+    // screens round its lower block, and the brown cladding and fins of its tower's south-east face
+    screenBlack: painted(0x2c2e30, 0.45, space),
+    finBrown: painted(0x86695c, 0.6, space),
   };
   return m;
 }

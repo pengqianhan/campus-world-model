@@ -39,15 +39,19 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 ## Ownership
 - `parts/tower.js` (the tower, its lower roofs, the annex), `parts/block.js` (the lower block), `parts/shapes.js`
   (shared helpers: one owner per round, named in the brief). `model.js` and `parts/common.js` are the lead's.
-- The materials: the kit's `claddingPale` (the tower's walls, round 0), `screenGrey` (the lower block's walls and
-  screens, round 0), `roofGrey` (the roofs: grey in the 2023 aerial) and `grey` (the plant, round 1).
+- The materials: the kit's `claddingPale` (the tower's walls and metal bands), `roofGrey` (the roofs: grey in the
+  2023 aerial), `grey` (the plant, round 1), `glassPale` (the ribbons and the glazed corner, step 5), and two the
+  kit gained for this building at step 5, `screenBlack` (the lower block and its screens) and `finBrown` (the
+  south-east face's cladding and fins): the paint's shader in two more colours, added with nothing else changed
+  (the Clock Tower, the Kate Edger Information Commons, the Music School and the Old Choral Hall in the viewer at
+  `?quality=low` and `?mask=1` before and after: 0 pixels differ).
 - `landmarks/kit/` and `landmarks/pipeline/` are shared by every landmark: add, with defaults, and show the other
   landmarks' pictures unchanged (`?quality=low` and `?mask=1`, or byte-identical stage outputs).
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw
-  calls; round 1's shape 378 and 4; step 6: 464 and 4. Build time of a part ≤ ~300 ms on this machine (the
-  console logs it).
+  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces: 1,307 and 6. Build time of a part
+  ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
 ## References
@@ -77,6 +81,10 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   84.0%. What is left: cells at the faces and edges; the plant, whose units stand apart with gaps between them
   that the boxes fill; the main roof rising 0.6 m toward the south-west parapet in its last few metres; the
   slot's openings.
+- Step 5's faces, a first pass (the south-west face's ribbons, bands and slats; the south-east face's cladding
+  and fins; the lower block dark, with its glazed corner; the light from the north, the exposure 1.2): IoU 0.589
+  (0.923 in the box), luma 148 against 152. Not drawn yet: the screens' folds and the black frame round the
+  glazed corner, the ground storey's glazing and the canopy, the metal bands' ribs.
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a reference through its fitted camera; say
