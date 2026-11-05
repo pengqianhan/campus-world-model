@@ -516,7 +516,7 @@ is estimated, and its card names it: among other things the sizes and spacing of
 Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in that photograph;
 the brightness of the building is within 9 of the photograph's. From above its outline covers the LiDAR's with an
 IoU of 0.85, the LiDAR's counting the neighbouring block's returns inside the campus map's outline along its
-north-east side, and on 91% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
+north-east side, and on 90% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
 does not show is drawn plainly: its faces to the north-east and north-west, and the screen along its north-west
 face.
 

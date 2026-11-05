@@ -80,7 +80,8 @@ in the band (b 16.5 to 28.0) a gutter at each side, a court at 46.7 m and three 
 its cells (slopes 0.76 to 0.78, the cells within 0.11 m of the plane), rising toward the south-west from 46.72
 to 50.6 m, then a block at 51.1 m and a slot with openings to below; a parapet 0.9 m wide at 51.5 m along the
 south-west face; a raised strip at 51.3 m along the north-east face with its parapet at 51.8; plant in four
-boxes at 53.0 to 53.25 m (their cells are units with gaps between, which the boxes fill); the two lower roofs
+boxes, each to its cells' p90, 53.6 to 53.8 m (their cells are units with gaps between, which the boxes fill;
+the medians 53.0 to 53.25); the two lower roofs
 each rising from the south-west parapet in a ramp fitted to its cells, with an upstand at 48.0 m along its
 face. The north-east face steps out 0.8 m between the lower roofs. The check found, too, that the lower
 block's screens run on from its two ends along the tower's end faces, 1.7 and 2 m deep, to 26.0 m (the
@@ -110,8 +111,8 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
 
 Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/180 against the photograph's
 102/152/190 (its pixels are dark screens or pale metal, few between, so the median moves the most). From
-above: footprint IoU 0.846, 91% of the cells within 0.5 m. 3,917 triangles, 6 draw calls; no two faces of
-different materials in one plane.
+above: footprint IoU 0.846, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
+3,917 triangles, 6 draw calls; no two faces of different materials in one plane.
 
 ## On the map (step 7)
 

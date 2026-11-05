@@ -53,10 +53,12 @@ export const MEASURED = {
       high: 50.6, low: 46.72,
       sw: { a: 7.9, top: [50.85, 49.8] }, island: { a: [33.0, 37.4], top: 51.1 },
     },
-    // Plant on the main roof: the cells above 51.9 m, four boxes (their cells' medians 53.0-53.25, p90 53.6-53.8).
+    // Plant on the main roof: the cells above 51.9 m, four boxes, each to its cells' p90 (53.61-53.77; their medians
+    // 53.0-53.25, for the units stand apart with gaps between them that the boxes fill; the LiDAR's highest point,
+    // its p99.9, 53.9).
     plant: [
-      { a: [7.5, 16.5], b: [7.5, 10.0], top: 53.25 }, { a: [20.0, 28.0], b: [7.5, 10.0], top: 53.0 },
-      { a: [7.5, 16.5], b: [34.5, 37.0], top: 53.25 }, { a: [20.0, 28.0], b: [34.5, 36.5], top: 53.0 },
+      { a: [7.5, 16.5], b: [7.5, 10.0], top: 53.7 }, { a: [20.0, 28.0], b: [7.5, 10.0], top: 53.64 },
+      { a: [7.5, 16.5], b: [34.5, 37.0], top: 53.77 }, { a: [20.0, 28.0], b: [34.5, 36.5], top: 53.61 },
     ],
     // The south-west face, the one the photograph shows in full (step 5): ribbons of glass, one a storey, between
     // bands of pale ribbed metal, and above them a band of tall slats. The LiDAR's returns on the face (a -1.0 to

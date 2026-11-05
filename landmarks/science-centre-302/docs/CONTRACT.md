@@ -21,7 +21,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   - **its main roof**, from b 4.55 to 39.7, falling from 50.8 m at its ends to 50.1 m at a **band** across its
     middle (b 16.5 to 28.0): from the south-west, a court at 46.7 m, three sawtooth ramps rising toward the
     south-west from 46.72 to 50.6 m, a block at 51.1 m and a slot; a parapet along the south-west face (51.5 m)
-    and a raised strip along the north-east face (51.3 m, its parapet 51.8 m); four boxes of plant (53.0-53.25 m);
+    and a raised strip along the north-east face (51.3 m, its parapet 51.8 m); four boxes of plant (53.6-53.8 m);
   - **lower roofs at 46.7 m** along the south-east and north-west ends, each rising in a ramp from the south-west
     parapet, an upstand at 48.0 m along each face, and a small **annex** north of the tower;
   - **the lower block** before the tower's south-west face, its top flat at 25.5 m (its edge 26.0), its outer
@@ -85,8 +85,9 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   lower block dark, with its glazed corner and the frame along its edges, the screens' folded blades and top rail
   on the faces the photograph shows, reaching out to the hull of the returns, the walls behind them; the ground
   storey's glazing; the light from the north): IoU 0.589 (0.923 in the box); luma p10/p50/p90 99/161/180 at the
-  exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.846, 91% of the cells within
-  0.5 m, block 302 under the model 84.2%. 3,917 triangles, 6 draw calls. Not drawn yet: the canopy, the metal
+  exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.846, 90% of the cells within
+  0.5 m, the highest point 53.77 m against 53.9 (the plant to its cells' p90), block 302 under the model 84.2%.
+  3,917 triangles, 6 draw calls. Not drawn yet: the canopy, the metal
   bands' ribs, the tower's open storey over the lower block (posts in the photograph).
 
 ## Rules
