@@ -1,6 +1,8 @@
 {
  "name": "science-centre-302",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
  "building": {
   "id": "302",
   "also": [],
