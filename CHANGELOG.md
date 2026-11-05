@@ -32,7 +32,7 @@ A change to what the site does or shows adds its line here, and the README's
   a graphics card, its own cladding, metal screens and glass. Its faces to the north-west and south-east,
   its south-west end and its roofs, which the photograph does not show, are drawn plainly. Its entrances
   are down in the sunken court, which the map's ground does not have: it stands at Alfred Street's
-  footpath, and the map's ground covers the court's storey (#PR).
+  footpath, and the map's ground covers the court's storey (#133).
 
 ## 2026-11-03
 
