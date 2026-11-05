@@ -30,7 +30,7 @@ A change to what the site does or shows adds its line here, and the README's
   its windows stand back, how wide their panes are and which of them have the film, the roofs in the angle
   of its L, drawn flat, and the colour of the walls and roofs no photograph shows. On the map it has the
   map's colours; from a walker's height on a computer with a graphics card, its own brick, film and glass.
-  Its other faces, which the photograph does not show, are drawn in plain brick (#PR).
+  Its other faces, which the photograph does not show, are drawn in plain brick (#134).
 
 ## 2026-11-05
 
