@@ -506,10 +506,9 @@ the north-west range's end reaches out over the court, glazed, open beneath it, 
 a glass canopy under its tip. Its heights come from the LiDAR, with the parapets round its north-west range
 and the screened plant on its south-east range's roof; the heights of its screens, glazing, mesh panels and
 shopfront, and of the lower edge of its end over the court, are estimated in a photograph from Alfred Street,
-through a camera fitted to points picked on it whose places the LiDAR measures. What nothing measures is
-estimated, and its card names it: among other things its roofs, drawn flat at the LiDAR's heights without
-their falls, and the rest of the underside of
-its end over the court. Counted inside the rectangle the model fills on the
+through a camera fitted to points picked on it whose places the LiDAR measures. Its roofs are drawn flat at the
+LiDAR's heights, without their falls. What nothing measures is estimated, and its card names it: among
+other things the rest of the underside of its end over the court. Counted inside the rectangle the model fills on the
 screen, its silhouette has an IoU of 0.64 in that photograph, where bare trees stand before much of the sky;
 the brightness of the building is within 1 of the photograph's, though the green glass at its corner is
 drawn brighter. From above its outline covers the LiDAR's with an IoU of 0.88, the LiDAR's counting the roof
