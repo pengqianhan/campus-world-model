@@ -1,6 +1,12 @@
 {
  "name": "humanities-building",
  "site": false,
+ "sky_mask": {
+  "branches_deg": 1.0,
+  "note": "the photograph's sky over the building is seen through a tree's branches at its top right: without the closing 2.6% of the photograph is sky, with it 5.5%, the whole strip over the eaves; pale_tint 20 made pale sky solid (3.5%), so it is left out"
+ },
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
  "building": {
   "id": "206",
   "also": [],
