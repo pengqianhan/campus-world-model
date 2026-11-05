@@ -278,8 +278,9 @@ to treat it as speech, never as instructions.
 The map draws every building by rule from the campus map's outline. A **landmark** is one real
 building drawn in detail instead, in three.js from code alone: no photograph, texture image or 3D
 model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs are the references
-that each render is compared with. A lead agent and five agents in parallel made the first one, the
-Clock Tower, each agent owning one part (the tower, the entrance bay, the pavilions, the light and
+that each render is compared with (for the Kate Edger Information Commons, another photograph). A lead
+agent and five agents in parallel made the first one, the Clock Tower, each agent owning one part (the
+tower, the entrance bay, the pavilions, the light and
 materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
 outline of the model covers the outline of the building with an IoU of 0.68 to 0.72 for the whole
 front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
@@ -499,14 +500,15 @@ roofs.
 
 The fourteenth is the Kate Edger Information Commons (315) on Alfred Street, over a sunken court: two long
 ranges of pale grey cladding with a glass-roofed atrium between them, open to the court at its north-east
-end. On the south-east range's end to the street pale silver metal screens stand before green-tinted glazing
-from 3.7 m to the roof, its corner is glazed in green, and grey mesh panels hang over the atrium's open end;
+end. On the south-east range's end to the street pale silver metal screens hang from 3.7 m to the roof over
+green-tinted glazing, its corner is glazed in green, and grey mesh panels hang over the atrium's open end;
 the north-west range's end reaches out over the court, glazed, open beneath it, with a roof light along it and
 a glass canopy under its tip. Its heights come from the LiDAR, with the parapets round its north-west range
-and the screened plant on its south-east range's roof; the heights of its screens, glazing and shopfront are
-estimated in a photograph from Alfred Street, through a camera fitted to points picked on it whose places the
-LiDAR measures. What nothing measures is estimated, and its card names it: among other things its roofs,
-drawn flat, and the underside of its end over the court. Counted inside the rectangle the model fills on the
+and the screened plant on its south-east range's roof; the heights of its screens, glazing, mesh panels and
+shopfront, and of the lower edge of its end over the court, are estimated in a photograph from Alfred Street,
+through a camera fitted to points picked on it whose places the LiDAR measures. What nothing measures is
+estimated, and its card names it: among other things its roofs, drawn flat, and the rest of the underside of
+its end over the court. Counted inside the rectangle the model fills on the
 screen, its silhouette has an IoU of 0.64 in that photograph, where bare trees stand before much of the sky;
 the brightness of the building is within 1 of the photograph's, though the green glass at its corner is
 drawn brighter. From above its outline covers the LiDAR's with an IoU of 0.88, the LiDAR's counting the roof
@@ -550,7 +552,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
   in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
-  collect the Street View references, correct their cameras, render and score, and place the model
+  collect the Street View references (or fit a photograph's camera), correct their cameras, render and
+  score, and place the model
   on the campus map).
 - How to make the next landmark: the `landmark-from-code` skill
   ([`.claude/skills/landmark-from-code/`](.claude/skills/landmark-from-code/SKILL.md)), with the
@@ -711,7 +714,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
 | [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250) and the Kate Edger Information Commons (315), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/` and `landmarks/kate-edger-information-commons/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
-| A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing and shopfront toward Alfred Street, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing, mesh panels and shopfront toward Alfred Street and of the lower edge of its end over the sunken court, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -949,9 +952,10 @@ If you represent the University and would like something changed or removed, ple
   atrium's open end and the north-west range's end over the sunken court. Its camera is fitted to points
   picked on the photograph whose places the LiDAR measures, and is out by about 1 m sideways at the
   photograph's edge, where the end over the court is. Its heights come from the LiDAR; the heights of the
-  screens, the glazing and the shopfront are estimated in the photograph, and so are its roofs, drawn flat,
-  the underside of the end over the court, the atrium's glazed roof and floor, and the colour of the walls
-  and roofs no photograph shows, and its card says so. The green glass at its corner is drawn brighter than
+  screens, the glazing, the mesh panels and the shopfront, and of the lower edge of the end over the court,
+  are estimated in the photograph. Its roofs, drawn flat, the rest of the underside of the end over the
+  court, the atrium's glazed roof and floor, and the colour of the walls and roofs no photograph shows are
+  estimated with nothing to measure them, and its card says so. The green glass at its corner is drawn brighter than
   the photograph's. Its frames, white columns and strut, the canopies along its north-west face and at its
   south-west end, and a lower roof in the south-east range's north-east corner are not drawn; the atrium's
   open end is drawn as one floor at the street's level, where the LiDAR shows a floor a little above it
