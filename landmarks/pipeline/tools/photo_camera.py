@@ -8,7 +8,9 @@ pair its pixels with places the LiDAR measures:
    "solve_centre": false,
    "start":     {"at": [x, y], "height_m": 1.6, "height_sd_m": 0.3, "yaw": deg, "pitch": deg, "hfov": deg}}
 x, y are metres east and north in the frame of data/<name>_pts.npy (NZTM less the ring's E0, N0) and z the
-LiDAR's elevation. A point is a corner seen on the photograph. A line is an edge (a roof edge, a corner)
+LiDAR's elevation. u, v are the file's pixels as stored: an EXIF orientation is not applied (one
+photograph's tag turned it 90 degrees off its upright pixels), and the tool says when a file has one.
+A point is a corner seen on the photograph. A line is an edge (a roof edge, a corner)
 of which only some pixels are sure: each must fall on the edge's image. A vertical is the two ends of
 anything upright on the photograph (a post, a column, a wall's corner), wherever it stands: it must point
 at the camera's vertical vanishing point, which fixes pitch and roll. Solves the camera's position, yaw,
@@ -16,7 +18,8 @@ pitch, roll and focal length by least squares from "start"; with "solve_centre" 
 (a photograph whose verticals were straightened, or which was cut off centre: its principal point is not
 its centre). With "height_sd_m" the camera's height above the LiDAR ground where it stands is held near
 "height_m" (a hand-held photograph), one standard deviation weighing as 3 pixels.
-Writes refs/photos/views.json, one view per photograph in the form of refs/streetview/views.json (the
+Writes refs/photos/views.json (photographs named on the command line replace their own views and keep the
+others'), one view per photograph in the form of refs/streetview/views.json (the
 model's view frame: position, target, vfov, width, height), with a "photo_fit" record: the pixel error
 of every pick and the camera's height above the LiDAR ground. And refs/photos/<photo>_level.jpg: the
 photograph as the viewer's camera sees it, which does not roll and looks through its centre (turned back
@@ -89,7 +92,10 @@ if not photos: sys.exit(f"no picks: put <photo>.points.json beside the photograp
 views = []
 for name in photos:
     picks = json.load(open(os.path.join(REFS, f"{name}.points.json"), encoding="utf-8"))
-    img = Image.open(os.path.join(REFS, name)).convert("RGB"); W, H = img.size
+    img = Image.open(os.path.join(REFS, name))
+    if img.getexif().get(0x0112, 1) != 1:  # picks are the file's own pixels: a viewer that turns it by its tag shows others
+        print(f"{name}: its EXIF orientation is {img.getexif()[0x0112]}, not applied: pick its pixels as stored, unturned")
+    img = img.convert("RGB"); W, H = img.size
     s = picks["start"]
     g0 = ground_at(*s["at"])
     p0 = [s["at"][0], s["at"][1], (g0 if g0 is not None else G) + s.get("height_m", 1.6), s["yaw"], s["pitch"], s.get("roll", 0.0),
@@ -177,5 +183,9 @@ for name in photos:
     print(f"{name}: camera at ({p[0]:.2f}, {p[1]:.2f}), {view['photo_fit']['camera_above_ground_m']} m above the LiDAR ground; bearing {p[3] % 360:.2f}, pitch {p[4]:.2f}, roll {p[5]:.2f} deg; "
           f"hfov {view['photo_fit']['hfov_deg']} deg, centre ({cx:.1f}, {cy:.1f}); rms {rms:.2f} px over {len(res)} residuals; level cut {W2} x {H2}")
     for q in picks_out: print("   ", q["what"], q["error_px"])
-json.dump(views, open(os.path.join(REFS, "views.json"), "w"), indent=1)
+path = os.path.join(REFS, "views.json")
+if a.photos and os.path.exists(path):  # some of the photographs named: the others keep their views
+    done = {v["photo"]: v for v in views}
+    views = [done.pop(v.get("photo"), v) for v in json.load(open(path, encoding="utf-8"))] + list(done.values())
+json.dump(views, open(path, "w"), indent=1)
 print(f"{len(views)} views -> refs/photos/views.json")
