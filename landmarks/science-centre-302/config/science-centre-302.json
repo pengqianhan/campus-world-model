@@ -1,7 +1,7 @@
 {
  "name": "science-centre-302",
- "site": false,
- "estimated": "how far the south-west face's glass stands behind its metal, and its lowest ribbon of glass; the slats', the south-east face's fins' and the lower block's folded blades' sizes and spacing, with a photograph as a reference; the glazed corner below the canopy and behind the trees, and the ground storey's glazing; and the light",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; how far the glass of the tower's south-west face stands behind its metal; the sizes and spacing of its slats, of the fins on its south-east face and of the folded blades of the screens round its lower block; the glazing at the street, below the canopy and behind the trees; and the colour of the walls no photograph shows",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
  "building": {
