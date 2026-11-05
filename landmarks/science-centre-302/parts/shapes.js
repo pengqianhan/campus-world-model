@@ -1,5 +1,6 @@
 // Shapes the parts share: a plan [[x, z], ...] raised between two heights (with holes), a block with its flat roof,
-// triangles facing a given way, a convex plan raised to a sloping top, and a strip inside a side of a plan.
+// triangles facing a given way, a convex plan raised to a sloping top, a solid of eight corners, and a strip inside
+// a side of a plan.
 import * as THREE from "three";
 
 /** The plan raised from y0 to y1, less its holes (plans inside it): its walls and both ends, in `material`. */
@@ -62,6 +63,22 @@ export function slopedPrism(b, plan, y0, h, wall, top) {
     sides.push([[p[0], y0, p[1]], [q[0], y0, q[1]], up[j]], [[p[0], y0, p[1]], up[j], up[i]]);
   }
   tris(b, sides, wall, (m) => [2 * m[0] - c[0], 2 * m[1] - c[1]]);
+}
+
+/** A solid of eight corners [x, y, z] (a quad, then the four corners opposite its four in the same order): its six
+ * faces, each turned away from its centre. */
+export function hexahedron(b, P, material) {
+  const c = P.reduce((s, p) => [s[0] + p[0] / 8, s[1] + p[1] / 8, s[2] + p[2] / 8], [0, 0, 0]);
+  const out = [];
+  for (const [i, j, k, l] of [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]])
+    for (const t of [[P[i], P[j], P[k]], [P[i], P[k], P[l]]]) {
+      const n = cross(sub(t[1], t[0]), sub(t[2], t[0])), m = [0, 1, 2].map((a) => (t[0][a] + t[1][a] + t[2][a]) / 3);
+      if (Math.hypot(...n) < 1e-9) continue;
+      out.push(n[0] * (m[0] - c[0]) + n[1] * (m[1] - c[1]) + n[2] * (m[2] - c[2]) > 0 ? t : [t[0], t[2], t[1]]);
+    }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(out.flat(2), 3));
+  b.add(g, material);
 }
 
 /** A strip `width` deep inside the side from `p` to `q` of a plan wound with its inside on the left. */

@@ -106,6 +106,14 @@ export const MEASURED = {
     // from 17.0 m at the south corner falling 0.513 a metre, on the south face from 17.0 falling 0.449 (the two
     // lines meet at the corner within 0.01 m); down to the foot (estimated below the canopy and behind the trees).
     glass: { top: 17.0, sw: 0.513, s: 0.449 },
+    // The screens' folded blades on the faces the photograph shows (the south-west and south faces and the screen
+    // along the tower's south-east face): plates `depth` deep, `step` apart (the photograph's rhythm cast onto the
+    // south-west face, 1.7-1.9 m), straight from the top down to `straight`, zigzagging below it `amp` either way
+    // every `pitch` (its folds' highlights 1.2-2.5 m apart), from the ground storey's top `from` (the canopies' at
+    // 5.2-5.5 m in the LiDAR) or from the frame along the glazed corner's edges, `frame.width` wide and
+    // `frame.depth` deep; all estimated, with the photograph as a reference. The north-west screen, which it does
+    // not show, is plain.
+    folds: { step: 1.8, depth: 0.7, straight: 20.0, amp: 0.45, pitch: 2.0, from: 5.5, frame: { width: 1.2, depth: 0.9 } },
   },
 };
 

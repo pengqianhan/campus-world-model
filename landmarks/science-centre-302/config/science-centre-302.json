@@ -1,7 +1,7 @@
 {
  "name": "science-centre-302",
  "site": false,
- "estimated": "how far the south-west face's glass stands behind its metal, and its lowest ribbon of glass; the slats' and the south-east face's fins' sizes and spacing, with a photograph as a reference; the glazed corner below the canopy and behind the trees; and the light",
+ "estimated": "how far the south-west face's glass stands behind its metal, and its lowest ribbon of glass; the slats', the south-east face's fins' and the lower block's folded blades' sizes and spacing, with a photograph as a reference; the glazed corner below the canopy and behind the trees, and the ground storey's glazing; and the light",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
  "building": {
@@ -213,7 +213,7 @@
  "light": {
   "sunaz": 10,
   "sunel": 35,
-  "exposure": 1.2,
-  "note": "estimated: the photograph is under a bright overcast sky (no shadows, the glass pale with the sky), so the viewer's sun stands behind the building from the north (10 deg round, 35 deg up), which leaves both faces the photograph shows, the south-west and the south-east, in open shade; the exposure 1.2, the Humanities Building's: the building's luma median 148 against the photograph's 152"
+  "exposure": 1.5,
+  "note": "estimated: the photograph is under a bright overcast sky (no shadows, the glass pale with the sky), so the viewer's sun stands behind the building from the north (10 deg round, 35 deg up), which leaves both faces the photograph shows, the south-west and the south-east, in open shade; the exposure from the building's luma: p10/p50/p90 100/144/186 at 1.5 against the photograph's 102/152/190 (87/127/166 at 1.2, 94/136/176 at 1.35)"
  }
 }
