@@ -17,21 +17,35 @@ function run(p, q) {
   return { l, e, n, at: (s, y, d) => [p[0] + e[0] * s + n[0] * d, y, p[1] + e[1] * s + n[1] * d] };
 }
 
+/** Where the lines p1 + t d1 and p2 + s d2 meet. */
+function meet([p1, d1], [p2, d2]) {
+  const t = ((p2[0] - p1[0]) * d2[1] - (p2[1] - p1[1]) * d2[0]) / (d1[0] * d2[1] - d1[1] * d2[0]);
+  return [p1[0] + t * d1[0], p1[1] + t * d1[1]];
+}
+
 export function block(b) {
+  // The hull of the returns at the block's top is the screens' outer edge: on the faces the photograph shows, the
+  // walls stand the blades' depth inside it, and the blades reach out to it.
+  const P = B.plan, D = B.folds.depth;
+  const inLine = (p, q) => { const r = run(p, q); return [[p[0] - r.n[0] * D, p[1] - r.n[1] * D], r.e]; };
+  const along = (p, q) => [p, [q[0] - p[0], q[1] - p[1]]];
+  const [sw, cutL, south] = [inLine(P[0], P[1]), inLine(P[0], P[6]), inLine(P[6], P[5])];
+  const Q = [meet(sw, cutL), meet(sw, along(P[1], P[2])), P[2], P[3], P[4], meet(south, along(P[5], P[4])), meet(cutL, south)];
   // its foot 0.1 m below the tower's, so that where it runs inside the tower their undersides are not in one plane
-  slab(b, B.plan, FOOT - 0.1, B.top, DARK, ROOF);
-  // the screens, each with its inner side 0.1 m inside the tower's face
-  for (const S of B.screens) {
-    const [b0, b1] = S.b[0] > 0 ? [S.b[0] - 0.1, S.b[1]] : [S.b[0], S.b[1] + 0.1];
+  slab(b, Q, FOOT - 0.1, B.top, DARK, ROOF);
+  // the screens, each with its inner side 0.1 m inside the tower's face; the south-east one's outer side too
+  // stands the blades' depth inside the returns
+  B.screens.forEach((S, i) => {
+    const [b0, b1] = S.b[0] > 0 ? [S.b[0] - 0.1, S.b[1]] : [S.b[0] + (i === 1 ? D : 0), S.b[1] + 0.1];
     slab(b, towerRect(S.a, [b0, b1]), FOOT - 0.1, B.screenTop, DARK, ROOF);
-  }
+  });
   // the faces the photograph shows, each with the line of the glazed corner's edge on it (its height at s), if any
-  const P = B.plan, G = B.glass, cut = run(P[0], P[6]), h6 = G.top - G.s * cut.l;
+  const G = B.glass, cut = run(Q[0], Q[6]), h6 = G.top - G.s * cut.l;
   const faces = [
-    [run(P[0], P[1]), (s) => G.top - G.sw * s],
-    [run(P[6], P[5]), (s) => h6 - G.s * s],
+    [run(Q[0], Q[1]), (s) => G.top - G.sw * s],
+    [run(Q[6], Q[5]), (s) => h6 - G.s * s],
     // the screen along the tower's south-east face, to where the south face runs on in front of it
-    [run(towerAt(26.0, -1.7), towerAt(0.4, -1.7)), null],
+    [run(towerAt(26.0, B.screens[1].b[0] + D), towerAt(0.4, B.screens[1].b[0] + D)), null],
   ];
   corner(b, faces, cut);
   for (const [r, edge] of faces) blades(b, r, edge);

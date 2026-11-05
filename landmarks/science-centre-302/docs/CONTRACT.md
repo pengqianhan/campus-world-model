@@ -50,7 +50,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw
-  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces: 3,893 and 6. Build time of a part
+  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces: 3,917 and 6. Build time of a part
   ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
@@ -83,10 +83,11 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   slot's openings.
 - Step 5's faces (the south-west face's ribbons, bands and slats; the south-east face's cladding and fins; the
   lower block dark, with its glazed corner and the frame along its edges, the screens' folded blades and top rail
-  on the faces the photograph shows, the ground storey's glazing; the light from the north): IoU 0.589 (0.924 in
-  the box); luma p10/p50/p90 100/144/186 at the exposure 1.5 against the photograph's 102/152/190. 3,893
-  triangles, 6 draw calls. Not drawn yet: the canopy, the metal bands' ribs, the tower's open storey over the
-  lower block (posts in the photograph).
+  on the faces the photograph shows, reaching out to the hull of the returns, the walls behind them; the ground
+  storey's glazing; the light from the north): IoU 0.589 (0.923 in the box); luma p10/p50/p90 99/161/180 at the
+  exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.846, 91% of the cells within
+  0.5 m, block 302 under the model 84.2%. 3,917 triangles, 6 draw calls. Not drawn yet: the canopy, the metal
+  bands' ribs, the tower's open storey over the lower block (posts in the photograph).
 
 ## Rules
 - Measure, don't guess: a size comes from the LiDAR, the outline or a reference through its fitted camera; say

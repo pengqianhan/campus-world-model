@@ -514,11 +514,16 @@ to the returns on them; the edges of its glazed corner are estimated in a photog
 its south, through a camera fitted to points picked on it whose places the LiDAR measures. What nothing measures
 is estimated, and its card names it: among other things the sizes and spacing of its slats, fins and blades.
 Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in that photograph;
-the brightness of the building is within 8 of the photograph's. From above its outline covers the LiDAR's with an
-IoU of 0.84, the LiDAR's counting the neighbouring block's returns inside the campus map's outline along its
-north-east side, and on 90% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
+the brightness of the building is within 9 of the photograph's. From above its outline covers the LiDAR's with an
+IoU of 0.85, the LiDAR's counting the neighbouring block's returns inside the campus map's outline along its
+north-east side, and on 91% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
 does not show is drawn plainly: its faces to the north-east and north-west, and the screen along its north-west
 face.
+
+| | |
+| --- | --- |
+| ![Building 302 of the Science Centre from the street corner to its south, drawn from code](docs/landmarks/science-centre-302-front.jpg) | ![Building 302 of the Science Centre from above, drawn from code](docs/landmarks/science-centre-302-above.jpg) |
+| ![Building 302 of the Science Centre on the map, drawn from code in the map's colours](docs/landmarks/science-centre-302-map.jpg) | ![Building 302 of the Science Centre from Symonds Street to its south, through the walker's eyes](docs/landmarks/science-centre-302-eyes.jpg) |
 
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
