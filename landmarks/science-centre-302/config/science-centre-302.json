@@ -1,0 +1,210 @@
+{
+ "name": "science-centre-302",
+ "site": false,
+ "building": {
+  "id": "302",
+  "also": [],
+  "title": "Science Centre (302), University of Auckland",
+  "note": "outline: building 302's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 206 by its id.",
+  "outline": [
+   [
+    -73.1,
+    -69.2
+   ],
+   [
+    -70.8,
+    -71.1
+   ],
+   [
+    -70.2,
+    -70.4
+   ],
+   [
+    -63.6,
+    -75.7
+   ],
+   [
+    -64.2,
+    -76.5
+   ],
+   [
+    -50.6,
+    -87.5
+   ],
+   [
+    -49.4,
+    -88.4
+   ],
+   [
+    -49.0,
+    -87.8
+   ],
+   [
+    -48.5,
+    -87.9
+   ],
+   [
+    -41.9,
+    -93.3
+   ],
+   [
+    -42.3,
+    -93.8
+   ],
+   [
+    -36.9,
+    -98.2
+   ],
+   [
+    -37.4,
+    -98.8
+   ],
+   [
+    -35.5,
+    -100.3
+   ],
+   [
+    -35.1,
+    -100.0
+   ],
+   [
+    -31.5,
+    -102.9
+   ],
+   [
+    -35.0,
+    -107.1
+   ],
+   [
+    -31.6,
+    -109.9
+   ],
+   [
+    -39.8,
+    -119.9
+   ],
+   [
+    -39.2,
+    -120.4
+   ],
+   [
+    -54.5,
+    -139.2
+   ],
+   [
+    -53.8,
+    -140.5
+   ],
+   [
+    -65.5,
+    -154.8
+   ],
+   [
+    -94.5,
+    -112.0
+   ],
+   [
+    -86.9,
+    -102.8
+   ],
+   [
+    -85.5,
+    -103.2
+   ],
+   [
+    -75.5,
+    -90.9
+   ],
+   [
+    -74.9,
+    -91.4
+   ],
+   [
+    -72.9,
+    -88.8
+   ],
+   [
+    -73.8,
+    -88.2
+   ],
+   [
+    -79.1,
+    -80.9
+   ],
+   [
+    -78.5,
+    -81.2
+   ],
+   [
+    -76.3,
+    -78.6
+   ],
+   [
+    -79.0,
+    -76.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 45.0,
+ "door": {
+  "x": 0.0,
+  "z": 0.0,
+  "note": "to be set at step 7"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3,
+  "tower_above": 3,
+  "spine_below": 40,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    -64.43515402257518,
+    -108.15438823279041
+   ],
+   "axis": [
+    0.691576744028851,
+    0.722302988446298
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 39.7, p95 46.9: the site falls about 7 m); set to the ground at the door at step 7"
+}
