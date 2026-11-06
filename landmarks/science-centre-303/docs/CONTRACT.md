@@ -5,7 +5,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Frame and sizes
 - View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground (41.6 m NZVD2016, the
-  median ground in the crop box, provisional until the config's `door` is set at step 7), **z** north-west
+  median ground in the crop box, and the LiDAR's ground at the config's `door`, set at step 7), **z** north-west
   (`toStreet`); the frame's centre at x = z = 0. `config/science-centre-303.json`, `frame`: the axis is the bearing
   of most of the walls.
 - The building's own frame: every wall runs square with its face to the street, which is turned 3.24 degrees from
@@ -75,7 +75,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, of the lower part of the face to the street; `refs/photos/`, gitignored) is a reference
-  for the look only: nothing is traced or sampled from it, and no size is read from it. The relief of white blocks
+  for the look: nothing is traced or sampled from it, and no size is measured from it; two heights are estimated
+  with it as a reference, the gaps' height (0.4 m) and the lowest band's bottom (3.0 m). The relief of white blocks
   on the face is an artwork: it is not drawn after; where it is, the model has plain panels.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.

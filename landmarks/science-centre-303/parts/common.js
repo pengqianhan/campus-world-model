@@ -8,7 +8,7 @@
 // building's walls all run square with its face to the street, which is turned 3.24 degrees from the frame, so the
 // building has its own frame: u along that face from its north-east end toward the south-west, w out of it (the
 // street side positive). In it: a range along the street, 11.2 m deep, its flat roof at 13.4 m behind a parapet at
-// 14.05 m along the face; behind it a slab 15 m deep, its roof at 33.6 m, a raised part at 37.6 m, a screened
+// 14.05 m along the face; behind it a slab 15.6 m deep, its roof at 33.6 m, a raised part at 37.6 m, a screened
 // deck, a round tank to 41.8 m and a box on it; behind that a block toward the south-west, 13.4 m with ridges at 17 m
 // and six round stacks to 42.1 m, and a wing at 18.3 m toward the north-east.
 

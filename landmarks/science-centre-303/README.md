@@ -51,8 +51,9 @@ edge, 2.74 m and 0.93 m out of the face), to the face's north-east corner at its
 glazing and the panels: an rms of 2.65 px. The lens bows the long edges by a few pixels, which a pinhole camera
 leaves as residuals of up to 6 px along the gaps; with the principal point at the centre the fit rolls the camera
 9 degrees, which the photograph's vanishing points (its face's lines meet at (-538, 525) px, five verticals at
-(595, -1704): f 461 px, pitch 12 degrees, roll 0.4) do not, so the principal point is solved too. No size is read
-from the photograph; it is a reference for the look, and the comparison.
+(595, -1704): f 461 px, pitch 12 degrees, roll 0.4) do not, so the principal point is solved too. No size is measured
+from the photograph; two heights are estimated with it as a reference, the gaps' height (0.4 m) and the
+lowest band's bottom (3.0 m), and it is otherwise a reference for the look, and the comparison.
 
 The sky mask is the default. The viewer's light (`light`) is estimated: the photograph is under an overcast sky,
 so its sun stands behind the building from the south-east, which leaves the face to the street in open shade, and
@@ -129,7 +130,8 @@ measured.
   `grey` are walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a
   reference" and goes on with the gaps between the bands, the canopy's depth, the glazing at the street, the plain
-  panels where the relief stands, and the colour of the walls and roofs no photograph or aerial shows.
+  panels where the relief stands, and the colour of the walls no photograph shows and of the wing's roof (the
+  aerial's mauve grey, drawn in `roofGrey`).
 - **The pictures** in `docs/landmarks/`: `science-centre-303-front.jpg` and `-above.jpg` are the viewer's renders
   of the model alone, from its street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
   the site built from this branch, the map near it and a walker's eyes on its street.

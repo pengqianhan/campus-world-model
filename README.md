@@ -71,7 +71,8 @@ It is built to answer two questions a student actually has:
 - **2026-11-06:** the map draws building 303 of the Science Centre in detail: a range of four storeys
   along its street, faced in bands of mauve-grey precast panels over a canopy and a glazed ground storey, before
   a slab of ten storeys with plant and a round tank on its roof, and six tall stacks behind it. Its sizes come
-  from the LiDAR; it was compared with a photograph, which is not published, and its card says what is estimated.
+  from the LiDAR; it was compared with a photograph, which is not published and with which two heights on its
+  face are estimated, and its card says what is estimated.
 - **2026-11-06:** the map draws the Humanities Building in detail: an L of two wings under red tiled roofs,
   a raised roof on eight sides over the corner, and on its face to the courtyard four bands of buff brick
   between ribbons of windows behind red, orange and yellow striped film. Its sizes come from the LiDAR; some
@@ -744,7 +745,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing, mesh panels and shopfront toward Alfred Street and of the lower edge of its end over the sunken court, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of the Humanities Building from its courtyard | The look its model was compared with while it was drawn, and the upper edge of its top brick band, the sill of its lowest windows and the sides of its entrance on its face to the courtyard, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of building 303 of the Science Centre from its street | The look its model was compared with while it was drawn | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of building 303 of the Science Centre from its street | The look its model was compared with while it was drawn, and two heights on its face estimated with it as a reference: the gaps between its bands, and its lowest band's bottom | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -860,7 +861,8 @@ If you represent the University and would like something changed or removed, ple
   Centre (303) are the exceptions:
   their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph; some heights
-  of the Kate Edger Information Commons and the Humanities Building are estimated in a photograph). The
+  of the Kate Edger Information Commons, the Humanities Building and building 303 of the Science Centre are
+  estimated in a photograph). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
