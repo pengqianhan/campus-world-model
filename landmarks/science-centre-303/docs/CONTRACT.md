@@ -22,7 +22,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     bay at each end at 32.8 m; on it a raised part at 37.6 m, a screened deck, a round tank to 41.8 m with a flue to
     44.7 m, and a box at 38.1 m;
   - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, flat-topped ridges
-    at 17 m about 3 m wide every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
+    at 17 m 2.75 to 3.25 m wide (the last 5.25) about every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
   - **the wing** behind the slab toward the north-east, from w -31 back to -61, its roof at 18.3 m with two troughs
     across it behind w -36, a strip at 16.2 m along its north-east side and its front, a light well 2 m wide between it
     and the slab, and a part at 21 m against the slab;
@@ -35,8 +35,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part's mass), `parts/faces.js` (the face to the street), `parts/shapes.js` (from building
-  302's), `model.js`: the lead.
+- `parts/building.js` (every part's mass), `parts/faces.js` (the face to the street), `parts/shapes.js` (the shapes the
+  parts share), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 180 triangles, 2

@@ -25,7 +25,8 @@ export function building(b) {
   // the parapet along the face, from inside the range's walls
   prism(b, rect([R.u[0] + 0.01, R.u[1] - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
   // the slab (its end 5 cm short of the range's): its middle, and a lower bay at each end running into it; its raised
-  // part; the screened deck, the round tank with its flue, and the box
+  // part; the screened deck, the round tank, the flue beside it (from the roof: it stands clear of the tank's round),
+  // and the box
   const Bs = S.bays;
   block(b, rect(Bs.u, S.w), FOOT - 0.1, S.roof, WALL, PALE);
   block(b, rect([S.u[0], Bs.u[0] + 0.1], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.12, Bs.roof, WALL, PALE);
@@ -35,7 +36,7 @@ export function building(b) {
   prism(b, rect(E.u, E.w), S.roof - 0.3, E.top, WALL, [hole]);
   block(b, hole, S.roof - 0.3, E.deck, WALL, PALE);
   block(b, round(S.tank.at, S.tank.r, 20), S.roof - 0.3, S.tank.top, WALL, PALE);
-  block(b, rect(S.tank.flue.u, S.tank.flue.w), S.tank.top - 0.3, S.tank.flue.top, WALL, PALE);
+  block(b, rect(S.tank.flue.u, S.tank.flue.w), S.roof - 0.3, S.tank.flue.top, WALL, PALE);
   block(b, rect(S.box.u, S.box.w), S.roof - 0.3, S.box.top, WALL, PALE);
   // behind it toward the south-west: the block, running into the slab; its ridges, its tall part and its stacks
   block(b, rect(Q.u, Q.w), FOOT - 0.15, Q.roof, WALL, ROOF);

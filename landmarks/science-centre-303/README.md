@@ -69,15 +69,15 @@ From the LiDAR's 1 m and 0.5 m cells and its returns:
   each end at 32.8 m; on it a raised part at 37.6 m (u 15.0-26.0), an enclosure of screens to 35.85 m round a deck
   at 34.5 m, a round tank 8 m across to 41.8 m with a flue to 44.7 m at its edge, and a box at 38.1 m.
 - **The rear block**, toward the south-west, to 305's ring: its roof at 13.4 m with flat-topped ridges at 17 m,
-  about 3 m wide and 6 m apart, from its back to the stacks, a part at 22.4 m, and six round stacks along the
-  slab's back, 2.7 m across, to 42.1 m (their returns' centres every 6.1 m).
+  2.75 to 3.25 m wide (the last 5.25) and about 6 m apart, from its back to the stacks, a part at 22.4 m, and six round stacks along the
+  slab's back, 2.7 m across, to 42.1 m (at their returns' centres, 6.0 to 6.3 m apart, the last pair 7.7).
 - **The wing**, toward the north-east, from w -31 back to -61: its roof at 18.3 m, with two troughs across it
-  behind w -36, each falling sharply to 16.9 m and rising to 18.2 m 2.5 m on; a strip at 16.2 m, 1.5 m wide, along
+  behind w -36, each falling sharply to 16.9 m and rising to 18.2 m 2.5 m on; a strip at 16.2 m, 1.7 to 1.75 m wide, along
   its north-east side and its front; a light well 2 m wide between it and the slab; a part at 21 m against the slab.
 - **The range**'s north-east end runs back to the slab's line, where the slab does not reach.
 
 From above: footprint IoU 0.848, 86% of the cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90
--0.27/0.07/0.29), the highest point 44.71 m, the flue's top (its own 8 returns to 44.79; the top view's p99.9 of
+-0.29/0.06/0.29), the highest point 44.71 m, the flue's top (its own 8 returns to 44.79; the top view's p99.9 of
 every roof cell, 42.1 m, leaves out a part so small).
 
 ## The face (step 5, November 2026, the lead)

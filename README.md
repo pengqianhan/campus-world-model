@@ -533,7 +533,8 @@ bands of mauve-grey precast panels with a shadowed gap under each, a canopy alon
 ground storey; behind it, set back, a slab of ten storeys, its roof at 33.6 m with a raised part, a screened deck,
 a round tank and a box of plant on it; behind the slab a block of ridged roofs with six round stacks rising to
 42 m along the slab's back, and a wing with two troughs across its roof, a light well between it and the slab.
-Every wall runs square with the face to the street, turned 3 degrees from the campus map's frame. Its heights
+Every wall runs square with the face to the street, turned 3 degrees from the bearing its config measured from
+the LiDAR's walls. Its heights
 and plans come from the LiDAR, the gaps between the bands and the canopy at the LiDAR's returns on the face; the
 roofs' colours come from the 2023 aerial. A large relief on the face is an artwork: it is not drawn after, and
 the band there is plain. One photograph sees the lower part of the face close up through a wide lens; counted

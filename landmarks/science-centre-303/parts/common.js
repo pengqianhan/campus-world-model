@@ -46,7 +46,7 @@ export const MEASURED = {
           tank: { at: [58.8, -19.9], r: 4.0, top: 41.8, flue: { u: [54.85, 55.4], w: [-22.9, -22.3], top: 44.7 } },
           box: { u: [59.5, 65.9], w: [-23.6, -16.1], top: 38.1 } },
   // Behind the slab, toward the south-west, to the campus map's ring of 305 (w -36.3): a block, its roof at 13.4 m,
-  // with flat-topped ridges at 17 m about 3 m wide, about 6 m apart along u, from its back to the stacks (the 0.5 m
+  // with flat-topped ridges at 17 m 2.75 to 3.25 m wide (the last 5.25), about 6 m apart along u, from its back to the stacks (the 0.5 m
   // cells at w -34 and along u 31.5 and 44), a part at 22.4 m (u 38.75-42.25); and six round stacks along the slab's back, 2.7 m round, to 42.1 m (the returns above
   // 36.5 m: their centres at w -28.95 and u 31.3, 37.6, 43.6, 49.7, 55.8 and 63.5, p90 42.0-42.1).
   rear: { u: [24.8, 67.0], w: [-36.3, -26.1], roof: 13.4,
@@ -54,13 +54,13 @@ export const MEASURED = {
           tower: { u: [38.75, 42.25], w: [-36.3, -29.0], top: 22.4 },
           stacks: { u: [31.3, 37.6, 43.6, 49.7, 55.8, 63.5], w: -28.95, r: 1.35, top: 42.1 } },
   // Toward the north-east: a wing from u 1.2 to 25 and from w -31 back to -61 (301's ring from w -59.5 for u above
-  // 8), its roof at 18.3 m (the cells 18.2-18.4); along its north-east side and its front a strip at 16.2 m, 1.5 m
-  // wide (u -0.5 to 1.3; w -31 to -29.25), a light well 2 m wide between it and the slab (no returns at w -29 to
-  // -27); a part at 21 m against the slab (u 12-23.5, w -32 to -27). Behind w -36 its roof has two troughs across
+  // 8), its roof at 18.3 m (the cells 18.2-18.4); along its north-east side and its front a strip at 16.2 m, 1.7 to
+  // 1.75 m wide (u -0.5 to the wing's 1.2; w -31 to -29.25), a light well 2 m wide between it and the slab (no returns at w -29 to
+  // -27); a part at 21 m against the slab (u 12-23.5, w -32 to the slab, 10 cm into it). Behind w -36 its roof has two troughs across
   // it, each falling sharply to 16.9 m at its north-east side and rising to 18.2 m 2.5 m on (the 0.5 m cells at
   // w -42, -50 and -58; the 2023 aerial's dark stripes).
   wing: { u: [1.2, 25.0], w: [-61.0, -31.0], roof: 18.3, strip: { u: [-0.5, 1.3], w: -29.25, top: 16.2 },
-          raised: { u: [12.0, 23.5], w: [-32.0, -26.9], top: 21.0 },
+          raised: { u: [12.0, 23.5], w: [-32.0, -26.7], top: 21.0 },
           troughs: { u: [[9.0, 11.5], [17.25, 19.75]], w: -36.0, low: 16.9, high: 18.2 } },
 };
 
