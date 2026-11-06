@@ -59,7 +59,7 @@ test("near it, the map draws the Clock Tower from code in its own colours, in pl
   await expect(page.locator("#height-note")).toContainText("measured by LiDAR");
 
   // Any other building says that its height is estimated.
-  await open(page, `?building=303&${T}`);
+  await open(page, `?building=440&${T}`);
   await expect(page.locator("#height-note")).toContainText("estimated from the number of floors");
 
   // About names the buildings drawn in detail, and credits the LiDAR as LINZ asks: its licensor, the

@@ -1,6 +1,7 @@
 {
  "name": "science-centre-303",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the gaps between the bands of panels on its face to the street, drawn as dark strips; the canopy's depth; the glazing at the street; plain panels where a relief, an artwork, stands on that face; and the colour of the walls and roofs no photograph or aerial shows",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken close up through a wide lens that bows the long edges by a few pixels (the pinhole camera's residuals reach 6 px along the bands' gaps), so the principal point is solved too",
  "building": {
