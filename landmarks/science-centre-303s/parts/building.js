@@ -34,6 +34,10 @@ export function building(b) {
   rim(b, se, M.roof, E.parapet.top, E.parapet.width);
   // behind the back's diagonal, the lower part, into the top storey
   block(b, plan([[L.u[0], backAt(L.u[0])], [L.u[1], backAt(L.u[1])], [L.u[1], L.w], [L.u[0], L.w]]), FOOT - 0.15, L.top, WALL, ROOF);
-  // the north-west tip, to the north-west part's end wall
+  // the north-west tip, to the north-west part's end wall, and the parapet along its front, 1 cm inside it, to the
+  // face's parapet wall
   block(b, plan(M.tip.plan), FOOT - 0.2, M.tip.top, WALL, ROOF);
+  const [[ta, wa], [tb, wb]] = M.tip.plan, front = (u) => wa + ((u - ta) / (tb - ta)) * (wb - wa) - 0.01, Tp = M.tip.parapet;
+  const t0 = ta + 0.1, t1 = P.u[0] - 0.01;
+  prism(b, plan([[t0, front(t0)], [t1, front(t1)], [t1, front(t1) - Tp.width], [t0, front(t0) - Tp.width]]), M.tip.top - 0.3, Tp.top, WALL);
 }

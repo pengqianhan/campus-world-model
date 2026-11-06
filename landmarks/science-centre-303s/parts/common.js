@@ -49,18 +49,20 @@ export const MEASURED = {
   // Behind the back's diagonal, a lower part from u 29 to the top storey's notch, back to w -22: its cells 15.3-16.3 m
   // (a lower patch at 11.3-11.9 m at w -20 to -22, not drawn yet).
   low: { u: [29.0, 31.95], w: -22.05, top: 15.5 },
-  // The north-west tip of the ring, to the north-west part's end wall: its cells 15.5-15.7 m (16.4 at the face).
-  tip: { plan: [[-4.4, 0.5], [1.6, 0.25], [1.6, -5.47], [-5.6, -3.0]], top: 15.6 },
+  // The north-west tip of the ring, to the north-west part's end wall: its cells 15.5-15.7 m; along its front, before
+  // the face's line, a parapet at 16.4 m (the cells there), 0.3 m wide (estimated).
+  tip: { plan: [[-4.4, 0.5], [1.6, 0.25], [1.6, -5.47], [-5.6, -3.0]], top: 15.6, parapet: { top: 16.4, width: 0.3 } },
   // The faces the photograph shows (step 5). The LiDAR has almost no returns on the glass and none in layers on the
   // south-east end face, so what it does not give is estimated, the photograph as a reference: the glass of the face
   // to the street from y 0 (the ground storey is hidden behind the street's railing); the pale fins on its
   // south-east stretch, where the 30.4 m parapet ends (u 37.7), 0.4 m wide and 0.38 m deep, at u 37.9, 42.5, 47.0
   // and 52.35 (the last two where the fitted camera's rays through the photograph's fins meet the face), to the
-  // parapet's 29.5 m; the pier at the corner from u 57.5, to 30.4 m; between the last fin and the pier the braces,
+  // parapet's 29.5 m; the pier at the corner from u 57.5, to 29.7 m (its returns' p99 29.71; the
+  // photograph's pier top, through the fitted camera, 29.8 m); between the last fin and the pier the braces,
   // a zigzag of bars 0.3 m wide every two storeys; on the south-east end face, a pale spandrel band 0.9 m tall at
   // each storey of 3.35 m (eight storeys from the ground at the end, 2.0 m, to the roof).
   facade: { glassFrom: 0.0, fins: [37.9, 42.5, 47.0, 52.35], fin: { width: 0.4, depth: 0.38 },
-            pier: { u: [57.5, 59.85], top: 30.4 }, braces: { u: [52.55, 57.5], width: 0.3, depth: 0.2, period: 6.8 },
+            pier: { u: [57.5, 59.85], top: 29.7 }, braces: { u: [52.55, 57.5], width: 0.3, depth: 0.2, period: 6.8 },
             storey: { first: 2.0, height: 3.35, count: 8, band: 0.9 } },
 };
 

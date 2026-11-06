@@ -30,7 +30,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 176 triangles, 2
-  draw calls; round 1's shape 308 and 2; the faces 584 and 3.
+  draw calls; round 1's shape 308 and 2; the faces 584 and 3; after the check 596 and 3.
 
 ## Rounds
 - Round 0: silhouette IoU 0.767, 0.963 in the model's screen box, through the fitted camera (much of the south-east
@@ -58,6 +58,15 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   one plane. Silhouette IoU 0.781 (0.974 in the box); the luma p10/p50/p90 96/131/188 against the photograph's
   87/130/190. The top view: footprint IoU 0.859, 85% of the cells within 0.5 m (the fins and the pier stand out of
   the face), block 303S under the model 92.7%.
+- The check (step 6): the pier at the corner to 29.7 m (its returns' p99 29.71, where round 1 had 30.4; the
+  photograph's pier top, through the fitted camera, 29.8 m); a parapet at 16.4 m along the tip's front. The highest
+  of the LiDAR's cells in the ring, 35.1-35.25 m at u 5-11, w -5 and back, are building 303's slab's end bay
+  (32.8 m above 303's ground of 41.6 m) at the ring's edge. 596 triangles, 3 draw calls. The top view: footprint
+  IoU 0.859, 86% of the cells within 0.5 m (p10/p50/p90 -0.62/-0.01/0.19), block 303S under the model 92.7%,
+  303 1.5% (`building.also` stays empty).
+- The door (step 7): the entrance is not known (the photograph hides the ground storey; the campus map records
+  none), so the door is on the pavement before the face's middle, 2.0 m out (u 23), where the LiDAR's ground is the
+  frame's (13 returns within 1 m, p50 0.002 m); `place` wrote it into `placement.json`.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
