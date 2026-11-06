@@ -10,6 +10,6 @@ What the building looks like, for whoever draws a part of it. The photograph is 
   north-east end.
 - Behind the range, set back, a taller slab of about ten storeys; behind it lower blocks. Only the range's face
   to the street is in the photograph; the rest is drawn plainly at the LiDAR's sizes.
-- Grey flat roofs (the 2023 aerial: pale ribbed metal over the range, brown sawtooth roofs over the north-east
-  block).
+- Flat roofs (the 2023 aerial): near white over the range and the slab, a blue grey over the rear block, a mauve
+  grey over the wing, its two troughs dark.
 - The light: an overcast sky in the photograph, no shadows; the faces even in tone.

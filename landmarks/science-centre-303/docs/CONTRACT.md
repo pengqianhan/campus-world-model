@@ -68,6 +68,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   pixel before and after); the viewer's light from behind (overcast), its exposure 2.0. Silhouette IoU 0.960 (0.960
   in the box); the luma p10/p50/p90 50/152/158 against the photograph's 111/156/200. From above: footprint IoU
   0.848, 86% of the cells within 0.5 m; block 303 under the model 84.8%. 1,572 triangles, 5 draw calls.
+- The roofs' colours from the 2023 aerial: the range's and the slab's near white (about 210 luma), drawn in the kit's
+  `roofPale`; the rear block's and the wing's darker (a blue grey and a mauve grey), drawn in `roofGrey`
+  (estimated). 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
