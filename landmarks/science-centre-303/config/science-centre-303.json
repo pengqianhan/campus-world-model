@@ -195,9 +195,9 @@
  "crop_margin": 25,
  "ground": 41.6,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -10.78,
+  "z": 32.26,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The forecourt before the entrance on the face to the street, under the canopy, is 0.08-0.12 m above the frame's ground (41.6 m); the door is 5.5 m out from the face before the entrance (u 19.5, w 5.5 in the building's frame), at the forecourt's front edge, where the LiDAR's ground is the frame's (27 returns within 1 m, p10/p50/p90 -0.065/-0.016/0.049 m), so every height is kept as measured"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -250,7 +250,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 37.2, p95 46.7: the site falls about 9 m); set to the ground at the door at step 7",
+ "ground_note": "the median LiDAR ground (class 2) in the crop box (p5 37.2, p95 46.7: the site falls about 9 m), and the LiDAR's ground at the door (door.note)",
  "light": {
   "sunaz": 135,
   "sunel": 35,

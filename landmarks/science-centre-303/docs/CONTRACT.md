@@ -28,6 +28,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     and the slab, and a part at 21 m against the slab;
   - **the range** ends where 303S's ring begins (u 70.3): the face's last 5 m are 303S's;
   - the ground falls 5.7 m along the face to the south-west: walls go down to `FOOT`, -6.0 m.
+- **The door** (step 7) is on the forecourt 5.5 m out from the face before the entrance (u 19.5), at its front edge,
+  where the LiDAR's ground is the frame's (27 returns within 1 m, p50 -0.016 m); the forecourt under the canopy is
+  0.08-0.12 m above it. No other block of the campus map has half of it under the model (305 10.2%, 301 1.5%):
+  `building.also` is empty.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
