@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   from the LINZ 2024 LiDAR, the roofs' colours from the 2023 aerial; it was compared with a photograph of its face
   to the street, and its card says what is estimated: some heights, the gaps between the bands, the canopy's
   depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
-  artwork and is not drawn after. Its other faces are drawn plainly (#PR).
+  artwork and is not drawn after. Its other faces are drawn plainly (#136).
 
 ## 2026-11-06
 
