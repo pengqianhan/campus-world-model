@@ -18,11 +18,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the range along the street**, 11.2 m deep, its roof at 13.4 m, a parapet at 14.05 m along the face; at its
     north-east end, where the slab does not reach, it runs back to the slab's back line;
-  - **the slab** behind it, 15 m deep, from u 5.1 to 72.6, its roof at 33.6 m, with a raised part at 37.6 m and
-    plant to 38.1 m;
-  - **the block** behind the slab toward the south-west, its roof at 17 m (lower courts at 13.4 m and a part at
-    22 m, not drawn yet);
-  - **the wing** behind the slab toward the north-east, back to w -63.5, its roof at 18.3 m;
+  - **the slab** behind it, 15 m deep, from u 5.1 to where 303S's ring begins (u 70.3), its roof at 33.6 m, with a
+    raised part at 37.6 m, plant at 38.2 m and a round tank on it to 44.3 m;
+  - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, ridges at
+    17 m every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
+  - **the wing** behind the slab toward the north-east, back to w -61, its roof at 18.3 m (sawtooth in the 2023
+    aerial, drawn flat yet), a strip at 16.2 m along its north-east side and a part at 21 m against the slab;
+  - **the range** ends where 303S's ring begins (u 70.3): the face's last 5 m are 303S's;
   - the ground falls 5.7 m along the face to the south-west: walls go down to `FOOT`, -6.0 m.
 
 ## Who owns what
@@ -31,7 +33,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 180 triangles, 2
-  draw calls.
+  draw calls; round 1's shape 1,268 and 2.
 
 ## Rounds
 - Round 0: silhouette IoU 0.959 (0.959 in the model's screen box: the photograph is close up, its sky 17%) through
@@ -39,6 +41,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   The top view: footprint IoU 0.832 (the LiDAR's 3,706 m² against the model's 3,420), 64% of the cells within 0.5 m
   of the LiDAR's height (the courts and stepped roofs behind the slab, the rear block's 22 m part, the plant), the
   highest point 38.1 m against the LiDAR's 42.1 (p99.9, the plant); block 303 under the model 85.7%.
+- Round 1's shape: the slab's raised part, plant and tank; the block's ridges, tall part and stacks; the wing's
+  strip and raised part; the range, slab, block and wing ended at the rings of 303S, 305 and 301. The top view:
+  footprint IoU 0.822, 73% of the cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90
+  -0.30/0.09/1.38: the wing's sawtooth and the block's ridges, drawn by their 2 m cells), the highest point 44.3 m,
+  the tank's top (its own returns' p99 44.33; the whole roof's p99.9 is 42.1); block 303 under the model 85.2%,
+  305 10.2%, 303S 0%. The silhouette and luma unchanged (the photograph sees only the range's face).
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
