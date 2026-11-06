@@ -48,12 +48,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   faces of different materials in one plane. Silhouette IoU 0.780 (0.972 in the box); the top view: footprint IoU
   0.857, 86% of the cells within 0.5 m (p10/p50/p90 -0.62/-0.01/0.18), the highest point 33.75 m.
 - The faces (step 5, `parts/faces.js`): the glass of the face to the street (the kit's `glassPale`) 2 cm before its
-  walls, from y 0; on its south-east stretch, beyond the 30.4 m parapet, pale fins at u 37.9, 42.5, 47.0 and 52.35
+  walls, from under the street's level; on its south-east stretch, beyond the 30.4 m parapet, pale fins at u 37.9, 42.5, 47.0 and 52.35
   (the last two where the fitted camera's rays through the photograph's fins meet the face), the pier at the corner
   from u 57.5 to 30.4 m, and between the last fin and the pier the braces, a zigzag of bars every two storeys; the
   south-east end face's glass and a pale spandrel band at each storey of 3.35 m. The walls in the kit's
   `claddingPale` (the faces no photograph shows estimated alike), the roofs `roofGrey`. Estimated: the fins' and
-  bands' sizes, the storey's height, the braces' bars and period, the glass from y 0. The viewer's light: the sun at
+  bands' sizes, the storey's height, the braces' bars and period, the glass from under the street's level. The viewer's light: the sun at
   20 deg round and 60 deg up, the exposure 1.4. 584 triangles, 3 draw calls; no two faces of different materials in
   one plane. Silhouette IoU 0.781 (0.974 in the box); the luma p10/p50/p90 96/131/188 against the photograph's
   87/130/190. The top view: footprint IoU 0.859, 85% of the cells within 0.5 m (the fins and the pier stand out of

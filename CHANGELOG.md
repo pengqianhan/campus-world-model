@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-07
+
+### Added
+
+- **Building 303S of the Science Centre drawn in detail.** Near the camera the map draws building 303S of the
+  Science Centre on Symonds Street from code in place of its block: a block of eight storeys behind a curtain wall
+  of mirror-like blue glass, pale fins on its face's south-east stretch with a zigzag of pale braces between the
+  last fin and the pier at the corner, a pale spandrel band at each storey on its south-east end, and on its roof,
+  set back from the face, a top storey in pale grey panels. Its sizes come from the LINZ 2024 LiDAR, the roofs'
+  colour from the 2023 aerial; it was compared with a photograph from the street to its south-east, and its card
+  says what is estimated: some heights, the fins, the braces and the bands, the glazing at the street, and the
+  colour of the walls no photograph shows. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own glass and cladding. Its back, which the photograph does not show, is
+  drawn plainly (#PR).
+
 ## 2026-11-06
 
 ### Added

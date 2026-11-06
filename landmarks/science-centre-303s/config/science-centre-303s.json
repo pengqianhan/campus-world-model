@@ -1,6 +1,7 @@
 {
  "name": "science-centre-303s",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the places, sizes and spacing of the fins on its face to the street; the braces between the last fin and the pier at the corner; the spandrel bands on its south-east end and the storey's height; the glazing from the street's level; and the colour of the walls no photograph shows",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street about 95 m to the south-east through a long lens (a horizontal field of 32 degrees); its camera is fitted with the principal point at the centre.",
  "building": {
