@@ -1,7 +1,7 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/science-centre-303_pts.npy: the building returns, class 6, in
 // the crop box) in the view frame of config/science-centre-303.json: x is -axis (south-west), y up from the frame's
-// ground (41.6 m NZVD2016, the median ground in the crop box; to be the LiDAR's ground at the config's door at step
-// 7), z is toStreet (north-west); the frame's centre at x = z = 0. Owned by the lead: read, do not edit. Measured
+// ground (41.6 m NZVD2016, the median ground in the crop box, and the LiDAR's ground at the config's door, set at
+// step 7), z is toStreet (north-west); the frame's centre at x = z = 0. Owned by the lead: read, do not edit. Measured
 // 2026-11-06 (round 0; round 1's shape).
 //
 // How: the 90th percentile of the returns in each 0.5 m cell, and the returns on the face to the street. The

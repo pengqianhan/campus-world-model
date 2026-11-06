@@ -59,4 +59,7 @@ export function building(b) {
   block(b, rect(St.u, [K.w[0] + 0.1, St.w]), FOOT - 0.25, St.top, WALL, ROOF);
   block(b, rect([St.u[1] - 0.05, K.raised.u[0] + 0.1], [K.w[1] - 0.1, St.w]), FOOT - 0.25, St.top, WALL, ROOF);
   block(b, rect(K.raised.u, K.raised.w), FOOT - 0.3, K.raised.top, WALL, ROOF);
+  // the wing's roof on between its raised part and the rear block, back to the slab (its returns there at 18.2-18.3 m;
+  // 5 cm into the slab, where the raised part's face is 10 cm in)
+  block(b, rect([K.raised.u[1] - 0.1, Q.u[0] + 0.1], [K.w[1] - 0.1, S.w[0] + 0.05]), FOOT - 0.35, K.roof, WALL, ROOF);
 }

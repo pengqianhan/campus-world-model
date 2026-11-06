@@ -28,14 +28,14 @@ it, the street side positive (`at`, `rect`, `uw`).
 
 - The campus map's rings of 303S, 305 and 301 adjoin 303's: the face's last 5 m to the south-west are 303S's
   (its ring from u 70.1-70.4), the low roofs behind the rear block are 305's (from w -36.3), and the wing's back
-  runs into 301's (from w -59.5). The model ends where each begins, but for three slivers where a neighbour's
-  ring reaches into 303's own parts, which the model draws as the LiDAR has them: 305's from the rear block's
-  back across it and its 22.4 m part into the slab (u 37 to 41, to w -24.4), and along the wing's south-west
-  side (u 23.5 to 25, w -36.3 to -46.3); 303S's along the rear block's back at its south-west end (u 62 to 67,
-  from w -35).
+  runs into 301's (from w -59.5). The model ends where each begins (303S's ring runs 0.2 m behind the rear block's
+  back, and meets the slab's south-west end within 0.1 m), but for two slivers where 305's ring reaches into
+  303's own parts, which the model draws as the LiDAR has them: from the rear block's back across it and its
+  22.4 m part into the slab (u 37 to 41, to w -24.4), and along the wing's south-west side (u 23.5 to 25,
+  w -36.3 to -46.3).
 - No other block has as much as half of it under the model (305 10.2%, its two slivers; 301 1.5%), so
   `building.also` is empty.
-- **Block 303 itself** is 84.8% under the model, short of the 85% asked: its ring takes in a light well 2 m wide
+- **Block 303 itself** is 84.96% under the model, a hair short of the 85% asked: its ring takes in a light well 2 m wide
   between the wing and the slab, where the LiDAR has no returns, and the model leaves it open.
 
 ## The reference
@@ -82,8 +82,8 @@ From the LiDAR's 1 m and 0.5 m cells and its returns:
   its north-east side and its front; a light well 2 m wide between it and the slab; a part at 21 m against the slab.
 - **The range**'s north-east end runs back to the slab's line, where the slab does not reach.
 
-From above: footprint IoU 0.848, 86% of the cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90
--0.29/0.06/0.29), the highest point 44.71 m, the flue's top (its own 8 returns to 44.79; the top view's p99.9 of
+From above (after the review, below): footprint IoU 0.849, 86% of the cells within 0.5 m (the model's heights minus
+the LiDAR's p10/p50/p90 -0.29/0.06/0.29), the highest point 44.71 m, the flue's top (its own 8 returns to 44.79; the top view's p99.9 of
 every roof cell, 42.1 m, leaves out a part so small).
 
 ## The face (step 5, November 2026, the lead)
@@ -107,6 +107,18 @@ Silhouette IoU 0.960, 0.960 in the box; the luma p10/p50/p90 50/152/158 against 
 glazing and gaps hold the p10 down). 1,572 triangles, 6 draw calls; no two faces of different materials in one
 plane.
 
+## The review (November 2026)
+
+- **The flue** at the tank's edge stood on the tank's top, but its plan lies outside the tank's round: it hung from
+  41.5 to 44.7 m. It rises from the slab's roof, as the LiDAR's returns in its plan do.
+- **The wing's raised part** ended 10 cm short of the slab's back; it runs 10 cm into it.
+- **The wing's roof** runs on at 18.3 m between the raised part's end (u 23.5) and the rear block's start (u 24.8),
+  back to the slab, where the LiDAR's returns are at 18.2-18.3 m and the model had left a slot 1.3 m by 4.2 m open
+  from the foot to the sky.
+
+From above: footprint IoU 0.849 (the LiDAR's 3,706 m², the model's 3,159, both 3,153), 86% of the 12,219 cells
+within 0.5 m; block 303 84.96% under the model. 1,596 triangles, 6 draw calls.
+
 ## On the map (step 7)
 
 - **The door** is on the forecourt 5.5 m out from the face before the entrance (u 19.5, w 5.5 in the building's
@@ -123,7 +135,8 @@ within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the land
 measured.
 
 - **The foot.** The model stands on the map's ground at its door, and its walls go down to FOOT, 6.0 m below the
-  frame's ground (each part's foot 6.0 to 6.3 m below it); the foot check of `tests/landmarks.test.ts`, which
+  frame's ground (each wall's foot 6.0 to 6.3 m below it, the glazing under the canopy from 5.5 m below it);
+  the foot check of `tests/landmarks.test.ts`, which
   tests each material's lowest points against the map's ground, passes.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofPale` and
   `roofGrey` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `concreteMauve`, `screenGrey` and

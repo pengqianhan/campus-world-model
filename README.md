@@ -86,6 +86,7 @@ It is built to answer two questions a student actually has:
   its end to the street, and a glazed end over the sunken court, open beneath it. Its sizes come from the
   LiDAR; the heights on its faces to the street are estimated in a photograph, which is not published, and
   its card says so.
+
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
 <details>
@@ -1054,7 +1055,7 @@ If you represent the University and would like something changed or removed, ple
   the face's bands are drawn as dark strips on it, the lowest band's bottom, the canopy's depth and the glazing
   under it are estimated. A large relief of white blocks on the face is an artwork, not drawn after: the band is
   plain there. The slab, the rear block, the wing and their faces, which no photograph shows, are drawn plainly
-  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 84.8% under the model: its ring takes in
+  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 84.96% under the model: its ring takes in
   a light well, which has no returns, between the wing and the slab.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
