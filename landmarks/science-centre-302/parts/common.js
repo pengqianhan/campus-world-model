@@ -65,10 +65,10 @@ export const MEASURED = {
     // 0.3, b 3-41) lie in thin layers, the sills and heads of the ribbons (each pair 1.87-1.93 m apart, a storey
     // 4.22-4.23 m): 30.27/32.14, 34.49/36.40, 38.72/40.64, 42.95/44.88, and a ledge at 46.69 under the slats; the
     // lowest ribbon, just above the lower block's roof, a storey below (26.04/27.91, estimated); that the glass lies
-    // between each pair's sill and head is the photograph's (its ribbons a little under half the storey). The glass
-    // stands back `recess` behind the metal (estimated: the sills' returns reach 0.3 m out of the face). The slats,
-    // `slat.width` wide and `slat.depth` deep every `slat.step` (estimated from the photograph's rhythm, 36-38 across
-    // the face).
+    // between each pair's sill and head is the photograph's (its ribbons a little under half the storey). The walls
+    // stand back `recess` behind the metal, the glass 4 cm before them (estimated: the sills' returns reach 0.3 m out
+    // of the face). The slats, `slat.width` wide and `slat.depth` deep every `slat.step` (estimated from the
+    // photograph's rhythm, 36-38 across the face).
     sw: {
       recess: 0.25, ribbons: [[26.04, 27.91], [30.27, 32.14], [34.49, 36.40], [38.72, 40.64], [42.95, 44.88]],
       ledge: 46.69, slat: { width: 0.3, depth: 0.15, step: 1.2 },

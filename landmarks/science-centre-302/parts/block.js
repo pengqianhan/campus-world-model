@@ -30,7 +30,9 @@ export function block(b) {
   const inLine = (p, q) => { const r = run(p, q); return [[p[0] - r.n[0] * D, p[1] - r.n[1] * D], r.e]; };
   const along = (p, q) => [p, [q[0] - p[0], q[1] - p[1]]];
   const [sw, cutL, south] = [inLine(P[0], P[1]), inLine(P[0], P[6]), inLine(P[6], P[5])];
-  const Q = [meet(sw, cutL), meet(sw, along(P[1], P[2])), P[2], P[3], P[4], meet(south, along(P[5], P[4])), meet(cutL, south)];
+  // the south face's line, moved in, meets the inner side inside the tower: the hull's two corners there (P4, P5) are
+  // left out, or the plan would cross itself
+  const Q = [meet(sw, cutL), meet(sw, along(P[1], P[2])), P[2], P[3], meet(south, along(P[4], P[3])), meet(cutL, south)];
   // its foot 0.1 m below the tower's, so that where it runs inside the tower their undersides are not in one plane
   slab(b, Q, FOOT - 0.1, B.top, DARK, ROOF);
   // the screens, each with its inner side 0.1 m inside the tower's face; the south-east one's outer side too
@@ -40,26 +42,41 @@ export function block(b) {
     slab(b, towerRect(S.a, [b0, b1]), FOOT - 0.1, B.screenTop, DARK, ROOF);
   });
   // the faces the photograph shows, each with the line of the glazed corner's edge on it (its height at s), if any
-  const G = B.glass, cut = run(Q[0], Q[6]), h6 = G.top - G.s * cut.l;
+  const G = B.glass, cut = run(Q[0], Q[5]), h6 = G.top - G.s * cut.l;
   const faces = [
     [run(Q[0], Q[1]), (s) => G.top - G.sw * s],
-    [run(Q[6], Q[5]), (s) => h6 - G.s * s],
+    [run(Q[5], Q[4]), (s) => h6 - G.s * s],
     // the screen along the tower's south-east face, to where the south face runs on in front of it
     [run(towerAt(26.0, B.screens[1].b[0] + D), towerAt(0.4, B.screens[1].b[0] + D)), null],
   ];
-  corner(b, faces, cut);
+  const [swR, southR] = [faces[0][0], faces[1][0]];
+  // where on the south face the south-east screen begins: its face stands a few centimetres before the south face's
+  // from there, so the glazed corner's glass and frame stop there
+  const m = meet([Q[5], southR.e], [towerAt(B.screens[1].a[0], 0), MEASURED.tower.b]);
+  const sEnd = (m[0] - Q[5][0]) * southR.e[0] + (m[1] - Q[5][1]) * southR.e[1];
+  // where a run's outer edge, d out of it, meets its neighbour's at the south corner and its short cut: the rail and
+  // the frame are mitred there, with no notch at the corner
+  const reach = (r, o, d) => {
+    const [p, q] = [r.at(0, 0, d), o.at(0, 0, d)], x = meet([[p[0], p[2]], r.e], [[q[0], q[2]], o.e]);
+    return (x[0] - p[0]) * r.e[0] + (x[1] - p[2]) * r.e[1];
+  };
+  const ends = (r, d) => r === swR ? [reach(r, cut, d), r.l] : r === cut ? [reach(r, swR, d), reach(r, southR, d)]
+    : r === southR ? [reach(r, cut, d), r.l] : [0, r.l];
+  corner(b, faces, cut, sEnd, ends);
   for (const [r, edge] of faces) blades(b, r, edge);
   // the screens' top rail along those faces, from the block's roof to 5 cm over the screens' top, as deep as the
   // blades (the photograph: one dark line along the top)
-  for (const r of [faces[0][0], cut, faces[1][0], faces[2][0]]) {
-    const q = [[0, B.top], [r.l, B.top], [r.l, B.screenTop + 0.05], [0, B.screenTop + 0.05]];
-    hexahedron(b, [...q.map(([s, y]) => r.at(s, y, 0)), ...q.map(([s, y]) => r.at(s, y, B.folds.depth))], DARK);
+  for (const r of [swR, cut, southR, faces[2][0]]) {
+    const [o0, o1] = ends(r, D), [y0, y1] = [B.top, B.screenTop + 0.05];
+    hexahedron(b, [r.at(0, y0, 0), r.at(r.l, y0, 0), r.at(r.l, y1, 0), r.at(0, y1, 0),
+      r.at(o0, y0, D), r.at(o1, y0, D), r.at(o1, y1, D), r.at(o0, y1, D)], DARK);
   }
 }
 
 /** The glazed corner: from the south corner along the south-west face to where its edge meets the foot, and round
- * the corner's short cut and along the south face to the tower, 3 cm before the walls; the frame along its edges. */
-function corner(b, [[sw, swEdge], [south, sEdge]], cut) {
+ * the corner's short cut and along the south face to the south-east screen (sEnd along it), 3 cm before the walls;
+ * the frame along its edges, its outer edge from and to `ends`. */
+function corner(b, [[sw, swEdge], [south, sEdge]], cut, sEnd, ends) {
   const G = B.glass, Fr = B.folds.frame, out = 0.03;
   // a run's glass under its edge line, from h0 at its start falling `fall` a metre, as panels down to the foot
   const panel = (r, h0, fall) => {
@@ -73,16 +90,18 @@ function corner(b, [[sw, swEdge], [south, sEdge]], cut) {
   // and the ground storey's glazing along the south-west face, under the canopy (estimated: to the screens' foot)
   tris(b, [[sw.at(0, B.folds.from, out), sw.at(sw.l, B.folds.from, out), sw.at(sw.l, FOOT, out)], [sw.at(0, B.folds.from, out), sw.at(sw.l, FOOT, out), sw.at(0, FOOT, out)]], GLASS, (m) => [m[0] + sw.n[0], m[1] + sw.n[1]]);
   panel(cut, G.top, G.s);
-  panel(south, G.top - G.s * cut.l, G.s);
-  // the frame: above each edge from the corner down to the ground storey's top (or the run's end), Fr.width wide
+  panel({ ...south, l: sEnd }, G.top - G.s * cut.l, G.s);
+  // the frame: above each edge from the corner down to the ground storey's top (or the glass's end), Fr.width wide
   const frame = (r, edge, s1) => {
-    const q = [[0, edge(0)], [s1, edge(s1)], [s1, edge(s1) + Fr.width], [0, edge(0) + Fr.width]];
-    hexahedron(b, [...q.map(([s, y]) => r.at(s, y, 0)), ...q.map(([s, y]) => r.at(s, y, Fr.depth))], DARK);
+    const [o0, o1] = ends(r, Fr.depth), e1 = s1 < r.l ? s1 : o1;
+    const q = (s) => [[s, edge(s)], [s, edge(s) + Fr.width]];
+    const [[a, d], [c, f]] = [q(0), q(s1)], [[g, j], [k, m]] = [q(o0), q(e1)];
+    hexahedron(b, [...[a, c, f, d].map(([s, y]) => r.at(s, y, 0)), ...[g, k, m, j].map(([s, y]) => r.at(s, y, Fr.depth))], DARK);
   };
   const to = (edge, fall, l) => Math.min(l, (edge(0) - B.folds.from) / fall);
   frame(sw, swEdge, to(swEdge, G.sw, sw.l));
   frame(cut, (s) => G.top - G.s * s, cut.l);
-  frame(south, sEdge, to(sEdge, G.s, south.l));
+  frame(south, sEdge, to(sEdge, G.s, sEnd));
 }
 
 /** A face's folded blades: plates perpendicular to it, straight from the screens' top down to `straight`, then

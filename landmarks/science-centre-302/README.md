@@ -25,13 +25,13 @@ from it, and all its roofs run square with its own faces, so `parts/common.js` g
 its south corner) and `towerAt` and `towerRect` turn it into the view frame.
 
 The points are the building's own. `building.outline` is campus.json's ring, which on the north-east side lies
-2 to 6 m outside the LiDAR's walls and runs into the neighbouring block's returns: the plans follow the LiDAR.
+5 to 7 m outside the LiDAR's walls and runs into the neighbouring block's returns: the plans follow the LiDAR.
 
 ## Neighbours on the map
 
 - No other block of the campus map within 80 m has as much as 0.5% of it under the model, so `building.also`
   is empty.
-- **Block 302 itself** is 84.2% under the model, short of the 85% asked: its ring runs 2 to 6 m outside the
+- **Block 302 itself** is 84.2% under the model, short of the 85% asked: its ring runs 5 to 7 m outside the
   LiDAR's walls on the north-east side, into the neighbouring block's returns.
 
 ## The reference
@@ -77,7 +77,8 @@ The check, each part against its 0.5 m cells, found every edge half a cell to a 
 square with the tower, 3.93 degrees off. They are drawn now in the tower's frame, measured again: the main
 roof from b 4.55 to 39.7, falling from 50.8 m at its ends to 50.1 m at a band across its middle (two planes);
 in the band (b 16.5 to 28.0) a gutter at each side, a court at 46.7 m and three sawtooth ramps, each fitted to
-its cells (slopes 0.76 to 0.78, the cells within 0.11 m of the plane), rising toward the south-west from 46.72
+its cells (a plane of slope 0.76 to 0.78, the cells within 0.11 m of it; the cells for 0.3 m before its top
+are at its top too, so each is drawn from there, its slope 0.72 to 0.73), rising toward the south-west from 46.72
 to 50.6 m, then a block at 51.1 m and a slot with openings to below; a parapet 0.9 m wide at 51.5 m along the
 south-west face; a raised strip at 51.3 m along the north-east face with its parapet at 51.8; plant in four
 boxes, each to its cells' p90, 53.6 to 53.8 m (their cells are units with gaps between, which the boxes fill;
@@ -91,7 +92,7 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
 
 ## The faces (step 5, November 2026, the lead)
 
-- **The tower's south-west face**: ribbons of glass between bands of pale metal standing 0.25 m out of them
+- **The tower's south-west face**: ribbons of glass between bands of pale metal standing 0.21 m out of them
   (estimated). The LiDAR's returns on the face lie in thin layers, the ribbons' sills and heads, each pair
   1.87 to 1.93 m apart, a storey 4.22 m: 30.27/32.14, 34.49/36.40, 38.72/40.64 and 42.95/44.88 m, and a
   ledge at 46.69 m under a band of slats to the parapet's top; the lowest ribbon, just above the lower block's
@@ -100,7 +101,8 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
 - **The tower's south-east face**: brown cladding from the screen's top up, and north-east of a flat stretch a
   row of deep brown fins, all estimated: the LiDAR has almost no returns on the face.
 - **The lower block** and its screens near-black, with the glazed corner at its south end and a frame along
-  the glass's two edges; on the faces the photograph shows, the screens' blades, plates 0.7 m deep every
+  the glass's two edges (on the south face to where the screen along the tower's south-east face begins, 2 m
+  short of the tower, its face standing just before the block's beyond); on the faces the photograph shows, the screens' blades, plates 0.7 m deep every
   1.8 m, straight from the top and zigzagging below 20 m every 2 m, their folds catching the sky, reaching out
   to the hull of the returns at the block's top (the screens' outer edge), the walls behind them; a top rail;
   the ground storey glazed along Symonds Street below the canopy (all estimated, the photograph as a
@@ -109,10 +111,10 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
   The Clock Tower's, the Kate Edger Information Commons', the Music School's and the Old Choral Hall's viewer
   pictures at `?quality=low` and `?mask=1` are the same pixel for pixel with and without them.
 
-Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/180 against the photograph's
+Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/179 against the photograph's
 102/152/190 (its pixels are dark screens or pale metal, few between, so the median moves the most). From
-above: footprint IoU 0.846, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
-3,917 triangles, 6 draw calls; no two faces of different materials in one plane.
+above: footprint IoU 0.847, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
+3,873 triangles, 6 draw calls; no two faces of different materials in one plane.
 
 ## On the map (step 7)
 
@@ -120,8 +122,8 @@ above: footprint IoU 0.846, 90% of the cells within 0.5 m, the highest point 53.
   south-west face and 15 m north-west of its south corner, before the glazed ground storey, where the LiDAR's
   ground is the frame's (45.01 m; 12 returns within 1 m, 44.93 to 45.03 from p10 to p90). The pavement falls
   along the face from 46.0 m at the south corner to 42.6 m at the west end, so a door at the corner would
-  stand the model about 1 m above the LiDAR's ground. As for the Kate Edger Information Commons and the
-  Humanities Building, the door is where the frame's ground is, every height is kept, and `door.note` says so.
+  stand the model about 1 m above the LiDAR's ground. As for the Kate Edger Information Commons, the door
+  is where the frame's ground is, every height is kept, and `door.note` says so.
 - `building.also` is empty.
 
 ## On the site
