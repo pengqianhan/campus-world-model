@@ -28,8 +28,13 @@ it, the street side positive (`at`, `rect`, `uw`).
 
 - The campus map's rings of 303S, 305 and 301 adjoin 303's: the face's last 5 m to the south-west are 303S's
   (its ring from u 70.1-70.4), the low roofs behind the rear block are 305's (from w -36.3), and the wing's back
-  runs into 301's (from w -59.5). The model ends at each.
-- No other block has as much as half of it under the model (305 10.2%, 301 1.5%), so `building.also` is empty.
+  runs into 301's (from w -59.5). The model ends where each begins, but for three slivers where a neighbour's
+  ring reaches into 303's own parts, which the model draws as the LiDAR has them: 305's from the rear block's
+  back across it and its 22.4 m part into the slab (u 37 to 41, to w -24.4), and along the wing's south-west
+  side (u 23.5 to 25, w -36.3 to -46.3); 303S's along the rear block's back at its south-west end (u 62 to 67,
+  from w -35).
+- No other block has as much as half of it under the model (305 10.2%, its two slivers; 301 1.5%), so
+  `building.also` is empty.
 - **Block 303 itself** is 84.8% under the model, short of the 85% asked: its ring takes in a light well 2 m wide
   between the wing and the slab, where the LiDAR has no returns, and the model leaves it open.
 
@@ -117,7 +122,8 @@ within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the land
 measured.
 
 - **The foot.** The model stands on the map's ground at its door, and its walls go down to FOOT, 6.0 m below the
-  frame's ground; `tests/landmarks.test.ts`, which checks that none hangs over the map's ground, passes.
+  frame's ground (each part's foot 6.0 to 6.3 m below it); the foot check of `tests/landmarks.test.ts`, which
+  tests each material's lowest points against the map's ground, passes.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofPale` and
   `roofGrey` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `concreteMauve`, `screenGrey` and
   `grey` are walls.
