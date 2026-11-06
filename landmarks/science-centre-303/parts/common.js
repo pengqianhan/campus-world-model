@@ -43,13 +43,22 @@ export const MEASURED = {
   // Toward the north-east: a wing from u 0 to 25, back to w -61 (301's ring from w -59.5 for u above 8), its roof at
   // 18.3 m (the cells 18.2-18.4); a strip 2.5 m wide at 16.2 m along its north-east side (the ring's edge at u -3.0),
   // and a part at 21 m against the slab (u 12-23.5, w to -31).
-  wing: { u: [0.05, 25.0], w: [-61.0, -26.0], roof: 18.3, ne: { u: [-2.5, 0.3], top: 16.2 }, raised: { u: [12.0, 23.5], w: [-31.0, -26.0], top: 21.0 } },
+  // Behind w -36 its roof has two troughs across it, each falling sharply to 16.9 m at its north-east side and rising
+  // to 18.2 m 2.5 m on (the 0.5 m cells at w -42, -50 and -58; the 2023 aerial's dark stripes).
+  wing: { u: [0.05, 25.0], w: [-61.0, -26.0], roof: 18.3, ne: { u: [-2.5, 0.3], top: 16.2 }, raised: { u: [12.0, 23.5], w: [-31.0, -26.0], top: 21.0 },
+          troughs: { u: [[9.0, 11.5], [17.25, 19.75]], w: -36.0, low: 16.9, high: 18.2 } },
 };
 
 /** The point [x, z] of the view frame at u along the face to the street and w out of it. */
 export function at(u, w) {
   const F = MEASURED.frame;
   return [F.corner[0] + u * F.e[0] + w * F.n[0], F.corner[1] + u * F.e[1] + w * F.n[1]];
+}
+
+/** u and w of the point [x, z] of the view frame. */
+export function uw(x, z) {
+  const F = MEASURED.frame, dx = x - F.corner[0], dz = z - F.corner[1];
+  return [dx * F.e[0] + dz * F.e[1], dx * F.n[0] + dz * F.n[1]];
 }
 
 /** The rectangle from u0 to u1 and w0 to w1 in the building's frame, as a plan [[x, z] x 4]. */
