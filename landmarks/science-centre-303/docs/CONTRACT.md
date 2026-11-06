@@ -18,12 +18,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the range along the street**, 11.2 m deep, its roof at 13.4 m, a parapet at 14.05 m along the face; at its
     north-east end, where the slab does not reach, it runs back to the slab's back line;
-  - **the slab** behind it, 15 m deep, from u 5.1 to where 303S's ring begins (u 70.3), its roof at 33.6 m, with a
-    raised part at 37.6 m, plant at 38.2 m and a round tank on it to 44.3 m;
+  - **the slab** behind it, 15.6 m deep, from u 6.75 to where 303S's ring begins (u 70.3), its roof at 33.6 m with a
+    bay at each end at 32.8 m; on it a raised part at 37.6 m, a screened deck, a round tank to 41.8 m with a flue to
+    44.7 m, and a box at 38.1 m;
   - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, flat-topped ridges
     at 17 m about 3 m wide every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
-  - **the wing** behind the slab toward the north-east, back to w -61, its roof at 18.3 m with two troughs across
-    it behind w -36, a strip at 16.2 m along its north-east side and a part at 21 m against the slab;
+  - **the wing** behind the slab toward the north-east, from w -31 back to -61, its roof at 18.3 m with two troughs
+    across it behind w -36, a strip at 16.2 m along its north-east side and its front, a light well 2 m wide between it
+    and the slab, and a part at 21 m against the slab;
   - **the range** ends where 303S's ring begins (u 70.3): the face's last 5 m are 303S's;
   - the ground falls 5.7 m along the face to the south-west: walls go down to `FOOT`, -6.0 m.
 
@@ -49,7 +51,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   305 10.2%, 303S 0%. The silhouette and luma unchanged (the photograph sees only the range's face).
 - The check begun (step 6): the wing's two troughs as ramps (16.9 to 18.2 m over 2.5 m), the block's ridges at
   their 0.5 m cells (3 m wide, from its back to the stacks): 77% of the cells within 0.5 m (p10/p50/p90 -0.36/0.09/
-  0.94); 1,360 triangles, 2 draw calls.
+  0.94); 1,360 triangles, 2 draw calls. Then the slab's end bays, its plant as the 1 m cells have it, the slab's
+  north-east end at u 6.75 and its back at w -26.8, the wing's front strip and the light well: 86% of the cells within
+  0.5 m (p10/p50/p90 -0.27/0.07/0.29), footprint IoU 0.839, the model's 3,113 m² of which 3,110 the LiDAR's too;
+  block 303 under the model 83.7% (the light well, which has no returns, is in its ring); 1,512 triangles.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

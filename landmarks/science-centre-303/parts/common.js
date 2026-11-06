@@ -22,17 +22,17 @@ export const MEASURED = {
   // is 303S's (the campus map's ring of 303S from u 70.1-70.4).
   frame: { corner: [-30.56, 27.872], e: [0.99840, -0.05646], n: [0.05646, 0.99840] },
   // The range along the street: from the face 11.2 m back (the slab's front, its returns' edge parallel to the
-  // face: z 16.2 at x -23, 12.6 at x 41), and at its north-east end, where the slab does not reach (u below 5.1),
+  // face: z 16.2 at x -23, 12.6 at x 41), and at its north-east end, where the slab does not reach (u below 6.75),
   // back to the slab's back line; its roof at 13.4 m (the cells 13.2-13.7, rising a little away from the face), the
   // parapet along the face at 14.05 m (the face's top, p99 14.1).
-  range: { u: [0, 70.3], w: [-11.2, 0], ne: { u: [0, 5.4], w: [-26.3, -11.2] }, roof: 13.4, parapet: { top: 14.05, width: 0.4 } },
-  // The slab: from u 5.1 (x -25.5) to 303S's ring, w -11.2 to -26.3, its roof at 33.6 m (the 1 m cells 33.4-34.0,
+  range: { u: [0, 70.3], w: [-11.2, 0], ne: { u: [0, 6.9], w: [-26.3, -11.2] }, roof: 13.4, parapet: { top: 14.05, width: 0.4 } },
+  // The slab: from u 6.75 (the 0.5 m cells at w -14 and -25) to 303S's ring, w -11.2 to -26.8 (its back's returns), its roof at 33.6 m (the 1 m cells 33.4-34.0,
   // a little higher along its middle), but for a bay at each end at 32.8 m (the cells 32.7-32.9: u to 11.0, from
   // 68.3); on it a raised part at 37.6 m (the cells 37.5-37.7, u 15.0-26.0, w -23.0 to -15.0); and toward its
   // south-west end, from the north-east: an enclosure of screens to 35.85 m round a deck at 34.5 m (u 42.9-53.9,
   // w -23.4 to -16.2), a round tank 8 m across to 41.8 m (its top's returns u 54.8-62.8, p50 41.73) with a flue
   // to 44.7 m at its edge (8 returns, u 54.9-55.4), and a box at 38.1 m (u 59.5-65.9, w -23.6 to -16.1).
-  slab: { u: [5.1, 70.3], w: [-26.3, -11.2], roof: 33.6, bays: { u: [11.0, 68.3], roof: 32.8 },
+  slab: { u: [6.75, 70.3], w: [-26.8, -11.2], roof: 33.6, bays: { u: [11.0, 68.3], roof: 32.8 },
           raised: { u: [15.0, 26.0], w: [-23.0, -15.0], top: 37.6 },
           enclosure: { u: [42.9, 53.9], w: [-23.4, -16.2], top: 35.85, deck: 34.5, wall: 0.5 },
           tank: { at: [58.8, -19.9], r: 4.0, top: 41.8, flue: { u: [54.85, 55.4], w: [-22.9, -22.3], top: 44.7 } },
@@ -45,12 +45,14 @@ export const MEASURED = {
           ridges: { u: [[30.0, 32.75], [36.0, 38.75], [42.25, 45.0], [48.0, 51.25], [54.5, 57.25], [61.5, 66.75]], w: [-36.3, -30.4], top: 17.0 },
           tower: { u: [38.75, 42.25], w: [-36.3, -29.0], top: 22.4 },
           stacks: { u: [31.3, 37.6, 43.6, 49.7, 55.8, 63.5], w: -28.95, r: 1.35, top: 42.1 } },
-  // Toward the north-east: a wing from u 0 to 25, back to w -61 (301's ring from w -59.5 for u above 8), its roof at
-  // 18.3 m (the cells 18.2-18.4); a strip 2.5 m wide at 16.2 m along its north-east side (the ring's edge at u -3.0),
-  // and a part at 21 m against the slab (u 12-23.5, w to -31).
-  // Behind w -36 its roof has two troughs across it, each falling sharply to 16.9 m at its north-east side and rising
-  // to 18.2 m 2.5 m on (the 0.5 m cells at w -42, -50 and -58; the 2023 aerial's dark stripes).
-  wing: { u: [0.05, 25.0], w: [-61.0, -26.0], roof: 18.3, ne: { u: [-2.5, 0.3], top: 16.2 }, raised: { u: [12.0, 23.5], w: [-31.0, -26.0], top: 21.0 },
+  // Toward the north-east: a wing from u 1.2 to 25 and from w -31 back to -61 (301's ring from w -59.5 for u above
+  // 8), its roof at 18.3 m (the cells 18.2-18.4); along its north-east side and its front a strip at 16.2 m, 1.5 m
+  // wide (u -0.5 to 1.3; w -31 to -29.25), a light well 2 m wide between it and the slab (no returns at w -29 to
+  // -27); a part at 21 m against the slab (u 12-23.5, w -32 to -27). Behind w -36 its roof has two troughs across
+  // it, each falling sharply to 16.9 m at its north-east side and rising to 18.2 m 2.5 m on (the 0.5 m cells at
+  // w -42, -50 and -58; the 2023 aerial's dark stripes).
+  wing: { u: [1.2, 25.0], w: [-61.0, -31.0], roof: 18.3, strip: { u: [-0.5, 1.3], w: -29.25, top: 16.2 },
+          raised: { u: [12.0, 23.5], w: [-32.0, -26.9], top: 21.0 },
           troughs: { u: [[9.0, 11.5], [17.25, 19.75]], w: -36.0, low: 16.9, high: 18.2 } },
 };
 

@@ -41,10 +41,10 @@ export function building(b) {
   for (const [u0, u1] of Q.ridges.u) block(b, rect([u0, Math.min(u1, Q.u[1] - 0.1)], [w0, Q.ridges.w[1]]), Q.roof - 0.3, Q.ridges.top, WALL, ROOF);
   block(b, rect(Q.tower.u, [w0, Q.tower.w[1]]), Q.roof - 0.3, Q.tower.top, WALL, ROOF);
   for (const u of Q.stacks.u) block(b, round([u, Q.stacks.w], Q.stacks.r), Q.roof - 0.3, Q.stacks.top, WALL, ROOF);
-  // toward the north-east: the wing, running into the slab, its front part flat, behind w -36 flat between its two
-  // troughs, each a ramp rising from its north-east side; the lower strip along its north-east side, 10 cm inside its
-  // ends; its raised part against the slab
-  const T = K.troughs;
+  // toward the north-east: the wing, its front part flat, behind w -36 flat between its two troughs, each a ramp
+  // rising from its north-east side; the lower strip along its north-east side and its front, 10 cm inside the
+  // wing's back; its raised part, running into the slab
+  const T = K.troughs, St = K.strip;
   block(b, rect(K.u, [T.w, K.w[1]]), FOOT - 0.2, K.roof, WALL, ROOF);
   let u0 = K.u[0];
   for (const [a0, a1] of T.u) {
@@ -53,6 +53,7 @@ export function building(b) {
     u0 = a1;
   }
   block(b, rect([u0, K.u[1]], [K.w[0], T.w + 0.1]), FOOT - 0.2, K.roof, WALL, ROOF);
-  block(b, rect(K.ne.u, [K.w[0] + 0.1, K.w[1] - 0.1]), FOOT - 0.25, K.ne.top, WALL, ROOF);
-  block(b, rect(K.raised.u, [K.raised.w[0], K.raised.w[1] - 0.1]), K.roof - 0.3, K.raised.top, WALL, ROOF);
+  block(b, rect(St.u, [K.w[0] + 0.1, St.w]), FOOT - 0.25, St.top, WALL, ROOF);
+  block(b, rect([St.u[1] - 0.05, K.raised.u[0] + 0.1], [K.w[1] - 0.1, St.w]), FOOT - 0.25, St.top, WALL, ROOF);
+  block(b, rect(K.raised.u, K.raised.w), FOOT - 0.3, K.raised.top, WALL, ROOF);
 }
