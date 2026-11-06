@@ -1087,7 +1087,8 @@ If you represent the University and would like something changed or removed, ple
   estimated. Its back and its north-west end, which no photograph shows, are drawn plainly, and the ground
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
-  ground it shares with building 303, 0.89 m below the map's ground there. Behind its back a slot 0.5 to 1.6 m
+  ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
+  south-east end, which the photograph does not show, is drawn flat. Behind its back a slot 0.5 to 1.6 m
   wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
   reaching to it. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
   and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the

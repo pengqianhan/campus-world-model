@@ -1,7 +1,8 @@
 # Art bible: building 303S of the Science Centre
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from
-it.
+it; the places of the last two fins and the storey's height on the south-east end are estimated with it as a
+reference.
 
 - A glazed block along the street, about eight storeys: on its face to the street a curtain wall of blue, mirror-like
   glass between pale grey fins, one at every few panes, running the whole height; toward its south-east end the fins

@@ -38,7 +38,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   luma median 110 against the photograph's 129 (the plain concrete against the glass). The top view: footprint IoU
   0.857 (the LiDAR's 1,044 m² against the model's 922, both 908), 74% of the cells within 0.5 m of the LiDAR's height
   (p10/p50/p90 -0.3/0.26/1.6: the north-west part drawn at its parapet's height, the parapets, the plant), the
-  highest point 33.41 m against the LiDAR's 35.25 (p99.9, the plant on the north-west part); block 303S under the
+  highest point 33.41 m against the LiDAR's 35.25 (p99.9, the end bay of building 303's slab reaching into the ring,
+  as the check found); block 303S under the
   model 92.6%, 303 1.5%.
 - Round 1's shape (from the 1 m cells): the body's roof at 28.75 m, a thin parapet wall along the face at 30.4 m to
   u 37.7, the north-west part's end wall at u 1.6 with its parapet; the top storey from u 12.65 to 49.5, its roof at
@@ -71,12 +72,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   frame's (13 returns within 1 m, p50 0.002 m); `place` wrote it into `placement.json`.
 - On the site (step 8): the glass, the fins and the pier from 0.5 m above FOOT, under the street's level, for the
   foot check (the glass from y 0 stood 0.8 m above the map's ground at the north-west end). 608 triangles, 3 draw
-  calls.
+  calls. Silhouette IoU 0.781 (0.974 in the box), the luma p10/p50/p90 96/130/188; the top view unchanged.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from the street about 95 m to the south-east, through a long lens; `refs/photos/`,
-  gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is measured from it.
+  gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is measured from it;
+  the places of the last two fins (where the fitted camera's rays through them meet the face) and the storey's
+  height on the south-east end are estimated with it as a reference.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's, or the two stand at least 1 cm
   apart: no two faces of different materials in one plane.
 

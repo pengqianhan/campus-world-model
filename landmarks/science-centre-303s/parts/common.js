@@ -32,7 +32,8 @@ export const MEASURED = {
   // The north-west part: from its end wall at u 1.6 (a parapet along it at 29.4-29.5 m, u 1.6-2.4) to the top storey.
   nw: { u: [1.6, 12.7], end: { u: [1.6, 2.0], top: 29.5 } },
   // The parapet wall along the face: 30.4 m (the cells 30.4 at the face, w 0 to 1), from the face's north-west end at
-  // u 0 to u 37.7, where the 30.4 m returns end; drawn 0.35 m thick, its front 5 cm before the face's line.
+  // u 0 to u 37.7, where the 30.4 m returns end; drawn 0.35 m thick (estimated), its front 5 cm before the face's
+  // line.
   parapet: { u: [0, 37.7], w: [-0.1, 0.25], top: 30.4 },
   // The top storey: from u 12.65 to 49.5 (its parapet's cells at u 49), its front at w -1.45 (p99), back to the back
   // line to u 31.9, there back to w -22 and -23 (its parapet's cells along u 32 and w -22) to u 41, from u 41 to w
@@ -59,7 +60,8 @@ export const MEASURED = {
   // south-east stretch, where the 30.4 m parapet ends (u 37.7), 0.4 m wide and 0.38 m deep, at u 37.9, 42.5, 47.0
   // and 52.35 (the last two where the fitted camera's rays through the photograph's fins meet the face), to the
   // parapet's 29.5 m; the pier at the corner from u 57.5, to 29.7 m (its returns' p99 29.71; the
-  // photograph's pier top, through the fitted camera, 29.8 m); between the last fin and the pier the braces,
+  // photograph's pier top, through the fitted camera, 29.8 m), to 0.25 m past the end face and 0.38 m out of the
+  // face, as the fins (estimated); between the last fin and the pier the braces,
   // a zigzag of bars 0.3 m wide every two storeys; on the south-east end face, a pale spandrel band 0.9 m tall at
   // each storey of 3.35 m (eight storeys from the ground at the end, 2.0 m, to the roof).
   facade: { glassFrom: FOOT + 0.5, fins: [37.9, 42.5, 47.0, 52.35], fin: { width: 0.4, depth: 0.38 },

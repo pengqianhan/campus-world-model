@@ -108,7 +108,8 @@ estimated, the photograph as a reference:
 - **The colours**: the walls in the kit's `claddingPale` (the faces no photograph shows estimated alike), the roofs
   in `roofGrey` (grey in the 2023 aerial).
 
-Silhouette IoU 0.781, 0.974 in the box (the box's sky 36%); the luma p10/p50/p90 96/131/188 against the
+Silhouette IoU 0.781, 0.974 in the box (the box's sky 36%); the luma p10/p50/p90 96/130/188 (on the site's model,
+608 triangles; 96/131/188 before the glass went down) against the
 photograph's 87/130/190. From above: footprint IoU 0.859 (the LiDAR's 1,044 m², the model's 926, both 910), 86% of
 the 3,577 cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90 -0.62/-0.01/0.19), the highest
 point 33.75 m against the LiDAR's 35.25, which is 303's slab's end bay reaching into the ring (above). 608 triangles, 3 draw
@@ -157,5 +158,5 @@ measured.
 The glass's mullions and the fins along the face's north-west stretch, which the photograph sees only far off; the
 ground storey's frames and doors, hidden behind the street's railing; the louvres near the top storey's north-west
 end and the vent pipe on its roof; a lower patch at 11.3-11.9 m behind the back (w -20 to -22); the back and the
-north-west end, which no photograph shows (plain); the recess of about 1.4 m in the south-east end between w -12.5
-and -6 (its returns reach only u 58.4-58.8 there), which the model draws flat at u 59.6.
+north-west end, which no photograph shows (plain); the recess of 0.8 to 1.2 m in the south-east end between w -12.5
+and -6 (its returns reach only u 58.4-58.8 there, against 59.6 beside it), which the model draws flat at u 59.6.
