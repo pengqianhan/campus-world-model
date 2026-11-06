@@ -1,12 +1,14 @@
 // The Science Centre's building 303S (University of Auckland), drawn by rule from code alone. Each part lives in
 // parts/ and is built here; a part that throws is logged and left out, so that one broken part never stops the
-// others. `only` (the viewer's ?only=building) builds just those parts. Every landmark's model.js exports
+// others. `only` (the viewer's ?only=building,faces) builds just those parts. Every landmark's model.js exports
 // build(materials, only), which returns a Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
 import { building } from "./parts/building.js";
+import { faces } from "./parts/faces.js";
 
 const PARTS = {
   building: (b) => building(b),
+  faces: (b) => faces(b),
 };
 
 export function build(materials, only) {

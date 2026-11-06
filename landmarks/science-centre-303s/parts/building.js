@@ -6,7 +6,7 @@
 import { FOOT, MEASURED, backAt, inset, plan, rect } from "./common.js";
 import { block, prism } from "./shapes.js";
 
-const M = MEASURED, WALL = "concrete", ROOF = "roofGrey";
+const M = MEASURED, WALL = "claddingPale", ROOF = "roofGrey";
 
 /** A parapet round a [u, w] polygon: from 0.3 m under `roof` to `top`, `width` wide, 1 cm inside its walls. */
 function rim(b, corners, roof, top, width) {

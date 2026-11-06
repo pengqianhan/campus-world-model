@@ -25,11 +25,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, round 0), `parts/shapes.js` (the shapes the parts share), `model.js`: the lead.
+- `parts/building.js` (every part's mass), `parts/faces.js` (the faces the photograph shows), `parts/shapes.js` (the
+  shapes the parts share), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 176 triangles, 2
-  draw calls; round 1's shape 308 and 2.
+  draw calls; round 1's shape 308 and 2; the faces 584 and 3.
 
 ## Rounds
 - Round 0: silhouette IoU 0.767, 0.963 in the model's screen box, through the fitted camera (much of the south-east
@@ -46,13 +47,24 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   beyond the back's diagonal and below the notch lie outside the ring: not drawn. 308 triangles, 2 draw calls; no two
   faces of different materials in one plane. Silhouette IoU 0.780 (0.972 in the box); the top view: footprint IoU
   0.857, 86% of the cells within 0.5 m (p10/p50/p90 -0.62/-0.01/0.18), the highest point 33.75 m.
+- The faces (step 5, `parts/faces.js`): the glass of the face to the street (the kit's `glassPale`) 2 cm before its
+  walls, from y 0; on its south-east stretch, beyond the 30.4 m parapet, pale fins at u 37.9, 42.5, 47.0 and 52.35
+  (the last two where the fitted camera's rays through the photograph's fins meet the face), the pier at the corner
+  from u 57.5 to 30.4 m, and between the last fin and the pier the braces, a zigzag of bars every two storeys; the
+  south-east end face's glass and a pale spandrel band at each storey of 3.35 m. The walls in the kit's
+  `claddingPale` (the faces no photograph shows estimated alike), the roofs `roofGrey`. Estimated: the fins' and
+  bands' sizes, the storey's height, the braces' bars and period, the glass from y 0. The viewer's light: the sun at
+  20 deg round and 60 deg up, the exposure 1.4. 584 triangles, 3 draw calls; no two faces of different materials in
+  one plane. Silhouette IoU 0.781 (0.974 in the box); the luma p10/p50/p90 96/131/188 against the photograph's
+  87/130/190. The top view: footprint IoU 0.859, 85% of the cells within 0.5 m (the fins and the pier stand out of
+  the face), block 303S under the model 92.7%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from the street about 95 m to the south-east, through a long lens; `refs/photos/`,
   gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is measured from it.
-- Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's, or the two stand 5 cm apart: no
-  two faces of different materials in one plane.
+- Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's, or the two stand at least 1 cm
+  apart: no two faces of different materials in one plane.
 
 ## How to check
 - `landmarks/pipeline/run.sh science-centre-303s refine compare topview` (from `landmarks/science-centre-303s/`, with

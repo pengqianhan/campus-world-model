@@ -155,5 +155,11 @@
   "keep_fixes": true
  },
  "ground_note": "provisional: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 36.7, p95 42.2: the site falls about 5.5 m); set to the ground at the door at step 7",
- "crop_note": "135 m round the outline, so that the crop takes in the photograph's camera, on the street about 95 m to the south-east, and tools/photo_camera.py holds it at a hand's height above the LiDAR's ground there; the frame comes from the points near the outline and is the same as with 25 m"
+ "crop_note": "135 m round the outline, so that the crop takes in the photograph's camera, on the street about 95 m to the south-east, and tools/photo_camera.py holds it at a hand's height above the LiDAR's ground there; the frame comes from the points near the outline and is the same as with 25 m",
+ "light": {
+  "sunaz": 20,
+  "sunel": 60,
+  "exposure": 1.4,
+  "note": "estimated: the photograph is taken on a clear day with the sun high to the north, which leaves the face to the street (to the south-west) and the south-east end, the faces it shows, in shade; so the viewer's sun stands at 20 deg round and 60 deg up; the exposure from the building's luma: p10/p50/p90 96/131/188 at 1.4 against the photograph's 87/130/190 (112 at the default 1.0, 150 at 1.8)"
+ }
 }
