@@ -1,0 +1,119 @@
+// Shared sizes, measured in the LINZ 2024 LiDAR (data/science-centre-303s_pts.npy: the building returns, class 6, in
+// the crop box) in the view frame of config/science-centre-303s.json: x is -axis (south-east), y up from the frame's
+// ground (39.3 m NZVD2016, the median ground in the first crop box; to be the LiDAR's ground at the config's door at
+// step 7), z is toStreet (south-west); the frame's centre at x = z = 0. Owned by the lead: read, do not edit.
+// Measured 2026-11-07 (round 0; round 1's shape).
+//
+// How: the returns inside the campus map's ring of 303S, per 2 m along the face (their back edge, their front and
+// their heights' p90), then the p90 of each 1 m cell. The face to the street is turned 8.75 degrees from the frame,
+// and the walls run square with it or along one diagonal back line, so the building has its own frame: u along that
+// face from its north-west end toward the south-east, w out of it (the street side positive). In it: the body of
+// eight storeys, its roof at 28.75 m, a thin parapet wall along the face at 30.4 m to u 37.7 and a parapet at 29.5 m
+// round its south-east part; on it, set back 1.45 m from the face, a top storey from u 12.65 to 49.5, its roof at
+// 33.1 m inside a parapet at 33.75 m, its back walls in the body's; behind the back's diagonal a lower part at
+// 15.5 m, and at the north-west tip of the ring a part at 15.6 m. The returns to 35.1 m before the back's line, up
+// to 1.6 m into the ring from u 5 to 20, are the end bay of building 303's slab, which reaches into the ring.
+
+// The lowest the walls go: the ground rises 4.4 m along the face to the south-east (the LiDAR's ground within 3 m
+// outside the plan from -1.85 m at the north-west tip to +2.6 m at the south-east end).
+export const FOOT = -4.5;
+
+export const MEASURED = {
+  // The face to the street (step 3): z = 8.445 + 0.1539 x in the view frame (the returns on it at 26-31 m, the
+  // glass below has almost none), within 0.41 m (p90; it bows a little); u from its north-west end (s -31.7).
+  frame: { corner: [-32.601, 3.428], e: [0.98836, 0.15211], n: [-0.15211, 0.98836] },
+  // The face's line (its returns at 26-31 m, w p99 0.1-0.4).
+  face: 0.2,
+  // The back's diagonal line from the north-west end: w = -4.96 - 0.318 u (its returns' back edge above 25 m, u 2-30).
+  back: { w0: -4.96, slope: -0.318 },
+  // The body's roof: 28.7-28.8 m in the 1 m cells of the north-west part, the ledge before the top storey and the
+  // south-east part.
+  roof: 28.75,
+  // The north-west part: from its end wall at u 1.6 (a parapet along it at 29.4-29.5 m, u 1.6-2.4) to the top storey.
+  nw: { u: [1.6, 12.7], end: { u: [1.6, 2.0], top: 29.5 } },
+  // The parapet wall along the face: 30.4 m (the cells 30.4 at the face, w 0 to 1), from the face's north-west end at
+  // u 0 to u 37.7, where the 30.4 m returns end; drawn 0.35 m thick (estimated), its front 5 cm before the face's
+  // line.
+  parapet: { u: [0, 37.7], w: [-0.1, 0.25], top: 30.4 },
+  // The top storey: from u 12.65 to 49.5 (its parapet's cells at u 49), its front at w -1.45 (p99), back to the back
+  // line to u 31.9, there back to w -22 and -23 (its parapet's cells along u 32 and w -22) to u 41, from u 41 to w
+  // -16.5; its roof 32.9-33.4 m (p50 of the cells inside its edges 33.1), its parapet 33.7-33.8 m (the cells along
+  // its edges), 0.3 m wide (estimated).
+  top: { u: [12.65, 49.5], w: -1.45, notch: { u: [31.9, 41.0], w: [-22.0, -23.0] }, se: -16.5, roof: 33.1,
+         parapet: { top: 33.75, width: 0.3 } },
+  // The ledge before the top storey: u 12.6 to the south-east part (from u 37.6), between the face's parapet and the top
+  // storey, at the body's roof.
+  ledge: { u: [12.6, 37.65] },
+  // The south-east part: u 37.6 to 59.6 (its end face, s 27.9), back to w -18.3; at the body's roof, a parapet round
+  // it at 29.4-29.6 m (the cells along the face, the end and the back), 0.3 m wide (estimated).
+  se: { u: [37.6, 59.6], w: -18.3, parapet: { top: 29.5, width: 0.3 } },
+  // Behind the back's diagonal, a lower part from u 29 to the top storey's notch, back to w -22: its cells 15.3-16.3 m
+  // (a lower patch at 11.3-11.9 m at w -20 to -22, not drawn yet).
+  low: { u: [29.0, 31.95], w: -22.05, top: 15.5 },
+  // The north-west tip of the ring, to the north-west part's end wall: its cells 15.5-15.7 m; along its front, before
+  // the face's line, a parapet at 16.4 m (the cells there), 0.3 m wide (estimated).
+  tip: { plan: [[-4.4, 0.5], [1.6, 0.25], [1.6, -5.47], [-5.6, -3.0]], top: 15.6, parapet: { top: 16.4, width: 0.3 } },
+  // The faces the photograph shows (step 5). The LiDAR has almost no returns on the glass and none in layers on the
+  // south-east end face, so what it does not give is estimated, the photograph as a reference: the glass of the face
+  // to the street from under the street's level, 0.5 m above FOOT (the ground storey is hidden behind the street's
+  // railing, and the street rises 4.4 m along the face); the pale fins on its
+  // south-east stretch, where the 30.4 m parapet ends (u 37.7), 0.4 m wide and 0.38 m deep, at u 37.9, 42.5, 47.0
+  // and 52.35 (the last two where the fitted camera's rays through the photograph's fins meet the face), to the
+  // parapet's 29.5 m; the pier at the corner from u 57.5, to 29.7 m (its returns' p99 29.71; the
+  // photograph's pier top, through the fitted camera, 29.8 m), to 0.25 m past the end face and 0.38 m out of the
+  // face, as the fins (estimated); between the last fin and the pier the braces,
+  // a zigzag of bars 0.3 m wide every two storeys; on the south-east end face, a pale spandrel band 0.9 m tall at
+  // each storey of 3.35 m (eight storeys from the ground at the end, 2.0 m, to the roof).
+  facade: { glassFrom: FOOT + 0.5, fins: [37.9, 42.5, 47.0, 52.35], fin: { width: 0.4, depth: 0.38 },
+            pier: { u: [57.5, 59.85], top: 29.7 }, braces: { u: [52.55, 57.5], width: 0.3, depth: 0.2, period: 6.8 },
+            storey: { first: 2.0, height: 3.35, count: 8, band: 0.9 } },
+};
+
+/** The point [x, z] of the view frame at u along the face to the street and w out of it. */
+export function at(u, w) {
+  const F = MEASURED.frame;
+  return [F.corner[0] + u * F.e[0] + w * F.n[0], F.corner[1] + u * F.e[1] + w * F.n[1]];
+}
+
+/** u and w of the point [x, z] of the view frame. */
+export function uw(x, z) {
+  const F = MEASURED.frame, dx = x - F.corner[0], dz = z - F.corner[1];
+  return [dx * F.e[0] + dz * F.e[1], dx * F.n[0] + dz * F.n[1]];
+}
+
+/** The rectangle from u0 to u1 and w0 to w1 in the building's frame, as a plan [[x, z] x 4]. */
+export function rect([u0, u1], [w0, w1]) {
+  return [at(u0, w0), at(u1, w0), at(u1, w1), at(u0, w1)];
+}
+
+/** A plan from [u, w] corners. */
+export function plan(corners) {
+  return corners.map(([u, w]) => at(u, w));
+}
+
+/** The back's diagonal line at u. */
+export function backAt(u) {
+  return MEASURED.back.w0 + MEASURED.back.slope * u;
+}
+
+/** The [u, w] corners of a polygon moved `d` inward along every side (each corner where its two sides' moved lines
+ * meet), for a polygon whose sides are all longer than twice `d`. */
+export function inset(corners, d) {
+  const n = corners.length;
+  let area = 0;
+  for (let i = 0; i < n; i++) { const [a, b] = corners[i], [c, e] = corners[(i + 1) % n]; area += a * e - c * b; }
+  const s = area > 0 ? 1 : -1;
+  const line = (i) => {
+    const [a, b] = corners[i], [c, e] = corners[(i + 1) % n], L = Math.hypot(c - a, e - b);
+    const nu = (-s * (e - b)) / L, nw = (s * (c - a)) / L;
+    return [[a + d * nu, b + d * nw], [(c - a) / L, (e - b) / L]];
+  };
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const [p, t] = line((i + n - 1) % n), [q, r] = line(i);
+    const den = t[0] * r[1] - t[1] * r[0];
+    const k = ((q[0] - p[0]) * r[1] - (q[1] - p[1]) * r[0]) / den;
+    out.push([p[0] + k * t[0], p[1] + k * t[1]]);
+  }
+  return out;
+}

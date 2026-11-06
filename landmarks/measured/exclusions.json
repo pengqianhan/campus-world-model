@@ -996,65 +996,6 @@
     "open_below": 0.1
    }
   },
-  "303S": {
-   "name": "Science Centre - Faculty of Science",
-   "reason": "top-view check: footprint IoU 0.938 (limit 0.9), 89% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.7 degrees, over 115 m2; a low pitch: gable, 4.8 degrees, over 402 m2; several faces: 4 mono-pitches over 402 m2; a low pitch: mono, 2.7 degrees, over 19 m2; a low pitch: mono, 4.9 degrees, over 5 m2; a low pitch: mono, 3.1 degrees, over 26 m2; a low pitch: mono, 2.5 degrees, over 22 m2): footprint IoU 0.949, 86% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 973.7,
-    "ground": {
-     "p5": 37.27,
-     "p50": 39.87,
-     "p95": 41.66,
-     "zero": 37.4
-    },
-    "roof_inside_m2": 939.8,
-    "cover": 0.965,
-    "vegetation": 0.008,
-    "open_below": 0.153,
-    "not_drawn_m2": 20.8,
-    "check": {
-     "iou": 0.938,
-     "lidar_m2": 974.5,
-     "model_m2": 974.0,
-     "within_0.5m": 0.888,
-     "model_minus_lidar_m": {
-      "p10": -0.47,
-      "p50": -0.0,
-      "p90": 0.3
-     },
-     "highest_m": {
-      "model": 37.01,
-      "lidar": 37.07
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: mono, 2.7 degrees, over 115 m2",
-      "a low pitch: gable, 4.8 degrees, over 402 m2",
-      "several faces: 4 mono-pitches over 402 m2",
-      "a low pitch: mono, 2.7 degrees, over 19 m2",
-      "a low pitch: mono, 4.9 degrees, over 5 m2",
-      "a low pitch: mono, 3.1 degrees, over 26 m2",
-      "a low pitch: mono, 2.5 degrees, over 22 m2"
-     ],
-     "check": {
-      "iou": 0.949,
-      "lidar_m2": 974.5,
-      "model_m2": 985.2,
-      "within_0.5m": 0.859,
-      "model_minus_lidar_m": {
-       "p10": -0.69,
-       "p50": -0.0,
-       "p90": 0.05
-      },
-      "highest_m": {
-       "model": 37.07,
-       "lidar": 37.07
-      }
-     }
-    }
-   }
-  },
   "310": {
    "name": "HIWA Recreation Centre",
    "reason": "roof cells cover 64% of the outline (limit 85%)",

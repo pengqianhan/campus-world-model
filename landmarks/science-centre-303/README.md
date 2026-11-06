@@ -134,7 +134,11 @@ in `landmarks/measured/exclusions.json` (the generator's massing of it failed th
 within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the landmarks and counts 35 stand-ins
 measured.
 
-- **The foot.** The model stands on the map's ground at its door, and its walls go down to FOOT, 6.0 m below the
+- **The foot.** Since building 303S of the Science Centre came onto the site, the model stands on the ground it
+  shares with 303S, whose outline it touches (`standHeights` in `src/scene/landmarks.ts`; `../README.md`,
+  "Placement"): its y = 0 at its LiDAR ground, 41.6 m, plus the two landmarks' mean of the map's ground at the
+  door minus the LiDAR's, -0.504 m, so at 41.096 m on the map, 0.892 m higher than the map's ground at its own
+  door, and the two stand at the LiDAR's heights against each other. Its walls go down to FOOT, 6.0 m below the
   frame's ground (each wall's foot 6.0 to 6.35 m below it, the glazing under the canopy from 5.5 m below it);
   the foot check of `tests/landmarks.test.ts`, which
   tests each material's lowest points against the map's ground, passes.
