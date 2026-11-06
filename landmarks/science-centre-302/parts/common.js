@@ -1,7 +1,7 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/science-centre-302_pts.npy: the building returns, class 6, in
 // the crop box) in the view frame of config/science-centre-302.json: x is -axis (south-west, toward Symonds Street),
-// y up from the frame's ground (45.0 m NZVD2016, the median ground in the crop box; to be the LiDAR's ground at the
-// config's door at step 7), z is toStreet (north-west); the frame's centre at x = z = 0. Owned by the lead: read, do
+// y up from the frame's ground (45.0 m NZVD2016, the median ground in the crop box, and the LiDAR's ground at the
+// config's door), z is toStreet (north-west); the frame's centre at x = z = 0. Owned by the lead: read, do
 // not edit. Measured 2026-11-06 (baseline, round 0; round 1's shape; the tower's roofs again in its own frame, step 6).
 //
 // How: the 90th percentile of the returns in each 0.5 m cell (the roofs' heights and where they step), lines fitted to
@@ -11,7 +11,7 @@
 // from 50.8 m at its ends to 50.1 m at a band across its middle, where three sawtooth ramps rise toward the south-west
 // face; a parapet along its south-west face and a raised strip along its north-east one; lower roofs at 46.7 m along
 // its south-east and north-west ends, each rising in a ramp to the south-west face, and over a small annex north of it;
-// and, before its south-west face, a lower block with a flat top at 25.5 m whose outer face leans away from the
+// a lower wing along its north-east face, its roof falling away from it at 31-33 m; and, before its south-west face, a lower block with a flat top at 25.5 m whose outer face leans away from the
 // tower's: 15 m out at its south end, at the tower at its west end, from where a screen 2 m deep runs on along the
 // north-west face.
 
@@ -90,6 +90,12 @@ export const MEASURED = {
     nw: { ramp: { a: 8.0, h: [51.60, -0.519] }, upstand: { a: [6.75, 30.3], width: 0.75 } },
     upstand: 48.0,
     annex: [[-17.2, 21.0], [-9.3, 20.5], [-9.6, 31.5], [-16.6, 32.0]],
+    // A lower wing along the north-east face, under a roof of its own (the review, 2026-11-06): its cells from b 15.3
+    // to 45.5, out to a 43.3, where a valley at 29.8 m runs before 301's walls (301's roof from a 43.5, its ring on the map
+    // from 44.8; the wing is inside 302's). Its roof a plane fitted to its cells, 32.82 m at the face (a 39.8)
+    // falling 0.538 a metre to 30.94 at a 43.3 (the cells within 0.16 m of it, p90). Its inner side inside the tower
+    // and the annex.
+    wing: { a: [38.7, 43.3], b: [15.3, 45.5], h: [39.8, 32.82, 43.3, 30.94] },
   },
   // The lower block before the tower's south-west face: the hull of its returns at its top (69.5-72 m elevation:
   // its roof p50 25.48 above the frame's ground, its edge p90 26.04), its inner side inside the tower. Its screens run

@@ -16,7 +16,8 @@ What the building looks like, for whoever draws a part of it. Sizes are in `part
 ## From above (the 2023 aerial, the LiDAR)
 - Grey roofs, square with the tower's faces: its main roof falling gently to a band of three sawtooth ramps across
   its middle, plant in four boxes, a raised strip along its north-east side; lower roofs at its two ends, each
-  rising in a ramp to the south-west parapet, and over a small annex; the lower block's roof well below the
+  rising in a ramp to the south-west parapet, and over a small annex; a lower wing along its north-east face, its
+  roof falling away from it; the lower block's roof well below the
   tower's.
 
 ## Light

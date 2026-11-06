@@ -3,7 +3,7 @@
 // main roof's two planes, the band across its middle (a court, three sawtooth ramps, a block and a slot), the
 // parapets and the raised strip along the north-east face, the plant; the two lower roofs at its ends, each with its
 // ramp up to the south-west parapet, its upstand along the face and, at the south-east end, a slab; the annex north of
-// it. Pale walls, grey roofs; step 5, the faces the photograph shows: the south-west face's ribbons of glass between
+// it; a lower wing along its north-east face. Pale walls, grey roofs; step 5, the faces the photograph shows: the south-west face's ribbons of glass between
 // bands of metal and its slats, the south-east face's brown cladding and fins. What stands on a roof starts inside the
 // walls under it, and a roof's plate (1 cm thick) leaves out what stands on it, so that no two faces of different
 // materials lie in one plane.
@@ -59,6 +59,8 @@ export function tower(b) {
   plate(b, [[nw.ramp.a, B1], [ne.ends, B1], [ne.ends, NW], [ua1, NW], [ua1, u0], [nw.ramp.a, u0]].map(([a, c]) => towerAt(a, c)));
   // the annex north of the tower
   block(b, L.annex, FOOT, L.roof, WALL, ROOF);
+  // the lower wing along the north-east face, its foot 0.1 m below the tower's
+  slopedPrism(b, rect(L.wing.a, L.wing.b), FOOT - 0.1, alongA(...L.wing.h), WALL, ROOF);
   faces(b);
 }
 

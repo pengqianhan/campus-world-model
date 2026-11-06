@@ -7,12 +7,12 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 
 ## Frame and sizes
 - View frame, metres: **x** south-west (the frame's `-axis`, toward Symonds Street), **y** up from the frame's
-  ground (45.0 m NZVD2016, the median ground in the crop box, provisional until the config's `door` is set at
-  step 7), **z** north-west (`toStreet`); the frame's centre at x = z = 0.
+  ground (45.0 m NZVD2016, the median ground in the crop box, and the LiDAR's ground at the config's `door`), **z** north-west (`toStreet`); the frame's centre at x = z = 0.
   `config/science-centre-302.json`, `frame`: the axis is the bearing of most of the walls (the lower block's); the
   tower is turned about 4 degrees from it.
-- The building's own returns only. campus.json's ring of 302 lies 5 to 7 m outside the LiDAR's walls on the
-  north-east side, where it runs into the neighbouring block's returns: the plans follow the LiDAR.
+- The building's own returns only. campus.json's ring of 302 lies 5 to 7 m outside the tower's walls on the
+  north-east side, 1 to 3 m past the lower wing there, over a valley and the edge of 301's roof: the plans follow
+  the LiDAR.
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the tower**, a rectangle 44.35 m along its south-west face and 39 m along its south-east face, turned 3.93
     degrees from the frame; its roofs all run square with its own faces, so the tower is drawn in its own frame
@@ -24,6 +24,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
     and a raised strip along the north-east face (51.3 m, its parapet 51.8 m); four boxes of plant (53.6-53.8 m);
   - **lower roofs at 46.7 m** along the south-east and north-west ends, each rising in a ramp from the south-west
     parapet, an upstand at 48.0 m along each face, and a small **annex** north of the tower;
+  - **a lower wing** along the north-east face, its roof falling away from it from 32.8 to 30.9 m (the review);
   - **the lower block** before the tower's south-west face, its top flat at 25.5 m (its edge 26.0), its outer
     face leaning away from the tower's: 15 m out at the south end, at the tower at the west end; from its two ends
     its **screens** run on along the tower's end faces, 1.7 and 2 m deep, to 26.0 m;
@@ -37,7 +38,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   tower's south-east face, where the LiDAR has the screen.
 
 ## Ownership
-- `parts/tower.js` (the tower, its lower roofs, the annex), `parts/block.js` (the lower block), `parts/shapes.js`
+- `parts/tower.js` (the tower, its lower roofs, the annex, the lower wing), `parts/block.js` (the lower block), `parts/shapes.js`
   (shared helpers: one owner per round, named in the brief). `model.js` and `parts/common.js` are the lead's.
 - The materials: the kit's `claddingPale` (the tower's walls and metal bands), `roofGrey` (the roofs: grey in the
   2023 aerial), `grey` (the plant, round 1), `glassPale` (the ribbons and the glazed corner, step 5), and two the
@@ -50,7 +51,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw
-  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces: 3,873 and 6. Build time of a part
+  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces and the review: 3,883 and 6. Build time of a part
   ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
@@ -68,8 +69,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   `out/topview/`. GPU steps only under `~/.campus-loop/gpu.lock`.
 - Round 0: silhouette IoU 0.571 (0.900 in the model's screen box) through the fitted camera; the building's luma
   median 150 against the photograph's 153. The top view: footprint IoU 0.803 (the LiDAR's 2,709 m² against the
-  model's 2,176: most of the rest a strip of the neighbouring block's returns inside the ring along the north-east
-  side), 60% of the cells within 0.5 m of the LiDAR's height (the band of sloping strips and the strips' ends
+  model's 2,176: most of the rest the lower wing along the north-east face, drawn in the review), 60% of the cells within 0.5 m of the LiDAR's height (the band of sloping strips and the strips' ends
   drawn at the main roof), the highest point 51.7 m against the LiDAR's 53.9 (p99.9, the plant); block 302 under
   the model 80.2%.
 - Round 1's shape (the roofs at the cells' heights, drawn square with the frame): IoU 0.578 (0.907 in the box),
@@ -84,10 +84,11 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 - Step 5's faces (the south-west face's ribbons, bands and slats; the south-east face's cladding and fins; the
   lower block dark, with its glazed corner and the frame along its edges, the screens' folded blades and top rail
   on the faces the photograph shows, reaching out to the hull of the returns, the walls behind them; the ground
-  storey's glazing; the light from the north): IoU 0.589 (0.923 in the box); luma p10/p50/p90 99/161/179 at the
-  exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.847, 90% of the cells within
-  0.5 m, the highest point 53.77 m against 53.9 (the plant to its cells' p90), block 302 under the model 84.2%.
-  3,873 triangles, 6 draw calls. Not drawn yet: the canopy, the metal
+  storey's glazing; the light from the north): IoU 0.589 (0.923 in the box); luma p10/p50/p90 99/161/180 at the
+  exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.888, 90% of the cells within
+  0.5 m, the highest point 53.77 m against 53.9 (the plant to its cells' p90), block 302 under the model 88.3%
+  (with the lower wing along the north-east face, drawn in the review; 84.2% before it). 3,883 triangles, 6 draw
+  calls. Not drawn yet: the canopy, the metal
   bands' ribs, the tower's open storey over the lower block (posts in the photograph).
 
 ## Rules

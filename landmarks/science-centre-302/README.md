@@ -25,14 +25,15 @@ from it, and all its roofs run square with its own faces, so `parts/common.js` g
 its south corner) and `towerAt` and `towerRect` turn it into the view frame.
 
 The points are the building's own. `building.outline` is campus.json's ring, which on the north-east side lies
-5 to 7 m outside the LiDAR's walls and runs into the neighbouring block's returns: the plans follow the LiDAR.
+5 to 7 m outside the tower's walls, 1 to 3 m past the lower wing there, over a valley and the edge of 301's roof:
+the plans follow the LiDAR.
 
 ## Neighbours on the map
 
 - No other block of the campus map within 80 m has as much as 0.5% of it under the model, so `building.also`
   is empty.
-- **Block 302 itself** is 84.2% under the model, short of the 85% asked: its ring runs 5 to 7 m outside the
-  LiDAR's walls on the north-east side, into the neighbouring block's returns.
+- **Block 302 itself** is 88.3% under the model (85% asked): its ring runs 1 to 3 m past the lower wing on
+  the north-east side, and 1 to 1.7 m outside the walls on the south-west and south-east sides.
 
 ## The reference
 
@@ -96,7 +97,8 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
   (estimated). The LiDAR's returns on the face lie in thin layers, the ribbons' sills and heads, each pair
   1.87 to 1.93 m apart, a storey 4.22 m: 30.27/32.14, 34.49/36.40, 38.72/40.64 and 42.95/44.88 m, and a
   ledge at 46.69 m under a band of slats to the parapet's top; the lowest ribbon, just above the lower block's
-  roof, a storey below (26.04/27.91, estimated). That the glass lies between each pair's sill and head is the
+  roof, a storey below (26.04/27.91, estimated: the LiDAR has no returns on the face there, and the photograph
+  shows that storey open behind posts, which are not drawn yet). That the glass lies between each pair's sill and head is the
   photograph's. The slats, 0.3 m wide and 0.15 m deep every 1.2 m, are estimated from its rhythm.
 - **The tower's south-east face**: brown cladding from the screen's top up, and north-east of a flat stretch a
   row of deep brown fins, all estimated: the LiDAR has almost no returns on the face.
@@ -111,10 +113,22 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
   The Clock Tower's, the Kate Edger Information Commons', the Music School's and the Old Choral Hall's viewer
   pictures at `?quality=low` and `?mask=1` are the same pixel for pixel with and without them.
 
-Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/179 against the photograph's
+Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/180 against the photograph's
 102/152/190 (its pixels are dark screens or pale metal, few between, so the median moves the most). From
-above: footprint IoU 0.847, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
-3,873 triangles, 6 draw calls; no two faces of different materials in one plane.
+above: footprint IoU 0.888, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
+3,883 triangles, 6 draw calls; no two faces of different materials in one plane.
+
+## The review (November 2026)
+
+- **The lower wing** along the tower's north-east face, which the check had taken for the neighbouring block's
+  returns: a roof of its own from b 15.3 to 45.5, out to a 43.3, where a valley at 29.8 m runs before 301's
+  walls; a plane fitted to its cells, 32.82 m at the face falling 0.538 a metre to 30.94 (the cells within
+  0.16 m of it, p90). The campus map's ring of 302 takes it in, 301's starts beyond it. No photograph shows it:
+  it is drawn plainly. Block 302 under the model: 84.2% before it, 88.3% with it; footprint IoU 0.847 to 0.888.
+- **The lower block's plan**: the south face's line, moved the blades' depth in, met the hull's short side at
+  its south-east end 1 m past it, so the plan crossed itself; it now meets the inner side, inside the tower. The
+  top rail and the glazed corner's frame are mitred at the south corner, and the glass and frame on the south
+  face stop where the screen along the tower's south-east face begins.
 
 ## On the map (step 7)
 

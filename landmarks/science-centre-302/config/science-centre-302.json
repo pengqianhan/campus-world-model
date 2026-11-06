@@ -214,6 +214,6 @@
   "sunaz": 10,
   "sunel": 35,
   "exposure": 1.4,
-  "note": "estimated: the photograph is under a bright overcast sky (no shadows, the glass pale with the sky), so the viewer's sun stands behind the building from the north (10 deg round, 35 deg up), which leaves both faces the photograph shows, the south-west and the south-east, in open shade; the exposure from the building's luma: p10/p50/p90 99/161/179 at 1.4 against the photograph's 102/152/190 (101/164/182 at 1.45, 103/166/186 at 1.5: its pixels are dark screens or pale metal, few between, so the median moves by more than the rest)"
+  "note": "estimated: the photograph is under a bright overcast sky (no shadows, the glass pale with the sky), so the viewer's sun stands behind the building from the north (10 deg round, 35 deg up), which leaves both faces the photograph shows, the south-west and the south-east, in open shade; the exposure from the building's luma: p10/p50/p90 99/161/180 at 1.4 against the photograph's 102/152/190 (101/164/182 at 1.45, 103/166/186 at 1.5: its pixels are dark screens or pale metal, few between, so the median moves by more than the rest)"
  }
 }

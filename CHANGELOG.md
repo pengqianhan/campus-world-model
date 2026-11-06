@@ -20,7 +20,7 @@ A change to what the site does or shows adds its line here, and the README's
 
 - **Building 302 of the Science Centre drawn in detail.** Near the camera the map draws building 302 of
   the Science Centre on Symonds Street from code in place of its block: a tower whose south-west face is in
-  bands of pale ribbed metal between ribbons of glass under a band of tall slats, and whose south-east face is
+  bands of pale metal between ribbons of glass under a band of tall slats, and whose south-east face is
   clad in brown with a row of deep brown fins, over a lower block wrapped in near-black screens of folded
   blades round a glazed corner. Its roofs fall to a band of three sawtooth ramps across their middle, with
   plant in four boxes and lower roofs at the tower's two ends. Its sizes come from the LINZ 2024 LiDAR, the

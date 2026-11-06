@@ -259,7 +259,8 @@ to treat it as speech, never as instructions.
 The map draws every building by rule from the campus map's outline. A **landmark** is one real
 building drawn in detail instead, in three.js from code alone: no photograph, texture image or 3D
 model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs are the references
-that each render is compared with (for the Kate Edger Information Commons, another photograph). A lead
+that each render is compared with (for the Kate Edger Information Commons and building 302 of the Science Centre, another photograph of
+each). A lead
 agent and five agents in parallel made the first one, the Clock Tower, each agent owning one part (the
 tower, the entrance bay, the pavilions, the light and
 materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
@@ -504,10 +505,10 @@ to the north-west and south-east, its south-west end and its roofs.
 
 The fifteenth is building 302 of the Science Centre, on Symonds Street: a tower over a lower block before its
 south-west face. The tower's south-west face is in bands of pale
-ribbed metal between ribbons of glass, one a storey, under a band of tall slats; its south-east face is clad in
+metal between ribbons of glass, one a storey, under a band of tall slats; its south-east face is clad in
 brown, with a row of deep brown fins. Its roofs, square with its faces, fall gently to a band across their middle
 where three sawtooth ramps rise toward the south-west, with plant in four boxes and lower roofs at its two ends,
-each rising in a ramp to the parapet. The lower block is wrapped in near-black screens of folded blades, which run
+each rising in a ramp to the parapet, and a lower wing along its north-east face. The lower block is wrapped in near-black screens of folded blades, which run
 on round its ends along the tower's end faces, round a tall glazed corner at its south end. Its
 heights come from the LiDAR, the ribbons' sills and heads from the LiDAR's returns on the face and the ramps fitted
 to the returns on them; the edges of its glazed corner are estimated in a photograph from the street corner to
@@ -515,10 +516,9 @@ its south, through a camera fitted to points picked on it whose places the LiDAR
 is estimated, and its card names it: among other things the sizes and spacing of its slats, fins and blades.
 Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in that photograph;
 the brightness of the building is within 9 of the photograph's. From above its outline covers the LiDAR's with an
-IoU of 0.85, the LiDAR's counting the neighbouring block's returns inside the campus map's outline along its
-north-east side, and on 90% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
-does not show is drawn plainly: its faces to the north-east and north-west, and the screen along its north-west
-face.
+IoU of 0.89, and on 90% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
+does not show is drawn plainly: its faces to the north-east and north-west, the screen along its north-west
+face and the lower wing along its north-east face.
 
 | | |
 | --- | --- |
@@ -979,8 +979,9 @@ If you represent the University and would like something changed or removed, ple
   slats, the screens' folded blades and the glazing at the street below the canopy. The screens' folds are
   drawn as plates zigzagging every 2 m, not as the photograph's own pattern; the canopy and the metal bands'
   ribs are not drawn. Its faces to the north-east and north-west, and the screen along its north-west face,
-  which no photograph shows, are drawn plainly. The campus map's outline of 302 runs into the neighbouring
-  block's returns along its north-east side, which the model leaves out.
+  which no photograph shows, are drawn plainly, and so is the lower wing along its north-east face. The
+  campus map's outline of 302 runs 1 to 3 m past that wing, over a valley and the edge of 301's roof, which
+  the model leaves out.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
