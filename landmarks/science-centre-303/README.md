@@ -135,7 +135,7 @@ within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the land
 measured.
 
 - **The foot.** The model stands on the map's ground at its door, and its walls go down to FOOT, 6.0 m below the
-  frame's ground (each wall's foot 6.0 to 6.3 m below it, the glazing under the canopy from 5.5 m below it);
+  frame's ground (each wall's foot 6.0 to 6.35 m below it, the glazing under the canopy from 5.5 m below it);
   the foot check of `tests/landmarks.test.ts`, which
   tests each material's lowest points against the map's ground, passes.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofPale` and

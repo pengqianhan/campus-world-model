@@ -1,7 +1,7 @@
 # Art bible: building 303 of the Science Centre
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from it; two heights are estimated with it as a reference, the
-gaps between the face's bands and the lowest band's bottom.
+height of the gaps between the face's bands (their places are the LiDAR's) and the lowest band's bottom.
 
 - A long range along the street, about four storeys, faced in bands of brown-grey precast concrete panels (a
   warm, slightly purple brown, the panels' joints faint), each band a storey, with a shadowed gap under each band.
