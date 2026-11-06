@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   says what is estimated: some heights, the fins, the braces and the bands, the glazing at the street, and the
   colour of the walls no photograph shows. On the map it has the map's colours; from a walker's height on a
   computer with a graphics card, its own glass and cladding. Its back, which the photograph does not show, is
-  drawn plainly (#PR).
+  drawn plainly (#137).
 - **Building 303 of the Science Centre drawn in detail.** Near the camera the map draws building 303 of
   the Science Centre from code in place of its block: a range of four storeys along its street, faced in three
   bands of mauve-grey precast panels, with a canopy along the entrance over the glazed ground storey; behind it a
