@@ -51,7 +51,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
 
 ## Budget (tier 2: the site runs in a browser, phones too)
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (merged by material). Round 0: 200 triangles, 3 draw
-  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces and the review: 3,911 and 6. Build time of a part
+  calls; round 1's shape 378 and 4; step 6: 464 and 4; step 5's faces and the review: 3,915 and 6. Build time of a part
   ≤ ~300 ms on this machine (the console logs it).
 - Street View: none (2026-11-04: new landmarks use none).
 
@@ -88,7 +88,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   storey's glazing; the light from the north): IoU 0.589 (0.923 in the box); luma p10/p50/p90 99/161/180 at the
   exposure 1.4 against the photograph's 102/152/190; the top view: footprint IoU 0.888, 90% of the cells within
   0.5 m, the highest point 53.77 m against 53.9 (the plant to its cells' p90), block 302 under the model 88.4%
-  (with the lower wing along the north-east face, drawn in the review; 84.2% before it). 3,911 triangles, 6 draw
+  (with the lower wing along the north-east face, drawn in the review; 84.2% before it). 3,915 triangles, 6 draw
   calls. Not drawn yet: the canopy, the metal
   bands' ribs, the tower's open storey over the lower block (posts in the photograph).
 

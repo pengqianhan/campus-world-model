@@ -49,7 +49,8 @@ export function block(b) {
   const m = meet([Q[5], southR.e], [towerAt(B.screens[1].a[0], 0), MEASURED.tower.b]);
   const sEnd = (m[0] - Q[5][0]) * southR.e[0] + (m[1] - Q[5][1]) * southR.e[1];
   const faces = [
-    [run(Q[0], Q[1]), (s) => G.top - G.sw * s],
+    // (the south-west face's edge to where it meets the ground storey's top: the blades beyond run down to it too)
+    [run(Q[0], Q[1]), (s) => (s <= (G.top - B.folds.from) / G.sw ? G.top - G.sw * s : null)],
     [southR, (s) => (s <= sEnd ? h6 - G.s * s : null)],
     // the screen along the tower's south-east face, to where the south face runs on in front of it
     [run(towerAt(26.0, B.screens[1].b[0] + D), towerAt(0.4, B.screens[1].b[0] + D)), null],
@@ -92,17 +93,17 @@ function corner(b, [[sw, swEdge], [south, sEdge]], cut, sEnd, ends) {
   tris(b, [[sw.at(0, B.folds.from, out), sw.at(sw.l, B.folds.from, out), sw.at(sw.l, FOOT, out)], [sw.at(0, B.folds.from, out), sw.at(sw.l, FOOT, out), sw.at(0, FOOT, out)]], GLASS, (m) => [m[0] + sw.n[0], m[1] + sw.n[1]]);
   panel(cut, G.top, G.s);
   panel({ ...south, l: sEnd }, G.top - G.s * cut.l, G.s);
-  // the frame: above each edge from the corner down to the ground storey's top (or the glass's end), Fr.width wide;
-  // where it is mitred, its outer corner at the inner corner's height, so that neighbours meet level
-  const frame = (r, edge, s1) => {
+  // the frame: above each edge from the corner down to the ground storey's top (or the glass's end), Fr.width wide,
+  // mitred at the corners; the short cut's outer corners at its neighbours' heights there, so that they meet level
+  const frame = (r, edge, s1, [h0, h1] = []) => {
     const [o0, o1] = ends(r, Fr.depth), e1 = s1 < r.l ? s1 : o1;
-    const q = (s, at = s) => [[s, edge(at)], [s, edge(at) + Fr.width]];
-    const [[a, d], [c, f]] = [q(0), q(s1)], [[g, j], [k, m]] = [q(o0, 0), q(e1, s1)];
+    const q = (s, h = edge(s)) => [[s, h], [s, h + Fr.width]];
+    const [[a, d], [c, f]] = [q(0), q(s1)], [[g, j], [k, m]] = [q(o0, h0), q(e1, h1)];
     hexahedron(b, [...[a, c, f, d].map(([s, y]) => r.at(s, y, 0)), ...[g, k, m, j].map(([s, y]) => r.at(s, y, Fr.depth))], DARK);
   };
   const to = (edge, fall, l) => Math.min(l, (edge(0) - B.folds.from) / fall);
   frame(sw, swEdge, to(swEdge, G.sw, sw.l));
-  frame(cut, (s) => G.top - G.s * s, cut.l);
+  frame(cut, (s) => G.top - G.s * s, cut.l, [swEdge(ends(sw, Fr.depth)[0]), sEdge(ends(south, Fr.depth)[0])]);
   frame(south, sEdge, to(sEdge, G.s, sEnd));
 }
 

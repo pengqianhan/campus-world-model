@@ -92,7 +92,7 @@ export const MEASURED = {
     annex: [[-17.2, 21.0], [-9.3, 20.5], [-9.6, 31.5], [-16.6, 32.0]],
     // A lower wing along the north-east face, under a roof of its own (the review, 2026-11-06): its cells from b 15.3
     // to 46.0, out to a 43.3, where a valley at 29.8 m runs before 301's walls (301's roof from a 43.5, its ring on the map
-    // from 44.8; the wing is inside 302's). Its roof a plane fitted to its cells, 32.82 m at the face (a 39.8)
+    // from 44.8; the wing is inside 302's). Its roof a plane fitted to its returns, 32.82 m at the face (a 39.8)
     // falling 0.538 a metre to 30.94 at a 43.3 (the returns within 0.16 m of it, p90). Its inner side inside the tower
     // and the annex.
     wing: { a: [38.7, 43.3], b: [15.3, 46.0], h: [39.8, 32.82, 43.3, 30.94] },
