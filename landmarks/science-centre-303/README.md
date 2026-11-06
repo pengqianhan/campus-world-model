@@ -119,7 +119,7 @@ plane.
 
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 303. 303's entry
 in `landmarks/measured/exclusions.json` (the generator's massing of it failed the top-view check, 84% of its cells
-within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the landmarks and counts 36 stand-ins
+within 0.5 m where 90% is asked) has gone; `MASSING.md` lists 303 among the landmarks and counts 35 stand-ins
 measured.
 
 - **The foot.** The model stands on the map's ground at its door, and its walls go down to FOOT, 6.0 m below the

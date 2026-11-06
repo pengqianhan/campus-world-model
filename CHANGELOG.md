@@ -14,7 +14,7 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-11-06
+## 2026-11-07
 
 ### Added
 
@@ -27,6 +27,11 @@ A change to what the site does or shows adds its line here, and the README's
   to the street, and its card says what is estimated: some heights, the gaps between the bands, the canopy's
   depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
   artwork and is not drawn after. Its other faces are drawn plainly (#PR).
+
+## 2026-11-06
+
+### Added
+
 - **The Humanities Building drawn in detail.** Near the camera the map draws the Humanities Building
   (206), beside the CLL Building, from code in place of its block: an L of two wings under red clay-tiled
   roofs, a higher middle along each wing with a lower roof round its outer sides, a raised roof on eight
@@ -40,6 +45,18 @@ A change to what the site does or shows adds its line here, and the README's
   of its L, drawn flat, and the colour of the walls and roofs no photograph shows. On the map it has the
   map's colours; from a walker's height on a computer with a graphics card, its own brick, film and glass.
   Its other faces, which the photograph does not show, are drawn in plain brick (#134).
+- **Building 302 of the Science Centre drawn in detail.** Near the camera the map draws building 302 of
+  the Science Centre on Symonds Street from code in place of its block: a tower whose south-west face is in
+  bands of pale metal between ribbons of glass under a band of tall slats, and whose south-east face is
+  clad in brown with a row of deep brown fins, over a lower block wrapped in near-black screens of folded
+  blades round a glazed corner. Its roofs fall to a band of three sawtooth ramps across their middle, with
+  plant in four boxes and lower roofs at the tower's two ends. Its sizes come from the LINZ 2024 LiDAR, the
+  ribbons' sills and heads from its returns on the face; the edges of the glazed corner are estimated in a
+  photograph, through a camera fitted to points measured on it against the LiDAR, and its card says so, with
+  how far the glass stands behind the metal, the sizes and spacing of the slats, fins and blades, the glazing
+  at the street, and the colour of the walls no photograph shows. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own metal, glass and screens. Its faces to the
+  north-east and north-west, which the photograph does not show, are drawn plainly (#135).
 
 ## 2026-11-05
 

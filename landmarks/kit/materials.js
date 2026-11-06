@@ -334,6 +334,10 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     filmRed: painted(0xc42a1c, 0.5, space),
     filmOrange: painted(0xe8682a, 0.5, space),
     filmYellow: painted(0xf0b82e, 0.5, space),
+    // the Science Centre (302): the paint's shader in two more colours (its photograph): the near-black folded
+    // screens round its lower block, and the brown cladding and fins of its tower's south-east face
+    screenBlack: painted(0x2c2e30, 0.45, space),
+    finBrown: painted(0x86695c, 0.6, space),
     // the Science Centre (303): the paint's shader in a mauve grey, its precast concrete panels (its photograph)
     concreteMauve: painted(0x9b8f8d, 0.75, space),
   };
