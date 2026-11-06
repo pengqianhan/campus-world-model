@@ -542,6 +542,11 @@ of the building is within 4 of the photograph's. From above its outline covers t
 and on 86% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
 drawn plainly: every face but the one to the street.
 
+| | |
+| --- | --- |
+| ![Building 303 of the Science Centre from its street, drawn from code](docs/landmarks/science-centre-303-front.jpg) | ![Building 303 of the Science Centre from above, drawn from code](docs/landmarks/science-centre-303-above.jpg) |
+| ![Building 303 of the Science Centre on the map, drawn from code in the map's colours](docs/landmarks/science-centre-303-map.jpg) | ![Building 303 of the Science Centre from its street, through the walker's eyes](docs/landmarks/science-centre-303-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
