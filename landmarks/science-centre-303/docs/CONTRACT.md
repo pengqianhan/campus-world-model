@@ -20,10 +20,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     north-east end, where the slab does not reach, it runs back to the slab's back line;
   - **the slab** behind it, 15 m deep, from u 5.1 to where 303S's ring begins (u 70.3), its roof at 33.6 m, with a
     raised part at 37.6 m, plant at 38.2 m and a round tank on it to 44.3 m;
-  - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, ridges at
-    17 m every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
-  - **the wing** behind the slab toward the north-east, back to w -61, its roof at 18.3 m (sawtooth in the 2023
-    aerial, drawn flat yet), a strip at 16.2 m along its north-east side and a part at 21 m against the slab;
+  - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, flat-topped ridges
+    at 17 m about 3 m wide every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
+  - **the wing** behind the slab toward the north-east, back to w -61, its roof at 18.3 m with two troughs across
+    it behind w -36, a strip at 16.2 m along its north-east side and a part at 21 m against the slab;
   - **the range** ends where 303S's ring begins (u 70.3): the face's last 5 m are 303S's;
   - the ground falls 5.7 m along the face to the south-west: walls go down to `FOOT`, -6.0 m.
 
@@ -47,6 +47,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   -0.30/0.09/1.38: the wing's sawtooth and the block's ridges, drawn by their 2 m cells), the highest point 44.3 m,
   the tank's top (its own returns' p99 44.33; the whole roof's p99.9 is 42.1); block 303 under the model 85.2%,
   305 10.2%, 303S 0%. The silhouette and luma unchanged (the photograph sees only the range's face).
+- The check begun (step 6): the wing's two troughs as ramps (16.9 to 18.2 m over 2.5 m), the block's ridges at
+  their 0.5 m cells (3 m wide, from its back to the stacks): 77% of the cells within 0.5 m (p10/p50/p90 -0.36/0.09/
+  0.94); 1,360 triangles, 2 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

@@ -33,12 +33,12 @@ export const MEASURED = {
   slab: { u: [5.1, 70.3], w: [-26.3, -11.2], roof: 33.6, raised: { u: [15.4, 25.7], w: [-22.9, -15.5], top: 37.6 },
           plant: { u: [47.3, 65.7], w: [-23.5, -16.1], top: 38.2 }, tank: { at: [58.77, -19.88], r: 4.0, top: 44.3 } },
   // Behind the slab, toward the south-west, to the campus map's ring of 305 (w -36.3): a block, its roof at 13.4 m,
-  // with ridges at 17 m every 6 m along u (the 2 m cells' rhythm, to be measured at 0.5 m at step 6) and a part at
-  // 22.4 m (u 38-41.5); and six round stacks along the slab's back, 2.7 m round, to 42.1 m (the returns above
+  // with flat-topped ridges at 17 m about 3 m wide, about 6 m apart along u, from its back to the stacks (the 0.5 m
+  // cells at w -34 and along u 31.5 and 44), a part at 22.4 m (u 38.75-42.25); and six round stacks along the slab's back, 2.7 m round, to 42.1 m (the returns above
   // 36.5 m: their centres at w -28.95 and u 31.3, 37.6, 43.6, 49.7, 55.8 and 63.5, p90 42.0-42.1).
   rear: { u: [24.8, 67.0], w: [-36.3, -26.1], roof: 13.4,
-          ridges: { u: [[29.5, 33.5], [35.5, 38.0], [41.5, 45.5], [47.5, 51.5], [53.5, 57.5], [59.5, 67.0]], w: [-36.3, -27.0], top: 17.0 },
-          tower: { u: [38.0, 41.5], w: [-36.3, -29.0], top: 22.4 },
+          ridges: { u: [[30.0, 32.75], [36.0, 38.75], [42.25, 45.0], [48.0, 51.25], [54.5, 57.25], [61.5, 66.75]], w: [-36.3, -30.4], top: 17.0 },
+          tower: { u: [38.75, 42.25], w: [-36.3, -29.0], top: 22.4 },
           stacks: { u: [31.3, 37.6, 43.6, 49.7, 55.8, 63.5], w: -28.95, r: 1.35, top: 42.1 } },
   // Toward the north-east: a wing from u 0 to 25, back to w -61 (301's ring from w -59.5 for u above 8), its roof at
   // 18.3 m (the cells 18.2-18.4); a strip 2.5 m wide at 16.2 m along its north-east side (the ring's edge at u -3.0),
