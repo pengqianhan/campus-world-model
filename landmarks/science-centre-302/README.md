@@ -32,7 +32,7 @@ the plans follow the LiDAR.
 
 - No other block of the campus map within 80 m has as much as 0.5% of it under the model, so `building.also`
   is empty.
-- **Block 302 itself** is 88.3% under the model (85% asked). Of the 316 m² of its ring the model leaves out,
+- **Block 302 itself** is 88.4% under the model (85% asked). Of the some 310 m² of its ring the model leaves out,
   about 64 lie 2 to 3 m past the lower wing on the north-east side and about 144 beyond the wing's two ends,
   5 to 7 m off the tower (the edge of 301's roof, or no return above 2.5 m); about 92 lie on the south-west and
   south-east sides, where the ring runs 1 to 2.3 m outside the walls, and 17 on the north-west.
@@ -118,7 +118,7 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
 Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/180 against the photograph's
 102/152/190 (its pixels are dark screens or pale metal, few between, so the median moves the most). From
 above: footprint IoU 0.888, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
-3,883 triangles, 6 draw calls; no two faces of different materials in one plane.
+3,911 triangles, 6 draw calls; no two faces of different materials in one plane.
 
 ## The review (November 2026)
 
@@ -126,7 +126,7 @@ above: footprint IoU 0.888, 90% of the cells within 0.5 m, the highest point 53.
   returns: a roof of its own from b 15.3 to 46.0, out to a 43.3, where a valley at 29.8 m runs before 301's
   walls; a plane fitted to its cells, 32.82 m at the face falling 0.538 a metre to 30.94 (the returns within
   0.16 m of it, p90). The campus map's ring of 302 takes it in, 301's starts beyond it. No photograph shows it:
-  it is drawn plainly. Block 302 under the model: 84.2% before it, 88.3% with it; footprint IoU 0.847 to 0.888.
+  it is drawn plainly. Block 302 under the model: 84.2% before it, 88.4% with it; footprint IoU 0.847 to 0.888.
 - **The lower block's plan**: the south face's line, moved the blades' depth in, met the hull's short side at
   its south-east end 1 m past it, so the plan crossed itself; it now meets the inner side, inside the south-east screen's slab. The
   top rail and the glazed corner's frame are mitred at the south corner, and the glass and frame on the south
