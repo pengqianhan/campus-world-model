@@ -12,5 +12,5 @@ it.
   vent pipe on its roof.
 - At the street, a ground storey behind the railing and planting of the street's edge (hidden in the photograph).
 - Flat roofs (the 2023 aerial): grey.
-- The light: a clear day, the sun high to the north-east; the face to the street in shade, its glass mirroring the
+- The light: a clear day, the sun high to the north; the face to the street in shade, its glass mirroring the
   sky and the trees across the street.
