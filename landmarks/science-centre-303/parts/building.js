@@ -1,9 +1,9 @@
 // The building of the Science Centre's 303 (parts/common.js, MEASURED), drawn in its own frame (u along its face to
 // the street, w out of it). Round 0: each part a block at the LiDAR's plan and height, walls down to FOOT: the range
 // along the street with its parapet, the slab behind it, the block behind toward the south-west and the wing toward
-// the north-east. Round 1's shape: the slab's raised part, plant and round tank; the block's ridges, its 22.4 m part
-// and its six stacks; the wing's strip, raised part and the two troughs across its roof; the range and the slab end
-// where 303S's ring begins. Parts that meet run into each other, and ends that would meet in one plane stand a few
+// the north-east. Round 1's shape: the slab's end bays, raised part, screened deck, round tank and box; the block's
+// ridges, its 22.4 m part and its six stacks; the wing's strip, raised part and the two troughs across its roof; the
+// range and the slab end where 303S's ring begins. Parts that meet run into each other, and ends that would meet in one plane stand a few
 // centimetres apart, so that no two faces of different materials lie in one plane.
 import { FOOT, MEASURED, at, rect, uw } from "./common.js";
 import { block, prism, slopedPrism } from "./shapes.js";
@@ -22,11 +22,19 @@ export function building(b) {
   block(b, rect(R.ne.u, [R.ne.w[0] + 0.1, R.ne.w[1] + 0.3]), FOOT - 0.05, R.roof, WALL, ROOF);
   // the parapet along the face, from inside the range's walls
   prism(b, rect([R.u[0] + 0.01, R.u[1] - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
-  // the slab (its end 5 cm short of the range's), its raised part, its plant and the round tank on it
-  block(b, rect([S.u[0], S.u[1] - 0.05], S.w), FOOT - 0.1, S.roof, WALL, ROOF);
+  // the slab (its end 5 cm short of the range's): its middle, and a lower bay at each end running into it; its raised
+  // part; the screened deck, the round tank with its flue, and the box
+  const Bs = S.bays;
+  block(b, rect(Bs.u, S.w), FOOT - 0.1, S.roof, WALL, ROOF);
+  block(b, rect([S.u[0], Bs.u[0] + 0.1], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.12, Bs.roof, WALL, ROOF);
+  block(b, rect([Bs.u[1] - 0.1, S.u[1] - 0.05], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.12, Bs.roof, WALL, ROOF);
   block(b, rect(S.raised.u, S.raised.w), S.roof - 0.3, S.raised.top, WALL, ROOF);
-  block(b, rect(S.plant.u, S.plant.w), S.roof - 0.3, S.plant.top, WALL, ROOF);
-  block(b, round(S.tank.at, S.tank.r, 20), S.plant.top - 0.3, S.tank.top, WALL, ROOF);
+  const E = S.enclosure, t = E.wall, hole = rect([E.u[0] + t, E.u[1] - t], [E.w[0] + t, E.w[1] - t]);
+  prism(b, rect(E.u, E.w), S.roof - 0.3, E.top, WALL, [hole]);
+  block(b, hole, S.roof - 0.3, E.deck, WALL, ROOF);
+  block(b, round(S.tank.at, S.tank.r, 20), S.roof - 0.3, S.tank.top, WALL, ROOF);
+  block(b, rect(S.tank.flue.u, S.tank.flue.w), S.tank.top - 0.3, S.tank.flue.top, WALL, ROOF);
+  block(b, rect(S.box.u, S.box.w), S.roof - 0.3, S.box.top, WALL, ROOF);
   // behind it toward the south-west: the block, running into the slab; its ridges, its tall part and its stacks
   block(b, rect(Q.u, Q.w), FOOT - 0.15, Q.roof, WALL, ROOF);
   const w0 = Q.ridges.w[0] + 0.1;

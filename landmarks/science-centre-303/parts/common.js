@@ -8,8 +8,8 @@
 // building's walls all run square with its face to the street, which is turned 3.24 degrees from the frame, so the
 // building has its own frame: u along that face from its north-east end toward the south-west, w out of it (the
 // street side positive). In it: a range along the street, 11.2 m deep, its flat roof at 13.4 m behind a parapet at
-// 14.05 m along the face; behind it a slab 15 m deep, its roof at 33.6 m, a raised part at 37.6 m and plant to
-// 38.2 m and a round tank to 44.3 m on it; behind that a block toward the south-west, 13.4 m with ridges at 17 m
+// 14.05 m along the face; behind it a slab 15 m deep, its roof at 33.6 m, a raised part at 37.6 m, a screened
+// deck, a round tank to 41.8 m and a box on it; behind that a block toward the south-west, 13.4 m with ridges at 17 m
 // and six round stacks to 42.1 m, and a wing at 18.3 m toward the north-east.
 
 // The lowest the walls go: the ground falls 5.7 m along the face to the south-west (the LiDAR's ground 0.3-6 m out
@@ -26,12 +26,17 @@ export const MEASURED = {
   // back to the slab's back line; its roof at 13.4 m (the cells 13.2-13.7, rising a little away from the face), the
   // parapet along the face at 14.05 m (the face's top, p99 14.1).
   range: { u: [0, 70.3], w: [-11.2, 0], ne: { u: [0, 5.4], w: [-26.3, -11.2] }, roof: 13.4, parapet: { top: 14.05, width: 0.4 } },
-  // The slab: from u 5.1 (x -25.5) to 303S's ring, w -11.2 to -26.3, its roof at 33.6 m (p50 of its cells); a raised
-  // part at 37.6 m (the returns above 35.5 m, u 15.4-25.7, w -22.9 to -15.5, p90 37.63) and plant (u 47.3-65.7,
-  // w -23.5 to -16.1, p50 38.2) with a round tank on it, 4 m round, to 44.3 m (p99; its centre the returns' above
-  // 39 m).
-  slab: { u: [5.1, 70.3], w: [-26.3, -11.2], roof: 33.6, raised: { u: [15.4, 25.7], w: [-22.9, -15.5], top: 37.6 },
-          plant: { u: [47.3, 65.7], w: [-23.5, -16.1], top: 38.2 }, tank: { at: [58.77, -19.88], r: 4.0, top: 44.3 } },
+  // The slab: from u 5.1 (x -25.5) to 303S's ring, w -11.2 to -26.3, its roof at 33.6 m (the 1 m cells 33.4-34.0,
+  // a little higher along its middle), but for a bay at each end at 32.8 m (the cells 32.7-32.9: u to 11.0, from
+  // 68.3); on it a raised part at 37.6 m (the cells 37.5-37.7, u 15.0-26.0, w -23.0 to -15.0); and toward its
+  // south-west end, from the north-east: an enclosure of screens to 35.85 m round a deck at 34.5 m (u 42.9-53.9,
+  // w -23.4 to -16.2), a round tank 8 m across to 41.8 m (its top's returns u 54.8-62.8, p50 41.73) with a flue
+  // to 44.7 m at its edge (8 returns, u 54.9-55.4), and a box at 38.1 m (u 59.5-65.9, w -23.6 to -16.1).
+  slab: { u: [5.1, 70.3], w: [-26.3, -11.2], roof: 33.6, bays: { u: [11.0, 68.3], roof: 32.8 },
+          raised: { u: [15.0, 26.0], w: [-23.0, -15.0], top: 37.6 },
+          enclosure: { u: [42.9, 53.9], w: [-23.4, -16.2], top: 35.85, deck: 34.5, wall: 0.5 },
+          tank: { at: [58.8, -19.9], r: 4.0, top: 41.8, flue: { u: [54.85, 55.4], w: [-22.9, -22.3], top: 44.7 } },
+          box: { u: [59.5, 65.9], w: [-23.6, -16.1], top: 38.1 } },
   // Behind the slab, toward the south-west, to the campus map's ring of 305 (w -36.3): a block, its roof at 13.4 m,
   // with flat-topped ridges at 17 m about 3 m wide, about 6 m apart along u, from its back to the stacks (the 0.5 m
   // cells at w -34 and along u 31.5 and 44), a part at 22.4 m (u 38.75-42.25); and six round stacks along the slab's back, 2.7 m round, to 42.1 m (the returns above
