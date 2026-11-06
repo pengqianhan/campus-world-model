@@ -29,7 +29,7 @@ A change to what the site does or shows adds its line here, and the README's
   how far the glass stands behind the metal, the sizes and spacing of the slats, fins and blades, the glazing
   at the street, and the colour of the walls no photograph shows. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own metal, glass and screens. Its faces to the
-  north-east and north-west, which the photograph does not show, are drawn plainly (#PR).
+  north-east and north-west, which the photograph does not show, are drawn plainly (#135).
 
 ## 2026-11-05
 
