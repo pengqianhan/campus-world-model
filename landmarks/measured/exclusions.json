@@ -996,63 +996,6 @@
     "open_below": 0.1
    }
   },
-  "302": {
-   "name": "Science Centre - Faculty of Science",
-   "reason": "top-view check: footprint IoU 0.930 (limit 0.9), 42% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 17 mono-pitches over 1022 m2; a low pitch: mono, 1.3 degrees, over 5 m2; a low pitch: mono, 5.0 degrees, over 18 m2; a low pitch: mono, 2.3 degrees, over 10 m2; a low pitch: mono, 4.3 degrees, over 4 m2): footprint IoU 0.931, 77% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 2706.3,
-    "ground": {
-     "p5": 41.01,
-     "p50": 44.57,
-     "p95": 46.26,
-     "zero": 40.81
-    },
-    "roof_inside_m2": 2531.0,
-    "cover": 0.935,
-    "vegetation": 0.019,
-    "open_below": 0.07,
-    "not_drawn_m2": 193.0,
-    "check": {
-     "iou": 0.93,
-     "lidar_m2": 2593.2,
-     "model_m2": 2726.0,
-     "within_0.5m": 0.415,
-     "model_minus_lidar_m": {
-      "p10": -3.96,
-      "p50": -0.47,
-      "p90": 0.35
-     },
-     "highest_m": {
-      "model": 56.45,
-      "lidar": 58.28
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 17 mono-pitches over 1022 m2",
-      "a low pitch: mono, 1.3 degrees, over 5 m2",
-      "a low pitch: mono, 5.0 degrees, over 18 m2",
-      "a low pitch: mono, 2.3 degrees, over 10 m2",
-      "a low pitch: mono, 4.3 degrees, over 4 m2"
-     ],
-     "check": {
-      "iou": 0.931,
-      "lidar_m2": 2593.2,
-      "model_m2": 2727.5,
-      "within_0.5m": 0.766,
-      "model_minus_lidar_m": {
-       "p10": -0.47,
-       "p50": -0.0,
-       "p90": 1.43
-      },
-      "highest_m": {
-       "model": 57.53,
-       "lidar": 58.28
-      }
-     }
-    }
-   }
-  },
   "303": {
    "name": "Science Centre - Faculty of Science",
    "reason": "top-view check: footprint IoU 0.916 (limit 0.9), 84% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.6 degrees, over 12 m2; a low pitch: mono, 2.5 degrees, over 35 m2; a low pitch: mono, 3.1 degrees, over 19 m2; a low pitch: mono, 3.3 degrees, over 10 m2; a low pitch: mono, 2.2 degrees, over 25 m2; a low pitch: mono, 2.2 degrees, over 27 m2; several faces: 2 mono-pitches over 237 m2; a low pitch: mono, 3.3 degrees, over 20 m2; a low pitch: mono, 4.1 degrees, over 6 m2; a low pitch: gable, 5.7 degrees, over 26 m2; a low pitch: mono, 3.0 degrees, over 20 m2; a low pitch: mono, 4.9 degrees, over 4 m2; a low pitch: mono, 2.1 degrees, over 26 m2; a low pitch: mono, 3.3 degrees, over 22 m2; a low pitch: mono, 2.3 degrees, over 37 m2; a low pitch: mono, 4.7 degrees, over 5 m2; a low pitch: hip, 3.6 degrees, over 8 m2): footprint IoU 0.916, 84% of cells within 0.5 m",

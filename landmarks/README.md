@@ -1,8 +1,9 @@
 # Landmarks drawn from code
 
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
-LiDAR and checked against Street View photographs (the Kate Edger Information Commons and the Humanities
-Building each against another photograph of it: `"refs": "photos"`, under "Stages"). The site draws the landmarks whose
+LiDAR and checked against Street View photographs (the Kate Edger Information Commons, the Humanities
+Building and building 302 of the Science Centre each against another photograph of it: `"refs": "photos"`,
+under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
 the `landmark-from-code` skill (`.claude/skills/landmark-from-code/`).
@@ -355,7 +356,8 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 | metrics | `tools/metrics.py` | compare's renders, labels, masks | `$OUT/metrics.json`, `metrics.md` |
 | topview | `tools/topview.mjs` + `tools/topview.py` | the model (`model.js`), the data stage's points | `out/topview/triangles.bin`, `metrics.json`, `metrics.md`, `topview.png` |
 
-With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building),
+With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building,
+building 302 of the Science Centre),
 refine, compare, metrics, `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
 makes only the masks. `refs/photos/` is gitignored (`landmarks/.gitignore` keeps every `refs/` folder
