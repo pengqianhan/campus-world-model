@@ -5,7 +5,8 @@ it.
 
 - A glazed block along the street, about eight storeys: on its face to the street a curtain wall of blue, mirror-like
   glass between pale grey fins, one at every few panes, running the whole height; toward its south-east end the fins
-  stand proud as piers, and between the last two of them a frame of X-shaped braces climbs the face, pale grey.
+  stand proud as piers, and between the last fin and the pier at the corner a zigzag of diagonal braces climbs the
+  face, pale grey.
 - At the south-east end a face of level bands: dark glass between pale spandrel bands, a storey each, turning the
   corner from the street.
 - On top, set back from the face, a top storey clad in pale grey panels, with louvres near its north-west end and a

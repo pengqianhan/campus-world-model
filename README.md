@@ -1086,8 +1086,10 @@ If you represent the University and would like something changed or removed, ple
   places, sizes and spacing, the braces' bars, the storey's height and the spandrel bands on the end are
   estimated. Its back and its north-west end, which no photograph shows, are drawn plainly, and the ground
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
-  entrance is not known: its door is set at the middle of its face to the street, and it stands on the ground it
-  shares with building 303, 0.89 m below the map's ground there.
+  entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
+  ground it shares with building 303, 0.89 m below the map's ground there. Behind its back a slot 0.5 to 1.6 m
+  wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
+  reaching to it.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

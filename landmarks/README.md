@@ -155,7 +155,7 @@ higher (0.62 m), building 303 of the Science Centre 0.892 m higher and building 
 (1.78 m). The Clock Tower and its East Wing (5.07 m) each stand on the map's ground at its own
 door, as before: at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's, at the East
 Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its wing than the LiDAR
-does. Any limit from 1.78 to 5.07 m gives these groups. Either way a model's walls go down below
+does. Any limit from 1.79 to 5.06 m gives these groups. Either way a model's walls go down below
 y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so
 that their foot is nowhere more than 0.25 m above it. `tests/landmarks.test.ts` stands each landmark as
 the site does and checks that for every landmark on the site, at

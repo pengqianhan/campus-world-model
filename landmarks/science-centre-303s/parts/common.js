@@ -11,8 +11,8 @@
 // eight storeys, its roof at 28.75 m, a thin parapet wall along the face at 30.4 m to u 37.7 and a parapet at 29.5 m
 // round its south-east part; on it, set back 1.45 m from the face, a top storey from u 12.65 to 49.5, its roof at
 // 33.1 m inside a parapet at 33.75 m, its back walls in the body's; behind the back's diagonal a lower part at
-// 15.5 m, and at the north-west tip of the ring a part at 15.6 m. The returns to 35.1 m at u 5-11, w -5 and back
-// are building 303's slab at the ring's edge.
+// 15.5 m, and at the north-west tip of the ring a part at 15.6 m. The returns to 35.1 m before the back's line, up
+// to 1.6 m into the ring from u 5 to 20, are the end bay of building 303's slab, which reaches into the ring.
 
 // The lowest the walls go: the ground rises 4.4 m along the face to the south-east (the LiDAR's ground within 3 m
 // outside the plan from -1.85 m at the north-west tip to +2.6 m at the south-east end).

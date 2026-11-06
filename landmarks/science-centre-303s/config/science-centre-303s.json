@@ -102,7 +102,7 @@
  "door": {
   "x": -10.17,
   "z": 8.9,
-  "note": "the entrance is not known: the photograph hides the ground storey behind the street's railing and the campus map records none; so the door is on the pavement before the face to the street at its middle, 2.0 m out from the face (u 23, w 2.0 in the building's frame), where the LiDAR's ground is the frame's (13 returns within 1 m, p10/p50/p90 -0.048/0.002/0.049 m); the pavement rises along the face, from 1.85 m below it at the north-west tip to 2.6 m above it at the south-east end"
+  "note": "the entrance is not known: the photograph hides the ground storey behind the street's railing and the campus map records none; so the door is on the pavement before the face to the street, 39% along it from its north-west end, 1.8 m out from it (u 23, w 2.0 from the face's line in the building's frame, the drawn face at w 0.2), where the LiDAR's ground is the frame's (13 returns within 1 m, p10/p50/p90 -0.048/0.002/0.049 m); the pavement rises along the face, from 1.85 m below it at the north-west tip to 2.6 m above it at the south-east end"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

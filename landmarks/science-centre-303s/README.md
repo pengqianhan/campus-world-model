@@ -31,9 +31,15 @@ points near the outline and is the same as with the usual 25 m.
 
 ## Neighbours on the map
 
-- The campus map's ring of 303 adjoins 303S's along its north-west part: the highest returns inside 303S's ring,
-  35.1-35.25 m at u 5-11 from w -5 back, are the end bay of 303's slab (32.8 m above 303's ground of 41.6 m), which
-  reaches the ring's edge; the model leaves them to 303's.
+- The campus map's rings of 303 and 303S overlap along 303S's back, the diagonal from its north-west tip. The
+  highest returns inside 303S's ring, 35.1-35.25 m, are the end bay of 303's slab (32.8 m above 303's ground of
+  41.6 m), which reaches up to 1.6 m into the ring before the back's line from u 5 to 20; the model draws its own
+  north-west part and top storey there, at 28.75 and 33.75 m.
+- **Behind its back, a slot.** 303's model stops 0.5 to 1.6 m short of 303S's back, from the north-west tip to
+  303's light well at u 19.7, where the LiDAR has 303's 16 m block (its returns at 15.5 m above 303S's ground,
+  u -6 to 4.8) and its slab's end bay (35.1 m, u 4.8 to 19.7) reaching to 303S's back, with none below them. The
+  slot lies outside 303S's ring and inside 303's, and block 303S, which stood at the same ring, left it open on
+  `main` too; filling it is a change to 303's model.
 - Building 302 stands 5.6 m to the south-east; its screens hide most of 303S's south-east end in the photograph.
 - No other block has as much as half of it under the model (303 1.5%), so `building.also` is empty. Block 303S
   itself is 92.7% under the model.
@@ -105,14 +111,15 @@ estimated, the photograph as a reference:
 Silhouette IoU 0.781, 0.974 in the box (the box's sky 36%); the luma p10/p50/p90 96/131/188 against the
 photograph's 87/130/190. From above: footprint IoU 0.859 (the LiDAR's 1,044 m², the model's 926, both 910), 86% of
 the 3,577 cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90 -0.62/-0.01/0.19), the highest
-point 33.75 m against the LiDAR's 35.25, which is 303's slab at the ring's edge (above). 608 triangles, 3 draw
+point 33.75 m against the LiDAR's 35.25, which is 303's slab's end bay reaching into the ring (above). 608 triangles, 3 draw
 calls.
 
 ## On the map (step 7)
 
 - **The door**: the entrance is not known (the photograph hides the ground storey behind the street's railing, and
-  the campus map records none), so the door is on the pavement before the face's middle, 2.0 m out (u 23, w 2.0;
-  (-10.17, 8.90) in the view frame), where the LiDAR's ground is the frame's (13 returns within 1 m, p10/p50/p90
+  the campus map records none), so the door is on the pavement before the face, 39% along it from its north-west
+  end, 1.8 m out from it (u 23, w 2.0 from the face's line, the drawn face at w 0.2; (-10.17, 8.90) in the view
+  frame), where the LiDAR's ground is the frame's (13 returns within 1 m, p10/p50/p90
   -0.048/0.002/0.049 m). `door.note` says so.
 - `building.also` is empty.
 
@@ -144,4 +151,5 @@ measured.
 The glass's mullions and the fins along the face's north-west stretch, which the photograph sees only far off; the
 ground storey's frames and doors, hidden behind the street's railing; the louvres near the top storey's north-west
 end and the vent pipe on its roof; a lower patch at 11.3-11.9 m behind the back (w -20 to -22); the back and the
-north-west end, which no photograph shows (plain).
+north-west end, which no photograph shows (plain); the recess of about 1.4 m in the south-east end between w -12.5
+and -6 (its returns reach only u 58.4-58.8 there), which the model draws flat at u 59.6.

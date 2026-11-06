@@ -130,12 +130,13 @@ export interface LandmarkHost {
 
 /**
  * How near, in metres, the outlines of two landmarks drawn from code come for the two to stand on one
- * ground (standHeights). On the site only three pairs come this near, and in each the outlines touch or
- * overlap: the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), and the
- * Thomas Building and its Extension (110, 110N). The nearest two landmarks that do not touch, buildings 302
- * and 303 of the Science Centre, stand 15 m apart (the next, the Kate Edger Information Commons (315) and Old
- * Choral Hall (104), 17 m): each of those can stand on the map's own ground without a step or an overlap
- * between them that a camera could see.
+ * ground (standHeights). On the site only four pairs come this near, and in each the outlines touch or
+ * overlap: the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), the
+ * Thomas Building and its Extension (110, 110N), and buildings 303 and 303S of the Science Centre. The
+ * nearest two landmarks that do not touch, buildings 302 and 303S of the Science Centre, stand 5.6 m apart
+ * (the next, 302 and 303, 15 m, and the Kate Edger Information Commons (315) and Old Choral Hall (104),
+ * 17 m): each of those can stand on the map's own ground without a step or an overlap between them that a
+ * camera could see.
  */
 export const SHARED_GROUND = 2;
 
@@ -145,8 +146,8 @@ export const SHARED_GROUND = 2;
  * the span. The four groups on the site span 0.62 m (110 and 110N), 0.90 m (801 and 802), 1.78 m (303 and
  * 303S) and 5.07 m (the Clock Tower and its East Wing): at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's and
  * at the East Wing's about right, so a shared ground would stand both 2.5 m off their real ground, where the
- * fault is the map's ground, not the models (the maintainer chose this, 2026-11-03). Any limit from 1.78 to
- * 5.07 m gives the same groups today.
+ * fault is the map's ground, not the models (the maintainer chose this, 2026-11-03). Any limit from 1.79 to
+ * 5.06 m gives the same groups today.
  */
 export const SHARED_SPREAD = 2;
 
