@@ -25,15 +25,17 @@ from it, and all its roofs run square with its own faces, so `parts/common.js` g
 its south corner) and `towerAt` and `towerRect` turn it into the view frame.
 
 The points are the building's own. `building.outline` is campus.json's ring, which on the north-east side lies
-5 to 7 m outside the tower's walls, 1 to 3 m past the lower wing there, over a valley and the edge of 301's roof:
+5 to 7 m outside the tower's walls, 2 to 3 m past the lower wing there, over a valley and the edge of 301's roof:
 the plans follow the LiDAR.
 
 ## Neighbours on the map
 
 - No other block of the campus map within 80 m has as much as 0.5% of it under the model, so `building.also`
   is empty.
-- **Block 302 itself** is 88.3% under the model (85% asked): its ring runs 1 to 3 m past the lower wing on
-  the north-east side, and 1 to 1.7 m outside the walls on the south-west and south-east sides.
+- **Block 302 itself** is 88.3% under the model (85% asked). Of the 316 m² of its ring the model leaves out,
+  about 64 lie 2 to 3 m past the lower wing on the north-east side and about 144 beyond the wing's two ends,
+  5 to 7 m off the tower (the edge of 301's roof, or no return above 2.5 m); about 92 lie on the south-west and
+  south-east sides, where the ring runs 1 to 2.3 m outside the walls, and 17 on the north-west.
 
 ## The reference
 
@@ -79,7 +81,7 @@ square with the tower, 3.93 degrees off. They are drawn now in the tower's frame
 roof from b 4.55 to 39.7, falling from 50.8 m at its ends to 50.1 m at a band across its middle (two planes);
 in the band (b 16.5 to 28.0) a gutter at each side, a court at 46.7 m and three sawtooth ramps, each fitted to
 its cells (a plane of slope 0.76 to 0.78, the cells within 0.11 m of it; the cells for 0.3 m before its top
-are at its top too, so each is drawn from there, its slope 0.72 to 0.73), rising toward the south-west from 46.72
+are at its top too, so each is drawn from there, its slope 0.71 to 0.73), rising toward the south-west from 46.72
 to 50.6 m, then a block at 51.1 m and a slot with openings to below; a parapet 0.9 m wide at 51.5 m along the
 south-west face; a raised strip at 51.3 m along the north-east face with its parapet at 51.8; plant in four
 boxes, each to its cells' p90, 53.6 to 53.8 m (their cells are units with gaps between, which the boxes fill;
@@ -121,12 +123,12 @@ above: footprint IoU 0.888, 90% of the cells within 0.5 m, the highest point 53.
 ## The review (November 2026)
 
 - **The lower wing** along the tower's north-east face, which the check had taken for the neighbouring block's
-  returns: a roof of its own from b 15.3 to 45.5, out to a 43.3, where a valley at 29.8 m runs before 301's
-  walls; a plane fitted to its cells, 32.82 m at the face falling 0.538 a metre to 30.94 (the cells within
+  returns: a roof of its own from b 15.3 to 46.0, out to a 43.3, where a valley at 29.8 m runs before 301's
+  walls; a plane fitted to its cells, 32.82 m at the face falling 0.538 a metre to 30.94 (the returns within
   0.16 m of it, p90). The campus map's ring of 302 takes it in, 301's starts beyond it. No photograph shows it:
   it is drawn plainly. Block 302 under the model: 84.2% before it, 88.3% with it; footprint IoU 0.847 to 0.888.
 - **The lower block's plan**: the south face's line, moved the blades' depth in, met the hull's short side at
-  its south-east end 1 m past it, so the plan crossed itself; it now meets the inner side, inside the tower. The
+  its south-east end 1 m past it, so the plan crossed itself; it now meets the inner side, inside the south-east screen's slab. The
   top rail and the glazed corner's frame are mitred at the south corner, and the glass and frame on the south
   face stop where the screen along the tower's south-east face begins.
 

@@ -980,8 +980,8 @@ If you represent the University and would like something changed or removed, ple
   drawn as plates zigzagging every 2 m, not as the photograph's own pattern; the canopy and the metal bands'
   ribs are not drawn. Its faces to the north-east and north-west, and the screen along its north-west face,
   which no photograph shows, are drawn plainly, and so is the lower wing along its north-east face. The
-  campus map's outline of 302 runs 1 to 3 m past that wing, over a valley and the edge of 301's roof, which
-  the model leaves out.
+  campus map's outline of 302 runs 2 to 3 m past that wing, over a valley and the edge of 301's roof, and 5 to
+  7 m off the tower beyond the wing's two ends, which the model leaves out.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

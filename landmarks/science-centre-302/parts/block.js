@@ -30,8 +30,8 @@ export function block(b) {
   const inLine = (p, q) => { const r = run(p, q); return [[p[0] - r.n[0] * D, p[1] - r.n[1] * D], r.e]; };
   const along = (p, q) => [p, [q[0] - p[0], q[1] - p[1]]];
   const [sw, cutL, south] = [inLine(P[0], P[1]), inLine(P[0], P[6]), inLine(P[6], P[5])];
-  // the south face's line, moved in, meets the inner side inside the tower: the hull's two corners there (P4, P5) are
-  // left out, or the plan would cross itself
+  // the south face's line, moved in, meets the inner side inside the south-east screen's slab: the hull's two corners
+  // there (P4, P5) are left out, or the plan would cross itself
   const Q = [meet(sw, cutL), meet(sw, along(P[1], P[2])), P[2], P[3], meet(south, along(P[4], P[3])), meet(cutL, south)];
   // its foot 0.1 m below the tower's, so that where it runs inside the tower their undersides are not in one plane
   slab(b, Q, FOOT - 0.1, B.top, DARK, ROOF);
@@ -43,17 +43,18 @@ export function block(b) {
   });
   // the faces the photograph shows, each with the line of the glazed corner's edge on it (its height at s), if any
   const G = B.glass, cut = run(Q[0], Q[5]), h6 = G.top - G.s * cut.l;
+  const southR = run(Q[5], Q[4]);
+  // where on the south face the south-east screen begins: its face stands a few centimetres before the south face's
+  // from there, so the glazed corner's glass and frame stop there, and the blades beyond run down as if no edge
+  const m = meet([Q[5], southR.e], [towerAt(B.screens[1].a[0], 0), MEASURED.tower.b]);
+  const sEnd = (m[0] - Q[5][0]) * southR.e[0] + (m[1] - Q[5][1]) * southR.e[1];
   const faces = [
     [run(Q[0], Q[1]), (s) => G.top - G.sw * s],
-    [run(Q[5], Q[4]), (s) => h6 - G.s * s],
+    [southR, (s) => (s <= sEnd ? h6 - G.s * s : null)],
     // the screen along the tower's south-east face, to where the south face runs on in front of it
     [run(towerAt(26.0, B.screens[1].b[0] + D), towerAt(0.4, B.screens[1].b[0] + D)), null],
   ];
-  const [swR, southR] = [faces[0][0], faces[1][0]];
-  // where on the south face the south-east screen begins: its face stands a few centimetres before the south face's
-  // from there, so the glazed corner's glass and frame stop there
-  const m = meet([Q[5], southR.e], [towerAt(B.screens[1].a[0], 0), MEASURED.tower.b]);
-  const sEnd = (m[0] - Q[5][0]) * southR.e[0] + (m[1] - Q[5][1]) * southR.e[1];
+  const swR = faces[0][0];
   // where a run's outer edge, d out of it, meets its neighbour's at the south corner and its short cut: the rail and
   // the frame are mitred there, with no notch at the corner
   const reach = (r, o, d) => {
@@ -91,11 +92,12 @@ function corner(b, [[sw, swEdge], [south, sEdge]], cut, sEnd, ends) {
   tris(b, [[sw.at(0, B.folds.from, out), sw.at(sw.l, B.folds.from, out), sw.at(sw.l, FOOT, out)], [sw.at(0, B.folds.from, out), sw.at(sw.l, FOOT, out), sw.at(0, FOOT, out)]], GLASS, (m) => [m[0] + sw.n[0], m[1] + sw.n[1]]);
   panel(cut, G.top, G.s);
   panel({ ...south, l: sEnd }, G.top - G.s * cut.l, G.s);
-  // the frame: above each edge from the corner down to the ground storey's top (or the glass's end), Fr.width wide
+  // the frame: above each edge from the corner down to the ground storey's top (or the glass's end), Fr.width wide;
+  // where it is mitred, its outer corner at the inner corner's height, so that neighbours meet level
   const frame = (r, edge, s1) => {
     const [o0, o1] = ends(r, Fr.depth), e1 = s1 < r.l ? s1 : o1;
-    const q = (s) => [[s, edge(s)], [s, edge(s) + Fr.width]];
-    const [[a, d], [c, f]] = [q(0), q(s1)], [[g, j], [k, m]] = [q(o0), q(e1)];
+    const q = (s, at = s) => [[s, edge(at)], [s, edge(at) + Fr.width]];
+    const [[a, d], [c, f]] = [q(0), q(s1)], [[g, j], [k, m]] = [q(o0, 0), q(e1, s1)];
     hexahedron(b, [...[a, c, f, d].map(([s, y]) => r.at(s, y, 0)), ...[g, k, m, j].map(([s, y]) => r.at(s, y, Fr.depth))], DARK);
   };
   const to = (edge, fall, l) => Math.min(l, (edge(0) - B.folds.from) / fall);
@@ -109,7 +111,7 @@ function corner(b, [[sw, swEdge], [south, sEdge]], cut, sEnd, ends) {
 function blades(b, r, edge) {
   const F = B.folds, top = B.screenTop, list = [];
   for (let s0 = F.step / 2; s0 < r.l - F.step / 4; s0 += F.step) {
-    const y0 = Math.max(F.from, edge ? edge(s0) + F.frame.width : F.from);
+    const e = edge ? edge(s0) : null, y0 = Math.max(F.from, e === null ? F.from : e + F.frame.width);
     if (y0 >= top - 0.5) continue;
     // the blade's line on the face: [s, y] from the top down
     const line = [[s0, top]];

@@ -11,7 +11,7 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   `config/science-centre-302.json`, `frame`: the axis is the bearing of most of the walls (the lower block's); the
   tower is turned about 4 degrees from it.
 - The building's own returns only. campus.json's ring of 302 lies 5 to 7 m outside the tower's walls on the
-  north-east side, 1 to 3 m past the lower wing there, over a valley and the edge of 301's roof: the plans follow
+  north-east side, 2 to 3 m past the lower wing there, over a valley and the edge of 301's roof: the plans follow
   the LiDAR.
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the tower**, a rectangle 44.35 m along its south-west face and 39 m along its south-east face, turned 3.93
@@ -69,7 +69,8 @@ code. Photographs are **references only**; nothing is traced or sampled from the
   `out/topview/`. GPU steps only under `~/.campus-loop/gpu.lock`.
 - Round 0: silhouette IoU 0.571 (0.900 in the model's screen box) through the fitted camera; the building's luma
   median 150 against the photograph's 153. The top view: footprint IoU 0.803 (the LiDAR's 2,709 m² against the
-  model's 2,176: most of the rest the lower wing along the north-east face, drawn in the review), 60% of the cells within 0.5 m of the LiDAR's height (the band of sloping strips and the strips' ends
+  model's 2,176: most of the rest along the north-east side: the edge of 301's roof inside the ring, the lower wing, drawn in the
+  review, and the tower's own north-east strip), 60% of the cells within 0.5 m of the LiDAR's height (the band of sloping strips and the strips' ends
   drawn at the main roof), the highest point 51.7 m against the LiDAR's 53.9 (p99.9, the plant); block 302 under
   the model 80.2%.
 - Round 1's shape (the roofs at the cells' heights, drawn square with the frame): IoU 0.578 (0.907 in the box),
