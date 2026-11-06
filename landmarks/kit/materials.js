@@ -338,6 +338,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     // screens round its lower block, and the brown cladding and fins of its tower's south-east face
     screenBlack: painted(0x2c2e30, 0.45, space),
     finBrown: painted(0x86695c, 0.6, space),
+    // the Science Centre (303): the paint's shader in a mauve grey, its precast concrete panels (its photograph)
+    concreteMauve: painted(0x9b8f8d, 0.75, space),
   };
   return m;
 }

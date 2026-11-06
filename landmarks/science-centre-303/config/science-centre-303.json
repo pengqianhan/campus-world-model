@@ -1,0 +1,261 @@
+{
+ "name": "science-centre-303",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the gaps between the bands of panels on its face to the street, drawn as dark strips; the canopy's depth; the glazing at the street; plain panels where a relief, an artwork, stands on that face; and the colour of the walls no photograph shows and of the wing's roof",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken close up through a wide lens that bows the long edges by a few pixels (the pinhole camera's residuals reach 6 px along the bands' gaps), so the principal point is solved too",
+ "building": {
+  "id": "303",
+  "also": [],
+  "title": "Science Centre (303), University of Auckland",
+  "note": "outline: building 303's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 303 by its id.",
+  "outline": [
+   [
+    -88.6,
+    -49.8
+   ],
+   [
+    -88.2,
+    -50.1
+   ],
+   [
+    -89.3,
+    -51.5
+   ],
+   [
+    -89.7,
+    -51.2
+   ],
+   [
+    -103.1,
+    -67.6
+   ],
+   [
+    -102.6,
+    -68.0
+   ],
+   [
+    -104.3,
+    -70.0
+   ],
+   [
+    -110.9,
+    -64.9
+   ],
+   [
+    -111.4,
+    -65.5
+   ],
+   [
+    -113.0,
+    -64.2
+   ],
+   [
+    -112.5,
+    -63.6
+   ],
+   [
+    -114.5,
+    -62.0
+   ],
+   [
+    -114.7,
+    -62.3
+   ],
+   [
+    -115.1,
+    -61.9
+   ],
+   [
+    -115.7,
+    -62.7
+   ],
+   [
+    -117.4,
+    -61.2
+   ],
+   [
+    -116.8,
+    -60.5
+   ],
+   [
+    -124.5,
+    -54.8
+   ],
+   [
+    -128.7,
+    -59.8
+   ],
+   [
+    -132.1,
+    -54.7
+   ],
+   [
+    -132.6,
+    -55.0
+   ],
+   [
+    -136.6,
+    -49.0
+   ],
+   [
+    -134.3,
+    -46.1
+   ],
+   [
+    -135.0,
+    -45.6
+   ],
+   [
+    -105.4,
+    -9.2
+   ],
+   [
+    -105.6,
+    -8.7
+   ],
+   [
+    -88.9,
+    11.7
+   ],
+   [
+    -78.7,
+    3.4
+   ],
+   [
+    -78.9,
+    3.0
+   ],
+   [
+    -78.2,
+    2.5
+   ],
+   [
+    -79.3,
+    1.1
+   ],
+   [
+    -73.9,
+    -3.3
+   ],
+   [
+    -73.1,
+    -2.3
+   ],
+   [
+    -68.1,
+    -6.3
+   ],
+   [
+    -68.8,
+    -7.3
+   ],
+   [
+    -39.2,
+    -31.3
+   ],
+   [
+    -55.2,
+    -50.8
+   ],
+   [
+    -56.3,
+    -49.9
+   ],
+   [
+    -62.2,
+    -57.2
+   ],
+   [
+    -65.0,
+    -54.9
+   ],
+   [
+    -65.5,
+    -55.5
+   ],
+   [
+    -74.4,
+    -48.3
+   ],
+   [
+    -68.7,
+    -41.2
+   ],
+   [
+    -76.4,
+    -34.9
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 41.6,
+ "door": {
+  "x": -10.78,
+  "z": 32.26,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The forecourt before the entrance on the face to the street, under the canopy, is 0.08-0.12 m above the frame's ground (41.6 m); the door is 5.5 m out from the face before the entrance (u 19.5, w 5.5 in the building's frame), at the forecourt's front edge, where the LiDAR's ground is the frame's (27 returns within 1 m, p10/p50/p90 -0.065/-0.016/0.049 m), so every height is kept as measured"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3,
+  "tower_above": 3,
+  "spine_below": 40,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    -89.2018227052721,
+    -32.096747566842694
+   ],
+   "axis": [
+    0.6874514783044181,
+    0.7262303112491726
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the median LiDAR ground (class 2) in the crop box (p5 37.2, p95 46.7: the site falls about 9 m), and the LiDAR's ground at the door (door.note)",
+ "light": {
+  "sunaz": 135,
+  "sunel": 35,
+  "exposure": 2.0,
+  "note": "estimated: the photograph is under an overcast sky (no shadows), so the viewer's sun stands behind the building from the south-east (135 deg round, 35 deg up), which leaves the face to the street, the one the photograph shows, in open shade; the exposure from the building's luma: p10/p50/p90 50/152/158 at 2.0 against the photograph's 111/156/200 (126 at 1.4, 142 at 1.75, 148 at 1.9: its dark glazing and gaps hold the p10 down)"
+ }
+}

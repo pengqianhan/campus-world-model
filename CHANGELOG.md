@@ -28,6 +28,15 @@ A change to what the site does or shows adds its line here, and the README's
   colour of the walls no photograph shows. On the map it has the map's colours; from a walker's height on a
   computer with a graphics card, its own glass and cladding. Its back, which the photograph does not show, is
   drawn plainly (#PR).
+- **Building 303 of the Science Centre drawn in detail.** Near the camera the map draws building 303 of
+  the Science Centre from code in place of its block: a range of four storeys along its street, faced in three
+  bands of mauve-grey precast panels, with a canopy along the entrance over the glazed ground storey; behind it a
+  slab of ten storeys with a raised part, a screened deck, a round tank and plant on its roof; behind the slab a
+  block of ridged roofs with six round stacks to 42 m, and a wing with two troughs across its roof. Its sizes come
+  from the LINZ 2024 LiDAR, the roofs' colours from the 2023 aerial; it was compared with a photograph of its face
+  to the street, and its card says what is estimated: some heights, the gaps between the bands, the canopy's
+  depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
+  artwork and is not drawn after. Its other faces are drawn plainly (#136).
 
 ## 2026-11-06
 
