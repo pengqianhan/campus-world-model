@@ -118,7 +118,7 @@ heights minus the LiDAR's p10/p50/p90 -0.39/0.00/0.09), the highest point 53.25 
 Silhouette IoU 0.589, 0.923 in the box; the luma p10/p50/p90 99/161/180 against the photograph's
 102/152/190 (its pixels are dark screens or pale metal, few between, so the median moves the most). From
 above: footprint IoU 0.888, 90% of the cells within 0.5 m, the highest point 53.77 m against 53.9 (p99.9).
-3,915 triangles, 6 draw calls; no two faces of different materials in one plane.
+3,919 triangles, 6 draw calls; no two faces of different materials in one plane.
 
 ## The review (November 2026)
 

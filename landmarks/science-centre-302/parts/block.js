@@ -111,16 +111,18 @@ function corner(b, [[sw, swEdge], [south, sEdge]], cut, sEnd, ends) {
  * zigzagging, from the ground storey's top or the frame over the glazed corner's edge. Each plate both ways. */
 function blades(b, r, edge) {
   const F = B.folds, top = B.screenTop, list = [];
+  // where a blade stands at s on the face: the ground storey's top, or the frame's top over the glazed corner's edge
+  const foot = (s) => { const e = edge ? edge(s) : null; return Math.max(F.from, e === null ? F.from : e + F.frame.width); };
   for (let s0 = F.step / 2; s0 < r.l - F.step / 4; s0 += F.step) {
-    const e = edge ? edge(s0) : null, y0 = Math.max(F.from, e === null ? F.from : e + F.frame.width);
-    if (y0 >= top - 0.5) continue;
-    // the blade's line on the face: [s, y] from the top down
+    if (foot(s0) >= top - 0.5) continue;
+    // the blade's line on the face: [s, y] from the top down, to where it meets its foot (the frame's top slopes)
     const line = [[s0, top]];
     for (let j = 0, y = F.straight; ; j++, y -= F.pitch / 2) {
       const pt = [s0 + (j % 2 ? F.amp : 0), Math.min(y, top)];
-      if (pt[1] > y0) { line.push(pt); continue; }
-      const [ps, py] = line.at(-1), t = (py - y0) / (py - pt[1]);
-      line.push([ps + t * (pt[0] - ps), y0]);
+      if (pt[1] > foot(pt[0])) { line.push(pt); continue; }
+      const [ps, py] = line.at(-1), f0 = py - foot(ps), f1 = pt[1] - foot(pt[0]);
+      const t = Math.min(1, Math.max(0, f0 / (f0 - f1)));
+      line.push([ps + t * (pt[0] - ps), py + t * (pt[1] - py)]);
       break;
     }
     for (let i = 0; i + 1 < line.length; i++) {
