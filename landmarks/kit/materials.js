@@ -328,6 +328,12 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     screenGrey: painted(0x6c6e6c, 0.6, space),
     // and its green-tinted glazing: glassPale's glass over darker rooms tinted green
     glassGreen: glassGreen(space),
+    // the Humanities Building: the brick's shader in a pale buff brick (its photograph), and the film in vertical
+    // stripes on its windows: the paint's shader in its red, orange and yellow
+    brickBuff: brick(space, { lo: "0.58, 0.43, 0.22", hi: "0.68, 0.53, 0.29", key: "brick-buff-v1" }),
+    filmRed: painted(0xc42a1c, 0.5, space),
+    filmOrange: painted(0xe8682a, 0.5, space),
+    filmYellow: painted(0xf0b82e, 0.5, space),
     // the Science Centre (302): the paint's shader in two more colours (its photograph): the near-black folded
     // screens round its lower block, and the brown cladding and fins of its tower's south-east face
     screenBlack: painted(0x2c2e30, 0.45, space),

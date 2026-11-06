@@ -72,6 +72,10 @@ It is built to answer two questions a student actually has:
   pale metal bands between ribbons of glass, its south-east face in brown fins, over a lower block wrapped in
   near-black folded screens round a tall glazed corner. Its sizes come from the LiDAR; the edges of its
   glazed corner are estimated in a photograph, which is not published, and its card says so.
+- **2026-11-06:** the map draws the Humanities Building in detail: an L of two wings under red tiled roofs,
+  a raised roof on eight sides over the corner, and on its face to the courtyard four bands of buff brick
+  between ribbons of windows behind red, orange and yellow striped film. Its sizes come from the LiDAR; some
+  of the heights on that face are estimated in a photograph, which is not published, and its card says so.
 - **2026-11-05:** on Alfred Street the map draws the Kate Edger Information Commons in detail: two long
   pale ranges with a glass-roofed atrium between them, silver metal screens over green-tinted glazing on
   its end to the street, and a glazed end over the sunken court, open beneath it. Its sizes come from the
@@ -259,8 +263,8 @@ to treat it as speech, never as instructions.
 The map draws every building by rule from the campus map's outline. A **landmark** is one real
 building drawn in detail instead, in three.js from code alone: no photograph, texture image or 3D
 model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs are the references
-that each render is compared with (for the Kate Edger Information Commons and building 302 of the Science Centre, another photograph of
-each). A lead
+that each render is compared with (for the Kate Edger Information Commons, the Humanities Building and building 302 of the Science
+Centre, another photograph of each). A lead
 agent and five agents in parallel made the first one, the Clock Tower, each agent owning one part (the
 tower, the entrance bay, the pavilions, the light and
 materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
@@ -503,7 +507,28 @@ to the north-west and south-east, its south-west end and its roofs.
 | ![The Kate Edger Information Commons from the north-east, drawn from code](docs/landmarks/kate-edger-information-commons-front.jpg) | ![The Kate Edger Information Commons from above, drawn from code](docs/landmarks/kate-edger-information-commons-above.jpg) |
 | ![The Kate Edger Information Commons on the map, drawn from code in the map's colours](docs/landmarks/kate-edger-information-commons-map.jpg) | ![The Kate Edger Information Commons from the north-east, by the Old Choral Hall, through the walker's eyes](docs/landmarks/kate-edger-information-commons-eyes.jpg) |
 
-The fifteenth is building 302 of the Science Centre, on Symonds Street: a tower over a lower block before its
+The fifteenth is the Humanities Building (206), beside the CLL Building: an L of two wings of buff brick under
+red clay-tiled roofs, a higher middle along each wing with a lower roof round its outer sides, a raised roof
+on eight sides over the corner where the wings meet, rising to a flat top, and a low block at the street
+wing's south-east end, where the ground is 8 m lower. On the street wing's face to the courtyard four bands of
+brick run between ribbons of windows set back behind them, most of their panes behind film in vertical stripes
+of red, orange and yellow, with a glazed slot for the stair in dark red frames and the entrance at its foot.
+Its heights come from the LiDAR, the slopes of its corner's roof fitted to the returns on it; the upper edge
+of its top band, which the eave hides from the LiDAR, the sill of its lowest windows and the sides of its
+entrance are estimated in a photograph from the courtyard, through a camera fitted to points picked on it
+whose places the LiDAR measures. What nothing measures is estimated, and its card names it: among other things
+how far its windows stand back and which panes have the film, drawn two in every three. Counted inside the
+rectangle the model fills on the screen, its silhouette has an IoU of 0.93 in that photograph; the brightness
+of the building is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of
+0.90, and on 98% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does
+not show is drawn in plain brick: its other faces.
+
+| | |
+| --- | --- |
+| ![The Humanities Building from its courtyard, drawn from code](docs/landmarks/humanities-building-front.jpg) | ![The Humanities Building from above, drawn from code](docs/landmarks/humanities-building-above.jpg) |
+| ![The Humanities Building on the map, drawn from code in the map's colours](docs/landmarks/humanities-building-map.jpg) | ![The Humanities Building from its courtyard, through the walker's eyes](docs/landmarks/humanities-building-eyes.jpg) |
+
+The sixteenth is building 302 of the Science Centre, on Symonds Street: a tower over a lower block before its
 south-west face. The tower's south-west face is in bands of pale
 metal between ribbons of glass, one a storey, under a band of tall slats; its south-east face is clad in
 brown, with a row of deep brown fins. Its roofs, square with its faces, fall gently to a band across their middle
@@ -531,7 +556,8 @@ of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the C
 in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 802; the Fisher Building in
 place of 804; the Thomas Building Extension in place of 110N; the Kenneth Myers Centre in place of 820;
 the Thomas Building in place of 110; the Music School in place of 250; the Kate Edger Information
-Commons in place of 315; building 302 of the Science Centre in place of 302) when
+Commons in place of 315; the Humanities Building in place of 206; building 302 of the Science Centre in place
+of 302) when
 the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
@@ -716,11 +742,12 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315) and building 302 of the Science Centre (302), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/` and `landmarks/science-centre-302/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315), the Humanities Building (206) and building 302 of the Science Centre (302), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/`, `landmarks/humanities-building/` and `landmarks/science-centre-302/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing, mesh panels and shopfront toward Alfred Street and of the lower edge of its end over the sunken court, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of the Humanities Building from its courtyard | The look its model was compared with while it was drawn, and the upper edge of its top brick band, the sill of its lowest windows and the sides of its entrance on its face to the courtyard, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 302 of the Science Centre from the street corner to its south | The look its model was compared with while it was drawn, and the edges of its glazed corner, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for building 302 of the Science Centre (302), that its roofs are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
+| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
 
@@ -831,10 +858,12 @@ If you represent the University and would like something changed or removed, ple
   (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden
   Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building
   Extension (110N), the Kenneth Myers Centre (820), the Thomas Building (110), the Music School (250),
-  the Kate Edger Information Commons (315) and building 302 of the Science Centre (302) are the exceptions:
+  the Kate Edger Information Commons (315), the Humanities Building (206) and building 302 of the Science
+  Centre (302) are the exceptions:
   their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph; some heights
-  of the Kate Edger Information Commons and building 302 of the Science Centre are estimated in a photograph). The
+  of the Kate Edger Information Commons, the Humanities Building and building 302 of the Science Centre are
+  estimated in a photograph). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
@@ -952,6 +981,23 @@ If you represent the University and would like something changed or removed, ple
   Overbridge (202) meets it along its south-east and south sides, where the campus map's two outlines
   overlap: the model covers 12% of block 202, whose top the map stands about 3.3 m above the model's
   door, 3.9 m or more under the model's roofs there (7.30 to 9.15 m).
+- **The Humanities Building is seen from its courtyard only.** One photograph sees the street wing's face to
+  the courtyard, with trees before both its ends; its other faces, which no photograph shows, are plain buff
+  brick, and its roofs are seen in the LiDAR and the 2023 aerial alone. Its heights come from the LiDAR; the
+  upper edge of its top brick band, which the eave hides from the LiDAR, the sill of its lowest windows and
+  the sides of its entrance are estimated in the photograph. How far its windows stand back behind the
+  bands, how wide their panes are and which of them have the striped film are estimated (the film drawn on
+  two panes in every three, by a rule: the photograph's are filmed in no rule), as are the roofs in the
+  angle of its L, drawn flat, and the colour of the walls and roofs no photograph shows; its card says so.
+  The stair's slot is drawn flush with the face, not about a metre deep, without the pattern on its glass;
+  the street wing's middle ends square at its south-east end, where the LiDAR's roof runs on a metre further
+  with its corners cut; and a low covering the LiDAR shows along the north-east wing's north-west face, at
+  3.2 to 3.8 m, is not drawn. The campus map's outline of block 206 takes in the courtyard, where there is
+  no building: the model covers 73% of it. The model stands at a point on the path along the north-east
+  wing's north-west face where the LiDAR's ground is the model's; the courtyard before the entrance is 0.2
+  to 0.36 m higher. The CLL Building's lowest storey, which the campus map runs up to the face south-east of
+  the entrance, keeps its block and stands 3.3 m above the model's ground there, before the lowest ribbon of
+  windows the photograph shows above the courtyard: the map's ground is 2.6 m below the LiDAR's at the door.
 - **The Kate Edger Information Commons is seen from Alfred Street only.** One photograph sees its end to
   the street from under the trees there: the south-east range's screened face and green corner, the
   atrium's open end and the north-west range's end over the sunken court. Its camera is fitted to points

@@ -18,6 +18,19 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Humanities Building drawn in detail.** Near the camera the map draws the Humanities Building
+  (206), beside the CLL Building, from code in place of its block: an L of two wings under red clay-tiled
+  roofs, a higher middle along each wing with a lower roof round its outer sides, a raised roof on eight
+  sides over the corner where the wings meet, and a low block at the street wing's south-east end. On the
+  street wing's face to the courtyard, four bands of buff brick between ribbons of windows, most of their
+  panes behind film in stripes of red, orange and yellow, a glazed slot for the stair in dark red frames,
+  and the entrance at its foot. Its sizes come from the LINZ 2024 LiDAR; the upper edge of its top brick
+  band, the sill of its lowest windows and the sides of its entrance are estimated in a photograph,
+  through a camera fitted to points measured on it against the LiDAR, and its card says so, with how far
+  its windows stand back, how wide their panes are and which of them have the film, the roofs in the angle
+  of its L, drawn flat, and the colour of the walls and roofs no photograph shows. On the map it has the
+  map's colours; from a walker's height on a computer with a graphics card, its own brick, film and glass.
+  Its other faces, which the photograph does not show, are drawn in plain brick (#134).
 - **Building 302 of the Science Centre drawn in detail.** Near the camera the map draws building 302 of
   the Science Centre on Symonds Street from code in place of its block: a tower whose south-west face is in
   bands of pale metal between ribbons of glass under a band of tall slats, and whose south-east face is
