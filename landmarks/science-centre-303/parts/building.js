@@ -8,7 +8,8 @@
 import { FOOT, MEASURED, at, rect, uw } from "./common.js";
 import { block, prism, slopedPrism } from "./shapes.js";
 
-const M = MEASURED, WALL = "concrete", ROOF = "roofGrey";
+// the walls in the photograph's precast panels' mauve grey (the faces it does not show estimated alike)
+const M = MEASURED, WALL = "concreteMauve", ROOF = "roofGrey";
 
 /** A round plan of n sides about [u, w] in the building's frame, r round. */
 function round([u, w], r, n = 16) {

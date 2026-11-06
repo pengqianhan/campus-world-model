@@ -26,6 +26,14 @@ export const MEASURED = {
   // back to the slab's back line; its roof at 13.4 m (the cells 13.2-13.7, rising a little away from the face), the
   // parapet along the face at 14.05 m (the face's top, p99 14.1).
   range: { u: [0, 70.3], w: [-11.2, 0], ne: { u: [0, 6.9], w: [-26.3, -11.2] }, roof: 13.4, parapet: { top: 14.05, width: 0.4 } },
+  // The face to the street (step 5): its three bands of precast panels in one plane (the returns on the face within
+  // 0.1 m of the line at every height), the gaps between them at the layers of returns on the face, 10.15 and
+  // 5.85 m (each drawn 0.4 m tall, estimated), the lowest band from 3.0 m (estimated, the photograph as a reference)
+  // and from u 1.06 (its returns end at x -29.5, the others' at -30.56); the canopy along the entrance, its top at
+  // 2.74 m and its front 0.93 m out of the face (its returns, p50 and p95), from u 11.6 to 52.6 (x -19 to 22), 0.3 m
+  // deep (estimated); under it the ground storey glazed (estimated), elsewhere plain.
+  face: { gaps: [[9.95, 10.35], [5.65, 6.05]], band1: { u0: 1.06, bottom: 3.0 },
+          canopy: { u: [11.6, 52.6], top: 2.74, out: 0.93, t: 0.3 } },
   // The slab: from u 6.75 (the 0.5 m cells at w -14 and -25) to 303S's ring, w -11.2 to -26.8 (its back's returns), its roof at 33.6 m (the 1 m cells 33.4-34.0,
   // a little higher along its middle), but for a bay at each end at 32.8 m (the cells 32.7-32.9: u to 11.0, from
   // 68.3); on it a raised part at 37.6 m (the cells 37.5-37.7, u 15.0-26.0, w -23.0 to -15.0); and toward its

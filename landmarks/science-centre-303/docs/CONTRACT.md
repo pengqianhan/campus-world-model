@@ -31,7 +31,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, round 0), `parts/shapes.js` (from building 302's), `model.js`: the lead.
+- `parts/building.js` (every part's mass), `parts/faces.js` (the face to the street), `parts/shapes.js` (from building
+  302's), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 180 triangles, 2
@@ -55,6 +56,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   north-east end at u 6.75 and its back at w -26.8, the wing's front strip and the light well: 86% of the cells within
   0.5 m (p10/p50/p90 -0.27/0.07/0.29), footprint IoU 0.839, the model's 3,113 m² of which 3,110 the LiDAR's too;
   block 303 under the model 83.7% (the light well, which has no returns, is in its ring); 1,512 triangles.
+- Step 5's face (the one the photograph shows): the gaps between its bands as dark strips 2 cm before it at the
+  LiDAR's layers (10.15 and 5.85 m), the shadow under the lowest band, the canopy along the entrance (its returns:
+  2.74 m, 0.93 m out, u 11.6-52.6) and the ground storey glazed under it (estimated); the walls in `concreteMauve`,
+  added to the kit (the paint's shader in a mauve grey: the Clock Tower's, the Kate Edger Information Commons', the
+  Humanities Building's and the Thomas Building's viewer pictures at `?quality=low` and `?mask=1` the same pixel for
+  pixel before and after); the viewer's light from behind (overcast), its exposure 2.0. Silhouette IoU 0.960 (0.960
+  in the box); the luma p10/p50/p90 50/152/158 against the photograph's 111/156/200. From above: footprint IoU
+  0.848, 86% of the cells within 0.5 m; block 303 under the model 84.8%. 1,572 triangles, 5 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
