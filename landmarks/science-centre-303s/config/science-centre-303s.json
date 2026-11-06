@@ -1,6 +1,8 @@
 {
  "name": "science-centre-303s",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street about 95 m to the south-east through a long lens (a horizontal field of 32 degrees); its camera is fitted with the principal point at the centre.",
  "building": {
   "id": "303S",
   "also": [],
@@ -94,7 +96,7 @@
   "lon": 174.7691,
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
- "crop_margin": 25,
+ "crop_margin": 135,
  "ground": 39.3,
  "door": {
   "x": 0.0,
@@ -104,6 +106,7 @@
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
+   "3604",
    "3704"
   ],
   "mirrors": [],
@@ -112,6 +115,7 @@
  "aerial": {
   "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
   "tiles": [
+   "1802",
    "1902"
   ],
   "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
@@ -150,5 +154,6 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "provisional: the median LiDAR ground (class 2) in the crop box (p5 36.7, p95 42.2: the site falls about 5.5 m); set to the ground at the door at step 7"
+ "ground_note": "provisional: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 36.7, p95 42.2: the site falls about 5.5 m); set to the ground at the door at step 7",
+ "crop_note": "135 m round the outline, so that the crop takes in the photograph's camera, on the street about 95 m to the south-east, and tools/photo_camera.py holds it at a hand's height above the LiDAR's ground there; the frame comes from the points near the outline and is the same as with 25 m"
 }
