@@ -1,0 +1,273 @@
+{
+ "name": "humanities-building",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; how far its windows stand back behind its brick bands, how wide their panes are and which of them have the striped film; the roofs in the angle of its L, drawn flat; and the colour of the walls and roofs no photograph shows",
+ "sky_mask": {
+  "branches_deg": 1.0,
+  "note": "the photograph's sky over the building is seen through a tree's branches at its top right: without the closing 2.6% of the photograph is sky, with it 5.5%, the whole strip over the eaves; pale_tint 20 made pale sky solid (3.5%), so it is left out"
+ },
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
+ "building": {
+  "id": "206",
+  "also": [],
+  "title": "Humanities Building, University of Auckland",
+  "note": "outline: building 206's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 206 by its id.",
+  "outline": [
+   [
+    199.4,
+    39.4
+   ],
+   [
+    217.4,
+    21.1
+   ],
+   [
+    217.4,
+    17.1
+   ],
+   [
+    215.7,
+    15.5
+   ],
+   [
+    216.1,
+    15.1
+   ],
+   [
+    219.0,
+    15.0
+   ],
+   [
+    219.0,
+    13.1
+   ],
+   [
+    216.1,
+    13.0
+   ],
+   [
+    214.4,
+    11.4
+   ],
+   [
+    211.9,
+    11.4
+   ],
+   [
+    211.4,
+    10.8
+   ],
+   [
+    209.4,
+    10.8
+   ],
+   [
+    204.9,
+    15.2
+   ],
+   [
+    205.2,
+    15.5
+   ],
+   [
+    201.5,
+    19.3
+   ],
+   [
+    202.5,
+    20.2
+   ],
+   [
+    202.4,
+    20.6
+   ],
+   [
+    194.9,
+    20.8
+   ],
+   [
+    194.0,
+    21.7
+   ],
+   [
+    191.7,
+    19.4
+   ],
+   [
+    195.0,
+    16.1
+   ],
+   [
+    191.2,
+    12.4
+   ],
+   [
+    179.5,
+    24.3
+   ],
+   [
+    177.4,
+    24.4
+   ],
+   [
+    174.6,
+    21.7
+   ],
+   [
+    172.8,
+    21.7
+   ],
+   [
+    170.6,
+    24.0
+   ],
+   [
+    167.7,
+    21.1
+   ],
+   [
+    165.2,
+    21.3
+   ],
+   [
+    164.1,
+    22.5
+   ],
+   [
+    178.0,
+    36.0
+   ],
+   [
+    177.5,
+    36.6
+   ],
+   [
+    177.8,
+    36.9
+   ],
+   [
+    170.2,
+    44.6
+   ],
+   [
+    170.2,
+    50.8
+   ],
+   [
+    200.7,
+    80.7
+   ],
+   [
+    204.5,
+    80.6
+   ],
+   [
+    204.5,
+    77.8
+   ],
+   [
+    206.3,
+    77.6
+   ],
+   [
+    210.6,
+    73.3
+   ],
+   [
+    208.0,
+    66.9
+   ],
+   [
+    192.6,
+    52.0
+   ],
+   [
+    196.2,
+    48.3
+   ],
+   [
+    196.2,
+    47.5
+   ],
+   [
+    193.8,
+    45.1
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 32.9,
+ "door": {
+  "x": -18.6,
+  "z": -10.9,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The path along the north-east wing's north-west face, 1.45 m out from its eave's front, under the low covering the LiDAR shows there at 3.2-3.8 m, where the LiDAR's ground is 32.90 m (12 ground returns within 1 m: 32.86-32.96 for p10-p90), the frame's ground. The entrance the photograph shows, at the stair's foot on the courtyard, stands on ground 0.21-0.36 m higher (the courtyard falls from 33.15-33.26 at the face to 33.01-33.05 6 m out, and the nearest level ground at 32.90 is this path, 33 m off: 14 m south-east of the entrance the ground returns within 1 m have a median of 32.90 but span half a metre, p10-p90 32.49-33.06), so a door there would stand the model about 0.25 m above the LiDAR's ground."
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604",
+   "3605",
+   "3704",
+   "3705"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802",
+   "1803",
+   "1902",
+   "1903"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3,
+  "tower_above": 3,
+  "spine_below": 40,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    193.84278717214053,
+    43.140223328238356
+   ],
+   "axis": [
+    -0.6997070357975367,
+    0.7144298874315272
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (door.note), which is the median LiDAR ground (class 2) in the crop box (p5 24.4, p95 37.2: the site falls about 13 m) that the model was measured from",
+ "light": {
+  "sunaz": 60,
+  "sunel": 35,
+  "exposure": 1.2,
+  "note": "estimated: the photograph's light is soft (no shadow under the bands, bright cloud), so the viewer's sun stands behind the building from the courtyard (60 deg round, 35 deg up), which leaves the south-west face in open shade; the exposure from the building's luma (its median 141 against the photograph's 133 at 1.2, 144 at 1.25)."
+ }
+}
