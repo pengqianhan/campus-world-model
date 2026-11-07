@@ -1,0 +1,322 @@
+{
+ "name": "architecture-east",
+ "site": false,
+ "building": {
+  "id": "421E",
+  "also": [],
+  "title": "Architecture - East (421E), University of Auckland",
+  "note": "outline: building 421E's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 421E by its id.",
+  "outline": [
+   [
+    9.2,
+    -210.9
+   ],
+   [
+    5.7,
+    -208.0
+   ],
+   [
+    7.8,
+    -207.8
+   ],
+   [
+    10.1,
+    -209.7
+   ],
+   [
+    10.6,
+    -209.1
+   ],
+   [
+    11.0,
+    -209.4
+   ],
+   [
+    16.5,
+    -208.9
+   ],
+   [
+    17.8,
+    -207.3
+   ],
+   [
+    20.7,
+    -206.9
+   ],
+   [
+    21.1,
+    -206.4
+   ],
+   [
+    28.2,
+    -205.7
+   ],
+   [
+    29.7,
+    -204.0
+   ],
+   [
+    38.2,
+    -203.0
+   ],
+   [
+    39.7,
+    -204.2
+   ],
+   [
+    48.7,
+    -203.3
+   ],
+   [
+    51.3,
+    -200.2
+   ],
+   [
+    51.3,
+    -198.5
+   ],
+   [
+    60.1,
+    -187.9
+   ],
+   [
+    63.4,
+    -187.2
+   ],
+   [
+    87.3,
+    -206.6
+   ],
+   [
+    63.0,
+    -235.7
+   ],
+   [
+    50.8,
+    -236.1
+   ],
+   [
+    48.9,
+    -237.1
+   ],
+   [
+    46.8,
+    -237.6
+   ],
+   [
+    44.6,
+    -237.6
+   ],
+   [
+    42.5,
+    -237.0
+   ],
+   [
+    40.6,
+    -235.9
+   ],
+   [
+    39.1,
+    -234.3
+   ],
+   [
+    38.0,
+    -232.5
+   ],
+   [
+    37.5,
+    -230.4
+   ],
+   [
+    37.4,
+    -228.2
+   ],
+   [
+    38.0,
+    -226.1
+   ],
+   [
+    39.0,
+    -224.2
+   ],
+   [
+    41.7,
+    -221.9
+   ],
+   [
+    39.9,
+    -222.1
+   ],
+   [
+    39.2,
+    -221.5
+   ],
+   [
+    38.6,
+    -221.5
+   ],
+   [
+    37.9,
+    -222.3
+   ],
+   [
+    34.1,
+    -222.7
+   ],
+   [
+    33.3,
+    -222.0
+   ],
+   [
+    32.8,
+    -222.1
+   ],
+   [
+    30.1,
+    -225.3
+   ],
+   [
+    23.4,
+    -226.0
+   ],
+   [
+    22.9,
+    -226.5
+   ],
+   [
+    19.1,
+    -226.9
+   ],
+   [
+    18.6,
+    -226.5
+   ],
+   [
+    17.6,
+    -226.6
+   ],
+   [
+    17.1,
+    -227.1
+   ],
+   [
+    13.3,
+    -227.5
+   ],
+   [
+    12.7,
+    -227.1
+   ],
+   [
+    11.8,
+    -227.2
+   ],
+   [
+    10.5,
+    -228.7
+   ],
+   [
+    4.9,
+    -229.3
+   ],
+   [
+    0.4,
+    -225.6
+   ],
+   [
+    0.1,
+    -223.5
+   ],
+   [
+    -0.4,
+    -223.0
+   ],
+   [
+    -1.4,
+    -223.1
+   ],
+   [
+    -4.3,
+    -220.8
+   ],
+   [
+    -4.6,
+    -219.5
+   ],
+   [
+    1.1,
+    -212.6
+   ],
+   [
+    3.3,
+    -214.4
+   ],
+   [
+    7.4,
+    -209.4
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 31.6,
+ "door": {
+  "x": 0.0,
+  "z": 0.0,
+  "note": "to be set at step 7"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3,
+  "tower_above": 3,
+  "spine_below": 40,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    35.35434246266007,
+    -213.8659820375338
+   ],
+   "axis": [
+    0.6915511603109645,
+    0.7223274829830018
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "31.6 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 16.0, p95 43.4: the site falls about 27 m across the crop); provisional, to be the LiDAR's ground at the door at step 7"
+}
