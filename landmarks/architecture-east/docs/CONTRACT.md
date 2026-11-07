@@ -13,10 +13,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   frame `W` the lower wing and the west tower, in frame `E` the main block and the tall tower; u along the walls'
   first direction, w across it.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
-  - **the lower wing**, its roof at 22.3 m inside a parapet at 23.3 m;
-  - **the west tower** on it, its top a plane rising to 33.6 m at its end;
-  - **the main block**, its walls to eaves at 25 m under a gabled roof whose ridge runs at 30 m;
-  - **the tall tower** out of that roof, its top a plane rising to 36.7 m at its end;
+  - **the lower wing**, its corner cut square with the main block, its roof at 22.65 m inside a parapet at 23.5 m;
+  - **the west tower** on it, its top a plane rising to 33.6 m at its end, with a lower slope on its south-east side;
+  - **the main block**, a flat roof at 25.74 m and on it a hipped roof whose ridge runs at 30.1 m; at its
+    south-west end a part at 25.1 m on its north-west side, and on the flat a box at 27 m; north-west of it, from u 9,
+    the terrace's ground comes up to its face;
+  - **the tall tower** out of the hipped roof, its top a plane rising to 36.7 m at its end;
   - **the ring's south-east part**, a car park at the ground: not drawn;
   - the ground round the plans from -1.16 m to +8.5 m (the raised terrace to the north-west): walls go down to `FOOT`,
     -1.5 m.
@@ -27,7 +29,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 94 triangles, 3 draw
-  calls.
+  calls. Round 1's shape: 180 and 3.
 
 ## Rounds
 - Round 0 (2026-11-07): the four parts as blocks at the LiDAR's plans and heights; walls in the kit's
@@ -36,6 +38,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   The top view: footprint IoU 0.766 (the LiDAR's 1,600 m² against the model's 1,362, both 1,286), 50% of the cells
   within 0.5 m (p10/p50/p90 -1.43/-0.3/2.02: the terraces and the stepped faces, which round 0 does not draw), the
   highest point 36.64 m against 36.56; block 421E under the model 57.2% (its ring takes in the car park), 421W 8.5%.
+- Round 1's shape (2026-11-07, from the 1 m cells and the returns' p50 in each part): the lower wing's roof at
+  22.65 m and its corner cut at 45 degrees, square with the main block; the west tower's south-east slope; the main
+  block's flat roof at 25.74 m with the hipped roof on it (its ridge at 30.1 m along w 0, its slopes to w -6.2 and
+  4.5, its hips to u -7 and 37.5), the part at 25.1 m and the box at 27 m. A terrace tried before the north-west
+  face from u 9 is not there: the LiDAR sees the terrace's ground (8 m) up to the face. 180 triangles, 3 draw
+  calls; no two faces of different materials in one plane. Silhouette IoU 0.939 (0.939 in the box); the top view:
+  footprint IoU 0.796 (1,600 m² against 1,288, both 1,280), 59% of the cells within 0.5 m (p10/p50/p90
+  -1.16/-0.05/0.49), the highest point 36.66 m; block 421E under the model 54.5%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
