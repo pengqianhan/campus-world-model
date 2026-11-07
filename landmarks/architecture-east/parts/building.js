@@ -27,12 +27,24 @@ function rising(F, axis, [a0, a1], low, high) {
   return (x, z) => low + ((uwOf(F, x, z)[axis] - a0) / (a1 - a0)) * (high - low);
 }
 
-/** A hipped roof over the rectangle u x w of frame `F`, from its eaves at `base` to a ridge along u at `ridge.w`,
- * `ridge.top` high, from ridge.u[0] to ridge.u[1]: its two long slopes and two hips in ROOF. */
-function hipped(b, F, [u0, u1], [w0, w1], base, ridge) {
-  const A = P(F, u0, w0, base), B = P(F, u1, w0, base), C = P(F, u1, w1, base), D = P(F, u0, w1, base);
+/** A hipped roof over the rectangle u x w of frame `F`, from its eaves on the w0 side at `base0` and on the w1 side
+ * at `base1` (above it) to a ridge along u at `ridge.w`, `ridge.top` high, from ridge.u[0] to ridge.u[1]: its two
+ * long slopes and two hips in ROOF; under the higher eave a face in WALL down to base0, and at each end the triangle
+ * below the hip's foot, 2 cm inside it. */
+function hipped(b, F, [u0, u1], [w0, w1], base0, base1, ridge) {
+  const A = P(F, u0, w0, base0), B = P(F, u1, w0, base0), C = P(F, u1, w1, base1), D = P(F, u0, w1, base1);
   const R0 = P(F, ridge.u[0], ridge.w, ridge.top), R1 = P(F, ridge.u[1], ridge.w, ridge.top);
   tris(b, [[A, B, R1], [A, R1, R0], [D, C, R1], [D, R1, R0], [A, D, R0], [B, C, R1]], ROOF, "up");
+  if (base1 <= base0) return;
+  const toward = (du, dw) => (m) => {
+    const [x, , z] = P(F, du, dw, 0), [ox, , oz] = P(F, 0, 0, 0);
+    return [m[0] + x - ox, m[1] + z - oz];
+  };
+  const Cl = P(F, u1, w1, base0), Dl = P(F, u0, w1, base0);
+  tris(b, [[Dl, Cl, C], [Dl, C, D]], WALL, toward(0, 1));
+  const e = 0.02;
+  tris(b, [[P(F, u0 + e, w0, base0), P(F, u0 + e, w1, base1), P(F, u0 + e, w1, base0)]], WALL, toward(-1, 0));
+  tris(b, [[P(F, u1 - e, w0, base0), P(F, u1 - e, w1, base1), P(F, u1 - e, w1, base0)]], WALL, toward(1, 0));
 }
 
 export function building(b) {
@@ -46,7 +58,7 @@ export function building(b) {
   slopedPrism(b, rect("W", f.u, [f.w, T.w[0] + 0.05]), L.roof - 0.3, rising("W", 1, [f.w, T.w[0]], f.foot, f.top), TOWER, TOWER);
   // the main block: its walls and flat roof, the hipped roof on it, and the box on the flat
   block(b, rect("E", B.u, B.w), FOOT - 0.05, B.roof, WALL, ROOF);
-  hipped(b, "E", B.u, B.hip.w, B.roof, B.hip.ridge);
+  hipped(b, "E", B.u, B.hip.w, B.roof, B.hip.eave, B.hip.ridge);
   // its north-west part at the south-west end, 5 cm into it (its end 3 cm off the block's)
   block(b, rect("E", [B.nw.u[0] + 0.03, B.nw.u[1]], [B.nw.w[0] - 0.05, B.nw.w[1]]), FOOT - 0.08, B.nw.top, WALL, ROOF);
   block(b, rect("E", B.box.u, B.box.w), B.roof - 0.3, B.box.top, WALL, ROOF);

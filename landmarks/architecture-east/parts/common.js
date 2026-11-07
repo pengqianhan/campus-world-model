@@ -31,14 +31,15 @@ export const MEASURED = {
   wtower: { u: [-31, -18], w: [-14.5, -10.5], low: 25.0, high: 33.6, flank: { u: [-28.5, -19], w: -19.5, top: 28.0, foot: 25.0 } },
   // The main block (frame E): u -7 to 37.5 (the ring's end; the building runs on past it, beyond 421E's ring), w
   // -10.5 to 4.5. Its walls to a flat roof at 25.74 m (its returns' p50 from w -10 to -7) and on it a hipped roof over
-  // w -6.2 to 4.5: its ridge at 30.1 m along w 0 from u 0 to 31 (the returns' p50 30.09 at w 0 to 1), its slopes
-  // falling to the flat roof at w -6.2 (the returns' p50 29.61, 27.95 and 26.3 at w -1.5, -3.5 and -5.5) and to its
-  // north-west edge at w 4.5 (28.27 at w 2.5; north-west of it, from u 9, the returns drop to 14-16 m), its hips to
-  // u -7 and 37.5 (the cells 25 to 29 and 30 to 26). From u -7 to 9 a part at 25.1 m runs on to w 7 (its returns'
-  // p50 25.08 at w 6 to 7.5); from u 9 the terrace's ground (8 m) comes up to the north-west edge (the LiDAR's ground
-  // returns from w 4.5), with a ledge at about 16 m along the face (its returns' p50 16.1 at w 4.5 to 5.5), not drawn
-  // yet. On the flat roof a box at 27 m, u 25 to 30, w -10 to -4.5 (the cells 27).
-  main: { u: [-7, 37.5], w: [-10.5, 4.5], roof: 25.74, hip: { w: [-6.2, 4.5], ridge: { w: 0, u: [0, 31], top: 30.1 } },
+  // w -6.2 to 3: its ridge at 30.1 m along w 0 from u 0 to 31 (the returns' p50 30.09 at w 0 to 1, 30.3 at w 0 to
+  // 0.5 from u 10 to 30), its slopes falling to the flat roof at w -6.2 (the returns' p50 29.61, 27.95 and 26.3 at w
+  // -1.5, -3.5 and -5.5) and to its north-west eave at 28 m at w 3 (28.7 and 28.2 at w 2 to 2.5 and 2.5 to 3), a face
+  // under that eave down to the flat roof, which runs on as a ledge to w 4.5 (returns at 25-26 m); its hips to u -7
+  // and 37.5 (the cells 25 to 29 and 30 to 26). Between w 3 and 5.5 the storeys' edges step out below (returns at
+  // 12-28 m), not drawn yet. From u -7 to 9 a part at 25.1 m runs on to w 7 (its returns' p50 25.08 at w 6 to 7.5);
+  // from u 9 the terrace's ground (8 m) comes up to the face (the LiDAR's ground returns from w 4.5). On the flat roof
+  // a box at 27 m, u 25 to 30, w -10 to -4.5 (the cells 27).
+  main: { u: [-7, 37.5], w: [-10.5, 4.5], roof: 25.74, hip: { w: [-6.2, 3.0], eave: 28.0, ridge: { w: 0, u: [0, 31], top: 30.1 } },
           nw: { u: [-7, 9], w: [4.5, 7], top: 25.1 },
           box: { u: [25, 30], w: [-10, -4.5], top: 27.0 } },
   // The tall tower (frame E): u 1 to 7.0, w -3.6 to 0.4; its top a plane rising along u from 32.8 m at u 1 (the cells

@@ -15,7 +15,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers):
   - **the lower wing**, its corner cut square with the main block, its roof at 22.65 m inside a parapet at 23.5 m;
   - **the west tower** on it, its top a plane rising to 33.6 m at its end, with a lower slope on its south-east side;
-  - **the main block**, a flat roof at 25.74 m and on it a hipped roof whose ridge runs at 30.1 m; at its
+  - **the main block**, a flat roof at 25.74 m and on it a hipped roof whose ridge runs at 30.1 m, its north-west
+    eave at 28 m over a face down to the flat, which runs on as a ledge; at its
     south-west end a part at 25.1 m on its north-west side, and on the flat a box at 27 m; north-west of it, from u 9,
     the terrace's ground comes up to its face;
   - **the tall tower** out of the hipped roof, its top a plane rising to 36.7 m at its end;
@@ -29,7 +30,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 94 triangles, 3 draw
-  calls. Round 1's shape: 180 and 3.
+  calls. Round 1's shape: 184 and 3.
 
 ## Rounds
 - Round 0 (2026-11-07): the four parts as blocks at the LiDAR's plans and heights; walls in the kit's
@@ -45,7 +46,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   face from u 9 is not there: the LiDAR sees the terrace's ground (8 m) up to the face. 180 triangles, 3 draw
   calls; no two faces of different materials in one plane. Silhouette IoU 0.939 (0.939 in the box); the top view:
   footprint IoU 0.796 (1,600 m² against 1,288, both 1,280), 59% of the cells within 0.5 m (p10/p50/p90
-  -1.16/-0.05/0.49), the highest point 36.66 m; block 421E under the model 54.5%.
+  -1.16/-0.05/0.49), the highest point 36.66 m; block 421E under the model 54.5%. Then the hipped roof's north-west
+  eave at 28 m at w 3 (the returns at w 2.5 to 3, p50 28.2), over a face down to the flat roof, which runs on to
+  w 4.5 as a ledge; the storeys' edges stepping out below it (returns at 12-28 m between w 3 and 5.5) are for the
+  faces. 184 triangles; silhouette IoU 0.942; the top view: 63% of the cells within 0.5 m (p10/p50/p90
+  -1.29/-0.04/0.59). The viewer's light (estimated): the sun at 300 deg round and 45 up, the exposure 0.5; the
+  building's luma median 174 against the photograph's 175.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
