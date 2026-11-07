@@ -2,8 +2,8 @@
 
 Architecture - East, building 421E of the University of Auckland, beside the Grafton Gully: a main block in pale
 grey concrete with a pale louvred parapet and a band of windows on each floor of its face to a raised terrace,
-along its top floor, under a grey hipped roof, a face in dark cladding with a row of dormers, a lower wing beside it, and two towers in the same dark
-cladding, their tops sloping up. It is drawn in three.js from code alone, sized by the LINZ 2024 LiDAR, and
+and along its top floor, under a grey hipped roof, a face in dark cladding with a row of dormers; a lower wing
+beside it, and two towers in the same dark cladding, their tops sloping up. It is drawn in three.js from code alone, sized by the LINZ 2024 LiDAR, and
 compared with one photograph of it from its raised terrace (November 2026). The kit it is built with, the
 pipeline, the viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
 
