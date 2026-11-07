@@ -30,7 +30,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     wing a band of windows on each floor from the terrace's up (below it, where the photograph sees none, its walls
     are plain). Not drawn yet: the storeys' edges stepping out below the eave (returns at 12-28 m between w 3 and
     5.5), the glazed ground storey behind its columns, the louvres' slats, and a part reaching out to w 9-11.7 at
-    the main block's north-east end (u 30 to 37.5, returns from 10 to 28 m);
+    the main block's west end (u 30 to 37.5, returns from 10 to 28 m), toward Architecture - West;
   - **the ring's south-east part**, a car park at the ground: not drawn;
   - the ground round the plans from -1.16 m to +8.5 m (the raised terrace to the north-west): walls go down to `FOOT`,
     -1.5 m.
