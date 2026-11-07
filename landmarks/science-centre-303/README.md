@@ -158,7 +158,9 @@ measured.
   aerial's mauve grey, drawn in `roofGrey`).
 - **The pictures** in `docs/landmarks/`: `science-centre-303-front.jpg` and `-above.jpg` are the viewer's renders
   of the model alone, from its street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
-  the site built from this branch, the map near it and a walker's eyes on its street.
+  the site built from this branch, the map near it and a walker's eyes on its street. All four were taken again on
+  2026-11-07, when the range and the slab ran on to 303S's back (1,656 triangles, 6 draw calls), the map's and the
+  walker's with 303S beside it, on the ground the two share.
 
 ## Not drawn yet
 
