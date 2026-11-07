@@ -318,7 +318,9 @@ agent and no photograph. All of them share one model and have a data file each:
   drawn by rule in the walker views. It is drawn where a metre of ground takes 4 pixels or more
   (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open, as every
   landmark does (since 2026-11-07: until then a landmark drawn from code was squashed about its own y = 0 beside
-  an open building, which on a slope sank its footprint under the drawn ground or lifted it above).
+  an open building, which on a slope could sink its footprint under the drawn ground; the blocks' footprints
+  stand on their footings, at the ground under each one's middle with a footing of up to 4 m on a slope, as the
+  README's Known limitations say).
 - `tests/measured.test.ts` checks every data file (closed rings, heights, the limits) and that no
   building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added

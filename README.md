@@ -69,8 +69,8 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-11-07:** while a building is open, the buildings drawn in detail beside it give way to their blocks,
-  which sink to footprints at the lowest ground under them, as every other building's; on a slope a landmark's
-  own footprint sank under the drawn ground or stood above it.
+  which sink to footprints on their footings, as every other building's; on a slope a landmark's own footprint
+  could sink under the drawn ground.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was

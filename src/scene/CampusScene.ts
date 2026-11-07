@@ -659,7 +659,8 @@ export class CampusScene {
       });
       const mesh = new Mesh(geometry, [walls, new MeshLambertMaterial({ color: 0xffffff })]);
       mesh.userData.mapMaterial = mesh.material;
-      // The building stands on the lowest ground under it; squashing it keeps it there.
+      // The building stands on its footing's base, the ground under its middle but at most FOOTING above its
+      // lowest corner (Terrain.footing); squashing it keeps it there.
       mesh.position.y = this.baseOf(b);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
@@ -717,9 +718,9 @@ export class CampusScene {
     for (const l of this.landmarks) {
       const blocks = l.buildings.flatMap((id) => this.buildingMeshes.get(id) ?? []);
       // Every landmark gives way to its blocks while a building is open: its neighbours are then
-      // footprints, which the blocks draw at the lowest ground under them, as every other building's.
-      // A landmark squashed about its own y = 0 sank under the drawn ground on a slope, or stood above
-      // it (until 2026-11-07, for those drawn from code).
+      // footprints, which the blocks draw on their footings, as every other building's. A landmark drawn
+      // from code was squashed about its own y = 0 until 2026-11-07, which on a slope could sink its
+      // footprint under the drawn ground.
       const open = this.focus > 0;
       const want = this.buildingMeshes.has(l.buildings[0]!) && !open ? this.landmarkWanted(l) : undefined;
       if (want) l.want(want, () => this.landmarkCovers(l));

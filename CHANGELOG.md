@@ -16,13 +16,6 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-11-07
 
-### Changed
-
-- **Landmarks give way to their blocks while a building is open.** Beside an open building every building
-  drawn in detail is drawn by its block, which sinks to a footprint at the lowest ground under it, as every other
-  building's; a landmark squashed about its own height sank under the drawn ground on a slope, or stood above
-  it (#PR).
-
 ### Added
 
 - **Building 303S of the Science Centre drawn in detail.** Near the camera the map draws building 303S of the
@@ -44,6 +37,12 @@ A change to what the site does or shows adds its line here, and the README's
   to the street, and its card says what is estimated: some heights, the gaps between the bands, the canopy's
   depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
   artwork and is not drawn after. Its other faces are drawn plainly (#136).
+
+### Changed
+
+- **Landmarks give way to their blocks while a building is open.** Beside an open building every building
+  drawn in detail is drawn by its block, which sinks to a footprint on its footing, as every other building's;
+  a landmark squashed about its own height could sink its footprint under the drawn ground on a slope (#PR).
 
 ## 2026-11-06
 
