@@ -27,9 +27,10 @@ export function building(b) {
   // the range and the slab on to 303S's back (M.ends), each from inside its end (the range's 10 cm, the slab's 15 cm,
   // so that the two starts do not meet in one plane): the range along 303S's back, about 5 cm into its model, with its
   // parapet, which stops 4 cm short of the range's end; the slab's end bay to its returns' end
-  const En = M.ends, [e0, e1, e2] = En.range;
-  block(b, [[R.u[1] - 0.1, e2[1]], e2, e1, e0, [R.u[1] - 0.1, 0]].map(([u, w]) => at(u, w)), FOOT - 0.02, R.roof, WALL, PALE);
-  prism(b, rect([R.u[1] - 0.05, e0[0] - 0.04], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
+  const En = M.ends, ends = En.range, last = ends[ends.length - 1];
+  block(b, [[R.u[1] - 0.1, last[1]], ...[...ends].reverse(), [R.u[1] - 0.1, 0]].map(([u, w]) => at(u, w)), FOOT - 0.02,
+        R.roof, WALL, PALE);
+  prism(b, rect([R.u[1] - 0.05, ends[0][0] - 0.04], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
   block(b, rect([S.u[1] - 0.15, En.slab.u], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.14, S.bays.roof, WALL, PALE);
   // the slab (its end 5 cm short of the range's): its middle, and a lower bay at each end running into it; its raised
   // part; the screened deck, the round tank, the flue beside it (from the roof: it stands clear of the tank's round),

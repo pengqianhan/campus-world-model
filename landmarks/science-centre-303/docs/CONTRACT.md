@@ -18,15 +18,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers and says where each came from):
   - **the range along the street**, 11.2 m deep, its roof at 13.4 m, a parapet at 14.05 m along the face; at its
     north-east end, where the slab does not reach, it runs back to the slab's back line;
-  - **the slab** behind it, 15.6 m deep, from u 6.75 to where 303S's ring begins (u 70.3), its roof at 33.6 m with a
-    bay at each end at 32.8 m; on it a raised part at 37.6 m, a screened deck, a round tank to 41.8 m with a flue to
-    44.7 m, and a box at 38.1 m;
+  - **the slab** behind it, 15.6 m deep, from u 6.75 to u 71.65, 1.35 to 1.5 m into 303S's ring (`ends`), its roof at
+    33.6 m with a bay at each end at 32.8 m; on it a raised part at 37.6 m, a screened deck, a round tank to 41.8 m
+    with a flue to 44.7 m, and a box at 38.1 m;
   - **the block** behind the slab toward the south-west, to 305's ring (w -36.3): its roof at 13.4 m, flat-topped ridges
     at 17 m 2.75 to 3.25 m wide (the last 5.25) about every 6 m, a part at 22.4 m, and six round stacks along the slab's back to 42.1 m;
   - **the wing** behind the slab toward the north-east, from w -31 back to -61, its roof at 18.3 m with two troughs
     across it behind w -36, a strip at 16.2 m along its north-east side and its front, a light well 2 m wide between it
     and the slab, and a part at 21 m against the slab;
-  - **the range** ends where 303S's ring begins (u 70.3): the face's last 5 m are 303S's;
+  - **the range** runs on past where 303S's ring begins (u 70.3) to 303S's back (`ends`, u 71.84 at the face); the
+    face beyond it is 303S's tip;
   - the ground falls 5.7 m along the face to the south-west: walls go down to `FOOT`, -6.0 m.
 - **The door** (step 7) is on the forecourt 5.5 m out from the face before the entrance (u 19.5), at its front edge,
   where the LiDAR's ground is the frame's (27 returns within 1 m, p50 -0.016 m); the forecourt under the canopy is
@@ -73,8 +74,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   (estimated). 6 draw calls.
 - Beside 303S (2026-11-07, the maintainer's word): the range and the slab run on to 303S's back (`MEASURED.ends`),
   closing the slot between the two models, and the face's gaps with them. From above: footprint IoU 0.859 (the
-  LiDAR's 3,706 m², the model's 3,195, both 3,189), 86% of the 12,358 cells within 0.5 m; block 303 85.6% under the
-  model, 303S 3.7%. 1,664 triangles, 6 draw calls.
+  LiDAR's 3,706 m², the model's 3,195, both 3,189), 86% of the 12,357 cells within 0.5 m; block 303 85.6% under the
+  model, 303S 3.7%. 1,672 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

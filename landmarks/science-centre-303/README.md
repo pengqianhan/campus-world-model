@@ -36,7 +36,8 @@ it, the street side positive (`at`, `rect`, `uw`).
 - **On to 303S's back.** The range and the slab run on past u 70.3, where the campus map's rings meet, to 303S's
   back, as the LiDAR has them, with no returns below them in between: the slab's end bay at 32.8 m to u 71.65 (its
   returns' u p98 71.55-71.73 from w -12 to -26), 1.35 to 1.5 m into 303S's ring; the range at 13.4 m along
-  303S's back, about 5 cm into 303S's model (u 71.84 at the face, 71.45 at w -7.6, 71.33 at the range's back),
+  303S's back, about 5 cm into 303S's model (u 71.84 at the face, 1.6 cm into the tip; 71.44 and, past a step in
+  303S's back, 71.40 at w -7.6; 71.28 at the range's back),
   where 303S's tip stands at its height; the face's gaps run on with it to u 71.80. Until 2026-11-07, when 303S
   came onto the site, the model ended at u 70.3 and a slot 0.5 to 1.5 m wide stood open between it and 303S's
   model; the maintainer asked for it to be closed.
@@ -160,7 +161,7 @@ measured.
 - **The pictures** in `docs/landmarks/`: `science-centre-303-front.jpg` and `-above.jpg` are the viewer's renders
   of the model alone, from its street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
   the site built from this branch, the map near it and a walker's eyes on its street. All four were taken again on
-  2026-11-07, when the range and the slab ran on to 303S's back (1,664 triangles, 6 draw calls), the map's and the
+  2026-11-07, when the range and the slab ran on to 303S's back (1,672 triangles, 6 draw calls), the map's and the
   walker's with 303S beside it, on the ground the two share.
 
 ## Not drawn yet

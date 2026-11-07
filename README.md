@@ -1090,10 +1090,11 @@ If you represent the University and would like something changed or removed, ple
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
-  south-east end, which the photograph does not show, is drawn flat. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
-  and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
-  street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
-  1.7 m above it.
+  south-east end, which the photograph does not show, is drawn flat. While a building is open, its neighbours
+  sink to footprints, a landmark about its own y = 0 and a block about the lowest ground under it: beside an open
+  303, 303S's footprint, its y = 0 below the street's rising ground, is mostly under the drawn ground; beside an
+  open neighbour 303's stands up to 1.7 m above it, and beside an open 303S it lies over a strip of 303S's floors
+  along its back.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
