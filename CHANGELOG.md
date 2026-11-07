@@ -42,7 +42,7 @@ A change to what the site does or shows adds its line here, and the README's
 
 - **Building 303 of the Science Centre meets 303S.** Its range along the street and its slab run on to the back of
   building 303S beside it, as the LiDAR has them, closing a slot 0.5 to 1.5 m wide that stood open between the two
-  models from the street to the slab's back (#PR).
+  models from the street to the slab's back (#138).
 
 ## 2026-11-06
 
