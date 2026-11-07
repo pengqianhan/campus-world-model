@@ -20,8 +20,8 @@ A change to what the site does or shows adds its line here, and the README's
 
 - **Architecture - East drawn in detail.** Near the camera the map draws Architecture - East (421E), beside the
   Grafton Gully, from code in place of its block: a main block in pale concrete with a pale louvred parapet and a
-  band of windows on each floor of its face to the raised terrace, under a steep roof in dark vertical cladding
-  with a row of dormers; a lower wing beside it with a band of windows on each floor; and two towers in the same
+  band of windows on each floor of its face to the raised terrace, and along its top floor, under a grey hipped
+  roof, a face in dark vertical cladding with a row of dormers; a lower wing beside it with a band of windows on each floor; and two towers in the same
   dark cladding, their tops sloping up. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
   photograph from its raised terrace, and its card says what is estimated: some heights, the storeys, the
   parapets and the windows, the dark face and its dormers, and the faces no photograph shows. On the map it has

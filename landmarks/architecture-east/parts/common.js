@@ -6,29 +6,31 @@
 //
 // How: the returns' p90 in 1.5 m cells, in two frames of the building's own. Its walls run in two directions 45
 // degrees apart (the campus map's ring: its edges at -4.4 and 40.0 degrees from x toward z, length-weighted): the
-// lower wing, with the west tower on it, square with the first; the main block, its gabled roof and the tall tower,
-// square with the second. In each, u runs along the walls' first direction and w across it.
+// lower wing, with its tower, square with the first; the main block, its hipped roof and the tall tower,
+// square with the second. In each, u runs along the walls' first direction and w across it: in W toward the
+// south-west and the north-west, in E toward the west and the north (W and E are the frames' names, not compass
+// points: the wing stands east of the main block).
 
 /** A height measured above 31.6 m, as one above the door's ground, 7.96 m higher (the config's `ground`). */
 const H = (h) => h - 7.96;
 
-// The lowest the walls go: the ground within 3 m of the plans falls to -1.16 m at the main block's south-east side
-// (and rises to +8.5 m on the raised terrace to its north-west).
+// The lowest the walls go: the ground within 3 m of the plans falls to -1.16 m at the main block's south side
+// (and rises to +8.5 m on the raised terrace to its north).
 export const FOOT = H(-1.5);
 
 export const MEASURED = {
   frames: {
-    // the lower wing and the west tower
+    // the lower wing and its tower
     W: { deg: -4.4 },
     // the main block and the tall tower
     E: { deg: 40.0 },
   },
-  // The lower wing (frame W): from u -37 to the main block, w -21 to -4.5, its south-east corner cut on a line at 45
+  // The lower wing (frame W): from u -37 to the main block, w -21 to -4.5, its south corner cut on a line at 45
   // degrees, square with the main block, from u -6 at w -21 to u 1 at w -14 (the 1 m cells); its roof at 22.65 m (its
   // returns' p50 22.63-22.67), a parapet at 23.5 m round it (the returns along its edges, p90 23.3-23.65), 0.3 m wide
   // (estimated).
   low: { plan: [[-37, -21], [-6, -21], [1, -14], [1, -4.5], [-37, -4.5]], roof: H(22.65), parapet: { top: H(23.5), width: 0.3 } },
-  // The west tower on it (frame W): u -31 to -18, w -14.5 to -10.5; its top a plane rising along u from 25 m at
+  // The wing's tower (frame W): u -31 to -18, w -14.5 to -10.5; its top a plane rising along u from 25 m at
   // u -31 to 33.6 m at its end (its ridge's returns p50 33.5, max 33.7 m); on its south-east side, from u -28.5 to
   // -19, a lower slope falling across w from 28 m at the tower to 25 m at w -19.5 (the cells 28 to 25).
   wtower: { u: [-31, -18], w: [-14.5, -10.5], low: H(25.0), high: H(33.6), flank: { u: [-28.5, -19], w: -19.5, top: H(28.0), foot: H(25.0) } },
@@ -36,7 +38,7 @@ export const MEASURED = {
   // -10.5 to 4.5. Its walls to a flat roof at 25.74 m (its returns' p50 from w -10 to -7) and on it a hipped roof over
   // w -6.2 to 3: its ridge at 30.1 m along w 0 from u 0 to 31 (the returns' p50 30.09 at w 0 to 1, 30.3 at w 0 to
   // 0.5 from u 10 to 30), its slopes falling to the flat roof at w -6.2 (the returns' p50 29.61, 27.95 and 26.3 at w
-  // -1.5, -3.5 and -5.5) and to its north-west eave at 28 m at w 3 (28.7 and 28.2 at w 2 to 2.5 and 2.5 to 3), a face
+  // -1.5, -3.5 and -5.5) and to its north eave at 28 m at w 3 (28.7 and 28.2 at w 2 to 2.5 and 2.5 to 3), a face
   // under that eave down to the flat roof, which runs on as a ledge to w 4.5 (returns at 25-26 m); its hips to u -7
   // and 37.5 (the cells 25 to 29 and 30 to 26). Between w 3 and 5.5 the storeys' edges step out below (returns at
   // 12-28 m), not drawn yet. From u -7 to 9 a part at 25.1 m runs on to w 7 (its returns' p50 25.08 at w 6 to 7.5);
@@ -50,8 +52,8 @@ export const MEASURED = {
   ttower: { u: [1, 7.0], w: [-3.6, 0.4], low: H(32.8), high: H(36.7) },
   // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
   // every 3.55 m from the terrace's 8 m (five storeys to the main block's flat roof), the same floors in the wing;
-  // on each floor of the main block's north-west face, from the terrace up, a pale louvred parapet before a band of
-  // windows; round the wing, a band of windows on each floor from the terrace's up; under the main block's north-west
+  // on each floor of the main block's north face, from the terrace up, a pale louvred parapet before a band of
+  // windows; round the wing, a band of windows on each floor from the terrace's up; under the main block's north
   // eave a face in the towers' dark cladding, with dormer windows standing out of it on the flat roof's ledge.
   floors: { first: H(8.0), every: 3.55 },
   parapet: { height: 1.1, out: 0.08 },

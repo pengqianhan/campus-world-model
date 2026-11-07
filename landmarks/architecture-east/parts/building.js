@@ -1,8 +1,8 @@
 // Architecture - East (421E; parts/common.js, MEASURED), drawn in its two frames (u along the walls, w across them).
-// Round 1's shape: the lower wing, its corner cut square with the main block, inside its parapet; the west tower on
-// it with the lower slope on its south-east side; the main block, its flat roof and the hipped roof on it, and a box
-// on the flat; the tall tower out of the hipped roof. Round 1's faces: on the main block's north-west faces a louvred
-// parapet and a band of windows on each floor, under its north-west eave a face in the towers' dark cladding with
+// Round 1's shape: the lower wing, its corner cut square with the main block, inside its parapet; the wing's tower
+// with the lower slope on its south-east side; the main block, its flat roof and the hipped roof on it, and a box
+// on the flat; the tall tower out of the hipped roof. Round 1's faces: on the main block's north faces a louvred
+// parapet and a band of windows on each floor, under its north eave a face in the towers' dark cladding with
 // dormers out of it, and round the wing a band of windows on each floor. Walls down to FOOT. Parts that meet run into
 // each other, so that no two faces of different materials lie in one plane.
 import { FOOT, MEASURED, inset, plan, rect } from "./common.js";
@@ -72,19 +72,19 @@ export function building(b) {
   // the lower wing inside its parapet, 1 cm inside its walls
   block(b, plan("W", L.plan), FOOT, L.roof, WALL, ROOF);
   prism(b, plan("W", inset(L.plan, 0.01)), L.roof - 0.3, L.parapet.top, WALL, [plan("W", inset(L.plan, L.parapet.width))]);
-  // the west tower, from inside the wing's roof, and the lower slope on its south-east side, 5 cm into it
+  // the wing's tower, from inside the wing's roof, and the lower slope on its south-east side, 5 cm into it
   slopedPrism(b, rect("W", T.u, T.w), L.roof - 0.3, rising("W", 0, T.u, T.low, T.high), TOWER, TOWER);
   const f = T.flank;
   slopedPrism(b, rect("W", f.u, [f.w, T.w[0] + 0.05]), L.roof - 0.3, rising("W", 1, [f.w, T.w[0]], f.foot, f.top), TOWER, TOWER);
   // the main block: its walls and flat roof, the hipped roof on it, and the box on the flat
   block(b, rect("E", B.u, B.w), FOOT - 0.05, B.roof, WALL, ROOF);
   hipped(b, "E", B.u, B.hip.w, B.roof, B.hip.eave, B.hip.ridge, TOWER);
-  // its north-west part at the south-west end, 5 cm into it (its end 3 cm off the block's)
+  // its part on the north side at its east end, 5 cm into it (its end 3 cm off the block's)
   block(b, rect("E", [B.nw.u[0] + 0.03, B.nw.u[1]], [B.nw.w[0] - 0.05, B.nw.w[1]]), FOOT - 0.08, B.nw.top, WALL, ROOF);
   block(b, rect("E", B.box.u, B.box.w), B.roof - 0.3, B.box.top, WALL, ROOF);
   // the tall tower, from inside the hipped roof
   slopedPrism(b, rect("E", H.u, H.w), B.roof - 0.3, rising("E", 0, H.u, H.low, H.high), TOWER, TOWER);
-  // the floors on the north-west faces: the north-west part's, and the block's from where the terrace meets it
+  // the floors on the north faces: the part's at the east end, and the block's from where the terrace meets it
   floorsOn(b, [B.nw.u[0] + 0.1, B.nw.u[1] - 0.05], B.nw.w[1], B.nw.top);
   floorsOn(b, [B.nw.u[1] + 0.05, B.u[1] - 0.05], B.w[1], B.roof);
   // on the flat roof's ledge, a louvred parapet along its edge, and the dormers out of the face under the eave

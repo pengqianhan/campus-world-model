@@ -1,7 +1,7 @@
 {
  "name": "architecture-east",
  "site": true,
- "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the main block's north-west faces a louvred parapet and a band of windows, and round the wing a band of windows; the face in dark cladding under the main block's north-west eave and the dormers out of it; and the faces no photograph shows, drawn plainly or after the ones it shows",
+ "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the main block's north faces a louvred parapet and a band of windows, and round the wing a band of windows; the face in dark cladding under the main block's north eave and the dormers out of it; and the faces no photograph shows, drawn plainly or after the ones it shows",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the raised terrace to the building's north-west, about 50 m from its tall tower, through a lens of about 53 degrees across; its camera is fitted to the two towers' top edges and three of their corners, with the principal point at the centre.",
  "building": {
@@ -270,7 +270,7 @@
  "door": {
   "x": 13.12,
   "z": 20.15,
-  "note": "the entrance is not known (the campus map records no lobby or entrance in 421E, and no street passes it: OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully motorway to the east), so the door is on the raised terrace before the main block's north-west face, which the photograph shows people coming to, in the middle of the stretch where the terrace meets the face (u 9 to 37.5 in frame E), 2.5 m out from it (u 23, w 7). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 39.534/39.558/39.578 m; along the face the terrace lies at 39.56 to 40.01 m (p50 per 3 m, w 5 to 12)"
+  "note": "the entrance is not known (the campus map records no lobby or entrance in 421E, and no street passes it: OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully motorway to the east), so the door is on the raised terrace before the main block's north face, which the photograph shows people coming to, in the middle of the stretch where the terrace meets the face (u 9 to 37.5 in frame E), 2.5 m out from it (u 23, w 7). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 39.534/39.558/39.578 m; along the face the terrace lies at 39.56 to 40.01 m (p50 per 3 m, w 5 to 12)"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -327,6 +327,6 @@
   "sunaz": 300,
   "sunel": 45,
   "exposure": 0.5,
-  "note": "estimated: the photograph is taken on a clear afternoon with the sun to the north-west, behind the camera, which lights the faces it shows; so the viewer's sun stands at 300 deg round and 45 deg up; the exposure from the building's luma: p10/p50/p90 172/174/176 at 0.5 against the photograph's 92/175/222 (204 at 0.7, 242 at the default 1.0; the model's faces are plain, so its spread is narrow)"
+  "note": "estimated: the photograph is taken on a clear afternoon with the sun to the north-west, behind the camera, which lights the faces it shows; so the viewer's sun stands at 300 deg round and 45 deg up; the exposure from the building's luma: p10/p50/p90 172/174/176 at 0.5 against the photograph's 92/175/222 (204 at 0.7, 242 at the default 1.0), when round 0's faces were plain; with round 1's faces, 34/174/215"
  }
 }

@@ -2,7 +2,7 @@
 
 Architecture - East, building 421E of the University of Auckland, beside the Grafton Gully: a main block in pale
 grey concrete with a pale louvred parapet and a band of windows on each floor of its face to a raised terrace,
-under a steep roof in dark cladding with a row of dormers, a lower wing beside it, and two towers in the same dark
+along its top floor, under a grey hipped roof, a face in dark cladding with a row of dormers, a lower wing beside it, and two towers in the same dark
 cladding, their tops sloping up. It is drawn in three.js from code alone, sized by the LINZ 2024 LiDAR, and
 compared with one photograph of it from its raised terrace (November 2026). The kit it is built with, the
 pipeline, the viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
@@ -23,8 +23,9 @@ it); y up from 39.56 m NZVD2016, the LiDAR's ground at `door`, on the raised ter
 x = z = 0. The site falls about 27 m across the crop, from the terrace down to the car park and the gully to the
 south-east. The walls run in two directions 44.4 degrees apart, as the campus map's outline does (its edges at
 -4.4 and 40.0 degrees from x toward z, length-weighted), so `parts/common.js` gives the building two frames of its
-own, `W` for the wing and the west tower and `E` for the main block and the tall tower: `u` along the walls' first
-direction (in `E`, toward the west), `w` across it (in `E`, toward the north, the terrace's side; in `W`, toward the
+own, `W` for the wing and its tower and `E` for the main block and the tall tower (the frames' names, not compass
+points: the wing stands east of the main block): `u` along the walls' first direction (in `E`, toward the west; in
+`W`, toward the south-west), `w` across it (in `E`, toward the north, the terrace's side; in `W`, toward the
 north-west).
 
 Every height in `parts/common.js` was measured before the door was set, above 31.6 m, the median ground in the
@@ -37,7 +38,7 @@ by the same 7.96 m, so the measured frame is the one the model was drawn in (0.0
   "Placement").
 - Architecture - West (421W) is 8.5% under the model and the Architecture Acoustics Laboratory (422) 3.3%, so
   `building.also` is empty. Block 421E itself is 54.7% under the model: its ring takes in a car park at the
-  ground on its south-east side, which the model does not draw.
+  ground on its east side, which the model does not draw.
 - At the main block's west end the LiDAR has returns from 10 to 28 m reaching out 4.5 to 7 m past its face to the
   terrace (u 30 to 37.5, w 9 to 11.7), toward Architecture - West; the model stops at the face.
 
@@ -50,7 +51,7 @@ its mask. Nothing of it goes into git, and how it is recorded and credited is fo
 Street View photograph is used.
 
 Its camera is fitted by `tools/photo_camera.py` to points and lines whose places the LiDAR gives: the two towers'
-tops (the tall tower's high edge, at its returns above 36.3 m over the old ground, and the west tower's ridge),
+tops (the tall tower's high edge, at its returns above 36.3 m over the old ground, and the wing's tower's ridge),
 and three of the towers' vertical corners. It stands 1.61 m above the LiDAR's ground there, looking 8.9 degrees
 up, rolled 1.2 degrees, its field 53.4 degrees across: an rms of 1.33 px. No size is measured from the photograph;
 it is a reference for the look, the storeys' height and the faces' parts, and the comparison.
@@ -61,7 +62,7 @@ afternoon, the sun to the north-west on the faces it shows, so the viewer's sun 
 
 ## Round 0 (November 2026, the lead)
 
-The four parts as blocks at the LiDAR's plans and heights: the wing, the west tower on it, the main block and the
+The four parts as blocks at the LiDAR's plans and heights: the wing, its tower, the main block and the
 tall tower. Walls in the kit's `claddingPale`, roofs `roofGrey`, the towers `screenGrey`. 94 triangles, 3 draw
 calls. Silhouette IoU 0.927 (0.927 in the model's screen box); from above, footprint IoU 0.766 and 50% of the cells
 within 0.5 m of the LiDAR's height.
@@ -72,7 +73,7 @@ From the LiDAR's 1 m cells and the returns' p50 in each part:
 
 - **The wing**, its roof at 22.65 m inside a parapet at 23.5 m, 0.3 m wide (estimated), its corner toward the main
   block cut at 45 degrees, square with it.
-- **The west tower** on it, its top a plane rising along the wing to 33.6 m at its end, with a lower slope on its
+- **The wing's tower**, its top a plane rising along the wing to 33.6 m at its end, with a lower slope on its
   south-east side, from 28 m at the tower to 25 m.
 - **The main block**, its flat roof at 25.74 m, and on it a hipped roof whose ridge runs at 30.1 m; on the
   terrace's side its eave at 28 m over a face down to the flat roof, which runs on as a ledge to the face; a part
@@ -94,7 +95,8 @@ The LiDAR has few returns on the faces, so what it does not give is estimated, t
 - **Under the main block's eave on the terrace's side**, a face in the towers' dark cladding (`screenGrey`), and
   out of it, on the ledge, a row of seven dormers 1.6 m wide every 4.1 m, each with its pane, behind a louvred
   parapet along the ledge's edge.
-- **Round the wing**, a band of windows 1.4 m tall on each floor from the terrace's level up.
+- **Round the wing**, a band of windows 1.4 m tall on each floor (on the site, from the terrace's level up: "On the
+  site", below).
 
 A first try, with the parapets in `render` and the windows 1.9 m tall, read dark and orange against the
 photograph (the building's luma median 153 against 175); with the parapets in `plain` and the windows 1.4 m tall,
@@ -108,7 +110,8 @@ photograph (the building's luma median 153 against 175); with the parapets in `p
   the stretch where it meets the main block's face, 2.5 m out from it (u 23, w 7 in frame `E`; (13.12, 20.15) in
   the view frame), where the LiDAR's ground is 39.56 m (13 returns within 1 m, p10/p50/p90
   39.534/39.558/39.578 m). Along the face the terrace lies at 39.56 to 40.01 m. `door.note` says so.
-- The viewer's ground plane now stands at the terrace, where the photograph's camera stands, not 8 m under it:
+- The viewer's ground plane now stands at the door's terrace, about 4 m under the ground where the photograph's
+  camera stands (12 m under it before):
   silhouette IoU 0.938 (0.938 in the box), the luma median 174 against the photograph's 175. From above: footprint
   IoU 0.824 (the LiDAR's 1,535 m², the model's 1,295, both 1,279; its cells above 2.5 m now counted from the door's
   ground), 63% of the 5,051 cells within 0.5 m (the model's heights minus the LiDAR's p10/p50/p90
@@ -144,4 +147,4 @@ The storeys' edges stepping out on the main block's face to the terrace (the LiD
 w 3 and 5.5); the louvres' slats; the glazed ground storey behind its columns at the terrace; the part reaching out
 from the main block's west end; the main block's faces turned away from the terrace, which no photograph shows
 (plain), and the wing's walls below the terrace (plain; its other faces have the bands of its face to the
-terrace); the car park in the ring's south-east part.
+terrace); the car park in the ring's east part.

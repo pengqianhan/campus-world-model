@@ -70,8 +70,8 @@ It is built to answer two questions a student actually has:
 
 - **2026-11-07:** beside the Grafton Gully the map draws Architecture - East (421E) in detail: a main block in
   pale concrete with a pale louvred parapet and a band of windows on each floor of its face to the raised
-  terrace, under a steep roof in dark cladding with a row of dormers, a lower wing beside it, and two towers in
-  the same dark cladding, their tops sloping up. Its sizes come from the LiDAR; it was compared with a
+  terrace, a face in dark cladding with a row of dormers under its grey hipped roof, a lower wing beside it, and
+  two towers in the same dark cladding, their tops sloping up. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
@@ -597,8 +597,9 @@ north-west end.
 | ![Building 303S of the Science Centre on the map, drawn from code in the map's colours](docs/landmarks/science-centre-303s-map.jpg) | ![Building 303S of the Science Centre from Symonds Street to its south-east, through the walker's eyes](docs/landmarks/science-centre-303s-eyes.jpg) |
 
 The nineteenth is Architecture - East (421E), beside the Grafton Gully: a building in pale grey concrete whose main
-block has, on each floor of its face to a raised terrace, a pale louvred parapet before a band of windows, and over
-its top floor a steep roof in dark vertical cladding with a row of dormers standing out of it; beside it a lower
+block has, on each floor of its face to a raised terrace, a pale louvred parapet before a band of windows, and along
+its top floor, under a grey hipped roof, a face in dark vertical cladding with a row of dormers standing out of it;
+beside it a lower
 wing with a band of windows on each floor. Two towers in the same dark cladding rise out of them, their tops
 sloping up: a tall one out of the main block's roof and a lower one on the wing. Its walls run in two directions
 45 degrees apart, the wing's and the main block's, as the campus map's outline does. Its heights and plans come

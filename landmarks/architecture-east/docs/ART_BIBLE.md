@@ -3,7 +3,7 @@
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from
 it.
 
-- A concrete building of the 1970s in pale grey board-marked concrete, its faces stepping back storey by storey as
+- A building in pale grey board-marked concrete, its faces stepping back storey by storey as
   they rise: on each floor a band of windows in dark frames, and before many of them a balcony or ledge with a
   pale louvred parapet.
 - Over the upper floors of the main block a steep roof in dark vertical cladding, with dormer windows standing out
