@@ -42,7 +42,7 @@ A change to what the site does or shows adds its line here, and the README's
 
 - **Landmarks give way to their blocks while a building is open.** Beside an open building every building
   drawn in detail is drawn by its block, which sinks to a footprint on its footing, as every other building's;
-  a landmark squashed about its own height could sink its footprint under the drawn ground on a slope (#PR).
+  a landmark squashed about its own height could sink its footprint under the drawn ground on a slope (#139).
 
 ## 2026-11-06
 
