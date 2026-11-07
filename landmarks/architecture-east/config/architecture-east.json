@@ -265,11 +265,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 31.6,
+ "ground": 39.56,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": 13.12,
+  "z": 20.15,
+  "note": "the entrance is not known (the campus map records no lobby or entrance in 421E, and no street passes it: OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully motorway to the east), so the door is on the raised terrace before the main block's north-west face, which the photograph shows people coming to, in the middle of the stretch where the terrace meets the face (u 9 to 37.5 in frame E), 2.5 m out from it (u 23, w 7). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 39.534/39.558/39.578 m; along the face the terrace lies at 39.56 to 40.01 m (p50 per 3 m, w 5 to 12)"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -288,9 +288,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": -4.96,
+  "tower_above": -4.96,
+  "spine_below": 32.04,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -305,7 +305,8 @@
     0.7197329022821964
    ],
    "tolerance_m": 0.05
-  }
+  },
+  "thresholds_note": "min_above, tower_above and spine_below were 3, 3 and 40 m above the provisional ground (31.6 m); lowered by 7.96 m with the ground set at the door, so that they pick the same points and the measured frame stays the expected one"
  },
  "refine": {
   "position_m": 3,
@@ -320,7 +321,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "31.6 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 16.0, p95 43.4: the site falls about 27 m across the crop); provisional, to be the LiDAR's ground at the door at step 7",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-07); the provisional ground was 31.6 m, the median LiDAR ground in the crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 300,
   "sunel": 45,

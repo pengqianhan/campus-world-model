@@ -4,10 +4,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground (31.6 m NZVD2016, the
-  median ground in the crop box, 25 m round the outline; to be the LiDAR's ground at the config's `door`, step 7),
-  **z** north-west (`toStreet`); the frame's centre at x = z = 0. `config/architecture-east.json`, `frame`. The site
-  falls about 27 m across the crop.
+- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the LiDAR's ground at the config's
+  `door` (39.56 m NZVD2016, on the raised terrace before the main block's north-west face), **z** north-west
+  (`toStreet`); the frame's centre at x = z = 0. `config/architecture-east.json`, `frame`. The site falls about
+  27 m across the crop.
+- The heights in this file and in `parts/common.js` were measured before the door was set, above 31.6 m (the
+  median ground in the crop box, 25 m round the outline): 7.96 m under the door's ground. `H` in
+  `parts/common.js` moves each on to it.
 - Two frames of the building's own: its walls run in two directions 45 degrees apart (the campus map's ring: its
   edges at -4.4 and 40.0 degrees from x toward z). `parts/common.js` gives `at(F, u, w)` and `rect(F, u, w)`: in
   frame `W` the lower wing and the west tower, in frame `E` the main block and the tall tower; u along the walls'
@@ -65,6 +68,17 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   windows 1.4 m tall, 174. 844 triangles, 5 draw calls; no two faces of different materials in one plane.
   Silhouette IoU 0.942 (0.942 in the box); the top view: footprint IoU 0.797, 63% of the cells within 0.5 m
   (p10/p50/p90 -1.24/-0.04/0.63), the highest point 36.66 m against 36.56; block 421E under the model 54.7%.
+- The door (step 7, 2026-11-07): the entrance is not known (the campus map records no lobby or entrance in 421E,
+  and no street passes it), so the door is on the raised terrace, which the photograph shows people coming to, in
+  the middle of the stretch where it meets the main block's north-west face, 2.5 m out from it (u 23, w 7 in frame
+  E); the LiDAR's ground there 39.56 m (13 returns within 1 m, p10/p90 39.534/39.578), the terrace along the face
+  at 39.56 to 40.01 m. The config's ground is the door's; the frame's thresholds were lowered by the same 7.96 m,
+  so the measured frame is the expected one (0.000 m, 0.000 degrees), and the photograph's camera (gitignored
+  `refs/photos/views.json`) moved down with it. On the door's ground the viewer's ground plane stands at the
+  terrace, where the photograph's camera stands, not 8 m under it: silhouette IoU 0.938 (0.938 in the box), the
+  luma median 174 against 175; the top view: footprint IoU 0.824 (its cells above 2.5 m now counted from the
+  door's ground), the heights' differences and the 63% within 0.5 m unchanged, the highest point 28.70 m against
+  28.63. `place`: the door at (15.48, -209.12) on the map.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
