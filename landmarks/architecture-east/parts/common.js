@@ -51,8 +51,8 @@ export const MEASURED = {
   // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
   // every 3.55 m from the terrace's 8 m (five storeys to the main block's flat roof), the same floors in the wing;
   // on each floor of the main block's north-west face, from the terrace up, a pale louvred parapet before a band of
-  // windows; round the wing, a band of windows on each floor; under the main block's north-west eave a face in the
-  // towers' dark cladding, with dormer windows standing out of it on the flat roof's ledge.
+  // windows; round the wing, a band of windows on each floor from the terrace's up; under the main block's north-west
+  // eave a face in the towers' dark cladding, with dormer windows standing out of it on the flat roof's ledge.
   floors: { first: H(8.0), every: 3.55 },
   parapet: { height: 1.1, out: 0.08 },
   windows: { sill: 1.25, head: 2.65, out: 0.03 },

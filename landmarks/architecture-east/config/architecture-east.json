@@ -1,6 +1,7 @@
 {
  "name": "architecture-east",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the main block's north-west faces a louvred parapet and a band of windows, and round the wing a band of windows; the face in dark cladding under the main block's north-west eave and the dormers out of it; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the raised terrace to the building's north-west, about 50 m from its tall tower, through a lens of about 53 degrees across; its camera is fitted to the two towers' top edges and three of their corners, with the principal point at the centre.",
  "building": {

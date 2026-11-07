@@ -94,8 +94,9 @@ export function building(b) {
     prism(b, rect("E", [c - hw, c + hw], [ew - 0.05, ew + D.out]), y0, y1, TOWER);
     prism(b, rect("E", [c - hw + D.pane, c + hw - D.pane], [ew + D.out - 0.01, ew + D.out + 0.03]), y0 + D.pane, y1 - D.pane, GLASS);
   }
-  // round the wing, a band of windows on each floor below its roof, 3 cm out of its walls
+  // round the wing, a band of windows on each floor from the terrace's up to its roof, 3 cm out of its walls (below the
+  // terrace, where the photograph sees none, its walls are plain)
   const WW = M.wingWindows;
-  for (const y of levels(FOOT, L.roof - WW.head))
+  for (const y of levels(M.floors.first, L.roof - WW.head))
     prism(b, plan("W", inset(L.plan, -M.windows.out)), y + WW.sill, y + WW.head, GLASS, [plan("W", inset(L.plan, 0.3))]);
 }
