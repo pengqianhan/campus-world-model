@@ -41,7 +41,8 @@ export const MEASURED = {
   // -1.5, -3.5 and -5.5) and to its north eave at 28 m at w 3 (28.7 and 28.2 at w 2 to 2.5 and 2.5 to 3), a face
   // under that eave down to the flat roof, which runs on as a ledge to w 4.5 (returns at 25-26 m); its hips to u -7
   // and 37.5 (the cells 25 to 29 and 30 to 26). Between w 3 and 5.5 the storeys' edges step out below (returns at
-  // 12-28 m), not drawn yet. From u -7 to 9 a part at 25.1 m runs on to w 7 (its returns' p50 25.08 at w 6 to 7.5);
+  // 12-28 m), not drawn yet. From u -7 to 9 (`nw`, named before the frames' directions were checked: the main
+// block's east end, on its north side) a part at 25.1 m runs on to w 7 (its returns' p50 25.08 at w 6 to 7.5);
   // from u 9 the terrace's ground (8 m) comes up to the face (the LiDAR's ground returns from w 4.5). On the flat roof
   // a box at 27 m, u 25 to 30, w -10 to -4.5 (the cells 27).
   main: { u: [-7, 37.5], w: [-10.5, 4.5], roof: H(25.74), hip: { w: [-6.2, 3.0], eave: H(28.0), ridge: { w: 0, u: [0, 31], top: H(30.1) } },

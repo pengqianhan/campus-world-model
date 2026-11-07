@@ -70,26 +70,26 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   windows 1.4 m tall, 174. 844 triangles, 5 draw calls; no two faces of different materials in one plane.
   Silhouette IoU 0.942 (0.942 in the box); the top view: footprint IoU 0.797, 63% of the cells within 0.5 m
   (p10/p50/p90 -1.24/-0.04/0.63), the highest point 36.66 m against 36.56; block 421E under the model 54.7%.
-- The door (step 7, 2026-11-07): the entrance is not known (the campus map records no lobby or entrance in 421E,
-  and no street passes it), so the door is on the raised terrace, which the photograph shows people coming to, in
-  the middle of the stretch where it meets the main block's north face, 2.5 m out from it (u 23, w 7 in frame
-  E); the LiDAR's ground there 39.56 m (13 returns within 1 m, p10/p90 39.534/39.578), the terrace along the face
-  at 39.56 to 40.01 m. The config's ground is the door's; the frame's thresholds were lowered by the same 7.96 m,
-  so the measured frame is the expected one (0.000 m, 0.000 degrees), and the photograph's camera (gitignored
-  `refs/photos/views.json`) moved down with it. On the door's ground the viewer's ground plane stands at the
-  door's terrace, about 4 m under the ground where the photograph's camera stands (43.60 m; 12 m under it
-  before): silhouette IoU 0.938 (0.938 in the box), the luma median 174 against 175; the top view: footprint IoU
-  0.824 (its cells above 2.5 m now counted from the door's ground), the 63% within 0.5 m unchanged (the heights'
-  differences p10/p50/p90 -1.24/-0.04/0.58), the highest point 28.70 m against 28.63. `place`: the door at
+- The door (step 7, 2026-11-07): the entrance is not known (the campus map records no lobby or entrance in 421E, and no
+  street passes it), so the door is on the raised terrace, in the middle of the stretch where it meets the main block's
+  north face, 2.5 m out from it (u 23, w 7 in frame E); the LiDAR's ground there 39.56 m (13 returns within 1 m, p10/p90
+  39.534/39.578), the terrace along the face at 39.56 to 40.01 m. The config's ground is the door's; the frame's
+  thresholds were lowered by the same 7.96 m, so the measured frame is the expected one (0.000 m, 0.000 degrees), and
+  the photograph's camera (gitignored `refs/photos/views.json`) moved down with it. On the door's ground the viewer's
+  ground plane stands at the door's terrace, about 4 m under the ground where the photograph's camera stands (43.60 m;
+  12 m under it before): silhouette IoU 0.938 (0.938 in the box), the luma median 174 against 175; the top view:
+  footprint IoU 0.824 (its cells above 2.5 m now counted from the door's ground), the 63% within 0.5 m unchanged (the
+  heights' differences p10/p50/p90 -1.24/-0.04/0.58), the highest point 28.70 m against 28.63. `place`: the door at
   (15.48, -209.12) on the map.
-- On the site (2026-11-07): the wing's bands of windows start at the terrace's floor, as the main block's do (from
-  the floor under it the lowest band stood 4.0 m over the map's ground, the foot check of `tests/landmarks.test.ts`);
+- On the site (2026-11-07): the wing's bands of windows start at the terrace's floor, as the main block's do (from the
+  two floors under it the lowest band stood 4.0 m over the map's ground, the foot check of `tests/landmarks.test.ts`);
   below it the wing's walls are plain. 764 triangles, 5 draw calls; the comparison and the top view as above.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
-- The photograph (one, from the raised terrace to the north-west, about 50 m from the tall tower; `refs/photos/`,
-  gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is measured from it.
+- The photograph (one, from a paved deck about 4 m above the raised terrace to the north-west, about 50 m from the tall
+  tower; `refs/photos/`, gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is
+  measured from it.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

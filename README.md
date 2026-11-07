@@ -597,19 +597,18 @@ north-west end.
 | ![Building 303S of the Science Centre on the map, drawn from code in the map's colours](docs/landmarks/science-centre-303s-map.jpg) | ![Building 303S of the Science Centre from Symonds Street to its south-east, through the walker's eyes](docs/landmarks/science-centre-303s-eyes.jpg) |
 
 The nineteenth is Architecture - East (421E), beside the Grafton Gully: a building in pale grey concrete whose main
-block has, on each floor of its face to a raised terrace, a pale louvred parapet before a band of windows, and along
-its top floor, under a grey hipped roof, a face in dark vertical cladding with a row of dormers standing out of it;
-beside it a lower
-wing with a band of windows on each floor. Two towers in the same dark cladding rise out of them, their tops
-sloping up: a tall one out of the main block's roof and a lower one on the wing. Its walls run in two directions
-45 degrees apart, the wing's and the main block's, as the campus map's outline does. Its heights and plans come
-from the LiDAR; the storeys' height, the parapets, the windows and the dormers are estimated with the photograph
-as a reference. One photograph from the raised terrace, about 50 m from the tall tower; counted inside the
-rectangle the model fills on the screen, its silhouette has an IoU of 0.94 in it, and the brightness of the
-building is within 1 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.82, and on
-63% of the cells both cover it is within 0.5 m of the LiDAR's height (the storeys' edges stepping out on the main
-block's face to the terrace are not drawn). What the photograph does not show is drawn plainly, the main block's
-faces turned away from the terrace and the wing's walls below it, or after what it shows, the wing's other faces.
+block has, on each floor of its face to a raised terrace, a pale louvred parapet before a band of windows, and along its
+top floor, under a grey hipped roof, a face in dark cladding with a row of dormers standing out of it; beside it a lower
+wing with a band of windows on each floor. Two towers in the same dark cladding rise out of them, their tops sloping up:
+a tall one out of the main block's roof and a lower one on the wing. Its walls run in two directions 45 degrees apart,
+the wing's and the main block's, as the campus map's outline does. Its heights and plans come from the LiDAR; the
+storeys' height, the parapets, the windows and the dormers are estimated with the photograph as a reference. One
+photograph from a paved deck above the raised terrace, about 50 m from the tall tower; counted inside the rectangle the
+model fills on the screen, its silhouette has an IoU of 0.94 in it, and the brightness of the building is within 1 of
+the photograph's. From above its outline covers the LiDAR's with an IoU of 0.82, and on 63% of the cells both cover it
+is within 0.5 m of the LiDAR's height (the storeys' edges stepping out on the main block's face to the terrace are not
+drawn). What the photograph does not show is drawn plainly, the main block's faces turned away from the terrace and the
+wing's walls below it, or after what it shows, the wing's other faces.
 
 | | |
 | --- | --- |
@@ -815,7 +814,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of building 302 of the Science Centre from the street corner to its south | The look its model was compared with while it was drawn, and the edges of its glazed corner, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 303 of the Science Centre from its street | The look its model was compared with while it was drawn, and two heights on its face estimated with it as a reference: the gaps between its bands, and its lowest band's bottom | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 303S of the Science Centre from its street to the south-east | The look its model was compared with while it was drawn, and, as a reference, the storeys' height on its south-east end and the places of the fins on its face to the street | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of Architecture - East from its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Architecture - East from a paved deck above its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -1120,15 +1119,15 @@ If you represent the University and would like something changed or removed, ple
   and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
   street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
   1.7 m above it.
-- **Architecture - East is seen from its raised terrace only.** One photograph, from the terrace, sees the main
-  block's face to it and the wing's beside it. The main block's faces turned away from the terrace, which no
-  photograph shows, are drawn plainly, and so are the wing's walls below the terrace; the wing's other faces have
-  the bands of windows of its face to the terrace. The storeys' height, the parapets, the
-  bands of windows and the dormers are estimated with the photograph as a reference; the storeys' edges stepping
-  out on the main block's face to the terrace, the louvres' slats, the glazed ground storey behind its columns,
-  and a part reaching out from the main block's west end toward Architecture - West are not drawn. Its entrance
-  is not known: its door is set on the terrace before the main block's face, where the map's ground lies 4.6 m
-  under the LiDAR's. Block 421E is 54.7% under the model: its ring takes in a car park at the ground.
+- **Architecture - East is seen from above its raised terrace only.** One photograph, from a paved deck about 4 m above
+  the terrace, sees the main block's face to it and the wing's beside it. The main block's faces turned away from the
+  terrace, which no photograph shows, are drawn plainly, and so are the wing's walls below the terrace; the wing's other
+  faces have the bands of windows of its face to the terrace. The storeys' height, the parapets, the bands of windows
+  and the dormers are estimated with the photograph as a reference; the storeys' edges stepping out on the main block's
+  face to the terrace, the louvres' slats, the glazed ground storey behind its columns, and a part reaching out from the
+  main block's west end toward Architecture - West are not drawn. Its entrance is not known: its door is set on the
+  terrace before the main block's face, where the map's ground lies 4.6 m under the LiDAR's. Block 421E is 54.7% under
+  the model: its ring takes in a car park at the ground.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

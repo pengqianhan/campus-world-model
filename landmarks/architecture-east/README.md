@@ -1,11 +1,12 @@
 # Landmark: Architecture - East (421E), drawn from code
 
-Architecture - East, building 421E of the University of Auckland, beside the Grafton Gully: a main block in pale
-grey concrete with a pale louvred parapet and a band of windows on each floor of its face to a raised terrace,
-and along its top floor, under a grey hipped roof, a face in dark cladding with a row of dormers; a lower wing
-beside it, and two towers in the same dark cladding, their tops sloping up. It is drawn in three.js from code alone, sized by the LINZ 2024 LiDAR, and
-compared with one photograph of it from its raised terrace (November 2026). The kit it is built with, the
-pipeline, the viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
+Architecture - East, building 421E of the University of Auckland, beside the Grafton Gully: a main block in pale grey
+concrete with a pale louvred parapet and a band of windows on each floor of its face to a raised terrace, and along its
+top floor, under a grey hipped roof, a face in dark cladding with a row of dormers; a lower wing beside it, and two
+towers in the same dark cladding, their tops sloping up. It is drawn in three.js from code alone, sized by the LINZ 2024
+LiDAR, and compared with one photograph of it from a paved deck about 4 m above the raised terrace (November 2026). The
+kit it is built with, the pipeline, the viewer and how to run them are shared by every landmark:
+[`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=architecture-east&view=orbit`
   with the repository root served on port 8765. `site` is true: the site draws it in place of block 421E
@@ -20,8 +21,8 @@ pipeline, the viewer and how to run them are shared by every landmark: [`../READ
 
 `config/architecture-east.json`, `frame`: x south-west (the axis, the bearing of most of the walls, and x is minus
 it); y up from 39.56 m NZVD2016, the LiDAR's ground at `door`, on the raised terrace; z north-west; the centre at
-x = z = 0. The site falls about 27 m across the crop, from the terrace down to the car park and the gully to the
-south-east. The walls run in two directions 44.4 degrees apart, as the campus map's outline does (its edges at
+x = z = 0. The site falls about 27 m across the crop, from the terrace down to the car park to the east and the
+gully beyond it. The walls run in two directions 44.4 degrees apart, as the campus map's outline does (its edges at
 -4.4 and 40.0 degrees from x toward z, length-weighted), so `parts/common.js` gives the building two frames of its
 own, `W` for the wing and its tower and `E` for the main block and the tall tower (the frames' names, not compass
 points: the wing stands east of the main block): `u` along the walls' first direction (in `E`, toward the west; in
@@ -44,11 +45,12 @@ by the same 7.96 m, so the measured frame is the one the model was drawn in (0.0
 
 ## The reference
 
-One photograph from the raised terrace about 50 m west-north-west of the tall tower, looking 116 degrees round,
-sees the main block's face to the terrace obliquely, the wing's face to it and both towers. It is kept on the
-maintainer's computer in `refs/photos/` (gitignored), with the picks on it, its fitted camera, its level cut and
-its mask. Nothing of it goes into git, and how it is recorded and credited is for the maintainer to decide. No
-Street View photograph is used.
+One photograph from a paved deck about 4 m above the raised terrace (its LiDAR ground 43.60 m, the door's 39.56; the
+ground steps up between them 16 to 19 m out from the door), about 50 m west-north-west of the tall tower, looking 116
+degrees round, sees the main block's face to the terrace obliquely, the wing's face to it and both towers. It is kept on
+the maintainer's computer in `refs/photos/` (gitignored), with the picks on it, its fitted camera, its level cut and its
+mask. Nothing of it goes into git, and how it is recorded and credited is for the maintainer to decide. No Street View
+photograph is used.
 
 Its camera is fitted by `tools/photo_camera.py` to points and lines whose places the LiDAR gives: the two towers'
 tops (the tall tower's high edge, at its returns above 36.3 m over the old ground, and the wing's tower's ridge),
@@ -104,12 +106,11 @@ photograph (the building's luma median 153 against 175); with the parapets in `p
 
 ## On the map (step 7)
 
-- **The door**: the entrance is not known (the campus map records no lobby or entrance in 421E, and no street
-  passes it: OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully's motorway
-  to the east), so the door is on the raised terrace, which the photograph shows people coming to, in the middle of
-  the stretch where it meets the main block's face, 2.5 m out from it (u 23, w 7 in frame `E`; (13.12, 20.15) in
-  the view frame), where the LiDAR's ground is 39.56 m (13 returns within 1 m, p10/p50/p90
-  39.534/39.558/39.578 m). Along the face the terrace lies at 39.56 to 40.01 m. `door.note` says so.
+- **The door**: the entrance is not known (the campus map records no lobby or entrance in 421E, and no street passes it:
+  OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully's motorway to the east), so
+  the door is on the raised terrace, in the middle of the stretch where it meets the main block's face, 2.5 m out from
+  it (u 23, w 7 in frame `E`; (13.12, 20.15) in the view frame), where the LiDAR's ground is 39.56 m (13 returns within
+  1 m, p10/p50/p90 39.534/39.558/39.578 m). Along the face the terrace lies at 39.56 to 40.01 m. `door.note` says so.
 - The viewer's ground plane now stands at the door's terrace, about 4 m under the ground where the photograph's
   camera stands (12 m under it before):
   silhouette IoU 0.938 (0.938 in the box), the luma median 174 against the photograph's 175. From above: footprint
@@ -125,12 +126,11 @@ in `landmarks/measured/exclusions.json` (the generator's massing of it failed: i
 outline, where 85% is asked) has gone; `MASSING.md` lists 421E among the landmarks and counts 33 stand-ins
 measured.
 
-- **The foot.** It stands alone, its y = 0 on the map's ground at its door, which lies 4.56 m under the LiDAR's
-  there (3.3 to 6.2 m round the building). Its walls go down to FOOT, 9.46 m below the door's ground; the foot
-  check of `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes.
-  The wing's bands of windows start at the terrace's floor, as the main block's do: from the floor below it the
-  lowest band stood 4.0 m over the map's ground where it falls away from the terrace. 764 triangles, 5 draw
-  calls.
+- **The foot.** It stands alone, its y = 0 on the map's ground at its door, which lies 4.56 m under the LiDAR's there
+  (3.3 to 6.2 m round the building). Its walls go down to FOOT, 9.46 m below the door's ground; the foot check of
+  `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes. The wing's
+  bands of windows start at the terrace's floor, as the main block's do: from the two floors below it the lowest band
+  stood 4.0 m over the map's ground where it falls away from the terrace. 764 triangles, 5 draw calls.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are
   walls.
