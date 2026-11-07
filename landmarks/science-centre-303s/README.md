@@ -138,12 +138,11 @@ measured.
   each other. Its walls go down to FOOT, 4.5 m below the frame's ground, the glass, the fins and the pier from
   4.0 m below it; the foot check of `tests/landmarks.test.ts`, which tests each material's lowest points against
   the map's ground, passes.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0
-  and a block about the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus` in
-  `src/scene/CampusScene.ts`). The street rises 4.4 m along the face and 303S's y = 0 stands 0.892 m below the
-  map's ground at its door, so beside an open 303 its footprint shows above the drawn ground on about 7% of its
-  cells (about half if it stood alone at its door), where block 303S's showed on nearly all; beside an open
-  neighbour 303's footprint stands up to 1.70 m above the ground (0.81 m when it stood alone).
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 303S, which
+  sinks on its footing, 1.6 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`,
+  since 2026-11-07). Before that the site squashed the model about its own y = 0: the street rises 4.4 m along
+  the face and 303S's y = 0 stands 0.892 m below the map's ground at its door, so beside an open 303 its
+  footprint showed above the drawn ground on about 7% of its cells, where block 303S's shows on nearly all.
 - **The light form** (the map, and the walker views of the basic tier) draws `glassPale` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` is walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a

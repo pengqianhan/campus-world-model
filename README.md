@@ -68,6 +68,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-07:** while a building is open, the buildings drawn in detail beside it give way to their blocks,
+  which sink to footprints on their footings, as every other building's; on a slope a landmark's own footprint
+  could sink under the drawn ground.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
@@ -1090,10 +1093,7 @@ If you represent the University and would like something changed or removed, ple
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
   south-east end, which the photograph does not show, is drawn flat. Behind its back a slot 0.5 to 1.6 m
   wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
-  reaching to it. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
-  and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
-  street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
-  1.7 m above it.
+  reaching to it.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
