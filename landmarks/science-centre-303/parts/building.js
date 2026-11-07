@@ -24,6 +24,14 @@ export function building(b) {
   block(b, rect(R.ne.u, [R.ne.w[0] + 0.1, R.ne.w[1] + 0.3]), FOOT - 0.05, R.roof, WALL, PALE);
   // the parapet along the face, from inside the range's walls
   prism(b, rect([R.u[0] + 0.01, R.u[1] - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
+  // the range and the slab on to 303S's back (M.ends), each from inside its end (the range's 10 cm, the slab's 15 cm,
+  // so that the two starts do not meet in one plane): the range to a line 5 cm into 303S, with its parapet; the
+  // slab's end bay to its returns' end
+  const En = M.ends, uEnd = (w) => En.range.u0 + En.range.slope * w, wb = R.w[0] - 0.3;
+  block(b, [[R.u[1] - 0.1, wb], [uEnd(wb), wb], [uEnd(0), 0], [R.u[1] - 0.1, 0]].map(([u, w]) => at(u, w)), FOOT - 0.02,
+        R.roof, WALL, PALE);
+  prism(b, rect([R.u[1] - 0.05, uEnd(0) - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
+  block(b, rect([S.u[1] - 0.15, En.slab.u], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.14, S.bays.roof, WALL, PALE);
   // the slab (its end 5 cm short of the range's): its middle, and a lower bay at each end running into it; its raised
   // part; the screened deck, the round tank, the flue beside it (from the roof: it stands clear of the tank's round),
   // and the box
