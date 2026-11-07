@@ -20,17 +20,24 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     south-west end a part at 25.1 m on its north-west side, and on the flat a box at 27 m; north-west of it, from u 9,
     the terrace's ground comes up to its face;
   - **the tall tower** out of the hipped roof, its top a plane rising to 36.7 m at its end;
+  - **the faces** (round 1), with the photograph as a reference and every size estimated: floors every 3.55 m from
+    the terrace's 8 m; on each floor of the main block's north-west faces a pale louvred parapet 1.1 m tall and
+    over it a band of windows; under its north-west eave a face in the towers' dark cladding, with dormers 1.6 m
+    wide every 4.1 m standing out of it on the ledge, behind a louvred parapet along the ledge's edge; round the
+    wing a band of windows on each floor. Not drawn yet: the storeys' edges stepping out below the eave (returns
+    at 12-28 m between w 3 and 5.5), the glazed ground storey behind its columns, the louvres' slats, and a part
+    reaching out to w 9-11.7 at the main block's north-east end (u 30 to 37.5, returns from 10 to 28 m);
   - **the ring's south-east part**, a car park at the ground: not drawn;
   - the ground round the plans from -1.16 m to +8.5 m (the raised terrace to the north-west): walls go down to `FOOT`,
     -1.5 m.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frames): the lead.
-- `parts/building.js` (every part, round 0), `parts/shapes.js` (the shapes the parts share), `model.js`: the lead.
+- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 94 triangles, 3 draw
-  calls. Round 1's shape: 184 and 3.
+  calls. Round 1's shape: 184 and 3; round 1's faces: 844 and 5.
 
 ## Rounds
 - Round 0 (2026-11-07): the four parts as blocks at the LiDAR's plans and heights; walls in the kit's
@@ -52,6 +59,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   faces. 184 triangles; silhouette IoU 0.942; the top view: 63% of the cells within 0.5 m (p10/p50/p90
   -1.29/-0.04/0.59). The viewer's light (estimated): the sun at 300 deg round and 45 up, the exposure 0.5; the
   building's luma median 174 against the photograph's 175.
+- Round 1's faces (2026-11-07): the floors' parapets in the kit's `plain`, the windows in `glass`, the face under
+  the eave and the dormers in `screenGrey`. The first try (the parapets in `render`, the windows 1.9 m tall) read
+  dark and orange against the photograph (the luma median 153 against 175); with the parapets in `plain` and the
+  windows 1.4 m tall, 174. 844 triangles, 5 draw calls; no two faces of different materials in one plane.
+  Silhouette IoU 0.942 (0.942 in the box); the top view: footprint IoU 0.797, 63% of the cells within 0.5 m
+  (p10/p50/p90 -1.24/-0.04/0.63), the highest point 36.66 m against 36.56; block 421E under the model 54.7%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

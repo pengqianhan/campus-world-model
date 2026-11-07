@@ -45,6 +45,16 @@ export const MEASURED = {
   // The tall tower (frame E): u 1 to 7.0, w -3.6 to 0.4; its top a plane rising along u from 32.8 m at u 1 (the cells
   // 33) to 36.7 m at its end (the high edge's returns above 36.3 m at u 6.9; p50 36.6, max 36.8).
   ttower: { u: [1, 7.0], w: [-3.6, 0.4], low: 32.8, high: 36.7 },
+  // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
+  // every 3.55 m from the terrace's 8 m (five storeys to the main block's flat roof), the same floors in the wing;
+  // on each floor of the main block's north-west face, from the terrace up, a pale louvred parapet before a band of
+  // windows; round the wing, a band of windows on each floor; under the main block's north-west eave a face in the
+  // towers' dark cladding, with dormer windows standing out of it on the flat roof's ledge.
+  floors: { first: 8.0, every: 3.55 },
+  parapet: { height: 1.1, out: 0.08 },
+  windows: { sill: 1.25, head: 2.65, out: 0.03 },
+  wingWindows: { sill: 1.0, head: 2.4 },
+  dormers: { u: [1.5, 30.5], every: 4.1, width: 1.6, out: 0.7, sill: 0.25, height: 1.75, pane: 0.2 },
 };
 
 /** The point [x, z] of the view frame at u and w in the building's frame `F` ("W" or "E"). */
