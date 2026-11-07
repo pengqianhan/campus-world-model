@@ -16,6 +16,13 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-11-07
 
+### Changed
+
+- **Landmarks give way to their blocks while a building is open.** Beside an open building every building
+  drawn in detail is drawn by its block, which sinks to a footprint at the lowest ground under it, as every other
+  building's; a landmark squashed about its own height sank under the drawn ground on a slope, or stood above
+  it (#PR).
+
 ### Added
 
 - **Building 303S of the Science Centre drawn in detail.** Near the camera the map draws building 303S of the

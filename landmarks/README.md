@@ -316,7 +316,9 @@ agent and no photograph. All of them share one model and have a data file each:
   and all the data files, one chunk each, the first time one is wanted. A measured massing has one
   form, in its block's own materials: the map's palette, windows and night on the map, the facades
   drawn by rule in the walker views. It is drawn where a metre of ground takes 4 pixels or more
-  (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open.
+  (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open, as every
+  landmark does (since 2026-11-07: until then a landmark drawn from code was squashed about its own y = 0 beside
+  an open building, which on a slope sank its footprint under the drawn ground or lifted it above).
 - `tests/measured.test.ts` checks every data file (closed rings, heights, the limits) and that no
   building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added
