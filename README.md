@@ -68,6 +68,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-07:** building 303 of the Science Centre now meets building 303S beside it: its range along
+  the street and its slab run on to 303S's back, as the LiDAR has them, where a gap stood open between the two.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
@@ -1088,9 +1090,7 @@ If you represent the University and would like something changed or removed, ple
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
-  south-east end, which the photograph does not show, is drawn flat. Behind its back a slot 0.5 to 1.6 m
-  wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
-  reaching to it. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
+  south-east end, which the photograph does not show, is drawn flat. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
   and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
   street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
   1.7 m above it.
