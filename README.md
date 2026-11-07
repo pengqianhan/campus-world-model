@@ -1079,7 +1079,7 @@ If you represent the University and would like something changed or removed, ple
   the face's bands are drawn as dark strips on it, the lowest band's bottom, the canopy's depth and the glazing
   under it are estimated. A large relief of white blocks on the face is an artwork, not drawn after: the band is
   plain there. The slab, the rear block, the wing and their faces, which no photograph shows, are drawn plainly
-  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 84.96% under the model: its ring takes in
+  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 85.6% under the model: its ring takes in
   a light well, which has no returns, between the wing and the slab.
 - **Building 303S of the Science Centre is seen from the south-east only, from far off.** One photograph, from the
   street about 95 m to the south-east through a long lens, sees its face to the street obliquely and the first

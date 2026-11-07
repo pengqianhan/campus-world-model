@@ -72,9 +72,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   `roofPale`; the rear block's and the wing's darker (a blue grey and a mauve grey), drawn in `roofGrey`
   (estimated). 6 draw calls.
 - Beside 303S (2026-11-07, the maintainer's word): the range and the slab run on to 303S's back (`MEASURED.ends`),
-  closing the slot between the two models. From above: footprint IoU 0.859 (the LiDAR's 3,706 m², the model's
-  3,196, both 3,190), 86% of the 12,362 cells within 0.5 m; block 303 85.6% under the model, 303S 3.8%. 1,656
-  triangles, 6 draw calls.
+  closing the slot between the two models, and the face's gaps with them. From above: footprint IoU 0.859 (the
+  LiDAR's 3,706 m², the model's 3,195, both 3,189), 86% of the 12,358 cells within 0.5 m; block 303 85.6% under the
+  model, 303S 3.7%. 1,664 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

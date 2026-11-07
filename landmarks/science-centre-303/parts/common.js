@@ -28,11 +28,14 @@ export const MEASURED = {
   range: { u: [0, 70.3], w: [-11.2, 0], ne: { u: [0, 6.9], w: [-26.3, -11.2] }, roof: 13.4, parapet: { top: 14.05, width: 0.4 } },
   // Where the range and the slab meet 303S (2026-11-07, when 303S came onto the site): the campus map's rings leave
   // them at u 70.3, but the LiDAR has them run on to 303S's back, with no returns below them in between. The slab's
-  // end bay runs on at 32.8 m to u 71.65 (its returns' u p98 71.55-71.73 from w -12 to -26); the range at its roof's
-  // height (its returns there at 13.2-13.4 m, as 303S's tip beside it, which the model of 303S stands at 13.3 m) to
-  // 303S's back, 5 cm into it: from u 71.87 at the face to u 71.42 at w -11.5 (303S's tip's back corner, and its back
-  // line, at u 71.82 and 71.29-71.40 in this frame).
-  ends: { range: { u0: 71.87, slope: 0.0391 }, slab: { u: 71.65 } },
+  // end bay runs on at 32.8 m to u 71.65 (its returns' u p98 71.55-71.73 from w -12 to -26), 1.35 to 1.5 m into
+  // 303S's ring; the range at its roof's height (its returns there at 13.2-13.4 m, as 303S's tip beside it, which the
+  // model of 303S stands at 13.3 m) to 303S's back, about 5 cm into its model, along its tip's two back corners and
+  // its back line (at u 71.82 at the face, 71.40 at w -7.6 and 71.28 at w -11.5 in this frame): from u 71.84 at the
+  // face (2 cm into the tip, so that the two faces at the street, 3 degrees apart, stay clear of each other) to 71.45
+  // at w -7.6 and 71.33 at w -11.5. The face's gaps run on to u 71.80, short of the tip's corner (the face's returns
+  // hold their layers there: at 5.85-5.96 m and 10.02-10.17 m between u 70.3 and 71.9).
+  ends: { range: [[71.84, 0], [71.45, -7.6], [71.33, -11.5]], slab: { u: 71.65 }, face: 71.80 },
   // The face to the street (step 5): its three bands of precast panels in one plane (the returns on the face within
   // 0.1 m of the line at every height), the gaps between them at the layers of returns on the face, 10.15 and
   // 5.85 m (each drawn 0.4 m tall, estimated), the lowest band from 3.0 m (estimated, the photograph as a reference)

@@ -35,12 +35,13 @@ it, the street side positive (`at`, `rect`, `uw`).
   w -36.3 to -46.3).
 - **On to 303S's back.** The range and the slab run on past u 70.3, where the campus map's rings meet, to 303S's
   back, as the LiDAR has them, with no returns below them in between: the slab's end bay at 32.8 m to u 71.65 (its
-  returns' u p98 71.55-71.73 from w -12 to -26), up to 0.9 m over 303S's ring; the range at 13.4 m to a line 5 cm
-  into 303S (u 71.87 at the face, 71.42 at the range's back), where 303S's tip stands at its height. Until
-  2026-11-07, when 303S came onto the site, the model ended at u 70.3 and a slot 0.5 to 1.6 m wide stood open
-  between it and 303S's model; the maintainer asked for it to be closed.
-- No other block has as much as half of it under the model (305 10.2%, its two slivers; 303S 3.8%, the end bay
-  over its ring; 301 1.5%), so `building.also` is empty.
+  returns' u p98 71.55-71.73 from w -12 to -26), 1.35 to 1.5 m into 303S's ring; the range at 13.4 m along
+  303S's back, about 5 cm into 303S's model (u 71.84 at the face, 71.45 at w -7.6, 71.33 at the range's back),
+  where 303S's tip stands at its height; the face's gaps run on with it to u 71.80. Until 2026-11-07, when 303S
+  came onto the site, the model ended at u 70.3 and a slot 0.5 to 1.5 m wide stood open between it and 303S's
+  model; the maintainer asked for it to be closed.
+- No other block has as much as half of it under the model (305 10.2%, its two slivers; 303S 3.7%, the range and
+  the end bay over its ring's edge; 301 1.5%), so `building.also` is empty.
 - **Block 303 itself** is 85.6% under the model (84.96% before the range and the slab ran on to 303S): its ring takes
   in a light well 2 m wide between the wing and the slab, where the LiDAR has no returns, and the model leaves it
   open.
@@ -159,7 +160,7 @@ measured.
 - **The pictures** in `docs/landmarks/`: `science-centre-303-front.jpg` and `-above.jpg` are the viewer's renders
   of the model alone, from its street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
   the site built from this branch, the map near it and a walker's eyes on its street. All four were taken again on
-  2026-11-07, when the range and the slab ran on to 303S's back (1,656 triangles, 6 draw calls), the map's and the
+  2026-11-07, when the range and the slab ran on to 303S's back (1,664 triangles, 6 draw calls), the map's and the
   walker's with 303S beside it, on the ground the two share.
 
 ## Not drawn yet

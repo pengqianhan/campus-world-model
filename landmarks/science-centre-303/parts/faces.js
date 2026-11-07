@@ -8,7 +8,8 @@ import { prism } from "./shapes.js";
 const M = MEASURED, F = M.face, GAP = "screenGrey", GLASS = "glass", CANOPY = "grey";
 
 export function faces(b) {
-  const [u0, u1] = [M.range.u[0] + 0.02, M.range.u[1] - 0.02];
+  // along the whole face, on to its end beside 303S (M.ends.face)
+  const [u0, u1] = [M.range.u[0] + 0.02, M.ends.face];
   for (const [y0, y1] of F.gaps) prism(b, rect([u0, u1], [0, 0.02]), y0, y1, GAP);
   // under the lowest band, which ends a metre short of the north-east end: its soffit's shadow
   prism(b, rect([F.band1.u0, u1], [0, 0.02]), F.canopy.top + 0.01, F.band1.bottom, GAP);

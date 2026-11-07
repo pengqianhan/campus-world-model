@@ -3,8 +3,8 @@
 // along the street with its parapet, the slab behind it, the block behind toward the south-west and the wing toward
 // the north-east. Round 1's shape: the slab's end bays, raised part, screened deck, round tank and box; the block's
 // ridges, its 22.4 m part and its six stacks; the wing's strip, raised part and the two troughs across its roof; the
-// range and the slab end where 303S's ring begins. Parts that meet run into each other, and ends that would meet in one plane stand a few
-// centimetres apart, so that no two faces of different materials lie in one plane.
+// range and the slab run on to 303S's back (M.ends). Parts that meet run into each other, and ends that would meet in
+// one plane stand a few centimetres apart, so that no two faces of different materials lie in one plane.
 import { FOOT, MEASURED, at, rect, uw } from "./common.js";
 import { block, prism, slopedPrism } from "./shapes.js";
 
@@ -25,12 +25,11 @@ export function building(b) {
   // the parapet along the face, from inside the range's walls
   prism(b, rect([R.u[0] + 0.01, R.u[1] - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
   // the range and the slab on to 303S's back (M.ends), each from inside its end (the range's 10 cm, the slab's 15 cm,
-  // so that the two starts do not meet in one plane): the range to a line 5 cm into 303S, with its parapet; the
-  // slab's end bay to its returns' end
-  const En = M.ends, uEnd = (w) => En.range.u0 + En.range.slope * w, wb = R.w[0] - 0.3;
-  block(b, [[R.u[1] - 0.1, wb], [uEnd(wb), wb], [uEnd(0), 0], [R.u[1] - 0.1, 0]].map(([u, w]) => at(u, w)), FOOT - 0.02,
-        R.roof, WALL, PALE);
-  prism(b, rect([R.u[1] - 0.05, uEnd(0) - 0.01], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
+  // so that the two starts do not meet in one plane): the range along 303S's back, about 5 cm into its model, with its
+  // parapet, which stops 4 cm short of the range's end; the slab's end bay to its returns' end
+  const En = M.ends, [e0, e1, e2] = En.range;
+  block(b, [[R.u[1] - 0.1, e2[1]], e2, e1, e0, [R.u[1] - 0.1, 0]].map(([u, w]) => at(u, w)), FOOT - 0.02, R.roof, WALL, PALE);
+  prism(b, rect([R.u[1] - 0.05, e0[0] - 0.04], [-R.parapet.width, -0.01]), R.roof - 0.3, R.parapet.top, WALL);
   block(b, rect([S.u[1] - 0.15, En.slab.u], [S.w[0] + 0.05, S.w[1] - 0.05]), FOOT - 0.14, S.bays.roof, WALL, PALE);
   // the slab (its end 5 cm short of the range's): its middle, and a lower bay at each end running into it; its raised
   // part; the screened deck, the round tank, the flue beside it (from the roof: it stands clear of the tank's round),

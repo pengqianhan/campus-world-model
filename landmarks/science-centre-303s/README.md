@@ -36,9 +36,9 @@ points near the outline and is the same as with the usual 25 m.
   41.6 m), which reaches up to 1.6 m into the ring before the back's line from u 5 to 20; the model draws its own
   north-west part and top storey there, at 28.75 and 33.75 m.
 - **Behind its back**, 303's range (its returns at 15.5 m above 303S's ground, u -6 to 4.8) and its slab's end bay
-  (35.1 m, u 4.8 to 19.7) reach to 303S's back, with no returns below them, outside 303S's ring and inside 303's.
-  303's model runs on to them (since 2026-11-07; until then a slot 0.5 to 1.6 m wide stood open there, beside
-  block 303S too).
+  (35.1 m, u 4.8 to 19.7) reach to 303S's back, with no returns below them, up to 1.5 m into 303S's ring. 303's
+  model runs on to them (since 2026-11-07; until then a slot 0.5 to 1.5 m wide stood open there, beside block
+  303S too).
 - Building 302 stands 5.6 m to the south-east; its screens hide most of 303S's south-east end in the photograph.
 - No other block has as much as half of it under the model (303 1.5%), so `building.also` is empty. Block 303S
   itself is 92.7% under the model.
