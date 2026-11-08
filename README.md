@@ -640,7 +640,8 @@ in place of 119; 9 Eden Crescent in place of 801; 15 Eden Crescent in place of 8
 place of 804; the Thomas Building Extension in place of 110N; the Kenneth Myers Centre in place of 820;
 the Thomas Building in place of 110; the Music School in place of 250; the Kate Edger Information
 Commons in place of 315; the Humanities Building in place of 206; building 302 of the Science Centre in place
-of 302; building 303 of the Science Centre in place of 303; building 303S of the Science Centre in place of 303S; Architecture - West in place of 421W; Architecture - East in place of 421E) when
+of 302; building 303 of the Science Centre in place of 303; building 303S of the Science Centre in place of 303S;
+Architecture - West in place of 421W; Architecture - East in place of 421E) when
 the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
@@ -1146,10 +1147,10 @@ If you represent the University and would like something changed or removed, ple
   where the map's ground lies 4.8 m under the LiDAR's. Its south-east end, where it joins Architecture - East, is drawn
   by that building's model. Block 421W is 62.3% under the model: its ring takes in that end, and parts beyond the roofs.
   While a building beside it is open, its neighbours sink to footprints, a landmark about its own y = 0 and a block
-  about its base (at most 4 m above the lowest ground under it): 421W's y = 0, on the ground it shares with Architecture
-  - East, is 0.12 m over the map's ground at its door on the upper level, and the map's ground under it falls toward its
-  south-east end, up to 6.0 m lower, so its footprint stands above the drawn ground on about 77% of its cells, by up to
-  6.2 m, where block 421W's showed on 39%, by up to 4.2 m.
+  about its base (at most 4 m above the lowest ground under it): 421W's y = 0, on the ground it shares with
+  Architecture - East, is 0.12 m over the map's ground at its door on the upper level, and the map's ground under it
+  falls toward its south-east end, up to 6.0 m lower, so its footprint stands above the drawn ground on about 77% of its
+  cells, by up to 6.2 m, where block 421W's showed on 39%, by up to 4.3 m.
 - **Architecture - East is seen from above its raised terrace only.** One photograph, from a paved deck about 4 m above
   the terrace, sees the main block's face to it and the wing's beside it. The main block's faces turned away from the
   terrace, which no photograph shows, are drawn plainly, and so are the wing's walls below the terrace; the wing's other
@@ -1174,8 +1175,8 @@ If you represent the University and would like something changed or removed, ple
   map's ground under its door, and its walls go down far enough that their foot is nowhere more
   than 0.25 m above that ground (the Clock Tower's, up to 0.2 m). Landmarks side by side share one
   ground instead, at the LiDAR's heights against each other: 9 and 15 Eden Crescent stand 0.45 m, the
-  Thomas Building and its Extension 0.31 m, and buildings 303 and 303S of the Science Centre 0.89 m, off the
-  map's ground at their doors. The Clock Tower and
+  Thomas Building and its Extension 0.31 m, buildings 303 and 303S of the Science Centre 0.89 m, and
+  Architecture - West and Architecture - East 0.12 m, off the map's ground at their doors. The Clock Tower and
   its East Wing do not, as the map's ground at their doors is off the LiDAR's by amounts 5.07 m apart:
   each stands on the map's ground at its own door, and their heights against each other are not the
   LiDAR's (the map stands the Clock Tower 5.07 m lower against the wing). Under Old Government House the

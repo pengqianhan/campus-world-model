@@ -139,7 +139,7 @@ measured.
   and `baseOf` in `src/scene/CampusScene.ts`). 421E's y = 0, on the ground it shares with 421W, is 0.12 m under the
   map's ground at its door on the terrace, and under the model the map's ground lies from 1.28 m above it to 9.90 m
   below, where the site falls away from the terrace, so beside an open neighbour its footprint shows above the drawn
-  ground on about 98% of its cells, by up to 10.13 m, where block 421E's showed on 38%, by up to 4.30 m.
+  ground on about 98% of its cells, by up to 10.13 m, where block 421E's showed on 38%, by up to 4.32 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are
   walls.

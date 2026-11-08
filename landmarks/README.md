@@ -148,14 +148,15 @@ heights against each other are the LiDAR's and neither shows through the other w
 (`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
 when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
 the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
-models can mend. Four pairs touch; the nearest two landmarks that do not, buildings 302 and 303S of the
-Science Centre, stand 5.6 m apart. Three pairs share: against the map's ground at its own door 9 Eden Crescent stands 0.448 m higher and 15 Eden
-Crescent 0.448 m lower (a span of 0.90 m), the Thomas Building 0.311 m lower and its Extension 0.311 m
-higher (0.62 m), building 303 of the Science Centre 0.892 m higher and building 303S 0.892 m lower
-(1.78 m). The Clock Tower and its East Wing (5.07 m) each stand on the map's ground at its own
-door, as before: at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's, at the East
-Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its wing than the LiDAR
-does. Any limit from 1.79 to 5.06 m gives these groups. Either way a model's walls go down below
+models can mend. Five pairs touch; the nearest two landmarks that do not, buildings 302 and 303S of the
+Science Centre, stand 5.6 m apart. Four pairs share: against the map's ground at its own door 9 Eden
+Crescent stands 0.448 m higher and 15 Eden Crescent 0.448 m lower (a span of 0.90 m), the Thomas
+Building 0.311 m lower and its Extension 0.311 m higher (0.62 m), building 303 of the Science Centre
+0.892 m higher and building 303S 0.892 m lower (1.78 m), Architecture - West 0.116 m higher and
+Architecture - East 0.116 m lower (0.23 m). The Clock Tower and its East Wing (5.07 m) each stand on the
+map's ground at its own door, as before: at the Clock Tower's door the map's ground is 4.85 m below the
+LiDAR's, at the East Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its
+wing than the LiDAR does. Any limit from 1.79 to 5.06 m gives these groups. Either way a model's walls go down below
 y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so
 that their foot is nowhere more than 0.25 m above it. `tests/landmarks.test.ts` stands each landmark as
 the site does and checks that for every landmark on the site, at
