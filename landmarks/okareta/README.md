@@ -61,11 +61,11 @@ stand over its front to 25 m and some of their returns are classed as building):
 - **The south-west wing's hipped roof**, its ridge across the front at u -3.5, 10.7 m, its eaves at 8.7 m, over the
   bay at its front; **the north-east part's**, its ridge along the front at w -1.75, 10.7 m, from the wing's roof to its
   north-east hip; where the two meet, the higher slope shows, as in the valleys the LiDAR has. **A low roof** behind,
-  falling from 9.2 to 8.7 m, and **a porch** behind the north-east part, its flat roof at 3.2 m.
+  falling from 9.2 to 8.65 m, and **a porch** behind the north-east part, its flat roof at 3.2 m.
 - **The verandah** before the north-east part, its outer edge at w 4.3.
 
-Walls in the kit's `trim`, roofs `roofGrey` (grey in the 2023 aerial). 165 triangles, 2 draw calls. Silhouette IoU 0.751 (0.751 in the model's
-screen box); from above, footprint IoU 0.900 and 81% of the 662 cells within 0.5 m of the LiDAR's height.
+Walls in the kit's `trim`, roofs `roofGrey` (grey in the 2023 aerial). 165 triangles, 2 draw calls. Silhouette IoU
+0.751 (0.751 in the model's screen box); from above, footprint IoU 0.900 and 81% of the 662 cells within 0.5 m of the LiDAR's height.
 
 ## The front and the light (round 1, November 2026, the lead)
 
@@ -128,8 +128,11 @@ The review's first round found the walls' flat top, at 9.0 m over the crop's med
 roof behind the house (8.74 m over the back wall) and the north-east part's slope over its back wall (8.97 m): about
 4.6 m² of it showed at the back, in the walls' ochre. The walls now stop at 8.5 m, inside the cornice, which fills
 the eaves' line under every roof; the low roof's eave is at 8.7 m as the others' (its returns there 8.6 to 8.7), and
-its north-east end, which was open, is closed down to the cornice's top. 419 triangles, 4 draw calls; the
-comparison and the top view are as at step 7.
+its north-east end, which was open, is closed down to the cornice's top. The review after the pull request opened
+found its south-west end open too, where it stopped on the wing's eave line: it now runs on under the wing's roof
+to u -1.1, where the wing's slope stands over it everywhere (the LiDAR's returns there, 9.14 to 9.18 m, are the low
+roof's own). The cornice's top stands 5 mm under the eaves, where it stood 2 cm under them. 419 triangles, 4 draw
+calls; the comparison and the top view are as at step 7.
 
 ## Not drawn yet
 

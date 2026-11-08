@@ -10,7 +10,7 @@ const WALL = "trim", ROOF = "roofGrey";
  * behind. */
 export function house(b) {
   prism(b, plan(HOUSE.walls), FOOT, HOUSE.top, WALL);
-  prism(b, plan(HOUSE.eaves), HOUSE.cornice, HOUSE.eave - 0.02, WALL);
+  prism(b, plan(HOUSE.eaves), HOUSE.cornice, HOUSE.eave - 0.005, WALL);
   const W = ROOFS.wing, M = ROOFS.main, R = ROOFS.rear;
   // The view frame's x is -u: the wing's u from -0.25 to -6.75 is x from 0.25 to 6.75, its ridge on x = 3.5.
   hipRoof(b, [-W.u[1], -W.u[0]], W.w, HOUSE.eave, W.ridge, "z", -W.at, W.hips, ROOF);
@@ -18,8 +18,8 @@ export function house(b) {
   hipRoof(b, [-M.u[1], -M.u[0]], M.w, HOUSE.eave, M.ridge, "x", M.at, M.hips, ROOF);
   const [x0, x1] = [-R.u[1], -R.u[0]], hi = (x) => [x, R.high, R.w[1]], lo = (x) => [x, R.low, R.w[0]];
   tris(b, [[hi(x0), hi(x1), lo(x1)], [hi(x0), lo(x1), lo(x0)]], ROOF);
-  // its north-east end closed down to the cornice's top (its south-west end lies on the wing's roof)
-  const foot = (z) => [x0, HOUSE.eave - 0.02, z];
+  // its north-east end closed down to the cornice's top (its south-west end runs on under the wing's roof)
+  const foot = (z) => [x0, HOUSE.eave - 0.005, z];
   tris(b, [[foot(R.w[0]), foot(R.w[1]), hi(x0)], [foot(R.w[0]), hi(x0), lo(x0)]], WALL, (m) => [m[0] - 1, m[1]]);
 }
 

@@ -61,8 +61,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   ground on about 93% of its cells, by up to 1.43 m (block 215's: 78%, 1.01 m).
 - The review's round 1 (2026-11-09): the walls' top, which stood above the low roof behind and the north-east
   part's slope over its back wall, brought down to 8.5 m, inside the cornice; the low roof's eave at 8.7 m as the
-  others (its returns 8.6 to 8.7), and its north-east end closed down to the cornice's top. 419 triangles, 4 draw
-  calls; the comparison and the top view as at step 7.
+  others (its returns 8.6 to 8.7), and its north-east end closed down to the cornice's top. After the pull request
+  opened: the low roof run on under the wing's roof to u -1.1, closing its south-west end; the cornice's top 5 mm
+  under the eaves. 419 triangles, 4 draw calls; the comparison and the top view as at step 7.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
