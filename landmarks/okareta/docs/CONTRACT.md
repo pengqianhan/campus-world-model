@@ -18,7 +18,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   - **the north-east part**, under a hipped roof whose ridge runs along the front at w -1.75, 10.7 m, from the wing's
     roof to its north-east hip;
   - the eaves of both at 8.7 m; **a low roof** behind the north-east part's south-west end falling from 9.2 to
-    8.65 m; **a porch** behind the north-east part, its flat roof at 3.2 m;
+    8.7 m; **a porch** behind the north-east part, its flat roof at 3.2 m;
   - **the verandah** before the north-east part's front, its outer edge at w 4.3;
   - the street trees stand over the front up to 25 m, and some of their returns are classed as building: the roofs
     are read below 12.5 m;

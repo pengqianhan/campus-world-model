@@ -35,7 +35,7 @@ export const HOUSE = {
   // its fitted camera: estimated), its corners canted at 45 degrees back to the wing's sides.
   walls: [[6.7, -5.0], [6.7, 1.65], [-0.75, 1.65], [-0.75, 4.75], [-1.15, 5.15], [-5.45, 5.15], [-5.85, 4.75], [-5.85, -7.0],
     [2.0, -7.0], [2.0, -5.0]],
-  top: H(9.0),          // the walls' tops, under the roofs' slopes 0.6 m in from the eaves
+  top: H(8.5),          // the walls' tops, inside the cornice, which fills the eaves' line under every roof
   // The eaves' line, round the roofs: the wing's from back to front, u -6.75 to -0.25 (its ridge, at u -3.5, in the
   // middle), w -7.5 to 5.75; the north-east part's, w -5.5 to 2.25, to u 7.25; the low roof's back, w -7.5, to
   // u 2.0. The cornice fills it from `cornice` up to the eaves, under the roofs.
@@ -52,8 +52,8 @@ export const ROOFS = {
   // (the returns over 10.5 m: u -3.5 to 3.5); its south-west end, inside the wing's roof, is left square.
   main: { u: [-3.5, 7.25], w: [-5.5, 2.25], ridge: H(10.7), at: -1.75, hips: [3.75, 0] },
   // The low roof behind the north-east part's south-west end, from 9.2 m where it meets that part's slope (w -4.5)
-  // to 8.65 at its eave, w -7.5.
-  rear: { u: [-0.25, 2.0], w: [-7.5, -4.5], high: H(9.2), low: H(8.65) },
+  // to its eave at w -7.5, 8.7 m as the other eaves (its returns there 8.6 to 8.7).
+  rear: { u: [-0.25, 2.0], w: [-7.5, -4.5], high: H(9.2), low: H(8.7) },
   // The porch behind the north-east part: a flat roof at 3.2 m (3.1 to 3.3), w -5.75 to -6.75, u 2.25 to 6.75, about
   // 6 m over the ground behind; its posts and its floor estimated.
   porch: { u: [2.25, 6.75], w: [-6.75, -5.0], top: H(3.2) },

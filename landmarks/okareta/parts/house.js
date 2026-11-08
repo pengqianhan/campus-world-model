@@ -5,8 +5,9 @@ import { prism, hipRoof, tris } from "./shapes.js";
 
 const WALL = "trim", ROOF = "roofGrey";
 
-/** The walls from FOOT to their tops under the roofs, the cornice filling the eaves' line under the roofs, the wing's
- * and the north-east part's hipped roofs (the latter's square end inside the wing's roof), and the low roof behind. */
+/** The walls from FOOT to their tops inside the cornice, the cornice filling the eaves' line under the roofs, the
+ * wing's and the north-east part's hipped roofs (the latter's square end inside the wing's roof), and the low roof
+ * behind. */
 export function house(b) {
   prism(b, plan(HOUSE.walls), FOOT, HOUSE.top, WALL);
   prism(b, plan(HOUSE.eaves), HOUSE.cornice, HOUSE.eave - 0.02, WALL);

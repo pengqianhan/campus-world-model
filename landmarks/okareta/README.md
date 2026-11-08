@@ -26,8 +26,9 @@ same 0.27 m, so the measured frame is the one the model was drawn in (0.000 m, 0
 
 ## Neighbours on the map
 
-- No other landmark's outline comes within 2 m of its (the houses beside it, 212 Belgrave and 216 Mona, are blocks),
-  so it stands alone on the map's ground at its door (`../README.md`, "Placement").
+- No other landmark's outline comes within 2 m of its (beside it 212 Belgrave is a block and 216 Mona a measured
+  massing, which joins no ground), so it stands alone on the map's ground at its door (`../README.md`,
+  "Placement").
 - No other block of the campus map lies under the model above 2.5 m, so `building.also` is empty. Of block 215 itself
   98.7% is under the model above 2.5 m.
 
@@ -60,10 +61,10 @@ stand over its front to 25 m and some of their returns are classed as building):
 - **The south-west wing's hipped roof**, its ridge across the front at u -3.5, 10.7 m, its eaves at 8.7 m, over the
   bay at its front; **the north-east part's**, its ridge along the front at w -1.75, 10.7 m, from the wing's roof to its
   north-east hip; where the two meet, the higher slope shows, as in the valleys the LiDAR has. **A low roof** behind,
-  falling from 9.2 to 8.65 m, and **a porch** behind the north-east part, its flat roof at 3.2 m.
+  falling from 9.2 to 8.7 m, and **a porch** behind the north-east part, its flat roof at 3.2 m.
 - **The verandah** before the north-east part, its outer edge at w 4.3.
 
-Walls in the kit's `trim`, roofs `roofGrey`. 165 triangles, 2 draw calls. Silhouette IoU 0.751 (0.751 in the model's
+Walls in the kit's `trim`, roofs `roofGrey` (grey in the 2023 aerial). 165 triangles, 2 draw calls. Silhouette IoU 0.751 (0.751 in the model's
 screen box); from above, footprint IoU 0.900 and 81% of the 662 cells within 0.5 m of the LiDAR's height.
 
 ## The front and the light (round 1, November 2026, the lead)

@@ -614,8 +614,8 @@ strip lies in (see "The third round"): the strip now lies on their measured roof
 of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
 shows in patches where it stood above their 14.4 m blocks before.
 
-**The other 30 keep their blocks** (31 then: 110, among them, is now a landmark), from their top views
-(`measured/out/<id>-forms.png`):
+**The other 25 keep their blocks** (31 then: 110, 215, 302, 303, 303S and 315, among them, are now landmarks), from
+their top views (`measured/out/<id>-forms.png`):
 
 - Several ridges whose heights now fit, but whose footprint does not: 212 (footprint IoU 0.860,
   92% within 0.5 m) and 226 (0.805, 93%), where trees classed as building stand over a corner, and
@@ -624,7 +624,8 @@ shows in patches where it stood above their 14.4 m blocks before.
   eaves drawn past the LiDAR's on its east side) and 908 (0.926, 89.8%: the east end of its south
   wing, where the roof turns, drawn up to 2 m low).
 - Trees classed as building over part of the roof: 118 (0.828, 87%), 215 (0.876, 83%) and 219
-  (0.899, 84%).
+  (0.899, 84%). 215 Okareta is now a landmark, drawn in place of its block, and has no entry in
+  `exclusions.json`.
 - 110 Thomas Building (0.848, 71%): its outline takes in its courtyard, which the LiDAR sees as
   ground and the model fills at its lowest layer. It is now a landmark, drawn in place of its block,
   and has no entry in `exclusions.json`.
@@ -632,10 +633,10 @@ shows in patches where it stood above their 14.4 m blocks before.
   each of their layers has one face at most.
 - Low pitches whose heights now fit: 274 (0.858, 99%) and 803 (0.864, 97%); their footprints
   differ from their outlines, as before.
-- The other reasons (18): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
+- The other reasons (14; 18 then, 302, 303, 303S and 315 among them, now landmarks): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
   from 42% to 77%), and none over the limits.
 
-Each of the 30 keeps its reason in `exclusions.json`. 26 of them also give the numbers of the
+Each of the 25 keeps its reason in `exclusions.json`. 21 of them also give the numbers of the
 check with the new forms (`measured.forms`); 132, 509, 910 and 911 do not, as no new form fits
 them.
 
