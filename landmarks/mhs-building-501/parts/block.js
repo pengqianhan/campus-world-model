@@ -1,19 +1,22 @@
 // The M&HS Building's long block west of the tower, with the plant room on it, the part south of it, the concrete
 // link north of it to 502 and the glazed link beside the tower; and the south edge of the building to its north
 // (502's), inside the campus map's ring of 501. Sizes from common.js.
-import { BLOCK, FOOT, GLAZED, GLAZED_FLOORS, LINK, NORTH, PLANT, SOUTH, WELL, at, plan, rect } from "./common.js";
+import {
+  BLOCK, BLOCK_EAST, FOOT, GLAZED, GLAZED_FLOORS, LINK, NORTH, PLANT, SOUTH, WELL, at, plan, rect,
+} from "./common.js";
 import { block, prism, tris } from "./shapes.js";
 
 const WALL = "renderGrey", ROOF = "roofGrey", GLASS = "glass", PALE = "claddingPale";
 
-/** The long block round its light well (the well's floor a block of its own), the plant room on its south side, the
- * part south of it, the concrete link north of it, and the glazed link: glass from just over FOOT to its roof, each
- * floor's slab standing out of the glass. */
+/** The long block round its light well (the well's floor a block of its own) and its lower east end, the plant room
+ * on its south side, the part south of it, the concrete link north of it, and the glazed link: glass from just over
+ * FOOT to its roof, each floor's slab standing out of the glass. */
 export function body(b) {
   const [u0, u1] = BLOCK.u, [w0, w1] = BLOCK.w, [a0, a1] = WELL.u, [c0, c1] = WELL.w;
   for (const [u, w] of [[[u0, u1], [w0, c0]], [[u0, u1], [c1, w1]], [[u0, a0], [c0, c1]], [[a1, u1], [c0, c1]]])
-    block(b, rect(u, w), FOOT, BLOCK.top, WALL, ROOF);
+    if (u[1] > u[0] && w[1] > w[0]) block(b, rect(u, w), FOOT, BLOCK.top, WALL, ROOF);
   block(b, rect(WELL.u, WELL.w), FOOT, WELL.floor, WALL, ROOF);
+  block(b, rect(BLOCK_EAST.u, BLOCK_EAST.w), FOOT, BLOCK_EAST.top, WALL, ROOF);
   block(b, rect(PLANT.u, PLANT.w), BLOCK.top - 2, PLANT.top, WALL, ROOF);
   for (const s of SOUTH) block(b, rect(s.u, s.w), FOOT, s.top, WALL, ROOF);
   block(b, rect(LINK.u, LINK.w), FOOT, LINK.top, WALL, ROOF);

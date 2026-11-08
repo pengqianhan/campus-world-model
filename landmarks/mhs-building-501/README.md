@@ -38,12 +38,14 @@ as it does for every landmark.
 - No other landmark's outline comes within 2 m of its (502 and 503 are blocks), so it stands alone on the map's ground
   at its door (`../README.md`, "Placement").
 - The model draws what the LiDAR has inside block 501's ring, so that it stands over no part of the blocks of 502 and
-  503 beside it (0.0% and 0.4% of them under it). The ring takes in, besides the building, the plaza east of the tower,
-  over the floors the campus map has below its ground, and the south edge of building 502's roof: the model draws that
-  edge (plainly, in pale cladding, its roof rising as the LiDAR has it) up to 502's own ring, so that the map keeps the
-  roof the block drew there. The long block's south-west corner stands over the ring of 501C, which the campus map has
-  as a basement (2.7% of that block under the model); the LiDAR has the block there.
-- 57.8% of block 501 is under the model above 2.5 m; of the LiDAR's roof inside its ring (899 m²), 92.9%. No other
+  503 beside it (0.1% and 0.3% of them under it). The ring takes in, besides the building, the plaza east of the
+  tower, over the floors the campus map has below its ground, and the south edge of building 502's roof: the model
+  draws that edge (plainly, in pale cladding, its roof rising as the LiDAR has it) to the edge of 502's ring and, east
+  of it, of 501's, so that the map keeps the roof the block drew there. Block 502, as the site draws it, stands about
+  6 m lower than the LiDAR has its roof, so the edge shows as a step over it, as block 501 did. The long block's
+  south-west corner stands over the ring of 501C, which the campus map has as a basement (2.7% of that block under the
+  model); the LiDAR has the block there.
+- 60.0% of block 501 is under the model above 2.5 m; of the LiDAR's roof inside its ring (899 m²), 96.8%. No other
   block is under it by half, so `building.also` is empty.
 
 ## The reference
@@ -63,7 +65,8 @@ camera held 1.6 m over the LiDAR's ground. It stands about 67 m before the face,
 degrees across: an rms of 2.78 px. The crown's eave is at 27.8 m: the LiDAR's edge cells there mix the crown and the
 wall (28 to 30 m), and the fit's residual on the eave was 22 px at the outermost cell's 29.2 m and 1 px at 27.8. No
 size is measured from the photograph but that eave, the crown's band, the shaft's set-back under the crown, the glazed
-link's top and floors and the strip of windows (below); it is a reference for the look and the comparison.
+link's top and floors, the strip of windows and the glazed box's beam (below); it is a reference for the look and the
+comparison.
 
 ## The model (`parts/common.js`)
 
@@ -75,23 +78,25 @@ link's top and floors and the strip of windows (below); it is a reference for th
   estimated).
 - **The glazed box** before the east face, its roof at 4.5 m (its beams 5.4 to 7.0 above it), its face at u 16.8, a
   beam 0.5 m deep along its top (estimated).
-- **The long block** west of it, 29.8 m (29.5 to 29.8), u -26 to -2 and w -6 to 10, a light well in its roof (u -21 to
-  -7, w 4 to 8, its floor at 25.8 m); **the plant room** on its south side, u -13 to -4 and w -7 to -3, 34.6 m;
-  **the part south of it**, 30.5 and 28.6 m, to the ring's edge at w -9.3 (the LiDAR has it on to w -11, inside block
-  503's ring, which draws it); **the concrete link** on its north side, u -5.5 to -2, from the block to 502, 28.5 m.
+- **The long block** west of it, 29.8 m (29.5 to 29.8), u -26 to -6 and w -6 to 10, a light well in its roof (u -21 to
+  -6, w 4 to 8, its floor at 25.8 m), and its last 4 m to the tower at 28.5 m; **the plant room** on its south side,
+  u -13 to -4.5 and w -7 to -3, 34.6 m; **the part south of it**, 30.5 and 28.6 m, to the ring's edge at w -9.3 (the
+  LiDAR has it on to w -11, inside block 503's ring; the site draws 503 from its storeys' outlines, which start at about
+  w -10.2, so a strip of about 1 m between is drawn by neither, as on main); **the concrete link** on its north side,
+  u -5.5 to -2, from the block to 502, 28.5 m.
 - **The glazed link** beside the tower's north side, u -2 to 0.5 and w 10 to 15, where the LiDAR returns nothing (a
   glass roof; the ground beyond it): glass to 27 m, each floor's slab every 3.8 m from 4.8 m standing 0.05 m out of
   it (the photograph's glazed link right of the tower, through its fitted camera: estimated). The link the photograph
   shows left of the tower stands south of 501's ring, in 503's, and is left to that block.
 - **502's south edge** inside the ring: its south wall at w 16 (its first roof returns), its east end at u 5.75, its
-  roof rising 0.2 m a metre from 28.8 m, to 502's ring.
+  roof rising 0.2 m a metre from 28.8 m, to the edge of 502's ring (and of 501's, east of u -6.45).
 - The light: the photograph has no date, and its east face stands in sun. The viewer's sun at 70 degrees round and 45
-  up lights that face; the building's luma median is 136 at an exposure of 0.4 against the photograph's 126 (counted
+  up lights that face; the building's luma median is 136 at an exposure of 0.4 against the photograph's 129 (counted
   in the model's screen box).
 
-Silhouette IoU 0.914 in the model's screen box. The top view: footprint IoU 0.797 (the LiDAR's 1,006 m² against the
-model's 916, both 852), 72% of the 3,374 cells both cover within 0.5 m (p10/p50/p90 -0.13/0.12/1.49), the highest
-point 34.3 m against the LiDAR's 34.4 (p99.9). 395 triangles, 5 draw calls.
+Silhouette IoU 0.909 in the model's screen box. The top view: footprint IoU 0.830 (the LiDAR's 1,006 m² against the
+model's 950, both 887), 78% of the 3,511 cells both cover within 0.5 m (p10/p50/p90 -0.13/0.10/1.27), the highest
+point 34.3 m against the LiDAR's 34.4 (p99.9). 409 triangles, 5 draw calls.
 
 ## On the map (step 7)
 
@@ -136,7 +141,10 @@ not 13.8 (the strip between is open ground); the long block's west end at u -26,
 atria drawn on the block's whole length where the LiDAR has, on the south-west, a planted surface at the plaza's level,
 and on the north-west nothing over a strip 6 m wide. The model now draws only what the LiDAR has inside 501's ring
 (and the block's corner over 501C's), at the cells' sizes; the glazed link only where the photograph shows it, beside
-the tower; and its card names every size estimated in the photograph. 640 triangles became 395.
+the tower; and its card names every size estimated in the photograph. 640 triangles became 395. The second round
+found 502's edge stopping on a straight line short of 501's ring (a strip up to 1.9 m wide left undrawn) and the
+block's last 4 m to the tower 1.2 m too high (it stands at 28.5 m, as the concrete link does): both fixed, and the
+light well runs on to that lower part; 409 triangles.
 
 ## Not drawn yet
 

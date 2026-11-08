@@ -14,10 +14,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - The building's own frame: **u** east-south-east (`-x`), toward the plaza, and **w** toward 502 (`z`).
   `parts/common.js` gives `at(u, w)`, `plan(corners)` and `rect(u, w)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers; measured cell by cell after the review's round 1):
-  - **the long block**, about 29.8 m, u -26 to -2 and w -6 to 10, a light well in its roof (25.8 m);
+  - **the long block**, about 29.8 m, u -26 to -6 and w -6 to 10, a light well in its roof (25.8 m), its last 4 m to
+    the tower at 28.5 m;
   - **the tower** at its east end, toward the plaza, u -2 to 9 and w -7 to 10: its **crown**'s flat top at 32.4 m,
     its edges falling to about 28 to 30 m;
-  - **a plant room** of 34.6 m on the block's south side (u -13 to -4, w -7 to -3), **a lower part** south of it
+  - **a plant room** of 34.6 m on the block's south side (u -13 to -4.5, w -7 to -3), **a lower part** south of it
     (30.5 and 28.6 m) on to w -11, past 501's ring at w -9.3 into 503's; **a concrete link** of 28.5 m on its north side
     (u -5.5 to -2) to 502;
   - **a glazed link** beside the tower's north side (u -2 to 0.5, w 10 to 15), which returns nothing (a glass roof),
@@ -37,7 +38,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 244 triangles, 4 draw calls; round 1: 640, 5; after the review's round 1: 395, 5.
+  0: 244 triangles, 4 draw calls; round 1: 640, 5; after the review's rounds 1 and 2: 395 and 409, 5.
 
 ## Rounds
 - Round 0 (2026-11-09): the tower's shaft (`renderGrey`), its crown (`roofGrey`) and the glazed box before it
@@ -82,13 +83,19 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   Silhouette IoU 0.914 in the model's screen box, luma 136 against 126; the top view: footprint IoU 0.797, 72% of
   the 3,374 cells within 0.5 m (p10/p50/p90 -0.13/0.12/1.49); block 501 under the model 57.8%, the LiDAR's roof in
   its ring 92.9%; 502 0.0%, 503 0.4%, 501C 2.7%.
+- The review's round 2 (2026-11-09): 502's edge drawn to 501's ring's north edge east of u -6.45, where the straight
+  line to 502's ring had left a strip up to 1.9 m wide undrawn; the block's last 4 m to the tower at 28.5 m and the
+  light well on to it (u -6); the plant room's east end at u -4.5 and the second part south of the block's at -1.5.
+  409 triangles, 5 draw calls. Silhouette IoU 0.909 in the model's screen box, luma 136 against 129; the top view:
+  footprint IoU 0.830, 78% of the 3,511 cells within 0.5 m (p10/p50/p90 -0.13/0.10/1.27); block 501 under the model
+  60.0%, the LiDAR's roof in its ring 96.8%; 502 0.1%, 503 0.3%, 501C 2.7%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from the plaza about 67 m before the tower's east face; `refs/photos/`, gitignored) is a
   reference for the look: nothing is traced or sampled from it, and no size is measured from it but the crown's eave
   and band over the east face, the shaft's set-back under the crown, the glazed link's top and floors and the tower's
-  strip of windows, which are estimated through its fitted camera.
+  strip of windows and the glazed box's beam, which are estimated through its fitted camera.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

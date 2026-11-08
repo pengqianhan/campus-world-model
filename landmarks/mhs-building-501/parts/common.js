@@ -50,19 +50,22 @@ export const TOWER = {
 // lie in the shaft's face. The beam along its top is 0.5 m deep (estimated).
 export const BOX = { u: [8.1, 16.8], w: [-6.0, 9.5], top: H(4.5), beam: 0.5 };
 
-// The long block west of the tower: 29.8 m (29.5 to 29.8), its west end at u -26 (beyond it a part of 22 m, outside
-// the ring, and the ground), its sides at w -6 and 10.
-export const BLOCK = { u: [-26.0, -2.0], w: [-6.0, 10.0], top: H(29.8) };
-// A light well in its roof, u -21 to -7, w 4 to 8, its floor at 25.8 m (25.6 to 26.5).
-export const WELL = { u: [-21, -7], w: [4.0, 8.0], floor: H(25.8) };
-// The plant room on its south side, u -13 to -4, w -7 to -3, 34.6 m (34.3 to 34.9); its ends 0.1 m inside the part
-// south of the block, so that its walls do not lie in that part's ends.
-export const PLANT = { u: [-12.9, -4.1], w: [-7, -3], top: H(34.6) };
-// The part south of the block, to the ring's south edge at w -9.3 (the LiDAR has it on to w -11, inside block 503's
-// ring, which draws it): 30.5 m from u -13 to -4.5 (30.3 to 30.7), 28.6 m from -4.5 to -1 (28.5 to 28.6).
+// The long block west of the tower: 29.8 m (29.5 to 29.8) from its west end at u -26 (beyond it a part of 22 m,
+// outside the ring, and the ground) to u -6, its sides at w -6 and 10; its last 4 m to the tower, u -6 to -2, at
+// 28.5 m (28.4 to 28.7), the height of the concrete link and of the part south of it.
+export const BLOCK = { u: [-26.0, -6.0], w: [-6.0, 10.0], top: H(29.8) };
+export const BLOCK_EAST = { u: [-6.0, -2.0], w: [-6.0, 10.0], top: H(28.5) };
+// A light well in its roof, u -21 to -6 (to the lower east part), w 4 to 8, its floor at 25.8 m (25.6 to 26.5).
+export const WELL = { u: [-21, -6], w: [4.0, 8.0], floor: H(25.8) };
+// The plant room on its south side, u -13 to -4.5, w -7 to -3, 34.6 m (34.1 to 34.9); its ends 0.1 m inside the
+// part south of the block, so that its walls do not lie in that part's ends.
+export const PLANT = { u: [-12.9, -4.6], w: [-7, -3], top: H(34.6) };
+// The part south of the block, to the ring's south edge at w -9.3: 30.5 m from u -13 to -4.5 (30.3 to 30.7), 28.6 m
+// from -4.5 to -1.5 (28.5 to 28.6). The LiDAR has it on to w -11, inside block 503's ring; the site draws 503 from its
+// storeys' outlines, which start at about w -10.2, so a strip of about 1 m between is drawn by neither, as on main.
 export const SOUTH = [
   { u: [-13, -4.5], w: [-9.3, -6.0], top: H(30.5) },
-  { u: [-4.5, -1.0], w: [-9.3, -6.0], top: H(28.6) },
+  { u: [-4.5, -1.5], w: [-9.3, -6.0], top: H(28.6) },
 ];
 // The concrete link on its north side, u -5.5 to -2, from the block to 502 (w 10 to 16.5, 0.5 m into 502), 28.5 m.
 export const LINK = { u: [-5.5, -2.0], w: [10.0, 16.5], top: H(28.5) };
@@ -76,10 +79,12 @@ export const GLAZED = { u: [-2.5, 0.5], w: [9.3, 15.0], top: H(27.0) };
 export const GLAZED_FLOORS = [4.8, 8.6, 12.4, 16.2, 20.0, 23.8].map(H);
 
 // The building to the north (502), its south edge inside 501's ring: its south wall at w 16 (its first roof returns),
-// its east end at u 5.75, from the ring's west edge at u -30; drawn to 502's ring, whose south edge runs from w 20.3
-// at u -23.2 to 19.65 at u 5.75 (its block draws on from there). Its roof rises 0.2 m a metre to the north from 28.8 m
-// at that wall (29.2, 29.5, 29.9 and 30.2 m at w 17 to 23; the outermost cells, 27.0 to 27.3, are its edge's).
+// its east end at u 5.75, from the ring's west edge at u -30; drawn to the edge of 502's ring west of u -6.45 (w 20.3
+// to 21.4; its block draws on from there) and to 501's ring's north edge east of it (w 21.5 to 21.8, which 502's ring
+// meets or overlaps by up to 0.2 m), so that no part of 501's ring with the LiDAR's roof is left undrawn. Its roof
+// rises 0.2 m a metre to the north from 28.8 m at that wall (29.2, 29.5, 29.9 and 30.2 m at w 17 to 23; the outermost
+// cells, 27.0 to 27.3, are its edge's).
 export const NORTH = {
-  plan: [[-30, 16.0], [5.75, 16.0], [5.75, 19.65], [-23.17, 20.32], [-30, 20.29]],
+  plan: [[-30, 16.0], [5.75, 16.0], [5.75, 21.78], [-3.54, 21.49], [-6.45, 21.42], [-23.17, 20.32], [-30, 20.29]],
   eave: H(28.8), rise: 0.2, w0: 16.0,
 };

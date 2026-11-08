@@ -614,8 +614,8 @@ and its corners hipped up to a flat top; a strip of windows up the middle of the
 and a glazed link beside it to the north. Its heights and plans come from the LiDAR; the crown's eave and band, the
 glazed link's top and floors and the strip of windows are estimated with the photograph as a reference. One
 photograph from the plaza, about 67 m from the tower; counted inside the rectangle the model fills on the screen, its
-silhouette has an IoU of 0.91 in it, and the brightness of the building is within 10 of the photograph's. From above
-its outline covers the LiDAR's with an IoU of 0.80, and on 72% of the cells both cover it is within 0.5 m of the
+silhouette has an IoU of 0.91 in it, and the brightness of the building is within 7 of the photograph's. From above
+its outline covers the LiDAR's with an IoU of 0.83, and on 78% of the cells both cover it is within 0.5 m of the
 LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
@@ -1145,10 +1145,10 @@ If you represent the University and would like something changed or removed, ple
   court), which is not drawn. The concrete's boards and bands, the glazing's frames, the balcony rails, the box's
   doors and the things on the roofs are not drawn. Its entrance is not known from a record: its door is set before
   the glass doors the photograph shows in the glazed box, where the map's ground lies 1.3 m under the LiDAR's.
-  Block 501 is 57.8% under the model: its ring takes in the plaza east of the tower, over the floors the campus map
+  Block 501 is 60.0% under the model: its ring takes in the plaza east of the tower, over the floors the campus map
   has below its ground, and that strip. Inside the ring the model also draws the south edge of building 502's roof,
-  up to 502's own ring; the long block's south-west corner stands over the ring of 501C, a basement in the campus
-  map.
+  to the edge of 502's ring; the long block's south-west corner stands over the ring of 501C, a basement in the
+  campus map.
   While a building beside it is open, it gives way to block 501, which sinks to a footprint on its footing, at most
   4 m above the lowest ground under it: that footprint stands above the drawn ground on 79% of its cells, by up to
   1.7 m.
