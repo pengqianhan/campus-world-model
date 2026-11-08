@@ -1,6 +1,7 @@
 {
  "name": "mhs-building-501",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference: the crown's eave over the tower's east face, the tops and floors of the glazed links either side of it, and its strip of windows; the glass roofs of the links, which the LiDAR does not see; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the plaza east of the tower, about 67 m before its east face, through a lens of about 48 degrees across, looking up 4 degrees, its principal point low in the frame (the photograph is cut off centre, or its verticals were straightened: they are upright); its camera is fitted to the front edge of the crown's flat top, the crown's eave over the east face, and the top and foot of the glazed box before that face, held 1.6 m over the LiDAR's ground",
  "building": {

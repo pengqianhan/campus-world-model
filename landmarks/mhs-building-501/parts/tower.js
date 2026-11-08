@@ -26,9 +26,9 @@ export function tower(b) {
   prism(b, rect([T.shaft.u[1], T.shaft.u[1] + 0.05], T.strip.w), T.strip.y[0], T.strip.y[1], GLASS);
 }
 
-/** The glazed box before the east face: glass from FOOT to its beam, the beam and its roof over it. */
+/** The glazed box before the east face: glass from just over FOOT to its beam, the beam and its roof over it. */
 export function box(b) {
   const p = rect(BOX.u, BOX.w);
-  prism(b, p, FOOT, BOX.top - BOX.beam, GLASS);
+  prism(b, p, FOOT + 0.1, BOX.top - BOX.beam, GLASS);  // its foot 0.1 m over the shaft's, where it runs in
   prism(b, p, BOX.top - BOX.beam, BOX.top, WALL);
 }

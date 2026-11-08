@@ -43,7 +43,8 @@ export const TOWER = {
 
 // The glazed box before the tower's east face: its roof 4.5 m (4.4 to 4.6, its beams 5.4 to 7.0 above it), its face
 // at u 16.8 (the last cell with its returns), w -6.0 to 9.5.
-export const BOX = { u: [8.6, 16.8], w: [-6.0, 9.5], top: H(4.5), beam: 0.5 };
+// It runs 0.5 m into the shaft, so that its glass does not lie in the shaft's face.
+export const BOX = { u: [8.1, 16.8], w: [-6.0, 9.5], top: H(4.5), beam: 0.5 };
 
 // The long block west of the tower: 29.8 m (29.5 to 30.2), its west end at u -28.5 (the ground at -4.8 beyond it),
 // its sides at w -6.5 and 9.5; the plant room on its south side, u -14 to -6, w -9 to -3.5, 34.8 m (34.4 to 34.9);
@@ -51,19 +52,25 @@ export const BOX = { u: [8.6, 16.8], w: [-6.0, 9.5], top: H(4.5), beam: 0.5 };
 export const BLOCK = { u: [-28.5, -2.0], w: [-6.5, 9.5], top: H(29.8) };
 // A light well in its roof, u -21 to -7, w 3.5 to 7.8, its floor at 26.3 m (25.7 to 27.0).
 export const WELL = { u: [-21, -7], w: [3.5, 7.8], floor: H(26.3) };
-export const PLANT = { u: [-14, -6], w: [-9, -3.5], top: H(34.8) };
-export const SOUTH = [{ u: [-14, -6], w: [-12.5, -6.5], top: H(30.6) }, { u: [-6, -2], w: [-12.5, -6.5], top: H(28.6) }];
-// The concrete link on its north side, u -6 to -2, w 9.5 to 14, 28.6 m.
-export const LINK = { u: [-6, -2], w: [9.5, 14], top: H(28.6) };
+// The plant room's ends 0.1 m inside the part south of the block, so that its walls do not lie in that part's ends.
+export const PLANT = { u: [-13.9, -6.1], w: [-9, -3.5], top: H(34.8) };
+export const SOUTH = [
+  { u: [-14, -6], w: [-12.5, -6.5], top: H(30.6) },
+  { u: [-6, -2], w: [-12.5, -6.5], top: H(28.6) },
+];
+// The concrete link on its north side, u -6 to -2, w 9.5 to 14, 28.6 m; drawn to 502's south wall, w 13.8.
+export const LINK = { u: [-6, -2], w: [9.5, 13.8], top: H(28.6) };
 // The glass-roofed atria, which the LiDAR does not see: to the north, w 9.5 to 14, from the block's west end to u 5
 // (the ground's returns beyond); to the south, w -12.5 to -6.5, west of the part south of the block and from it to
 // u 5. Their tops at 27 m and their floors 3.8 m apart from 4.8 m up: the photograph's glazed links either side of the
 // tower, through its fitted camera (estimated); each floor's slab stands 0.05 m out of the glass.
-// Each runs 0.5 m into the walls it meets (the block's, the shaft's, the link's and the part's south of the block), so
-// that no glass lies in a wall's plane; their west ends 0.5 m short of the block's, for the same reason.
+// Each runs 0.5 m into the walls it meets (the block's, the shaft's, the link's and the part's south of the block)
+// and 0.2 m into 502's south wall, so that no glass lies in a wall's plane; their west ends 0.5 m short of the
+// block's, their east ends 0.1 m short of 502's, and their south faces 0.1 m inside the part south of the block, for
+// the same reason.
 export const ATRIA = [
-  { u: [-28.0, -5.5], w: [9.0, 14] }, { u: [-2.5, 5], w: [9.3, 14] },
-  { u: [-28.0, -13.5], w: [-12.5, -6.0] }, { u: [-2.5, 5], w: [-12.5, -5.9] },
+  { u: [-28.0, -5.5], w: [9.0, 14] }, { u: [-2.5, 4.9], w: [9.3, 14] },
+  { u: [-28.0, -13.5], w: [-12.4, -6.0] }, { u: [-2.5, 4.9], w: [-12.4, -5.9] },
 ];
 export const ATRIUM_TOP = H(27.0);
 export const ATRIUM_FLOORS = [4.8, 8.6, 12.4, 16.2, 20.0, 23.8].map(H);

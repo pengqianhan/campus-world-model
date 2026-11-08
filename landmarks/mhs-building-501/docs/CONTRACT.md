@@ -6,10 +6,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 ## Frame and sizes
 - View frame, metres: **x** west-north-west (the frame's `-axis`, along the long block), **y** up from the frame's
   ground, 72.19 m NZVD2016, the LiDAR's ground at the door, on the plaza before the glazed box (the heights in
-  `parts/common.js` were measured above 71.88 m, the median ground in the first crop box, and `H` moves them on), **z** north-north-east (`toStreet`, toward building 502); the frame's centre, at the
-  top of the tower, at x = z = 0. `config/mhs-building-501.json`, `frame`. The campus's origin is about 1 km to the
-  north: there the map's true north and NZTM's grid north differ by about 1 degree, so the map's metres and the
-  frame's local NZTM metres lie about 19 m apart (`place` turns one into the other).
+  `parts/common.js` were measured above 71.88 m, the median ground in the first crop box, and `H` moves them on),
+  **z** north-north-east (`toStreet`, toward building 502); the frame's centre, at the top of the tower, at x = z = 0.
+  `config/mhs-building-501.json`, `frame`. The campus's origin is about 1 km to the north: there the map's true north
+  and NZTM's grid north differ by about 1 degree, so the map's metres and the frame's local NZTM metres lie about 19 m
+  apart (`place` turns one into the other).
 - The building's own frame: **u** east-south-east (`-x`), toward the plaza, and **w** toward 502 (`z`).
   `parts/common.js` gives `at(u, w)`, `plan(corners)` and `rect(u, w)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
@@ -62,12 +63,20 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   screen box, luma 136 against 131; the top view as before, block 501 under the model 74.7% (its ring takes in the
   plaza, over the floors the campus map has below its ground: -5, -10 and -20), the LiDAR's roof inside that ring
   98.9% (899 m²); 501C 13.0%, 502 6.3%, 503 4.5%: `also` stays empty.
+- On the site (2026-11-09): `site` true, the card's `estimated`; the faces check found glass and walls of different
+  materials in one plane where the atria and the glazed box met the walls round them, and 502's south edge's foot in
+  the link's: the box and the atria now run 0.5 m into the walls they meet and their glass starts 0.1 m over FOOT, the
+  atria's ends stop 0.1 m short of 502's east end and their south faces 0.1 m inside the part south of the block, the
+  link stops at 502's south wall and the plant room's ends stand 0.1 m inside that part. The foot check passes. Beside
+  an open neighbour the model gives way to block 501, whose footprint stands above the drawn ground on 79% of its
+  cells, by up to 1.67 m. 640 triangles, 5 draw calls; the comparison and the top view as at step 7.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from the plaza about 67 m before the tower's east face; `refs/photos/`, gitignored) is a
   reference for the look: nothing is traced or sampled from it, and no size is measured from it but the crown's eave
-  over the east face and the atria's tops, which are estimated through its fitted camera.
+  over the east face, the atria's tops and floors and the tower's strip of windows, which are estimated through its
+  fitted camera.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-09
+
+### Added
+
+- **Building 501 of the M&HS Building drawn in detail.** Near the camera the map draws building 501 of the M&HS
+  Building, on the Grafton campus, from code in place of its block: a long block in board-marked concrete with a
+  tower at its east end under a dark crown of standing-seam metal, a strip of windows up the tower's face, a glazed
+  box at its foot and glazed links either side. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the plaza to its east, and its card says what is estimated: some heights, with the photograph as
+  a reference (the crown's eave, the links' tops and floors, the strip of windows), the links' glass roofs, which the
+  LiDAR does not see, and the faces no photograph shows. On the map it has the map's colours; from a walker's height
+  on a computer with a graphics card, its own concrete, metal and glass (#PR).
+
 ## 2026-11-08
 
 ### Added

@@ -18,7 +18,8 @@ export function body(b) {
   for (const s of SOUTH) block(b, rect(s.u, s.w), FOOT, s.top, WALL, ROOF);
   block(b, rect(LINK.u, LINK.w), FOOT, LINK.top, WALL, ROOF);
   for (const a of ATRIA) {
-    prism(b, rect(a.u, a.w), FOOT, ATRIUM_TOP, GLASS);
+    // from 0.1 m over FOOT, so that its foot does not lie in the foot of the walls it runs into
+    prism(b, rect(a.u, a.w), FOOT + 0.1, ATRIUM_TOP, GLASS);
     const out = rect([a.u[0] - 0.05, a.u[1] + 0.05], [a.w[0] - 0.05, a.w[1] + 0.05]);
     for (const y of ATRIUM_FLOORS) prism(b, out, y - 0.3, y, WALL);
   }
@@ -29,10 +30,12 @@ export function north(b) {
   const N = NORTH, [u0, u1] = N.u, [w0, w1] = N.w;
   prism(b, rect(N.u, N.w), FOOT, N.eave, PALE);
   const p = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
-  tris(b, [[p(u0, w0, N.eave), p(u1, w0, N.eave), p(u1, w1, N.high)], [p(u0, w0, N.eave), p(u1, w1, N.high), p(u0, w1, N.high)]], ROOF);
+  tris(b, [[p(u0, w0, N.eave), p(u1, w0, N.eave), p(u1, w1, N.high)],
+    [p(u0, w0, N.eave), p(u1, w1, N.high), p(u0, w1, N.high)]], ROOF);
   const out = (u) => (m) => [m[0] - (u === u1 ? 1 : -1), m[1]];
   for (const u of [u0, u1])
     tris(b, [[p(u, w0, N.eave), p(u, w1, N.eave), p(u, w1, N.high)]], PALE, out(u));
-  tris(b, [[p(u0, w1, N.eave), p(u1, w1, N.eave), p(u1, w1, N.high)], [p(u0, w1, N.eave), p(u1, w1, N.high), p(u0, w1, N.high)]], PALE,
+  tris(b, [[p(u0, w1, N.eave), p(u1, w1, N.eave), p(u1, w1, N.high)],
+    [p(u0, w1, N.eave), p(u1, w1, N.high), p(u0, w1, N.high)]], PALE,
     (m) => [m[0], m[1] + 1]);
 }

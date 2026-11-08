@@ -422,7 +422,8 @@ building over it.
 The maintainer's goal of 2026-10-28 is every building of the City, Grafton and Newmarket campuses
 drawn at least as a measured massing. `massing.py --campus grafton` and `--campus newmarket` measure
 every building of those campuses by the same steps, limits and decisions as on the City campus (no
-tiers there: no landmark is planned for them yet). They need four more tiles of the same LiDAR, the
+tiers there: no landmark was planned for them then; 501 has since become one, and the generator
+leaves it out as it does every landmark on the site). They need four more tiles of the same LiDAR, the
 1:1000 tiles of sheet BA32 that cover each outline with the 12 m the generator crops round it:
 3803 and 3804 for Grafton, with 3704 that the City campus already uses (93 Grafton Road reaches
 into it), and 3904 and 3905 for Newmarket. `--fetch` fetched them once through `snapshot.ts` on
@@ -499,7 +500,8 @@ neighbour's outline is for the maintainer: keep these strips; or keep 904's bloc
 generator leave the neighbours' outlines out of the layers above the lowest, which would change
 305 on the City campus too.
 
-The other 34 keep their blocks, each in `exclusions.json` with its reason:
+The other 34 kept their blocks then, each in `exclusions.json` with its reason (33 now: 501, the M&HS
+Building, has since become a landmark, and its entry has gone):
 
 - **By decision 6** (seven): Grafton Hall's 644, 645 and 646 and Building 523 by their residential
   floors; by hand 621 Grafton Hall Residences, by its name, and 643 Grafton Hall Block A, a block of
@@ -508,16 +510,16 @@ The other 34 keep their blocks, each in `exclusions.json` with its reason:
   None of the seven would pass the limits (523, the nearest: footprint IoU 0.807).
 - **In another area of the map** (one): 581 18 Carrick Place stands at Carrick Place, Mount Eden,
   in its own area of the map, which the campus's tiles do not reach.
-- **Too little roof** (13). The LiDAR is not wrong in any of them; it sees ground, trees or a low
-  structure inside the outline. The car parks P9A, P9B and P9C are open-air: ground in 95%, 95% and
-  75% of their cells; P9C's second outline (P9C_2, 32 m²) holds a structure lower than 2.5 m.
-  595 Med School Hospital Underpass is under the ground (ground in 67% of its cells, crowns in 32%),
-  and 501C has only floors -2 and -1: the LiDAR sees trees over 28% of it. 913 Larder Cafe (62 m²)
-  lies under crowns about 5 m high (42% of its cells) with no point in 37%. The outlines of 501
-  (ground in 27% of its cells, no point in 13%), 505 (ground in 14%), 528 (ground 11%, crowns 8%),
-  628 (crowns 11%, ground 8%) and 629 (ground 19%) take in open ground or trees. 623's low side
-  stands under 2.5 m above the median ground round it, which falls 3.6 m across the site (24% of
-  its cells).
+- **Too little roof** (13; 12 now, 501 a landmark). The LiDAR is not wrong in any of them; it sees
+  ground, trees or a low structure inside the outline. The car parks P9A, P9B and P9C are open-air:
+  ground in 95%, 95% and 75% of their cells; P9C's second outline (P9C_2, 32 m²) holds a structure
+  lower than 2.5 m. 595 Med School Hospital Underpass is under the ground (ground in 67% of its
+  cells, crowns in 32%), and 501C has only floors -2 and -1: the LiDAR sees trees over 28% of it.
+  913 Larder Cafe (62 m²) lies under crowns about 5 m high (42% of its cells) with no point in 37%.
+  The outlines of 501 (ground in 27% of its cells, no point in 13%), 505 (ground in 14%), 528
+  (ground 11%, crowns 8%), 628 (crowns 11%, ground 8%) and 629 (ground 19%) take in open ground or
+  trees. 623's low side stands under 2.5 m above the median ground round it, which falls 3.6 m
+  across the site (24% of its cells).
 - **Below the top-view limits** (13), from their top views (`measured/out/<id>.png`):
   - Outlines that take in open ground the model roofs: 503 (a strip 2 to 3 m wide along its north
     side, where the LiDAR sees the ground), 507 (a court on its west side, under scattered points at
