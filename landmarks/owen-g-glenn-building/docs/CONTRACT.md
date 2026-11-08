@@ -67,7 +67,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   against 164. The top view, on this ground: 90% of the 21,331 cells within 0.5 m (p10/p50/p90 -0.34/0.02/0.22),
   footprint IoU 0.931 (the LiDAR's 5,765 m² against the model's 5,537, both 5,448: the deck's top is at the ground
   now, under the 2.5 m the footprint counts from), the highest point 26.96 m against the LiDAR's 27.34; block 260
-  under the model 48.8% (the plaza, at the ground, is not under it), block 219 6.5%: `also` stays empty.
+  under the model 48.8% (the plaza, at the ground, is not under it; of its 22,474 cells where the LiDAR has a roof
+  more than 2.5 m above the ground, the model covers 95.5%), and no other block (block 219's 6.5% was under the
+  deck's edge on the provisional ground): `also` stays empty.
 - The map's ground (its 8 m elevation model) runs as a slope from the streets down to the gully under the deck: at
   the door it lies 6.18 m below the LiDAR's, 4.15 m below at the plaza's north edge, 1.3 to 1.5 m below on the road
   on the west, level with it on the driveway on the north, 7.68 m above it in the gully on the east. The site stands

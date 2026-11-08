@@ -33,8 +33,10 @@ same 5.16 m, so the measured frame is the one the model was drawn in (0.000 m, 0
 
 - No other landmark's outline comes within 2 m of its, so it stands alone on the map's ground at its door
   (`../README.md`, "Placement").
-- No other block of the campus map lies half under the model (block 219, 8 Grafton Road, 6.5%), so `building.also` is
-  empty. Of block 260 itself 48.8% is under the model above 2.5 m: the plaza, the deck's top, is at the door's ground.
+- No other block of the campus map lies under the model above 2.5 m (block 219, 8 Grafton Road, had 6.5% under the
+  deck's edge while the heights stood on the provisional ground), so `building.also` is empty. Of block 260 itself
+  48.8% is under the model above 2.5 m, as the plaza, the deck's top, is at the door's ground; of its 22,474 cells
+  where the LiDAR has a roof more than 2.5 m above that ground, the model covers 95.5%.
 
 ## The reference
 
