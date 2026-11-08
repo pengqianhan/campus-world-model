@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   floors under the plaza. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the
   plaza, and its card says what is estimated: some heights, with the photograph as a reference, the crown's width,
   the top of one strip the LiDAR does not see, and the faces no photograph shows. On the map it has the map's
-  colours; from a walker's height on a computer with a graphics card, its own glass, louvres and cladding (#PR).
+  colours; from a walker's height on a computer with a graphics card, its own glass, louvres and cladding (#144).
 
 ## 2026-11-08
 
