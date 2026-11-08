@@ -4,10 +4,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground (24.46 m NZVD2016,
-  the median ground in the crop box, 25 m round the outline; to be the LiDAR's ground at the config's `door`, step
-  7), **z** north-west (`toStreet`); the frame's centre at x = z = 0. `config/owen-g-glenn-building.json`, `frame`.
-  The site falls about 28 m across the crop, from the road on the west to the gully on the east.
+- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground (29.62 m NZVD2016,
+  the LiDAR's ground at the config's `door`, on the plaza before the canopy; from 24.46 m, the median ground in the
+  crop box, before step 7), **z** north-west (`toStreet`); the frame's centre at x = z = 0.
+  `config/owen-g-glenn-building.json`, `frame`. The site falls about 28 m across the crop, from the road on the west
+  to the gully on the east.
 - The building's own frame: **u** north-east (`-x`) and **w** north-west (`z`). `parts/common.js` gives `at(u, w)`,
   `rect(u, w)` and `plan(corners)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers; every plan traced from it):
@@ -20,7 +21,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   - **the sloping canopy** in the curve's inner corner, a triangle in plan, its top a plane fitted to its returns
     (33.65 m at its north end, 34.5 m at its east end, rising south-west into the curve);
   - the ground within 3 m round the deck from 10.98 m (east of the east arm, where the site drops) to 31.21 m (on
-    the west): walls go down to `FOOT`, -14.0 m.
+    the west): walls go down to `FOOT`, -14.0 m above 24.46 m (-19.16 m above the door's ground).
+- `parts/common.js` measures every height above 24.46 m, and its `H` moves it on to the door's ground (5.16 m
+  higher).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -51,6 +54,24 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   it, the north-east building) plain. The light: the viewer's sun where the sun stood when the photograph was taken
   (61.7 degrees round, 65.8 up), exposure 0.75. Silhouette IoU 0.904 (0.904 in the box); luma median 198 against the
   photograph's 193. The top view: 86% of the cells within 0.5 m (p10/p50/p90 -0.91/0.02/0.22), the rest as round 0.
+- Step 7 (2026-11-09): the door on the plaza before the glazed front under the canopy, 1.5 m out from the middle
+  of the canopy's low edge (`door` in the config: the photograph shows that front, a banner in it and a dark wall
+  with lettering beside it; its doors are not made out; the campus map records no lobby or entrance in 260, only a
+  reception on level 0, below the plaza, and OpenStreetMap no entrance near it). The LiDAR's ground there, 29.62 m,
+  is the frame's ground: the frame's thresholds lowered by the 5.16 m, the heights moved by `H`, the photograph's
+  camera lowered with them; `measure` gives the expected frame (0.000 m, 0.000 degrees). With the ground at the
+  door, the comparison counts the model more than 4 m above it (the config's `refine.min_height_m`), so the plaza on
+  the deck no longer counts as model: silhouette IoU 0.763 (0.763 in the box, where the photograph shows 76.0% sky);
+  the luma, on those parts, 110 against the photograph's 164 at exposure 0.75, so the exposure is set at 1.5: 160
+  against 164. The top view, on this ground: 90% of the 21,331 cells within 0.5 m (p10/p50/p90 -0.34/0.02/0.22),
+  footprint IoU 0.931 (the LiDAR's 5,765 m² against the model's 5,537, both 5,448: the deck's top is at the ground
+  now, under the 2.5 m the footprint counts from), the highest point 26.96 m against the LiDAR's 27.34; block 260
+  under the model 48.8% (the plaza, at the ground, is not under it), block 219 6.5%: `also` stays empty.
+- The map's ground (its 8 m elevation model) runs as a slope from the streets down to the gully under the deck: at
+  the door it lies 6.18 m below the LiDAR's, 4.15 m below at the plaza's north edge, 1.3 to 1.5 m below on the road
+  on the west, level with it on the driveway on the north, 7.68 m above it in the gully on the east. The site stands
+  the model on the map's ground at the door, so the plaza there is drawn 6.18 m lower than it stands, and along the
+  deck's plan the map's ground runs from 3.61 m below the model's y = 0 to 6.82 m above it.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

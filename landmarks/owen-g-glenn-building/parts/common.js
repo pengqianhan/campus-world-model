@@ -1,17 +1,21 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/owen-g-glenn-building_pts.npy: the building returns, class 6,
 // and the ground's, classes 1 and 2, in the crop box) in the view frame of config/owen-g-glenn-building.json: x is
 // -axis (south-west), y up from the frame's ground, z is toStreet (north-west); the frame's centre at x = z = 0.
-// Owned by the lead: read, do not edit. Measured 2026-11-09 (round 0), before the door is set: every height below is
-// measured above 24.46 m NZVD2016, the median ground in the crop box (step 7 moves them on to the door's ground).
+// Owned by the lead: read, do not edit. Measured 2026-11-09 (round 0), before the door was set: every height below
+// is measured above 24.46 m NZVD2016, the median ground in the crop box, and H moves it on to the door's ground.
 //
 // How: the highest return in 0.5 m cells; each part's cells (by height, near the campus map's ring moved onto the
 // LiDAR: the placement's offset and turn) closed, filled, and their outline simplified to 0.6 m (the deck's to
 // 0.9 m), in the building's own frame: u along the axis (north-east, -x), w along toStreet (north-west, z). The
 // heights are the returns' p50 inside each plan.
 
+/** A height measured above 24.46 m, as one above the door's ground, 5.16 m higher (the config's `ground`, 29.62 m,
+ * on the plaza before the canopy). */
+const H = (h) => h - 5.16;
+
 // The lowest the walls go: the ground within 3 m outside the deck falls to 10.98 m (-13.48) east of the building's
 // east arm, where the site drops into Grafton Gully (and rises to 31.21 m, 6.75 m above 24.46 m, on the west).
-export const FOOT = -14.0;
+export const FOOT = H(-14.0);
 
 export const MEASURED = {
   // The deck: the plaza north-east of the curved wing and the floors under it, the returns at 28.4 m and over inside
@@ -30,7 +34,7 @@ export const MEASURED = {
       [15.1, 52.8], [17.2, 52.8], [18.5, 60.6], [26.9, 69.6], [30.9, 65.7], [31.0, 53.7], [42.3, 53.1],
       [42.4, 50.3], [47.0, 50.0], [47.0, 48.9], [43.4, 48.2], [34.2, 48.1], [34.7, 36.8], [54.9, 36.6],
       [56.0, 31.3], [76.2, 30.9], [77.6, 31.9]],
-    top: 5.12,
+    top: H(5.12),
   },
   // The curved wing: a Y of three arms (north, south-west and east) round a curve, its roof at 52.83 m (p50; 52.6 to
   // 52.9 over most of it), the crown of louvres along its inner face to 53.8 m; its cells 3,282 m2.
@@ -44,13 +48,13 @@ export const MEASURED = {
       [-46.4, -6.6], [-45.4, -3.4], [-43.7, -1.6], [-43.7, -0.2], [-37.4, 9.8], [-30.1, 19.4], [-12.7, 37.3],
       [-9.8, 37.7], [-7.0, 34.2], [-5.2, 34.2], [-2.7, 35.3], [-1.7, 37.0], [3.6, 38.9], [8.5, 43.9],
       [9.5, 43.9], [10.6, 40.7], [13.1, 40.8], [13.5, 41.8], [16.6, 41.5], [18.0, 42.9], [20.9, 43.0]],
-    roof: 28.37,
+    roof: H(28.37),
     // The crown of louvres, to 53.8 m (29.34), along the sides of the plan (by index: side i runs from corner i to
     // i + 1) 4 m long or more where the returns within 1.2 m of the side reach 53.5 m or more (p95 53.69 to 53.88),
     // and the shorter sides between two of those (7, 11, 40 to 42); along the other long sides the returns stop at
     // the roof (p95 52.78 to 52.92). Its width, 0.3 m, is estimated.
     crown: {
-      top: 29.34, width: 0.3,
+      top: H(29.34), width: 0.3,
       sides: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 29, 34, 35, 38, 39, 40, 41, 42, 43, 44, 45, 60],
     },
     // The faces (round 1; estimated, with the photograph as a reference: its edges on the east arm's inner face
@@ -59,11 +63,11 @@ export const MEASURED = {
     // (16.94), three storeys each of a white spandrel and a band of louvres and windows, 3.4 m apart, and a white
     // fascia from 51.6 m (27.14) to the roof. Each band [bottom, top] above 24.46 m.
     faces: {
-      ground: [5.12, 9.04],
-      glazed: [9.04, 16.94],
-      spandrels: [[16.94, 18.39], [20.34, 21.64], [23.74, 25.09]],
-      louvres: [[18.39, 20.34], [21.64, 23.74], [25.09, 27.14]],
-      fascia: 27.14,
+      ground: [H(5.12), H(9.04)],
+      glazed: [H(9.04), H(16.94)],
+      spandrels: [[H(16.94), H(18.39)], [H(20.34), H(21.64)], [H(23.74), H(25.09)]],
+      louvres: [[H(18.39), H(20.34)], [H(21.64), H(23.74)], [H(25.09), H(27.14)]],
+      fascia: H(27.14),
     },
   },
   // On it, along the west side of its north and south-west arms, a top storey at 56.57 m (p50), its cells 560 m2.
@@ -72,7 +76,7 @@ export const MEASURED = {
       [-23.8, -12.0], [-24.5, -12.7], [-39.3, -12.5], [-39.8, -3.3], [-37.7, 3.0], [-36.0, 4.8], [-33.2, 11.2],
       [-31.5, 12.3], [-29.0, 16.2], [-21.7, 23.0], [-10.8, 29.9], [-6.2, 33.8], [-2.7, 35.3], [-1.7, 37.0],
       [1.8, 37.8], [6.7, 41.4]],
-    roof: 32.11,
+    roof: H(32.11),
   },
   // The west wing, along the road on the west, west of the south-west arm: its roof at 46.06 m (p50), its cells
   // 502 m2.
@@ -81,21 +85,21 @@ export const MEASURED = {
       [-45.4, -3.4], [-61.3, -33.3], [-62.4, -34.4], [-64.9, -33.7], [-67.7, -31.6], [-67.7, -30.5],
       [-63.6, -24.1], [-61.5, -18.4], [-59.4, -16.3], [-59.4, -14.9], [-54.2, -5.3], [-52.1, -3.1],
       [-48.0, 6.1], [-39.3, 19.3], [-35.1, 22.9], [-29.5, 30.7]],
-    roof: 21.6,
+    roof: H(21.6),
   },
   // West of the west wing's north end, a lower part at 35.13 m (p50), its cells 131 m2.
   westLow: {
     plan: [[-37.2, 23.2], [-36.9, 20.4], [-40.0, 19.3], [-40.0, 17.9], [-44.5, 11.8], [-44.9, 8.6], [-46.3, 8.6],
       [-49.0, 2.9], [-50.4, 2.5], [-50.5, 4.0], [-51.9, 4.6], [-55.4, 4.6], [-55.4, 6.4], [-54.0, 8.5],
       [-44.3, 20.6], [-40.8, 24.2]],
-    roof: 10.67,
+    roof: H(10.67),
   },
   // The north-east building: a rectangle on the deck north-east of the plaza, its roof at 35.85 m (p50), its cells
   // 1,222 m2.
   ne: {
     plan: [[68.4, 31.1], [68.7, 3.2], [68.4, 2.1], [65.5, 2.1], [65.6, -1.1], [69.5, -2.1], [69.6, -16.6],
       [42.1, -16.5], [41.5, -1.7], [46.5, -0.9], [46.4, 2.2], [41.8, 2.5], [42.2, 31.2]],
-    roof: 11.39,
+    roof: H(11.39),
   },
   // The sloping canopy in the curve's inner corner, a triangle in plan: its low edge from its north end (u 2.33,
   // w 22.56; 33.65 m) to its east end at the east arm's face (u 0.63, w -13.81; 34.5 m), rising south-west into the
@@ -104,7 +108,7 @@ export const MEASURED = {
   // w 3.07) lies inside the curved wing.
   canopy: {
     plan: [[2.33, 22.56], [0.63, -13.81], [-19.51, 3.07]],
-    top: (u, w) => 10.527 - 0.4588 * u - 0.0148 * w,
+    top: (u, w) => H(10.527 - 0.4588 * u - 0.0148 * w),
   },
 };
 
