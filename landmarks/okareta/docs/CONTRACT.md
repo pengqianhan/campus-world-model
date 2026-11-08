@@ -55,6 +55,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   cells within 0.5 m, the highest point 10.43 m (the ridges) against the LiDAR's 19.71 (p99.9, the trees); block 215
   under the model 98.7%, no other block under it. The map's ground (its 8 m elevation model) at the door lies 4.36 m
   below the LiDAR's; along the walls it runs from 1.23 m below the door's to 0.27 m above.
+- On the site (2026-11-09): `site` true, the card's `estimated`; the verandah's balustrade 0.02 m off its floor, so
+  that its foot does not share the posts' feet's plane (the faces check: 0.038 m²). Its foot is below the map's ground
+  under the whole plan (the foot check passes); beside an open neighbour its squashed footprint stands above the drawn
+  ground on about 93% of its cells, by up to 1.43 m (block 215's: 78%, 1.01 m).
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

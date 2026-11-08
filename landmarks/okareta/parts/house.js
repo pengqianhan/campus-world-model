@@ -32,8 +32,9 @@ export function porches(b) {
   const lo = V.eave - V.frieze;
   tris(b, [[edge(x0, lo), edge(x1, lo), edge(x1)], [edge(x0, lo), edge(x1), edge(x0)]], "render", (m) => [m[0], m[1] + 1]);
   for (const u of V.posts) prism(b, rect([u - 0.08, u + 0.08], [V.w[1] - 0.16, V.w[1]]), V.floor, lo, WALL);
-  // the balustrade from the first post to the fifth, the steps to the door between the fifth and the last
-  prism(b, rect([V.posts[4], V.posts[0]], [V.w[1] - 0.12, V.w[1] - 0.06]), V.floor, V.floor + 0.85, "render");
+  // the balustrade from the first post to the fifth, the steps to the door between the fifth and the last; its foot
+  // 0.02 m over the floor, so that it does not share the posts' feet's plane
+  prism(b, rect([V.posts[4], V.posts[0]], [V.w[1] - 0.12, V.w[1] - 0.06]), V.floor + 0.02, V.floor + 0.85, "render");
   const P = ROOFS.porch;
   prism(b, rect(P.u, P.w), P.top - 0.15, P.top, ROOF);
   for (const u of [P.u[0] + 0.1, P.u[1] - 0.1]) prism(b, rect([u - 0.1, u + 0.1], [P.w[0], P.w[0] + 0.2]), FOOT, P.top - 0.15, WALL);

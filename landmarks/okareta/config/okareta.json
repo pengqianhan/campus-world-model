@@ -1,6 +1,7 @@
 {
  "name": "okareta",
- "site": false,
+ "site": true,
+ "estimated": "some heights and sizes, with a photograph as a reference: the places and heights of the windows, the door, the bay's face and the verandah; the cornice's depth, the eaves' overhang and the porches' posts; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the footpath before the house, about 18 m from its front and north-east of its middle, looking up 9 degrees through a lens of about 45 degrees across; its camera is fitted to the front eave of the house's north-east part, to the north-east eave of its south-west wing and that eave's front end, and to the upright front edge of that wing's north-east side, with the camera held 1.6 m over the LiDAR's ground and the principal point at the centre.",
  "building": {

@@ -463,59 +463,6 @@
     }
    }
   },
-  "215": {
-   "name": "Okareta",
-   "reason": "top-view check: footprint IoU 0.857 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 6 mono-pitches over 110 m2): footprint IoU 0.876, 83% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 155.1,
-    "ground": {
-     "p5": 32.93,
-     "p50": 33.18,
-     "p95": 36.42,
-     "zero": 32.64
-    },
-    "roof_inside_m2": 150.8,
-    "cover": 0.977,
-    "vegetation": 0.029,
-    "open_below": 0.245,
-    "not_drawn_m2": 46.5,
-    "check": {
-     "iou": 0.857,
-     "lidar_m2": 175.5,
-     "model_m2": 154.5,
-     "within_0.5m": 0.76,
-     "model_minus_lidar_m": {
-      "p10": -1.02,
-      "p50": -0.04,
-      "p90": 0.08
-     },
-     "highest_m": {
-      "model": 14.2,
-      "lidar": 23.74
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 6 mono-pitches over 110 m2"
-     ],
-     "check": {
-      "iou": 0.876,
-      "lidar_m2": 175.5,
-      "model_m2": 158.0,
-      "within_0.5m": 0.83,
-      "model_minus_lidar_m": {
-       "p10": -3.34,
-       "p50": -0.01,
-       "p90": 0.12
-      },
-      "highest_m": {
-       "model": 14.89,
-       "lidar": 23.74
-      }
-     }
-    }
-   }
-  },
   "219": {
    "name": "8 Grafton Road",
    "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 66 m2; several faces: 2 mono-pitches over 16 m2): footprint IoU 0.899, 84% of cells within 0.5 m",
