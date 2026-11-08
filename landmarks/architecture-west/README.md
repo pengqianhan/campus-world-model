@@ -35,7 +35,7 @@ same 6.67 m, so the measured frame is the one the model was drawn in (0.000 m, 0
   they meet, its ridge turns into this one's. This model is drawn up to where the model of 421E in pull request #140
   ends (that model's main block, u 37.5 and w 4.5 in its frame `E`), so that the two do not overlap below the roofs;
   south-east of the slab's tower its roof runs on to that line. If both are on the site they stand on one ground
-  (`../README.md`, "Placement"): their campus-map rings lie 0.2 m apart, and the map's ground less the LiDAR's at
+  (`../README.md`, "Placement"): their rings on the campus map lie 0.2 m apart, and the map's ground less the LiDAR's at
   their doors is -4.78 m here and -4.55 m at 421E's, 0.23 m apart. On this branch 421E is not on the site, and 421W
   stands alone on the map's ground at its door.
 - 421E's block is 2.8% under the model, so `building.also` is empty. Block 421W itself is 62.3% under the model: of
