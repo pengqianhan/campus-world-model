@@ -4,10 +4,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground, 36.16 m NZVD2016, the
-  median ground in the crop box, 25 m round the outline (provisional: the LiDAR's ground at the door at step 7),
-  **z** north-west (`toStreet`, Symonds Street); the frame's centre, the house's, at x = z = 0.
-  `config/okareta.json`, `frame`.
+- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the frame's ground, the LiDAR's ground at
+  the config's `door` (36.43 m NZVD2016, on the garden path before the verandah's steps; step 7), **z** north-west
+  (`toStreet`, Symonds Street); the frame's centre, the house's, at x = z = 0. `config/okareta.json`, `frame`. The
+  heights below, and those in `parts/common.js`, are measured above 36.16 m, the median ground in the crop box, 25 m
+  round the outline; its `H` moves each on to the door's ground, 0.27 m higher.
 - The building's own frame: **u** north-east (`-x`) and **w** to the street (`z`). `parts/common.js` gives
   `at(u, w)`, `plan(corners)` and `rect(u, w)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
@@ -31,7 +32,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (tier 1, a house of the 1880s), merged by material. Round 0:
-  165 triangles, 2 draw calls; round 1: 417 triangles, 4 draw calls.
+  165 triangles, 2 draw calls; round 1 and step 7: 417 triangles, 4 draw calls.
 
 ## Rounds
 - Round 0 (2026-11-09): the walls (`trim`) with the cornice under the eaves, the two hipped roofs and the low roof
@@ -48,6 +49,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   balustrade, its eave at 4.5 m. Their places and heights are estimated: the photograph's edges carried through its
   fitted camera onto the walls' planes. The light: the viewer's sun behind the house, 200 degrees round and 40 up, an
   exposure of 0.75. Silhouette IoU 0.776 (0.776 in the box); the luma median 130 against the photograph's 126.
+- Step 7 (2026-11-09): the door on the garden path 1.5 m before the verandah's steps (the photograph's front door),
+  the frame's ground the LiDAR's there (36.43 m). Silhouette IoU 0.771 (0.771 in the box: the comparison counts the
+  model from 4 m over the door's ground), luma 130 against 126; the top view: footprint IoU 0.900, 81% of the 662
+  cells within 0.5 m, the highest point 10.43 m (the ridges) against the LiDAR's 19.71 (p99.9, the trees); block 215
+  under the model 98.7%, no other block under it. The map's ground (its 8 m elevation model) at the door lies 4.36 m
+  below the LiDAR's; along the walls it runs from 1.23 m below the door's to 0.27 m above.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
