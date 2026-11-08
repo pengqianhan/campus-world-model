@@ -72,6 +72,17 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   on the west, level with it on the driveway on the north, 7.68 m above it in the gully on the east. The site stands
   the model on the map's ground at the door, so the plaza there is drawn 6.18 m lower than it stands, and along the
   deck's plan the map's ground runs from 3.61 m below the model's y = 0 to 6.82 m above it.
+- On the site (step 8, 2026-11-09): `site` is true, and the site draws the model in place of block 260. It stands
+  alone (no other landmark's outline comes within 2 m of its), its y = 0 on the map's ground at its door. The foot
+  check of `tests/landmarks.test.ts` asks each material that comes down to the door's ground to come down to the
+  map's: the deck's top is the door's ground, and the map's ground round the deck falls up to 3.61 m below it, so
+  every part on the deck takes its walls down to `FOOT` inside the deck (their feet a few centimetres apart), and the
+  deck is drawn in one material, `grey`, its top (the plaza's paving) too. No new roof, pane or opening material:
+  `glass` and `glassPale` are glass and `roofGrey` a roof in `LIGHT_ROLE` already; `grey`, `paint`, `screenSilver` and
+  `claddingPale` are walls. The card's `estimated`: some heights, with a photograph as a reference; the crown's
+  width; the top of the strip between the west wing and the curved wing, which the LiDAR does not see; the faces no
+  photograph shows. 3,207 triangles (`building` 3,111, `northEast` 96), 7 draw calls; the comparison and the top view
+  as at step 7.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

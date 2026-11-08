@@ -859,23 +859,6 @@
     "open_below": 0.0
    }
   },
-  "260": {
-   "name": "Sir Owen G Glenn Building OGGB",
-   "reason": "roof cells cover 51% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 11156.1,
-    "ground": {
-     "p5": 12.09,
-     "p50": 24.74,
-     "p95": 30.93,
-     "zero": 11.64
-    },
-    "roof_inside_m2": 5662.8,
-    "cover": 0.507,
-    "vegetation": 0.108,
-    "open_below": 0.157
-   }
-  },
   "273": {
    "name": "Fale - Office Building",
    "reason": "roof cells cover 72% of the outline (limit 85%)",
