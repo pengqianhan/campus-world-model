@@ -67,8 +67,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - The review (2026-11-08): the lower building's corner by the tower's north-east cut runs along the cut, 0.3 to 0.4 m
   inside it, where a shaft of 0.55 m² stood open between the two. 288 triangles, 4 draw calls; the top view: footprint
   IoU 0.922, 81% of the 4,549 cells within 0.5 m (p10/p50/p90 -2.01/0.0/0.09), block 439 under the model 91.1%; the
-  silhouette and the luma as at step 7. Its corner by the south-east cut stands inside the cut too, where it stood 14
-  cm out.
+  silhouette and the luma as at step 7. The lower building's corner by the south-east cut stands inside that cut too,
+  where it stood 14 cm south of it (10 cm square to it).
 - Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
   its slope is known) and the recess stepped into the north face's west end and the north-west cut over several
   floors (the photograph shows its dark soffits; the LiDAR, which sees the roof, gives neither its plan nor how deep
