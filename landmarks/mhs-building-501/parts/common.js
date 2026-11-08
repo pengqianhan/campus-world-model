@@ -1,9 +1,10 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/mhs-building-501_pts.npy: the building returns, class 6, in
 // the crop box) in the view frame of config/mhs-building-501.json: x is -axis (west-north-west, along the long block),
-// y up from 71.88 m NZVD2016 (the median ground in the first crop box; provisional, until the door is set), z is
+// y up from the LiDAR's ground at the config's door (72.19 m NZVD2016, on the plaza before the glazed box), z is
 // toStreet (north-north-east, toward building 502); the frame's centre at x = z = 0, at the top of the tower. Owned
 // by the lead: read, do not edit.
-// Measured 2026-11-09 (round 0).
+// Measured 2026-11-09 (round 0), before the door was set: every height below is measured above 71.88 m, the median
+// ground in the first crop box, and H moves it on to the door's ground.
 //
 // The sizes are given in the building's own frame, u along the long block toward the plaza (east-south-east, the
 // frame's axis, so x = -u) and w toward 502 (z = w); `at`, `plan` and `rect` turn them into the view frame.
@@ -15,8 +16,8 @@
 // glass-roofed atria to its north and south, which return nothing; and, inside the campus map's ring of 501, the
 // south edge of the building to its north (502's roof, rising from 27.5 m at its south wall to 30.6 m).
 export const at = (u, w) => [-u, w];
-/** A height measured above 71.88 m, as one above the frame's ground (the config's `ground`). */
-export const H = (h) => h;
+/** A height measured above 71.88 m, as one above the door's ground, 0.31 m higher (the config's `ground`). */
+export const H = (h) => h - 0.31;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 export const rect = ([u0, u1], [w0, w1]) => plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]);
 

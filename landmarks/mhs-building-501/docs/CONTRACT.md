@@ -5,8 +5,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Frame and sizes
 - View frame, metres: **x** west-north-west (the frame's `-axis`, along the long block), **y** up from the frame's
-  ground, 71.88 m NZVD2016, the median ground in the first crop box, 25 m round the outline (provisional: the LiDAR's
-  ground at the door at step 7), **z** north-north-east (`toStreet`, toward building 502); the frame's centre, at the
+  ground, 72.19 m NZVD2016, the LiDAR's ground at the door, on the plaza before the glazed box (the heights in
+  `parts/common.js` were measured above 71.88 m, the median ground in the first crop box, and `H` moves them on), **z** north-north-east (`toStreet`, toward building 502); the frame's centre, at the
   top of the tower, at x = z = 0. `config/mhs-building-501.json`, `frame`. The campus's origin is about 1 km to the
   north: there the map's true north and NZTM's grid north differ by about 1 degree, so the map's metres and the
   frame's local NZTM metres lie about 19 m apart (`place` turns one into the other).
@@ -53,6 +53,15 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   draw calls. Silhouette IoU 0.894 in the model's screen box; the building's luma median 136 against the
   photograph's 131. The top view: footprint IoU 0.656, 65% of the 3,934 cells within 0.5 m (p10/p50/p90
   -0.45/0.12/1.45), block 501 under the model 74.7%.
+- The door (2026-11-09): before the glass doors in the middle of the glazed box's east face, on the plaza (the campus
+  map records no lobby or entrance in 501, OpenStreetMap none near it), the LiDAR's ground there 72.19 m (29
+  returns, p50), 0.31 m over the crop's median: the frame's thresholds lowered by as much, the heights moved on to it
+  through `H`, the photograph's view lowered by it, the measured frame unchanged (0.000 m, 0.000 degrees). The map's
+  ground (its 8 m elevation model) at the door lies 1.26 m below the LiDAR's; under the model's plans it runs from
+  1.42 m below the door's to 1.15 m above (FOOT -5.61 is under it everywhere). Silhouette IoU 0.893 in the model's
+  screen box, luma 136 against 131; the top view as before, block 501 under the model 74.7% (its ring takes in the
+  plaza, over the floors the campus map has below its ground: -5, -10 and -20), the LiDAR's roof inside that ring
+  98.9% (899 m²); 501C 13.0%, 502 6.3%, 503 4.5%: `also` stays empty.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

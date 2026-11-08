@@ -137,11 +137,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 70,
- "ground": 71.88,
+ "ground": 72.19,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -17.5,
+  "z": 0.9,
+  "note": "before the glass doors in the middle of the glazed box's east face, as the photograph shows them (the campus map records no lobby or entrance in 501, and OpenStreetMap no entrance near it): on the plaza 0.7 m out from the box's face (u 17.5, w 0.9 in the building's frame; (-17.5, 0.9) in the view frame). The LiDAR's ground within 1 m: 29 returns, p10/p50/p90 72.170/72.193/72.212 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -160,9 +160,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 10,
-  "tower_above": 30,
-  "spine_below": 40,
+  "min_above": 9.69,
+  "tower_above": 29.69,
+  "spine_below": 39.69,
   "spine_radius": 30,
   "near_outline": 1.5,
   "street_side": "east",
@@ -178,7 +178,7 @@
    ],
    "tolerance_m": 0.05
   },
-  "thresholds_note": "min_above 10 m over the provisional ground, so that the frame is the building's: the plaza's low things and its trees are left out; the centre from its points over 30 m (tower_above), its top at the east end. The walls' axis runs along the long block (bearing 108 deg), so z faces north-north-east, toward building 502, and the end toward the plaza, the face the photograph sees, lies at minus x"
+  "thresholds_note": "min_above 10 m over the provisional ground (71.88 m), so that the frame is the building's: the plaza's low things and its trees are left out; the centre from its points over 30 m (tower_above), its top at the east end. The walls' axis runs along the long block (bearing 108 deg), so z faces north-north-east, toward building 502, and the end toward the plaza, the face the photograph sees, lies at minus x; all three lowered by 0.31 m with the ground set at the door (step 7), so that they pick the same points"
  },
  "refine": {
   "position_m": 3,
@@ -193,7 +193,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "71.88 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 70.58, p95 72.52); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 71.88 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "crop_note": "70 m round the outline, so that the crop box takes in the plaza where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)",
  "light": {
   "sunaz": 70,
