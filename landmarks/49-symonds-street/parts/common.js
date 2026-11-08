@@ -33,10 +33,19 @@ export const MEASURED = {
     deck: H(45.8),
     parapet: 0.3,
   },
-  // On the roof a mansard: walls from the roof to its eaves at 49.3 m round u -5.25 to 15.75, w -12.25 to 12.25 (where
-  // the profiles across it step up from the roof), and slopes up to a flat top at 51.94 m (the returns' p50) over u
-  // -2.65 to 12.99, w -8.95 to 9.57 (their p1 and p99).
-  mansard: { eaves: { u: [-5.25, 15.75], w: [-12.25, 12.25], h: H(49.3) }, top: { u: [-2.65, 12.99], w: [-8.95, 9.57], h: H(51.94) } },
+  // On the roof a mansard: walls from the roof to its eaves at 49.3 m, and slopes up to a flat top at 51.94 m (the
+  // returns' p50). Its eaves run round u -5.25 to 15.75, w -12.25 to 12.25 (where the profiles across it step up from
+  // the roof), and step in at the tower's east and west corners as the tower does (its returns over 48.5 m in 0.5 m
+  // cells): to u -2.25 from w 7.75 on toward the street, to u 10.75 from w -8.75 on toward the back. Its top over u
+  // -2.65 to 12.99, w -8.95 to 9.57 (the top's returns' p1 and p99), stepped in by as much at the same corners (to u 0.5
+  // from w 5.0 on, the top's returns at w 6 and 9.5 starting there; to u 8.0 from w -6.0 on). The two plans' corners in
+  // turn, each slope between a side of the one and the same side of the other.
+  mansard: {
+    eaves: { plan: [[-5.25, -12.25], [10.75, -12.25], [10.75, -8.75], [15.75, -8.75], [15.75, 12.25], [-2.25, 12.25],
+      [-2.25, 7.75], [-5.25, 7.75]], h: H(49.3) },
+    top: { plan: [[-2.65, -8.95], [8.0, -8.95], [8.0, -6.0], [12.99, -6.0], [12.99, 9.57], [0.5, 9.57], [0.5, 5.0],
+      [-2.65, 5.0]], h: H(51.94) },
+  },
   // East of it the plant: u -11.6 to -5.7, w -7.44 to 7.59 (the returns from 48.8 to 51 m, p2 and p98), its top at 49.8
   // m (their p90).
   plant: { u: [-11.6, -5.7], w: [-7.44, 7.59], top: H(49.8) },
@@ -45,7 +54,7 @@ export const MEASURED = {
   units: [{ u: [2.7, 3.5], w: [-2.3, -1.3], top: H(52.94) }, { u: [-1.2, -0.3], w: [-2.2, -1.1], top: H(52.74) },
     { u: [6.8, 7.3], w: [5.0, 5.8], top: H(52.63) }],
   // In the middle of each face a gable over the parapet, its apex the face's highest return (the west face's has few,
-  // 7, and may be higher), its half-width 1.9 m (where the returns pass 47.6 m, 0.5 m over the parapet, 1.55 m out from
+  // 7, and may be higher), its half-width 2.0 m (where the returns pass 47.6 m, 0.5 m over the parapet, 1.55 to 1.75 m out from
   // the apex); its depth is estimated. `face`: the side ("u" or "w") and its place; `at`: the apex along the face.
   gables: [
     { face: ["w", 17.29], at: 10.65, apex: H(49.79) },
@@ -61,15 +70,15 @@ export const MEASURED = {
   // east face from w -5.4 to its south-east end (from the photograph: glass at its north-west end). In the middle of
   // each white face, under its gable, a window arched at its top, 3.2 m wide (its edges 1.70 and -1.51 m from the
   // apex at 43 m, 2.31 and -0.48 at 14.3 m), from 12.0 m to its crown at 46.3 m; either side of it, in each of ten
-  // storeys 3.35 m apart, a window 1.8 m high from 2.4 to 4.6 m out from the middle (the north-east face's: 3.06 to
-  // 4.70 and -2.6 to -4.86), the highest's top at 44.82 m; on the bays' sides one 1.6 m wide in each storey, as on the
+  // storeys 3.35 m apart, a window 1.8 m high from 2.8 to 4.7 m out from the middle (the north-east face's two, 2.85
+  // to 4.49 and 2.81 to 5.07 m out from its gable's apex, kept off the face's end), the highest's top at 44.82 m; on the bays' sides one 1.6 m wide in each storey, as on the
   // street bay's north-east side, which the photograph shows. The west face shows no returns either, and no
   // photograph: glass. The base, the podium and the lower buildings in a dark stone (the photograph).
   faces: {
     base: H(11.0), band: H(45.2),
     white: { edges: [1, 2, 3, 15, 16, 17], ene: [-5.4, 5.01] },
     arch: { half: 1.6, foot: H(12.0), crown: H(46.3) },
-    windows: { top: H(44.82), storey: 3.35, height: 1.8, count: 10, from: 2.4, to: 4.6, side: 0.8 },
+    windows: { top: H(44.82), storey: 3.35, height: 1.8, count: 10, from: 2.8, to: 4.7, side: 0.8 },
   },
   // The podium to the tower's east, its flat roof at 7.68 m, run 0.53 m into the tower's east face; on its front to
   // the street a gable over the entrance, u -24.1 to -20.7, its ridge from w 4.5 to 5.5 at 10.13 m.

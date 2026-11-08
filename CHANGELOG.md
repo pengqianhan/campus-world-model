@@ -23,8 +23,9 @@ A change to what the site does or shows adds its line here, and the README's
   a gable in the middle of its faces in pale panels, each with a tall window arched at its top, its steps in blue
   glass, a white band along its top and a mansard on its roof; a podium in dark stone at its foot with a pointed
   gable over its entrance, and lower buildings behind it. Its sizes come from the LINZ 2024 LiDAR; it was compared
-  with a photograph from Symonds Street, and its card says what is estimated: some heights, with the photograph as
-  a reference, the parapet's width and the gables' depth, and the faces no photograph shows. On the map it has the
+  with a photograph from Symonds Street, and its card says what is estimated: some heights and sizes, with the
+  photograph as a reference, the parapet's width, the gables' depth and the canopy's thickness, and the faces no
+  photograph shows. On the map it has the
   map's colours; from a walker's height on a computer with a graphics card, its own glass, panels and stone (#PR).
 
 ## 2026-11-08

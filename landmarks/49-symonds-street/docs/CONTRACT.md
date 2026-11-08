@@ -16,7 +16,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   - **the tower**, a square of about 33 m with its corners stepped and a bay out of its street and back faces, its
     parapet's top at 47.06 m and its roof inside it at 45.80 m;
   - **the mansard** on its roof, its eaves at 49.3 m and its flat top at 51.94 m with three units on it to 52.94 m,
-    and **the plant** east of it at 49.8 m;
+    its plan stepped in at the tower's east and west corners as the tower's is, and **the plant** east of it at
+    49.8 m;
   - **a gable** in the middle of each of its four faces, its apex at 49.05 to 49.8 m;
   - **the podium** to its east, its flat roof at 7.68 m, with a gable over its entrance to the street at 10.13 m and a
     canopy along its front at 3.06 m;
@@ -32,7 +33,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 800 triangles, 2 draw
-  calls; round 1 and step 7: 1,253 triangles, 5 draw calls.
+  calls; round 1: 1,241 triangles, 5 draw calls; step 7: 1,253; the review's round 1: 1,289.
 
 ## Rounds
 - Round 0 (2026-11-09): the tower with its parapet, the mansard, the plant and the four gables, the podium with its
@@ -53,12 +54,18 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   top view: footprint IoU 0.882, 80% of the 5,893 cells within 0.5 m (p10/p50/p90 -0.23/0.03/1.06), the highest point
   52.87 m against the LiDAR's 52.55; block 620 under the model 51.4%, of its 6,426 cells where the LiDAR has a roof
   93.0%; no other block under it by more than 0.1%. The map's ground at the door lies 7.61 m below the LiDAR's.
+- The review's round 1 (2026-11-09): the mansard's eaves and top stepped in at the tower's east and west corners, as
+  the LiDAR has them; the plant run into the mansard's walls; the windows beside the arched ones at the mean of the
+  photograph's two places. Silhouette IoU 0.889 (0.890 in the box), luma 135 against 132; the top view: footprint IoU
+  0.885, 83% of the 5,888 cells within 0.5 m (p10/p50/p90 -0.24/0.02/0.61), the highest point 52.87 m against
+  52.55; block 620 under the model 51.0%, of its LiDAR roof cells 92.9%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from Symonds Street about 48 m east of the tower's north-east face, looking west at it;
   `refs/photos/`, gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is
-  measured from it but the heights of the faces' white band, dark base and windows, which are estimated.
+  measured from it but the heights of the faces' white band, dark base and windows and the windows' widths and
+  places, which are estimated.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

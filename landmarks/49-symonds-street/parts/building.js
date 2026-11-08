@@ -94,13 +94,18 @@ export function building(b) {
     panes(b, "u", u, out, 0.05, storeys((wa + wb) / 2, F.windows.side), GLASS);
   }
   // the mansard: its walls from 0.3 m under the roof to its eaves, its slopes, and its flat top 1 cm over them
-  prism(b, rect(E.u, E.w), T.deck - 0.3, E.h, WALL);
-  const q = ([u0, u1], [w0_, w1_], h) => [[u0, w0_], [u1, w0_], [u1, w1_], [u0, w1_]].map(([u, w]) => { const [x, z] = at(u, w); return [x, h, z]; });
-  hexahedron(b, [...q(E.u, E.w, E.h), ...q(Tp.u, Tp.w, Tp.h)], ROOF);
-  prism(b, rect(Tp.u, Tp.w), Tp.h - 0.05, Tp.h + 0.01, TOP);
+  prism(b, plan(E.plan), T.deck - 0.3, E.h, WALL);
+  const p3 = ([u, w], h) => { const [x, z] = at(u, w); return [x, h, z]; };
+  const slopes = [], n = E.plan.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n, a = p3(E.plan[i], E.h), c = p3(E.plan[j], E.h), d = p3(Tp.plan[j], Tp.h), e = p3(Tp.plan[i], Tp.h);
+    slopes.push([a, c, d], [a, d, e]);
+  }
+  tris(b, slopes, ROOF, "up");
+  prism(b, plan(Tp.plan), Tp.h - 0.05, Tp.h + 0.01, TOP);
   for (const U of M.units) block(b, rect(U.u, U.w), Tp.h - 0.1, U.top, WALL, ROOF);
-  // the plant, run 0.3 m into the mansard's walls
-  block(b, rect([M.plant.u[0], Math.min(M.plant.u[1], E.u[0] + 0.3)], M.plant.w), T.deck - 0.3, M.plant.top, WALL, ROOF);
+  // the plant, run 0.3 m into the mansard's walls (its east side at u -5.25 there)
+  block(b, rect([M.plant.u[0], E.plan[0][0] + 0.3], M.plant.w), T.deck - 0.3, M.plant.top, WALL, ROOF);
   // the gables, from 0.3 m inside the face to 5 cm before it, their feet 0.3 m under the parapet's top
   for (const g of M.gables) {
     const [side, d] = g.face, out = Math.sign(d);

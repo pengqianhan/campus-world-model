@@ -31,9 +31,9 @@ same 0.08 m, so the measured frame is the one the model was drawn in (0.000 m, 0
 - No other landmark's outline comes within 2 m of its, so it stands alone on the map's ground at its door
   (`../README.md`, "Placement").
 - No other block of the campus map lies under the model above 2.5 m by more than 0.1% (O'Rorke Hall, 614, behind it),
-  so `building.also` is empty. Of block 620 itself 51.4% is under the model above 2.5 m, as its ring takes in open
+  so `building.also` is empty. Of block 620 itself 51.0% is under the model above 2.5 m, as its ring takes in open
   ground round the lower buildings; of its 6,426 cells where the LiDAR has a roof more than 2.5 m above the door's
-  ground, the model covers 93.0%.
+  ground, the model covers 92.9%.
 
 ## The reference
 
@@ -51,7 +51,8 @@ the podium's entrance, and two upright edges. It stands 1.59 m above the ground 
 face, looking 23.3 degrees up, its field 37.6 degrees across: an rms of 2.25 px. Each of the tower's four faces has a
 gable in its middle, as the LiDAR shows; which face the photograph sees was told by its stepped corners, the podium at
 its foot and O'Rorke Hall behind it. No size is measured from the photograph but the heights of the faces' white
-band, dark base and windows (below); it is a reference for the look and the comparison.
+band, dark base and windows and the windows' widths and places (below); it is a reference for the look and the
+comparison.
 
 ## Round 0 (November 2026, the lead)
 
@@ -60,8 +61,8 @@ Each part a block at the LiDAR's plan and height:
 - **The tower**, a square of about 33 m with its corners stepped and a bay 2.8 m out of its street face and 2.2 m out
   of its back, its plan each face's place in the parapet's returns (46.6 to 47.8 m, their 2nd or 98th percentile over
   the face's span), its parapet's top at 47.06 m and its roof inside the parapet at 45.80 m.
-- **The mansard** on its roof, walls to its eaves at 49.3 m and slopes up to a flat top at 51.94 m, and **the plant**
-  east of it at 49.8 m.
+- **The mansard** on its roof, walls to its eaves at 49.3 m and slopes up to a flat top at 51.94 m, its plan stepped
+  in at the tower's east and west corners as the tower's is, and **the plant** east of it at 49.8 m.
 - **A gable** in the middle of each face, its apex the face's highest return, 49.05 to 49.8 m.
 - **The podium** to the tower's east, its roof at 7.68 m, with a gable over its entrance to the street at 10.13 m.
 - **Three lower buildings** behind the podium and north of it, at 4.59, 5.42 and 3.04 m, their plans the outlines of
@@ -116,7 +117,7 @@ where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and cou
   door's ground, below the map's ground under every plan: the foot check of `tests/landmarks.test.ts`, which tests the
   lowest points of each material that comes down to the door's ground against the map's ground, passes. Under the
   tower the map's ground rises up to 5.3 m over the door's, so the site draws the tower's lower storeys in the ground.
-  1,253 triangles, 5 draw calls.
+  1,289 triangles, 5 draw calls.
 - **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and
   a block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`,
   `applyFocus` and `baseOf` in `src/scene/CampusScene.ts`). Under the model the map's ground lies from 1.54 m below its
@@ -126,10 +127,22 @@ where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and cou
   `roofPale` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` and `screenBlack` are
   walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a
-  reference" and goes on with the parapet's width and the gables' depth, and the faces no photograph shows.
+  reference" and goes on with the parapet's width, the gables' depth and the canopy's thickness, and the faces no
+  photograph shows.
 - **The pictures** in `docs/landmarks/`: `49-symonds-street-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from the east and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site built
   from this branch, the map near it and a walker's eyes on Symonds Street to its east.
+
+## The review (November 2026)
+
+The review's first round found the mansard's eaves drawn as a rectangle over the tower's east and west corners, where
+the tower steps in and the LiDAR has no mansard: its plan and its top's now step in there as the tower's do (its
+returns over 48.5 m in 0.5 m cells), its slopes drawn between the two plans' sides. And the plant runs 0.3 m into the
+mansard's walls, as it was meant to; the windows beside the arched ones keep the mean of the two places the
+photograph shows, 2.8 to 4.7 m out from the middle. Silhouette IoU 0.889 (0.890 in the box), the luma median 135
+against the photograph's 132; from above, footprint IoU 0.885 (the LiDAR's 1,669 m², the model's 1,514, both 1,494),
+83% of the 5,888 cells within 0.5 m (p10/p50/p90 -0.24/0.02/0.61), the highest point 52.87 m against 52.55; block
+620 under the model 51.0%, of its LiDAR roof cells 92.9%. 1,289 triangles, 5 draw calls.
 
 ## Not drawn yet
 
