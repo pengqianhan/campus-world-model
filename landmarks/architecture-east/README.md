@@ -134,12 +134,10 @@ measured.
   material's lowest points against the map's ground, passes. The wing's bands of windows start at the terrace's floor,
   as the main block's do: from the two floors below it the lowest band stood 4.0 m over the map's ground where it falls
   away from the terrace. 764 triangles, 5 draw calls.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
-  block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
-  and `baseOf` in `src/scene/CampusScene.ts`). 421E's y = 0, on the ground it shares with 421W, is 0.12 m under the
-  map's ground at its door on the terrace, and under the model the map's ground lies from 1.28 m above it to 9.90 m
-  below, where the site falls away from the terrace, so beside an open neighbour its footprint shows above the drawn
-  ground on about 98% of its cells, by up to 10.13 m, where block 421E's showed on 38%, by up to 4.32 m.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 421E, which sinks on
+  its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
+  footprint shows above the drawn ground on 38% of its cells, by up to 4.32 m, where the site falls away from the
+  terrace.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are
   walls.
