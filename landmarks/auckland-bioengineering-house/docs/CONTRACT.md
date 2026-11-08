@@ -20,7 +20,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, round 0), `parts/shapes.js` (the shapes the parts share, as 421W's), `model.js`:
+- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as 421W's), `model.js`:
   the lead.
 
 ## Budget
@@ -35,6 +35,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   model's 1,159, both 1,150), 81% of the 4,549 cells within 0.5 m (p10/p50/p90 -2.01/0.0/0.08: the things on the
   tower's roof, which round 0 does not draw), the highest point 43.53 m against the LiDAR's 44.43 (p99.9); block 439
   under the model 91.0%.
+- Round 1, the faces and the light (2026-11-08): the tower's walls and parapet in the kit's `glass`; on its north
+  face two stone fins (`concrete`) standing 0.35 m out of it and up to 40.2 m, the first at the LiDAR's returns (u
+  -5.0 to -3.0), the second estimated with the photograph as a reference (u -12.7 to -11.0, as high and deep as the
+  first). The viewer's light estimated (`config`'s `light`): the sun at 20 degrees round and 40 up, an exposure of
+  1.4. Silhouette IoU 0.922 (0.923 in the box); the building's luma median 179 against the photograph's 181. 280
+  triangles, 4 draw calls; the top view as round 0.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

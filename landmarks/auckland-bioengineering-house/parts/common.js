@@ -35,6 +35,13 @@ export const MEASURED = {
   },
   strip: { u: [4.2, 6.8], w: [-12.5, 15.5], top: 11.28 },
   porch: { plan: [[-7.7, 11.0], [-3.9, 11.0], [-3.9, 16.6], [-5.9, 16.6]], top: 11.3 },
+  // The faces (round 1; the photograph as a reference for the look): the tower clad all round in glass; on its north
+  // face two stone fins standing out of it and rising above its top. The first, nearer the north-east corner: its top
+  // at 40.2 m and its front 0.35 m out of the face, from u -5.0 to -3.0 (its returns above 39.9 m near the north
+  // edge, max 40.24, out to w 11.55 where the face stands at 11.2). The second is not in the LiDAR: from u -12.7 to
+  // -11.0 (estimated: the photograph's edges through its fitted camera, on the face's plane), as high and as deep as
+  // the first (estimated).
+  fins: { along: [[-5.0, -3.0], [-12.7, -11.0]], top: 40.2, out: 0.35 },
 };
 
 /** The point [x, z] of the view frame at u and w in the building's frame. */
