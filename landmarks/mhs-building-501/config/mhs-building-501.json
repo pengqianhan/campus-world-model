@@ -200,6 +200,6 @@
   "sunaz": 70,
   "sunel": 45,
   "exposure": 0.4,
-  "note": "estimated: the photograph has no date; its east face stands in sun. The viewer's sun at 70 deg round and 45 up lights that face; the building's luma p50 196 at the default exposure, 174 at 0.65, 153 at 0.5, 145 at 0.45, 136 at 0.4, against the photograph's 131"
+  "note": "estimated: the photograph has no date; its east face stands in sun. The viewer's sun at 70 deg round and 45 up lights that face; the building's luma p50 196 at the default exposure, 174 at 0.65, 153 at 0.5, 145 at 0.45, 136 at 0.4, against the photograph's 131 at step 5 (the photograph's is counted in the model's screen box, which moves with the model: 129 at the model as it is)"
  }
 }

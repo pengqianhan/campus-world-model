@@ -96,7 +96,7 @@ comparison.
 
 Silhouette IoU 0.909 in the model's screen box. The top view: footprint IoU 0.830 (the LiDAR's 1,006 m² against the
 model's 950, both 887), 78% of the 3,511 cells both cover within 0.5 m (p10/p50/p90 -0.13/0.10/1.27), the highest
-point 34.3 m against the LiDAR's 34.4 (p99.9). 409 triangles, 5 draw calls.
+point 34.3 m against the LiDAR's 34.4 (p99.9). 423 triangles, 5 draw calls.
 
 ## On the map (step 7)
 
@@ -144,7 +144,8 @@ and on the north-west nothing over a strip 6 m wide. The model now draws only wh
 the tower; and its card names every size estimated in the photograph. 640 triangles became 395. The second round
 found 502's edge stopping on a straight line short of 501's ring (a strip up to 1.9 m wide left undrawn) and the
 block's last 4 m to the tower 1.2 m too high (it stands at 28.5 m, as the concrete link does): both fixed, and the
-light well runs on to that lower part; 409 triangles.
+light well runs on to that lower part; 409 triangles. The third round found 502's edge's east end standing 2.3 m
+into 502's ring at its corner: it now goes round that corner (423 triangles).
 
 ## Not drawn yet
 

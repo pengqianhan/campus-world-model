@@ -13,7 +13,8 @@
 //
 // The model draws what the LiDAR has inside the campus map's ring of 501 (and the long block's south-west corner,
 // which stands over the ring of 501C, a basement in the campus map), so that it does not stand over the blocks of
-// 502 and 503 beside it: a long block of about 29.8 m (u -26 to -2, w -6 to 10) with a tower at its east end toward
+// 502 and 503 beside it: a long block of about 29.8 m (u -26 to -6, w -6 to 10; its last 4 m to the tower 28.5 m)
+// with a tower at its east end toward
 // the plaza (u -2 to 9, w -7 to 10), whose dark crown's flat top stands at 32.4 m (32.2 to 32.6); a plant room of
 // 34.6 m on its south side; a lower part south of it (30.5 and 28.6 m) to the ring's edge; a concrete link north of
 // it to 502; a glazed link of 27 m beside the tower's north side, which returns nothing (a glass roof); a glazed box
@@ -81,10 +82,12 @@ export const GLAZED_FLOORS = [4.8, 8.6, 12.4, 16.2, 20.0, 23.8].map(H);
 // The building to the north (502), its south edge inside 501's ring: its south wall at w 16 (its first roof returns),
 // its east end at u 5.75, from the ring's west edge at u -30; drawn to the edge of 502's ring west of u -6.45 (w 20.3
 // to 21.4; its block draws on from there) and to 501's ring's north edge east of it (w 21.5 to 21.8, which 502's ring
-// meets or overlaps by up to 0.2 m), so that no part of 501's ring with the LiDAR's roof is left undrawn. Its roof
+// meets or overlaps by up to 0.2 m), round the corner of 502's ring at its east end (u 5.2 to 5.75, from w 19.5), so
+// that no part of 501's ring with the LiDAR's roof is left undrawn. Its roof
 // rises 0.2 m a metre to the north from 28.8 m at that wall (29.2, 29.5, 29.9 and 30.2 m at w 17 to 23; the outermost
 // cells, 27.0 to 27.3, are its edge's).
 export const NORTH = {
-  plan: [[-30, 16.0], [5.75, 16.0], [5.75, 21.78], [-3.54, 21.49], [-6.45, 21.42], [-23.17, 20.32], [-30, 20.29]],
+  plan: [[-30, 16.0], [5.75, 16.0], [5.75, 19.51], [5.24, 19.5], [5.18, 21.76], [-3.54, 21.49], [-6.45, 21.42],
+    [-23.17, 20.32], [-30, 20.29]],
   eave: H(28.8), rise: 0.2, w0: 16.0,
 };

@@ -38,7 +38,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 244 triangles, 4 draw calls; round 1: 640, 5; after the review's rounds 1 and 2: 395 and 409, 5.
+  0: 244 triangles, 4 draw calls; round 1: 640, 5; after the review's rounds 1, 2 and 3: 395, 409 and 423, 5.
 
 ## Rounds
 - Round 0 (2026-11-09): the tower's shaft (`renderGrey`), its crown (`roofGrey`) and the glazed box before it
