@@ -659,7 +659,8 @@ export class CampusScene {
       });
       const mesh = new Mesh(geometry, [walls, new MeshLambertMaterial({ color: 0xffffff })]);
       mesh.userData.mapMaterial = mesh.material;
-      // The building stands on the lowest ground under it; squashing it keeps it there.
+      // The building stands on its footing's base, the ground under its middle but at most FOOTING above its
+      // lowest corner (Terrain.footing); squashing it keeps it there.
       mesh.position.y = this.baseOf(b);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
@@ -708,17 +709,19 @@ export class CampusScene {
 
   /**
    * Draws each landmark in place of its buildings' blocks where the camera is near it, in the form
-   * the view takes, and asks for that form the first time. While one of its buildings is open it
-   * gives way to the blocks. In a walker view the light form stands in until the full one is made.
+   * the view takes, and asks for that form the first time. While a building is open every landmark
+   * gives way to its blocks. In a walker view the light form stands in until the full one is made.
    */
   private updateLandmarks(): void {
     this.needsLandmarks = false;
     let changed = false;
     for (const l of this.landmarks) {
       const blocks = l.buildings.flatMap((id) => this.buildingMeshes.get(id) ?? []);
-      // A measured massing gives way to the blocks while a building is open: its neighbours are then
-      // footprints, which its block draws as well as it would.
-      const open = l.measured && this.focus > 0;
+      // Every landmark gives way to its blocks while a building is open: its neighbours are then
+      // footprints, which the blocks draw on their footings, as every other building's. A landmark drawn
+      // from code was squashed about its own y = 0 until 2026-11-07, which on a slope could sink its
+      // footprint under the drawn ground.
+      const open = this.focus > 0;
       const want = this.buildingMeshes.has(l.buildings[0]!) && !open ? this.landmarkWanted(l) : undefined;
       if (want) l.want(want, () => this.landmarkCovers(l));
       let form: LandmarkForm | undefined;

@@ -109,12 +109,9 @@ asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 32 stand-
   triangles, 4 draw calls (280 until the review closed a shaft of 0.55 square metres between the lower building and the
   tower's north-east cut; since then the top view's footprint IoU is 0.922, 81% of the 4,549 cells within 0.5 m, and
   block 439 91.1% under the model).
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
-  block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
-  and `baseOf` in `src/scene/CampusScene.ts`). 439's y = 0 is the map's ground at its door on Symonds Street, and under
-  the model the map's ground lies from 1.06 m above it to 7.59 m below, where the site falls away to the east, so beside
-  an open neighbour its footprint shows above the drawn ground on about 95% of its cells, by up to 7.69 m, where block
-  439's showed on 50%, by up to 4.59 m.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 439, which sinks on
+  its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
+  footprint shows above the drawn ground on 50% of its cells, by up to 4.59 m, where the site falls away to the east.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` and `concrete` are walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "with a photograph as a reference" (no
