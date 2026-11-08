@@ -35,7 +35,9 @@ jobs:
     permissions:
       contents: read # the checkout; the push goes with the Claude GitHub App's token
       issues: write # the comments on the pull request
-      pull-requests: read # its branches
+      # A comment on a pull request needs this write too: with `read`, both of the job's comments failed with
+      # "Resource not accessible by integration" (HTTP 403; on #139, 2026-11-08).
+      pull-requests: write # its branches, and the comments on it
       id-token: write # the action's exchange for the Claude GitHub App's token
     steps:
       - name: Find the pull request's branches
