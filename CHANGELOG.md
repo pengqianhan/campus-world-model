@@ -38,6 +38,14 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Architecture - East drawn in detail.** Near the camera the map draws Architecture - East (421E), beside the Grafton
+  Gully, from code in place of its block: a main block in pale concrete with a pale louvred parapet and a band of
+  windows on each floor of its face to the raised terrace, and along its top floor, under a grey hipped roof, a face in
+  dark cladding with a row of dormers; a lower wing beside it with a band of windows on each floor; and two towers in
+  the same dark cladding, their tops sloping up. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from a paved deck above its raised terrace, and its card says what is estimated: some heights, the storeys,
+  the parapets and the windows, the dark face and its dormers, and the faces no photograph shows. On the map it has the
+  map's colours; from a walker's height on a computer with a graphics card, its own concrete, glass and cladding (#140).
 - **Building 303S of the Science Centre drawn in detail.** Near the camera the map draws building 303S of the
   Science Centre on Symonds Street from code in place of its block: a block of eight storeys behind a curtain wall
   of mirror-like blue glass, pale fins on its face's south-east stretch with a zigzag of pale braces between the
