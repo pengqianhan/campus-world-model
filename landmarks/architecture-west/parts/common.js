@@ -57,11 +57,9 @@ export const MEASURED = {
   low: { u: [14, 18.8], w: [-9.4, 7.9], top: H(17.43) },
   lower: { u: [18.8, 21.9], w: [-9.0, 0], top: H(15.9) },
   // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
-  // every 3.55 m in step with 421E's (its terrace's floor at 39.6 m: here 2.77 m, and 6.32 m at the paved upper
-  // level, 43.15 m, where the north-east face's doors are; the flat roof's 20.52 m is the sixth); on each floor of
-  // the north-east faces above the doors' storey a pale louvred parapet before a band of windows; the doors' storey
-  // glazed.
-  floors: { first: H(2.77), every: 3.55, doors: H(6.32) },
+  // every 3.55 m, as 421E's, from the door's ground (43.5 m), the storey of the slab's north-east doors; on each
+  // floor of the north-east faces above it a pale louvred parapet before a band of windows; the doors' storey glazed.
+  floors: { first: 0, every: 3.55, doors: 0 },
   parapet: { height: 1.1, out: 0.08 },
   windows: { sill: 1.25, head: 2.65, out: 0.03 },
   doors: { sill: 0.1, head: 3.2 },

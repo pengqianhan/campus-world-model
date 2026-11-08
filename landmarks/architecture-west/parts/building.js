@@ -78,11 +78,12 @@ export function building(b) {
   // further one in the brown cladding the photograph shows, its foot 5 cm higher than the nearer one's
   block(b, rect([M.low.u[0] - 0.1, M.low.u[1]], [M.low.w[0], M.low.w[1] - 0.05]), FOOT, M.low.top, WALL, ROOF);
   block(b, rect([M.lower.u[0] - 0.1, M.lower.u[1]], M.lower.w), FOOT + 0.05, M.lower.top, TOWER, ROOF);
-  // the north-east faces the photograph shows: the slab's, its doors' storey glazed and a floor on each storey above
-  // it; its set-back part's, from the upper level's storey; the nearer lower block's, above the doors' storey
+  // the north-east faces the photograph shows, a floor on each storey above the doors' (below it the set-back part
+  // and the nearer lower block are plain, where the site's ground lies lower than the LiDAR's): the slab's, its
+  // doors' storey glazed; its set-back part's; the nearer lower block's
   const F = M.floors, Dr = M.doors;
   floorsOn(b, [-2.45, 13.95], P[0][1], F.doors + F.every, S.top);
   prism(b, rect([-2.45, 13.95], [P[0][1] - M.windows.out, P[0][1] + 0.01]), F.doors + Dr.sill, F.doors + Dr.head, GLASS);
-  floorsOn(b, [P[3][0] + 0.05, -2.55], P[3][1], F.doors, S.top);
+  floorsOn(b, [P[3][0] + 0.05, -2.55], P[3][1], F.doors + F.every, S.top);
   floorsOn(b, [M.low.u[0] + 0.05, M.low.u[1] - 0.05], M.low.w[0], F.doors + F.every, M.low.top);
 }

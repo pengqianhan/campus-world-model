@@ -42,10 +42,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   model of 421E stands, and lower parts before the set-back face, which round 0 does not draw), 82% of the cells
   within 0.5 m (p10/p50/p90 -0.32/-0.01/0.55), the highest point 31.35 m against 31.38; block 421W under the model
   62.3%, 421E 2.8%.
-- Round 1, the faces (2026-11-08), all estimated: on the three north-east faces the photograph shows (the slab's,
-  its set-back part's and the lower block's), floors every 3.55 m in step with 421E's: on each a louvred parapet
-  (the kit's `plain`) and a band of windows (`glass`), and the slab's doors' storey at the upper level glazed; the
-  faces the photograph does not show plain. 445 triangles, 5 draw calls. The silhouette as round 0; the building's
+- Round 1, the faces (2026-11-08), all estimated: on the three north-east faces the photograph shows (the slab's, its
+  set-back part's and the lower block's), floors every 3.55 m, as 421E's: on each above the doors' storey a louvred
+  parapet (the kit's `plain`) and a band of windows (`glass`), and the slab's doors' storey at the upper level glazed;
+  the faces the photograph does not show plain. 445 triangles, 5 draw calls. The silhouette as round 0; the building's
   luma median 240 against 167: the viewer's ground is the frame's (36.83 m), 6.6 m under the paved level the
   photograph stands on, so the plain walls below that level count as the building's until step 7 sets the door's
   ground.
@@ -54,9 +54,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   measured frame is the expected one (0.000 m). With the viewer's ground there, as the photograph's: silhouette IoU
   0.830 (0.966 in the box: the comparison's ground plane now hides the walls below the upper level).
 - The light (estimated, `config`'s `light`): the sun at 65 degrees round and 40 up, behind the camera to its left,
-  as the photograph's (the tower's north-east face lit, its north-west face in shade), and an exposure of 0.6: the
-  building's luma median 167 against the photograph's 168 (p10/p90 70/234 against 114/221). The block furthest
-  north-west in the brown cladding the photograph shows: 445 triangles, 5 draw calls.
+  as the photograph's (the tower's north-east face lit, its north-west face in shade), and an exposure of 0.8: the
+  building's luma median 167 against the photograph's 168 (p10/p90 87/240 against 114/221). The block furthest
+  north-west in the brown cladding the photograph shows.
+- Step 8, on the site (2026-11-08): the floors start at the door's ground, the doors' storey's (they stood 0.35 m
+  lower, in step with 421E's, and the doors' glazing then came down below the door, 0.92 m over the site's ground
+  at the face's south-east end); the set-back part's faces start a storey up, as the slab's, plain below (its
+  lowest parapet stood 3.1 m over the site's ground, which lies there lower than the LiDAR's). 421 triangles, 5
+  draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
