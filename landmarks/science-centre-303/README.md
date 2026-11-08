@@ -29,14 +29,23 @@ it, the street side positive (`at`, `rect`, `uw`).
 - The campus map's rings of 303S, 305 and 301 adjoin 303's: the face's last 5 m to the south-west are 303S's
   (its ring from u 70.1-70.4), the low roofs behind the rear block are 305's (from w -36.3), and the wing's back
   runs into 301's (from w -59.5). The model ends where each begins (303S's ring runs 0.2 m behind the rear block's
-  back, and meets the slab's south-west end within 0.1 m), but for two slivers where 305's ring reaches into
+  back), but for 303S's side (below) and for two slivers where 305's ring reaches into
   303's own parts, which the model draws as the LiDAR has them: from the rear block's back across it and its
   22.4 m part into the slab (u 37 to 41, to w -24.4), and along the wing's south-west side (u 23.5 to 25,
   w -36.3 to -46.3).
-- No other block has as much as half of it under the model (305 10.2%, its two slivers; 301 1.5%), so
-  `building.also` is empty.
-- **Block 303 itself** is 84.96% under the model, a hair short of the 85% asked: its ring takes in a light well 2 m wide
-  between the wing and the slab, where the LiDAR has no returns, and the model leaves it open.
+- **On to 303S's back.** The range and the slab run on past u 70.3, where the campus map's rings meet, to 303S's
+  back, as the LiDAR has them, with no returns below them in between: the slab's end bay at 32.8 m to u 71.65 (its
+  returns' u p98 71.55-71.73 from w -12 to -26), 1.35 to 1.5 m into 303S's ring; the range at 13.4 m along
+  303S's back, about 5 cm into 303S's model (u 71.84 at the face, 1.6 cm into the tip; 71.44 and, past a step in
+  303S's back, 71.40 at w -7.6; 71.28 at the range's back),
+  where 303S's tip stands at its height; the face's gaps run on with it to u 71.80. Until 2026-11-07, when 303S
+  came onto the site, the model ended at u 70.3 and a slot 0.5 to 1.5 m wide stood open between it and 303S's
+  model; the maintainer asked for it to be closed.
+- No other block has as much as half of it under the model (305 10.2%, its two slivers; 303S 3.7%, the range and
+  the end bay over its ring's edge; 301 1.5%), so `building.also` is empty.
+- **Block 303 itself** is 85.6% under the model (84.96% before the range and the slab ran on to 303S): its ring takes
+  in a light well 2 m wide between the wing and the slab, where the LiDAR has no returns, and the model leaves it
+  open.
 
 ## The reference
 
@@ -151,7 +160,9 @@ measured.
   aerial's mauve grey, drawn in `roofGrey`).
 - **The pictures** in `docs/landmarks/`: `science-centre-303-front.jpg` and `-above.jpg` are the viewer's renders
   of the model alone, from its street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
-  the site built from this branch, the map near it and a walker's eyes on its street.
+  the site built from this branch, the map near it and a walker's eyes on its street. All four were taken again on
+  2026-11-07, when the range and the slab ran on to 303S's back (1,672 triangles, 6 draw calls), the map's and the
+  walker's with 303S beside it, on the ground the two share.
 
 ## Not drawn yet
 
