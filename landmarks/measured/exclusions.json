@@ -1209,23 +1209,6 @@
     }
    }
   },
-  "421E": {
-   "name": "Architecture - East",
-   "reason": "roof cells cover 60% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 2281.3,
-    "ground": {
-     "p5": 26.75,
-     "p50": 34.76,
-     "p95": 39.92,
-     "zero": 27.91
-    },
-    "roof_inside_m2": 1363.5,
-    "cover": 0.598,
-    "vegetation": 0.137,
-    "open_below": 0.088
-   }
-  },
   "422": {
    "name": "Architecture Acoustics Laboratory",
    "reason": "roof cells cover 60% of the outline (limit 85%)",
