@@ -1,7 +1,7 @@
 // 49 Symonds Street (620; parts/common.js, MEASURED), drawn in its own frame (u west-south-west, w to the street).
 // Round 0: each part a block at the LiDAR's plan and height: the tower with its roof inside a parapet, the mansard on
 // it, the plant east of the mansard and the gable in the middle of each face; the podium to its east with the gable
-// over its entrance; the lower buildings behind the podium. Round 1's faces: the tower's walls in glass between a base
+// over its entrance and the canopy along its front; the lower buildings behind the podium. Round 1's faces: the tower's walls in glass between a base
 // of dark stone and a white band, white on its bays and its north-east face, with an arched window under each white
 // face's gable and a window either side of it in each storey, and one in each storey of the bays' sides; the podium and
 // the lower buildings in the dark stone; the mansard's top pale.
@@ -114,6 +114,7 @@ export function podium(b) {
   // the gable over the entrance, its triangle to the street, its feet 0.3 m under the podium's roof
   const c = (En.u[0] + En.u[1]) / 2, half = (En.u[1] - En.u[0]) / 2;
   gable(b, "w", c, En.w[0], En.w[1], P.roof - 0.3, En.apex, half, STONE);
+  prism(b, rect(P.canopy.u, P.canopy.w), P.canopy.top - 0.3, P.canopy.top, STONE);
 }
 
 export function low(b) {

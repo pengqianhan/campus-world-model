@@ -1,7 +1,7 @@
 # Art bible: 49 Symonds Street (620)
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from
-it.
+it but the heights of the faces' white band, dark base and windows, which are estimated.
 
 - An office tower of about thirteen storeys, clad in pale grey-white panels with punched windows in bands, and on its
   stepped corners curtain walls of blue glass in dark frames, each step's face glazed with a white top.

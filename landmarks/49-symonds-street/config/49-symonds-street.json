@@ -2,7 +2,7 @@
  "name": "49-symonds-street",
  "site": false,
  "refs": "photos",
- "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from Symonds Street to the building's east, about 50 m from its north-east face, looking up 24 degrees through a lens of about 34 degrees across; its camera is fitted to the north-east face's gable and to the tops of the steps of its east corner, and to two upright edges, with the principal point at the centre.",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from Symonds Street to the building's east, about 48 m from its north-east face, looking up 23 degrees through a lens of about 38 degrees across; its camera is fitted to the north-east face's gable, to the tops of three faces of the steps of its east corner, to the apex of the gable over the podium's entrance and to two upright edges, with the principal point at the centre.",
  "building": {
   "id": "620",
   "also": [],
@@ -149,11 +149,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 56.79,
+ "ground": 56.87,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": 22.4,
+  "z": 7.0,
+  "note": "the entrance under the gable on the podium's front to Symonds Street, as the photograph shows it: a doorway under a pointed arch, with a canopy along the front at about 3 m (the campus map records no lobby or entrance in 620, and OpenStreetMap no entrance near it). The door is on the footpath 1.5 m out from the gable's front, past the canopy's edge (u -22.4, w 7.0 in the building's frame; (22.4, 7.0) in the view frame). The LiDAR's ground within 1 m: 14 returns, p10/p50/p90 56.816/56.872/56.910 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -172,9 +172,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 30,
-  "spine_below": 40,
+  "min_above": 2.92,
+  "tower_above": 29.92,
+  "spine_below": 39.92,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "east",
@@ -189,7 +189,8 @@
     -0.4243490714204586
    ],
    "tolerance_m": 0.05
-  }
+  },
+  "thresholds_note": "min_above, tower_above and spine_below were 3, 30 and 40 m above the provisional ground (56.79 m); lowered by 0.08 m with the ground set at the door, so that they pick the same points and the measured frame stays the expected one"
  },
  "refine": {
   "position_m": 3,
@@ -204,7 +205,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "56.79 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 52.42, p95 59.45: the site falls about 7 m across the crop); provisional, to be the LiDAR's ground at the door at step 7",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 56.79 m, the median LiDAR ground in the crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 75,
   "sunel": 30,
