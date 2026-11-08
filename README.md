@@ -73,6 +73,8 @@ It is built to answer two questions a student actually has:
   terrace, a face in dark cladding with a row of dormers under its grey hipped roof, a lower wing beside it, and
   two towers in the same dark cladding, their tops sloping up. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
+- **2026-11-07:** building 303 of the Science Centre now meets building 303S beside it: its range along
+  the street and its slab run on to 303S's back, as the LiDAR has them, where a gap stood open between the two.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
@@ -1102,7 +1104,7 @@ If you represent the University and would like something changed or removed, ple
   the face's bands are drawn as dark strips on it, the lowest band's bottom, the canopy's depth and the glazing
   under it are estimated. A large relief of white blocks on the face is an artwork, not drawn after: the band is
   plain there. The slab, the rear block, the wing and their faces, which no photograph shows, are drawn plainly
-  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 84.96% under the model: its ring takes in
+  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 85.6% under the model: its ring takes in
   a light well, which has no returns, between the wing and the slab.
 - **Building 303S of the Science Centre is seen from the south-east only, from far off.** One photograph, from the
   street about 95 m to the south-east through a long lens, sees its face to the street obliquely and the first
@@ -1113,12 +1115,11 @@ If you represent the University and would like something changed or removed, ple
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
-  south-east end, which the photograph does not show, is drawn flat. Behind its back a slot 0.5 to 1.6 m
-  wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
-  reaching to it. While a building is open, its neighbours sink to footprints, a landmark about its own y = 0
-  and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
-  street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
-  1.7 m above it.
+  south-east end, which the photograph does not show, is drawn flat. While a building is open, its neighbours
+  sink to footprints, a landmark about its own y = 0 and a block about the lowest ground under it: beside an open
+  303, 303S's footprint, its y = 0 below the street's rising ground, is mostly under the drawn ground; beside an
+  open neighbour 303's stands up to 1.7 m above it, and beside an open 303S it lies over a strip of 303S's floors
+  along its back.
 - **Architecture - East is seen from above its raised terrace only.** One photograph, from a paved deck about 4 m above
   the terrace, sees the main block's face to it and the wing's beside it. The main block's faces turned away from the
   terrace, which no photograph shows, are drawn plainly, and so are the wing's walls below the terrace; the wing's other
