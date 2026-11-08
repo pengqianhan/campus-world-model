@@ -33,7 +33,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 244 triangles, 4 draw calls.
+  0: 244 triangles, 4 draw calls; round 1: 640, 5.
 
 ## Rounds
 - Round 0 (2026-11-09): the tower's shaft (`renderGrey`), its crown (`roofGrey`) and the glazed box before it
@@ -45,6 +45,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   64% of the 3,934 cells both cover within 0.5 m (p10/p50/p90 -0.43/0.13/4.04), the highest point 34.81 m against
   the LiDAR's 34.71 (p99.9); block 501 under the model 74.8% (its ring takes in the plaza), 501C 13.2%, 502 6.3%,
   503 4.5%.
+- Round 1 (2026-11-09, the lead alone): the light well in the block's roof (its floor 26.3 m); the atria's tops at
+  27 m and their floors' slabs every 3.8 m from 4.8 m, standing out of the glass (the photograph's glazed links,
+  through its fitted camera: estimated), each atrium run 0.5 m into the walls it meets; the strip of windows up the
+  middle of the tower's east face (`glass`, 5.0 to 26.7 m: estimated); the crown's band and slopes in `screenGrey`,
+  its flat top `roofGrey`; the light (sun at 70 degrees round and 45 up, exposure 0.4: estimated). 640 triangles, 5
+  draw calls. Silhouette IoU 0.894 in the model's screen box; the building's luma median 136 against the
+  photograph's 131. The top view: footprint IoU 0.656, 65% of the 3,934 cells within 0.5 m (p10/p50/p90
+  -0.45/0.12/1.45), block 501 under the model 74.7%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

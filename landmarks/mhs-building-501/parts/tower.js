@@ -4,7 +4,8 @@
 import { BOX, FOOT, TOWER, at, rect } from "./common.js";
 import { loft, prism, tris } from "./shapes.js";
 
-const WALL = "renderGrey", ROOF = "roofGrey", GLASS = "glass";
+// The crown's band and slopes in the dark grey of its standing seams (the photograph), its flat top as a roof.
+const WALL = "renderGrey", ROOF = "roofGrey", GLASS = "glass", CROWN = "screenGrey";
 
 /** The four corners of a rectangle [u0, u1] x [w0, w1] at height y, as [x, y, z], round in one direction. */
 const ring = ({ u, w }, y) => [[u[0], w[0]], [u[1], w[0]], [u[1], w[1]], [u[0], w[1]]].map(([a, c]) => {
@@ -17,10 +18,12 @@ const ring = ({ u, w }, y) => [[u[0], w[0]], [u[1], w[0]], [u[1], w[1]], [u[0], 
 export function tower(b) {
   const T = TOWER;
   prism(b, rect(T.shaft.u, T.shaft.w), FOOT, T.eave, WALL);
-  prism(b, rect(T.crownOut.u, T.crownOut.w), T.eave, T.band, ROOF);
-  loft(b, ring(T.crownOut, T.band), ring(T.crownTop, T.top), ROOF, true);
+  prism(b, rect(T.crownOut.u, T.crownOut.w), T.eave, T.band, CROWN);
+  loft(b, ring(T.crownOut, T.band), ring(T.crownTop, T.top), CROWN, true);
   const t = ring(T.crownTop, T.top);
   tris(b, [[t[0], t[1], t[2]], [t[0], t[2], t[3]]], ROOF);
+  // the strip of windows, standing 0.05 m out of the east face
+  prism(b, rect([T.shaft.u[1], T.shaft.u[1] + 0.05], T.strip.w), T.strip.y[0], T.strip.y[1], GLASS);
 }
 
 /** The glazed box before the east face: glass from FOOT to its beam, the beam and its roof over it. */

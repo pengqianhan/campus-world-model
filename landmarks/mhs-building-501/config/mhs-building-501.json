@@ -194,5 +194,11 @@
   "keep_fixes": true
  },
  "ground_note": "71.88 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 70.58, p95 72.52); provisional, to be the LiDAR's ground at the door (step 7)",
- "crop_note": "70 m round the outline, so that the crop box takes in the plaza where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)"
+ "crop_note": "70 m round the outline, so that the crop box takes in the plaza where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)",
+ "light": {
+  "sunaz": 70,
+  "sunel": 45,
+  "exposure": 0.4,
+  "note": "estimated: the photograph has no date; its east face stands in sun. The viewer's sun at 70 deg round and 45 up lights that face; the building's luma p50 196 at the default exposure, 174 at 0.65, 153 at 0.5, 145 at 0.45, 136 at 0.4, against the photograph's 131"
+ }
 }

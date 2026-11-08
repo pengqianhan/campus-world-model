@@ -1,19 +1,27 @@
 // The M&HS Building's long block west of the tower, with the plant room on it, the parts south and north of it and
 // the glass-roofed atria either side; and the south edge of the building to its north (502's), inside the campus
 // map's ring of 501. Sizes from common.js.
-import { ATRIA, ATRIUM_TOP, BLOCK, FOOT, LINK, NORTH, PLANT, SOUTH, at, rect } from "./common.js";
+import { ATRIA, ATRIUM_FLOORS, ATRIUM_TOP, BLOCK, FOOT, LINK, NORTH, PLANT, SOUTH, WELL, at, rect } from "./common.js";
 import { block, prism, tris } from "./shapes.js";
 
 const WALL = "renderGrey", ROOF = "roofGrey", GLASS = "glass", PALE = "claddingPale";
 
-/** The long block, the plant room on its south side, the part south of it, the concrete link north of it, and the
- * atria: glass from FOOT to their roofs. */
+/** The long block round its light well (the well's floor a block of its own), the plant room on its south side, the
+ * part south of it, the concrete link north of it, and the atria: glass from FOOT to their roofs, each floor's slab
+ * standing out of the glass. */
 export function body(b) {
-  block(b, rect(BLOCK.u, BLOCK.w), FOOT, BLOCK.top, WALL, ROOF);
+  const [u0, u1] = BLOCK.u, [w0, w1] = BLOCK.w, [a0, a1] = WELL.u, [c0, c1] = WELL.w;
+  for (const [u, w] of [[[u0, u1], [w0, c0]], [[u0, u1], [c1, w1]], [[u0, a0], [c0, c1]], [[a1, u1], [c0, c1]]])
+    block(b, rect(u, w), FOOT, BLOCK.top, WALL, ROOF);
+  block(b, rect(WELL.u, WELL.w), FOOT, WELL.floor, WALL, ROOF);
   block(b, rect(PLANT.u, PLANT.w), BLOCK.top - 2, PLANT.top, WALL, ROOF);
   for (const s of SOUTH) block(b, rect(s.u, s.w), FOOT, s.top, WALL, ROOF);
   block(b, rect(LINK.u, LINK.w), FOOT, LINK.top, WALL, ROOF);
-  for (const a of ATRIA) prism(b, rect(a.u, a.w), FOOT, ATRIUM_TOP, GLASS);
+  for (const a of ATRIA) {
+    prism(b, rect(a.u, a.w), FOOT, ATRIUM_TOP, GLASS);
+    const out = rect([a.u[0] - 0.05, a.u[1] + 0.05], [a.w[0] - 0.05, a.w[1] + 0.05]);
+    for (const y of ATRIUM_FLOORS) prism(b, out, y - 0.3, y, WALL);
+  }
 }
 
 /** 502's south edge: its walls from FOOT to its eave, its roof rising to the north, and the ends under it. */
