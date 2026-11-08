@@ -60,10 +60,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   the map, where the map's ground lies 6.57 m under the LiDAR's.
 - On the site (step 8, 2026-11-08): `site` is true, and the site draws the model in place of block 439. It stands
   alone (no other landmark's outline comes within 2 m of its), its y = 0 on the map's ground at its door. The foot
-  check of `tests/landmarks.test.ts` passes: every material's lowest points are within 0.25 m of the map's ground.
-  No new roof, pane or opening material: `glass` is glass and `roofGrey` a roof in `LIGHT_ROLE` already, and
-  `claddingPale` and `concrete` are walls. The card's `estimated`: some heights, with a photograph as a reference;
-  the parapet; the second fin; the faces no photograph shows. 280 triangles, 4 draw calls.
+  check of `tests/landmarks.test.ts` passes: every material's lowest points are no more than 0.25 m above the map's
+  ground. No new roof, pane or opening material: `glass` is glass and `roofGrey` a roof in `LIGHT_ROLE` already, and
+  `claddingPale` and `concrete` are walls. The card's `estimated`: with a photograph as a reference, the second fin's
+  place; the parapet; the faces no photograph shows. 280 triangles, 4 draw calls.
 - Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
   its slope is known) and the recess stepped into the north face's west end and the north-west cut over several
   floors (the photograph shows its dark soffits; the LiDAR, which sees the roof, gives neither its plan nor how deep

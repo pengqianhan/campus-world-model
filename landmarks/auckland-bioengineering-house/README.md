@@ -17,11 +17,11 @@ are shared by every landmark: [`../README.md`](../README.md).
 
 ## The frame
 
-`config/auckland-bioengineering-house.json`, `frame`: x west (the axis, the bearing of the tower's long walls, and x is
-minus it); y up from 59.75 m NZVD2016, the LiDAR's ground at `door`, on the landing at the top of the steps from
-Symonds Street; z north; the centre at x = z = 0. The site falls about 20 m across the crop, steeply toward the east,
-where the ground beside the lower building lies about 18 m below the street. `parts/common.js` gives the building a
-frame of its own: `u` east (minus x) and `w` north (z).
+`config/auckland-bioengineering-house.json`, `frame`: x west (the axis, the bearing of the tower's north and south
+walls, and x is minus it); y up from 59.75 m NZVD2016, the LiDAR's ground at `door`, on the landing at the top of
+the steps from Symonds Street; z north; the centre at x = z = 0. The site falls about 20 m across the crop, steeply
+toward the east, where the ground beside the lower building lies about 18 m below the street. `parts/common.js` gives
+the building a frame of its own: `u` east (minus x) and `w` north (z).
 
 Every height in `parts/common.js` was measured before the door was set, above 57.96 m, the median ground in the crop
 box; `H` moves each on to the door's ground, 1.79 m higher. The frame's thresholds in the config were lowered by the
@@ -57,7 +57,7 @@ face's side of the sky, and 40 up, and the exposure (1.4) is set by the building
 The tower, its parapet and plant room, the lower building and the two parts on it, as blocks at the LiDAR's plans and
 heights, from the returns' p50 in 1 m cells and the hull of the tower's roof:
 
-- **The tower**, a rectangle with its four corners cut (the west face 20.5 m, the north 16.7, the east 18.7, the south
+- **The tower**, a rectangle with its four corners cut (the west face 20.5 m, the north 16.7, the east 20.9, the south
   15.6; the cuts 4.3 to 6.0 m), its roof at 38.73 m inside a top edge at 39.6 m, a parapet estimated 0.3 m wide.
 - **The plant room** on its roof, its top at 43.52 m.
 - **The lower building** round the tower's north and east sides, its flat roof at 8.54 m, its plan the returns' edge
@@ -115,9 +115,9 @@ asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 32 stand-
   439's showed on 50%, by up to 4.59 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` and `concrete` are walls.
-- **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a
-  reference" and goes on with the tower's parapet, the second stone fin, and the faces no photograph shows, the tower's
-  drawn after the ones it shows and the lower building's plainly.
+- **Its card** says "estimated:" and the config's `estimated`, which begins "with a photograph as a reference" (no
+  height of it is taken from the photograph) and goes on with the place of the second stone fin, the tower's parapet,
+  and the faces no photograph shows, the tower's drawn after the ones it shows and the lower building's plainly.
 - **The pictures** in `docs/landmarks/`: `auckland-bioengineering-house-front.jpg` and `-above.jpg` are the viewer's
   renders of the model alone, from the north-west and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are
   shots of the site built from this branch, the map near it and a walker's eyes on Symonds Street to its north-west.

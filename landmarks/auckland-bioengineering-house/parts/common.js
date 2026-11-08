@@ -19,7 +19,7 @@ export const FOOT = H(-18.5);
 
 export const MEASURED = {
   // The tower: its plan the hull of its roof's returns, a rectangle with its four corners cut (the west face 20.5 m,
-  // the north 16.7, the east 18.7, the south 15.6; the cuts 4.3 to 6.0 m); its roof at 38.73 m (the returns' p50), its
+  // the north 16.7, the east 20.9, the south 15.6; the cuts 4.3 to 6.0 m); its roof at 38.73 m (the returns' p50), its
   // top edge at 39.6 m (the outer returns' p90 39.47 to 39.6), a parapet estimated 0.3 m wide.
   tower: {
     plan: [[-18.91, -13.04], [-14.41, -17.0], [1.23, -16.45], [4.71, -12.88], [4.07, 8.01], [0.29, 11.46],
@@ -40,7 +40,7 @@ export const MEASURED = {
     roof: H(8.54),
   },
   strip: { u: [4.2, 6.8], w: [-12.5, 15.5], top: H(11.28) },
-  porch: { plan: [[-7.7, 11.0], [-3.9, 11.0], [-3.9, 16.6], [-5.9, 16.6]], top: H(11.3) },
+  porch: { plan: [[-7.7, 11.0], [-3.9, 11.0], [-3.9, 16.6], [-5.8, 16.6]], top: H(11.3) },
   // The faces (round 1; the photograph as a reference for the look): the tower clad all round in glass; on its north
   // face two stone fins standing out of it and rising above its top. The first, nearer the north-east corner: its top
   // at 40.2 m and its front 0.35 m out of the face, from u -5.0 to -3.0 (its returns above 39.9 m near the north
