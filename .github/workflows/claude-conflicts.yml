@@ -11,7 +11,9 @@ name: Claude resolves conflicts
 # Who: someone with write access (the job's `if`; the action checks again), on a pull request from a
 # branch of this repository. The comment's text never reaches Claude. The push goes with the Claude
 # GitHub App's token, so CI runs on it. The repository secret CLAUDE_CODE_OAUTH_TOKEN, made with
-# `claude setup-token`, bills the maintainer's Claude plan.
+# `claude setup-token`, bills the maintainer's Claude plan. The App's token may not push a change to a workflow:
+# when the base branch has changed one since the pull request's branch left it, the job says so and does not
+# start Claude.
 on:
   issue_comment:
     types: [created]
@@ -34,8 +36,9 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read # the checkout; the push goes with the Claude GitHub App's token
-      issues: write # the comments on the pull request
-      pull-requests: read # its branches
+      # Its branches, and the comments on it: with `read` here and `issues: write`, both of the job's comments
+      # failed with "Resource not accessible by integration" (HTTP 403; on #139, 2026-11-08).
+      pull-requests: write
       id-token: write # the action's exchange for the Claude GitHub App's token
     steps:
       - name: Find the pull request's branches
@@ -71,11 +74,15 @@ jobs:
           git merge --no-ff --no-commit "origin/$BASE" || true
           files=$(git diff --name-only --diff-filter=U | tr '\n' ' ')
           echo "conflicts=$files" >> "$GITHUB_OUTPUT"
-          if [ -z "$files" ]; then git merge --abort 2> /dev/null || true; fi
+          # The Claude GitHub App may not push a change to a workflow (it has no `workflows` permission), and
+          # a merge that brings the base branch's changes to one is such a change: then Claude is not started.
+          workflows=$(git diff --name-only "HEAD...origin/$BASE" -- .github/workflows | tr '\n' ' ' | sed 's/ $//')
+          echo "workflows=$workflows" >> "$GITHUB_OUTPUT"
+          if [ -z "$files" ] || [ -n "$workflows" ]; then git merge --abort 2> /dev/null || true; fi
 
       - name: Resolve the conflicts, check, commit and push
         id: claude
-        if: steps.merge.outputs.conflicts != ''
+        if: steps.merge.outputs.conflicts != '' && steps.merge.outputs.workflows == ''
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -139,6 +146,7 @@ jobs:
           BEFORE: ${{ steps.pr.outputs.sha }}
           MERGED: ${{ steps.merge.outcome }}
           CONFLICTS: ${{ steps.merge.outputs.conflicts }}
+          WORKFLOWS: ${{ steps.merge.outputs.workflows }}
           EXEC: ${{ steps.claude.outputs.execution_file }}
         run: |
           report="$RUNNER_TEMP/report.md"
@@ -148,6 +156,8 @@ jobs:
               echo "Claude resolves conflicts only on a branch of this repository. [Run]($RUN_URL)."
             elif [ "$MERGED" = success ] && [ -z "$CONFLICTS" ]; then
               echo "The base branch merges into this one without a conflict: nothing to resolve. [Run]($RUN_URL)."
+            elif [ -n "$WORKFLOWS" ]; then
+              echo "The base branch has changed \`$WORKFLOWS\` since this branch left it, and the Claude GitHub App may not push a change to a workflow, so Claude was not started and nothing was pushed: merge the base branch into this one another way. [Run]($RUN_URL)."
             else
               if [ "$after" != "$BEFORE" ]; then
                 echo "Pushed $after: the base branch merged into this one. [Run]($RUN_URL)."
