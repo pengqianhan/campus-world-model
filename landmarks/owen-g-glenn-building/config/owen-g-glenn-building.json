@@ -1,6 +1,8 @@
 {
  "name": "owen-g-glenn-building",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the north edge of the raised plaza north-east of the curved wing, about 1.2 m above the plaza, looking south across a raised lawn at the wing's inner face and the sloping canopy before it, up 10 degrees through a lens of about 60 degrees across; its camera is fitted to the canopy's low edge, three corners of the lawn, the crown of louvres on the wing's east arm and five upright edges, with the principal point at the centre. A second, smaller picture laid over the photograph's bottom right corner is left out of its view (photo_camera's exclude).",
  "building": {
   "id": "260",
   "also": [],
