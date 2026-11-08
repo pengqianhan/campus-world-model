@@ -22,8 +22,8 @@ A change to what the site does or shows adds its line here, and the README's
   (439), on Symonds Street, from code in place of its block: a tower clad all round in glass, its plan a rectangle
   with its corners cut, two stone fins on its north face rising above its top and a plant room on its roof, with a
   lower building round its north and east sides. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
-  photograph from Symonds Street, and its card says what is estimated: the second stone fin's place, with the
-  photograph as a reference, the tower's parapet, and the faces no photograph shows. On the map it has the map's
+  photograph from Symonds Street, and its card says what is estimated: the second stone fin's place (with the
+  photograph as a reference), the tower's parapet, and the faces no photograph shows. On the map it has the map's
   colours; from a walker's height on a computer with a graphics card, its own glass, stone and cladding (#PR).
 - **Architecture - West drawn in detail.** Near the camera the map draws Architecture - West (421W), north-west of
   Architecture - East, from code in place of its block: a slab in pale concrete with a pale louvred parapet and a band

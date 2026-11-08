@@ -107,7 +107,7 @@ asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 32 stand-
   Its walls go down to FOOT, 20.29 m below the door's ground, where the LiDAR's ground falls to the east; the foot check
   of `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes. 288
   triangles, 4 draw calls (280 until the review closed a shaft of 0.55 square metres between the lower building and the
-  tower's north-east cut; since then the top view's footprint IoU is 0.922, 81% of the 4,550 cells within 0.5 m, and
+  tower's north-east cut; since then the top view's footprint IoU is 0.922, 81% of the 4,549 cells within 0.5 m, and
   block 439 91.1% under the model).
 - **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
   block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
