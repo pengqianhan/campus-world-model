@@ -32,7 +32,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 150k triangles and ≤ 12 draw calls (tier 1, a house of the 1880s), merged by material. Round 0:
-  165 triangles, 2 draw calls; round 1 and step 7: 417 triangles, 4 draw calls.
+  165 triangles, 2 draw calls; round 1 and step 7: 417 triangles, 4 draw calls; the review's round 1: 419.
 
 ## Rounds
 - Round 0 (2026-11-09): the walls (`trim`) with the cornice under the eaves, the two hipped roofs and the low roof
@@ -59,6 +59,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   that its foot does not share the posts' feet's plane (the faces check: 0.038 m²). Its foot is below the map's ground
   under the whole plan (the foot check passes); beside an open neighbour its squashed footprint stands above the drawn
   ground on about 93% of its cells, by up to 1.43 m (block 215's: 78%, 1.01 m).
+- The review's round 1 (2026-11-09): the walls' top, which stood above the low roof behind and the north-east
+  part's slope over its back wall, brought down to 8.5 m, inside the cornice; the low roof's eave at 8.7 m as the
+  others (its returns 8.6 to 8.7), and its north-east end closed down to the cornice's top. 419 triangles, 4 draw
+  calls; the comparison and the top view as at step 7.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

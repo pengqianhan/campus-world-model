@@ -18,6 +18,9 @@ export function house(b) {
   hipRoof(b, [-M.u[1], -M.u[0]], M.w, HOUSE.eave, M.ridge, "x", M.at, M.hips, ROOF);
   const [x0, x1] = [-R.u[1], -R.u[0]], hi = (x) => [x, R.high, R.w[1]], lo = (x) => [x, R.low, R.w[0]];
   tris(b, [[hi(x0), hi(x1), lo(x1)], [hi(x0), lo(x1), lo(x0)]], ROOF);
+  // its north-east end closed down to the cornice's top (its south-west end lies on the wing's roof)
+  const foot = (z) => [x0, HOUSE.eave - 0.02, z];
+  tris(b, [[foot(R.w[0]), foot(R.w[1]), hi(x0)], [foot(R.w[0]), hi(x0), lo(x0)]], WALL, (m) => [m[0] - 1, m[1]]);
 }
 
 /** The verandah before the north-east part's front: its floor on a plinth, its roof falling from the wall to its edge

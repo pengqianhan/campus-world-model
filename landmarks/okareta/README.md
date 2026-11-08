@@ -122,6 +122,15 @@ gone; `MASSING.md` lists 215 among the landmarks and counts 32 stand-ins measure
   alone, from the north and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site built
   from this branch, the map near it and a walker's eyes on the footpath before it.
 
+## The review (November 2026)
+
+The review's first round found the walls' flat top, at 9.0 m over the crop's median ground, standing above the low
+roof behind the house (8.74 m over the back wall) and the north-east part's slope over its back wall (8.97 m): about
+4.6 m² of it showed at the back, in the walls' ochre. The walls now stop at 8.5 m, inside the cornice, which fills
+the eaves' line under every roof; the low roof's eave is at 8.7 m as the others' (its returns there 8.6 to 8.7), and
+its north-east end, which was open, is closed down to the cornice's top. 419 triangles, 4 draw calls; the
+comparison and the top view are as at step 7.
+
 ## Not drawn yet
 
 The verandah's lace and fretwork, the cornices' brackets, the window frames' teal and the glazing bars; the iron fence
