@@ -1,6 +1,7 @@
 {
  "name": "49-symonds-street",
- "site": false,
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the parapet's width and the gables' depth; and the faces no photograph shows, drawn after the ones it shows",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from Symonds Street to the building's east, about 48 m from its north-east face, looking up 23 degrees through a lens of about 38 degrees across; its camera is fitted to the north-east face's gable, to the tops of three faces of the steps of its east corner, to the apex of the gable over the podium's entrance and to two upright edges, with the principal point at the centre.",
  "building": {
