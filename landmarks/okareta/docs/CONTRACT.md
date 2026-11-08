@@ -64,6 +64,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   others (its returns 8.6 to 8.7), and its north-east end closed down to the cornice's top. After the pull request
   opened: the low roof run on under the wing's roof to u -1.1, closing its south-west end; the cornice's top 5 mm
   under the eaves. 419 triangles, 4 draw calls; the comparison and the top view as at step 7.
+- Merging `main` (2026-11-09): since #139 every landmark gives way to its blocks while a building is open, so beside an
+  open neighbour block 215's footprint stands on its footing (above the drawn ground on 78% of its cells, by up to
+  1.01 m), in place of the model's squashed one.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

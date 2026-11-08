@@ -109,11 +109,9 @@ gone; `MASSING.md` lists 215 among the landmarks and counts 32 stand-ins measure
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 4.17 m under the
   door's ground, below the map's ground under the whole plan: the foot check of `tests/landmarks.test.ts` passes.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and
-  a block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`,
-  `applyFocus` and `baseOf` in `src/scene/CampusScene.ts`). Under the model the map's ground lies from 1.38 m below its
-  y = 0 to 0.39 m above it, so beside an open neighbour its footprint shows above the drawn ground on about 93% of its
-  cells, by up to 1.43 m, where block 215's showed on 78%, by up to 1.01 m.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 215, which sinks on
+  its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
+  footprint shows above the drawn ground on 78% of its cells, by up to 1.01 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `trim` and `render` are walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights and sizes, with a photograph
