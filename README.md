@@ -77,6 +77,9 @@ It is built to answer two questions a student actually has:
   grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
   its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
   and its card says what is estimated.
+- **2026-11-07:** while a building is open, the buildings drawn in detail beside it give way to their blocks,
+  which sink to footprints on their footings, as every other building's; on a slope a landmark's own footprint
+  could sink under the drawn ground.
 - **2026-11-07:** building 303 of the Science Centre now meets building 303S beside it: its range along
   the street and its slab run on to 303S's back, as the LiDAR has them, where a gap stood open between the two.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
@@ -1122,11 +1125,7 @@ If you represent the University and would like something changed or removed, ple
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
-  south-east end, which the photograph does not show, is drawn flat. While a building is open, its neighbours
-  sink to footprints, a landmark about its own y = 0 and a block about the lowest ground under it: beside an open
-  303, 303S's footprint, its y = 0 below the street's rising ground, is mostly under the drawn ground; beside an
-  open neighbour 303's stands up to 1.7 m above it, and beside an open 303S it lies over a strip of 303S's floors
-  along its back.
+  south-east end, which the photograph does not show, is drawn flat.
 - **Architecture - West is seen from its north only.** One photograph, from the paved upper level to its north, sees the
   slab's north-east faces and its tower. Its faces turned away, which no photograph shows, are drawn plainly. The
   storeys' height, the parapets and the bands of windows are estimated with the photograph as a reference; the storeys'
@@ -1135,11 +1134,9 @@ If you represent the University and would like something changed or removed, ple
   is not known from a record: its door is set before the glazed doors the photograph shows, on the paved upper level,
   where the map's ground lies 4.8 m under the LiDAR's. Its south-east end, where it joins Architecture - East, is left
   to that building's model (#140): the slab's model ends there on a slant. Block 421W is 62.3% under the model: its ring
-  takes in that end, and parts beyond the roofs. While a building beside it is open, its neighbours sink to footprints,
-  a landmark about its own y = 0 and a block about its base (at most 4 m above the lowest ground under it): 421W's y = 0
-  is the map's ground at its door on the upper level, and the map's ground under it falls toward its south-east end, up
-  to 6.1 m lower, so its footprint stands above the drawn ground on about 73% of its cells, by up to 6.1 m, where block
-  421W's showed on 39%, by up to 4.3 m.
+  takes in that end, and parts beyond the roofs. While a building beside it is open, it gives way to block 421W, which
+  sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands above the
+  drawn ground on 39% of its cells, by up to 4.3 m.
 - **49 Symonds Street is seen from Symonds Street to its east only.** One photograph sees the tower's north-east face,
   the steps of its east corner and the podium before it. Its bays on the street and the back are drawn after the
   north-east face's white face, with its arched window and its windows, and its other faces in glass, as the LiDAR's
@@ -1148,10 +1145,9 @@ If you represent the University and would like something changed or removed, ple
   is set before the podium's pointed gable, which the photograph shows over a doorway, on the footpath of Symonds
   Street, where the map's ground lies 7.6 m under the LiDAR's; under the tower the map's ground rises up to 5.3 m over
   the door's, so the site draws the tower's lower storeys in the ground. Block 620 is 51.0% under the model: its ring
-  takes in open ground round the lower buildings. While a building beside it is open, its neighbours sink to
-  footprints, a landmark about its own y = 0 and a block about its base (at most 4 m above the lowest ground under
-  it): its footprint stands above the drawn ground on about 19% of its cells, by up to 1.6 m, where block 620's
-  showed on 62%, by up to 4.6 m.
+  takes in open ground round the lower buildings. While a building beside it is open, it gives way to block 620, which
+  sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands above the
+  drawn ground on 62% of its cells, by up to 4.6 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

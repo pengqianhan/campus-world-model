@@ -118,11 +118,9 @@ where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and cou
   lowest points of each material that comes down to the door's ground against the map's ground, passes. Under the
   tower the map's ground rises up to 5.3 m over the door's, so the site draws the tower's lower storeys in the ground.
   1,289 triangles, 5 draw calls.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and
-  a block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`,
-  `applyFocus` and `baseOf` in `src/scene/CampusScene.ts`). Under the model the map's ground lies from 1.54 m below its
-  y = 0 to 5.32 m above it, so beside an open neighbour its footprint shows above the drawn ground on about 19% of its
-  cells, by up to 1.58 m, where block 620's showed on 62%, by up to 4.64 m.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 620, which sinks on
+  its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
+  footprint shows above the drawn ground on 62% of its cells, by up to 4.64 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` and
   `roofPale` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` and `screenBlack` are
   walls.

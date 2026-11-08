@@ -122,6 +122,14 @@ test("while a building is open, a measured massing near it gives way to its bloc
   expect(await landmark(page, "measured/409")).toMatchObject({ form: "none", made: [] });
 });
 
+test("while a building is open, a landmark drawn from code near it gives way to its blocks", async ({ page }) => {
+  // Building 303S stands beside 303, both drawn from code. With 303S open, 303 sinks to a footprint with the other
+  // buildings, drawn by its block on its footing, not by its model squashed about its own y = 0.
+  test.skip(!ON_SITE.some((l) => l.name === "science-centre-303"), "303 is not on the site");
+  await open(page, `?building=303S&${T}`);
+  expect(await landmark(page, "science-centre-303")).toMatchObject({ form: "none", made: [] });
+});
+
 test("from a walker's height a measured massing takes the facades drawn by rule", async ({ page }) => {
   const { name, centre } = MEASURED[0]!;
   await open(page, `?walk=${centre[0] - 25},${centre[1] - 25}&view=eyes&${T}`);

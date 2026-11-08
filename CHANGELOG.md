@@ -65,6 +65,12 @@ A change to what the site does or shows adds its line here, and the README's
   depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
   artwork and is not drawn after. Its other faces are drawn plainly (#136).
 
+### Changed
+
+- **Landmarks give way to their blocks while a building is open.** Beside an open building every building
+  drawn in detail is drawn by its block, which sinks to a footprint on its footing, as every other building's;
+  a landmark squashed about its own height could sink its footprint under the drawn ground on a slope (#139).
+
 ### Fixed
 
 - **Building 303 of the Science Centre meets 303S.** Its range along the street and its slab run on to the back of
