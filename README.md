@@ -1121,7 +1121,7 @@ If you represent the University and would like something changed or removed, ple
   to that building's model (#140): the slab's model ends there on a slant. Block 421W is 62.3% under the model: its ring
   takes in that end, and parts beyond the roofs. While a building beside it is open, it gives way to block 421W, which
   sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands above the
-  drawn ground on 39% of its cells, by up to 4.2 m.
+  drawn ground on 39% of its cells, by up to 4.3 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
