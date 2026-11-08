@@ -119,11 +119,9 @@ where 85% is asked) has gone; `MASSING.md` lists 260 among the landmarks and cou
   walls of every part on the deck, inside it, and the deck is one material, its top too: the foot check of
   `tests/landmarks.test.ts`, which tests the lowest points of each material that comes down to the door's ground
   against the map's ground, passes. 3,207 triangles, 7 draw calls.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and
-  a block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`,
-  `applyFocus` and `baseOf` in `src/scene/CampusScene.ts`). Under the model the map's ground lies from 3.60 m below its
-  y = 0 to 6.79 m above it, so beside an open neighbour its footprint shows above the drawn ground on about 55% of its
-  cells, by up to 3.85 m, where block 260's showed on 62%, by up to 4.43 m.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 260, which sinks on
+  its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
+  footprint shows above the drawn ground on 62% of its cells, by up to 4.43 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` and `glassPale` as glass and
   `roofGrey` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `grey`, `paint`, `screenSilver` and
   `claddingPale` are walls.
