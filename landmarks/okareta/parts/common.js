@@ -40,7 +40,7 @@ export const HOUSE = {
   // middle), w -7.5 to 5.75; the north-east part's, w -5.5 to 2.25, to u 7.25; the low roof's back, w -7.5, to
   // u 2.0. The cornice fills it from `cornice` up to the eaves, under the roofs.
   eaves: [[7.25, -5.5], [7.25, 2.25], [-0.25, 2.25], [-0.25, 5.75], [-6.75, 5.75], [-6.75, -7.5], [2.0, -7.5], [2.0, -5.5]],
-  eave: H(8.7),          // the cornice's top 5 mm under it
+  eave: H(8.7),         // the cornice's top 5 mm under it
   cornice: H(8.25),     // estimated: the cornice's depth, 0.45 m
 };
 

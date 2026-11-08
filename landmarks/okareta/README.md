@@ -65,7 +65,8 @@ stand over its front to 25 m and some of their returns are classed as building):
 - **The verandah** before the north-east part, its outer edge at w 4.3.
 
 Walls in the kit's `trim`, roofs `roofGrey` (grey in the 2023 aerial). 165 triangles, 2 draw calls. Silhouette IoU
-0.751 (0.751 in the model's screen box); from above, footprint IoU 0.900 and 81% of the 662 cells within 0.5 m of the LiDAR's height.
+0.751 (0.751 in the model's screen box); from above, footprint IoU 0.900 and 81% of the 662 cells within 0.5 m of
+the LiDAR's height.
 
 ## The front and the light (round 1, November 2026, the lead)
 
@@ -130,9 +131,11 @@ roof behind the house (8.74 m over the back wall) and the north-east part's slop
 the eaves' line under every roof; the low roof's eave is at 8.7 m as the others' (its returns there 8.6 to 8.7), and
 its north-east end, which was open, is closed down to the cornice's top. The review after the pull request opened
 found its south-west end open too, where it stopped on the wing's eave line: it now runs on under the wing's roof
-to u -1.1, where the wing's slope stands over it everywhere (the LiDAR's returns there, 9.14 to 9.18 m, are the low
-roof's own). The cornice's top stands 5 mm under the eaves, where it stood 2 cm under them. 419 triangles, 4 draw
-calls; the comparison and the top view are as at step 7.
+to u -1.1, where the wing's slope stands over it everywhere; between u -0.75 and -0.25 it shows above the wing's
+slope, as the LiDAR's highest returns there do (9.15 to 9.18 m, the low roof's own). The cornice's top stands 5 mm
+under the eaves, where it stood 2 cm under them: the slit is thinner, and a faint dotted line still shows along
+the eaves from above. 419 triangles, 4 draw calls; the comparison and the top view are as at step 7 (the model's
+heights minus the LiDAR's p50 0.00, where it was 0.01).
 
 ## Not drawn yet
 
