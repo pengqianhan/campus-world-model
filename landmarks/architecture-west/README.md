@@ -114,8 +114,8 @@ outline, where 85% is asked) has gone; `MASSING.md` lists 421W among the landmar
 - **While a building is open** its neighbours sink to footprints, and the model gives way to block 421W, which sinks on
   its footing, 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`, since 2026-11-07),
   and whose footprint shows above the drawn ground on 39% of its cells, by up to 4.32 m. Before that the site squashed
-  the model about its own y = 0, the map's ground at its door on the upper level: under its ring the map's ground falls
-  toward its south-east end, from 0.98 m above it to 6.06 m below, so beside an open neighbour (421E, 423 or 409) its
+  the model about its own y = 0, the map's ground at its door on the upper level: under the model the map's ground falls
+  toward its south-east end, from 0.96 m above it to 5.87 m below, so beside an open neighbour (421E, 423 or 409) its
   footprint showed above the drawn ground on about 73% of its cells, by up to 6.08 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are walls.
