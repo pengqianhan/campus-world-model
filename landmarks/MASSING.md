@@ -254,17 +254,17 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110,
-110N, 119, 206, 215, 250, 302, 303, 303S, 315, 421W, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 119, 206, 215, 250, 302, 303, 303S, 315, 421E, 421W, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 32 (40 before 250, the Music School, 315, the Kate Edger
+leaving out the landmarks and `SOON`, it measures 31 (40 before 250, the Music School, 315, the Kate Edger
 Information Commons, 206, the Humanities Building, 302, the Science Centre's tower, 303, building 303 of
-the Science Centre, 303S, building 303S of the Science Centre, 421W, Architecture - West, and 215, Okareta, became
-landmarks; their entries in
+the Science Centre, 303S, building 303S of the Science Centre, 421E, Architecture - East, 421W,
+Architecture - West, and 215, Okareta, became landmarks; their entries in
 `exclusions.json`, where 250's roof cells covered 77% of its outline, 315's footprint had an IoU of 0.865,
 206's roof cells covered 77% of its outline, 42% of 302's cells, 84% of 303's and 89% of 303S's were
-within 0.5 m, 421W's roof cells covered 72% of its outline and 215's footprint had an IoU of 0.857, have gone). Places where people live keep their blocks here
+within 0.5 m, 421E's roof cells covered 60% of its outline and 421W's 72%, and 215's footprint had an IoU of 0.857, have gone). Places where people live keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
