@@ -35,8 +35,10 @@ by the same 7.96 m, so the measured frame is the one the model was drawn in (0.0
 
 ## Neighbours on the map
 
-- No other landmark stands within 2 m of it, so it stands alone on the map's ground at its door (`../README.md`,
-  "Placement").
+- Architecture - West (421W), at the main block's west end, is on the site too: their rings on the campus map overlap,
+  and the map's ground less the LiDAR's at their doors is -4.55 m here and -4.78 m at 421W's, 0.23 m apart, so the two
+  stand on one ground (`../README.md`, "Placement"), each at its LiDAR ground plus their mean, 4.67 m under it: 421E
+  0.12 m lower than alone.
 - Architecture - West (421W) is 8.5% under the model and the Architecture Acoustics Laboratory (422) 3.3%, so
   `building.also` is empty. Block 421E itself is 54.7% under the model: its ring takes in a car park at the
   ground on its east side, which the model does not draw.
@@ -123,14 +125,21 @@ photograph (the building's luma median 153 against 175); with the parapets in `p
 
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 421E. 421E's entry
 in `landmarks/measured/exclusions.json` (the generator's massing of it failed: its roof cells covered 60% of its
-outline, where 85% is asked) has gone; `MASSING.md` lists 421E among the landmarks and counts 33 stand-ins
+outline, where 85% is asked) has gone; `MASSING.md` lists 421E among the landmarks and counts 32 stand-ins
 measured.
 
-- **The foot.** It stands alone, its y = 0 on the map's ground at its door, which lies 4.56 m under the LiDAR's there
-  (3.3 to 6.2 m round the building). Its walls go down to FOOT, 9.46 m below the door's ground; the foot check of
-  `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes. The wing's
-  bands of windows start at the terrace's floor, as the main block's do: from the two floors below it the lowest band
-  stood 4.0 m over the map's ground where it falls away from the terrace. 764 triangles, 5 draw calls.
+- **The foot.** It stands on the ground it shares with 421W, its y = 0 4.67 m under the LiDAR's ground at its door and
+  0.12 m under the map's ground there, which lies 4.55 m under the LiDAR's (3.3 to 6.2 m round the building). Its walls
+  go down to FOOT, 9.46 m below the door's ground; the foot check of `tests/landmarks.test.ts`, which tests each
+  material's lowest points against the map's ground, passes. The wing's bands of windows start at the terrace's floor,
+  as the main block's do: from the two floors below it the lowest band stood 4.0 m over the map's ground where it falls
+  away from the terrace. 764 triangles, 5 draw calls.
+- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
+  block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
+  and `baseOf` in `src/scene/CampusScene.ts`). 421E's y = 0, on the ground it shares with 421W, is 0.12 m under the
+  map's ground at its door on the terrace, and under the model the map's ground lies from 1.28 m above it to 9.90 m
+  below, where the site falls away from the terrace, so beside an open neighbour its footprint shows above the drawn
+  ground on about 98% of its cells, by up to 10.13 m, where block 421E's showed on 38%, by up to 4.30 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are
   walls.

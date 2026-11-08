@@ -200,12 +200,13 @@ describe("landmarks side by side on one ground (standHeights)", () => {
     const shared = LANDMARKS.filter((l, k) => h[k] !== terrain.height(...(l.placement.door.map as [number, number]))).map((l) => l.name);
     // The Clock Tower and its East Wing touch, but their offsets span 5.07 m (SHARED_SPREAD): each stands as before.
     expect(shared).toEqual([
-      "fifteen-eden-crescent", "nine-eden-crescent", "science-centre-303", "science-centre-303s", "thomas-building",
-      "thomas-building-extension",
+      "architecture-east", "architecture-west", "fifteen-eden-crescent", "nine-eden-crescent", "science-centre-303",
+      "science-centre-303s", "thomas-building", "thomas-building-extension",
     ]);
     // Within each pair that shares, the two stand as far apart as their LiDAR grounds.
     const of = (name: string) => LANDMARKS.findIndex((l) => l.name === name);
     const pairs = [
+      ["architecture-east", "architecture-west"],
       ["nine-eden-crescent", "fifteen-eden-crescent"],
       ["thomas-building", "thomas-building-extension"],
       ["science-centre-303", "science-centre-303s"],
