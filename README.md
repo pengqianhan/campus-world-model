@@ -70,7 +70,7 @@ It is built to answer two questions a student actually has:
 
 - **2026-11-09:** on the Grafton campus the map draws building 501 of the M&HS Building in detail: a tower of
   board-marked concrete under a dark crown at the east end of a long block, a strip of windows up its face, a
-  glazed box at its foot and glazed links either side. Its sizes come from the LiDAR; it was compared with a
+  glazed box at its foot and a glazed link beside it. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
 - **2026-11-08:** the map draws Architecture - West (421W) in detail: a slab in pale concrete with a pale
   louvred parapet and a band of windows on each floor of its north-east faces above its glazed storey of doors, a
@@ -611,13 +611,12 @@ its set-back face are not drawn). What the photograph does not show is drawn pla
 The twentieth is building 501 of the M&HS Building, on the Grafton campus: a long block in board-marked concrete with,
 at its east end toward a plaza, a tower under a dark crown of standing-seam metal, its foot flared out over the shaft
 and its corners hipped up to a flat top; a strip of windows up the middle of the tower's face, a glazed box at its foot,
-and glazed links either side between it and its neighbours. Its heights and plans come from the LiDAR; the crown's
-eave, the links' tops and floors and the strip of windows are estimated with the photograph as a reference. One
+and a glazed link beside it to the north. Its heights and plans come from the LiDAR; the crown's eave and band, the
+glazed link's top and floors and the strip of windows are estimated with the photograph as a reference. One
 photograph from the plaza, about 67 m from the tower; counted inside the rectangle the model fills on the screen, its
-silhouette has an IoU of 0.89 in it, and the brightness of the building is within 5 of the photograph's. From above
-its outline covers the LiDAR's with an IoU of 0.66 (the links' glass roofs, which the LiDAR does not see, are the
-model's only), and on 65% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does
-not show is drawn plainly or after what it shows.
+silhouette has an IoU of 0.91 in it, and the brightness of the building is within 10 of the photograph's. From above
+its outline covers the LiDAR's with an IoU of 0.80, and on 72% of the cells both cover it is within 0.5 m of the
+LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -824,7 +823,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of building 302 of the Science Centre from the street corner to its south | The look its model was compared with while it was drawn, and the edges of its glazed corner, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 303 of the Science Centre from its street | The look its model was compared with while it was drawn, and two heights on its face estimated with it as a reference: the gaps between its bands, and its lowest band's bottom | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 303S of the Science Centre from its street to the south-east | The look its model was compared with while it was drawn, and, as a reference, the storeys' height on its south-east end and the places of the fins on its face to the street | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of building 501 of the M&HS Building from the plaza to its east | The look its model was compared with while it was drawn, and, as a reference, the height of its crown's eave, the tops and floors of the glazed links either side of it and its strip of windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of building 501 of the M&HS Building from the plaza to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of its crown's eave and band, the set-back of its shaft under the crown, the top and floors of the glazed link beside it and its strip of windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey; for building 501 of the M&HS Building (501), that its roofs are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
@@ -1138,14 +1137,18 @@ If you represent the University and would like something changed or removed, ple
   sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands above the
   drawn ground on 39% of its cells, by up to 4.3 m.
 - **Building 501 of the M&HS Building is seen from its plaza only.** One photograph, from the plaza to its east, sees
-  the tower's east face with its crown and the glazed box at its foot, and the glazed links either side. The long
-  block and the tower's other faces, which no photograph shows, are drawn plainly in the tower's concrete; the links
-  are drawn along the atria's whole length after the ones it shows, where the LiDAR sees no roof (glass roofs, whose
-  height is estimated). The concrete's boards and bands, the glazing's frames, the balcony rails, the box's doors
-  and the things on the roofs are not drawn. Its entrance is not known from a record: its door is set before the
-  glass doors the photograph shows in the glazed box, where the map's ground lies 1.3 m under the LiDAR's. Block 501
-  is 74.7% under the model: its ring takes in the plaza east of the tower, over the floors the campus map has below
-  its ground; inside the ring the model also draws the south edge of building 502's roof, which the ring takes in.
+  the tower's east face with its crown and the glazed box at its foot, and glazed links either side. The long block
+  and the tower's other faces, which no photograph shows, are drawn plainly in the tower's concrete. The glazed link
+  north of the tower is drawn after the photograph, where the LiDAR sees no roof (a glass roof, whose height is
+  estimated); the one south of it stands in block 503's ring and is left to that block. Between the block and 502,
+  west of the concrete link between them, the LiDAR sees nothing over a strip 6 m wide (a glass roof or an open
+  court), which is not drawn. The concrete's boards and bands, the glazing's frames, the balcony rails, the box's
+  doors and the things on the roofs are not drawn. Its entrance is not known from a record: its door is set before
+  the glass doors the photograph shows in the glazed box, where the map's ground lies 1.3 m under the LiDAR's.
+  Block 501 is 57.8% under the model: its ring takes in the plaza east of the tower, over the floors the campus map
+  has below its ground, and that strip. Inside the ring the model also draws the south edge of building 502's roof,
+  up to 502's own ring; the long block's south-west corner stands over the ring of 501C, a basement in the campus
+  map.
   While a building beside it is open, it gives way to block 501, which sinks to a footprint on its footing, at most
   4 m above the lowest ground under it: that footprint stands above the drawn ground on 79% of its cells, by up to
   1.7 m.

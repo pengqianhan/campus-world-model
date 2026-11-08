@@ -1,7 +1,7 @@
 # Art bible: M&HS Building (501)
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured
-from it but the two its contract names, which are estimated.
+from it but the ones its contract names, which are estimated.
 
 - A tower in board-marked concrete, light grey, its face banded at each floor, a strip of windows in
   dark frames up the middle of its east face, under a dark crown of standing-seam metal: a steep band over a foot

@@ -13,19 +13,22 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   apart (`place` turns one into the other).
 - The building's own frame: **u** east-south-east (`-x`), toward the plaza, and **w** toward 502 (`z`).
   `parts/common.js` gives `at(u, w)`, `plan(corners)` and `rect(u, w)`.
-- What the LiDAR shows (`parts/common.js` holds the numbers):
-  - **the long block**, about 29.8 m, u -28.5 to -2 and w -6.5 to 9.5, its west end over a yard 4.8 m below the
-    plaza;
+- What the LiDAR shows (`parts/common.js` holds the numbers; measured cell by cell after the review's round 1):
+  - **the long block**, about 29.8 m, u -26 to -2 and w -6 to 10, a light well in its roof (25.8 m);
   - **the tower** at its east end, toward the plaza, u -2 to 9 and w -7 to 10: its **crown**'s flat top at 32.4 m,
     its edges falling to about 28 to 30 m;
-  - **a plant room** of 34.8 m on the block's south side, **a lower part** south of it (30.6 and 28.6 m), **a
-    concrete link** of 28.6 m on its north side;
-  - **atria** to the north and south between it and buildings 502 and 503, which return nothing (glass roofs);
+  - **a plant room** of 34.6 m on the block's south side (u -13 to -4, w -7 to -3), **a lower part** south of it
+    (30.5 and 28.6 m) on to w -11, past 501's ring at w -9.3 into 503's; **a concrete link** of 28.5 m on its north side
+    (u -5.5 to -2) to 502;
+  - **a glazed link** beside the tower's north side (u -2 to 0.5, w 10 to 15), which returns nothing (a glass roof),
+    and, west of the concrete link, a strip 6 m wide between the block and 502 that returns nothing either;
   - **a glazed box** of 4.5 m before the tower's east face, to u 16.8;
-  - inside the campus map's ring of 501, **the south edge of building 502**, its roof rising from 27.5 m at its south
-    wall (w 13.8) to 30.6 m (w 24); and **the plaza** east of the tower, the ground and trees;
-  - the ground about +0.2 to +0.4 on the plaza and along the north side, -4.8 at the west end and along the south
-    side west of the tower: walls go down to `FOOT`, -5.3 m.
+  - inside the campus map's ring of 501, **the south edge of building 502**, its south wall at w 16, its roof rising
+    from 28.8 m; and **the plaza** east of the tower, the ground and trees;
+  - the ground about +0.3 round the building and 5.2 m below the door's beyond its west end: walls go down to `FOOT`,
+    -5.3 m over the provisional ground.
+- What it draws: what the LiDAR has inside block 501's ring, so that it stands over no part of the blocks of 502 and
+  503 (and the block's south-west corner, over 501C's ring, a basement in the campus map).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -34,7 +37,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 244 triangles, 4 draw calls; round 1: 640, 5.
+  0: 244 triangles, 4 draw calls; round 1: 640, 5; after the review's round 1: 395, 5.
 
 ## Rounds
 - Round 0 (2026-11-09): the tower's shaft (`renderGrey`), its crown (`roofGrey`) and the glazed box before it
@@ -61,7 +64,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   ground (its 8 m elevation model) at the door lies 1.26 m below the LiDAR's; under the model's plans it runs from
   1.42 m below the door's to 1.15 m above (FOOT -5.61 is under it everywhere). Silhouette IoU 0.893 in the model's
   screen box, luma 136 against 131; the top view as before, block 501 under the model 74.7% (its ring takes in the
-  plaza, over the floors the campus map has below its ground: -5, -10 and -20), the LiDAR's roof inside that ring
+  plaza, over the floors the campus map has below its ground), the LiDAR's roof inside that ring
   98.9% (899 m²); 501C 13.0%, 502 6.3%, 503 4.5%: `also` stays empty.
 - On the site (2026-11-09): `site` true, the card's `estimated`; the faces check found glass and walls of different
   materials in one plane where the atria and the glazed box met the walls round them, and 502's south edge's foot in
@@ -70,13 +73,22 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   link stops at 502's south wall and the plant room's ends stand 0.1 m inside that part. The foot check passes. Beside
   an open neighbour the model gives way to block 501, whose footprint stands above the drawn ground on 79% of its
   cells, by up to 1.67 m. 640 triangles, 5 draw calls; the comparison and the top view as at step 7.
+- The review's round 1 (2026-11-09): the plans measured again cell by cell (the first reading of 2 m cells had put
+  several edges 1 to 2.5 m off): 502's south wall at w 16, the block's west end at u -26, the plant room at u -13 to
+  -4 and w -7 to -3; the model clipped to 501's ring (502's edge to 502's ring, the part south of the block to w -9.3);
+  the atria along the block's whole length dropped (the LiDAR has a planted surface at the plaza's level on the
+  south-west and nothing on the north-west), the glazed link kept beside the tower's north side only, where the
+  photograph shows it; the card names every size estimated in the photograph. 395 triangles, 5 draw calls.
+  Silhouette IoU 0.914 in the model's screen box, luma 136 against 126; the top view: footprint IoU 0.797, 72% of
+  the 3,374 cells within 0.5 m (p10/p50/p90 -0.13/0.12/1.49); block 501 under the model 57.8%, the LiDAR's roof in
+  its ring 92.9%; 502 0.0%, 503 0.4%, 501C 2.7%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from the plaza about 67 m before the tower's east face; `refs/photos/`, gitignored) is a
   reference for the look: nothing is traced or sampled from it, and no size is measured from it but the crown's eave
-  over the east face, the atria's tops and floors and the tower's strip of windows, which are estimated through its
-  fitted camera.
+  and band over the east face, the shaft's set-back under the crown, the glazed link's top and floors and the tower's
+  strip of windows, which are estimated through its fitted camera.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

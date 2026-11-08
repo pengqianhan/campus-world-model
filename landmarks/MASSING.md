@@ -254,7 +254,7 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110,
-110N, 119, 206, 250, 302, 303, 303S, 315, 421W, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 119, 206, 250, 302, 303, 303S, 315, 421W, 501, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
