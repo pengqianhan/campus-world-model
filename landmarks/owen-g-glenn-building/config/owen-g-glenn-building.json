@@ -286,5 +286,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "24.46 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 5.66, p95 33.46: the site falls about 28 m across the crop, into Grafton Gully on the east); provisional, to be the LiDAR's ground at the door at step 7"
+ "ground_note": "24.46 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 5.66, p95 33.46: the site falls about 28 m across the crop, into Grafton Gully on the east); provisional, to be the LiDAR's ground at the door at step 7",
+ "light": {
+  "sunaz": 61.7,
+  "sunel": 65.8,
+  "exposure": 0.75,
+  "note": "estimated: the photograph is taken in the late morning of 12 December 2018 (its own record), the viewer's sun where the sun then stood, 61.7 deg round and 65.8 deg up; the exposure from the building's luma: p10/p50/p90 80/198/200 at 0.75 against the photograph's 126/193/220 (223 at 1.0), with round 1's faces"
+ }
 }

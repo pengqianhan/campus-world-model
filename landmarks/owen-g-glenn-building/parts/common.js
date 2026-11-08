@@ -45,6 +45,26 @@ export const MEASURED = {
       [-9.8, 37.7], [-7.0, 34.2], [-5.2, 34.2], [-2.7, 35.3], [-1.7, 37.0], [3.6, 38.9], [8.5, 43.9],
       [9.5, 43.9], [10.6, 40.7], [13.1, 40.8], [13.5, 41.8], [16.6, 41.5], [18.0, 42.9], [20.9, 43.0]],
     roof: 28.37,
+    // The crown of louvres, to 53.8 m (29.34), along the sides of the plan (by index: side i runs from corner i to
+    // i + 1) 4 m long or more where the returns within 1.2 m of the side reach 53.5 m or more (p95 53.69 to 53.88),
+    // and the shorter sides between two of those (7, 11, 40 to 42); along the other long sides the returns stop at
+    // the roof (p95 52.78 to 52.92). Its width, 0.3 m, is estimated.
+    crown: {
+      top: 29.34, width: 0.3,
+      sides: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 29, 34, 35, 38, 39, 40, 41, 42, 43, 44, 45, 60],
+    },
+    // The faces (round 1; estimated, with the photograph as a reference: its edges on the east arm's inner face
+    // through its fitted camera, on the face's plane, scaled so that its foot and its crown fall at the plaza's
+    // 29.6 m and the crown's 53.8 m): an open ground storey to 33.5 m (9.04), two storeys of glass to 41.4 m
+    // (16.94), three storeys each of a white spandrel and a band of louvres and windows, 3.4 m apart, and a white
+    // fascia from 51.6 m (27.14) to the roof. Each band [bottom, top] above 24.46 m.
+    faces: {
+      ground: [5.12, 9.04],
+      glazed: [9.04, 16.94],
+      spandrels: [[16.94, 18.39], [20.34, 21.64], [23.74, 25.09]],
+      louvres: [[18.39, 20.34], [21.64, 23.74], [25.09, 27.14]],
+      fascia: 27.14,
+    },
   },
   // On it, along the west side of its north and south-west arms, a top storey at 56.57 m (p50), its cells 560 m2.
   top: {
