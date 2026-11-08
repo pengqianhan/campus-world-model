@@ -4,10 +4,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** west (the frame's `-axis`), **y** up from the frame's ground (57.96 m NZVD2016, the
-  median ground in the crop box, 25 m round the outline; to be the LiDAR's ground at the config's `door`, step 7),
+- View frame, metres: **x** west (the frame's `-axis`), **y** up from the LiDAR's ground at the config's `door`
+  (59.75 m NZVD2016, on the landing at the top of the steps from Symonds Street before the tower's north face),
   **z** north (`toStreet`); the frame's centre at x = z = 0. `config/auckland-bioengineering-house.json`, `frame`.
   The site falls about 20 m across the crop, steeply toward the east.
+- The heights in this file and in `parts/common.js` were measured before the door was set, above 57.96 m (the
+  median ground in the crop box, 25 m round the outline): 1.79 m under the door's ground. `H` in `parts/common.js`
+  moves each on to it.
 - The building's own frame: **u** east (`-x`) and **w** north (`z`). `parts/common.js` gives `at(u, w)`,
   `rect(u, w)`, `plan(corners)` and `inset(corners, d)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
@@ -20,8 +23,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as 421W's), `model.js`:
-  the lead.
+- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as 421W's),
+  `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 256 triangles, 2 draw
@@ -41,6 +44,24 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   first). The viewer's light estimated (`config`'s `light`): the sun at 20 degrees round and 40 up, an exposure of
   1.4. Silhouette IoU 0.922 (0.923 in the box); the building's luma median 179 against the photograph's 181. 280
   triangles, 4 draw calls; the top view as round 0.
+- The door (step 7, 2026-11-08): the entrance is under the sign on the tower's north face, as the photograph shows
+  it (the campus map records no lobby or entrance in 439, and OpenStreetMap none near it): glass doors under a
+  sloping glazed roof before the face, reached by steps and a ramp from the footpath of Symonds Street. The door is
+  on the landing at the top of the steps, 1.9 m out from the tower's north face (u -15, w 12.5): its u from the
+  doors' foot in the photograph through its fitted camera, its w from the LiDAR's ground, which steps down from the
+  landing between w 13 and 14.5 (the camera stands too near the landing's level for a w through it). The LiDAR's
+  ground there 59.75 m (11 returns within 1 m, p10/p90 59.738/59.762), the footpath below the steps 59.1 to 59.2 m.
+  The config's ground is the door's; the frame's thresholds were lowered by the same 1.79 m, so the measured frame
+  is the expected one (0.000 m, 0.000 degrees), and the photograph's camera (gitignored `refs/photos/views.json`)
+  moved down with it. Silhouette IoU 0.919 (0.920 in the box), the luma median 176 against the photograph's 182;
+  the top view: footprint IoU 0.921, 81% of the 4,547 cells within 0.5 m (p10/p50/p90 -1.98/0.0/0.09, its cells
+  above 2.5 m now counted from the door's ground), the highest point 41.74 m against 42.64; block 439 under the
+  model 91.0%, and no other block under it (`building.also` is empty). `place`: the door at (-237.29, -406.96) on
+  the map, where the map's ground lies 6.57 m under the LiDAR's.
+- Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
+  its slope is known) and, at the north face's west end, the glass bays that step out and back over three floors
+  (the photograph shows their undersides; the LiDAR, which sees the roof, gives neither their plan nor how deep
+  they are).
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

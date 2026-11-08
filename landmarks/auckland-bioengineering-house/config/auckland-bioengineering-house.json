@@ -97,11 +97,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 57.96,
+ "ground": 59.75,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": 15.0,
+  "z": 12.5,
+  "note": "the entrance under the sign on the tower's north face, as the photograph shows it (the campus map records no lobby or entrance in 439, and OpenStreetMap no entrance near it): glass doors under the sloping glazed roof before the face, reached by steps and a ramp from the footpath of Symonds Street. The door is on the landing at the top of the steps, 1.9 m out from the tower's north face (u -15, w 12.5 in the building's frame; u from the doors' foot in the photograph through its fitted camera, w from the LiDAR's ground, which steps down from the landing between w 13 and 14.5). The LiDAR's ground within 1 m: 11 returns, p10/p50/p90 59.738/59.750/59.762 m; the footpath below the steps 59.1 to 59.2 m, falling to 58.8 m 8 m out"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -120,9 +120,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": 1.21,
+  "tower_above": 1.21,
+  "spine_below": 38.21,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -137,7 +137,8 @@
     0.004342715888738564
    ],
    "tolerance_m": 0.05
-  }
+  },
+  "thresholds_note": "min_above, tower_above and spine_below were 3, 3 and 40 m above the provisional ground (57.96 m); lowered by 1.79 m with the ground set at the door, so that they pick the same points and the measured frame stays the expected one"
  },
  "refine": {
   "position_m": 3,
@@ -152,7 +153,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "57.96 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 39.67, p95 59.76: the site falls about 20 m across the crop); provisional, to be the LiDAR's ground at the door at step 7",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-08); the provisional ground was 57.96 m, the median LiDAR ground in the crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 20,
   "sunel": 40,

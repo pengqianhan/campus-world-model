@@ -21,7 +21,8 @@ export function building(b) {
   for (const [u0, u1] of M.fins.along) {
     const s0 = (u1 - a[0]) / d[0], s1 = (u0 - a[0]) / d[0];
     const pt = (s, t) => [a[0] + s * d[0] + t * n[0], a[1] + s * d[1] + t * n[1]];
-    prism(b, plan([pt(s0, -0.35), pt(s1, -0.35), pt(s1, M.fins.out), pt(s0, M.fins.out)]), FOOT + 0.05, M.fins.top, STONE);
+    const foot = [pt(s0, -0.35), pt(s1, -0.35), pt(s1, M.fins.out), pt(s0, M.fins.out)];
+    prism(b, plan(foot), FOOT + 0.05, M.fins.top, STONE);
   }
   block(b, rect(M.plant.u, M.plant.w), T.roof - 0.3, M.plant.top, WALL, ROOF);
   // the lower building, run into the tower, its foot 5 cm under the tower's; on its roof the strip and the part
