@@ -111,7 +111,8 @@ ground; from above, 85% of the cells within 0.5 m of the LiDAR's height.
 
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 260. 260's entry in
 `landmarks/measured/exclusions.json` (the generator's massing of it failed: its roof cells covered 51% of its outline,
-where 85% is asked) has gone; `MASSING.md` lists 260 among the landmarks and counts 32 stand-ins measured.
+where 85% is asked) has gone; `MASSING.md` lists 260 among the landmarks and counts 31 stand-ins measured
+(with 421E's gone too).
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door, 6.18 m under the LiDAR's there: so the site
   draws the plaza about 6 m lower than it stands, and along the deck's plan the map's ground runs from 3.61 m below the
