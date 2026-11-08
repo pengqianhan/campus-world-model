@@ -114,5 +114,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "36.16 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 25.28, p95 37.15: the ground falls about 11 m to the underpass and the gully on one side); provisional, to be the LiDAR's ground at the door at step 7"
+ "ground_note": "36.16 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 25.28, p95 37.15: the ground falls about 11 m to the underpass and the gully on one side); provisional, to be the LiDAR's ground at the door at step 7",
+ "light": {
+  "sunaz": 200,
+  "sunel": 40,
+  "exposure": 0.75,
+  "note": "estimated: the photograph has no date; its front stands mostly in the street trees' shade, with patches of sun through the leaves. The viewer's sun behind the house (200 deg round, 40 up) leaves the front in shade: the building's luma p50 151 at an exposure of 1.0, 134 at 0.8, 125 at 0.7, against the photograph's 126; with the sun on the front (330 deg, 40 up) 218 at 1.0 and 198 at 0.55, the lit ochre near white"
+ }
 }

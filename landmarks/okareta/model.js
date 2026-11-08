@@ -4,10 +4,12 @@
 // which returns a Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
 import { house, porches } from "./parts/house.js";
+import { facade } from "./parts/facade.js";
 
 const PARTS = {
   house: (b) => house(b),
   porches: (b) => porches(b),
+  facade: (b) => facade(b),
 };
 
 export function build(materials, only) {

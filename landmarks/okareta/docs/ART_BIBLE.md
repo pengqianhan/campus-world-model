@@ -1,7 +1,8 @@
 # Art bible: Okareta (215)
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured
-from it.
+from it but the places and heights of the windows, the door, the bay's face and cornice and the verandah's eave,
+floor and posts, which are estimated.
 
 - A villa of two storeys in the Italianate manner of the 1880s, its walls rendered and painted a warm yellow ochre,
   under hipped roofs of grey corrugated iron.

@@ -19,13 +19,21 @@ export function house(b) {
   tris(b, [[hi(x0), hi(x1), lo(x1)], [hi(x0), lo(x1), lo(x0)]], ROOF);
 }
 
-/** The verandah before the north-east part's front: its roof falling from the wall to its edge, and four posts; the
- * porch behind: its flat roof and two posts. */
+/** The verandah before the north-east part's front: its floor on a plinth, its roof falling from the wall to its edge
+ * (its ceiling under it), the frieze along its edge, its posts and the balustrade between them (open before the door);
+ * the porch behind: its flat roof and two posts. */
 export function porches(b) {
   const V = VERANDAH, [x0, x1] = [-V.u[1], -V.u[0]];
-  const wall = (x) => [x, V.top, V.w[0]], edge = (x) => [x, V.eave, V.w[1]];
-  tris(b, [[wall(x0), wall(x1), edge(x1)], [wall(x0), edge(x1), edge(x0)]], ROOF);
-  for (const u of [6.5, 4.0, 1.5, -0.55]) prism(b, rect([u - 0.1, u + 0.1], [V.w[1] - 0.2, V.w[1]]), FOOT, V.eave, WALL);
+  prism(b, rect(V.u, [V.w[0] + 0.05, V.w[1]]), FOOT, V.floor, WALL);
+  const wall = (x, y = V.top) => [x, y, V.w[0]], edge = (x, y = V.eave) => [x, y, V.w[1]];
+  const slope = [[wall(x0), wall(x1), edge(x1)], [wall(x0), edge(x1), edge(x0)]];
+  tris(b, slope, ROOF);
+  tris(b, slope, "render", "down");
+  const lo = V.eave - V.frieze;
+  tris(b, [[edge(x0, lo), edge(x1, lo), edge(x1)], [edge(x0, lo), edge(x1), edge(x0)]], "render", (m) => [m[0], m[1] + 1]);
+  for (const u of V.posts) prism(b, rect([u - 0.08, u + 0.08], [V.w[1] - 0.16, V.w[1]]), V.floor, lo, WALL);
+  // the balustrade from the first post to the fifth, the steps to the door between the fifth and the last
+  prism(b, rect([V.posts[4], V.posts[0]], [V.w[1] - 0.12, V.w[1] - 0.06]), V.floor, V.floor + 0.85, "render");
   const P = ROOFS.porch;
   prism(b, rect(P.u, P.w), P.top - 0.15, P.top, ROOF);
   for (const u of [P.u[0] + 0.1, P.u[1] - 0.1]) prism(b, rect([u - 0.1, u + 0.1], [P.w[0], P.w[0] + 0.2]), FOOT, P.top - 0.15, WALL);

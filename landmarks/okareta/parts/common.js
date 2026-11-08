@@ -27,9 +27,9 @@ export const HOUSE = {
   // there), of the north-east part at w -5.0, 0.5 m in from its eave; the front of the north-east part at w 1.65,
   // 0.6 m in from its eave (the overhang at the house's ends, 0.55 and 0.9 m: estimated); the wing's north-east side
   // at u -0.75, 0.5 m in from its eave; the bay at the wing's front, its face at w 5.15 (0.6 m in from the eave over
-  // it) between u -2.4 and -4.6, its sides canted at 45 degrees back to the wing's sides (the eave's returns at w 5.0
-  // beside the face's).
-  walls: [[6.7, -5.0], [6.7, 1.65], [-0.75, 1.65], [-0.75, 3.5], [-2.4, 5.15], [-4.6, 5.15], [-5.85, 3.9], [-5.85, -7.0],
+  // it) between u -1.15 and -5.45 (where the photograph's windows and the bay's corners fall on that plane, through
+  // its fitted camera: estimated), its corners canted at 45 degrees back to the wing's sides.
+  walls: [[6.7, -5.0], [6.7, 1.65], [-0.75, 1.65], [-0.75, 4.75], [-1.15, 5.15], [-5.45, 5.15], [-5.85, 4.75], [-5.85, -7.0],
     [2.0, -7.0], [2.0, -5.0]],
   top: 9.0,             // the walls' tops, under the roofs' slopes 0.6 m in from the eaves
   // The eaves' line, round the roofs: the wing's from back to front, u -6.75 to -0.25 (its ridge, at u -3.5, in the
@@ -57,6 +57,19 @@ export const ROOFS = {
 
 export const VERANDAH = {
   // Before the north-east part's front, the whole of it: its outer edge at w 4.3 (the outermost returns 1.5 to 7.5 m
-  // up, u 0 to 6: w 4.0 to 4.7); its roof's heights estimated in round 0.
-  u: [-0.75, 6.7], w: [1.65, 4.3], eave: 4.0, top: 4.6,
+  // up, u 0 to 6: w 4.0 to 4.7). Estimated from the photograph through its fitted camera, on the plane of that edge:
+  // its eave at 4.5 m, its floor at 1.0 (the posts' feet), its posts at u 6.25, 3.6 and 1.1 (the two middle ones in
+  // pairs) and -0.6; the roof's fall to the wall and the frieze's depth.
+  u: [-0.75, 6.7], w: [1.65, 4.3], eave: 4.5, top: 5.1, floor: 1.0, frieze: 0.35, posts: [6.25, 3.75, 3.45, 1.25, 0.95, -0.6],
+};
+
+// The windows, estimated from the photograph: their edges carried through its fitted camera onto the walls' planes
+// (the north-east part's front, w 1.65; the bay's face, w 5.15): [u0, u1, sill, head], their heads arched.
+export const WINDOWS = {
+  front: [[5.2, 4.25, 5.9, 8.05], [2.8, 1.85, 5.9, 8.05], [0.55, -0.4, 5.9, 8.05],      // over the verandah
+    [5.25, 4.2, 1.45, 3.85], [2.95, 1.9, 1.45, 3.85]],                                  // under it
+  door: [0.35, -0.6, 1.05, 3.85],
+  bay: [[-1.8, -2.65, 5.9, 8.1], [-3.3, -4.15, 5.9, 8.1], [-1.95, -2.85, 1.5, 4.3], [-3.4, -4.35, 1.5, 4.3]],
+  // the cornice on brackets round the bay between its storeys, 4.95 to 5.75 m, standing 0.25 m out
+  bayCornice: [4.95, 5.75, 0.25],
 };
