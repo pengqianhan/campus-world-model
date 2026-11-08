@@ -11,7 +11,7 @@ name: Claude resolves conflicts
 # Who: someone with write access (the job's `if`; the action checks again), on a pull request from a
 # branch of this repository. The comment's text never reaches Claude. The push goes with the Claude
 # GitHub App's token, so CI runs on it. The repository secret CLAUDE_CODE_OAUTH_TOKEN, made with
-# `claude setup-token`, bills the maintainer's Claude plan. That token may not push a change to a workflow:
+# `claude setup-token`, bills the maintainer's Claude plan. The App's token may not push a change to a workflow:
 # when the base branch has changed one since the pull request's branch left it, the job says so and does not
 # start Claude.
 on:
