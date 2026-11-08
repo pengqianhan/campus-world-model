@@ -37,7 +37,8 @@ export const MEASURED = {
     top: H(5.12),
   },
   // The curved wing: a Y of three arms (north, south-west and east) round a curve, its roof at 52.83 m (p50; 52.6 to
-  // 52.9 over most of it), the crown of louvres along its inner face to 53.8 m; its cells 3,282 m2.
+  // 52.9 over most of it), the crown of louvres along its top to 53.8 m on the sides the LiDAR shows it on (below);
+  // its cells 3,282 m2.
   wing: {
     plan: [[27.9, 47.6], [27.7, 31.0], [29.8, 31.0], [30.2, 28.9], [15.0, 29.1], [10.4, 28.0], [-12.0, 12.9],
       [-16.2, 8.6], [-17.2, 5.4], [-17.2, 0.8], [-14.3, -4.1], [-4.0, -10.0], [-1.1, -10.7], [31.6, -27.3],

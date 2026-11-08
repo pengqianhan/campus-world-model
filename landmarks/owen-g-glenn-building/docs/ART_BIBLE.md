@@ -1,7 +1,7 @@
 # Art bible: Sir Owen G Glenn Building (260)
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from
-it.
+it but the heights of the curved wing's bands of faces, which are estimated.
 
 - A curved wing of several storeys over an open ground floor of round columns, its inner face a curtain wall of
   glass behind horizontal louvres that read blue, between white spandrel bands at each floor; a crown of louvres

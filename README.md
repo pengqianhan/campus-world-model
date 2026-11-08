@@ -88,14 +88,6 @@ It is built to answer two questions a student actually has:
   a slab of ten storeys with plant and a round tank on its roof, and six tall stacks behind it. Its sizes come
   from the LiDAR; it was compared with a photograph, which is not published and with which two heights on its
   face are estimated, and its card says what is estimated.
-- **2026-11-06:** on Symonds Street the map draws building 302 of the Science Centre in detail: a tower of
-  pale metal bands between ribbons of glass, its south-east face in brown fins, over a lower block wrapped in
-  near-black folded screens round a tall glazed corner. Its sizes come from the LiDAR; the edges of its
-  glazed corner are estimated in a photograph, which is not published, and its card says so.
-- **2026-11-06:** the map draws the Humanities Building in detail: an L of two wings under red tiled roofs,
-  a raised roof on eight sides over the corner, and on its face to the courtyard four bands of buff brick
-  between ribbons of windows behind red, orange and yellow striped film. Its sizes come from the LiDAR; some
-  of the heights on that face are estimated in a photograph, which is not published, and its card says so.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 

@@ -14,8 +14,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers; every plan traced from it):
   - **the deck**, the plaza north-east of the curved wing and the floors under it, its top the plaza's at 29.58 m;
     the LiDAR counts the plaza as ground;
-  - **the curved wing**, a Y of three arms round a curve, its roof at 52.83 m, the crown of louvres along its inner
-    face to 53.8 m, and **the top storey** along the west side of its north and south-west arms at 56.57 m;
+  - **the curved wing**, a Y of three arms round a curve, its roof at 52.83 m, the crown of louvres along its top to
+    53.8 m on the sides the LiDAR shows it on, and **the top storey** along the west side of its north and south-west
+    arms at 56.57 m;
   - **the west wing** along the road on the west at 46.06 m, and a lower part west of its north end at 35.13 m;
   - **the north-east building** on the deck north-east of the plaza at 35.85 m;
   - **the sloping canopy** in the curve's inner corner, a triangle in plan, its top a plane fitted to its returns
@@ -27,8 +28,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as Auckland
-  Bioengineering House's), `model.js`: the lead.
+- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as
+  Architecture - West's), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 1,447 triangles
