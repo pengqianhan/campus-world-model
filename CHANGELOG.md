@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-08
+
+### Added
+
+- **Architecture - West drawn in detail.** Near the camera the map draws Architecture - West (421W), north-west of
+  Architecture - East, from code in place of its block: a slab in pale concrete with a pale louvred parapet and a band
+  of windows on each floor of its north-east faces and its storey of doors glazed, under a grey hipped roof; a tower in
+  dark cladding on its ridge, its top falling to the north-west; and two lower blocks at its north-west end. Its sizes
+  come from the LINZ 2024 LiDAR; it was compared with a photograph from a paved level to its north, and its card says
+  what is estimated: some heights, the storeys, the parapets and the windows, the glazed storey of its doors, and the
+  faces no photograph shows. On the map it has the map's colours; from a walker's height on a computer with a
+  graphics card, its own concrete, glass and cladding (#PR).
+
 ## 2026-11-07
 
 ### Added
