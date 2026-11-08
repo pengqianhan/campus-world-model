@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   a photograph from the footpath before it, and its card says what is estimated: some heights and sizes, with the
   photograph as a reference, the cornice's depth, the eaves' overhang and the porches' posts, and the faces no
   photograph shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
-  its own render, iron and glass (#PR).
+  its own render, iron and glass (#146).
 
 ## 2026-11-08
 
