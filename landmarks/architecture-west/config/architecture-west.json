@@ -201,11 +201,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 36.83,
+ "ground": 43.5,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -7.0,
+  "z": -12.1,
+  "note": "the entrance is not known from a record (the campus map records no lobby or entrance in 421W), so the door is before the doors the photograph shows in the slab's north-east face, under the school's sign, on the paved upper level: 2.5 m out from the face (u 7, w -12.1 in parts/common.js's frame; u 7 is where the photograph's glazed doors stand, by its fitted camera). The LiDAR's ground within 1 m: 25 returns, p10/p50/p90 43.467/43.503/43.534 m; along the face from u 1 to 16 the level lies at 43.35 to 43.52 m (p50 per 3 m, w -14 to -10.5), and falls to 39.98 m at its south-east end"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -224,9 +224,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": -3.67,
+  "tower_above": -3.67,
+  "spine_below": 33.33,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -241,7 +241,8 @@
     0.6697393345442686
    ],
    "tolerance_m": 0.05
-  }
+  },
+  "thresholds_note": "min_above, tower_above and spine_below were 3, 3 and 40 m above the provisional ground (36.83 m); lowered by 6.67 m with the ground set at the door, so that they pick the same points and the measured frame stays the expected one"
  },
  "refine": {
   "position_m": 3,
@@ -256,5 +257,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "36.83 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 29.8, p95 46.0: the site falls about 16 m across the crop); provisional, to be the LiDAR's ground at the door at step 7"
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-08); the provisional ground was 36.83 m, the median LiDAR ground in the crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "light": {
+  "sunaz": 65,
+  "sunel": 40,
+  "exposure": 0.6,
+  "note": "estimated: the photograph is taken on a clear day with the sun between the north-east and the east, behind the camera to its left (the tower's north-east face lit, its north-west face in shade), which lights the faces it shows; so the viewer's sun stands at 65 deg round and 40 deg up; the exposure from the building's luma: p10/p50/p90 70/167/234 at 0.6 against the photograph's 114/168/221 (152 at 0.5, 180 at 0.7), with round 1's faces"
+ }
 }

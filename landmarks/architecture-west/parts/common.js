@@ -1,7 +1,8 @@
 // Shared sizes, measured in the LINZ 2024 LiDAR (data/architecture-west_pts.npy: the building returns, class 6, in
-// the crop box) in the view frame of config/architecture-west.json: x is -axis, y up from the frame's ground (36.83 m
-// NZVD2016, the median ground in the crop box; to be the LiDAR's ground at the config's door at step 7), z is
-// toStreet; the frame's centre at x = z = 0. Owned by the lead: read, do not edit.
+// the crop box) in the view frame of config/architecture-west.json: x is -axis, y up from the frame's ground (the
+// LiDAR's ground at the config's door, 43.5 m NZVD2016; the heights below were measured above 36.83 m, the median
+// ground in the crop box, and H moves them on to it), z is toStreet; the frame's centre at x = z = 0. Owned by the
+// lead: read, do not edit.
 // Measured 2026-11-08 (round 0).
 //
 // How: the returns' p10, p50 and p90 in 0.5 and 1 m cells, in the building's own frame: u along the axis (to the
@@ -12,11 +13,14 @@
 
 // The lowest the walls go: the ground within 3 m of the plans falls to -1.98 m on the slab's south-west side (and
 // rises to +6.6 m on the paved upper level to its north and north-west).
-export const FOOT = -2.3;
+/** A height measured above 36.83 m, as one above the door's ground, 6.67 m higher (the config's `ground`). */
+const H = (h) => h - 6.67;
+
+export const FOOT = H(-2.3);
 
 /** A plane over the building's frame, as its height at u and w: through `h` at [u, w], rising `du` a metre along u
  * and `dw` a metre along w. */
-const plane = (h, [u, w], du, dw) => ({ a: h - du * u - dw * w, b: du, c: dw });
+const plane = (h, [u, w], du, dw) => ({ a: H(h) - du * u - dw * w, b: du, c: dw });
 
 export const MEASURED = {
   // The slab's plan (u, w): its north-east face at w -9.6 from u 14 to -2.5 (the returns' edge, w -9.7 to -9.2), set
@@ -26,7 +30,7 @@ export const MEASURED = {
   // to 20.17 m, the eave's height (its returns' p90 20.10, max 20.24), the roof's planes above it.
   slab: {
     plan: [[14, -9.6], [-2.5, -9.6], [-2.5, -7.0], [-14.5, -7.0], [-8.7, -0.55], [-21.35, 10.8], [-1.5, 10.8], [-1.5, 7.9], [14, 7.9]],
-    top: 20.17,
+    top: H(20.17),
   },
   // The roof: planes fitted to the returns' p50 in 1 m strips, the roof the lowest of them. Both halves share the
   // north-east slope, 0.807 a metre up from the eave (20.35 m at w -9.6; 23.66 m at w -5.5 against 23.83 and 23.37).
@@ -43,21 +47,21 @@ export const MEASURED = {
     ne: plane(20.35, [0, -9.6], 0, 0.807),
     se: [plane(23.46, [0, -0.5], 0, -0.84), plane(25.4, [0, 0], 0, 0)],
     nw: [plane(22.39, [0, 4.5], 0, -0.81), plane(21.80, [10.5, 0], -0.66, 0), plane(24.7, [0, 0], 0, 0)],
-    flat: { from: 2.3, top: 20.52 },
+    flat: { from: 2.3, top: H(20.52) },
   },
   // The tower (u, w): u -0.6 to 5.25, w -2.9 to 1.0 (its returns' p1 to p99); its top a plane falling along u from
   // 31.57 m at u -0.6 to 27.97 m at u 5.25 (the cells' highest returns, 0.62 m a metre).
-  tower: { u: [-0.6, 5.25], w: [-2.9, 1.0], high: 31.57, low: 27.97 },
+  tower: { u: [-0.6, 5.25], w: [-2.9, 1.0], high: H(31.57), low: H(27.97) },
   // North-west of the slab, lower: u 14 to 18.8, w -9.4 to 7.9 at 17.43 m (the returns' p50), and beyond it u 18.8 to
   // 21.9, w -9.0 to 0 at 15.9 m (p50 15.92; the ring takes in its first 3.5 m).
-  low: { u: [14, 18.8], w: [-9.4, 7.9], top: 17.43 },
-  lower: { u: [18.8, 21.9], w: [-9.0, 0], top: 15.9 },
+  low: { u: [14, 18.8], w: [-9.4, 7.9], top: H(17.43) },
+  lower: { u: [18.8, 21.9], w: [-9.0, 0], top: H(15.9) },
   // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
   // every 3.55 m in step with 421E's (its terrace's floor at 39.6 m: here 2.77 m, and 6.32 m at the paved upper
   // level, 43.15 m, where the north-east face's doors are; the flat roof's 20.52 m is the sixth); on each floor of
   // the north-east faces above the doors' storey a pale louvred parapet before a band of windows; the doors' storey
   // glazed.
-  floors: { first: 2.77, every: 3.55, doors: 6.32 },
+  floors: { first: H(2.77), every: 3.55, doors: H(6.32) },
   parapet: { height: 1.1, out: 0.08 },
   windows: { sill: 1.25, head: 2.65, out: 0.03 },
   doors: { sill: 0.1, head: 3.2 },

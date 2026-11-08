@@ -4,10 +4,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** south-east (the frame's `-axis`), **y** up from the frame's ground (36.83 m NZVD2016, the
-  median ground in the crop box, 25 m round the outline; to be the LiDAR's ground at the config's `door`, step 7),
-  **z** south-west (`toStreet`); the frame's centre at x = z = 0. `config/architecture-west.json`, `frame`. The site
-  falls about 16 m across the crop.
+- View frame, metres: **x** south-east (the frame's `-axis`), **y** up from the frame's ground (43.5 m NZVD2016, the
+  LiDAR's ground at the config's `door`, on the paved upper level before the slab's north-east doors; the heights in
+  `parts/common.js` were measured above 36.83 m, the median ground in the crop box, and its `H` moves them on to
+  it), **z** south-west (`toStreet`); the frame's centre at x = z = 0. `config/architecture-west.json`, `frame`. The
+  site falls about 16 m across the crop.
 - The building's own frame: **u** along the slab, to the north-west (`-x`), and **w** across it, to the south-west
   (`z`). `parts/common.js` gives `at(u, w)`, `rect(u, w)` and `plan(corners)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
@@ -19,8 +20,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   - **two lower blocks** to the north-west, 17.43 m and 15.9 m;
   - **its south-east end**, where it joins 421E: drawn up to where #140's model of 421E ends (that model's main
     block, u 37.5 and w 4.5 in its frame E), so that the two do not overlap below the roofs;
-  - the ground round the plans from -1.98 m (the south-west side) to +6.6 m (the paved upper level to the north and
-    north-west): walls go down to `FOOT`, -2.3 m.
+  - the ground round the plans from 34.85 m (the south-west side) to 43.4-43.5 m (the paved upper level to the north
+    and north-west), with the lower courtyard at 39.6-40 m before the set-back part: walls go down to `FOOT`,
+    34.53 m.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -47,6 +49,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   luma median 240 against 167: the viewer's ground is the frame's (36.83 m), 6.6 m under the paved level the
   photograph stands on, so the plain walls below that level count as the building's until step 7 sets the door's
   ground.
+- Step 7, the door (2026-11-08): before the photograph's glazed doors in the slab's north-east face, 2.5 m out on the
+  paved upper level (u 7, w -12.1), the LiDAR's ground 43.5 m; the frame's thresholds lowered with it, so that the
+  measured frame is the expected one (0.000 m). With the viewer's ground there, as the photograph's: silhouette IoU
+  0.830 (0.966 in the box: the comparison's ground plane now hides the walls below the upper level).
+- The light (estimated, `config`'s `light`): the sun at 65 degrees round and 40 up, behind the camera to its left,
+  as the photograph's (the tower's north-east face lit, its north-west face in shade), and an exposure of 0.6: the
+  building's luma median 167 against the photograph's 168 (p10/p90 70/234 against 114/221). The block furthest
+  north-west in the brown cladding the photograph shows: 445 triangles, 5 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
