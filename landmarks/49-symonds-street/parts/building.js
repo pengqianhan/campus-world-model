@@ -1,12 +1,11 @@
 // 49 Symonds Street (620; parts/common.js, MEASURED), drawn in its own frame (u west-south-west, w to the street).
 // Round 0: each part a block at the LiDAR's plan and height: the tower with its roof inside a parapet, the mansard on
 // it, the plant east of the mansard and the gable in the middle of each face; the podium to its east with the gable
-// over its entrance and the canopy along its front; the lower buildings behind the podium. Round 1's faces: the tower's walls in glass between a base
-// of dark stone and a white band, white on its bays and its north-east face, with an arched window under each white
-// face's gable and a window either side of it in each storey, and one in each storey of the bays' sides; the podium and
-// the lower buildings in the dark stone; the mansard's top pale.
-// Walls down to FOOT. Parts that meet run into each other, so that no two faces of different materials lie in one
-// plane.
+// over its entrance and the canopy along its front; the lower buildings behind the podium. Round 1's faces: the
+// tower's walls in glass between a base of dark stone and a white band, white on its bays and its north-east face,
+// with an arched window under each white face's gable and a window either side of it in each storey, and one in each
+// storey of the bays' sides; the podium and the lower buildings in the dark stone; the mansard's top pale. Walls down
+// to FOOT. Parts that meet run into each other, so that no two faces of different materials lie in one plane.
 import { FOOT, MEASURED, at, inset, plan, rect } from "./common.js";
 import { block, hexahedron, prism, tris } from "./shapes.js";
 

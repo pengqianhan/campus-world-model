@@ -126,8 +126,8 @@ where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and cou
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` and
   `roofPale` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale` and `screenBlack` are
   walls.
-- **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a
-  reference" and goes on with the parapet's width, the gables' depth and the canopy's thickness, and the faces no
+- **Its card** says "estimated:" and the config's `estimated`, which begins "some heights and sizes, with a photograph
+  as a reference" and goes on with the parapet's width, the gables' depth and the canopy's thickness, and the faces no
   photograph shows.
 - **The pictures** in `docs/landmarks/`: `49-symonds-street-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from the east and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site built
@@ -138,8 +138,9 @@ where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and cou
 The review's first round found the mansard's eaves drawn as a rectangle over the tower's east and west corners, where
 the tower steps in and the LiDAR has no mansard: its plan and its top's now step in there as the tower's do (its
 returns over 48.5 m in 0.5 m cells), its slopes drawn between the two plans' sides. And the plant runs 0.3 m into the
-mansard's walls, as it was meant to; the windows beside the arched ones keep the mean of the two places the
-photograph shows, 2.8 to 4.7 m out from the middle. Silhouette IoU 0.889 (0.890 in the box), the luma median 135
+mansard's walls, as it was meant to; the windows beside the arched ones keep about the mean of the two places
+the photograph shows (2.85 to 4.49 and 2.81 to 5.07 m out), 2.8 to 4.7 m out from the middle, kept off the north-east
+face's end. Silhouette IoU 0.889 (0.890 in the box), the luma median 135
 against the photograph's 132; from above, footprint IoU 0.885 (the LiDAR's 1,669 m², the model's 1,514, both 1,494),
 83% of the 5,888 cells within 0.5 m (p10/p50/p90 -0.24/0.02/0.61), the highest point 52.87 m against 52.55; block
 620 under the model 51.0%, of its LiDAR roof cells 92.9%. 1,289 triangles, 5 draw calls.

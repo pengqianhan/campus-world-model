@@ -55,10 +55,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   52.87 m against the LiDAR's 52.55; block 620 under the model 51.4%, of its 6,426 cells where the LiDAR has a roof
   93.0%; no other block under it by more than 0.1%. The map's ground at the door lies 7.61 m below the LiDAR's.
 - The review's round 1 (2026-11-09): the mansard's eaves and top stepped in at the tower's east and west corners, as
-  the LiDAR has them; the plant run into the mansard's walls; the windows beside the arched ones at the mean of the
-  photograph's two places. Silhouette IoU 0.889 (0.890 in the box), luma 135 against 132; the top view: footprint IoU
-  0.885, 83% of the 5,888 cells within 0.5 m (p10/p50/p90 -0.24/0.02/0.61), the highest point 52.87 m against
-  52.55; block 620 under the model 51.0%, of its LiDAR roof cells 92.9%.
+  the LiDAR has them; the plant run into the mansard's walls; the windows beside the arched ones at about the mean of
+  the photograph's two places, kept off the north-east face's end. Silhouette IoU 0.889 (0.890 in the box), luma 135
+  against 132; the top view: footprint IoU 0.885, 83% of the 5,888 cells within 0.5 m (p10/p50/p90
+  -0.24/0.02/0.61), the highest point 52.87 m against 52.55; block 620 under the model 51.0%, of its LiDAR roof cells
+  92.9%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
