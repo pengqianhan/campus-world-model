@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   with a photograph from Symonds Street, and its card says what is estimated: some heights and sizes, with the
   photograph as a reference, the parapet's width, the gables' depth and the canopy's thickness, and the faces no
   photograph shows. On the map it has the
-  map's colours; from a walker's height on a computer with a graphics card, its own glass, panels and stone (#PR).
+  map's colours; from a walker's height on a computer with a graphics card, its own glass, panels and stone (#145).
 
 ## 2026-11-08
 
