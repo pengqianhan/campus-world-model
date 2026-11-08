@@ -1,0 +1,288 @@
+{
+ "name": "owen-g-glenn-building",
+ "site": false,
+ "building": {
+  "id": "260",
+  "also": [],
+  "title": "Sir Owen G Glenn Building (260), University of Auckland",
+  "note": "outline: building 260's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 260 by its id.",
+  "outline": [
+   [
+    235.5,
+    -3.1
+   ],
+   [
+    226.7,
+    -6.6
+   ],
+   [
+    244.2,
+    -24.2
+   ],
+   [
+    248.7,
+    -19.7
+   ],
+   [
+    251.2,
+    -22.3
+   ],
+   [
+    246.6,
+    -26.9
+   ],
+   [
+    249.3,
+    -29.6
+   ],
+   [
+    249.4,
+    -27.2
+   ],
+   [
+    259.0,
+    -36.8
+   ],
+   [
+    256.6,
+    -36.8
+   ],
+   [
+    270.5,
+    -50.6
+   ],
+   [
+    268.3,
+    -52.8
+   ],
+   [
+    271.5,
+    -56.1
+   ],
+   [
+    255.6,
+    -71.9
+   ],
+   [
+    258.2,
+    -74.6
+   ],
+   [
+    242.9,
+    -89.8
+   ],
+   [
+    240.3,
+    -87.3
+   ],
+   [
+    232.1,
+    -95.4
+   ],
+   [
+    228.3,
+    -108.4
+   ],
+   [
+    221.0,
+    -106.2
+   ],
+   [
+    194.5,
+    -132.6
+   ],
+   [
+    198.4,
+    -138.4
+   ],
+   [
+    182.4,
+    -149.7
+   ],
+   [
+    181.7,
+    -147.7
+   ],
+   [
+    161.4,
+    -159.1
+   ],
+   [
+    152.7,
+    -74.0
+   ],
+   [
+    153.6,
+    -73.9
+   ],
+   [
+    153.6,
+    -73.4
+   ],
+   [
+    151.9,
+    -56.9
+   ],
+   [
+    151.1,
+    -56.2
+   ],
+   [
+    150.7,
+    -52.6
+   ],
+   [
+    156.5,
+    -46.9
+   ],
+   [
+    156.5,
+    -45.5
+   ],
+   [
+    168.0,
+    -34.1
+   ],
+   [
+    168.3,
+    -33.0
+   ],
+   [
+    171.8,
+    -29.5
+   ],
+   [
+    173.2,
+    -24.2
+   ],
+   [
+    169.8,
+    -20.8
+   ],
+   [
+    168.2,
+    -7.0
+   ],
+   [
+    174.1,
+    -6.3
+   ],
+   [
+    183.3,
+    -15.6
+   ],
+   [
+    191.5,
+    -7.5
+   ],
+   [
+    193.5,
+    -9.6
+   ],
+   [
+    197.1,
+    -6.2
+   ],
+   [
+    197.9,
+    -7.1
+   ],
+   [
+    195.4,
+    -9.6
+   ],
+   [
+    197.5,
+    -11.7
+   ],
+   [
+    212.3,
+    3.0
+   ],
+   [
+    219.0,
+    -3.6
+   ],
+   [
+    220.2,
+    -2.5
+   ],
+   [
+    220.5,
+    -2.9
+   ],
+   [
+    235.7,
+    4.9
+   ],
+   [
+    239.6,
+    0.9
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 24.46,
+ "door": {
+  "x": 0.0,
+  "z": 0.0,
+  "note": "to be set at step 7"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704",
+   "3705"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902",
+   "1903"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3.0,
+  "tower_above": 3.0,
+  "spine_below": 40,
+  "spine_radius": 120.0,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    198.09868624856995,
+    -78.5643181830046
+   ],
+   "axis": [
+    0.7152162600875727,
+    0.6989032131177718
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "24.46 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 5.66, p95 33.46: the site falls about 28 m across the crop, into Grafton Gully on the east); provisional, to be the LiDAR's ground at the door at step 7"
+}
