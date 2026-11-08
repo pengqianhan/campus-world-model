@@ -65,15 +65,15 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   `claddingPale` and `concrete` are walls. The card's `estimated`: some heights, with a photograph as a reference;
   the parapet; the second fin; the faces no photograph shows. 280 triangles, 4 draw calls.
 - Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
-  its slope is known) and, at the north face's west end, the glass bays that step out and back over three floors
-  (the photograph shows their undersides; the LiDAR, which sees the roof, gives neither their plan nor how deep
-  they are).
+  its slope is known) and the recess stepped into the north face's west end and the north-west cut over several
+  floors (the photograph shows its dark soffits; the LiDAR, which sees the roof, gives neither its plan nor how deep
+  it is).
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
 - The photograph (one, from Symonds Street to the north-west, about 32 m from the tower's north face;
   `refs/photos/`, gitignored) is a reference for the look: nothing is traced or sampled from it, and no size is
-  measured from it.
+  measured from it but the second fin's place, which is estimated.
 - Walls go down to `FOOT`. Where two parts meet, one's plan runs into the other's: no two faces of different
   materials in one plane.
 

@@ -1,7 +1,7 @@
 # Art bible: Auckland Bioengineering House (439)
 
 What the building looks like, for whoever draws a part of it. The photograph is a reference: no size is measured from
-it.
+it but the second fin's place, which is estimated.
 
 - A tower clad all round in a curtain wall of bronze-tinted glass in dark frames, a grid of panes, its plan a
   rectangle with its corners cut.
