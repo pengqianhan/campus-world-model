@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   a reference (the crown's eave and band, the shaft's set-back under it, the glazed link's top and floors, the strip
   of windows, the glazed box's beam), the glazed link's glass roof, which the LiDAR does not see, and the faces no
   photograph shows. On the map it has the map's colours; from a walker's height
-  on a computer with a graphics card, its own concrete, metal and glass (#PR).
+  on a computer with a graphics card, its own concrete, metal and glass (#147).
 
 ## 2026-11-08
 
