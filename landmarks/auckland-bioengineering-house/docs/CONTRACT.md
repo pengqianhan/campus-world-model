@@ -58,6 +58,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   above 2.5 m now counted from the door's ground), the highest point 41.74 m against 42.64; block 439 under the
   model 91.0%, and no other block under it (`building.also` is empty). `place`: the door at (-237.29, -406.96) on
   the map, where the map's ground lies 6.57 m under the LiDAR's.
+- On the site (step 8, 2026-11-08): `site` is true, and the site draws the model in place of block 439. It stands
+  alone (no other landmark's outline comes within 2 m of its), its y = 0 on the map's ground at its door. The foot
+  check of `tests/landmarks.test.ts` passes: every material's lowest points are within 0.25 m of the map's ground.
+  No new roof, pane or opening material: `glass` is glass and `roofGrey` a roof in `LIGHT_ROLE` already, and
+  `claddingPale` and `concrete` are walls. The card's `estimated`: some heights, with a photograph as a reference;
+  the parapet; the second fin; the faces no photograph shows. 280 triangles, 4 draw calls.
 - Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
   its slope is known) and, at the north face's west end, the glass bays that step out and back over three floors
   (the photograph shows their undersides; the LiDAR, which sees the roof, gives neither their plan nor how deep
