@@ -1,6 +1,8 @@
 {
  "name": "49-symonds-street",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from Symonds Street to the building's east, about 50 m from its north-east face, looking up 24 degrees through a lens of about 34 degrees across; its camera is fitted to the north-east face's gable and to the tops of the steps of its east corner, and to two upright edges, with the principal point at the centre.",
  "building": {
   "id": "620",
   "also": [],
