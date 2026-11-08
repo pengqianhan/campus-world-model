@@ -38,6 +38,12 @@ A change to what the site does or shows adds its line here, and the README's
   depth, the glazing at the street, and the colour of the walls no photograph shows and of the wing's roof. A relief on the face is an
   artwork and is not drawn after. Its other faces are drawn plainly (#136).
 
+### Fixed
+
+- **Building 303 of the Science Centre meets 303S.** Its range along the street and its slab run on to the back of
+  building 303S beside it, as the LiDAR has them, closing a slot 0.5 to 1.5 m wide that stood open between the two
+  models from the street to the slab's back (#138).
+
 ## 2026-11-06
 
 ### Added
