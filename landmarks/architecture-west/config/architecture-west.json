@@ -1,7 +1,7 @@
 {
  "name": "architecture-west",
  "site": true,
- "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the slab's north-east faces a louvred parapet and a band of windows, and the glazed storey of its doors; and the faces no photograph shows, drawn plainly",
+ "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the slab's north-east faces above its doors' storey a louvred parapet and a band of windows, and the glazed storey of its doors; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the paved upper level to the building's north, about 33 m from its tower, through a lens of about 63 degrees across; its camera is fitted to the tower's top edges and corners, the slab's north eave corner and hip, and the ridge of 421E's main roof beside it, with the principal point at the centre.",
  "building": {

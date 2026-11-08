@@ -69,10 +69,10 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-11-08:** the map draws Architecture - West (421W) in detail: a slab in pale concrete with a pale
-  louvred parapet and a band of windows on each floor of its north-east faces, a grey hipped roof with a tower in
-  dark cladding on it, its top falling to the north-west, and two lower blocks at its north-west end. Its sizes
-  come from the LiDAR; it was compared with a photograph, which is not published, and its card says what is
-  estimated.
+  louvred parapet and a band of windows on each floor of its north-east faces above its glazed storey of doors, a
+  grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
+  its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
+  and its card says what is estimated.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
@@ -90,11 +90,6 @@ It is built to answer two questions a student actually has:
   a raised roof on eight sides over the corner, and on its face to the courtyard four bands of buff brick
   between ribbons of windows behind red, orange and yellow striped film. Its sizes come from the LiDAR; some
   of the heights on that face are estimated in a photograph, which is not published, and its card says so.
-- **2026-11-05:** on Alfred Street the map draws the Kate Edger Information Commons in detail: two long
-  pale ranges with a glass-roofed atrium between them, silver metal screens over green-tinted glazing on
-  its end to the street, and a glazed end over the sunken court, open beneath it. Its sizes come from the
-  LiDAR; the heights on its faces to the street are estimated in a photograph, which is not published, and
-  its card says so.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -597,14 +592,14 @@ north-west end.
 | ![Building 303S of the Science Centre on the map, drawn from code in the map's colours](docs/landmarks/science-centre-303s-map.jpg) | ![Building 303S of the Science Centre from Symonds Street to its south-east, through the walker's eyes](docs/landmarks/science-centre-303s-eyes.jpg) |
 
 The nineteenth is Architecture - West (421W), north-west of Architecture - East: a slab in pale grey concrete with, on
-each floor of its north-east faces, a pale louvred parapet before a band of windows, and its storey of doors glazed on
-a paved upper level; a grey hipped roof, with a tower in dark cladding on its ridge whose top falls to the north-west;
-and two lower blocks at its north-west end. Its heights and plans come from the LiDAR; the storeys' height, the
-parapets and the windows are estimated with the photograph as a reference. One photograph from the paved upper level
-to its north, about 33 m from the tower; counted inside the rectangle the model fills on the screen, its silhouette
-has an IoU of 0.97 in it, and the brightness of the building is within 1 of the photograph's. From above its outline
-covers the LiDAR's with an IoU of 0.78, and on 82% of the cells both cover it is within 0.5 m of the LiDAR's height
-(its south-east end, which joins Architecture - East and is left to that building's model, and lower parts before
+each floor of its north-east faces above its storey of doors, a pale louvred parapet under a band of windows, and that
+storey glazed on a paved upper level; a grey hipped roof, with a tower in dark cladding on its ridge whose top falls to
+the north-west; and two lower blocks at its north-west end. Its heights and plans come from the LiDAR; the storeys'
+height, the parapets and the windows are estimated with the photograph as a reference. One photograph from the paved
+upper level to its north, about 33 m from the tower; counted inside the rectangle the model fills on the screen, its
+silhouette has an IoU of 0.97 in it, and the brightness of the building is within 1 of the photograph's. From above its
+outline covers the LiDAR's with an IoU of 0.78, and on 82% of the cells both cover it is within 0.5 m of the LiDAR's
+height (its south-east end, which joins Architecture - East and is left to that building's model, and lower parts before
 its set-back face are not drawn). What the photograph does not show is drawn plainly.
 
 | | |
@@ -1124,7 +1119,11 @@ If you represent the University and would like something changed or removed, ple
   are not drawn. Its entrance is not known from a record: its door is set before the glazed doors the photograph
   shows, on the paved upper level, where the map's ground lies 4.8 m under the LiDAR's. Its south-east end, where it
   joins Architecture - East, is left to that building's model (#140): the slab's model ends there on a slant. Block
-  421W is 62.3% under the model: its ring takes in that end, and parts beyond the roofs.
+  421W is 62.3% under the model: its ring takes in that end, and parts beyond the roofs. While a building beside it
+  is open, its neighbours sink to footprints, a landmark about its own y = 0 and a block about the lowest ground under
+  it: 421W's y = 0 is the map's ground at its door on the upper level, and the map's ground under it lies up to 6.1 m
+  lower toward the south-west, so its footprint stands above the drawn ground on about 73% of its cells, by up to
+  6.1 m, where block 421W's showed on 39%, by up to 4.3 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

@@ -75,7 +75,7 @@ export function building(b) {
   const top = (x) => T.high + ((-x - T.u[0]) / (T.u[1] - T.u[0])) * (T.low - T.high);
   slopedPrism(b, rect([T.u[0] - 0.05, T.u[1]], [T.w[0], T.w[1] + 0.05]), S.top - 0.3, (x) => top(x), TOWER, TOWER);
   // the lower blocks to the north-west, each from 0.1 m inside the one before it and 5 cm inside the slab's side; the
-  // further one in the brown cladding the photograph shows, its foot 5 cm higher than the nearer one's
+  // further one, brown-clad in the photograph, in the tower's dark grey, its foot 5 cm higher than the nearer one's
   block(b, rect([M.low.u[0] - 0.1, M.low.u[1]], [M.low.w[0], M.low.w[1] - 0.05]), FOOT, M.low.top, WALL, ROOF);
   block(b, rect([M.lower.u[0] - 0.1, M.lower.u[1]], M.lower.w), FOOT + 0.05, M.lower.top, TOWER, ROOF);
   // the north-east faces the photograph shows, a floor on each storey above the doors' (below it the set-back part

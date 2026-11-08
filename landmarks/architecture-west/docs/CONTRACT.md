@@ -56,7 +56,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - The light (estimated, `config`'s `light`): the sun at 65 degrees round and 40 up, behind the camera to its left,
   as the photograph's (the tower's north-east face lit, its north-west face in shade), and an exposure of 0.8: the
   building's luma median 167 against the photograph's 168 (p10/p90 87/240 against 114/221). The block furthest
-  north-west in the brown cladding the photograph shows.
+  north-west, brown-clad in the photograph, in the tower's dark grey.
 - Step 8, on the site (2026-11-08): the floors start at the door's ground, the doors' storey's (they stood 0.35 m
   lower, in step with 421E's, and the doors' glazing then came down below the door, 0.92 m over the site's ground
   at the face's south-east end); the set-back part's faces start a storey up, as the slab's, plain below (its

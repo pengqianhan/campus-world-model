@@ -58,7 +58,7 @@ export const MEASURED = {
   lower: { u: [18.8, 21.9], w: [-9.0, 0], top: H(15.9) },
   // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
   // every 3.55 m, as 421E's, from the door's ground (43.5 m), the storey of the slab's north-east doors; on each
-  // floor of the north-east faces above it a pale louvred parapet before a band of windows; the doors' storey glazed.
+  // floor of the north-east faces above it a pale louvred parapet under a band of windows; the doors' storey glazed.
   floors: { first: 0, every: 3.55, doors: 0 },
   parapet: { height: 1.1, out: 0.08 },
   windows: { sill: 1.25, head: 2.65, out: 0.03 },

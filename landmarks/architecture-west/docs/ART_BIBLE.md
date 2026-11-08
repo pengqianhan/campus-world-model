@@ -4,7 +4,7 @@ What the building looks like, for whoever draws a part of it. The photograph is 
 it.
 
 - A concrete slab in the same language as 421E beside it: pale grey concrete faces stepping in storey by storey as
-  they rise; on each floor a band of windows in brown frames, and before many of them a pale louvred band.
+  they rise; on each floor a band of windows in brown frames, and under many of them a pale louvred band.
 - The top floor glazed all along under a deep hipped eave with a brown fascia and a dark soffit.
 - A tower in brown vertical cladding rising out of the roof, its top falling to the north-west, with steel flues
   standing on it.

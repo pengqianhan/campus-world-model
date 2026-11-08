@@ -1,11 +1,12 @@
 # Landmark: Architecture - West (421W), drawn from code
 
 Architecture - West, building 421W of the University of Auckland: a slab in pale grey concrete running north-west from
-Architecture - East, with a pale louvred parapet and a band of windows on each floor of its north-east faces, its glazed
-storey of doors on a paved upper level, a grey hipped roof, a tower in dark cladding on its ridge, its top falling to
-the north-west, and two lower blocks at its north-west end. It is drawn in three.js from code alone, sized by the LINZ
-2024 LiDAR, and compared with one photograph of it from that paved level to its north (November 2026). The kit it is
-built with, the pipeline, the viewer and how to run them are shared by every landmark: [`../README.md`](../README.md).
+Architecture - East, with a pale louvred parapet and a band of windows on each floor of its north-east faces above its
+glazed storey of doors, on a paved upper level, a grey hipped roof, a tower in dark cladding on its ridge, its top
+falling to the north-west, and two lower blocks at its north-west end. It is drawn in three.js from code alone, sized by
+the LINZ 2024 LiDAR, and compared with one photograph of it from that paved level to its north (November 2026). The kit
+it is built with, the pipeline, the viewer and how to run them are shared by every landmark:
+[`../README.md`](../README.md).
 
 - Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=architecture-west&view=orbit`
   with the repository root served on port 8765. `site` is true: the site draws it in place of block 421W
@@ -35,13 +36,13 @@ same 6.67 m, so the measured frame is the one the model was drawn in (0.000 m, 0
   they meet, its ridge turns into this one's. This model is drawn up to where the model of 421E in pull request #140
   ends (that model's main block, u 37.5 and w 4.5 in its frame `E`), so that the two do not overlap below the roofs;
   south-east of the slab's tower its roof runs on to that line. If both are on the site they stand on one ground
-  (`../README.md`, "Placement"): their rings on the campus map lie 0.2 m apart, and the map's ground less the LiDAR's at
-  their doors is -4.78 m here and -4.55 m at 421E's, 0.23 m apart. On this branch 421E is not on the site, and 421W
-  stands alone on the map's ground at its door.
-- 421E's block is 2.8% under the model, so `building.also` is empty. Block 421W itself is 62.3% under the model: of
-  its ring's cells within the top view's reach, 88.6% hold the LiDAR's roofs and the model covers 86.5% of those; the
-  rest, 82 m², is the slab's end that the model of 421E draws; the ring's parts beyond the roofs (about 200 m²) lie
-  outside the top view's reach.
+  (`../README.md`, "Placement"): their rings on the campus map overlap, by about 140 m² where the slab meets 421E's main
+  block, and the map's ground less the LiDAR's at their doors is -4.78 m here and -4.55 m at 421E's, 0.23 m apart. On
+  this branch 421E is not on the site, and 421W stands alone on the map's ground at its door.
+- 421E's block is 2.8% under the model, so `building.also` is empty. Block 421W itself is 62.3% under the model: of its
+  ring's cells within the top view's reach, 88.6% hold the LiDAR's roofs and the model covers 86.5% of those; the rest,
+  86 m², is all but 4 m² of it the slab's end that the model of 421E draws; the ring's parts beyond the roofs (about 200
+  m²) lie outside the top view's reach.
 
 ## The reference
 
@@ -82,7 +83,7 @@ The LiDAR has few returns on the faces, so what it does not give is estimated, t
 - **On each floor above it of the north-east faces** (the slab's, its set-back part's and the nearer lower block's), a
   pale louvred parapet 1.1 m tall (the kit's `plain`) and over it a band of windows 1.4 m tall (`glass`), standing a
   few centimetres out of the face; the slab's doors' storey glazed.
-- **The block furthest north-west** in the brown cladding the photograph shows (`screenGrey`).
+- **The block furthest north-west**, brown-clad in the photograph, in the tower's dark grey (`screenGrey`).
 
 ## On the map (step 7)
 
@@ -110,6 +111,12 @@ outline, where 85% is asked) has gone; `MASSING.md` lists 421W among the landmar
   ground at the face's south-east end; and the set-back part's faces start a storey up, as the slab's: from the
   doors' storey its lowest parapet stood 3.1 m over the map's ground, which lies lower there. 421 triangles, 5 draw
   calls.
+- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0
+  and a block about the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus` in
+  `src/scene/CampusScene.ts`). 421W's y = 0 is the map's ground at its door on the upper level, and under its ring
+  the map's ground lies from 6.06 m below it to 0.98 m above, so beside an open neighbour (421E, 423 or 409) its
+  footprint shows above the drawn ground on about 73% of its cells, by up to 6.08 m, where block 421W's showed on
+  39%, by up to 4.25 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a
