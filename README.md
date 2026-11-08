@@ -71,6 +71,8 @@ It is built to answer two questions a student actually has:
 - **2026-11-07:** while a building is open, the buildings drawn in detail beside it give way to their blocks,
   which sink to footprints on their footings, as every other building's; on a slope a landmark's own footprint
   could sink under the drawn ground.
+- **2026-11-07:** building 303 of the Science Centre now meets building 303S beside it: its range along
+  the street and its slab run on to 303S's back, as the LiDAR has them, where a gap stood open between the two.
 - **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
   eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
   south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
@@ -1080,7 +1082,7 @@ If you represent the University and would like something changed or removed, ple
   the face's bands are drawn as dark strips on it, the lowest band's bottom, the canopy's depth and the glazing
   under it are estimated. A large relief of white blocks on the face is an artwork, not drawn after: the band is
   plain there. The slab, the rear block, the wing and their faces, which no photograph shows, are drawn plainly
-  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 84.96% under the model: its ring takes in
+  at the LiDAR's sizes, the roofs in the aerial's colours. Block 303 is 85.6% under the model: its ring takes in
   a light well, which has no returns, between the wing and the slab.
 - **Building 303S of the Science Centre is seen from the south-east only, from far off.** One photograph, from the
   street about 95 m to the south-east through a long lens, sees its face to the street obliquely and the first
@@ -1091,9 +1093,7 @@ If you represent the University and would like something changed or removed, ple
   storey, hidden in the photograph behind the street's railing, is drawn as glass from the street's level. Its
   entrance is not known: its door is set on the pavement before its face to the street, and it stands on the
   ground it shares with building 303, 0.89 m below the map's ground there. A recess of about a metre in its
-  south-east end, which the photograph does not show, is drawn flat. Behind its back a slot 0.5 to 1.6 m
-  wide stays open between it and 303's model, which stops short of 303S's back where the LiDAR has 303's parts
-  reaching to it.
+  south-east end, which the photograph does not show, is drawn flat.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

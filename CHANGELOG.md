@@ -44,6 +44,12 @@ A change to what the site does or shows adds its line here, and the README's
   drawn in detail is drawn by its block, which sinks to a footprint on its footing, as every other building's;
   a landmark squashed about its own height could sink its footprint under the drawn ground on a slope (#139).
 
+### Fixed
+
+- **Building 303 of the Science Centre meets 303S.** Its range along the street and its slab run on to the back of
+  building 303S beside it, as the LiDAR has them, closing a slot 0.5 to 1.5 m wide that stood open between the two
+  models from the street to the slab's back (#138).
+
 ## 2026-11-06
 
 ### Added
