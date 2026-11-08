@@ -204,5 +204,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "56.79 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 52.42, p95 59.45: the site falls about 7 m across the crop); provisional, to be the LiDAR's ground at the door at step 7"
+ "ground_note": "56.79 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 52.42, p95 59.45: the site falls about 7 m across the crop); provisional, to be the LiDAR's ground at the door at step 7",
+ "light": {
+  "sunaz": 75,
+  "sunel": 30,
+  "exposure": 0.8,
+  "note": "estimated: the photograph has no date and soft light under broken cloud; the viewer's sun stands on the north-east face's side, 75 deg round and 30 deg up (behind it, the faces it shows go dark: luma p50 77 at 1.0); the exposure from the building's luma: p10/p50/p90 92/134/242 at 0.8 against the photograph's 98/132/224 (125 at 0.7), with round 1's faces"
+ }
 }

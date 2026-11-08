@@ -35,6 +35,10 @@ export const MEASURED = {
   // East of it the plant: u -11.6 to -5.7, w -7.44 to 7.59 (the returns from 48.8 to 51 m, p2 and p98), its top at 49.8
   // m (their p90).
   plant: { u: [-11.6, -5.7], w: [-7.44, 7.59], top: 49.8 },
+  // On the mansard's top three units, their plans the returns more than 0.35 m over it, their tops the highest; a mast
+  // at u 6.0, w 3.1 (two returns, to 54.03 m) is left out.
+  units: [{ u: [2.7, 3.5], w: [-2.3, -1.3], top: 52.94 }, { u: [-1.2, -0.3], w: [-2.2, -1.1], top: 52.74 },
+    { u: [6.8, 7.3], w: [5.0, 5.8], top: 52.63 }],
   // In the middle of each face a gable over the parapet, its apex the face's highest return (the west face's has few,
   // 7, and may be higher), its half-width 1.9 m (where the returns pass 47.6 m, 0.5 m over the parapet, 1.55 m out from
   // the apex); its depth is estimated. `face`: the side ("u" or "w") and its place; `at`: the apex along the face.
@@ -44,7 +48,24 @@ export const MEASURED = {
     { face: ["u", -15.13], at: 0.21, apex: 49.69 },
     { face: ["u", 17.79], at: 1.6, apex: 49.05 },
   ],
-  gable: { half: 1.9, depth: 0.35 },
+  gable: { half: 2.0, depth: 0.35 },
+  // The faces (round 1; the photograph as a reference for the look, its heights estimated through its fitted camera
+  // on the faces' planes): the tower's walls in glass between a base of dark stone to 11.0 m and a white band from
+  // 45.2 m to the parapet's top (1.9 m on both steps' faces it shows); white where the LiDAR has returns from the
+  // walls between 14 and 45 m (glass gives it few): the bays on the street and the back, all round, and the north-
+  // east face from w -5.4 to its south-east end (from the photograph: glass at its north-west end). In the middle of
+  // each white face, under its gable, a window arched at its top, 3.2 m wide (its edges 1.70 and -1.51 m from the
+  // apex at 43 m, 2.31 and -0.48 at 14.3 m), from 12.0 m to its crown at 46.3 m; either side of it, in each of ten
+  // storeys 3.35 m apart, a window 1.8 m high from 2.4 to 4.6 m out from the middle (the north-east face's: 3.06 to
+  // 4.70 and -2.6 to -4.86), the highest's top at 44.82 m; on the bays' sides one 1.6 m wide in each storey, as on the
+  // street bay's north-east side, which the photograph shows. The west face shows no returns either, and no
+  // photograph: glass. The base, the podium and the lower buildings in a dark stone (the photograph).
+  faces: {
+    base: 11.0, band: 45.2,
+    white: { edges: [1, 2, 3, 15, 16, 17], ene: [-5.4, 5.01] },
+    arch: { half: 1.6, foot: 12.0, crown: 46.3 },
+    windows: { top: 44.82, storey: 3.35, height: 1.8, count: 10, from: 2.4, to: 4.6, side: 0.8 },
+  },
   // The podium to the tower's east, its flat roof at 7.68 m, run 0.53 m into the tower's east face; on its front to
   // the street a gable over the entrance, u -24.1 to -20.7, its ridge from w 4.5 to 5.5 at 10.13 m.
   podium: {
