@@ -1,6 +1,8 @@
 {
  "name": "mhs-building-501",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the plaza east of the tower, about 67 m before its east face, through a lens of about 48 degrees across, looking up 4 degrees, its principal point low in the frame (the photograph is cut off centre, or its verticals were straightened: they are upright); its camera is fitted to the front edge of the crown's flat top, the crown's eave over the east face, and the top and foot of the glazed box before that face, held 1.6 m over the LiDAR's ground",
  "building": {
   "id": "501",
   "also": [],
@@ -134,7 +136,7 @@
   "lon": 174.7691,
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
- "crop_margin": 25,
+ "crop_margin": 70,
  "ground": 71.88,
  "door": {
   "x": 0.0,
@@ -191,5 +193,6 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "71.88 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 70.58, p95 72.52); provisional, to be the LiDAR's ground at the door (step 7)"
+ "ground_note": "71.88 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 70.58, p95 72.52); provisional, to be the LiDAR's ground at the door (step 7)",
+ "crop_note": "70 m round the outline, so that the crop box takes in the plaza where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)"
 }
