@@ -41,8 +41,8 @@ same 6.67 m, so the measured frame is the one the model was drawn in (0.000 m, 0
   this branch 421E is not on the site, and 421W stands alone on the map's ground at its door.
 - 421E's block is 2.8% under the model, so `building.also` is empty. Block 421W itself is 62.3% under the model: of its
   ring's cells within the top view's reach, 88.6% hold the LiDAR's roofs and the model covers 86.5% of those; the rest,
-  86 m², is all but 4 m² of it the slab's end that the model of 421E draws; the ring's parts beyond the roofs (about 200
-  m²) lie outside the top view's reach.
+  86 m², is all but about 8 m² of it the slab's end that the model of 421E draws; the ring's parts beyond the roofs
+  (about 200 m²) lie outside the top view's reach.
 
 ## The reference
 
@@ -111,12 +111,12 @@ outline, where 85% is asked) has gone; `MASSING.md` lists 421W among the landmar
   ground at the face's south-east end; and the set-back part's faces start a storey up, as the slab's: from the
   doors' storey its lowest parapet stood 3.1 m over the map's ground, which lies lower there. 421 triangles, 5 draw
   calls.
-- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0
-  and a block about the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus` in
-  `src/scene/CampusScene.ts`). 421W's y = 0 is the map's ground at its door on the upper level, and under its ring
-  the map's ground lies from 6.06 m below it to 0.98 m above, so beside an open neighbour (421E, 423 or 409) its
-  footprint shows above the drawn ground on about 73% of its cells, by up to 6.08 m, where block 421W's showed on
-  39%, by up to 4.25 m.
+- **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
+  block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
+  and `baseOf` in `src/scene/CampusScene.ts`). 421W's y = 0 is the map's ground at its door on the upper level, and
+  under its ring the map's ground falls toward its south-east end, from 0.98 m above it to 6.06 m below, so beside an
+  open neighbour (421E, 423 or 409) its footprint shows above the drawn ground on about 73% of its cells, by up to 6.08
+  m, where block 421W's showed on 39%, by up to 4.25 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as
   roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `plain` and `screenGrey` are walls.
 - **Its card** says "estimated:" and the config's `estimated`, which begins "some heights, with a photograph as a

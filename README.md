@@ -1111,19 +1111,19 @@ If you represent the University and would like something changed or removed, ple
   and a block about the lowest ground under it: beside an open 303, 303S's footprint, its y = 0 below the
   street's rising ground, is mostly under the drawn ground, and beside an open neighbour 303's stands up to
   1.7 m above it.
-- **Architecture - West is seen from its north only.** One photograph, from the paved upper level to its north,
-  sees the slab's north-east faces and its tower. Its faces turned away, which no photograph shows, are drawn
-  plainly. The storeys' height, the parapets and the bands of windows are estimated with the photograph as a
-  reference; the storeys' edges stepping out on its north-east faces, the louvres' slats, the deep eave's soffit, the
-  doors' storey's columns, the tower's flues, the dormers of its set-back part and the lower parts before that part
-  are not drawn. Its entrance is not known from a record: its door is set before the glazed doors the photograph
-  shows, on the paved upper level, where the map's ground lies 4.8 m under the LiDAR's. Its south-east end, where it
-  joins Architecture - East, is left to that building's model (#140): the slab's model ends there on a slant. Block
-  421W is 62.3% under the model: its ring takes in that end, and parts beyond the roofs. While a building beside it
-  is open, its neighbours sink to footprints, a landmark about its own y = 0 and a block about the lowest ground under
-  it: 421W's y = 0 is the map's ground at its door on the upper level, and the map's ground under it lies up to 6.1 m
-  lower toward the south-west, so its footprint stands above the drawn ground on about 73% of its cells, by up to
-  6.1 m, where block 421W's showed on 39%, by up to 4.3 m.
+- **Architecture - West is seen from its north only.** One photograph, from the paved upper level to its north, sees the
+  slab's north-east faces and its tower. Its faces turned away, which no photograph shows, are drawn plainly. The
+  storeys' height, the parapets and the bands of windows are estimated with the photograph as a reference; the storeys'
+  edges stepping out on its north-east faces, the louvres' slats, the deep eave's soffit, the doors' storey's columns,
+  the tower's flues, the dormers of its set-back part and the lower parts before that part are not drawn. Its entrance
+  is not known from a record: its door is set before the glazed doors the photograph shows, on the paved upper level,
+  where the map's ground lies 4.8 m under the LiDAR's. Its south-east end, where it joins Architecture - East, is left
+  to that building's model (#140): the slab's model ends there on a slant. Block 421W is 62.3% under the model: its ring
+  takes in that end, and parts beyond the roofs. While a building beside it is open, its neighbours sink to footprints,
+  a landmark about its own y = 0 and a block about its base (at most 4 m above the lowest ground under it): 421W's y = 0
+  is the map's ground at its door on the upper level, and the map's ground under it falls toward its south-east end, up
+  to 6.1 m lower, so its footprint stands above the drawn ground on about 73% of its cells, by up to 6.1 m, where block
+  421W's showed on 39%, by up to 4.3 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
