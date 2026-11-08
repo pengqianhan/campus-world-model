@@ -1,14 +1,32 @@
 // Architecture - West (421W; parts/common.js, MEASURED), drawn in its own frame (u along the slab, w across it).
 // Round 0: each part a block at the LiDAR's plan and height, walls down to FOOT: the slab to its eave, its roof the
 // lowest of its measured planes in convex pieces, the flat roof on the south-west side, the tower out of the roof,
-// and the two lower blocks to the north-west. Parts that meet run into each other, so that no two faces of different
-// materials lie in one plane.
+// and the two lower blocks to the north-west. Round 1's faces: on the north-east faces the photograph shows a louvred
+// parapet and a band of windows on each floor, the slab's doors' storey glazed. Parts that meet run into each other,
+// so that no two faces of different materials lie in one plane.
 import { FOOT, MEASURED, plan, rect } from "./common.js";
 import { block, prism, slopedPrism } from "./shapes.js";
 
-const M = MEASURED, WALL = "claddingPale", ROOF = "roofGrey", TOWER = "screenGrey";
+const M = MEASURED, WALL = "claddingPale", ROOF = "roofGrey", TOWER = "screenGrey", GLASS = "glass", LOUVRE = "plain";
 
 const h = (p, [u, w]) => p.a + p.b * u + p.c * w;
+
+/** The floors' levels from the first at or above `from` to the last below `to`, every M.floors.every. */
+function levels(from, to) {
+  const F = M.floors, out = [];
+  for (let y = F.first + Math.ceil((from - F.first) / F.every - 1e-6) * F.every; y < to; y += F.every) out.push(y);
+  return out;
+}
+
+/** On each floor from `from` up, below `top`, of the north-east face at w `wf` from u0 to u1: the louvred parapet
+ * and over it the band of windows, standing out of the face, the windows' head no higher than 0.1 m under `top`. */
+function floorsOn(b, [u0, u1], wf, from, top) {
+  const P = M.parapet, W = M.windows;
+  for (const y of levels(from, top - P.height)) {
+    prism(b, rect([u0, u1], [wf - P.out, wf + 0.01]), y, y + P.height, LOUVRE);
+    prism(b, rect([u0, u1], [wf - W.out, wf + 0.01]), y + W.sill, Math.min(y + W.head, top - 0.1), GLASS);
+  }
+}
 
 /** The part of the convex polygon [[u, w], ...] where f([u, w]) <= 0, f linear (Sutherland-Hodgman). */
 function clip(poly, f) {
@@ -59,4 +77,11 @@ export function building(b) {
   // the lower blocks to the north-west, each from 0.1 m inside the one before it and 5 cm inside the slab's side
   block(b, rect([M.low.u[0] - 0.1, M.low.u[1]], [M.low.w[0], M.low.w[1] - 0.05]), FOOT, M.low.top, WALL, ROOF);
   block(b, rect([M.lower.u[0] - 0.1, M.lower.u[1]], M.lower.w), FOOT, M.lower.top, WALL, ROOF);
+  // the north-east faces the photograph shows: the slab's, its doors' storey glazed and a floor on each storey above
+  // it; its set-back part's, from the upper level's storey; the lower block's, above the doors' storey
+  const F = M.floors, Dr = M.doors;
+  floorsOn(b, [-2.45, 13.95], P[0][1], F.doors + F.every, S.top);
+  prism(b, rect([-2.45, 13.95], [P[0][1] - M.windows.out, P[0][1] + 0.01]), F.doors + Dr.sill, F.doors + Dr.head, GLASS);
+  floorsOn(b, [P[3][0] + 0.05, -2.55], P[3][1], F.doors, S.top);
+  floorsOn(b, [M.low.u[0] + 0.05, M.low.u[1] - 0.05], M.low.w[0], F.doors + F.every, M.low.top);
 }

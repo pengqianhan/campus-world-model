@@ -52,6 +52,15 @@ export const MEASURED = {
   // 21.9, w -9.0 to 0 at 15.9 m (p50 15.92; the ring takes in its first 3.5 m).
   low: { u: [14, 18.8], w: [-9.4, 7.9], top: 17.43 },
   lower: { u: [18.8, 21.9], w: [-9.0, 0], top: 15.9 },
+  // The faces (round 1; the photograph as a reference for the look, no size measured from it), all estimated: floors
+  // every 3.55 m in step with 421E's (its terrace's floor at 39.6 m: here 2.77 m, and 6.32 m at the paved upper
+  // level, 43.15 m, where the north-east face's doors are; the flat roof's 20.52 m is the sixth); on each floor of
+  // the north-east faces above the doors' storey a pale louvred parapet before a band of windows; the doors' storey
+  // glazed.
+  floors: { first: 2.77, every: 3.55, doors: 6.32 },
+  parapet: { height: 1.1, out: 0.08 },
+  windows: { sill: 1.25, head: 2.65, out: 0.03 },
+  doors: { sill: 0.1, head: 3.2 },
 };
 
 /** The point [x, z] of the view frame at u and w in the building's frame. */

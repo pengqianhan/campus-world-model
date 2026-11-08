@@ -24,8 +24,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
-- `parts/building.js` (every part, round 0), `parts/shapes.js` (the shapes the parts share, as 421E's), `model.js`:
-  the lead.
+- `parts/building.js` (every part, rounds 0 and 1), `parts/shapes.js` (the shapes the parts share, as 421E's),
+  `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 217 triangles, 3 draw
@@ -40,6 +40,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   model of 421E stands, and lower parts before the set-back face, which round 0 does not draw), 82% of the cells
   within 0.5 m (p10/p50/p90 -0.32/-0.01/0.55), the highest point 31.35 m against 31.38; block 421W under the model
   62.3%, 421E 2.8%.
+- Round 1, the faces (2026-11-08), all estimated: on the three north-east faces the photograph shows (the slab's,
+  its set-back part's and the lower block's), floors every 3.55 m in step with 421E's: on each a louvred parapet
+  (the kit's `plain`) and a band of windows (`glass`), and the slab's doors' storey at the upper level glazed; the
+  faces the photograph does not show plain. 445 triangles, 5 draw calls. The silhouette as round 0; the building's
+  luma median 240 against 167: the viewer's ground is the frame's (36.83 m), 6.6 m under the paved level the
+  photograph stands on, so the plain walls below that level count as the building's until step 7 sets the door's
+  ground.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
