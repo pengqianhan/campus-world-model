@@ -17,11 +17,11 @@ are shared by every landmark: [`../README.md`](../README.md).
 
 ## The frame
 
-`config/auckland-bioengineering-house.json`, `frame`: x west (the axis, the bearing of the tower's north and south
-walls, and x is minus it); y up from 59.75 m NZVD2016, the LiDAR's ground at `door`, on the landing at the top of
-the steps from Symonds Street; z north; the centre at x = z = 0. The site falls about 20 m across the crop, steeply
-toward the east, where the ground beside the lower building lies about 18 m below the street. `parts/common.js` gives
-the building a frame of its own: `u` east (minus x) and `w` north (z).
+`config/auckland-bioengineering-house.json`, `frame`: x west (the axis, the bearing of most of its walls, within 1 to 3
+degrees of the tower's, and x is minus it); y up from 59.75 m NZVD2016, the LiDAR's ground at `door`, on the landing at
+the top of the steps from Symonds Street; z north; the centre at x = z = 0. The site falls about 20 m across the crop,
+steeply toward the east, where the ground beside the lower building lies about 18 m below the street. `parts/common.js`
+gives the building a frame of its own: `u` east (minus x) and `w` north (z).
 
 Every height in `parts/common.js` was measured before the door was set, above 57.96 m, the median ground in the crop
 box; `H` moves each on to the door's ground, 1.79 m higher. The frame's thresholds in the config were lowered by the
@@ -31,7 +31,7 @@ same 1.79 m, so the measured frame is the one the model was drawn in (0.000 m, 0
 
 - No other landmark's outline comes within 2 m of its, so it stands alone on the map's ground at its door
   (`../README.md`, "Placement").
-- No other block of the campus map lies under the model, so `building.also` is empty. Block 439 itself is 91.0% under
+- No other block of the campus map lies under the model, so `building.also` is empty. Block 439 itself is 91.1% under
   it.
 
 ## The reference
@@ -105,8 +105,10 @@ asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 32 stand-
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door, which lies 6.57 m under the LiDAR's there.
   Its walls go down to FOOT, 20.29 m below the door's ground, where the LiDAR's ground falls to the east; the foot check
-  of `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes. 280
-  triangles, 4 draw calls.
+  of `tests/landmarks.test.ts`, which tests each material's lowest points against the map's ground, passes. 288
+  triangles, 4 draw calls (280 until the review closed a shaft of 0.55 square metres between the lower building and the
+  tower's north-east cut; since then the top view's footprint IoU is 0.922, 81% of the 4,550 cells within 0.5 m, and
+  block 439 91.1% under the model).
 - **While a building is open** its neighbours sink to footprints: the site squashes a landmark about its own y = 0 and a
   block about its base, at most 4 m above the lowest ground under it (`squash` in `src/scene/landmarks.ts`, `applyFocus`
   and `baseOf` in `src/scene/CampusScene.ts`). 439's y = 0 is the map's ground at its door on Symonds Street, and under

@@ -31,12 +31,13 @@ export const MEASURED = {
   plant: { u: [-11.3, -2.3], w: [-7.8, 5.8], top: H(43.52) },
   // The lower building round the tower's north and east sides, its flat roof at 8.54 m (the returns' p50 from u 7 to
   // 18), its plan the returns' edge and the ring's on the LiDAR (its north-west side from u -8.2 at the tower to -5 at
-  // w 18.6), run 2 to 3 m into the tower; on it, along the tower's east face, a strip at 11.28 m (u 4.2 to 6.8, w -12.5
-  // to 15.5), and before the tower's north face a part at 11.3 m (u -7.7 to -3.9, w 11.5 to 16.6; run 0.5 m into the
-  // tower, its west side kept inside the lower building's).
+  // w 18.6), run into the tower: 2 to 3 m on its east side, and by the north-east cut along the cut, 0.4 m inside it.
+  // On it, along the tower's east face, a strip at 11.28 m (u 4.2 to 6.8, w -12.5 to 15.5), and before the tower's
+  // north face a part at 11.3 m (u -7.7 to -3.9, w 11.5 to 16.6; its south side moved 0.5 m, to w 11.0, 4 to 24 cm into
+  // the tower, whose north face slants; its west side kept inside the lower building's).
   low: {
     plan: [[-8.2, 10.9], [-5.0, 18.6], [-5.0, 19.8], [9.5, 19.8], [17.6, 13.0], [18.8, -7.0], [12.6, -15.0],
-      [2.0, -15.8], [2.0, 10.9]],
+      [2.0, -15.8], [2.0, 9.4], [0.4, 10.9]],
     roof: H(8.54),
   },
   strip: { u: [4.2, 6.8], w: [-12.5, 15.5], top: H(11.28) },

@@ -63,7 +63,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   check of `tests/landmarks.test.ts` passes: every material's lowest points are no more than 0.25 m above the map's
   ground. No new roof, pane or opening material: `glass` is glass and `roofGrey` a roof in `LIGHT_ROLE` already, and
   `claddingPale` and `concrete` are walls. The card's `estimated`: with a photograph as a reference, the second fin's
-  place; the parapet; the faces no photograph shows. 280 triangles, 4 draw calls.
+  place; the parapet; the faces no photograph shows. 288 triangles, 4 draw calls (below).
+- The review (2026-11-08): the lower building's corner by the tower's north-east cut runs along the cut, 0.4 m
+  inside it, where a shaft of 0.55 m² stood open between the two. 288 triangles, 4 draw calls; the top view:
+  footprint IoU 0.922, 81% of the 4,550 cells within 0.5 m (p10/p50/p90 -2.01/0.0/0.09), block 439 under the
+  model 91.1%; the silhouette and the luma as at step 7.
 - Not drawn: the sloping glazed roof over the entrance (the LiDAR has no returns from it, so neither its height nor
   its slope is known) and the recess stepped into the north face's west end and the north-west cut over several
   floors (the photograph shows its dark soffits; the LiDAR, which sees the roof, gives neither its plan nor how deep
