@@ -1,0 +1,332 @@
+{
+ "name": "architecture-east",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference; the storeys' height, and on each floor of the main block's north faces a louvred parapet and a band of windows, and round the wing a band of windows; the face in dark cladding under the main block's north eave and the dormers out of it; and the faces no photograph shows, drawn plainly or after the ones it shows",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from a paved deck about 4 m above the raised terrace to the building's north-west, about 50 m from its tall tower, through a lens of about 53 degrees across; its camera is fitted to the two towers' top edges and three of their corners, with the principal point at the centre.",
+ "building": {
+  "id": "421E",
+  "also": [],
+  "title": "Architecture - East (421E), University of Auckland",
+  "note": "outline: building 421E's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 421E by its id.",
+  "outline": [
+   [
+    9.2,
+    -210.9
+   ],
+   [
+    5.7,
+    -208.0
+   ],
+   [
+    7.8,
+    -207.8
+   ],
+   [
+    10.1,
+    -209.7
+   ],
+   [
+    10.6,
+    -209.1
+   ],
+   [
+    11.0,
+    -209.4
+   ],
+   [
+    16.5,
+    -208.9
+   ],
+   [
+    17.8,
+    -207.3
+   ],
+   [
+    20.7,
+    -206.9
+   ],
+   [
+    21.1,
+    -206.4
+   ],
+   [
+    28.2,
+    -205.7
+   ],
+   [
+    29.7,
+    -204.0
+   ],
+   [
+    38.2,
+    -203.0
+   ],
+   [
+    39.7,
+    -204.2
+   ],
+   [
+    48.7,
+    -203.3
+   ],
+   [
+    51.3,
+    -200.2
+   ],
+   [
+    51.3,
+    -198.5
+   ],
+   [
+    60.1,
+    -187.9
+   ],
+   [
+    63.4,
+    -187.2
+   ],
+   [
+    87.3,
+    -206.6
+   ],
+   [
+    63.0,
+    -235.7
+   ],
+   [
+    50.8,
+    -236.1
+   ],
+   [
+    48.9,
+    -237.1
+   ],
+   [
+    46.8,
+    -237.6
+   ],
+   [
+    44.6,
+    -237.6
+   ],
+   [
+    42.5,
+    -237.0
+   ],
+   [
+    40.6,
+    -235.9
+   ],
+   [
+    39.1,
+    -234.3
+   ],
+   [
+    38.0,
+    -232.5
+   ],
+   [
+    37.5,
+    -230.4
+   ],
+   [
+    37.4,
+    -228.2
+   ],
+   [
+    38.0,
+    -226.1
+   ],
+   [
+    39.0,
+    -224.2
+   ],
+   [
+    41.7,
+    -221.9
+   ],
+   [
+    39.9,
+    -222.1
+   ],
+   [
+    39.2,
+    -221.5
+   ],
+   [
+    38.6,
+    -221.5
+   ],
+   [
+    37.9,
+    -222.3
+   ],
+   [
+    34.1,
+    -222.7
+   ],
+   [
+    33.3,
+    -222.0
+   ],
+   [
+    32.8,
+    -222.1
+   ],
+   [
+    30.1,
+    -225.3
+   ],
+   [
+    23.4,
+    -226.0
+   ],
+   [
+    22.9,
+    -226.5
+   ],
+   [
+    19.1,
+    -226.9
+   ],
+   [
+    18.6,
+    -226.5
+   ],
+   [
+    17.6,
+    -226.6
+   ],
+   [
+    17.1,
+    -227.1
+   ],
+   [
+    13.3,
+    -227.5
+   ],
+   [
+    12.7,
+    -227.1
+   ],
+   [
+    11.8,
+    -227.2
+   ],
+   [
+    10.5,
+    -228.7
+   ],
+   [
+    4.9,
+    -229.3
+   ],
+   [
+    0.4,
+    -225.6
+   ],
+   [
+    0.1,
+    -223.5
+   ],
+   [
+    -0.4,
+    -223.0
+   ],
+   [
+    -1.4,
+    -223.1
+   ],
+   [
+    -4.3,
+    -220.8
+   ],
+   [
+    -4.6,
+    -219.5
+   ],
+   [
+    1.1,
+    -212.6
+   ],
+   [
+    3.3,
+    -214.4
+   ],
+   [
+    7.4,
+    -209.4
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 39.56,
+ "door": {
+  "x": 13.12,
+  "z": 20.15,
+  "note": "the entrance is not known (the campus map records no lobby or entrance in 421E, and no street passes it: OpenStreetMap has only footways, steps and a service lane round it, with the Grafton Gully motorway to the east), so the door is on the raised terrace before the main block's north face, in the middle of the stretch where the terrace meets the face (u 9 to 37.5 in frame E), 2.5 m out from it (u 23, w 7). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 39.534/39.558/39.578 m; along the face the terrace lies at 39.56 to 40.01 m (p50 per 3 m, w 5 to 12)"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": -4.96,
+  "tower_above": -4.96,
+  "spine_below": 32.04,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    35.217964935562875,
+    -213.89876702575648
+   ],
+   "axis": [
+    0.694251070847173,
+    0.7197329022821964
+   ],
+   "tolerance_m": 0.05
+  },
+  "thresholds_note": "min_above, tower_above and spine_below were 3, 3 and 40 m above the provisional ground (31.6 m); lowered by 7.96 m with the ground set at the door, so that they pick the same points and the measured frame stays the expected one"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-07); the provisional ground was 31.6 m, the median LiDAR ground in the crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "light": {
+  "sunaz": 300,
+  "sunel": 45,
+  "exposure": 0.5,
+  "note": "estimated: the photograph is taken on a clear afternoon with the sun to the north-west, behind the camera, which lights the faces it shows; so the viewer's sun stands at 300 deg round and 45 deg up; the exposure from the building's luma: p10/p50/p90 172/174/176 at 0.5 against the photograph's 92/175/222 (204 at 0.7, 242 at the default 1.0), when the faces were plain (round 1's shape); with round 1's faces, 34/174/215"
+ }
+}
