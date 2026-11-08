@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from a paved level to its north, and its card
   says what is estimated: some heights, the storeys, the parapets and the windows, the glazed storey of its doors, and
   the faces no photograph shows. On the map it has the map's colours; from a walker's height on a computer with a
-  graphics card, its own concrete, glass and cladding (#PR).
+  graphics card, its own concrete, glass and cladding (#141).
 
 ## 2026-11-07
 
