@@ -1,6 +1,8 @@
 {
  "name": "auckland-bioengineering-house",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from Symonds Street to the building's north-west, about 32 m from the tower's north face, looking up 24 degrees through a lens of about 46 degrees across; its camera is fitted to the tower's top edges and two corners and to three upright edges of its stone fins and its outline, with the principal point at the centre.",
  "building": {
   "id": "439",
   "also": [],
