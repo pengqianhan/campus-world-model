@@ -180,7 +180,6 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   // or less: about three minutes there, the whole of the usual time, so it gets three times that.
   test.slow();
   await open(page, "?light=day&time=preview&date=2026-03-20&t=15:00");
-  await openStrip(page);
   await page.locator("#walk-start").click();
   await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
   // The walker's panel waits folded, as a small button under the top bar, so the walk has the screen.
@@ -298,7 +297,6 @@ test("phone on its side: the map keeps the screen, and a walk puts the stick und
   expect(toggle.y + toggle.height).toBeGreaterThan(390 - 30);
   await shot(page, "06-mobile-landscape");
 
-  await openStrip(page);
   await page.locator("#walk-start").click();
   await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
   const panel = page.locator("#walker-panel");
@@ -334,7 +332,6 @@ test("phone on its side: the map keeps the screen, and a walk puts the stick und
 test("phone on its side: in the passage under the Clock Tower East Wing's link, the view from behind still sees the walker", async ({ page }) => {
   await page.setViewportSize({ width: 844, height: 390 });
   await open(page, "?light=day&time=preview&date=2026-03-20&t=15:00");
-  await openStrip(page);
   await page.locator("#walk-start").click();
   await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
   // OpenStreetMap's footway through the passage under 119's link, where the campus map has no ground

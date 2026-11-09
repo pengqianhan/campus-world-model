@@ -61,6 +61,12 @@ A change to what the site does or shows adds its line here, and the README's
   photograph shows. On the map it has the map's colours; from a walker's height
   on a computer with a graphics card, its own concrete, metal and glass (#147).
 
+### Changed
+
+- **"Take a walk" beside the campus's name.** The walk starts from a button of its own in the bottom-left corner,
+  beside the button with the campus's name and as tall, on every school's map, where it was a line inside the
+  campus panel; the panel keeps the term, the campuses and the other worlds (#PR).
+
 ## 2026-11-08
 
 ### Added

@@ -312,7 +312,7 @@ test("the top bar links straight to the source code on GitHub, beside About", as
   await expect(link).toBeVisible();
 });
 
-test("the campus panel starts shut, as a small button with the campus's name, and opens and shuts from there or with Escape", async ({ page }) => {
+test("the campus panel starts shut, as a small button with the campus's name and the walk's beside it, and opens and shuts from there or with Escape", async ({ page }) => {
   await open(page, "?light=day");
   const toggle = page.locator("#status-toggle");
   const strip = page.locator("#status-strip");
@@ -327,12 +327,22 @@ test("the campus panel starts shut, as a small button with the campus's name, an
   expect(box.height).toBeLessThanOrEqual(44);
   expect(box.x).toBeLessThan(30);
   expect(view.height - (box.y + box.height)).toBeLessThan(30);
+  // The walk is a button of its own beside it, on the same line and as tall, not inside the panel.
+  const walk = page.locator("#walk-start");
+  await expect(walk).toBeVisible();
+  await expect(walk).toContainText("Take a walk");
+  const wbox = (await walk.boundingBox())!;
+  expect(wbox.x).toBeGreaterThanOrEqual(box.x + box.width);
+  expect(wbox.x - (box.x + box.width)).toBeLessThan(20);
+  expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
+  expect(wbox.height).toBeLessThanOrEqual(44);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
-  for (const part of [".campus-tabs", "#walk-start", 'a[data-world="tsinghua"]']) await expect(strip.locator(part)).toBeVisible();
+  for (const part of [".campus-tabs", 'a[data-world="tsinghua"]']) await expect(strip.locator(part)).toBeVisible();
+  await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();
   await shot(page, "01-campus-panel-open");
