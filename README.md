@@ -96,6 +96,30 @@ It is built to answer two questions a student actually has:
   a slab of ten storeys with plant and a round tank on its roof, and six tall stacks behind it. Its sizes come
   from the LiDAR; it was compared with a photograph, which is not published and with which two heights on its
   face are estimated, and its card says what is estimated.
+
+Everything, with its pull request, is in the [changelog](CHANGELOG.md).
+
+<details>
+<summary><strong>Contents</strong></summary>
+
+- [What you get](#what-you-get)
+- [Run it locally](#run-it-locally)
+- [Walk the campus](#walk-the-campus)
+- [Updating the data snapshot](#updating-the-data-snapshot)
+- [Adding the class timetable](#adding-the-class-timetable)
+- [Adding a language](#adding-a-language)
+- [Porting to another university](#porting-to-another-university)
+- [Contributing](#contributing)
+- [How it is put together](#how-it-is-put-together)
+- [Data sources and licences](#data-sources-and-licences)
+- [Known limitations](#known-limitations)
+- [Inspiration](#inspiration)
+- [Star history](#star-history)
+
+</details>
+
+## What you get
+
 - **A rotatable miniature of every campus on the campus map:** 139 University buildings across the
   City, Grafton and Newmarket campuses, and 55 more at Tai Tokerau, Tai Tonga, Leigh, Waiheke, Ardmore
   and one Grafton building on Carrick Place, each on a base of OpenStreetMap streets, parks, trees and
@@ -614,7 +638,7 @@ render, its windows in dark frames and its roof falling away from the hall. Its 
 the places and heights of the glazing and of the annex's windows and doors are estimated with the photograph as a
 reference. One photograph from the street to its west-south-west, about 27 m from the annex's nearest corner; counted
 inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.86 in it, and the brightness of the
-building is within 2 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.96, and on 98% of
+building is within 2 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.96, and on 100% of
 the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |

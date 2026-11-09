@@ -8,21 +8,37 @@ const WALL = "renderOrange", ROOF = "roofPale";
 /** The roof's height at w. */
 const top = (w) => ANNEX.top[0] + (ANNEX.top[1] - ANNEX.top[0]) * (w - ANNEX.w[0]) / (ANNEX.w[1] - ANNEX.w[0]);
 
-/** The four walls from FOOT to the roof's plane, and the roof. */
+/** The walls round the L from FOOT to the roof's plane, and the roof over its two parts. */
 export function annex(b) {
-  const [u0, u1] = ANNEX.u, [w0, w1] = ANNEX.w;
+  const L = ANNEX.plan;
   const P = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
-  const corners = [[u0, w0], [u1, w0], [u1, w1], [u0, w1]];
   const walls = [];
-  for (let i = 0; i < 4; i++) {
-    const [ua, wa] = corners[i], [ub, wb] = corners[(i + 1) % 4];
+  for (let i = 0; i < L.length; i++) {
+    const [ua, wa] = L[i], [ub, wb] = L[(i + 1) % L.length];
     const a0 = P(ua, wa, FOOT), b0 = P(ub, wb, FOOT), a1 = P(ua, wa, top(wa)), b1 = P(ub, wb, top(wb));
     walls.push([a0, b0, b1], [a0, b1, a1]);
   }
-  const [cx, cz] = at((u0 + u1) / 2, (w0 + w1) / 2);
-  tris(b, walls, WALL, ([x, z]) => [x + (x - cx) * 10, z + (z - cz) * 10]);
-  const r = corners.map(([u, w]) => P(u, w, top(w)));
-  tris(b, [[r[0], r[1], r[2]], [r[0], r[2], r[3]]], ROOF, "up");
+  // each wall faces away from the L's inside: the point 1 m out from its middle, square to it, lies outside the L
+  const inside = ([u, w]) => {  // even-odd, over the plan
+    let c = false;
+    for (let i = 0, j = L.length - 1; i < L.length; j = i++) {
+      const [ui, wi] = L[i], [uj, wj] = L[j];
+      if ((wi > w) !== (wj > w) && u < ui + (w - wi) * (uj - ui) / (wj - wi)) c = !c;
+    }
+    return c;
+  };
+  const out = [];
+  for (let i = 0; i < L.length; i++) {
+    const [ua, wa] = L[i], [ub, wb] = L[(i + 1) % L.length], mu = (ua + ub) / 2, mw = (wa + wb) / 2;
+    const nu = wb - wa, nw = -(ub - ua), len = Math.hypot(nu, nw);
+    const o = inside([mu + nu / len * 0.5, mw + nw / len * 0.5]) ? [mu - nu / len, mw - nw / len] : [mu + nu / len, mw + nw / len];
+    out.push(at(...o));
+  }
+  for (let i = 0; i < L.length; i++) tris(b, walls.slice(2 * i, 2 * i + 2), WALL, () => out[i]);
+  // the roof in two rectangles, the neck's and the wider part's, split along the wider part's inner edge
+  const [n0, n1, n2, n3, n4, n5] = L;
+  const roof = [[n5, n0, [n0[0], n3[1]], n4], [n3, [n0[0], n3[1]], n1, n2]].map((q) => q.map(([u, w]) => P(u, w, top(w))));
+  tris(b, roof.flatMap((r) => [[r[0], r[1], r[2]], [r[0], r[2], r[3]]]), ROOF, "up");
 }
 
 /** The windows and the glazed door on the west-north-west face and the door on the south-south-west face: each a

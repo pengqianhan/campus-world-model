@@ -45,8 +45,9 @@ One photograph from the street west-south-west of the building, about 27 m from 
 (`tools/photo_camera.py`) is fitted to the annex's two corners on its south-south-west face, their tops and feet, and
 the vault's crown on the hall's west-north-west end, with the annex's two corners and the left edge of a pillar before
 the gates as verticals: rms 2.45 px, 1.93 m over the LiDAR's ground, a lens of 71.6 degrees, looking up 6.3 degrees.
-The crown and the annex fit to 1 or 2 px; the hall's end left of the crown stands about 18 px higher in the photograph
-than the model puts it, so sizes read there are not used.
+The crown and the annex's nearest corner fit to 0.6 to 2.3 px, its far corner's foot to 1.6 px and its far corner's top
+to 7.6 px; the hall's end left of the crown stands about 18 px higher in the photograph than the model puts it, so
+sizes read there are not used.
 
 ## The model (`parts/common.js`)
 
@@ -54,8 +55,10 @@ than the model puts it, so sizes read there are not used.
   6.2 m, its two ends up to the vault's arc, and the vault (`roofPale`, near white in the 2023 aerial), the same all
   along, its profile the median of the roof's returns in 1 m strips across it, the two sides averaged: the crown 10.03 m
   over the provisional ground.
-- **The annex** on its south-south-west side, u 9.2 to 21.8 and w 13.0 to 24.6, in orange render (`renderOrange`, a new
-  colour of the kit's paint shader), its roof (`roofPale`, near white in the aerial) a plane falling from 8.5 m where it
+- **The annex** on its south-south-west side, an L as the LiDAR and the campus map's outline have it: a neck from the
+  hall, u 16.3 to 21.8 and w 13.0 to 18.6, and a wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6 (between the
+  wider part and the hall the LiDAR sees the ground), in orange render (`renderOrange`, a new colour of the kit's paint
+  shader), its roof (`roofPale`, near white in the aerial) a plane falling from 8.5 m where it
   meets the hall (over the hall's eave by about 2 m) to 7.05 m at its far side.
 - **The openings** (estimated, from the photograph through its fitted camera): on the hall's west-north-west end a band
   of glazing in dark frames from the ground to 4.4 m, w -7.4 to 9.65, with a pale strip across it from 1.9 to 2.95 m;
@@ -64,14 +67,14 @@ than the model puts it, so sizes read there are not used.
 - **The light**: the photograph is of an overcast day, so the viewer's sun stands behind the building (65 degrees round,
   40 up) and the exposure is 0.65: the building's luma p50 149 against the photograph's 150.
 
-230 triangles in 5 draw calls (`paint`, `roofPale`, `renderOrange`, `glass`, `screenBlack`).
+236 triangles in 5 draw calls (`paint`, `roofPale`, `renderOrange`, `glass`, `screenBlack`).
 
 ## How it compares
 
 - Silhouette IoU 0.329 over the whole view, 0.862 in the model's screen box (where the photograph shows 7.1% sky); the
   building's luma p50 148 against the photograph's 150.
-- Top view (`run.sh building-907 topview`): footprint IoU 0.957 (1,532 m² the LiDAR's, 1,504 the model's, 1,484 both);
-  98% of the 5,888 cells both cover within 0.5 m of the LiDAR's height; the highest point 9.65 m over the door's ground
+- Top view (`run.sh building-907 topview`): footprint IoU 0.963 (1,532 m² the LiDAR's, 1,477 the model's, 1,476 both);
+  100% of the 5,858 cells both cover within 0.5 m of the LiDAR's height; the highest point 9.65 m over the door's ground
   against the LiDAR's 9.75 (p99.9). Block 907 is 89.2% under the model; no other block is near it.
 
 ## On the map (step 7)
