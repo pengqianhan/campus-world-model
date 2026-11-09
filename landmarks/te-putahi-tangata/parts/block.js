@@ -77,7 +77,8 @@ export function northEast(b) {
   const t = 0.15;
   walls(b, NE.plan, FOOT, NE.top - t, (i, y0, y1) => [[NE.pale.includes(i) ? PALE : WALL, y0, y1]]);
   prism(b, plan(NE.plan), NE.top - t, NE.top + 0.01, ROOF);
-  block(b, plan(NE.raised.plan), NE.top - 0.3, NE.raised.top, WALL, ROOF);
+  // the raised part's south-west side stands over the hall's roof, so its walls go down to FOOT
+  block(b, plan(NE.raised.plan), FOOT, NE.raised.top, WALL, ROOF);
 }
 
 export function south(b) {

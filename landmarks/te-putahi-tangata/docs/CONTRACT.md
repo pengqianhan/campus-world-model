@@ -16,10 +16,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers): the hall on the street (u -18.2 to 16.2, w -4.5 to
   40.2), its folded roof's ridges at 19.1 to 19.4 and valleys at 16.9 to 17.2 above 28.33 m, 7.3 m apart, the roof's
   top out to w 42 over the street; the canopy over the entrance at 10.85 (u -0.27 to 6.76); the north-east block
-  (u 16.2 to 37.6, out to w 44.2) at 23.9 to 24.6 with a raised part at 27.0 to 27.5; the long block behind (u -44.5
-  to 34, w -26 to -4.5) at 31.2 to 32.2, with strips 3 m wide at 34.5 to 35 across its middle, raised parts at 37.2 to
-  38 at each end of it, the stair's core at 33.2 to 33.6, the podium at 7.8 to 9 and 12, and a link at 13.5 beside the
-  hall. Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
+  (u 16.2 to 36.75, out to w 43.0) at 23.9 to 24.6 with a raised part at 27.0 to 27.5 (from u 14.6, its wall standing
+  from the hall's roof); the long block behind (u -43.0 to 34, w -26 to -4.5) at 31.2 to 32.2, with strips 2 to 3 m
+  wide at 34.5 to 35 across its middle, raised parts at 37.2 to 38 at each end of it, the stair's core at 33.2 to 33.7
+  (u -15 to -2.5), the podium at 7.6 to 8.0 (its parapets to 9) along its south-east side and round its south-west end,
+  and 12, a low roof at -0.5 and a part at 3 to 4 by its south-west end, and a link at 10.9 and 13.5 beside the hall.
+  Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
 - Walls go down to `FOOT`, 4.5 m under 28.33 m: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9
   on the south-east side.
 
@@ -29,7 +31,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 638 triangles, 5 draw
-  calls.
+  calls; step 8: 648, 5; the review's round 1: 712, 5.
 
 ## Rounds
 - Round 0 (2026-11-09, the lead alone): the plans at the LiDAR's edges and the campus map's ring; the hall's walls,
@@ -45,6 +47,17 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   street), 210 against 201 above the ground line. Top view: footprint IoU 0.874 (of the 511 m² only the model covers,
   most is the hall's roof over its glazing strips and a planted part, which the LiDAR classes as vegetation), 74% of
   16,036 cells within 0.5 m, highest 30.54 against 30.93 over the door's ground; block 201 86.8% under the model.
+- Step 8 (2026-11-09): the hall's roof falling 0.75 m to the back, as the LiDAR's; the tops at the LiDAR's roof levels
+  (their medians, where round 0 took their 95th percentiles); the podium on its roof, not its parapets; the long
+  block's raised parts 0.1 m back from its north edge. 648 triangles. Top view: 0.874, 80% of 16,036 cells within
+  0.5 m. Luma 213 against 203 as the metrics take it, 198 against 209 above the ground line; IoU in the box 0.646.
+- The review's round 1 (2026-11-09): the north-east block's raised part from u 14.6, its wall down from the hall's
+  roof (it overhung the hall by 2.2 m with nothing under it); the north-east block's front and east side at the
+  LiDAR's edges (w 43.0, u 36.75); the stair's core at u -15 to -2.5, to w -33; the long block's south-west end at u
+  -43.0, the podium round it, the low roof at -0.5 and the part at 3.6 beyond it, where a block at 9 stood; the link
+  at 10.9 by the block; the canopy's depth named on the card. 712 triangles, 5 draw calls. Top view: footprint IoU
+  0.896, 80% of 16,031 cells within 0.5 m; block 201 85.1% under the model. Luma and the IoU in the box as at step 8
+  (0.652).
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

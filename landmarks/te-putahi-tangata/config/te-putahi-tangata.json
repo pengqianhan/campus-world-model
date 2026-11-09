@@ -1,7 +1,7 @@
 {
  "name": "te-putahi-tangata",
  "site": true,
- "estimated": "the depth of the folded roof's plates at the front, with a photograph as a reference; the strips across the long block's middle, drawn solid where the LiDAR sees returns both at their top and on the roof under them; and the faces no photograph shows, drawn plainly",
+ "estimated": "the depth of the folded roof's plates at the front and of the canopy over the entrance, with a photograph as a reference; the strips across the long block's middle, drawn solid where the LiDAR sees returns both at their top and on the roof under them; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-west of the hall, about 14 m from its glazed front and 1.1 m above the road, level, through a lens of about 115 degrees across whose principal point is off its centre (the picture cut from a wider one: its verticals are upright); its camera is fitted to the canopy over the entrance (its top, which the LiDAR gives), the foot of the glazed front and the hall's two ends, and an edge of the street (rms 1.77 px). Three plane trees stand between it and the hall, and their leaves hide the sky over the whole roof: the sky mask finds none, so refine has nothing to move the camera by and the silhouette IoU tells nothing",
  "building": {
@@ -225,6 +225,6 @@
   "sunaz": 300.0,
   "sunel": 35.0,
   "exposure": 1.15,
-  "note": "estimated: the photograph's light is soft and bright, the front lit under the trees, so the viewer's sun stands behind the camera, low in the north-west (300 deg round, 35 up); the exposure from the building's luma above the ground line (its median 203 against the photograph's 210 at 1.15; 207 at 1.2, 173 at 1.2 with the sun at 315 and 40 up)"
+  "note": "estimated: the photograph's light is soft and bright, the front lit under the trees, so the viewer's sun stands behind the camera, low in the north-west (300 deg round, 35 up); the exposure from the building's luma above the ground line (its median 198 against the photograph's 209 at 1.15, and 213 against 203 as the metrics take them, the model at any height; in round 0, 207 at 1.2, and 173 at 1.2 with the sun at 315 and 40 up)"
  }
 }

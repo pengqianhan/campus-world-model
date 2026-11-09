@@ -754,11 +754,11 @@ School: on the street a hall whose front is glass from the pavement to its roof,
 and fall across the front, their ridges running back from the street; a canopy over its entrance; at its north-east
 end a taller block clad in pale metal; and behind them, down the slope, a long block whose roofs stand about 25 m over
 the street, with raised strips and parts. Its heights and plans come from the LiDAR; the depth of the folded roof's
-plates at the front is estimated with the photograph as a reference. One photograph from the street to its
-north-west, about 14 m from the glass, through three plane trees whose leaves hide all the sky over the roof: no
+plates at the front and of the canopy are estimated with the photograph as a reference. One photograph from the street
+to its north-west, about 14 m from the glass, through three plane trees whose leaves hide all the sky over the roof: no
 silhouette can be counted against the sky, so the model was checked by laying it over the photograph through the
 camera fitted to it (to 1.8 pixels), and the brightness of the building is within 11 of the photograph's. From above
-its outline covers the LiDAR's with an IoU of 0.87, and on 80% of the cells both cover it is within 0.5 m of the
+its outline covers the LiDAR's with an IoU of 0.90, and on 80% of the cells both cover it is within 0.5 m of the
 LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
@@ -971,7 +971,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of 49 Symonds Street from Symonds Street to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of the white band along its top, its dark base and its windows and its windows' widths and places, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Okareta from the footpath before it | The look its model was compared with while it was drawn, and, as a reference, the places and heights of its windows, its door, its bay's face and its verandah, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 501 of the M&HS Building from the plaza to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of its crown's eave and band, the set-back of its shaft under the crown, the top and floors of the glazed link beside it and its strip of windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of Te Pūtahi Tangata from the street to its north-west | The look its model was compared with while it was drawn, and, as a reference, the depth of its folded roof's plates at the front, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Te Pūtahi Tangata from the street to its north-west | The look its model was compared with while it was drawn, and, as a reference, the depth of its folded roof's plates at the front and of its canopy, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - East from a paved deck above its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1368,18 +1368,18 @@ If you represent the University and would like something changed or removed, ple
   photograph sees the hall's glazed front and the north-east block's corner beside it; the trees hide the roof's top
   and all the sky over it, so its likeness was checked by laying the model over the photograph through the camera
   fitted to it, not by a silhouette counted against the sky. The folded roof's plates are drawn 1.4 m deep at the
-  front, estimated where the glass meets them in the photograph. The long block behind and the north-east block's
-  other faces, which no photograph shows, are drawn plainly; the strips across the long block's middle are drawn
-  solid, where the LiDAR sees returns both at their top and on the roof under them. The glazing's mullions, the
-  cladding's panels, the hall's glazed roof strips and planted part and the things on the roofs are not drawn. Its
-  entrance is not known from a record: its door is set on the plaza before the canopy, where the map's ground lies
-  5.5 m under the LiDAR's. The map's ground falls about 7 m across its site where the LiDAR's falls about 11 m, so
-  from the south-east the long block stands about 4 m less over the drawn ground than over the real one. It touches
-  the Humanities Building and the Music School, but the map's ground at their three doors is off the LiDAR's by
-  amounts 4.26 m apart, so each stands on the map's ground at its own door, as the Clock Tower and its East Wing do.
-  Block 201 is 86.8% under the model. While a building beside it is open, it gives way to block 201, which sinks to
-  a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands above the drawn
-  ground on 70% of its cells, by up to 4.6 m.
+  front, estimated where the glass meets them in the photograph, and the canopy's depth is estimated in it too. The long
+  block behind and the north-east block's other faces, which no photograph shows, are drawn plainly; the strips across
+  the long block's middle are drawn solid, where the LiDAR sees returns both at their top and on the roof under them.
+  The glazing's mullions, the cladding's panels, the hall's glazed roof strips and planted part and the things on the
+  roofs are not drawn. Its entrance is not known from a record: its door is set on the plaza before the canopy, where
+  the map's ground lies 5.5 m under the LiDAR's. The map's ground falls about 7 m across its site where the LiDAR's
+  falls about 11 m, so from the south-east the long block stands about 4 m less over the drawn ground than over the real
+  one. It stands within 2 m of the Humanities Building and the Music School (0.57 and 0.44 m), but the map's ground at
+  their three doors is off the LiDAR's by amounts 4.26 m apart, so each stands on the map's ground at its own door, as
+  the Clock Tower and its East Wing do. Block 201 is 85.1% under the model. While a building beside it is open, it gives
+  way to block 201, which sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that
+  footprint stands above the drawn ground on 70% of its cells, by up to 4.6 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

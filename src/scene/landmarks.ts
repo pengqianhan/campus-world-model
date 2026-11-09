@@ -130,10 +130,11 @@ export interface LandmarkHost {
 
 /**
  * How near, in metres, the outlines of two landmarks drawn from code come for the two to stand on one
- * ground (standHeights). On the site only five pairs come this near, and in each the outlines touch or
- * overlap: the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), the
- * Thomas Building and its Extension (110, 110N), buildings 303 and 303S of the Science Centre, and
- * Architecture - West and Architecture - East (421W, 421E). The nearest two landmarks that do not touch,
+ * ground (standHeights). On the site seven pairs come this near. In five the outlines touch or overlap:
+ * the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), the Thomas
+ * Building and its Extension (110, 110N), buildings 303 and 303S of the Science Centre, and Architecture -
+ * West and Architecture - East (421W, 421E); Te Pūtahi Tangata (201) stands 0.44 m from the Music School
+ * (250) and 0.57 m from the Humanities Building (206). The nearest two landmarks further apart than this,
  * buildings 302 and 303S of the Science Centre, stand 5.6 m apart (the next, 302 and 303, 15 m, and the
  * Kate Edger Information Commons (315) and Old Choral Hall (104), 17 m): each of those can stand on the
  * map's own ground without a step or an overlap between them that a camera could see.

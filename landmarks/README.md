@@ -150,15 +150,16 @@ heights against each other are the LiDAR's and neither shows through the other w
 (`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
 when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
 the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
-models can mend. Seven pairs touch; the nearest two landmarks that do not, buildings 302 and 303S of the
-Science Centre, stand 5.6 m apart. Four pairs share: against the map's ground at its own door 9 Eden
-Crescent stands 0.448 m higher and 15 Eden Crescent 0.448 m lower (a span of 0.90 m), the Thomas
+models can mend. Five pairs touch, and Te Pūtahi Tangata comes within 2 m of two landmarks without touching them
+(0.44 m from the Music School, 0.57 m from the Humanities Building); the nearest two landmarks further apart than
+2 m, buildings 302 and 303S of the Science Centre, stand 5.6 m apart. Four pairs share: against the map's ground at its
+own door 9 Eden Crescent stands 0.448 m higher and 15 Eden Crescent 0.448 m lower (a span of 0.90 m), the Thomas
 Building 0.311 m lower and its Extension 0.311 m higher (0.62 m), building 303 of the Science Centre
 0.892 m higher and building 303S 0.892 m lower (1.78 m), Architecture - West 0.116 m higher and
 Architecture - East 0.116 m lower (0.23 m). The Clock Tower and its East Wing (5.07 m) each stand on the
 map's ground at its own door, as before: at the Clock Tower's door the map's ground is 4.85 m below the
 LiDAR's, at the East Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its
-wing than the LiDAR does. Te Pūtahi Tangata touches the Humanities Building and the Music School, the three in one
+wing than the LiDAR does. Te Pūtahi Tangata and the two it comes near make one
 group: at their doors the map's ground is 5.47 m, 2.61 m and 6.87 m below the LiDAR's, a span of 4.26 m, so each
 stands on the map's ground at its own door. Any limit from 1.79 to 4.25 m gives these groups. Either way a model's walls
 go down below y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so

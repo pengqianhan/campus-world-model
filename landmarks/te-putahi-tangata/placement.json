@@ -24,5 +24,5 @@
   ]
  },
  "ground": 35.5,
- "estimated": "the depth of the folded roof's plates at the front, with a photograph as a reference; the strips across the long block's middle, drawn solid where the LiDAR sees returns both at their top and on the roof under them; and the faces no photograph shows, drawn plainly"
+ "estimated": "the depth of the folded roof's plates at the front and of the canopy over the entrance, with a photograph as a reference; the strips across the long block's middle, drawn solid where the LiDAR sees returns both at their top and on the roof under them; and the faces no photograph shows, drawn plainly"
 }
