@@ -1,7 +1,7 @@
 {
  "name": "mhs-building-505",
- "site": false,
- "estimated": "to be set at step 8",
+ "site": true,
+ "estimated": "the north face's storeys, how far its glazing stands behind its fins and louvres, the louvres' spacing, the ground floor's set-back and its columns, the end bay's windows and their frames, and the east face's glass and its foot, with a photograph as a reference; the atrium's glass roof, drawn as one slope; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the main road north-east of the long block, about 42 m from its north-east corner, looking south-south-west at its north face, through a lens of about 59 degrees across, level, its principal point low and left in the frame (a level picture cut from a wider one: its verticals are upright); a second, smaller picture laid over its bottom right corner is left out (the picks' exclude). Its camera is fitted to the north-east corner's top, the north face's parapet, the east face's top and the high middle of the roof, whose north-east corner shows over the parapet 7 m behind it, held 1.6 m over the LiDAR's ground",
  "building": {

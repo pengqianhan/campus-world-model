@@ -69,7 +69,9 @@ export const END_BAY = {
 export const FRONT = { u: [4.0, 8.7], face: 8.5, band: H(16.15), top: H(17.65) };
 export const STOREY_GLASS = [[5.6, 8.3], [9.5, 12.2], [13.4, 16.1]].map(([a, b]) => [H(a), H(b)]);
 export const LOUVRES = { first: H(5.4), step: 0.975, n: 12, t: 0.06, w: [7.35, 7.85] };
-export const FIN = { half: 0.06, w: [GLAZING, 7.85] };
+// the fins and their frame from just out of the glazing (whose glass stands 0.02 m out of it), so that their backs do
+// not lie in the glass's back
+export const FIN = { half: 0.06, w: [GLAZING + 0.05, 7.85] };
 export const COLUMNS = { u: [53.6, 46.49, 38.23, 29.96, 21.70, 13.44], w: 7.3, r: 0.4 };
 // The east face's glass, from the north-east corner to w -4.3, from 4.4 m to the parapet (the photograph, through its
 // camera: estimated).

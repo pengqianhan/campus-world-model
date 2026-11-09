@@ -14,6 +14,22 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-10
+
+### Added
+
+- **Building 505 of the M&HS Building drawn in detail.** Near the camera the map draws building 505 of the M&HS
+  Building, on the Grafton campus, from code in place of its block: a long block of four storeys over a ground floor
+  set back behind round columns, in white concrete panels; on its north face twelve bays of silver fins and louvres
+  over set-back glazing between a white wall at each end, glass at its north-east corner and a dark band round its cut
+  south-east corner; over the parapet a higher middle of the roof, and at its west end an atrium under a glass roof.
+  Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the main road, and its card says
+  what is estimated: the north face's storeys, how far its glazing stands behind its fins and louvres, the louvres'
+  spacing, the ground floor's set-back and its columns, the end bay's windows and the east face's glass, with the
+  photograph as a reference; the atrium's glass roof, drawn as one slope; and the faces no photograph shows. On the
+  map it has the map's colours; from a walker's height on a computer with a graphics card, its own panels, fins, glass
+  and roofs (#PR).
+
 ## 2026-11-09
 
 ### Added

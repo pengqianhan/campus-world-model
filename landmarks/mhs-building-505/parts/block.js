@@ -52,7 +52,8 @@ export function north(b) {
   const step = (u1 - u0) / BAYS.n;
   for (let k = 0; k <= BAYS.n; k++) {
     const u = u0 + k * step;
-    prism(b, rect([u - FIN.half, u + FIN.half], FIN.w), SOFFIT, BAYS.top, FIN_M);
+    // from just over the soffit, so that the end fins' feet, which run into the white walls, do not lie in theirs
+    prism(b, rect([u - FIN.half, u + FIN.half], FIN.w), SOFFIT + 0.02, BAYS.top, FIN_M);
   }
   for (let k = 0; k < LOUVRES.n; k++) {
     const y = LOUVRES.first + k * LOUVRES.step;

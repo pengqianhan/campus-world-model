@@ -68,6 +68,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   2,683), 93% of the 10,600 cells within 0.5 m; the highest point 24.59 m against the LiDAR's 28.81 (p99.9: 503's
   edge, within the top view's 1.5 m of the outline); block 505 under the model 69.4% (its ring takes in the plaza),
   504 5.9%.
+- The door (2026-11-10): before the glazed entrance the photograph shows in the north face's ground floor, on the
+  plaza 4.1 m out from its glass (the campus map records no lobby or entrance in 505, OpenStreetMap none near it),
+  the LiDAR's ground there 72.16 m (13 returns, p50), 0.03 m over the crop's median: the frame's thresholds lowered by
+  as much, the heights moved on to it through `H`, the photograph's camera refitted on it (the same camera). The map's
+  ground (its 8 m elevation model) at the door lies 1.25 m above the LiDAR's; along the outline it runs from 0.56 m
+  below the door's to 2.48 m above (FOOT -4.53 is under it everywhere). The comparison and the top view as in round 1.
+- On the site (2026-11-10): `site` true, the card's `estimated`; the faces check found the end fins' feet in the white
+  walls' undersides and the fins' backs in the glazing's glass: the fins now start 0.02 m over the soffit and 0.05 m
+  out of the glazing. The foot check passes. Beside an open neighbour the model gives way to block 505, whose
+  footprint stands above the drawn ground on 74% of its cells, by up to 3.12 m. 1,270 triangles, 5 draw calls.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

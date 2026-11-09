@@ -1,6 +1,6 @@
 {
  "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground`, when those differences span 2 m or less (src/scene/landmarks.ts, standHeights). It stands in place of the blocks of `building` and of the buildings in `also`.",
- "site": false,
+ "site": true,
  "building": "505",
  "also": [],
  "centre": [
@@ -24,5 +24,5 @@
   ]
  },
  "ground": 72.16,
- "estimated": "to be set at step 8"
+ "estimated": "the north face's storeys, how far its glazing stands behind its fins and louvres, the louvres' spacing, the ground floor's set-back and its columns, the end bay's windows and their frames, and the east face's glass and its foot, with a photograph as a reference; the atrium's glass roof, drawn as one slope; and the faces no photograph shows, drawn plainly"
 }
