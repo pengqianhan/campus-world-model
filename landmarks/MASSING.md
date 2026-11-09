@@ -254,17 +254,19 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110,
-110N, 119, 206, 250, 260, 302, 303, 303S, 315, 421E, 421W, 801, 802, 804 and 820) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 119, 206, 250, 260, 302, 303, 303S, 315, 421E, 421W, 439, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 31 (40 before 250, the Music School, 315, the Kate Edger
+leaving out the landmarks and `SOON`, it measures 30 (40 before 250, the Music School, 315, the Kate Edger
 Information Commons, 206, the Humanities Building, 302, the Science Centre's tower, 303, building 303 of
 the Science Centre, 303S, building 303S of the Science Centre, 421E, Architecture - East, 421W,
-Architecture - West, and 260, the Sir Owen G Glenn Building, became landmarks; their entries in
-`exclusions.json`, where 250's roof cells covered 77% of its outline, 315's footprint had an IoU of 0.865,
-206's roof cells covered 77% of its outline, 42% of 302's cells, 84% of 303's and 89% of 303S's were
-within 0.5 m, 421E's roof cells covered 60% of its outline, 421W's 72% and 260's 51%, have gone). Places where people live keep their blocks here
+Architecture - West, 439, Auckland Bioengineering House, and 260, the Sir Owen G Glenn Building,
+became landmarks; their entries in `exclusions.json`, where 250's roof cells covered 77% of its
+outline, 315's footprint had an IoU of 0.865, 206's roof cells covered 77% of its outline, 42% of
+302's cells, 84% of 303's and 89% of 303S's were within 0.5 m, 421E's roof cells covered 60% of its
+outline, 421W's 72% and 260's 51%, and 88% of 439's cells were within 0.5 m, have gone). Places
+where people live keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
@@ -423,7 +425,8 @@ building over it.
 The maintainer's goal of 2026-10-28 is every building of the City, Grafton and Newmarket campuses
 drawn at least as a measured massing. `massing.py --campus grafton` and `--campus newmarket` measure
 every building of those campuses by the same steps, limits and decisions as on the City campus (no
-tiers there: no landmark is planned for them yet). They need four more tiles of the same LiDAR, the
+tiers there: no landmark was planned for them then; 907 has since become one, and the generator
+leaves it out as it does every landmark on the site). They need four more tiles of the same LiDAR, the
 1:1000 tiles of sheet BA32 that cover each outline with the 12 m the generator crops round it:
 3803 and 3804 for Grafton, with 3704 that the City campus already uses (93 Grafton Road reaches
 into it), and 3904 and 3905 for Newmarket. `--fetch` fetched them once through `snapshot.ts` on
@@ -500,7 +503,8 @@ neighbour's outline is for the maintainer: keep these strips; or keep 904's bloc
 generator leave the neighbours' outlines out of the layers above the lowest, which would change
 305 on the City campus too.
 
-The other 34 keep their blocks, each in `exclusions.json` with its reason:
+The other 34 kept their blocks then, each in `exclusions.json` with its reason (33 now: 907, Building
+907, has since become a landmark, and its entry has gone):
 
 - **By decision 6** (seven): Grafton Hall's 644, 645 and 646 and Building 523 by their residential
   floors; by hand 621 Grafton Hall Residences, by its name, and 643 Grafton Hall Block A, a block of
@@ -519,7 +523,7 @@ The other 34 keep their blocks, each in `exclusions.json` with its reason:
   628 (crowns 11%, ground 8%) and 629 (ground 19%) take in open ground or trees. 623's low side
   stands under 2.5 m above the median ground round it, which falls 3.6 m across the site (24% of
   its cells).
-- **Below the top-view limits** (13), from their top views (`measured/out/<id>.png`):
+- **Below the top-view limits** (13; 12 now, 907 a landmark), from their top views (`measured/out/<id>.png`):
   - Outlines that take in open ground the model roofs: 503 (a strip 2 to 3 m wide along its north
     side, where the LiDAR sees the ground), 507 (a court on its west side, under scattered points at
     about 17 m that the LiDAR sees the ground through: an open or glazed roof), 907 (a wing of
@@ -614,7 +618,8 @@ strip lies in (see "The third round"): the strip now lies on their measured roof
 of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
 shows in patches where it stood above their 14.4 m blocks before.
 
-**The other 30 keep their blocks** (31 then: 110, among them, is now a landmark), from their top views
+**The other 24 keep their blocks** (31 then: 110, 302, 303, 303S, 315, 439 and 907, among them, are now landmarks),
+from their top views
 (`measured/out/<id>-forms.png`):
 
 - Several ridges whose heights now fit, but whose footprint does not: 212 (footprint IoU 0.860,
@@ -632,10 +637,12 @@ shows in patches where it stood above their 14.4 m blocks before.
   each of their layers has one face at most.
 - Low pitches whose heights now fit: 274 (0.858, 99%) and 803 (0.864, 97%); their footprints
   differ from their outlines, as before.
-- The other reasons (18): as before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
-  from 42% to 77%), and none over the limits.
+- The other reasons (12; 18 then, 302, 303, 303S, 315, 439 and 907 among them, now landmarks): as
+  before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
+  from 42% to 77%), and none over the limits. 439 Auckland Bioengineering House and 907 Building 907 are now
+  landmarks, drawn in place of their blocks, and have no entry in `exclusions.json`.
 
-Each of the 30 keeps its reason in `exclusions.json`. 26 of them also give the numbers of the
+Each of the 24 keeps its reason in `exclusions.json`. 20 of them also give the numbers of the
 check with the new forms (`measured.forms`); 132, 509, 910 and 911 do not, as no new form fits
 them.
 
