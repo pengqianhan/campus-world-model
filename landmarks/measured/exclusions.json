@@ -806,23 +806,6 @@
     "open_below": 0.0
    }
   },
-  "260": {
-   "name": "Sir Owen G Glenn Building OGGB",
-   "reason": "roof cells cover 51% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 11156.1,
-    "ground": {
-     "p5": 12.09,
-     "p50": 24.74,
-     "p95": 30.93,
-     "zero": 11.64
-    },
-    "roof_inside_m2": 5662.8,
-    "cover": 0.507,
-    "vegetation": 0.108,
-    "open_below": 0.157
-   }
-  },
   "273": {
    "name": "Fale - Office Building",
    "reason": "roof cells cover 72% of the outline (limit 85%)",
@@ -1305,61 +1288,6 @@
      "highest_m": {
       "model": 17.09,
       "lidar": 17.61
-     }
-    }
-   }
-  },
-  "439": {
-   "name": "Auckland Bioengineering House",
-   "reason": "top-view check: footprint IoU 0.910 (limit 0.9), 88% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 10.2 degrees, over 71 m2; several faces: 2 mono-pitches over 71 m2; a low pitch: mono, 4.2 degrees, over 18 m2): footprint IoU 0.910, 88% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 1266.6,
-    "ground": {
-     "p5": 47.92,
-     "p50": 57.22,
-     "p95": 59.62,
-     "zero": 41.4
-    },
-    "roof_inside_m2": 1142.0,
-    "cover": 0.902,
-    "vegetation": 0.069,
-    "open_below": 0.13,
-    "not_drawn_m2": 46.8,
-    "check": {
-     "iou": 0.91,
-     "lidar_m2": 1191.0,
-     "model_m2": 1288.0,
-     "within_0.5m": 0.884,
-     "model_minus_lidar_m": {
-      "p10": -0.46,
-      "p50": -0.02,
-      "p90": 0.06
-     },
-     "highest_m": {
-      "model": 60.05,
-      "lidar": 82.74
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: hip, 10.2 degrees, over 71 m2",
-      "several faces: 2 mono-pitches over 71 m2",
-      "a low pitch: mono, 4.2 degrees, over 18 m2"
-     ],
-     "check": {
-      "iou": 0.91,
-      "lidar_m2": 1191.0,
-      "model_m2": 1288.0,
-      "within_0.5m": 0.88,
-      "model_minus_lidar_m": {
-       "p10": -0.48,
-       "p50": -0.02,
-       "p90": 0.05
-      },
-      "highest_m": {
-       "model": 60.05,
-       "lidar": 82.74
-      }
      }
     }
    }
@@ -1981,23 +1909,6 @@
     }
    }
   },
-  "620": {
-   "name": "49 Symonds Street",
-   "reason": "roof cells cover 53% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 2961.8,
-    "ground": {
-     "p5": 54.92,
-     "p50": 57.0,
-     "p95": 58.63,
-     "zero": 54.41
-    },
-    "roof_inside_m2": 1567.0,
-    "cover": 0.529,
-    "vegetation": 0.112,
-    "open_below": 0.101
-   }
-  },
   "621": {
    "name": "Grafton Hall Residences",
    "reason": "decision 6, a place where people live (Grafton Hall Residences by its name, though its floors are marked unmapped): kept until the maintainer decides",
@@ -2491,59 +2402,6 @@
     "cover": 0.724,
     "vegetation": 0.146,
     "open_below": 0.217
-   }
-  },
-  "907": {
-   "name": "Building 907",
-   "reason": "top-view check: footprint IoU 0.859 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 1378 m2): footprint IoU 0.872, 77% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 1623.6,
-    "ground": {
-     "p5": 52.22,
-     "p50": 53.2,
-     "p95": 53.68,
-     "zero": 52.15
-    },
-    "roof_inside_m2": 1449.0,
-    "cover": 0.893,
-    "vegetation": 0.007,
-    "open_below": 0.047,
-    "not_drawn_m2": 6.5,
-    "check": {
-     "iou": 0.859,
-     "lidar_m2": 1517.2,
-     "model_m2": 1622.0,
-     "within_0.5m": 0.763,
-     "model_minus_lidar_m": {
-      "p10": -0.19,
-      "p50": 0.05,
-      "p90": 0.67
-     },
-     "highest_m": {
-      "model": 12.16,
-      "lidar": 12.6
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 2 mono-pitches over 1378 m2"
-     ],
-     "check": {
-      "iou": 0.872,
-      "lidar_m2": 1517.2,
-      "model_m2": 1646.0,
-      "within_0.5m": 0.768,
-      "model_minus_lidar_m": {
-       "p10": -0.17,
-       "p50": 0.08,
-       "p90": 0.63
-      },
-      "highest_m": {
-       "model": 12.14,
-       "lidar": 12.6
-      }
-     }
-    }
    }
   },
   "908": {

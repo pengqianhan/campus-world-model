@@ -18,6 +18,31 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Building 907 drawn in detail.** Near the camera the map draws Building 907, on the Newmarket campus, from code in
+  place of its block: a hall under a shallow barrel vault in white metal cladding, a band of glazing at the foot of
+  its end toward the street, and beside it an annex of two storeys in orange render, its windows in dark frames and its
+  roof falling away from the hall. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the
+  street to its west-south-west, and its card says what is estimated: some sizes, with the photograph as a reference
+  (the places and heights of the glazing and of the annex's windows and doors), and the faces no photograph shows.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
+  render and glass (#148).
+- **The Sir Owen G Glenn Building drawn in detail.** Near the camera the map draws the Sir Owen G Glenn Building
+  (260) from code in place of its block: a curved wing of glass, white spandrels and bands of louvres with a crown
+  of louvres along its top, a Y of three arms round a raised plaza with a sloping canopy in its curve and a top
+  storey along its west side, a lower west wing, a lower building on the plaza's north-east side, and the deck of
+  floors under the plaza. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the
+  plaza, and its card says what is estimated: some heights, with the photograph as a reference, the crown's width,
+  the top of one strip the LiDAR does not see, and the faces no photograph shows. On the map it has the map's
+  colours; from a walker's height on a computer with a graphics card, its own glass, louvres and cladding (#144).
+- **49 Symonds Street drawn in detail.** Near the camera the map draws 49 Symonds Street (620), on Symonds Street,
+  from code in place of its block: an office tower of about thirteen storeys whose corners step back, its bays under
+  a gable in the middle of its faces in pale panels, each with a tall window arched at its top, its steps in blue
+  glass, a white band along its top and a mansard on its roof; a podium in dark stone at its foot with a pointed
+  gable over its entrance, and lower buildings behind it. Its sizes come from the LINZ 2024 LiDAR; it was compared
+  with a photograph from Symonds Street, and its card says what is estimated: some heights and sizes, with the
+  photograph as a reference, the parapet's width, the gables' depth and the canopy's thickness, and the faces no
+  photograph shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
+  its own glass, panels and stone (#145).
 - **Okareta drawn in detail.** Near the camera the map draws Okareta (215), beside Symonds Street, from code in
   place of its block: a villa of two storeys of the 1880s, rendered and painted a warm yellow ochre under hipped
   roofs of grey iron, with a verandah across the left of its front, a canted bay of two storeys on the right and
@@ -31,6 +56,13 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Auckland Bioengineering House drawn in detail.** Near the camera the map draws Auckland Bioengineering House
+  (439), on Symonds Street, from code in place of its block: a tower clad all round in glass, its plan a rectangle
+  with its corners cut, two stone fins on its north face rising above its top and a plant room on its roof, with a
+  lower building round its north and east sides. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from Symonds Street, and its card says what is estimated: the second stone fin's place (with the
+  photograph as a reference), the tower's parapet, and the faces no photograph shows. On the map it has the map's
+  colours; from a walker's height on a computer with a graphics card, its own glass, stone and cladding (#143).
 - **Architecture - West drawn in detail.** Near the camera the map draws Architecture - West (421W), north-west of
   Architecture - East, from code in place of its block: a slab in pale concrete with a pale louvred parapet and a band
   of windows on each floor of its north-east faces above its glazed storey of doors, under a grey hipped roof; a tower

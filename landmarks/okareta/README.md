@@ -105,7 +105,8 @@ the luma median 130 against the photograph's 126.
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 215. 215's entry in
 `landmarks/measured/exclusions.json` (the generator's massing of it failed the top-view check: its footprint had an
 IoU of 0.857, and 76% of its cells were within 0.5 m, under its roofs of several ridges and the trees over them) has
-gone; `MASSING.md` lists 215 among the landmarks and counts 31 stand-ins measured (with 421E's gone too).
+gone; `MASSING.md` lists 215 among the landmarks and counts 28 stand-ins measured (with 421E's, 439's,
+260's and 620's gone too).
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 4.17 m under the
   door's ground, below the map's ground under the whole plan: the foot check of `tests/landmarks.test.ts` passes.

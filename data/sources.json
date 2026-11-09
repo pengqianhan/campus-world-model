@@ -34,6 +34,14 @@
       "source": "linz-aerial"
     },
     {
+      "file": "landmarks/aerial/auckland-central_2023_0.06m/BA32_2000_2003.tiff",
+      "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_2003.tiff",
+      "fetchedAt": "2026-11-08T23:50:13.384Z",
+      "bytes": 607846068,
+      "sha256": "68302ef1040fe865161b13a21e74160537baae80b5b6372e141f6988f152b8f9",
+      "source": "linz-aerial"
+    },
+    {
       "file": "landmarks/lidar/NZ24_Auckland/CL2_BA32_2024_1000_3603.laz",
       "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_3603.laz",
       "fetchedAt": "2026-10-21T11:51:41.969Z",
@@ -2338,19 +2346,19 @@
       "source": "streetview"
     },
     {
-      "file": "landmarks/streetview/metadata/S1VuwnIAnOKNxbxUi8dhdw.json",
-      "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=S1VuwnIAnOKNxbxUi8dhdw",
-      "fetchedAt": "2026-10-21T22:04:39.842Z",
-      "bytes": 1548,
-      "sha256": "f4fb9adb9e5516c57db6b7a99905b16c82454b7feab6a87541720cfdb53257f7",
-      "source": "streetview"
-    },
-    {
       "file": "landmarks/streetview/metadata/S_C83uV6erL3A0gsWU2LUg.json",
       "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=S_C83uV6erL3A0gsWU2LUg",
       "fetchedAt": "2026-10-27T03:57:29.079Z",
       "bytes": 1907,
       "sha256": "6136f689156f03332c5f7b8e20f8d7a3fb146158de12dfe896fd5e79cccf0026",
+      "source": "streetview"
+    },
+    {
+      "file": "landmarks/streetview/metadata/S1VuwnIAnOKNxbxUi8dhdw.json",
+      "url": "https://tile.googleapis.com/v1/streetview/metadata?session=<session>&panoId=S1VuwnIAnOKNxbxUi8dhdw",
+      "fetchedAt": "2026-10-21T22:04:39.842Z",
+      "bytes": 1548,
+      "sha256": "f4fb9adb9e5516c57db6b7a99905b16c82454b7feab6a87541720cfdb53257f7",
       "source": "streetview"
     },
     {
@@ -3707,15 +3715,6 @@
       "count": 143
     },
     {
-      "file": "landmarks/streetview/tiles/S1VuwnIAnOKNxbxUi8dhdw",
-      "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=S1VuwnIAnOKNxbxUi8dhdw",
-      "fetchedAt": "2026-10-21T22:07:52.233Z",
-      "bytes": 457593,
-      "sha256": "bc966b24ae254f21f78d8160b2581024bf9c6ca92d4437ec55c0ecf6b7da753f",
-      "source": "streetview",
-      "count": 8
-    },
-    {
       "file": "landmarks/streetview/tiles/S_C83uV6erL3A0gsWU2LUg",
       "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=S_C83uV6erL3A0gsWU2LUg",
       "fetchedAt": "2026-10-28T09:27:12.470Z",
@@ -3723,6 +3722,15 @@
       "sha256": "9d7912655dda83e86b7f9847edd1342bb73bc6c2541ae2a2dc5d5c34a48143fc",
       "source": "streetview",
       "count": 143
+    },
+    {
+      "file": "landmarks/streetview/tiles/S1VuwnIAnOKNxbxUi8dhdw",
+      "url": "https://tile.googleapis.com/v1/streetview/tiles/{zoom}/{x}/{y}?session=<session>&panoId=S1VuwnIAnOKNxbxUi8dhdw",
+      "fetchedAt": "2026-10-21T22:07:52.233Z",
+      "bytes": 457593,
+      "sha256": "bc966b24ae254f21f78d8160b2581024bf9c6ca92d4437ec55c0ecf6b7da753f",
+      "source": "streetview",
+      "count": 8
     },
     {
       "file": "landmarks/streetview/tiles/sXmGRxrqC09jMIIAugyZ-g",
