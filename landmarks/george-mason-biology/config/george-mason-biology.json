@@ -1,0 +1,306 @@
+{
+ "name": "george-mason-biology",
+ "site": true,
+ "estimated": "the windows of the south-east end, their sizes and places, and its pilasters' width, with a photograph as a reference (the upper windows' arched heads drawn square); the depth of the canopy past the north-west end and how far its faces come down, which the LiDAR does not see; and the faces no photograph shows, drawn plainly",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street south-east of the building, square to its south-east end; the copy the project has is squeezed across (1398 x 953): the pilasters 3.5 m apart and the end wall's 13.1 m in the LiDAR give the same scale both ways only with its width stretched 1.2117 times, to 16:9, so the reference is that stretched copy. Its camera is fitted to the end wall (its foot, its top and its north-east corner, its two pilasters) and the attic's top behind it, the only pick off the wall's plane, the camera held near 1.6 m over the LiDAR's ground (rms 1.39 px): a lens of about 109 degrees across whose principal point lies off the picture to the left (a level picture cut from a wider one: its verticals are upright), about 14.6 m from the end wall and 24 m south-west of its middle. Plane trees and a hazy sky: the sky mask finds almost none (2,523 px), so the silhouette IoU tells little; the model laid over the photograph through the fitted camera is the check",
+ "building": {
+  "id": "106",
+  "also": [],
+  "title": "George Mason Biology Building (106), University of Auckland",
+  "note": "outline: traced from the LiDAR (building.outline_note), in the map's frame; chooses the crop box and the building's own points (frame.near_outline, measure and topview). campus_outline: building 106's outer ring from the main project's campus.json, kept for the record; the site replaces block 106 by its id, and topview measures the share of that block under the model.",
+  "outline": [
+   [
+    164.5,
+    122.27
+   ],
+   [
+    156.11,
+    130.57
+   ],
+   [
+    158.29,
+    132.77
+   ],
+   [
+    156.52,
+    134.53
+   ],
+   [
+    156.31,
+    134.32
+   ],
+   [
+    133.7,
+    156.68
+   ],
+   [
+    131.73,
+    154.69
+   ],
+   [
+    122.91,
+    163.42
+   ],
+   [
+    119.96,
+    160.43
+   ],
+   [
+    118.32,
+    162.05
+   ],
+   [
+    114.24,
+    157.92
+   ],
+   [
+    115.88,
+    156.31
+   ],
+   [
+    114.47,
+    154.88
+   ],
+   [
+    119.59,
+    149.82
+   ],
+   [
+    116.85,
+    147.05
+   ],
+   [
+    119.12,
+    144.8
+   ],
+   [
+    121.87,
+    147.57
+   ],
+   [
+    123.29,
+    146.16
+   ],
+   [
+    119.07,
+    141.9
+   ],
+   [
+    123.62,
+    137.39
+   ],
+   [
+    123.76,
+    137.54
+   ],
+   [
+    138.69,
+    122.77
+   ],
+   [
+    138.55,
+    122.62
+   ],
+   [
+    143.24,
+    117.98
+   ],
+   [
+    144.3,
+    119.05
+   ],
+   [
+    146.93,
+    116.45
+   ],
+   [
+    150.09,
+    119.65
+   ],
+   [
+    156.06,
+    113.74
+   ]
+  ],
+  "campus_outline": [
+   [
+    126.8,
+    139.6
+   ],
+   [
+    120.7,
+    145.7
+   ],
+   [
+    124.3,
+    149.3
+   ],
+   [
+    120.2,
+    153.4
+   ],
+   [
+    120.5,
+    153.7
+   ],
+   [
+    119.4,
+    154.9
+   ],
+   [
+    123.4,
+    158.9
+   ],
+   [
+    124.6,
+    157.7
+   ],
+   [
+    127.1,
+    160.3
+   ],
+   [
+    135.1,
+    152.3
+   ],
+   [
+    137.4,
+    152.0
+   ],
+   [
+    138.1,
+    152.8
+   ],
+   [
+    154.9,
+    135.9
+   ],
+   [
+    154.5,
+    135.3
+   ],
+   [
+    156.3,
+    135.3
+   ],
+   [
+    156.7,
+    135.0
+   ],
+   [
+    156.7,
+    133.3
+   ],
+   [
+    156.3,
+    132.9
+   ],
+   [
+    154.6,
+    132.8
+   ],
+   [
+    162.4,
+    125.0
+   ],
+   [
+    155.5,
+    118.2
+   ],
+   [
+    148.2,
+    125.5
+   ],
+   [
+    144.5,
+    121.8
+   ],
+   [
+    138.5,
+    127.8
+   ],
+   [
+    140.5,
+    129.7
+   ],
+   [
+    131.9,
+    138.3
+   ],
+   [
+    130.0,
+    136.4
+   ]
+  ],
+  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (the south-east end at x 29.1, the north-west end at x -29.4, its long walls at z -6.0 and 6.0), the middle (x -17.0 to 17.0, z -8.8 to 8.8), the two wings to the south-west (to z 12.0), the tower on the north-east side, the canopy past the north-west end and the low parts round the foot, taken to the map's frame. campus.json's ring (campus_outline) is about 3.5 m short at each end (x 25.7 to -25.9, where the LiDAR's walls stand at 29.1 and -29.4) and narrower on the south-west (to z 8.4, against 12.0): within 1.5 m of it the first data run left out the ends of the long block and the wings. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 36.61,
+ "door": {
+  "x": 30.1,
+  "z": 0.0,
+  "note": "its entrance is not known from a record (the campus map has none for building 106 and OpenStreetMap none within 80 m): the door is set on the pavement 1 m out from the middle of the south-east end, the face on the street that the photograph sees (u -30.1, w 0 in parts/common.js)"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3.69,
+  "tower_above": 3.69,
+  "spine_below": 40.69,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    142.1231101525735,
+    135.84798099113445
+   ],
+   "axis": [
+    -0.6977522885396407,
+    0.716339126278674
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "36.61 m: the LiDAR's ground at the door (11 ground returns within 1 m, 36.55 to 36.65, p10 to p90); the first crop's median ground was 37.30 m, which the frame's thresholds and parts/common.js's heights were measured above: the thresholds over the ground were raised by 0.69 m, as the ground is 0.69 m lower, so the frame stays the same",
+ "light": {
+  "sunaz": 250,
+  "sunel": 35,
+  "exposure": 0.75,
+  "note": "the photograph's end wall is in soft shade under a hazy bright sky, so the viewer's sun stands behind the building (250 deg round, 35 up), and the exposure (0.75) from a plain stretch of the end wall between the window rows of its north-east bay, free of leaves: luma 161 in the photograph and 161 in the render (140 in the photograph in the middle bay, in the branches' shade); the metrics' luma over the model's screen box, 161 against 132, takes the photograph's leaves, which cover most of the box"
+ }
+}

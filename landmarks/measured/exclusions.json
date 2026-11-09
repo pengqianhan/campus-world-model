@@ -1,60 +1,6 @@
 {
  "note": "The buildings that the generator measures and that keep their blocks, each with its reason (landmarks/MASSING.md): those of the City campus in its eight LiDAR tiles (tier 3, and tiers 1 and 2 until their landmarks come), and every building of the Grafton and Newmarket campuses (their own tiles; massing.py, CAMPUS_TILES). Written by landmarks/pipeline/tools/massing.py; do not edit.",
  "buildings": {
-  "106": {
-   "name": "George Mason Biology Bldg",
-   "reason": "top-view check: footprint IoU 0.865 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 76 m2; several faces: 5 mono-pitches over 442 m2): footprint IoU 0.950, 90% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 701.2,
-    "ground": {
-     "p5": 35.85,
-     "p50": 36.96,
-     "p95": 38.57,
-     "zero": 35.76
-    },
-    "roof_inside_m2": 684.0,
-    "cover": 0.98,
-    "vegetation": 0.02,
-    "open_below": 0.027,
-    "not_drawn_m2": 37.2,
-    "check": {
-     "iou": 0.865,
-     "lidar_m2": 787.0,
-     "model_m2": 706.2,
-     "within_0.5m": 0.87,
-     "model_minus_lidar_m": {
-      "p10": -0.14,
-      "p50": 0.0,
-      "p90": 0.09
-     },
-     "highest_m": {
-      "model": 18.96,
-      "lidar": 20.34
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 2 mono-pitches over 76 m2",
-      "several faces: 5 mono-pitches over 442 m2"
-     ],
-     "check": {
-      "iou": 0.95,
-      "lidar_m2": 787.0,
-      "model_m2": 784.0,
-      "within_0.5m": 0.895,
-      "model_minus_lidar_m": {
-       "p10": -0.06,
-       "p50": 0.01,
-       "p90": 0.11
-      },
-      "highest_m": {
-       "model": 19.46,
-       "lidar": 20.34
-      }
-     }
-    }
-   }
-  },
   "118": {
    "name": "Lippincott Cottage",
    "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 35 m2): footprint IoU 0.828, 87% of cells within 0.5 m",
