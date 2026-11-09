@@ -3,8 +3,8 @@
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
 LiDAR and checked against Street View photographs (the Kate Edger Information Commons, the Humanities
 Building, buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907,
-Auckland Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta and building 501 of the M&HS
-Building each against another photograph of it: `"refs": "photos"`,
+Auckland Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta and buildings 501 and 502 of
+the M&HS Building each against another photograph of it: `"refs": "photos"`,
 under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
@@ -150,15 +150,16 @@ heights against each other are the LiDAR's and neither shows through the other w
 (`standHeights` in `src/scene/landmarks.ts`; a measured massing is in no group). A group shares only
 when its members' offsets span 2 m or less (`SHARED_SPREAD`): sharing moves each member by up to half
 the span, and a wider span means the map's ground is wrong at one of the doors, which no move of the
-models can mend. Five pairs touch; the nearest two landmarks that do not, buildings 302 and 303S of the
-Science Centre, stand 5.6 m apart. Four pairs share: against the map's ground at its own door 9 Eden
+models can mend. Six pairs touch; the nearest two landmarks that do not, buildings 302 and 303S of the
+Science Centre, stand 5.6 m apart. Five pairs share: against the map's ground at its own door 9 Eden
 Crescent stands 0.448 m higher and 15 Eden Crescent 0.448 m lower (a span of 0.90 m), the Thomas
 Building 0.311 m lower and its Extension 0.311 m higher (0.62 m), building 303 of the Science Centre
 0.892 m higher and building 303S 0.892 m lower (1.78 m), Architecture - West 0.116 m higher and
-Architecture - East 0.116 m lower (0.23 m). The Clock Tower and its East Wing (5.07 m) each stand on the
+Architecture - East 0.116 m lower (0.23 m), building 501 of the M&HS Building 0.919 m lower and building 502
+0.919 m higher (1.84 m). The Clock Tower and its East Wing (5.07 m) each stand on the
 map's ground at its own door, as before: at the Clock Tower's door the map's ground is 4.85 m below the
 LiDAR's, at the East Wing's 0.22 m above it, so the map stands the Clock Tower 5.07 m lower against its
-wing than the LiDAR does. Any limit from 1.79 to 5.06 m gives these groups. Either way a model's walls go down below
+wing than the LiDAR does. Any limit from 1.84 to 5.06 m gives these groups. Either way a model's walls go down below
 y = 0 as far as the map's ground falls under it (Old Government House's to 1.6 m below its porch), so
 that their foot is nowhere more than 0.25 m above it. `tests/landmarks.test.ts` stands each landmark as
 the site does and checks that for every landmark on the site, at
@@ -366,8 +367,8 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 
 With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building,
 buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland
-Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, building 501 of the M&HS Building),
-refine, compare, metrics, `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
+Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501 and 502 of the M&HS
+Building), refine, compare, metrics, `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
 makes only the masks. `refs/photos/` is gitignored (`landmarks/.gitignore` keeps every `refs/` folder
 local).

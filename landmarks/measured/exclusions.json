@@ -1393,60 +1393,6 @@
     "open_below": 0.039
    }
   },
-  "502": {
-   "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 95% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 1000 m2; a low pitch: mono, 2.7 degrees, over 4 m2): footprint IoU 0.873, 96% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 2115.5,
-    "ground": {
-     "p5": 68.19,
-     "p50": 69.87,
-     "p95": 72.15,
-     "zero": 68.22
-    },
-    "roof_inside_m2": 1859.5,
-    "cover": 0.879,
-    "vegetation": 0.056,
-    "open_below": 0.048,
-    "not_drawn_m2": 88.2,
-    "check": {
-     "iou": 0.858,
-     "lidar_m2": 1923.8,
-     "model_m2": 2120.0,
-     "within_0.5m": 0.95,
-     "model_minus_lidar_m": {
-      "p10": -0.07,
-      "p50": -0.01,
-      "p90": 0.05
-     },
-     "highest_m": {
-      "model": 38.21,
-      "lidar": 38.45
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 4 mono-pitches over 1000 m2",
-      "a low pitch: mono, 2.7 degrees, over 4 m2"
-     ],
-     "check": {
-      "iou": 0.873,
-      "lidar_m2": 1923.8,
-      "model_m2": 2150.2,
-      "within_0.5m": 0.958,
-      "model_minus_lidar_m": {
-       "p10": -0.06,
-       "p50": -0.01,
-       "p90": 0.05
-      },
-      "highest_m": {
-       "model": 38.21,
-       "lidar": 38.45
-      }
-     }
-    }
-   }
-  },
   "503": {
    "name": "M&HS Building",
    "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 5.3 degrees, over 339 m2; several faces: 4 mono-pitches over 339 m2; several faces: 4 mono-pitches over 1072 m2; a low pitch: mono, 3.4 degrees, over 5 m2; a low pitch: hip, 3.9 degrees, over 27 m2; several faces: 2 mono-pitches over 27 m2): footprint IoU 0.854, 96% of cells within 0.5 m",
