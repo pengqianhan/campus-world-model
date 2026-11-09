@@ -72,6 +72,22 @@ It is built to answer two questions a student actually has:
   storeys in white panels over a recessed ground floor, its north face shaded by twelve bays of silver fins and louvres,
   glass at its north-east corner and a glass-roofed atrium at its west end. Its sizes come from the LiDAR; it was
   compared with a photograph, which is not published, and its card says what is estimated.
+- **2026-11-10:** on the City campus the map draws the George Mason Biology Building (106) in detail: a long block of
+  three storeys in cream render under a grey attic and a low hipped roof, with two wings and raised parts, and
+  red-framed windows between pilasters at its south-east end on the street. Its sizes come from the LiDAR; it was
+  compared with a photograph, which is not published, and its card says what is estimated.
+- **2026-11-09:** on the City campus the map draws Te Pūtahi Tangata (201) in detail: a hall on the street, glass
+  from the pavement to a folded roof whose plates rise and fall across its front, a taller block in pale metal at its
+  north-east end, and behind them, down the slope, a long block with raised strips. Its sizes come from the LiDAR; it
+  was compared with a photograph, which is not published, and its card says what is estimated.
+- **2026-11-09:** on the Grafton campus the map draws building 507 of the M&HS Building in detail: along the street a
+  block whose finned upper storeys stand over a glazed base, three glazed bays north of it each set back further, and
+  a block behind them under flat roofs. Its sizes come from the LiDAR; it was compared with a photograph, which is not
+  published, and its card says what is estimated.
+- **2026-11-09:** on the Grafton campus the map draws building 502 of the M&HS Building in detail: a block of seven
+  storeys in pale concrete, its north face a row of fins over grey bays, under a dark metal skirt and a low hipped
+  roof, and a lower part at its west end. Its sizes come from the LiDAR; it was compared with a photograph, which is
+  not published, and its card says what is estimated.
 - **2026-11-09:** "Take a walk" is a button of its own beside the campus's name in the bottom-left corner, on
   every school's map, no longer a line inside the campus panel.
 - **2026-11-09:** on the Newmarket campus the map draws Building 907 in detail: a hall under a shallow barrel
@@ -282,9 +298,10 @@ building drawn in detail instead, in three.js from code alone: no photograph, te
 model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs are the references
 that each render is compared with (for the Kate Edger Information Commons, the Humanities Building, buildings 302, 303
 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House,
-the Sir Owen G Glenn Building, 49 Symonds Street, Okareta and buildings 501 and 505 of the M&HS Building, another
-photograph of each). A lead agent and five agents in parallel made the first one, the Clock Tower, each agent owning one
-part (the tower, the entrance bay, the pavilions, the light and
+the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te
+Pūtahi Tangata and the George Mason Biology Building, another photograph of each). A lead agent and five agents in
+parallel made the first one, the Clock Tower, each agent owning one part (the tower, the entrance bay, the pavilions,
+the light and
 materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
 outline of the model covers the outline of the building with an IoU of 0.68 to 0.72 for the whole
 front, 0.89 to 0.95 for the tower and 0.88 to 0.98 for the entrance.
@@ -730,7 +747,78 @@ LiDAR's height. What the photograph does not show is drawn plainly.
 | ![Building 501 of the M&HS Building from its plaza, drawn from code](docs/landmarks/mhs-building-501-front.jpg) | ![Building 501 of the M&HS Building from above, drawn from code](docs/landmarks/mhs-building-501-above.jpg) |
 | ![Building 501 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-501-map.jpg) | ![Building 501 of the M&HS Building from its plaza, through the walker's eyes](docs/landmarks/mhs-building-501-eyes.jpg) |
 
-The twenty-seventh is building 505 of the M&HS Building, on the Grafton campus: a long block of four storeys in white
+The twenty-seventh is building 502 of the M&HS Building, on the Grafton campus beside 501: a main block of seven storeys
+in pale concrete, its north face to the street a row of tall fins with window bays between them, their spandrels in a
+textured grey, its east end pale panels beside a near-black glazed strip, under a dark metal skirt and a low hipped
+roof with a plant room at each end; and a lower part of five storeys at its west end. Its heights and plans come from
+the LiDAR; the foot of the roof's skirt, which the photograph shows, from the LiDAR's outermost roof cells, and the
+edge of the east end's glazed strip in the photograph are estimated. One photograph from the street to its
+north-east, about 38 m from the main block's corner; counted inside the rectangle the model fills on the
+screen, its silhouette has an IoU of 0.93 in it, and the brightness of the
+building is within 1 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.91, and on 91% of
+the cells both cover it is within 0.5 m of the LiDAR's height (the strip of its roof inside block 501's ring is drawn
+by 501's model). What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 502 of the M&HS Building from the street to its north-east, drawn from code](docs/landmarks/mhs-building-502-front.jpg) | ![Building 502 of the M&HS Building from above, drawn from code](docs/landmarks/mhs-building-502-above.jpg) |
+| ![Building 502 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-502-map.jpg) | ![Building 502 of the M&HS Building from the street to its north-east, through the walker's eyes](docs/landmarks/mhs-building-502-eyes.jpg) |
+
+
+The twenty-eighth is building 507 of the M&HS Building, on the Grafton campus: along the street a block of five
+storeys, its upper storeys clad in tall near-black fins over a glazed base two storeys high; north of it three glazed
+bays stepping back one behind another, with a canopy over the entrance at their foot; behind them a block under flat
+roofs at the same height, with raised parts and a lower part on its south side. Its heights and plans come from the
+LiDAR; the underside of the finned storeys and the foot of the canopy's fascia are estimated with the photograph as a
+reference. One photograph from across the street to its east-south-east at dusk, about 16 m from the street face;
+counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.97 in it, and the brightness
+of the building is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.89, and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn
+plainly.
+
+| | |
+| --- | --- |
+| ![Building 507 of the M&HS Building from across the street to its east-south-east, drawn from code](docs/landmarks/mhs-building-507-front.jpg) | ![Building 507 of the M&HS Building from above, drawn from code](docs/landmarks/mhs-building-507-above.jpg) |
+| ![Building 507 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-507-map.jpg) | ![Building 507 of the M&HS Building from across the street to its east-south-east, through the walker's eyes](docs/landmarks/mhs-building-507-eyes.jpg) |
+
+
+The twenty-ninth is Te Pūtahi Tangata (201), on the City campus between the Humanities Building and the Music School:
+on the street a hall whose front is glass from the pavement to its roof, under a folded roof whose plates rise and fall
+across the front, their ridges running back from the street; a canopy over its entrance; at its north-east end a taller
+block clad in pale metal; and behind them, down the slope, a long block whose roofs stand about 25 m over the street,
+with raised strips and parts. Its heights and plans come from the LiDAR; the depth of the folded roof's plates at the
+front and of the canopy are estimated with the photograph as a reference, and that of two plates, along the hall's
+south-west side and over a passage by the long block, without one. One photograph from the street to its north-west,
+about 14 m from the glass, through three plane trees whose leaves hide all the sky over the roof: no silhouette can be
+counted against the sky, so the model was checked by laying it over the photograph through the camera fitted to it (to
+1.8 pixels), and the brightness of the building is within 11 of the photograph's. From above its outline covers the
+LiDAR's with an IoU of 0.91, and on 80% of the cells both cover it is within 0.5 m of the LiDAR's height. What the
+photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Te Pūtahi Tangata from the street to its north-west, drawn from code](docs/landmarks/te-putahi-tangata-front.jpg) | ![Te Pūtahi Tangata from above, drawn from code](docs/landmarks/te-putahi-tangata-above.jpg) |
+| ![Te Pūtahi Tangata on the map, drawn from code in the map's colours](docs/landmarks/te-putahi-tangata-map.jpg) | ![Te Pūtahi Tangata from the street to its north-west, through the walker's eyes](docs/landmarks/te-putahi-tangata-eyes.jpg) |
+
+
+The thirtieth is the George Mason Biology Building (106), on the City campus beside the Thomas Building: a long
+block of three storeys in cream render, its walls up to a parapet and a grey attic set back behind it under a low hipped
+roof; its middle wider, with two wings to the south-west and raised parts over the roof; at its south-east end, on the
+street, three bays of red-framed windows between pilasters. Its heights and plans come from the LiDAR, and so does its
+outline, which the campus map gives about 3.5 m short at each end; the windows of its south-east end and its pilasters'
+width are estimated with the photograph as a reference. One photograph from the street to its south-east, square to that
+end, through plane trees and under a hazy sky: the copy the project has is squeezed across, and was stretched back to
+16:9 before its camera was fitted (to 1.4 pixels); its sky is too faint to count a silhouette against, so the model was
+checked by laying it over the photograph through that camera, and the brightness of a plain stretch of the end wall is
+the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 85% of the cells both cover it
+is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![The George Mason Biology Building from the south, drawn from code](docs/landmarks/george-mason-biology-front.jpg) | ![The George Mason Biology Building from above, drawn from code](docs/landmarks/george-mason-biology-above.jpg) |
+| ![The George Mason Biology Building on the map, drawn from code in the map's colours](docs/landmarks/george-mason-biology-map.jpg) | ![The George Mason Biology Building from the street to its south-east, through the walker's eyes](docs/landmarks/george-mason-biology-eyes.jpg) |
+
+
+The thirty-first is building 505 of the M&HS Building, on the Grafton campus: a long block of four storeys in white
 concrete panels over a ground floor set back under its upper storeys, behind round columns on the north; on its north
 face, toward a plaza, twelve bays of silver fins and louvres over set-back glazing between a white wall at each end,
 glass at its north-east corner and a dark band round its cut south-east corner; over the parapet a higher middle of the
@@ -760,9 +848,9 @@ Commons in place of 315; the Humanities Building in place of 206; building 302 o
 of 302; building 303 of the Science Centre in place of 303; building 303S of the Science Centre in place of 303S;
 Architecture - West in place of 421W; Architecture - East in place of 421E; Building 907 in place of 907; Auckland
 Bioengineering House in place of 439; the Sir Owen G Glenn Building in place of 260; 49 Symonds Street in place of 620;
-Okareta in place of 215; building 501 of the M&HS Building in place of 501; building 505 of the M&HS Building in
-place of 505) when
-the camera comes
+Okareta in place of 215; building 501 of the M&HS Building in place of 501; building 502 of the M&HS Building in place
+of 502; building 505 of the M&HS Building in place of 505; building 507 of the M&HS Building in place of 507; Te Pūtahi
+Tangata in place of 201; the George Mason Biology Building in place of 106) when the camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
 geometry and the textures are made in a worker, the first time they are wanted, so that the page
@@ -946,7 +1034,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315), the Humanities Building (206), building 302 of the Science Centre (302), building 303 of the Science Centre (303), building 303S of the Science Centre (303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), building 501 of the M&HS Building (501) and building 505 of the M&HS Building (505), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/`, `landmarks/humanities-building/`, `landmarks/science-centre-302/`, `landmarks/science-centre-303/`, `landmarks/science-centre-303s/`, `landmarks/architecture-west/`, `landmarks/architecture-east/`, `landmarks/building-907/`, `landmarks/auckland-bioengineering-house/`, `landmarks/owen-g-glenn-building/`, `landmarks/49-symonds-street/`, `landmarks/okareta/`, `landmarks/mhs-building-501/` and `landmarks/mhs-building-505/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315), the Humanities Building (206), building 302 of the Science Centre (302), building 303 of the Science Centre (303), building 303S of the Science Centre (303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), Te Pūtahi Tangata (201) and the George Mason Biology Building (106), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/`, `landmarks/humanities-building/`, `landmarks/science-centre-302/`, `landmarks/science-centre-303/`, `landmarks/science-centre-303s/`, `landmarks/architecture-west/`, `landmarks/architecture-east/`, `landmarks/building-907/`, `landmarks/auckland-bioengineering-house/`, `landmarks/owen-g-glenn-building/`, `landmarks/49-symonds-street/`, `landmarks/okareta/`, `landmarks/mhs-building-501/`, `landmarks/mhs-building-502/`, `landmarks/mhs-building-505/`, `landmarks/mhs-building-507/`, `landmarks/te-putahi-tangata/` and `landmarks/george-mason-biology/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing, mesh panels and shopfront toward Alfred Street and of the lower edge of its end over the sunken court, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of the Humanities Building from its courtyard | The look its model was compared with while it was drawn, and the upper edge of its top brick band, the sill of its lowest windows and the sides of its entrance on its face to the courtyard, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -956,12 +1044,16 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of 49 Symonds Street from Symonds Street to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of the white band along its top, its dark base and its windows and its windows' widths and places, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Okareta from the footpath before it | The look its model was compared with while it was drawn, and, as a reference, the places and heights of its windows, its door, its bay's face and its verandah, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 501 of the M&HS Building from the plaza to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of its crown's eave and band, the set-back of its shaft under the crown, the top and floors of the glazed link beside it and its strip of windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of building 502 of the M&HS Building from the street to its north-east | The look its model was compared with while it was drawn, and, as a reference, the dark skirt round its roof, whose foot the LiDAR gives, and the edge of its east end's glazed strip, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of building 507 of the M&HS Building from across the street to its east-south-east | The look its model was compared with while it was drawn, and, as a reference, the underside of its street face's finned upper storeys and the foot of its canopy's fascia, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Te Pūtahi Tangata from the street to its north-west | The look its model was compared with while it was drawn, and, as a reference, the depth of its folded roof's plates at the front and of its canopy, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of the George Mason Biology Building from the street to its south-east | The look its model was compared with while it was drawn, and, as a reference, the sizes and places of the windows of its south-east end and its pilasters' width, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 505 of the M&HS Building from the main road to its north-east | The look its model was compared with while it was drawn, and, as a reference, its north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - East from a paved deck above its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Building 907 from the street to its west-south-west | The look its model was compared with while it was drawn, and, as a reference, the places and heights of the band of glazing on the hall's end and of the annex's windows and doors, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey; for Building 907 (907), that its roofs are near white; for 49 Symonds Street (620), that the flat top of the mansard on its roof is pale; for Okareta (215), that its roofs are grey; for building 501 of the M&HS Building (501), that its roofs are grey; for building 505 of the M&HS Building (505), that its roofs are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
+| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey; for Building 907 (907), that its roofs are near white; for 49 Symonds Street (620), that the flat top of the mansard on its roof is pale; for Okareta (215), that its roofs are grey; for buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), that their roofs are grey; for Te Pūtahi Tangata (201), that its roofs are grey, with strips of glazing and a planted part on the hall's; for the George Mason Biology Building (106), that its roofs and its attic are grey | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | A photograph of the Sir Owen G Glenn Building from the north edge of its plaza | The look its model was compared with while it was drawn, and, as a reference, the heights of the bands of glass, spandrels and louvres on its curved wing, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -1075,14 +1167,16 @@ If you represent the University and would like something changed or removed, ple
   Extension (110N), the Kenneth Myers Centre (820), the Thomas Building (110), the Music School (250),
   the Kate Edger Information Commons (315), the Humanities Building (206), buildings 302, 303 and 303S of the
   Science Centre (302, 303, 303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland
-  Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215) and buildings
-  501 and 505 of the M&HS Building (501, 505) are the exceptions:
+  Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), buildings
+  501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), Te Pūtahi Tangata (201) and the George Mason Biology
+  Building (106) are the exceptions:
   their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph; some heights
   of the Kate Edger Information Commons, the Humanities Building, buildings 302, 303 and 303S of the Science Centre,
   Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House, the Sir Owen G Glenn Building,
-  49 Symonds Street, Okareta and buildings 501 and 505 of the M&HS Building are estimated in a photograph, as is the
-  place of one of Auckland Bioengineering House's stone fins). The
+  49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te Pūtahi Tangata and the George
+  Mason Biology Building are estimated in a photograph, as is the place of one of Auckland Bioengineering House's stone
+  fins). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
   Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
@@ -1349,6 +1443,60 @@ If you represent the University and would like something changed or removed, ple
   While a building beside it is open, it gives way to block 501, which sinks to a footprint on its footing, at most
   4 m above the lowest ground under it: that footprint stands above the drawn ground on 79% of its cells, by up to
   1.7 m.
+- **Building 502 of the M&HS Building is seen from the street to its north-east only.** One photograph sees the main
+  block's east end and its north face, under the roof's dark skirt. Its other faces and the lower west part's, which no
+  photograph shows, are drawn plainly, the west part's with the same skirt; the north face is drawn mid grey for its
+  fins and spandrels together, and the fins, the window bays, the east end's panels' joints, the steps and the street's
+  canopy are not drawn. The strip of its roof that lies in block 501's ring is drawn by 501's model, and this one stops
+  at that strip's edge. Its entrance is not known from a record: its door is set before the middle of the east end, at
+  the top of its steps, where the map's ground lies 3.1 m under the LiDAR's. It shares one ground with building 501
+  beside it: against the map's ground at its own door it stands 0.92 m higher and 501 0.92 m lower. Block 502 is 87.0%
+  under the model. While a building beside it is open, it gives way to block 502, which sinks to a footprint on its
+  footing, at most 4 m above the lowest ground under it: that footprint stands above the drawn ground on 61% of its
+  cells, by up to 1.6 m.
+- **Building 507 of the M&HS Building is seen from across the street to its east-south-east only, at dusk.** One
+  photograph sees the street face of its south-east block and the glazed bays north of it. Its other faces, which no
+  photograph shows, are drawn plainly in mid grey, and the fins, the windows, the recessed entrance under the street
+  face's north end and its column, and the things on the roofs are not drawn; a court in the north-west block, under a
+  roof the LiDAR partly sees through (open or glazed), is drawn as roof. The photograph's light, dusk with the windows
+  lit from inside, is not drawn: the viewer lights the face from the front. Its roofs run up to 4.9 m past the campus map's outline in places, as the LiDAR has them. Its entrance is not known from a record: its door is set before the
+  entrance under the canopy, where the map's ground lies 2.14 m above the LiDAR's. Block 507 is 93.1% under the model.
+  While a building beside it is open, it gives way to block 507, which sinks to a footprint on its footing, at most 4 m
+  above the lowest ground under it: that footprint stands above the drawn ground on 69% of its cells, by up to 4.2 m.
+- **Te Pūtahi Tangata is seen from the street to its north-west only, through the leaves of three plane trees.** One
+  photograph sees the hall's glazed front and the north-east block's corner beside it; the trees hide the roof's top
+  and all the sky over it, so its likeness was checked by laying the model over the photograph through the camera
+  fitted to it, not by a silhouette counted against the sky. The folded roof's plates are drawn 1.4 m deep at the
+  front, estimated where the glass meets them in the photograph, and the canopy's depth is estimated in it too; a strip
+  along the hall's south-west side and over a passage by the long block is a plate 0.6 m deep, open under it, its depth
+  estimated. The long block behind and the north-east block's other faces, which no photograph shows, are drawn plainly;
+  the strips across the long block's middle are drawn solid, where the LiDAR sees returns both at their top and on the
+  roof under them. The glazing's mullions, the cladding's panels, the hall's glazed roof strips and planted part and the
+  things on the roofs are not drawn. Its entrance is not known from a record: its door is set on the plaza before the
+  canopy, where the map's ground lies 5.5 m under the LiDAR's. The map's ground falls about 7 m across its site where
+  the LiDAR's falls about 11 m, so from the south-east the long block stands about 4 m less over the drawn ground than
+  over the real one, and a low roof and a low part by its south-west end stand wholly under the drawn ground, where the
+  site does not show them. It stands within 2 m of the Humanities Building and the Music School (0.57 and 0.44 m), but
+  the map's ground at their three doors is off the LiDAR's by amounts 4.26 m apart, so each stands on the map's ground
+  at its own door, as the Clock Tower and its East Wing do. While a building beside it is open, it gives way to block
+  201, which sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that footprint stands
+  above the drawn ground on 70% of its cells, by up to 4.6 m.
+- **The George Mason Biology Building is seen from the street to its south-east only.** One photograph sees its
+  south-east end, through plane trees; the copy the project has is squeezed across (1398 x 953) and was stretched back
+  to 16:9 before its camera was fitted, as only so do the LiDAR's pilasters and the end wall's height give one scale
+  both ways. Its sky is too faint to count a silhouette against, so its likeness was checked by laying the model over
+  the photograph through the camera fitted to it. The end's windows, their sizes and places, and its pilasters' width
+  are estimated in the photograph, the upper windows' arched heads drawn square, and the depth of a canopy past its
+  north-west end and how far its faces come down, which the LiDAR does not see, are estimated too. Its long sides, its
+  north-west end and its wings, which no photograph shows, are drawn plainly; the glazing bars, the dormer over the end,
+  the things on the roofs and a flue are not drawn. The campus map's outline is about 3.5 m short at each end of the
+  long block and narrower on the south-west: the model follows the LiDAR, past block 106 at both ends. Its entrance is
+  not known from a record: its door is set on the pavement before the middle of the south-east end, where the map's
+  ground lies 3.0 m under the LiDAR's. Under the model the map's ground rises to 4.0 m above the door's toward the
+  north-west end, the LiDAR's to about 2.5 m, so that end stands about 1.5 m less over the drawn ground than over the
+  real one. While a building beside it is open, it gives way to block 106, which sinks to a footprint on its footing, at
+  most 4 m above the lowest ground under it: that footprint stands above the drawn ground on 65% of its cells, by up to
+  2.4 m.
 - **Building 505 of the M&HS Building is seen from the main road to its north-east only.** One photograph sees its north
   face and the edge of its east face; it is a level picture cut from a wider one, and a smaller picture laid over its
   corner is left out. The north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top
