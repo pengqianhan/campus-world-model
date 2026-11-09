@@ -23,8 +23,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   and 12, a low roof at -0.5 and a part at 3 to 4 by its south-west end, and a link at 13.5 beside the hall, with a
   strip at 10.3 to 11.8 along the long block and the hall's south-west side, open under it in places.
   Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
-- Walls go down to `FOOT`, 4.5 m under 28.33 m: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9
-  on the south-east side.
+- Walls go down to `FOOT`, 4.5 m under 28.33 m, all but the canopy's and the two plates' at 10.9, which hang from the
+  walls beside them: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9 on the south-east side.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/shapes.js` (the Humanities
@@ -79,5 +79,6 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
-- No two faces of different materials in one plane; every wall down to `FOOT`.
+- No two faces of different materials in one plane; every wall down to `FOOT` but the canopy's and the plates', hung
+  from the walls beside them.
 - The photograph is a reference only: never traced, sampled or published; it stays in the gitignored `refs/photos/`.

@@ -65,10 +65,10 @@ A change to what the site does or shows adds its line here, and the README's
   front is glass from the pavement to a folded roof, a canopy over its entrance, a taller block in pale metal at its
   north-east end, and behind them, down the slope, a long block with raised strips and parts. Its sizes come from
   the LINZ 2024 LiDAR; it was compared with a photograph from the street, and its card says what is estimated: the
-  depth of the folded roof's plates at the front and of the canopy, with the photograph as a reference; the depth of a
-  plate along the hall's side; the strips across the long block's middle, drawn solid; and the faces no photograph
-  shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
-  glass, metal and roofs (#152).
+  depth of the folded roof's plates at the front and of the canopy, with the photograph as a reference; the depth of
+  two plates, along the hall's side and over a passage by the long block; the strips across the long block's middle,
+  drawn solid; and the faces no photograph shows. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own glass, metal and roofs (#152).
 
 ### Changed
 

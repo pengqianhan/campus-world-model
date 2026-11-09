@@ -125,7 +125,8 @@ against the LiDAR's 30.93 (p99.9). 776 triangles, 5 draw calls.
 against a limit of 0.9 and 84% of its cells within 0.5 m against 90%) has gone; `MASSING.md` notes it.
 
 - **The foot.** Its y = 0 is the map's ground at its door. Its walls go down to FOOT, 11.67 m under the door's ground,
-  below the map's ground under every plan: the foot check of `tests/landmarks.test.ts` passes, as does its faces check.
+  below the map's ground under every plan, but for the canopy's and the two plates' at 10.9, which hang from the walls
+  beside them: the foot check of `tests/landmarks.test.ts` passes, as does its faces check.
 - **Under the drawn ground.** The map's ground falls about 7 m across the site where the LiDAR's falls about 11 m, so
   the low roof at -0.5 past the podium's south-west end (its top 7.67 m under the door's ground) and the part at 3.6
   north of the block's west end (3.57 m under it) stand wholly under the map's ground there, by 4.0 to 5.4 m and 1.2 to
