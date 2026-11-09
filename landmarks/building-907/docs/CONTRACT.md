@@ -18,8 +18,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   - **the hall**, u -22.9 to 23.0 and w -15.15 to 15.15, under a **barrel vault** the same all along: its crown
     10.03 m over the ground, its eaves 6.2 m, its profile the median of the roof's returns in 1 m strips;
   - **the annex** on its south-south-west side, an L: a neck from the hall, u 16.3 to 21.8 and w 13.0 to 18.6, and a
-    wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6, the ground between the wider part and the hall; its roof
-    falling from 8.5 m where it meets the hall (over the hall's eave by about 2 m) to 7.05 m at its far side;
+    wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6, the ground between the wider part and the hall, and a small
+    canopy at about 3 m against the neck (not drawn); its roof falling from 8.5 m where it meets the hall (over the
+    hall's eave by about 2 m) to 7.05 m at its far side;
   - the ground flat round both, -1.0 to +0.7 over the first ground: walls go down to `FOOT`, -1.3 m over it, 1.67 m
     under the door's.
 

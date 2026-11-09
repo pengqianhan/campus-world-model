@@ -35,8 +35,9 @@ export const HALL = {
 export const ANNEX = {
   // An L in plan, its walls round its roof's returns (the outermost 0.3%; the campus map's outline has the same notch):
   // a neck from the hall, u 16.3 to 21.8 and w 13.0 to 18.6, rising over the hall's eave by about 2 m where it meets
-  // it, and a wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6. Between the wider part and the hall, west of
-  // the neck, the LiDAR sees the ground. `plan` runs round the L; `u` and `w` are its outer extents.
+  // it, and a wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6. Between the wider part and the hall,
+  // east-south-east of the neck, the LiDAR sees the ground, and a small low roof against the neck (about 1.4 by 1.8 m,
+  // 2.8 m over the ground there: a canopy, not drawn). `plan` runs round the L; `u` and `w` are its outer extents.
   plan: [[21.8, 13.0], [21.8, 24.6], [9.2, 24.6], [9.2, 18.6], [16.3, 18.6], [16.3, 13.0]],
   u: [9.2, 21.8], w: [13.0, 24.6],
   // Its roof falls from the hall, a plane through the medians of its returns in 1 m strips (8.05 at w 16.5, 7.09 at

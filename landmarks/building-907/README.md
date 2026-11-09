@@ -57,15 +57,15 @@ sizes read there are not used.
   over the provisional ground.
 - **The annex** on its south-south-west side, an L as the LiDAR and the campus map's outline have it: a neck from the
   hall, u 16.3 to 21.8 and w 13.0 to 18.6, and a wider part beyond it, u 9.2 to 21.8 and w 18.6 to 24.6 (between the
-  wider part and the hall the LiDAR sees the ground), in orange render (`renderOrange`, a new colour of the kit's paint
-  shader), its roof (`roofPale`, near white in the aerial) a plane falling from 8.5 m where it
-  meets the hall (over the hall's eave by about 2 m) to 7.05 m at its far side.
+  wider part and the hall the LiDAR sees the ground, and a small canopy against the neck), in orange render
+  (`renderOrange`, a new colour of the kit's paint shader), its roof (`roofPale`, near white in the aerial) a plane
+  falling from 8.5 m where it meets the hall (over the hall's eave by about 2 m) to 7.05 m at its far side.
 - **The openings** (estimated, from the photograph through its fitted camera): on the hall's west-north-west end a band
   of glazing in dark frames from the ground to 4.4 m, w -7.4 to 9.65, with a pale strip across it from 1.9 to 2.95 m;
   on the annex's west-north-west face two columns of windows in dark frames, an upper window over a glazed door and an
   upper window over a lower one; on its south-south-west face a door.
 - **The light**: the photograph is of an overcast day, so the viewer's sun stands behind the building (65 degrees round,
-  40 up) and the exposure is 0.65: the building's luma p50 149 against the photograph's 150.
+  40 up) and the exposure is 0.65: the building's luma p50 148 against the photograph's 150.
 
 236 triangles in 5 draw calls (`paint`, `roofPale`, `renderOrange`, `glass`, `screenBlack`).
 
@@ -111,5 +111,5 @@ fourth round, and `massing.py --campus newmarket` leaves it out and writes every
 ## Not drawn yet
 
 The ribs of the hall's cladding and the glazing's frames; two dark louvred openings high on the hall's end; the canopy
-over the annex's glazed door and the cap along its top; the flues beside the hall's end; the hall's other end and the
-annex's other faces, which no photograph shows, beyond plain walls.
+over the annex's glazed door, a small one against its neck, and the cap along its top; the flues beside the hall's end;
+the hall's other end and the annex's other faces, which no photograph shows, beyond plain walls.

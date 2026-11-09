@@ -1174,8 +1174,8 @@ If you represent the University and would like something changed or removed, ple
   end under the arc of its vault, and the annex's two faces at its corner nearest the street. The hall's other end and
   its sides and the annex's other faces, which no photograph shows, are drawn plainly; the band of glazing on the hall's
   end and the annex's windows and doors are placed with the photograph as a reference. The ribs of the hall's cladding,
-  the glazing's frames, two dark louvred openings high on the hall's end, the canopy over the annex's glazed door, the
-  cap along its top and the flues beside the hall's end are not drawn. Its entrance is not known from a record: its door
+  the glazing's frames, two dark louvred openings high on the hall's end, the canopy over the annex's glazed door and a
+  small one against its neck, the cap along its top and the flues beside the hall's end are not drawn. Its entrance is not known from a record: its door
   is set before the glazed door the photograph shows in the annex, on the yard, where the map's ground lies 0.7 m under
   the LiDAR's. While a building beside it is open, it gives way to block 907, which sinks to a footprint on its footing,
   at most 4 m above the lowest ground under it: that footprint stands above the drawn ground on 87% of its cells, by up
