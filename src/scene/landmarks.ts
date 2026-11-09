@@ -135,8 +135,9 @@ export interface LandmarkHost {
  * Building and its Extension (110, 110N), buildings 303 and 303S of the Science Centre, and Architecture -
  * West and Architecture - East (421W, 421E); Te Pūtahi Tangata (201) stands 0.44 m from the Music School
  * (250) and 0.57 m from the Humanities Building (206). The nearest two landmarks further apart than this,
- * buildings 302 and 303S of the Science Centre, stand 5.6 m apart (the next, 302 and 303, 15 m, and the
- * Kate Edger Information Commons (315) and Old Choral Hall (104), 17 m): each of those can stand on the
+ * buildings 302 and 303S of the Science Centre, stand 5.6 m apart (the next, the Humanities Building and
+ * Okareta (206, 215), 7.4 m, and the Humanities Building and the Sir Owen G Glenn Building (206, 260),
+ * 7.9 m): each of those can stand on the
  * map's own ground without a step or an overlap between them that a camera could see.
  */
 export const SHARED_GROUND = 2;

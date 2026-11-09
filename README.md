@@ -1377,9 +1377,10 @@ If you represent the University and would like something changed or removed, ple
   falls about 11 m, so from the south-east the long block stands about 4 m less over the drawn ground than over the real
   one. It stands within 2 m of the Humanities Building and the Music School (0.57 and 0.44 m), but the map's ground at
   their three doors is off the LiDAR's by amounts 4.26 m apart, so each stands on the map's ground at its own door, as
-  the Clock Tower and its East Wing do. Block 201 is 85.1% under the model. While a building beside it is open, it gives
-  way to block 201, which sinks to a footprint on its footing, at most 4 m above the lowest ground under it: that
-  footprint stands above the drawn ground on 70% of its cells, by up to 4.6 m.
+  the Clock Tower and its East Wing do. Block 201 is 84.6% under the model by the top view's count, which leaves out the
+  podium and the low parts standing less than 2.5 m over the door's ground (94.4% counted from the ground under it).
+  While a building beside it is open, it gives way to block 201, which sinks to a footprint on its footing, at most 4 m
+  above the lowest ground under it: that footprint stands above the drawn ground on 70% of its cells, by up to 4.6 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
