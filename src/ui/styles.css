@@ -1674,6 +1674,13 @@ select optgroup {
   background: rgba(16, 28, 38, 0.72);
   color: #d5dee4;
   font-size: 11px;
+  /* It shares the foot of the screen with the campus's and the walk's buttons (at most 380 px wide where it could
+     reach them, below): it gives way, to its ellipsis, before it would run under them. The phone's layout, which
+     puts it below them, sets its own. */
+  max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .attribution:hover {
@@ -2279,21 +2286,11 @@ select optgroup {
   }
 }
 
-/* Wider than the phone's layout (a zoomed page can be 720.5 px wide, which neither 720 nor 721 takes), the campus's
-   and the walk's buttons share the foot of the screen with the attribution: it gives way, to its ellipsis, before it
-   would run under them, and where the screen is narrow enough for that the row is at most 380 px wide. */
-@media (width > 720px) {
-  .attribution {
-    max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
-@media (720px < width < 1000px) {
+/* Where the attribution could reach the campus's and the walk's buttons, in a wide font with a long campus name and
+   a count, the row is at most 380 px wide (the attribution keeps 388 px clear); on a wider screen it has its room. */
+@media (max-width: 1099.98px) {
   .campus-dock {
-    max-width: 380px;
+    max-width: min(380px, calc(100vw - var(--edge-l) - var(--edge-r)));
   }
 }
 

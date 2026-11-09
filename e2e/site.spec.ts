@@ -385,7 +385,7 @@ test("the campus's and the walk's buttons stay clear of the attribution at every
   await expect(page.locator("#status-toggle")).toContainText(longest.name.slice(0, 4));
   const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
     a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
-  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1024, 1440]) {
+  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1440]) {
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const attribution = (await page.locator("#attribution").boundingBox())!;
