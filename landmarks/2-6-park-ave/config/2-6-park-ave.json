@@ -1,0 +1,184 @@
+{
+ "name": "2-6-park-ave",
+ "site": true,
+ "estimated": "the balconies' slabs' depth and their rails' bars and posts, the glazing behind them on the east face and its ground storey's brick and windows, with a photograph as a reference; how far the walls stand behind the eaves and the balconies, behind where the LiDAR sees the ground under them; the low part south-west of the block where trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the footpath of Park Avenue near the block's north-east corner, about 8 m out from its east face, looking south-south-west along it, through a lens of about 36 degrees across, looking up about 6.5 degrees; its camera is fitted to the east face's eave, the top of its south end, the planted bed's kerb along the footpath (where the LiDAR's shrubs end) and two verticals, held near 1.6 m over the LiDAR's ground (2.15 m)",
+ "building": {
+  "id": "529",
+  "also": [],
+  "title": "2-6 Park Ave (529), University of Auckland",
+  "note": "outline: building 529's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 529 by its id.",
+  "outline": [
+   [
+    -126.6,
+    -1184.8
+   ],
+   [
+    -119.4,
+    -1159.2
+   ],
+   [
+    -123.2,
+    -1158.1
+   ],
+   [
+    -121.7,
+    -1152.7
+   ],
+   [
+    -118.0,
+    -1153.7
+   ],
+   [
+    -115.6,
+    -1145.0
+   ],
+   [
+    -113.0,
+    -1145.7
+   ],
+   [
+    -112.1,
+    -1142.9
+   ],
+   [
+    -91.1,
+    -1148.7
+   ],
+   [
+    -91.6,
+    -1150.8
+   ],
+   [
+    -88.0,
+    -1151.7
+   ],
+   [
+    -99.2,
+    -1192.5
+   ],
+   [
+    -119.0,
+    -1187.1
+   ],
+   [
+    -119.7,
+    -1189.5
+   ],
+   [
+    -122.8,
+    -1188.7
+   ],
+   [
+    -122.5,
+    -1187.6
+   ],
+   [
+    -123.6,
+    -1187.3
+   ],
+   [
+    -123.5,
+    -1185.9
+   ],
+   [
+    -124.0,
+    -1185.7
+   ],
+   [
+    -137.3,
+    -1182.1
+   ],
+   [
+    -137.7,
+    -1183.5
+   ],
+   [
+    -143.8,
+    -1181.9
+   ],
+   [
+    -140.2,
+    -1168.8
+   ],
+   [
+    -134.1,
+    -1170.4
+   ],
+   [
+    -137.2,
+    -1181.9
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 68.87,
+ "door": {
+  "x": -17.5,
+  "z": 17.0,
+  "note": "on the footpath of Park Avenue before the east face's south end, 0.9 m out from the eave's edge (the campus map records no lobby or entrance in 529, and OpenStreetMap no entrance near it): u 17.5, w 17.0 in the building's frame ((-17.5, 17.0) in the view frame). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 68.713/68.867/68.924 m"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3804"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 2.99,
+  "tower_above": 2.99,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    -130.01549709614017,
+    -1166.4514362238638
+   ],
+   "axis": [
+    -0.31267446607431804,
+    -0.9498603467168951
+   ],
+   "tolerance_m": 0.05
+  },
+  "thresholds_note": "min_above 3 m over the provisional ground (68.86 m); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long east face (bearing 198 deg), so z faces east-south-east, to Park Avenue; all three lowered by 0.01 m with the ground set at the door (step 7), so that they pick the same points"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-10); the provisional ground was 68.86 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "light": {
+  "sunaz": 290,
+  "sunel": 40,
+  "exposure": 1.0,
+  "note": "estimated: the photograph is taken under an overcast sky, its east face in soft light without shadows. The viewer's sun stands behind the block (290 deg round, 40 up), so that the east face takes the sky's light only, at an exposure of 1.0: the luma (p50) of the east face between the eave and the brick 92 against the photograph's 85, of its brick 87 against 111, of its slabs' fronts 147 against 189, of its glazing 85 against 75 (the compare's figure over the model's screen box, where the photograph has its bright sky, trees and a sign: 82 against 145)"
+ }
+}

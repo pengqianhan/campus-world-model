@@ -18,6 +18,16 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **2-6 Park Ave drawn in detail.** Near the camera the map draws 2-6 Park Ave (529), on the Grafton campus, from code
+  in place of its block: a long block of four storeys under a thin flat roof with a dark eave; at each upper storey a
+  balcony along every face on a pale slab with a light rail; on its east face, on Park Avenue, the glazing behind them
+  and a ground storey of pale grey brick; on its roof grey plant and a raised part with a red roof; a one-storey annex
+  on its west and a low part south-west of it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from Park Avenue, and its card says what is estimated: the balconies' slabs' depth and their rails' bars
+  and posts, the glazing behind them on the east face and its ground storey's brick and windows, with the photograph
+  as a reference; how far the walls stand behind the eaves and the balconies; the low part south-west of it where
+  trees hide its roof; and the faces no photograph shows. On the map it has the map's colours; from a walker's height
+  on a computer with a graphics card, its own walls, rails, glass and roofs (#155).
 - **Building 505 of the M&HS Building drawn in detail.** Near the camera the map draws building 505 of the M&HS
   Building, on the Grafton campus, from code in place of its block: a long block of four storeys in white concrete
   panels over a ground floor set back under its upper storeys, behind round columns on the north; on its north face
