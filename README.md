@@ -69,9 +69,9 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-11-10:** on the Grafton campus the map draws 2-6 Park Ave (529) in detail: a long block of four storeys with a
-  balcony along each upper storey of its face on Park Avenue, a ground storey of pale brick, a dark eave and a raised
-  part with a red roof. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and
-  its card says what is estimated.
+  balcony along each upper storey of every face, a ground storey of pale brick, a dark eave and a raised part with a red
+  roof. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and its card says what
+  is estimated.
 - **2026-11-09:** "Take a walk" is a button of its own beside the campus's name in the bottom-left corner, on
   every school's map, no longer a line inside the campus panel.
 - **2026-11-09:** on the Newmarket campus the map draws Building 907 in detail: a hall under a shallow barrel
@@ -731,16 +731,16 @@ LiDAR's height. What the photograph does not show is drawn plainly.
 | ![Building 501 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-501-map.jpg) | ![Building 501 of the M&HS Building from its plaza, through the walker's eyes](docs/landmarks/mhs-building-501-eyes.jpg) |
 
 The twenty-seventh is 2-6 Park Ave (529), on the Grafton campus: a long block of four storeys under a thin flat roof
-with a dark eave; on its east face, on Park Avenue, a balcony along each upper storey on a pale slab with a light rail,
-the glazing behind them, and a ground storey of pale grey brick; on its roof grey plant and a raised part with a red
-roof. Its heights and plans come from the LiDAR, which also sees the ground, or a canopy, under its eaves, where the
-walls are drawn set back, but for the part of a low wing south-west of it that trees hide, drawn to the campus map's
-outline; the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick
-and windows are estimated with the photograph as a reference. One photograph from the footpath of Park Avenue, looking
-along the east face; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in
-it, and the brightness of that face is within 8 of the photograph's. From above its outline covers the LiDAR's with an
-IoU of 0.87, and on 89% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not
-show is drawn plainly.
+with a dark eave; at each upper storey a balcony along every face on a pale slab with a light rail; on its east face, on
+Park Avenue, the glazing behind them and a ground storey of pale grey brick; on its roof grey plant and a raised part
+with a red roof. Its heights and plans come from the LiDAR, which also sees the balconies' slabs and rails all round,
+and the ground under its eaves, where the walls are drawn set back, but for the part of a low wing south-west of it that
+trees hide, drawn to the campus map's outline; the balconies' slabs' depth and their rails' bars and posts, the glazing
+behind them on the east face and its ground storey's brick and windows are estimated with the photograph as a reference.
+One photograph from the footpath of Park Avenue, looking along the east face; counted inside the rectangle the model
+fills on the screen, its silhouette has an IoU of 0.96 in it, and the brightness of that face is within 8 of the
+photograph's. From above its outline covers the LiDAR's with an IoU of 0.87, and on 89% of the cells both cover it is
+within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -953,7 +953,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of 49 Symonds Street from Symonds Street to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of the white band along its top, its dark base and its windows and its windows' widths and places, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Okareta from the footpath before it | The look its model was compared with while it was drawn, and, as a reference, the places and heights of its windows, its door, its bay's face and its verandah, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 501 of the M&HS Building from the plaza to its east | The look its model was compared with while it was drawn, and, as a reference, the heights of its crown's eave and band, the set-back of its shaft under the crown, the top and floors of the glazed link beside it and its strip of windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of 2-6 Park Ave from the footpath of Park Avenue | The look its model was compared with while it was drawn, and, as a reference, its east face's storeys, its balconies' depth and rails, the glazing behind them and its ground storey's brick and windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of 2-6 Park Ave from the footpath of Park Avenue | The look its model was compared with while it was drawn, and, as a reference, its balconies' slabs' depth and their rails' bars and posts, the glazing behind them on the east face and its ground storey's brick and windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - East from a paved deck above its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1348,17 +1348,17 @@ If you represent the University and would like something changed or removed, ple
   1.7 m.
 - **2-6 Park Ave is seen from Park Avenue only.** One photograph, under an overcast sky, looks along its east face from
   the footpath near its north-east corner; its camera's distance is held by the planted bed's kerb along the footpath,
-  where the LiDAR's shrubs end. The east face's storeys, its balconies' depth and rails, the glazing behind them and the
-  ground storey's brick and windows are estimated in the photograph. The LiDAR sees the ground under the eave on its
-  north, east and south sides, and a canopy under it on the west: the walls are drawn behind them, by estimated depths.
-  Of the low parts the campus map's block takes in, a one-storey annex on the west and a low part south-west of the
-  block are drawn, the second to the block's outline where trees hide its roof; low strips along the walls, up to about
-  1.5 m wide, are left open. Its other faces, which no photograph shows, are drawn plainly. Its entrance is not known
-  from a record: its door is set on the footpath before the east face's south end. The map's ground round it stands
-  about 11 m over the LiDAR's (the 8 m elevation model is flat at about 80 m there), so the model stands on the drawn
-  ground at its door, 10.9 m higher than the real one, as the blocks round it do. While a building beside it is open, it
-  gives way to block 529, which sinks to a footprint on its footing: that footprint stands above the drawn ground on all
-  its cells, by up to 0.8 m.
+  where the LiDAR's shrubs end. The balconies' slabs and rails stand at the LiDAR's heights on every side; their slabs'
+  depth and the rails' bars and posts, the glazing behind them on the east face and its ground storey's brick and
+  windows are estimated in the photograph. The LiDAR sees the ground under the eave on its north, east and south sides:
+  the walls are drawn behind it and the balconies, by estimated depths. Of the low parts the campus map's block takes
+  in, a one-storey annex on the west and a low part south-west of the block are drawn, the second to the block's outline
+  where trees hide its roof; low strips along the walls, up to about 1.5 m wide, are left open. Its other faces, which
+  no photograph shows, are drawn plainly. Its entrance is not known from a record: its door is set on the footpath
+  before the east face's south end. The map's ground round it stands about 11 m over the LiDAR's (the 8 m elevation
+  model is flat at about 80 m there), so the model stands on the drawn ground at its door, 10.9 m higher than the real
+  one, as the blocks round it do. While a building beside it is open, it gives way to block 529, which sinks to a
+  footprint on its footing: that footprint stands above the drawn ground on all its cells, by up to 0.8 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

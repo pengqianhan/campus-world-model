@@ -39,22 +39,22 @@ export const EAVE = H(12.45), ROOF_IN = { top: H(13.0), inset: 2.5 };
 export const PLANT = { u: [-14.0, -5.0], w: [-5.0, 6.0], top: H(14.6) };
 export const RAISED = { u: [4.0, 16.0], w: [-3.0, 7.0], top: H(17.3), plant: { u: [8.0, 11.0], w: [2.0, 5.0], top: H(18.3) } };
 
+// The balconies: on every side, under the eave from the walls to the eave's edge, the LiDAR has three slabs, their tops
+// at 3.60, 6.55 and 9.50 m (p50 on each side within 0.02 m of these; the storeys 2.95 m apart), and 0.9 m over each a
+// band near the edge (4.50, 7.46 and 10.41 m): the rails' tops. The slabs' fronts 0.5 m deep and the rails' two bars on
+// posts are taken from the photograph of the east face (estimated), on every side.
+export const BALCONY = { slabs: [3.6, 6.55, 9.5].map((t) => [H(t - 0.5), H(t)]), rail: [0.45, 0.9], bar: 0.06,
+  posts: 3.0 };
 // The east face, on Park Avenue, through the photograph's fitted camera (estimated): the wall stands 1.6 m behind the
-// eave's edge (the LiDAR sees the ground up to w 14.0 under it); before it, at each upper storey, a balcony on its
-// slab to the eave's line, with a rail of two bars; the storeys 3.1 m apart, the slabs from 3.4 to 3.9 m, 6.5 to 7.0
-// and 9.6 to 10.1 (the camera puts the lowest slab's underside at 3.4 m and the next at 6.5); the ground storey in pale
-// brick, its windows under the first slab; the eave's dark fascia from 12.0 m.
-export const EAST = { back: 1.6, slabs: [[3.4, 3.9], [6.5, 7.0], [9.6, 10.1]].map(([a, b]) => [H(a), H(b)]),
-  rail: [0.5, 1.05], bar: 0.06, fascia: H(12.0), windows: { y: [H(0.9), H(2.9)] } };
+// eave's edge (the LiDAR sees the ground up to w 14.0 under it); behind the balconies the glazing of each upper storey;
+// the ground storey in pale brick, its windows under the first slab; the eave's dark fascia from 12.0 m.
+export const EAST = { back: 1.6, slabs: BALCONY.slabs, fascia: H(12.0), windows: { y: [H(0.9), H(2.9)] } };
 
-// The walls stand behind the eave's edge (estimated depths): 1.8 m on the north, 1.6 m on the east and 1.8 m on the
-// south, behind the ground the LiDAR sees under the eave (its returns to 1.66, 1.48 and 1.46 m in), and 1.8 m on the
-// west, behind a canopy at 3.65 m (3.62 to 3.69) that the LiDAR sees under the eave all along that side, up to 1.61
-// m in from its edge: their corners. Inside them the LiDAR has the roof and no ground.
+// The walls stand behind the eave's edge and its balconies (estimated depths): 1.8 m on the north, 1.6 m on the east
+// and 1.8 m on the south, behind the ground the LiDAR sees under the eave (its returns to 1.66, 1.48 and 1.46 m in), and
+// 1.8 m on the west, where the ground is hidden: on every side the balconies' slabs reach 1.2 to 1.4 m in from the
+// eave's edge. Their corners; inside them the LiDAR has the roof and no ground.
 export const WALLS = [[-20.16, -10.74], [-20.95, 12.97], [18.85, 14.53], [19.55, -9.46]];
-/** The west canopy under the eave, from the wall to the eave's edge between the north and south walls. */
-export const CANOPY = { plan: [[-20.16, -10.74], [19.55, -9.46], [19.55, -11.26], [-20.16, -12.53]],
-  y: [H(3.5), H(3.65)] };
 // The east face's balconies, glazing, brick and ground storey windows run between the north and south walls: t along
 // NE to SE where the walls' lines meet the east wall.
 export const EAST_T = [0.0412, 0.9582];
