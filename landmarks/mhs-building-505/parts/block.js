@@ -1,15 +1,16 @@
-// The M&HS Building's long block: its roofs' four parts and the dark band round its south-east corner (`body`); its
-// north face, with the white end walls, the fins and louvres over the set-back glazing, the parapet, the first floor's
-// slab edge, the columns and the ground floor's glass, and the east face's glass (`north`); the atrium at its west
-// end, the link north of it and the low strip west of the atrium (`west`). Sizes from common.js.
+// The M&HS Building's long block: its ground floor, its roofs' four parts over it, the dark band round its south-east
+// corner and the canopy before its south face (`body`); its north face, with the white end walls, the fins and louvres
+// over the set-back glazing, the parapet, the first floor's slab edge, the columns and the ground floor's glass, and the
+// east face's glass (`north`); the atrium at its west end, the link north of it and the low strip west of the atrium
+// (`west`); and the edges of 503's roofs inside 505's ring (`edge`). Sizes from common.js.
 import {
-  ATRIUM, BACK, BAND, BAYS, COLUMNS, EAST_GLASS, END_BAY, FIN, FOOT, FRONT, GLAZING, LINK, LOUVRES, MIDDLE, NORTH_W, SOFFIT,
-  SOUTH_W, STOREY_GLASS, TOP_E, TOP_N, TOP_S, WEST, WEST_U, at, eastU, plan, rect,
+  ATRIUM, BACK, BAND, BAYS, CANOPY, COLUMNS, EAST_GLASS, EDGE, END_BAY, FIN, FOOT, FRONT, GLAZING, GROUND, LINK, LOUVRES,
+  MIDDLE, NORTH_W, SOFFIT, SOUTH_W, STOREY_GLASS, TOP_E, TOP_N, TOP_S, WEST, WEST_U, at, eastU, plan, rect,
 } from "./common.js";
 import { block, inset, prism, tris } from "./shapes.js";
 
 const WALL = "claddingPale", ROOF = "roofGrey", GLASS = "glass", FIN_M = "screenSilver", DARK = "screenGrey";
-const SLAB = 3.9;  // the first floor's slab under the north face's upper storeys, from 3.9 m to the soffit (estimated)
+const SLAB = GROUND.slab;  // the first floor's slab, under the upper storeys (estimated)
 
 /** The band's inner line (from its south-face end to its east-face end) and where it crosses w. */
 const INNER = inset(BAND.line.slice().reverse(), BAND.depth);
@@ -24,18 +25,21 @@ function crossing(line, w) {
   throw new Error(`the band's inner line does not cross w ${w}`);
 }
 
-/** The roof's four parts, each from FOOT to its own roof, and the dark band. */
+/** The ground floor, from FOOT to the first floor's slab; over it the roof's four parts, each to its own roof, and the
+ * dark band; the canopy before the south face. */
 export function body(b) {
   const x = crossing(INNER, -10.2), e1 = BAND.line[0];
-  block(b, plan(MIDDLE.plan), FOOT, MIDDLE.top, WALL, ROOF);
+  block(b, plan(GROUND.plan), FOOT, SLAB, WALL, WALL, 0.01);
+  block(b, plan(MIDDLE.plan), SLAB, MIDDLE.top, WALL, ROOF);
   // the north strip behind the north face's upper storeys (w to 5.4) and, west of the end bay, to the north face
   const n5 = eastU(BACK);
   block(b, plan([[-14.5, 1.0], [56.4, 1.0], [n5, BACK], [FRONT.u[0], BACK], [FRONT.u[0], NORTH_W], [-14.5, NORTH_W]]),
-    FOOT, TOP_N, WALL, ROOF);
-  block(b, plan([[37.5, -10.2], x.at, ...INNER.slice(x.i + 1), e1, [56.4, 1.0], [37.5, 1.0]]), FOOT, TOP_E, WALL, ROOF);
+    SLAB, TOP_N, WALL, ROOF);
+  block(b, plan([[37.5, -10.2], x.at, ...INNER.slice(x.i + 1), e1, [56.4, 1.0], [37.5, 1.0]]), SLAB, TOP_E, WALL, ROOF);
   block(b, plan([[WEST_U, SOUTH_W], BAND.line[BAND.line.length - 1], ...INNER.slice(0, x.i + 1), x.at, [WEST_U, -10.2]]),
-    FOOT, TOP_S, WALL, ROOF);
-  block(b, plan([...BAND.line, ...INNER]), FOOT, BAND.top, DARK, ROOF);
+    SLAB, TOP_S, WALL, ROOF);
+  block(b, plan([...BAND.line, ...INNER]), SLAB, BAND.top, DARK, ROOF);
+  prism(b, rect(CANOPY.u, CANOPY.w), CANOPY.y[0], CANOPY.y[1], WALL);
 }
 
 /** The north face and the east face's glass. */
@@ -73,7 +77,7 @@ export function north(b) {
   prism(b, rect(FRONT.u, [BACK, FRONT.face]), FOOT, FRONT.band, GLASS);
   block(b, rect(FRONT.u, [BACK, FRONT.face]), FRONT.band, FRONT.top, DARK, ROOF);
   // the ground floor's glass on the set-back wall, and the columns before it
-  prism(b, rect([END_BAY.u[0], ne], [BACK, BACK + 0.02]), 0, SLAB, GLASS);
+  prism(b, rect([END_BAY.u[0], GROUND.plan[3][0]], [BACK, BACK + 0.02]), 0, SLAB, GLASS);
   for (const u of COLUMNS.u) {
     const ring = [];
     for (let i = 0; i < 8; i++) {
@@ -87,17 +91,31 @@ export function north(b) {
   prism(b, plan([...inset(face, -0.04), ...inset(face, -0.02).reverse()]), EAST_GLASS.y[0], EAST_GLASS.y[1], GLASS);
 }
 
+/** A box over [u0, u1] x [w0, w1] from FOOT whose roof is one slope, `low` at w0 rising to `high` at w1: its walls to
+ * `low`, then the roof and, under it, the faces at its ends and on its high side. */
+function wedge(b, [u0, u1], [w0, w1], low, high, wall, roof) {
+  prism(b, rect([u0, u1], [w0, w1]), FOOT, low, wall);
+  const p = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
+  tris(b, [[p(u0, w0, low), p(u1, w0, low), p(u1, w1, high)], [p(u0, w0, low), p(u1, w1, high), p(u0, w1, high)]], roof);
+  const [cx, cz] = at((u0 + u1) / 2, (w0 + w1) / 2), away = (m) => [2 * m[0] - cx, 2 * m[1] - cz];
+  tris(b, [[p(u0, w0, low), p(u0, w1, low), p(u0, w1, high)], [p(u1, w0, low), p(u1, w1, high), p(u1, w1, low)],
+    [p(u0, w1, low), p(u1, w1, low), p(u1, w1, high)], [p(u0, w1, low), p(u1, w1, high), p(u0, w1, high)]], wall, away);
+}
+
 /** The atrium (its glass roof one slope from its south side up to its north side), the link north of the block's west
  * part (glass under a grey band) and the low strip west of the atrium. */
 export function west(b) {
-  const A = ATRIUM, [u0, u1] = A.u, [w0, w1] = A.w;
-  prism(b, rect(A.u, A.w), FOOT, A.low, WALL);
-  const p = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
-  tris(b, [[p(u0, w0, A.low), p(u1, w0, A.low), p(u1, w1, A.high)], [p(u0, w0, A.low), p(u1, w1, A.high), p(u0, w1, A.high)]], GLASS);
-  const [cx, cz] = at((u0 + u1) / 2, (w0 + w1) / 2), away = (m) => [2 * m[0] - cx, 2 * m[1] - cz];
-  tris(b, [[p(u0, w0, A.low), p(u0, w1, A.low), p(u0, w1, A.high)], [p(u1, w0, A.low), p(u1, w1, A.high), p(u1, w1, A.low)],
-    [p(u0, w1, A.low), p(u1, w1, A.low), p(u1, w1, A.high)], [p(u0, w1, A.low), p(u1, w1, A.high), p(u0, w1, A.high)]], WALL, away);
+  const A = ATRIUM;
+  wedge(b, A.u, A.w, A.low, A.high, WALL, GLASS);
   prism(b, plan(LINK.plan), FOOT, LINK.top - 1.5, GLASS);
   block(b, plan(LINK.plan), LINK.top - 1.5, LINK.top, DARK, ROOF);
   block(b, rect(WEST.u, WEST.w), FOOT, WEST.top, WALL, ROOF);
+}
+
+/** The south edges of 503's roofs inside 505's ring, north of the atrium (its roof rising to the north) and of the link,
+ * drawn plainly. */
+export function edge(b) {
+  const E = EDGE.high;
+  for (const [u, w1] of E.strips) wedge(b, u, [E.w0, w1], E.eave, E.eave + E.rise * (w1 - E.w0), WALL, ROOF);
+  block(b, plan(EDGE.low.plan), FOOT, EDGE.low.top, WALL, ROOF);
 }

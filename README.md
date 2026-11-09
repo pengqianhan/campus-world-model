@@ -730,18 +730,19 @@ LiDAR's height. What the photograph does not show is drawn plainly.
 | ![Building 501 of the M&HS Building from its plaza, drawn from code](docs/landmarks/mhs-building-501-front.jpg) | ![Building 501 of the M&HS Building from above, drawn from code](docs/landmarks/mhs-building-501-above.jpg) |
 | ![Building 501 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-501-map.jpg) | ![Building 501 of the M&HS Building from its plaza, through the walker's eyes](docs/landmarks/mhs-building-501-eyes.jpg) |
 
-The twenty-seventh is building 505 of the M&HS Building, on the Grafton campus: a long block of four storeys over a
-ground floor set back behind round columns, in white concrete panels; on its north face, toward a plaza, twelve bays of
-silver fins and louvres over set-back glazing between a white wall at each end, glass at its north-east corner and a
-dark band round its cut south-east corner; over the parapet a higher middle of the roof, and at its west end an atrium
-under a glass roof. Its heights and plans come from the LiDAR, and so does its outline: the campus map's takes in the
-plaza north of it, over the storeys below it. The north face's storeys, how far its glazing stands behind the fins, the
-louvres' spacing, the ground floor's set-back and columns, the end bay's windows and the east face's glass are estimated
-with the photograph as a reference. One photograph from the main road north-east of it, about 42 m from its north-east
-corner; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.95 in it, and the
-brightness of its white walls is within 3 of the photograph's. From above its outline covers the LiDAR's with an IoU of
-0.92, and on 93% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
-drawn plainly.
+The twenty-seventh is building 505 of the M&HS Building, on the Grafton campus: a long block of four storeys in white
+concrete panels over a ground floor set back under its upper storeys, behind round columns on the north; on its north
+face, toward a plaza, twelve bays of silver fins and louvres over set-back glazing between a white wall at each end,
+glass at its north-east corner and a dark band round its cut south-east corner; over the parapet a higher middle of the
+roof, and at its west end an atrium under a glass roof. Its heights and plans come from the LiDAR, and so does its
+outline: the campus map's lies about 7 m north-north-east of it, over the plaza, and gives it the south edges of the
+next building's roofs, which the model draws plainly. The north face's storeys, how far its glazing stands behind the
+fins, the louvres' spacing, the ground floor's set-back and columns, the end bay's windows and the east face's glass are
+estimated with the photograph as a reference. One photograph from the main road north-east of it, about 42 m from its
+north-east corner; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in it,
+and the brightness of its white walls is within 3 of the photograph's. From above its outline covers the LiDAR's with an
+IoU of 0.92, and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not
+show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -1352,15 +1353,19 @@ If you represent the University and would like something changed or removed, ple
   corner is left out. The north face's storeys, how far its glazing stands behind its fins and louvres, the louvres'
   spacing, the ground floor's set-back and its columns, the end bay's windows and their frames and the east face's glass
   are estimated in the photograph; the LiDAR has a shade over the end bay's top window west of where the photograph has
-  the window, and it is drawn where the LiDAR has it. The atrium's glass roof, in vaults across it, is drawn as one
-  slope. Its south face, its west end and the atrium's sides, which no photograph shows, are drawn plainly. The campus
-  map's outline takes in 10 to 12 m of the plaza north of the block, over the storeys below it, and strips of 503's and
-  504's roofs: the model follows the LiDAR, and 69% of block 505 is under it (84% of the LiDAR's roof in that outline).
-  Its entrance is not known from a record: its door is set on the plaza before the entrance the photograph shows in the
-  north face, where the map's ground lies 1.2 m over the LiDAR's; toward the atrium's west end the map's ground rises to
-  2.5 m over the door's, so that end stands lower over the drawn ground than over the real one. While a building beside
-  it is open, it gives way to block 505, which sinks to a footprint on its footing, at most 4 m above the lowest ground
-  under it: that footprint stands above the drawn ground on 74% of its cells, by up to 3.1 m.
+  the window, and it is drawn where the LiDAR has it. On its other sides the LiDAR sees the ground under the upper
+  storeys, up to 3.4 m in on the south and across the east end: the ground floor is drawn set back behind that, by an
+  estimated depth. The atrium's glass roof, in vaults across it, is drawn as one slope. Its south face, its west end and
+  the atrium's sides, which no photograph shows, are drawn plainly. The campus map's outlines of 505 lie about 7 m
+  north-north-east of the LiDAR's building: they take in 10 to 12 m of the plaza north of it and miss up to 4 m of its
+  south side, and block 503 as the site draws it stops short of its own roofs' south edges inside 505's outline, so the
+  model draws those edges plainly (at 29 and 21 m, as the LiDAR has them), and 79% of block 505 is under it (96% of the
+  LiDAR's roof in that outline). Its entrance is not known from a record: its door is set on the plaza before the
+  entrance the photograph shows in the north face, where the map's ground lies 1.2 m over the LiDAR's; at the block's
+  south-west corner, on the street, the map's ground rises 2.5 m over the door's where the LiDAR's falls 3.4 m under it,
+  so that corner stands about 6 m less over the drawn ground than over the real one. While a building beside it is open,
+  it gives way to block 505, which sinks to a footprint on its footing, at most 4 m above the lowest ground under it:
+  that footprint stands above the drawn ground on 74% of its cells, by up to 3.1 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

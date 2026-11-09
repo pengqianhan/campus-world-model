@@ -9,8 +9,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   from which the heights in `parts/common.js` are measured; `H` moves them on), **z** north-north-east (`toStreet`,
   toward the plaza and the main road); the frame's centre at x = z = 0. `config/mhs-building-505.json`, `frame`. The
   campus's origin is about 1 km to the north: there the map's true north and NZTM's grid north differ by about 1
-  degree, so the map's metres and the frame's local NZTM metres lie about 19 m apart (`place` turns one into the
-  other).
+  degree, so the map's metres and the frame's local NZTM metres lie about 20.5 m apart here (`place` turns one into
+  the other).
 - The building's own frame: **u** east-south-east (`-x`), toward the main road, and **w** toward the plaza (`z`).
   `parts/common.js` gives `at(u, w)`, `plan(corners)` and `rect(u, w)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
@@ -23,15 +23,19 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     face, **the south band** 17.9 m falling to 17.4 at the south face;
   - **the atrium** at the block's west end, between it and 503 (u -45.5 to -14.5, w -4.5 to 10.3), its glass roof
     rising from 21.6 m at its south side to 24.6 m at its north side;
-  - **a low link** of 17.3 m north of the block's west part (u -13 to 8), to 503's east wing, and **a low strip** of
-    16.8 m west of the atrium;
-  - inside the campus map's ring of 505 but not of it: 10 to 12 m of **the plaza** north of the block (the ring takes
-    in the storeys under it), and a strip of **503**'s roof (28.7 to 30 m) north of the atrium;
+  - **a low link** of 17.3 m north of the block's west part (u -14.5 to 4.0), to 503's east wing, beside **a glazed
+    front** (u 4.0 to 8.7) under a grey band, and **a low strip** of 16.8 m west of the atrium;
+  - **the ground** under the roof up to 3.4 m in from the south face, across the east end from u 51 and along the cut:
+    the ground floor set back under the upper storeys there, with **a canopy** of 4.75 m before the south face;
+  - inside the campus map's ring of 505 but not of it: 10 to 12 m of **the plaza** north of the block (the campus map's
+    outlines of 505 lie about 7 m north-north-east of the LiDAR's building), and the south edges of **503**'s roofs
+    (28.7 to 29.8 m and 21.0 m) north of the atrium and the link, which block 503 does not reach;
   - the ground: 0 on the plaza north of the block, rising to about +2.5 by the main road at its south-east corner and
     falling to -3.4 along the street south of its west end: walls go down to `FOOT`, -4.5 m over the provisional
     ground.
-- What it draws: what the LiDAR has of 505 inside its ring, so that it stands over no part of the blocks of 503 and
-  504. The outline (`building.outline`) is traced from the LiDAR; the campus map's ring is kept as `campus_outline`.
+- What it draws: what the LiDAR has of 505 (its south side's strip outside the ring too), and, plainly, the south edges
+  of 503's roofs inside 505's ring, which no block draws once block 505 gives way. The outline (`building.outline`) is
+  traced from the LiDAR; the campus map's ring is kept as `campus_outline`.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -39,7 +43,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 208 triangles, 3 draw calls; round 1: 1,270, 5.
+  0: 208 triangles, 3 draw calls; round 1: 1,270, 5; after the review's round 1: 1,494, 5.
 
 ## Rounds
 - Round 0 (2026-11-10): the long block's four parts and the atrium, the link and the low strip, at the LiDAR's plans
@@ -78,6 +82,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   walls' undersides and the fins' backs in the glazing's glass: the fins now start 0.02 m over the soffit and 0.05 m
   out of the glazing. The foot check passes. Beside an open neighbour the model gives way to block 505, whose
   footprint stands above the drawn ground on 74% of its cells, by up to 3.12 m. 1,270 triangles, 5 draw calls.
+- The review's round 1 (2026-11-10): the ground floor drawn solid on the south, the east end and the cut, where the
+  LiDAR sees the ground under the roof, is set back behind those returns (estimated), the band starts at the slab and
+  a canopy of 4.75 m stands before the south face (the LiDAR); the south edges of 503's roofs inside 505's ring, which
+  no block draws once block 505 gives way (335 m² of the LiDAR's roof), drawn plainly at its heights; the card names
+  every size taken through the photograph; the docs say the campus map's outlines lie about 7 m off, not over
+  storeys under the plaza, and where the map's ground stands highest. 1,494 triangles, 5 draw calls. Silhouette IoU
+  0.923 in the model's screen box; the top view: footprint IoU 0.917, 92% of the 12,114 cells within 0.5 m; block 505
+  under the model 78.9%, the LiDAR's roof in its ring 95.5%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
