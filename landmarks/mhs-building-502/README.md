@@ -41,10 +41,12 @@ as it does for every landmark.
   the door minus the LiDAR's, -3.10 and -1.26 m, span 1.84 m).
 - The main block's south strip, u -13.87 to 21.89 and w -17.58 to the edge of 502's ring, lies in 501's ring, where
   501's model draws it (`../mhs-building-501/README.md`). This model stops at the north edge of that strip
-  (`MAIN.strip`: from (-13.87, -13.29) by (-7.04, -13.24) to (21.3, -11.74), a straight line within 0.004 m of that
+  (`MAIN.strip`: from (-13.87, -13.29) by (-7.04, -13.24) to (21.3, -11.74), a straight line within 0.007 m of that
   edge's other corners but two, which stand 0.25 and 0.17 m north of it at u 9.68 and 12.59), so that the two models
-  overlap only there, by up to 0.25 m over about 3.4 m², where 501's roof stands 0.13 m above this one's; west of the
-  strip its south side is the LiDAR's, w -17.9.
+  overlap only there, by up to 0.25 m over about 3.5 m²; west of the strip its south side is the LiDAR's, w -17.9.
+  Along the seam 501's roof stands 0.13 m above this one's west of u 15.8, and further east up to 1.04 m above it
+  (at u 21.3): 501's strip is one plane, which does not fall with this roof's east hip as the LiDAR's roof does
+  (this model is within 0.02 m of the LiDAR there).
 - 87.0% of block 502 is under the model above 2.5 m; 4.3% of 501C (which the campus map has as a basement) and 0.9%
   of 501. No other block is under it by half, so `building.also` is empty.
 

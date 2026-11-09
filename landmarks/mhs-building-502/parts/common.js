@@ -32,9 +32,10 @@ export const MAIN = {
   // about 31.85 (the outermost cells 31.7 to 32.2).
   u: [-22.9, 21.3], w: [-17.9, 14.25],
   // The north edge of 501's model's strip of this roof (in this frame), along which this model's south side runs:
-  // from (-13.87, -13.29) by (-7.04, -13.24) to (21.31, -11.74), a straight line within 0.004 m of its other corners
+  // from (-13.87, -13.29) by (-7.04, -13.24) to (21.31, -11.74), a straight line within 0.007 m of its other corners
   // but two, which stand 0.25 and 0.17 m north of it (u 9.68 and 12.59): there 501's strip reaches up to 0.25 m over
-  // this model's south side (about 3.4 m2), its roof 0.13 m above this one's.
+  // this model's south side (about 3.5 m2), its roof 0.13 m above this one's west of u 15.8 and up to 1.04 m above it
+  // further east, where 501's strip is one plane and does not fall with this roof's east hip.
   strip: [[-13.87, -13.29], [-7.04, -13.24], [21.3, -11.74]],
   // The roof's planes, fitted to its returns: the north slope (rms 0.08 m) and the south (0.15) meet at w -1.83, at
   // 34.78; between u -12 and 12 there are only those two. Beyond them each end is lower, a gentler hip falling to the
