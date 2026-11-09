@@ -21,7 +21,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   wide at 34.5 to 35 across its middle, raised parts at 37.2 to 38 at each end of it, the stair's core at 33.2 to 33.7
   (u -15 to -2.5), the podium at 7.6 to 8.0 (its parapets to 9) along its south-east side and round its south-west end,
   and 12, a low roof at -0.5 and a part at 3 to 4 by its south-west end, and a link at 13.5 beside the hall, with a
-  strip at 10.6 to 11.8 along the long block and the hall's south-west side.
+  strip at 10.3 to 11.8 along the long block and the hall's south-west side, open under it in places.
   Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
 - Walls go down to `FOOT`, 4.5 m under 28.33 m: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9
   on the south-east side.
@@ -32,7 +32,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 638 triangles, 5 draw
-  calls; step 8: 648, 5; the review's round 1: 712, 5; round 2: 728, 5.
+  calls; step 8: 648, 5; the review's round 1: 712, 5; round 2: 728, 5; round 3: 744, 5; its review:
+  776, 5.
 
 ## Rounds
 - Round 0 (2026-11-09, the lead alone): the plans at the LiDAR's edges and the campus map's ring; the hall's walls,
@@ -70,6 +71,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   site. 744 triangles, 5 draw calls. Top view: footprint IoU 0.911, 80% of 16,204 cells within 0.5 m; block 201 85.3%
   under the model by the top view's count (95.0% of its outline counted from the ground under each cell, 98.9% of the
   cells in it where the LiDAR has a roof). Luma and the IoU in the box as before.
+- The review of round 3's fix (2026-11-10): where the LiDAR sees the ground or planting under the strip at 10.9 (over
+  the passage by the north-west extension, and along the hall north of the link), a plate 0.6 m deep (estimated), hung
+  from the walls beside it, not a block down to `FOOT`; its depth named in `estimated` and on the card; the link's 13.5
+  part to its north wall at w 3.7. 776 triangles, 5 draw calls. Top view: footprint IoU 0.911, 80% of 16,188 cells
+  within 0.5 m; block 201 85.1% (94.8% and 98.8% by the second count). Luma and the IoU in the box as before.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

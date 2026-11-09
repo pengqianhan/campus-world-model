@@ -85,4 +85,5 @@ export function south(b) {
   block(b, plan(SOUTH.main.plan), FOOT, SOUTH.main.top, WALL, ROOF);
   for (const R of SOUTH.raised) block(b, plan(R.plan), SOUTH.main.top - 0.3, R.top, WALL, ROOF);
   for (const L of SOUTH.low) block(b, plan(L.plan), FOOT, L.top, WALL, ROOF);
+  for (const P of SOUTH.plates) block(b, plan(P.plan), P.y[0], P.y[1], WALL, ROOF);
 }

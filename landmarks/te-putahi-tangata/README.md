@@ -39,9 +39,9 @@ the one the model was drawn in (0.000 m, 0.000 degrees).
   6.87 m (250), all below: a span of 4.26 m, more than `SHARED_SPREAD`, so each stands on the map's ground at its own
   door, as the Clock Tower and its East Wing do, and 206 and 250 stand where they stood.
 - The roofs west of the hall (17 to 26 m) stand outside the outline: other buildings, not drawn.
-- 85.3% of block 201 is under the model by the top view's count, which counts only what stands more than 2.5 m over the
+- 85.1% of block 201 is under the model by the top view's count, which counts only what stands more than 2.5 m over the
   door's ground: the site falls 11 m, and the podium and the low parts on its south side stand under that. Counted from
-  the ground under each cell, 95.0% of the block's outline is under the model, and 98.9% of the cells in it where the
+  the ground under each cell, 94.8% of the block's outline is under the model, and 98.8% of the cells in it where the
   LiDAR has a roof. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
@@ -93,19 +93,21 @@ underside along the glass fall on the photograph's.
   roof 7.6 to 8.0, its parapets to 9) along its south-east side and round its south-west end (u -46 to -43), and 12
   beside the core (to u 7); past the podium's south-west end a low roof at -0.5, about 2.6 m over the ground; north of
   the block's west end a part at 3.6 (to w -0.5); and the link between it and the hall's south-west end at 13.5 (to u
-  -19.5), with a strip at 10.9 (the LiDAR's 10.6 to 11.8) along the long block, from u -29.1, where the north-west
-  extension's roof ends, and along the hall's whole south-west side, to w 31. Every face plain mid grey (`grey`), the
-  roofs `roofGrey`.
+  -19.5 and to its north wall at w 3.7), with a strip at 10.9 (the LiDAR's 10.3 to 11.8) along the long block, from u
+  -29.1, where the north-west extension's roof ends, and along the hall's whole south-west side, to w 31. Where the
+  LiDAR sees the ground or planting under the strip (past u -26.8, over a passage by the north-west extension, and along
+  the hall north of the link) it is a plate 0.6 m deep (estimated), hung from the walls beside it. Every face plain mid
+  grey (`grey`), the roofs `roofGrey`.
 - The light: the photograph's light is soft and bright, the front lit under the trees; the viewer's sun stands behind
   the camera, low in the north-west (300 degrees round, 35 up), at an exposure of 1.15: the building's luma median 213
   against the photograph's 203 as the metrics take it (the model at any height, and under the ground line the
   photograph shows the street) and 198 against 209 above the ground line.
 
-The top view: footprint IoU 0.911 (the LiDAR's 4,176 m² against the model's 4,507, both 4,140; of the 367 m² only the
+The top view: footprint IoU 0.911 (the LiDAR's 4,176 m² against the model's 4,499, both 4,136; of the 363 m² only the
 model covers, most is the hall's roof over its glazed strips, which the LiDAR does not see, and over a
 planted part at its north-east end, whose returns at the roof's height the LiDAR classes as vegetation), 80% of the
-16,204 cells both cover within 0.5 m (p10/p50/p90 -0.39/0.06/0.63), the highest point 30.54 m over the door's ground
-against the LiDAR's 30.93 (p99.9). 744 triangles, 5 draw calls.
+16,188 cells both cover within 0.5 m (p10/p50/p90 -0.39/0.06/0.63), the highest point 30.54 m over the door's ground
+against the LiDAR's 30.93 (p99.9). 776 triangles, 5 draw calls.
 
 ## On the map (step 7)
 
@@ -133,9 +135,10 @@ against a limit of 0.9 and 84% of its cells within 0.5 m against 90%) has gone; 
   footprint shows above the drawn ground on 70% of its cells, by up to 4.6 m.
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `grey`, `claddingPale` and `screenBlack` are walls.
-- **Its card** says "estimated:" and the config's `estimated`: the depth of the folded roof's plates at the front, with
-  the photograph as a reference; the strips across the long block's middle, drawn solid; and the faces no photograph
-  shows.
+- **Its card** says "estimated:" and the config's `estimated`: the depth of the folded roof's plates at the front and of
+  the canopy, with the photograph as a reference; the depth of the plate along the hall's south-west side and over a
+  passage by the long block's north-west end; the strips across the long block's middle, drawn solid; and the faces no
+  photograph shows.
 - **The pictures** in `docs/landmarks/`: `te-putahi-tangata-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from the street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site
   built from this branch, the map near it and a walker's eyes from the street before it.

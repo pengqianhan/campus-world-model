@@ -749,17 +749,17 @@ LiDAR's height. What the photograph does not show is drawn plainly.
 | ![Building 501 of the M&HS Building from its plaza, drawn from code](docs/landmarks/mhs-building-501-front.jpg) | ![Building 501 of the M&HS Building from above, drawn from code](docs/landmarks/mhs-building-501-above.jpg) |
 | ![Building 501 of the M&HS Building on the map, drawn from code in the map's colours](docs/landmarks/mhs-building-501-map.jpg) | ![Building 501 of the M&HS Building from its plaza, through the walker's eyes](docs/landmarks/mhs-building-501-eyes.jpg) |
 
-The twenty-seventh is Te Pūtahi Tangata (201), on the City campus between the Humanities Building and the Music
-School: on the street a hall whose front is glass from the pavement to its roof, under a folded roof whose plates rise
-and fall across the front, their ridges running back from the street; a canopy over its entrance; at its north-east
-end a taller block clad in pale metal; and behind them, down the slope, a long block whose roofs stand about 25 m over
-the street, with raised strips and parts. Its heights and plans come from the LiDAR; the depth of the folded roof's
-plates at the front and of the canopy are estimated with the photograph as a reference. One photograph from the street
-to its north-west, about 14 m from the glass, through three plane trees whose leaves hide all the sky over the roof: no
-silhouette can be counted against the sky, so the model was checked by laying it over the photograph through the
-camera fitted to it (to 1.8 pixels), and the brightness of the building is within 11 of the photograph's. From above
-its outline covers the LiDAR's with an IoU of 0.91, and on 80% of the cells both cover it is within 0.5 m of the
-LiDAR's height. What the photograph does not show is drawn plainly.
+The twenty-seventh is Te Pūtahi Tangata (201), on the City campus between the Humanities Building and the Music School:
+on the street a hall whose front is glass from the pavement to its roof, under a folded roof whose plates rise and fall
+across the front, their ridges running back from the street; a canopy over its entrance; at its north-east end a taller
+block clad in pale metal; and behind them, down the slope, a long block whose roofs stand about 25 m over the street,
+with raised strips and parts. Its heights and plans come from the LiDAR; the depth of the folded roof's plates at the
+front and of the canopy are estimated with the photograph as a reference, and that of a plate along the hall's
+south-west side without one. One photograph from the street to its north-west, about 14 m from the glass, through three
+plane trees whose leaves hide all the sky over the roof: no silhouette can be counted against the sky, so the model was
+checked by laying it over the photograph through the camera fitted to it (to 1.8 pixels), and the brightness of the
+building is within 11 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.91, and on 80% of
+the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -1368,7 +1368,8 @@ If you represent the University and would like something changed or removed, ple
   photograph sees the hall's glazed front and the north-east block's corner beside it; the trees hide the roof's top
   and all the sky over it, so its likeness was checked by laying the model over the photograph through the camera
   fitted to it, not by a silhouette counted against the sky. The folded roof's plates are drawn 1.4 m deep at the
-  front, estimated where the glass meets them in the photograph, and the canopy's depth is estimated in it too. The long
+  front, estimated where the glass meets them in the photograph, and the canopy's depth is estimated in it too; a
+  strip along the hall's south-west side is a plate 0.6 m deep, open under it, its depth estimated. The long
   block behind and the north-east block's other faces, which no photograph shows, are drawn plainly; the strips across
   the long block's middle are drawn solid, where the LiDAR sees returns both at their top and on the roof under them.
   The glazing's mullions, the cladding's panels, the hall's glazed roof strips and planted part and the things on the

@@ -67,8 +67,10 @@ export const NE = {
  * the podium at 7.6 to 8.0 (its parapets to 9) along its south-east side and its south-west end, and 12 beside the core
  * (to u 7); past the podium's south-west end a low roof at -0.4 to -0.7, about 2.6 m over the ground; north of the
  * block's west end a part at 3 to 4 (to w -0.5); and the link between the long block and the hall's south-west end, at
- * 13.5 to u -19.5, and a strip at 10.3 to 11.8 along the long block (from u -29.1, where the north-west extension's
- * roof ends) and along the hall's whole south-west side (to w 31). */
+ * 13.5 to u -19.5 and to its north wall at w 3.7, and a strip at 10.3 to 11.8 along the long block (from u -29.1, where
+ * the north-west extension's roof ends) and along the hall's whole south-west side (to w 31). Where the LiDAR sees the
+ * ground or planting under the strip (past u -26.8 by the long block, and along the hall north of the link) it is a
+ * plate, 0.6 m deep (estimated), hung from the walls beside it. */
 export const SOUTH = {
   main: { top: H(31.95), plan: [[-43.0, -26.0], [34.0, -26.0], [34.0, -4.5], [30.0, -4.5], [30.0, 0.0], [20.0, 0.0],
     [20.0, -4.5], [-29.1, -4.5], [-29.1, -0.5], [-39.0, -0.5], [-39.0, -4.5], [-43.0, -4.5]] },
@@ -91,8 +93,12 @@ export const SOUTH = {
     { top: H(-0.5), plan: [[-48.5, -21.0], [-46.0, -21.0], [-46.0, -7.5], [-48.5, -7.5]] },
     { top: H(3.6), plan: [[-45.7, -4.5], [-39.0, -4.5], [-39.0, -0.5], [-45.7, -0.5]] },
     // the link: 10.9 along the long block and along the hall, 13.5 between
-    { top: H(10.9), plan: [[-29.1, -4.5], [-18.2, -4.5], [-18.2, 31.0], [-19.5, 31.0], [-19.5, -2.0], [-26.8, -2.0],
-      [-26.8, -0.5], [-29.1, -0.5]] },
-    { top: H(13.5), plan: [[-26.8, -2.0], [-19.5, -2.0], [-19.5, 4.7], [-26.8, 4.7]] },
+    { top: H(10.9), plan: [[-26.8, -4.5], [-18.2, -4.5], [-18.2, 4.7], [-19.5, 4.7], [-19.5, -2.0], [-26.8, -2.0]] },
+    { top: H(13.5), plan: [[-26.8, -2.0], [-19.5, -2.0], [-19.5, 3.7], [-26.8, 3.7]] },
+  ],
+  // the strip at 10.9 where the LiDAR sees under it: over the passage by the north-west extension, and along the hall
+  plates: [
+    { y: [H(10.3), H(10.9)], plan: [[-29.1, -4.5], [-26.8, -4.5], [-26.8, -0.5], [-29.1, -0.5]] },
+    { y: [H(10.3), H(10.9)], plan: [[-19.5, 4.7], [-18.2, 4.7], [-18.2, 31.0], [-19.5, 31.0]] },
   ],
 };
