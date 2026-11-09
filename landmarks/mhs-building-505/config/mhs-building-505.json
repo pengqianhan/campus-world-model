@@ -265,11 +265,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 72.13,
+ "ground": 72.16,
  "door": {
-  "x": 0,
-  "z": 0,
-  "note": "provisional, to be set at step 7"
+  "x": -24.3,
+  "z": 9.5,
+  "note": "before the glazed entrance in the north face's ground floor, under the sign band the photograph shows there (the campus map records no lobby or entrance in 505, and OpenStreetMap no entrance near it): on the plaza 4.1 m out from the ground floor's glass (u 24.3, w 9.5 in the building's frame; (-24.3, 9.5) in the view frame). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 72.111/72.157/72.218 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -288,9 +288,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": 2.97,
+  "tower_above": 2.97,
+  "spine_below": 39.97,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "east",
@@ -306,7 +306,7 @@
    ],
    "tolerance_m": 0.05
   },
-  "thresholds_note": "min_above 3 m over the provisional ground (72.13 m), the ground falling 4 m from north-east to south-west across the crop; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring: the long block, the glazed atrium at its west end and the edge of 503 that the ring takes in. The walls' axis runs along the long block (bearing 108 deg), so z faces north-north-east, to the plaza and the street at the block's east end"
+  "thresholds_note": "min_above 3 m over the provisional ground (72.13 m), the ground falling 4 m from north-east to south-west across the crop; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring: the long block, the glazed atrium at its west end and the edge of 503 that the ring takes in. The walls' axis runs along the long block (bearing 108 deg), so z faces north-north-east, to the plaza and the street at the block's east end; all three lowered by 0.03 m with the ground set at the door (step 7), so that they pick the same points"
  },
  "refine": {
   "position_m": 3,
@@ -321,7 +321,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "72.13 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 68.74, p95 74.30); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-10); the provisional ground was 72.13 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 350,
   "sunel": 50,

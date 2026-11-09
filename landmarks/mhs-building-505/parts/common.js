@@ -3,7 +3,8 @@
 // LiDAR's ground at the config's door, z is toStreet (north-north-east, toward the plaza and the main road); the
 // frame's centre at x = z = 0. Owned by the lead: read, do not edit.
 // Measured 2026-11-10 (round 0), before the door was set: every height below is measured above 72.13 m, the median
-// ground in the first crop box, and H moves it on to the door's ground.
+// ground in the first crop box, and H moves it on to the door's ground, 72.16 m (on the plaza before the entrance in
+// the north face's ground floor).
 //
 // The sizes are given in the building's own frame, u along the long block toward the main road (east-south-east, the
 // frame's axis, so x = -u) and w toward the plaza (z = w); `at`, `plan` and `rect` turn them into the view frame.
@@ -15,8 +16,8 @@
 // end stands 504, and north of the atrium 503, each drawn by its own block. The ring runs 10 to 12 m north of the
 // block's north face, over the plaza, where the LiDAR has only the ground: the storeys under the plaza.
 export const at = (u, w) => [-u, w];
-/** A height measured above 72.13 m (the provisional ground), as one above the door's ground. */
-export const H = (h) => h;
+/** A height measured above 72.13 m (the provisional ground), as one above the door's ground, 0.03 m higher. */
+export const H = (h) => h - 0.03;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 export const rect = ([u0, u1], [w0, w1]) => plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]);
 
