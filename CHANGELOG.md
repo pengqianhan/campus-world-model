@@ -29,7 +29,7 @@ A change to what the site does or shows adds its line here, and the README's
   louvres, the louvres' spacing, the ground floor's set-back and its columns, the end bay's windows and the east
   face's glass, with the photograph as a reference; how far the ground floor stands back on its other sides; the
   atrium's glass roof, drawn as one slope; and the faces no photograph shows. On the map it has the map's colours;
-  from a walker's height on a computer with a graphics card, its own panels, fins, glass and roofs (#PR).
+  from a walker's height on a computer with a graphics card, its own panels, fins, glass and roofs (#154).
 
 ## 2026-11-09
 
