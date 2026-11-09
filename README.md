@@ -754,7 +754,7 @@ roofs at the same height, with raised parts and a lower part on its south side. 
 LiDAR; the underside of the finned storeys and the foot of the canopy's fascia are estimated with the photograph as a
 reference. One photograph from across the street to its east-south-east at dusk, about 16 m from the street face;
 counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.97 in it, and the brightness
-of the building is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.89, and on 91% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn
+of the building is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.89, and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn
 plainly.
 
 | | |

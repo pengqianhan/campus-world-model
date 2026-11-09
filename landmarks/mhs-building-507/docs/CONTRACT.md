@@ -18,9 +18,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   44.3), the north-west block (u -41.2 to -10, w -43.4 to 4.6) and the three glazed steps between them (fronts at w
   10.75, 16.3 and 22.2, sides slanting 17 degrees); raised parts at 20.8, 19.25 and 19.1; a lower part at 9.65, one at
   5.5 and a strip at 9.35; the entrance canopy at 5.15. The LiDAR's roofs run up to 4.9 m past the campus map's ring in
-  places (the north-west block's west side and corner, the canopy's front), and no other block lies within 6 m of it:
-  the model draws the LiDAR's building. Lower roofs west and north of it (3 to 10 m), outside the ring, are other
-  buildings: not drawn.
+  places (the north-west block's west side and corner, the canopy's front and north side), and no other block lies
+  within 6 m of it: the model draws the LiDAR's building. Lower roofs west and north of it (3 to 10 m), outside the
+  ring, are other buildings: not drawn.
 - Walls go down to `FOOT`, 4.97 m under the door's ground (the ground round the building lies from -0.6 to +1.0 over
   the first ground, in the sunken courtyard between the blocks at -4.1).
 
@@ -30,7 +30,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 494 triangles, 4 draw
-  calls; after the review's round 1: 510, 4.
+  calls; after the review's round 1: 510, 4; round 2: 498, 4.
 
 ## Rounds
 - Round 0 (2026-11-09, the lead alone): the plans at the LiDAR's edges, flat roofs; the street face's finned upper
@@ -44,6 +44,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   degrees off the axis, w 2.27 to 3.85, not 2; the part at 5.5 to u 5.25; the raised parts about 1 m in); the
   canopy on before the third bay. Silhouette IoU 0.969 in the box, luma 142 against 147; top view: footprint IoU
   0.887, 91% of 13,453 cells within 0.5 m; block 507 93.1% under the model.
+- The review's round 2 (2026-11-09): the canopy's north side one straight line from (u -8.2, w 10.75) to (-2.8,
+  27.75), as the LiDAR's edge (the first fix had run it on to u -9 over open ground); the raised parts' other sides to
+  within about 0.5 m of the LiDAR's edges (the south-east block's middle 2 degrees off the axis). Top view: footprint
+  IoU 0.888, 92% of 13,447 cells within 0.5 m.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

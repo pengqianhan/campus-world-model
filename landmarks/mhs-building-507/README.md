@@ -38,9 +38,9 @@ as it does for every landmark.
 - No other landmark comes within 2 m of its outline (building 502, on its own branch, stands 23 m away), so it stands
   on the map's ground at its own door.
 - No other block's outline lies within 6 m of 507's. The LiDAR's roofs run up to 4.9 m past the campus map's outline in
-  places (the north-west block's west side and its north-west corner, 3.8 to 4.9 m, and the canopy's front): the model
-  draws the LiDAR's building. The lower roofs west and north of it (3 to 10 m), outside the outline, are other buildings
-  and are not drawn.
+  places (the north-west block's west side and its north-west corner, 3.8 to 4.9 m, and the canopy's front and north
+  side): the model draws the LiDAR's building. The lower roofs west and north of it (3 to 10 m), outside the outline,
+  are other buildings and are not drawn.
 - 93.1% of block 507 is under the model above 2.5 m. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
@@ -73,13 +73,14 @@ fascia (below); it is a reference for the look and the comparison.
 - **Its faces**: the street face's finned upper storeys (`screenBlack`) from 7.75 m, the underside of their front edge
   (estimated, through the photograph's fitted camera), over its glazed base (`glass`); the bays' fronts glazed and their
   sides near black; every face no photograph shows plain mid grey (`grey`).
-- **The raised parts**: the south-east block's middle at 20.8 (u 8.5 to 41, w 12 to 23, an L), the north-west block's
-  strip at 20.8 (u -32 to -21, w -40 to -8, an L), a part at 19.25 north-east of it, and one at 19.1 over the bays'
-  root.
+- **The raised parts**, each within about 0.5 m of the LiDAR's edges: the south-east block's middle at 20.8 (u 9 to
+  41, w 13 to 23.3, an L, its sides 2 degrees off the axis as the street face), the north-west block's strip at 20.8
+  (u -30.5 to -21, w -40 to -8, an L), a part at 19.25 south-east of it, and one at 19.1 over the bays' root.
 - **The lower parts**: along the north-west block's stepped south side at 9.65 (to u 7.6 and w -42.9),
   one at 5.5 beside it, to the sunken courtyard between the blocks (its ground at -4.1), and the strip at the south-east
   block's south end at 9.35 (u 44.3 to 50.1, from w 18.55, where the pavement's ground begins).
-- **The canopy** over the entrance, from the bays out to w 27.75 and on before the third bay to u -9: its roof at 5.15
+- **The canopy** over the entrance, from the bays out to w 27.75 and on before the third bay, its north side one
+  straight line from (u -8.2, w 10.75) to (-2.8, 27.75), as the LiDAR's edge (within 0.15 m): its roof at 5.15
   (the LiDAR's 5.0 to 5.3), its fascia's foot at 3.1 (estimated, through the photograph's camera), near black.
 - The roofs `roofGrey`, as the 2023 aerial shows them grey.
 - The light: the photograph is at dusk, the face in shade and lit from inside; the model draws no windows and no light
@@ -87,11 +88,11 @@ fascia (below); it is a reference for the look and the comparison.
   building's luma median 142 against the photograph's 147 (counted in the model's screen box). With the sun behind the
   building, as at dusk, it is 58 to 72.
 
-Silhouette IoU 0.969 in the model's screen box (0.946 in the whole view). The top view: footprint IoU 0.887 (the
-LiDAR's 3,643 m² against the model's 3,818, both 3,507; of the 312 m² only the model covers, 209 are roof the LiDAR
+Silhouette IoU 0.969 in the model's screen box (0.946 in the whole view). The top view: footprint IoU 0.888 (the
+LiDAR's 3,643 m² against the model's 3,808, both 3,506; of the 302 m² only the model covers, 209 are roof the LiDAR
 sees more than 1.5 m outside the campus map's outline, which the top view leaves out of its own, and 46 have no
-return), 91% of the 13,453 cells both cover within 0.5 m (p10/p50/p90 -0.08/0.13/0.27), the highest point 20.34 m
-over the door's ground against the LiDAR's 20.45 (p99.9). 510 triangles, 4 draw calls.
+return), 92% of the 13,447 cells both cover within 0.5 m (p10/p50/p90 -0.09/0.13/0.26), the highest point 20.34 m
+over the door's ground against the LiDAR's 20.45 (p99.9). 498 triangles, 4 draw calls.
 
 ## On the map (step 7)
 
@@ -101,7 +102,7 @@ over the door's ground against the LiDAR's 20.45 (p99.9). 510 triangles, 4 draw 
   the canopy and just before it): u 1.0 and w 30.0 (in the view frame (-1.0, 30.0)); the LiDAR's ground within 1 m, 7
   returns, p50 68.504 m.
 - **The map's ground** (its 8 m elevation model) lies 2.14 m above the LiDAR's at the door, and under the model's plans
-  from 3.51 m below the door's to 3.83 m above (at the south end).
+  from 3.51 m below the door's to 3.81 m above (at the south end).
 
 ## On the site
 

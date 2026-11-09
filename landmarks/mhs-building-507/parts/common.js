@@ -12,9 +12,10 @@
 // joined by three glazed steps, each set back further, to a north-west block behind it; both under flat roofs at about
 // 18 m with raised parts, a lower part on the north-west block's south side, a low strip at the south-east block's
 // south end and a canopy over the entrance at the steps' foot. The LiDAR's roofs run up to 4.9 m past the campus map's
-// ring in places (the north-west block's west side and corner, the canopy's front; no other block lies within 6 m of
-// the ring): the model draws the LiDAR's building. In this frame u runs south-south-west and w east-south-east: a side
-// at the least u faces north, at the greatest u south, at the least w west and at the greatest w east.
+// ring in places (the north-west block's west side and corner, the canopy's front and north side; no other block lies
+// within 6 m of the ring): the model draws the LiDAR's building. In this frame u runs south-south-west and w
+// east-south-east: a side at the least u faces north, at the greatest u south, at the least w west and at the greatest
+// w east.
 export const at = (u, w) => [-u, w];
 /** A height measured above 68.03 m, as one above the door's ground, 68.50 m (the config's `ground`), 0.47 m higher. */
 export const H = (h) => h - 0.47;
@@ -53,12 +54,13 @@ export const FACE = { base: H(7.75) };
 
 // The raised parts on the 18 m roofs: the south-east block's middle (20.7 to 20.9), an L; the north-west block's
 // strip (20.6 to 20.9), an L; a part at 19.1 to 19.4 south-east of it; and one at 18.9 to 19.2 over the steps' root;
-// each to the LiDAR's edges of its cells over 20 (19 for the lower two).
+// each to within about 0.5 m of the LiDAR's edges of its returns over 20 (19 for the lower two). The south-east block's
+// middle runs 2 degrees off the axis, as the street face: its sides from w 16.4 to 17.1 and from 22.2 to 23.3.
 export const RAISED = [
-  { top: H(20.8), plan: [[8.5, 16.0], [34.0, 16.0], [34.0, 12.0], [41.0, 12.0], [41.0, 23.0], [8.5, 23.0]] },
-  { top: H(20.8), plan: [[-32.0, -40.0], [-21.0, -40.0], [-21.0, -8.0], [-27.0, -8.0], [-27.0, -33.0],
-    [-32.0, -33.0]] },
-  { top: H(19.25), plan: [[-20.0, -8.0], [-12.0, -8.0], [-12.0, 2.5], [-20.0, 2.5]] },
+  { top: H(20.8), plan: [[9.0, 16.4], [34.0, 17.1], [34.0, 13.0], [41.0, 13.0], [41.0, 23.3], [9.0, 22.2]] },
+  { top: H(20.8), plan: [[-30.5, -40.0], [-21.0, -40.0], [-21.0, -8.0], [-27.0, -8.0], [-27.0, -33.0],
+    [-30.5, -33.0]] },
+  { top: H(19.25), plan: [[-20.0, -6.5], [-12.0, -6.5], [-12.0, 3.0], [-20.0, 3.0]] },
   { top: H(19.1), plan: [[-4.5, 4.5], [10.0, 4.5], [10.0, 11.0], [-4.5, 11.0]] },
 ];
 
@@ -74,9 +76,10 @@ export const LOWER = [
 ];
 
 // The canopy over the entrance at the steps' foot: its roof 5.0 to 5.3 in the LiDAR, its fascia's foot at 3.1 in the
-// photograph (estimated), from the steps out to w 27.75, and on before the third step to u -9.
+// photograph (estimated), from the steps out to w 27.75 and on before the third step; its north side one straight line
+// from (u -8.2, w 10.75) to (-2.8, 27.75), within 0.15 m of the LiDAR's edge from w 11 to 25.
 export const CANOPY = {
   y: [H(3.1), H(5.15)],
-  plan: [[-9.0, 10.75], [-5.3, 10.75], [-3.6, 16.3], [-0.9, 16.3], [0.9, 22.2], [3.6, 22.2], [3.6, 27.75],
-    [-2.8, 27.75], [-5.5, 20.5], [-5.5, 16.3], [-9.0, 16.3]],
+  plan: [[-8.2, 10.75], [-5.3, 10.75], [-3.6, 16.3], [-0.9, 16.3], [0.9, 22.2], [3.6, 22.2], [3.6, 27.75],
+    [-2.8, 27.75]],
 };
