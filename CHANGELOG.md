@@ -67,7 +67,7 @@ A change to what the site does or shows adds its line here, and the README's
   Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from across the street at dusk, and its
   card says what is estimated: some heights, with the photograph as a reference (the underside of the finned storeys,
   the foot of the canopy's fascia), and the faces no photograph shows. On the map it has the map's colours; from a
-  walker's height on a computer with a graphics card, its own metal, glass and cladding (#PR).
+  walker's height on a computer with a graphics card, its own metal, glass and cladding (#151).
 
 ## 2026-11-08
 
