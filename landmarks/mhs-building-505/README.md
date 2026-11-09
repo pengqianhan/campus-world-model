@@ -121,8 +121,9 @@ atrium's north side, 24.6 to 24.9 m). 1,434 triangles, 5 draw calls.
   door is on the plaza 4.1 m out from the ground floor's glass, u 24.3 and w 9.5 (in the view frame (-24.3, 9.5)); the
   LiDAR's ground within 1 m, 13 returns, p50 72.157 m.
 - **The map's ground** (its 8 m elevation model) lies 1.25 m above the LiDAR's at the door, and along the outline from
-  0.59 m below the door's to 2.48 m above, at the block's south-west corner on the street, where the LiDAR's ground
-  lies 3.4 m under the door's: that corner stands about 6 m less over the drawn ground than over the real one.
+  0.56 m below the door's (at the east end) to 2.48 m above, at the block's south-west corner on the street, where the
+  LiDAR's ground lies 3.4 m under the door's: that corner stands about 6 m less over the drawn ground than over the real
+  one.
 
 ## On the site
 
