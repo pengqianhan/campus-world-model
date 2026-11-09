@@ -105,11 +105,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 45,
- "ground": 53.19,
+ "ground": 53.56,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -23.3,
+  "z": 17.8,
+  "note": "before the glazed door under a small canopy on the annex's west-north-west face, as the photograph shows it (the campus map records no lobby or entrance in 907, and OpenStreetMap no entrance within 120 m): on the yard 1.5 m out from that face (u 23.3, w 17.8 in the building's frame; (-23.3, 17.8) in the view frame). The LiDAR's ground within 1 m: 22 returns, p10/p50/p90 53.514/53.556/53.597 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -128,9 +128,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 9,
-  "tower_above": 9,
-  "spine_below": 40,
+  "min_above": 8.63,
+  "tower_above": 8.63,
+  "spine_below": 39.63,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -145,7 +145,7 @@
    ],
    "tolerance_m": 0.05
   },
-  "thresholds_note": "min_above and tower_above 9 m over the provisional ground: the frame is the top of the hall's barrel vault, whose crown stands about 10 m over the ground and its eaves about 6.5 m, and the annex (7.5 to 8 m) is left out; the centre is that top's, the axis its principal axis (axis_from left out), bearing 284.90 deg, along the vault: within 0.24 deg of its crown line fitted to the LiDAR (285.13 deg), and the eaves keep their distance from it to 0.1 m along the hall. The walls axis is not used: on this roof it gave 287.7 deg, along which the eaves drift 1 m over 30 m. x runs along the vault toward its east-south-east end, z faces south-south-west, toward the annex"
+  "thresholds_note": "min_above and tower_above 9 m over the provisional ground: the frame is the top of the hall's barrel vault, whose crown stands about 10 m over the ground and its eaves about 6.5 m, and the annex (7.5 to 8 m) is left out; the centre is that top's, the axis its principal axis (axis_from left out), bearing 284.90 deg, along the vault: within 0.24 deg of its crown line fitted to the LiDAR (285.13 deg), and the eaves keep their distance from it to 0.1 m along the hall. The walls axis is not used: on this roof it gave 287.7 deg, along which the eaves drift 1 m over 30 m. x runs along the vault toward its east-south-east end, z faces south-south-west, toward the annex; all three lowered by 0.37 m with the ground set at the door (step 7), so that they pick the same points"
  },
  "refine": {
   "position_m": 3,
@@ -160,6 +160,12 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "53.19 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 52.22, p95 54.06); provisional, to be the LiDAR's ground at the door (step 7)",
- "crop_note": "45 m round the outline, so that the crop box takes in the street west-south-west of the annex where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)"
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 53.19 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "crop_note": "45 m round the outline, so that the crop box takes in the street west-south-west of the annex where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)",
+ "light": {
+  "sunaz": 65,
+  "sunel": 40,
+  "exposure": 0.65,
+  "note": "estimated: the photograph was taken on an overcast, wet day, every face it shows without sun. The viewer's sun at 65 deg round (behind the building, seen from the camera) and 40 up leaves those faces to the sky's light; the building's luma p50 232 with the sun at 240 deg and 60 up at exposure 0.7, then with the sun behind 202 at 1.2, 176 at 0.9 and 149 at 0.65, against the photograph's 150 (counted in the model's screen box)"
+ }
 }

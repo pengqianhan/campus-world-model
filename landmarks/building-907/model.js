@@ -3,12 +3,14 @@
 // ?only=hall) builds just those parts. Every landmark's model.js exports build(materials, only), which returns a
 // Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
-import { hall } from "./parts/hall.js";
-import { annex } from "./parts/annex.js";
+import { glazing, hall } from "./parts/hall.js";
+import { annex, openings } from "./parts/annex.js";
 
 const PARTS = {
   hall: (b) => hall(b),
   annex: (b) => annex(b),
+  glazing: (b) => glazing(b),
+  openings: (b) => openings(b),
 };
 
 export function build(materials, only) {

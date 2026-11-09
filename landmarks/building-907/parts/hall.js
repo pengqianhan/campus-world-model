@@ -1,6 +1,6 @@
 // Building 907's hall: its walls of white metal cladding to the eaves, its two ends up to the vault's arc, and the
 // vault. Sizes from common.js.
-import { FOOT, HALL, at, rect } from "./common.js";
+import { FOOT, HALL, OPENINGS, at, rect } from "./common.js";
 import { loft, prism, tris } from "./shapes.js";
 
 const WALL = "paint", ROOF = "roofPale";
@@ -24,4 +24,13 @@ export function hall(b) {
     tris(b, list, WALL, ([x, z]) => [x + Math.sign(x) * 10, z]);
   }
   loft(b, arc(u0), arc(u1), ROOF);
+}
+
+/** The band of glazing on the west-north-west end: its dark frame standing 0.03 m out of the wall, the glass 0.01 to
+ * 0.06 m out over it (0.1 m in from the frame's edge), the pale strip across it 0.02 to 0.09 m out. */
+export function glazing(b) {
+  const u = HALL.u[1], G = OPENINGS.hallGlazing, [w0, w1] = G.w;
+  prism(b, rect([u, u + 0.03], [w0 - 0.1, w1 + 0.1]), FOOT + 0.1, G.top + 0.1, "screenBlack");
+  prism(b, rect([u + 0.01, u + 0.06], [w0, w1]), FOOT + 0.2, G.top, "glass");
+  prism(b, rect([u + 0.02, u + 0.09], [w0, w1]), G.strip[0], G.strip[1], WALL);
 }
