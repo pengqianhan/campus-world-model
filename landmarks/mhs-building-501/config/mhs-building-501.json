@@ -1,0 +1,205 @@
+{
+ "name": "mhs-building-501",
+ "site": true,
+ "estimated": "some heights, with a photograph as a reference: the crown's eave and band over the tower's east face and the shaft's set-back under it, the top and floors of the glazed link beside the tower, its strip of windows, and the depth of the glazed box's beam; the glazed link's glass roof, which the LiDAR does not see; and the faces no photograph shows, drawn plainly",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the plaza east of the tower, about 67 m before its east face, through a lens of about 48 degrees across, looking up 4 degrees, its principal point low in the frame (the photograph is cut off centre, or its verticals were straightened: they are upright); its camera is fitted to the front edge of the crown's flat top, the crown's eave over the east face, and the top and foot of the glazed box before that face, held 1.6 m over the LiDAR's ground",
+ "building": {
+  "id": "501",
+  "also": [],
+  "title": "M&HS Building (501), University of Auckland",
+  "note": "outline: building 501's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 501 by its id.",
+  "outline": [
+   [
+    8.5,
+    -1021.6
+   ],
+   [
+    5.8,
+    -1020.9
+   ],
+   [
+    8.0,
+    -1013.0
+   ],
+   [
+    30.8,
+    -1019.3
+   ],
+   [
+    31.1,
+    -1018.4
+   ],
+   [
+    33.9,
+    -1019.1
+   ],
+   [
+    33.6,
+    -1020.1
+   ],
+   [
+    45.2,
+    -1023.3
+   ],
+   [
+    43.1,
+    -1031.0
+   ],
+   [
+    48.7,
+    -1032.5
+   ],
+   [
+    47.8,
+    -1035.9
+   ],
+   [
+    64.6,
+    -1040.5
+   ],
+   [
+    59.7,
+    -1058.2
+   ],
+   [
+    55.6,
+    -1057.0
+   ],
+   [
+    55.5,
+    -1057.4
+   ],
+   [
+    41.7,
+    -1053.6
+   ],
+   [
+    41.1,
+    -1053.9
+   ],
+   [
+    25.4,
+    -1049.6
+   ],
+   [
+    25.1,
+    -1050.4
+   ],
+   [
+    22.3,
+    -1049.6
+   ],
+   [
+    22.6,
+    -1048.8
+   ],
+   [
+    9.3,
+    -1045.1
+   ],
+   [
+    11.2,
+    -1038.3
+   ],
+   [
+    10.9,
+    -1038.2
+   ],
+   [
+    11.2,
+    -1036.9
+   ],
+   [
+    4.8,
+    -1035.0
+   ],
+   [
+    6.2,
+    -1030.0
+   ],
+   [
+    5.1,
+    -1028.0
+   ],
+   [
+    6.0,
+    -1024.6
+   ],
+   [
+    7.9,
+    -1023.6
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 70,
+ "ground": 72.19,
+ "door": {
+  "x": -17.5,
+  "z": 0.9,
+  "note": "before the glass doors in the middle of the glazed box's east face, as the photograph shows them (the campus map records no lobby or entrance in 501, and OpenStreetMap no entrance near it): on the plaza 0.7 m out from the box's face (u 17.5, w 0.9 in the building's frame; (-17.5, 0.9) in the view frame). The LiDAR's ground within 1 m: 29 returns, p10/p50/p90 72.170/72.193/72.212 m"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3804"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 9.69,
+  "tower_above": 29.69,
+  "spine_below": 39.69,
+  "spine_radius": 30,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    11.30298801934002,
+    -1041.9657766591617
+   ],
+   "axis": [
+    0.949384639372818,
+    -0.31411591255927207
+   ],
+   "tolerance_m": 0.05
+  },
+  "thresholds_note": "min_above 10 m over the provisional ground (71.88 m), so that the frame is the building's: the plaza's low things and its trees are left out; the centre from its points over 30 m (tower_above), its top at the east end. The walls' axis runs along the long block (bearing 108 deg), so z faces north-north-east, toward building 502, and the end toward the plaza, the face the photograph sees, lies at minus x; all three lowered by 0.31 m with the ground set at the door (step 7), so that they pick the same points"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 71.88 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "crop_note": "70 m round the outline, so that the crop box takes in the plaza where the photograph is taken (25 m left its camera outside, with no LiDAR ground under it to hold its height)",
+ "light": {
+  "sunaz": 70,
+  "sunel": 45,
+  "exposure": 0.4,
+  "note": "estimated: the photograph has no date; its east face stands in sun. The viewer's sun at 70 deg round and 45 up lights that face; the building's luma p50 196 at the default exposure, 174 at 0.65, 153 at 0.5, 145 at 0.45, 136 at 0.4, against the photograph's 131 at step 5 (the photograph's is counted in the model's screen box, which moves with the model: 129 at the model as it is)"
+ }
+}

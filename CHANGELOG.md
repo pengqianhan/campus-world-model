@@ -51,6 +51,15 @@ A change to what the site does or shows adds its line here, and the README's
   photograph as a reference, the cornice's depth, the eaves' overhang and the porches' posts, and the faces no
   photograph shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
   its own render, iron and glass (#146).
+- **Building 501 of the M&HS Building drawn in detail.** Near the camera the map draws building 501 of the M&HS
+  Building, on the Grafton campus, from code in place of its block: a long block in board-marked concrete with a
+  tower at its east end under a dark crown of standing-seam metal, a strip of windows up the tower's face, a glazed
+  box at its foot and a glazed link beside it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the plaza to its east, and its card says what is estimated: some heights, with the photograph as
+  a reference (the crown's eave and band, the shaft's set-back under it, the glazed link's top and floors, the strip
+  of windows, the glazed box's beam), the glazed link's glass roof, which the LiDAR does not see, and the faces no
+  photograph shows. On the map it has the map's colours; from a walker's height
+  on a computer with a graphics card, its own concrete, metal and glass (#147).
 
 ## 2026-11-08
 

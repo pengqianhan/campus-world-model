@@ -1376,23 +1376,6 @@
     }
    }
   },
-  "501": {
-   "name": "M&HS Building",
-   "reason": "roof cells cover 58% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 1529.5,
-    "ground": {
-     "p5": 71.52,
-     "p50": 72.06,
-     "p95": 72.21,
-     "zero": 66.99
-    },
-    "roof_inside_m2": 891.5,
-    "cover": 0.583,
-    "vegetation": 0.035,
-    "open_below": 0.096
-   }
-  },
   "501C": {
    "name": "Building 501C",
    "reason": "roof cells cover 56% of the outline (limit 85%)",
