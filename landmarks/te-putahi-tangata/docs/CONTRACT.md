@@ -1,0 +1,52 @@
+# Contract: Te Pūtahi Tangata (201)
+
+The rules every part of this landmark keeps. The kit, the pipeline and the viewer are shared
+(`../../README.md`); this file is the building's own.
+
+## Frame and sizes
+- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the door's ground (35.50 m NZVD2016, the
+  plaza before the entrance's canopy), **z** north-west (`toStreet`, toward the street); the frame's centre, the
+  middle of the building's points over 3 m above the first crop box's ground, at x = z = 0.
+  `config/te-putahi-tangata.json`, `frame`: the building's returns within 1.5 m of the campus map's ring, the axis
+  along its walls (bearing 45.5 deg). The frame's thresholds were set above 28.33 m, the median ground in the first
+  crop box, and moved with the ground to the door's (7.17 m higher), so that the frame stays the same.
+- The building's own frame: **u** north-east (`-x`), along the street front, **w** toward the street (`z`).
+  `parts/common.js` gives `at` and `plan`, and `H`, which turns a height measured above 28.33 m into one above the
+  door's ground.
+- What the LiDAR shows (`parts/common.js` holds the numbers): the hall on the street (u -18.2 to 16.2, w -4.5 to
+  40.2), its folded roof's ridges at 19.1 to 19.4 and valleys at 16.9 to 17.2 above 28.33 m, 7.3 m apart, the roof's
+  top out to w 42 over the street; the canopy over the entrance at 10.85 (u -0.27 to 6.76); the north-east block
+  (u 16.2 to 37.6, out to w 44.2) at 23.9 to 24.6 with a raised part at 27.0 to 27.5; the long block behind (u -44.5
+  to 34, w -26 to -4.5) at 31.2 to 32.2, with strips 3 m wide at 34.5 to 35 across its middle, raised parts at 37.2 to
+  38 at each end of it, the stair's core at 33.2 to 33.6, the podium at 7.8 to 9 and 12, and a link at 13.5 beside the
+  hall. Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
+- Walls go down to `FOOT`, 4.5 m under 28.33 m: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9
+  on the south-east side.
+
+## Who owns what
+- `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/shapes.js` (the Humanities
+  Building's), `model.js`: the lead.
+
+## Budget
+- Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 638 triangles, 5 draw
+  calls.
+
+## Rounds
+- Round 0 (2026-11-09, the lead alone): the plans at the LiDAR's edges and the campus map's ring; the hall's walls,
+  its glazed front (`glass`) and the folded roof's plates, grey on top (`roofGrey`) and near black under and at their
+  edges (`screenBlack`), 1.4 m deep at the front (estimated, through the photograph's fitted camera: the glass meets
+  the plates' underside about 1.45 m under the LiDAR's top); the canopy and the north-east block's faces toward the
+  street and the hall pale metal (`claddingPale`); the faces no photograph shows plain (`grey`); the strips over the
+  long block's middle drawn solid (the LiDAR's returns there lie both at their top and on the roof under them); the
+  light. The photograph's sky is all behind the plane trees' leaves, so the silhouette IoU tells nothing here (0.639
+  in the model's screen box, with no sky in it); the camera's fit (rms 1.77 px over the canopy, the foot of the
+  glass, the hall's two ends and an edge of the street) and the model laid over the photograph are the check. Luma
+  204 against 213 as the metrics take it (the model at any height: under the ground line the photograph shows the
+  street), 210 against 201 above the ground line. Top view: footprint IoU 0.874 (of the 511 m² only the model covers,
+  most is the hall's roof over its glazing strips and a planted part, which the LiDAR classes as vegetation), 74% of
+  16,036 cells within 0.5 m, highest 30.54 against 30.93 over the door's ground; block 201 86.8% under the model.
+
+## Rules
+- Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
+- No two faces of different materials in one plane; every wall down to `FOOT`.
+- The photograph is a reference only: never traced, sampled or published; it stays in the gitignored `refs/photos/`.

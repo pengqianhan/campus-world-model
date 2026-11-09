@@ -2,7 +2,7 @@
  "name": "te-putahi-tangata",
  "site": false,
  "refs": "photos",
- "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-west of the hall, about 14 m from its glazed front and 1.1 m above the road, level, through a lens of about 115 degrees across whose principal point is off its centre (the picture cut from a wider one: its verticals are upright); its camera is fitted to the canopy over the entrance (its top, which the LiDAR gives), the foot of the glazed front and the hall's two ends, and an edge of the street (rms 1.77 px). Three plane trees stand between it and the hall, and their leaves hide the sky over the whole roof: the sky mask finds none, so refine has nothing to move the camera by and the silhouette IoU tells nothing",
  "building": {
   "id": "201",
   "also": [],
@@ -157,11 +157,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 28.33,
+ "ground": 35.5,
  "door": {
-  "x": 0,
-  "z": 0,
-  "note": "provisional, to be set at step 7"
+  "x": -3.2,
+  "z": 44.5,
+  "note": "view frame: the point whose ground is the model's y = 0, where place.py meets the map's ground. The plaza before the entrance, 2.3 m out from the front of its canopy, in the middle of it (u 3.2, w 44.5), where the LiDAR's ground is 35.50 m (6 ground returns within 1 m: 35.46 to 35.54 for p10 to p90; within 1 m of points 2.2 m either side along the front, 35.44 and 35.54)."
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -186,9 +186,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": -4.17,
+  "tower_above": -4.17,
+  "spine_below": 32.83,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -203,7 +203,8 @@
     0.7006292178321183
    ],
    "tolerance_m": 0.05
-  }
+  },
+  "thresholds_note": "measured above the first crop box's median ground, 28.33 m (3, 3 and 40 m), and moved with the ground to the door's, 7.17 m higher, so that the frame stays the same"
  },
  "refine": {
   "position_m": 3,
@@ -218,11 +219,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "28.33 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 23.03, p95 36.09); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "the LiDAR's ground at the door (door.note): 35.50 m; the frame and the model were measured above 28.33 m, the median LiDAR ground (class 2) in the first crop box, 25 m round the outline (p5 23.03, p95 36.09: the site falls about 13 m), and moved on by 7.17 m",
  "light": {
-  "sunaz": 60,
-  "sunel": 35,
-  "exposure": 1.2,
-  "note": "provisional, as 206's; to be set from the photograph"
+  "sunaz": 300.0,
+  "sunel": 35.0,
+  "exposure": 1.15,
+  "note": "estimated: the photograph's light is soft and bright, the front lit under the trees, so the viewer's sun stands behind the camera, low in the north-west (300 deg round, 35 up); the exposure from the building's luma above the ground line (its median 203 against the photograph's 210 at 1.15; 207 at 1.2, 173 at 1.2 with the sun at 315 and 40 up)"
  }
 }
