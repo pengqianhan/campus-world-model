@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   glazing behind them and the ground storey's brick and windows, with the photograph as a reference; how far the walls
   stand behind the eaves; the low part south-west of it where trees hide its roof; and the faces no photograph shows.
   On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own walls,
-  rails, glass and roofs (#PR).
+  rails, glass and roofs (#155).
 
 ## 2026-11-09
 
