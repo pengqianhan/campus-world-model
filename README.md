@@ -754,7 +754,7 @@ roof with a plant room at each end; and a lower part of five storeys at its west
 the LiDAR; the foot of the roof's skirt and the edge of the east end's glazed strip are estimated with the photograph
 as a reference. One photograph from the street to its north-east, about 38 m from the main block's corner; counted
 inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.93 in it, and the brightness of the
-building is within 3 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.88, and on 91% of
+building is within 1 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.91, and on 91% of
 the cells both cover it is within 0.5 m of the LiDAR's height (the strip of its roof inside block 501's ring is drawn
 by 501's model). What the photograph does not show is drawn plainly.
 

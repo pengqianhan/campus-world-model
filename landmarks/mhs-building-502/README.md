@@ -87,12 +87,12 @@ glazed strip (below); it is a reference for the look and the comparison.
   lowest of the roof under it (31.7 and 32.3 m), so that it stands on the roof.
 - The light: the photograph has no date; the east end stands in sun and the north face is lit from the side. The
   viewer's sun at 75 degrees round and 40 up lights the east end; the building's luma median is 138 at an exposure of
-  0.6 against the photograph's 141 (counted in the model's screen box).
+  0.6 against the photograph's 137 (counted in the model's screen box).
 
-Silhouette IoU 0.934 in the model's screen box. The top view: footprint IoU 0.879 (the LiDAR's 2,092 m² against the
-model's 1,985, both 1,908; the strip 501 draws is the LiDAR's only), 91% of the 7,566 cells both cover within 0.5 m
-(p10/p50/p90 -0.11/0.01/0.25), the highest point 37.71 m against the LiDAR's 37.78 (p99.9). 1,964 triangles, 6 draw
-calls.
+Silhouette IoU 0.932 in the model's screen box. The top view, counting the cells more than 2.5 m over the door's
+ground: footprint IoU 0.905 (the LiDAR's 2,016 m² against the model's 1,985, both 1,901; the strip 501 draws is the
+LiDAR's only), 91% of the 7,536 cells both cover within 0.5 m (p10/p50/p90 -0.11/0.01/0.23), the highest point 35.02 m
+over the door's ground against the LiDAR's 35.10 (p99.9). 1,964 triangles, 6 draw calls.
 
 ## On the map (step 7)
 

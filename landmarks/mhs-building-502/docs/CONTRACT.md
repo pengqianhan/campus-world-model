@@ -39,6 +39,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   roof's dark skirt (`screenGrey`) from 30.5 m (23.7 m on the west part), the east end's glazed strip (`screenBlack`)
   south of w 3.4, the north face mid grey (`grey`, its fins and spandrels together); the light. 1,964 triangles, 6 draw
   calls. Silhouette IoU 0.934 in the box, luma 138 against 141.
+- The review's round 1 (2026-11-09): the plant rooms start just below the lowest of the roof under each (the west one
+  stood 0.8 to 1.1 m over the west hip). Refined and compared again with the camera's view on the door's ground (step
+  7): silhouette IoU 0.932 in the box, luma 138 against 137; top view, counting the cells more than 2.5 m over the
+  door's ground (over the first ground before): footprint IoU 0.905, 91% of 7,536 cells within 0.5 m, highest 35.02
+  against 35.10 over the door's ground; block 502 87.0% under the model. 1,964 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
