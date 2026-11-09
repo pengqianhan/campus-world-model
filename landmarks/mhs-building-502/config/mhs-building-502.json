@@ -3,7 +3,7 @@
  "site": true,
  "estimated": "some heights and places, with a photograph as a reference: the foot of the roof's dark skirt and the edge of the east end's glazed strip; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
- "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-east of the main block, about 41 m from its north-east corner, through a lens of about 64 degrees across, looking up 15 degrees; its camera is fitted to the top of the roof's skirt over the east end and the north face and at the main block's north-east and north-west corners, with two upright edges of the east end's panels as verticals, held 1.6 m over the LiDAR's ground (rms 1.58 px)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-east of the main block, about 38 m from its north-east corner, through a lens of about 64 degrees across, looking up 15 degrees; its camera is fitted to the top of the roof's skirt over the east end and the north face and at the main block's north-east and north-west corners, with two upright edges of the east end's panels as verticals, held 1.6 m over the LiDAR's ground (rms 1.58 px)",
  "building": {
   "id": "502",
   "also": [],

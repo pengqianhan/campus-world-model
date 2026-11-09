@@ -41,14 +41,16 @@ as it does for every landmark.
   the door minus the LiDAR's, -3.10 and -1.26 m, span 1.84 m).
 - The main block's south strip, u -13.87 to 21.89 and w -17.58 to the edge of 502's ring, lies in 501's ring, where
   501's model draws it (`../mhs-building-501/README.md`). This model stops at the north edge of that strip
-  (`MAIN.strip`: from (-13.87, -13.29) by (-7.04, -13.24) to (21.3, -11.74), a straight line within 0.17 m of its
-  other corners), so that the two models do not overlap; west of the strip its south side is the LiDAR's, w -17.9.
+  (`MAIN.strip`: from (-13.87, -13.29) by (-7.04, -13.24) to (21.3, -11.74), a straight line within 0.004 m of that
+  edge's other corners but two, which stand 0.25 and 0.17 m north of it at u 9.68 and 12.59), so that the two models
+  overlap only there, by up to 0.25 m over about 3.4 m², where 501's roof stands 0.13 m above this one's; west of the
+  strip its south side is the LiDAR's, w -17.9.
 - 87.0% of block 502 is under the model above 2.5 m; 4.3% of 501C (which the campus map has as a basement) and 0.9%
   of 501. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
 
-One photograph from the street north-east of the main block, about 41 m from its north-east corner: the east end, its
+One photograph from the street north-east of the main block, about 38 m from its north-east corner: the east end, its
 pale panels and the near-black glazed strip beside them, the north face's fins and bays, the dark skirt under the roof,
 and the steps and the street's canopy at its foot. It has no record of its date. It is kept on the maintainer's
 computer in `refs/photos/` (gitignored), with the picks on it, its fitted camera, its level cut and its mask. Nothing
@@ -76,11 +78,13 @@ glazed strip (below); it is a reference for the look and the comparison.
   wall; the east end's near-black glazed strip (`screenBlack`) south of w 3.4 and its pale panels north of it; the
   north face mid grey (`grey`), for its fins and textured spandrels together.
 - **The lower west part**, u -46.71 to -22.9 and w -17.83 to 13.07, under a low hip whose north and south slopes (rms
-  0.15 and 0.14 m) meet at w -1.85, at 25.96 m, its west end falling to 25.0 m; the same skirt from 23.7 m (the faces no
+  0.15 and 0.14 m) meet at w -1.85, at 26.26 m (the LiDAR's ridge band at 25.96 to 26.01 m), its west end falling to
+  25.0 m; the same skirt from 23.7 m (the faces no
   photograph shows: estimated). **The raised part** beside the main block, u -29.72 to -22.9 and w -9.32 to 3.7, flat
   at 28.8 m.
 - **The plant rooms** on the main roof, about 37.7 m: the east one, u 16.84 to 18.74 and w -3.83 to 1.21, a white
-  lattice in the photograph (`paint`); the west one, u -22.62 to -20.2 and w -5.31 to 1.07.
+  lattice in the photograph (`paint`); the west one, u -22.62 to -20.2 and w -5.31 to 1.07. Each starts just below the
+  lowest of the roof under it (31.7 and 32.3 m), so that it stands on the roof.
 - The light: the photograph has no date; the east end stands in sun and the north face is lit from the side. The
   viewer's sun at 75 degrees round and 40 up lights the east end; the building's luma median is 138 at an exposure of
   0.6 against the photograph's 141 (counted in the model's screen box).

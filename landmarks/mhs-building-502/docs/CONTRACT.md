@@ -14,7 +14,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   `plan`, `rect`.
 - What the LiDAR shows (`parts/common.js` holds the numbers): the main block, u -22.9 to 21.3 and w -17.9 to 14.25,
   its hipped roof (the middle's two slopes meeting at 34.78, each end a lower hip, the roof's edge at 31.85); the two
-  plant rooms (37.7); the lower west part, u -46.71 to -22.9, its low hipped roof (25.96); the raised part beside the
+  plant rooms (37.7); the lower west part, u -46.71 to -22.9, its low hipped roof (its planes meet at 26.26, the LiDAR's
+  ridge band at 25.96 to 26.01); the raised part beside the
   block (28.8). The main block's south strip lies in block 501's ring, where 501's model draws it: this model stops at
   that strip's north edge.
 - Walls go down to `FOOT`, -2.2 m (the ground round the building lies from -1.8 to +3.5).

@@ -32,7 +32,9 @@ export const MAIN = {
   // about 31.85 (the outermost cells 31.7 to 32.2).
   u: [-22.9, 21.3], w: [-17.9, 14.25],
   // The north edge of 501's model's strip of this roof (in this frame), along which this model's south side runs:
-  // from (-13.87, -13.29) by (-7.04, -13.24) to (21.31, -11.74), a straight line within 0.17 m of its other corners.
+  // from (-13.87, -13.29) by (-7.04, -13.24) to (21.31, -11.74), a straight line within 0.004 m of its other corners
+  // but two, which stand 0.25 and 0.17 m north of it (u 9.68 and 12.59): there 501's strip reaches up to 0.25 m over
+  // this model's south side (about 3.4 m2), its roof 0.13 m above this one's.
   strip: [[-13.87, -13.29], [-7.04, -13.24], [21.3, -11.74]],
   // The roof's planes, fitted to its returns: the north slope (rms 0.08 m) and the south (0.15) meet at w -1.83, at
   // 34.78; between u -12 and 12 there are only those two. Beyond them each end is lower, a gentler hip falling to the
@@ -44,8 +46,8 @@ export const MAIN = {
 
 export const WEST = {
   // The lower west part, u -46.7 to -22.9 (to the main block's wall), w -17.83 to 13.07 (its returns' outermost), under
-  // a low hipped roof: its north and south slopes (rms 0.15 and 0.14) meet at w -1.85, at 25.96; its west end falls to
-  // 25.0 at u -46.7 (rms 0.05).
+  // a low hipped roof: its north and south slopes (rms 0.15 and 0.14) meet at w -1.85, at 26.26 (the LiDAR's ridge band
+  // has a median of 25.96 to 26.01, 0.3 m lower); its west end falls to 25.0 at u -46.7 (rms 0.05).
   u: [-46.71, -22.9], w: [-17.83, 13.07],
   north: plane(26.109, 0, -0.0792), south: plane(26.386, 0, 0.0705), west: plane(29.966, 0.106, 0),
 };

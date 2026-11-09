@@ -81,7 +81,9 @@ export function west(b) {
   block(b, rect(CORE.u, CORE.w), H(24.5), CORE.top, WALL, ROOF);
 }
 
+// Each from just below the lowest of the roof under it (the west one over the west hip, 31.86 to 32.22; the east one
+// over the east hip, 32.39 to 32.68), so that it stands on the roof with no gap under it.
 export function plant(b) {
-  block(b, rect(PLANT_W.u, PLANT_W.w), H(33.0), PLANT_W.top, WALL, ROOF);
-  block(b, rect(PLANT_E.u, PLANT_E.w), H(32.5), PLANT_E.top, PLANT, PLANT);
+  block(b, rect(PLANT_W.u, PLANT_W.w), H(31.7), PLANT_W.top, WALL, ROOF);
+  block(b, rect(PLANT_E.u, PLANT_E.w), H(32.3), PLANT_E.top, PLANT, PLANT);
 }
