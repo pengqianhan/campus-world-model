@@ -143,11 +143,12 @@ export const SHARED_GROUND = 2;
 /**
  * The most, in metres, that a group's offsets (the map's ground at each member's door minus the LiDAR's
  * there) may span for the group to share one ground (standHeights). Sharing moves each member by up to half
- * the span. The five groups on the site span 0.23 m (421E and 421W), 0.62 m (110 and 110N), 0.90 m (801 and
- * 802), 1.78 m (303 and 303S) and 5.07 m (the Clock Tower and its East Wing): at the Clock Tower's door the
+ * the span. The six groups on the site span 0.23 m (421E and 421W), 0.62 m (110 and 110N), 0.90 m (801 and
+ * 802), 1.78 m (303 and 303S), 4.26 m (201 between 206 and 250) and 5.07 m (the Clock Tower and its East
+ * Wing): at the Clock Tower's door the
  * map's ground is 4.85 m below the LiDAR's and at the East Wing's about right, so a shared ground would
  * stand both 2.5 m off their real ground, where the fault is the map's ground, not the models (the
- * maintainer chose this, 2026-11-03). Any limit from 1.79 to 5.06 m gives the same groups today.
+ * maintainer chose this, 2026-11-03). Any limit from 1.79 to 4.25 m gives the same groups today.
  */
 export const SHARED_SPREAD = 2;
 
