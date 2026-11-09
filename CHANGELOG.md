@@ -68,6 +68,15 @@ A change to what the site does or shows adds its line here, and the README's
   card says what is estimated: some heights, with the photograph as a reference (the underside of the finned storeys,
   the foot of the canopy's fascia), and the faces no photograph shows. On the map it has the map's colours; from a
   walker's height on a computer with a graphics card, its own metal, glass and cladding (#151).
+- **Building 502 of the M&HS Building drawn in detail.** Near the camera the map draws building 502 of the M&HS
+  Building, on the Grafton campus beside 501, from code in place of its block: a main block of seven storeys in pale
+  concrete, its north face a row of fins over grey bays, its east end pale panels beside a near-black glazed strip,
+  under a dark metal skirt and a low hipped roof with a plant room at each end, and a lower part at its west end. Its
+  sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the street to its north-east, and its
+  card says what is estimated: some heights and places, with the photograph as a reference (the foot of the roof's
+  skirt, the edge of the glazed strip), and the faces no photograph shows. It shares one ground with building 501
+  beside it, which now stands 0.92 m lower against the map's ground at its door. On the map it has the map's colours;
+  from a walker's height on a computer with a graphics card, its own concrete, metal and glass (#149).
 
 ### Changed
 
