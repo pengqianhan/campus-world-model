@@ -257,11 +257,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 37.3,
+ "ground": 36.61,
  "door": {
-  "x": 0,
-  "z": 0,
-  "note": "provisional, to be set at step 7"
+  "x": 30.1,
+  "z": 0.0,
+  "note": "its entrance is not known from a record (the campus map has none for building 106 and OpenStreetMap none within 80 m): the door is set on the pavement 1 m out from the middle of the south-east end, the face on the street that the photograph sees (u -30.1, w 0 in parts/common.js)"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -280,9 +280,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": 3.69,
+  "tower_above": 3.69,
+  "spine_below": 40.69,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
@@ -312,11 +312,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "37.3 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 35.89, p95 38.83); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "36.61 m: the LiDAR's ground at the door (11 ground returns within 1 m, 36.55 to 36.65, p10 to p90); the first crop's median ground was 37.30 m, which the frame's thresholds and parts/common.js's heights were measured above: the thresholds moved down with the ground by 0.69 m, so the frame stays the same",
  "light": {
   "sunaz": 250,
   "sunel": 35,
-  "exposure": 1.2,
-  "note": "provisional: the sun behind the building, the south-east end in the shade as the photograph shows it; to be set from the luma"
+  "exposure": 0.75,
+  "note": "the photograph's end wall is in soft shade under a hazy bright sky, so the viewer's sun stands behind the building (250 deg round, 35 up), and the exposure (0.75) from a plain stretch of the end wall between the window rows of its north-east bay, free of leaves: luma 161 in the photograph and 161 in the render (140 in the photograph in the middle bay, in the branches' shade); the metrics' luma over the model's screen box, 161 against 132, takes the photograph's leaves, which cover most of the box"
  }
 }

@@ -23,6 +23,7 @@ export function middle(b) {
   block(b, plan(MIDDLE.plan), FOOT, MIDDLE.top, WALL, ROOF);
   attic(b, MIDDLE.attic, MIDDLE.top - 0.2);
   for (const R of MIDDLE.raised) block(b, plan(R.plan), MIDDLE.attic.eave - 0.4, R.top, ATTIC, ROOF);
+  for (const V of MIDDLE.vents) block(b, plan(V.plan), MIDDLE.raised[0].top - 0.3, V.top, ATTIC, ROOF);
 }
 
 export function wings(b) {

@@ -3,7 +3,7 @@
 // (south-west); the frame's centre at x = z = 0, the middle of the building's points near the campus map's ring.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-10 (round 0): every height below is measured above 37.30 m, the median ground in the first crop box,
-// and H moves it on to the door's ground (provisional: the door is set at step 7).
+// and H moves it on to the door's ground (36.61 m, on the pavement before the middle of the south-east end).
 //
 // The sizes are given in the building's own frame, u along its long walls toward the north-west (the frame's axis, so
 // x = -u) and w toward the south-west (z = w); `at` and `plan` turn them into the view frame. A side at the least u
@@ -13,8 +13,8 @@
 // grey attic set back behind it under a low hipped roof; its middle wider on both sides, with two wings to the
 // south-west, raised parts over the attic at each end of the middle, and low parts round its foot.
 export const at = (u, w) => [-u, w];
-/** A height measured above 37.30 m, as one above the door's ground (provisional: the same 37.30 m). */
-export const H = (h) => h;
+/** A height measured above 37.30 m, as one above the door's ground, 36.61 m (the config's `ground`), 0.69 m lower. */
+export const H = (h) => h + 0.69;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 
 // The ground round the building lies from -1.4 to 1.5 (p5 to p95 in the crop box); the walls go down to FOOT.
@@ -30,14 +30,20 @@ export const MAIN = {
 };
 
 /** The middle, wider on both sides (u -17.0 to 17.0, w -8.8 to 8.8): its walls to 12.5, its attic (w -7.8 to 7.8) to
- * 14.4 and its roof to the ridge at 16.4; over the attic at each end of it a raised part at 17.4 (17.1 to 17.9). */
+ * 14.4 and its roof to the ridge at 16.4; over the attic at each end of it a raised part at 17.2 (16.7 to 17.9, u -17.5
+ * to -13.0 and 13.0 to 17.5), each with a vent on its middle at 17.9 (u -15.7 to -14.5 and 14.6 to 16.0, w -0.4 to
+ * 0.3); a flue at 18.3 to 18.8 (three returns at u -17.3, w -3) is not drawn. */
 export const MIDDLE = {
   plan: [[-17.0, -8.8], [17.0, -8.8], [17.0, 8.8], [-17.0, 8.8]],
   top: H(12.5),
   attic: { u: [-16.3, 16.3], w: [-7.8, 7.8], eave: H(14.4), ridge: H(16.4), hip: 3.2 },
   raised: [
-    { top: H(17.4), plan: [[-20.6, -3.9], [-10.6, -3.9], [-10.6, 3.9], [-20.6, 3.9]] },
-    { top: H(17.4), plan: [[6.8, -3.9], [17.1, -3.9], [17.1, 3.9], [6.8, 3.9]] },
+    { top: H(17.2), plan: [[-17.5, -3.9], [-13.0, -3.9], [-13.0, 3.9], [-17.5, 3.9]] },
+    { top: H(17.2), plan: [[13.0, -3.9], [17.5, -3.9], [17.5, 3.9], [13.0, 3.9]] },
+  ],
+  vents: [
+    { top: H(17.9), plan: [[-15.7, -0.4], [-14.5, -0.4], [-14.5, 0.3], [-15.7, 0.3]] },
+    { top: H(17.9), plan: [[14.6, -0.4], [16.0, -0.4], [16.0, 0.3], [14.6, 0.3]] },
   ],
 };
 
@@ -51,13 +57,15 @@ export const WINGS = [
 ];
 
 /** The low parts: a tower on the north-east side by the south-east wing (15.5), a strip on the north-east side near the
- * south-east end (12.5), a part past the north-west end (6.6), a part between the wings (6.0), and two low annexes on
- * the south-west side (7.0 by the south-east wing, 4.1 by the north-west end). */
+ * south-east end (12.5), a part past the north-west end (6.6), a part at 4 to 6 beside each wing in the courtyard
+ * between them (its ground about 1 m up, open), and two low annexes on the south-west side (7.0 by the south-east
+ * wing, 4.1 by the north-west end). */
 export const LOW = [
   { top: H(15.5), plan: [[-17.3, -9.1], [-14.3, -9.1], [-14.3, -8.8], [-17.0, -8.8], [-17.0, -6.0], [-17.3, -6.0]] },
   { top: H(12.5), plan: [[-26.7, -7.4], [-24.2, -7.4], [-24.2, -6.0], [-26.7, -6.0]] },
   { top: H(6.6), plan: [[29.4, -1.8], [31.7, -1.8], [31.7, 4.0], [29.4, 4.0]] },
-  { top: H(6.0), plan: [[-10.4, 8.8], [10.6, 8.8], [10.6, 11.8], [-10.4, 11.8]] },
+  { top: H(5.0), plan: [[-10.4, 8.8], [-7.0, 8.8], [-7.0, 11.8], [-10.4, 11.8]] },
+  { top: H(5.0), plan: [[7.0, 8.8], [10.6, 8.8], [10.6, 11.8], [7.0, 11.8]] },
   { top: H(7.0), plan: [[-20.7, 6.0], [-17.0, 6.0], [-17.0, 10.5], [-20.7, 10.5]] },
   { top: H(4.1), plan: [[19.0, 6.0], [22.2, 6.0], [22.2, 9.9], [19.0, 9.9]] },
 ];
