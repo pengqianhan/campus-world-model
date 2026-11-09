@@ -254,19 +254,20 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 107, 109, 110,
-110N, 119, 206, 250, 260, 302, 303, 303S, 315, 421E, 421W, 439, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 119, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 439, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 29 (40 before 250, the Music School, 315, the Kate Edger
+leaving out the landmarks and `SOON`, it measures 28 (40 before 250, the Music School, 315, the Kate Edger
 Information Commons, 206, the Humanities Building, 302, the Science Centre's tower, 303, building 303 of
 the Science Centre, 303S, building 303S of the Science Centre, 421E, Architecture - East, 421W,
-Architecture - West, 439, Auckland Bioengineering House, 260, the Sir Owen G Glenn Building, and
-620, 49 Symonds Street, became landmarks; their entries in `exclusions.json`, where 250's roof cells
-covered 77% of its outline, 315's footprint had an IoU of 0.865, 206's roof cells covered 77% of its
-outline, 42% of 302's cells, 84% of 303's and 89% of 303S's were within 0.5 m, 421E's roof cells
-covered 60% of its outline, 421W's 72%, 260's 51% and 620's 53%, and 88% of 439's cells were within
-0.5 m, have gone). Places where people live keep their blocks here
+Architecture - West, 439, Auckland Bioengineering House, 260, the Sir Owen G Glenn Building, 620, 49
+Symonds Street, and 215, Okareta, became landmarks; their entries in `exclusions.json`, where 250's
+roof cells covered 77% of its outline, 315's footprint had an IoU of 0.865, 206's roof cells covered
+77% of its outline, 42% of 302's cells, 84% of 303's and 89% of 303S's were within 0.5 m, 421E's
+roof cells covered 60% of its outline, 421W's 72%, 260's 51% and 620's 53%, and 88% of 439's cells
+were within 0.5 m, and 215's footprint had an IoU of 0.857, have gone). Places where people live
+keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University
 though the campus map marks none of their floors residential (835 and 837 would pass the limits). `--tier3` measures tier 3 alone, as the first round did; if
@@ -618,9 +619,8 @@ strip lies in (see "The third round"): the strip now lies on their measured roof
 of them everywhere and within 0.1 m over 96% of it in 903's outline and 85% in 902's, and its rim
 shows in patches where it stood above their 14.4 m blocks before.
 
-**The other 24 keep their blocks** (31 then: 110, 302, 303, 303S, 315, 439 and 907, among them, are now landmarks),
-from their top views
-(`measured/out/<id>-forms.png`):
+**The other 23 keep their blocks** (31 then: 110, 215, 302, 303, 303S, 315, 439 and 907, among them, are now
+landmarks), from their top views (`measured/out/<id>-forms.png`):
 
 - Several ridges whose heights now fit, but whose footprint does not: 212 (footprint IoU 0.860,
   92% within 0.5 m) and 226 (0.805, 93%), where trees classed as building stand over a corner, and
@@ -629,7 +629,8 @@ from their top views
   eaves drawn past the LiDAR's on its east side) and 908 (0.926, 89.8%: the east end of its south
   wing, where the roof turns, drawn up to 2 m low).
 - Trees classed as building over part of the roof: 118 (0.828, 87%), 215 (0.876, 83%) and 219
-  (0.899, 84%).
+  (0.899, 84%). 215 Okareta is now a landmark, drawn in place of its block, and has no entry in
+  `exclusions.json`.
 - 110 Thomas Building (0.848, 71%): its outline takes in its courtyard, which the LiDAR sees as
   ground and the model fills at its lowest layer. It is now a landmark, drawn in place of its block,
   and has no entry in `exclusions.json`.
@@ -642,7 +643,7 @@ from their top views
   from 42% to 77%), and none over the limits. 439 Auckland Bioengineering House and 907 Building 907 are now
   landmarks, drawn in place of their blocks, and have no entry in `exclusions.json`.
 
-Each of the 24 keeps its reason in `exclusions.json`. 20 of them also give the numbers of the
+Each of the 23 keeps its reason in `exclusions.json`. 19 of them also give the numbers of the
 check with the new forms (`measured.forms`); 132, 509, 910 and 911 do not, as no new form fits
 them.
 

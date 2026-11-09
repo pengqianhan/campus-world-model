@@ -43,6 +43,14 @@ A change to what the site does or shows adds its line here, and the README's
   photograph as a reference, the parapet's width, the gables' depth and the canopy's thickness, and the faces no
   photograph shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
   its own glass, panels and stone (#145).
+- **Okareta drawn in detail.** Near the camera the map draws Okareta (215), beside Symonds Street, from code in
+  place of its block: a villa of two storeys of the 1880s, rendered and painted a warm yellow ochre under hipped
+  roofs of grey iron, with a verandah across the left of its front, a canted bay of two storeys on the right and
+  windows arched at their heads in moulded surrounds. Its sizes come from the LINZ 2024 LiDAR; it was compared with
+  a photograph from the footpath before it, and its card says what is estimated: some heights and sizes, with the
+  photograph as a reference, the cornice's depth, the eaves' overhang and the porches' posts, and the faces no
+  photograph shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
+  its own render, iron and glass (#146).
 
 ## 2026-11-08
 
