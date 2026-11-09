@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-10
+
+### Added
+
+- **The George Mason Biology Building drawn in detail.** Near the camera the map draws the George Mason Biology
+  Building (106), on the City campus beside the Thomas Building, from code in place of its block: a long block of
+  three storeys in cream render, its walls up to a parapet and a grey attic set back behind it under a low hipped
+  roof, its middle wider with two wings to the south-west and raised parts over the roof, and at its south-east end,
+  on the street, three bays of red-framed windows between pilasters. Its sizes come from the LINZ 2024 LiDAR; it was
+  compared with a photograph from the street, and its card says what is estimated: the windows of the south-east end,
+  their sizes and places, and its pilasters' width, with the photograph as a reference; and the faces no photograph
+  shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
+  glass, render, frames and roofs (#PR).
+
 ## 2026-11-09
 
 ### Added

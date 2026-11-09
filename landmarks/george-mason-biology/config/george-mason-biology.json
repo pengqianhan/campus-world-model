@@ -1,7 +1,7 @@
 {
  "name": "george-mason-biology",
- "site": false,
- "estimated": "to be set at step 8",
+ "site": true,
+ "estimated": "the windows of the south-east end, their sizes and places, and its pilasters' width, with a photograph as a reference (the upper windows' arched heads drawn square); and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street south-east of the building, square to its south-east end; the copy the project has is squeezed across (1398 x 953): the pilasters 3.5 m apart and the end wall's 13.1 m in the LiDAR give the same scale both ways only with its width stretched 1.2117 times, to 16:9, so the reference is that stretched copy. Its camera is fitted to the end wall (its foot, its top and its north-east corner, its two pilasters) and the attic's top behind it, the only pick off the wall's plane, the camera held near 1.6 m over the LiDAR's ground (rms 1.39 px): a lens of about 109 degrees across whose principal point lies off the picture to the left (a level picture cut from a wider one: its verticals are upright), about 14.6 m from the end wall and 24 m south-west of its middle. Plane trees and a hazy sky: the sky mask finds almost none (2,523 px), so the silhouette IoU tells little; the model laid over the photograph through the fitted camera is the check",
  "building": {

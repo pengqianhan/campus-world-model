@@ -62,7 +62,7 @@ export function end(b) {
       onEnd(b, 0, 0.10, [w1, w1 + f], [y0, y1], FRAME);
       for (let i = 1; i < END.lights; i++) {
         const wm = w0 + (i * END.ww) / END.lights;
-        onEnd(b, 0, 0.07, [wm - m, wm + m], [y0, y1], FRAME);
+        onEnd(b, 0, 0.07, [wm - m, wm + m], [y0 - f, y1 + f], FRAME);
       }
     }
   }

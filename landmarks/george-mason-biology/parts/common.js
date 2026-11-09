@@ -72,15 +72,16 @@ export const LOW = [
 
 /** The south-east end, the face the photograph sees (u -29.1, w -5.9 to 6.0): two pilasters 0.25 m proud of it (the
  * LiDAR's face at u -29.35 at w -1.75 and 1.75), 0.7 m wide (estimated), up to the parapet; in each of its three bays
- * two red-framed windows, 2.9 m wide, in three lights, the lower from 4.05 to 6.45 and the upper from 8.3 to 10.55
- * (estimated, in the photograph through its fitted camera; the upper ones' arched heads drawn square). */
+ * two red-framed windows, 2.6 m wide (clear of the pilasters), in three lights, the lower from 4.05 to 6.45 and the
+ * upper from 8.3 to 10.55 (estimated, in the photograph through its fitted camera; the upper ones' arched heads drawn
+ * square). */
 export const END = {
   u: -29.1,
   proud: 0.25,
   pilasters: [-1.75, 1.75],
   pw: 0.7,
   bays: [-3.95, 0, 3.95],
-  ww: 2.9,
+  ww: 2.6,
   rows: [[H(4.05), H(6.45)], [H(8.3), H(10.55)]],
   lights: 3,
 };
