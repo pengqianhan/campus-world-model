@@ -111,7 +111,8 @@ lower part of the photograph in line. 1,241 triangles, 5 draw calls; no two face
 
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 620. 620's entry in
 `landmarks/measured/exclusions.json` (the generator's massing of it failed: its roof cells covered 53% of its outline,
-where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and counts 32 stand-ins measured.
+where 85% is asked) has gone; `MASSING.md` lists 620 among the landmarks and counts 31 stand-ins measured
+(with 421E's gone too).
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 1.88 m under the
   door's ground, below the map's ground under every plan: the foot check of `tests/landmarks.test.ts`, which tests the
