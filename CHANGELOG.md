@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-09
+
+### Added
+
+- **Building 907 drawn in detail.** Near the camera the map draws Building 907, on the Newmarket campus, from code in
+  place of its block: a hall under a shallow barrel vault in white metal cladding, a band of glazing at the foot of
+  its end toward the street, and beside it an annex of two storeys in orange render, its windows in dark frames and its
+  roof falling away from the hall. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the
+  street to its west-south-west, and its card says what is estimated: some sizes, with the photograph as a reference
+  (the places and heights of the glazing and of the annex's windows and doors), and the faces no photograph shows.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
+  render and glass (#148).
+
 ## 2026-11-08
 
 ### Added

@@ -2491,59 +2491,6 @@
     "open_below": 0.217
    }
   },
-  "907": {
-   "name": "Building 907",
-   "reason": "top-view check: footprint IoU 0.859 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 1378 m2): footprint IoU 0.872, 77% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 1623.6,
-    "ground": {
-     "p5": 52.22,
-     "p50": 53.2,
-     "p95": 53.68,
-     "zero": 52.15
-    },
-    "roof_inside_m2": 1449.0,
-    "cover": 0.893,
-    "vegetation": 0.007,
-    "open_below": 0.047,
-    "not_drawn_m2": 6.5,
-    "check": {
-     "iou": 0.859,
-     "lidar_m2": 1517.2,
-     "model_m2": 1622.0,
-     "within_0.5m": 0.763,
-     "model_minus_lidar_m": {
-      "p10": -0.19,
-      "p50": 0.05,
-      "p90": 0.67
-     },
-     "highest_m": {
-      "model": 12.16,
-      "lidar": 12.6
-     }
-    },
-    "forms": {
-     "roofs": [
-      "several faces: 2 mono-pitches over 1378 m2"
-     ],
-     "check": {
-      "iou": 0.872,
-      "lidar_m2": 1517.2,
-      "model_m2": 1646.0,
-      "within_0.5m": 0.768,
-      "model_minus_lidar_m": {
-       "p10": -0.17,
-       "p50": 0.08,
-       "p90": 0.63
-      },
-      "highest_m": {
-       "model": 12.14,
-       "lidar": 12.6
-      }
-     }
-    }
-   }
-  },
   "908": {
    "name": "Building 908",
    "reason": "top-view check: footprint IoU 0.890 (limit 0.9), 76% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 85 m2; several faces: 2 mono-pitches over 57 m2): footprint IoU 0.926, 90% of cells within 0.5 m",
