@@ -1732,62 +1732,6 @@
     "open_below": 0.207
    }
   },
-  "529": {
-   "name": "2-6 Park Ave",
-   "reason": "top-view check: footprint IoU 0.920 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.2 degrees, over 4 m2; a low pitch: mono, 4.8 degrees, over 25 m2; several faces: 2 mono-pitches over 25 m2; a low pitch: mono, 6.4 degrees, over 5 m2): footprint IoU 0.920, 86% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 1364.7,
-    "ground": {
-     "p5": 68.17,
-     "p50": 68.62,
-     "p95": 69.05,
-     "zero": 68.26
-    },
-    "roof_inside_m2": 1276.5,
-    "cover": 0.935,
-    "vegetation": 0.09,
-    "open_below": 0.119,
-    "not_drawn_m2": 17.0,
-    "check": {
-     "iou": 0.92,
-     "lidar_m2": 1350.0,
-     "model_m2": 1403.0,
-     "within_0.5m": 0.864,
-     "model_minus_lidar_m": {
-      "p10": -0.42,
-      "p50": -0.01,
-      "p90": 0.22
-     },
-     "highest_m": {
-      "model": 17.89,
-      "lidar": 18.92
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: mono, 3.2 degrees, over 4 m2",
-      "a low pitch: mono, 4.8 degrees, over 25 m2",
-      "several faces: 2 mono-pitches over 25 m2",
-      "a low pitch: mono, 6.4 degrees, over 5 m2"
-     ],
-     "check": {
-      "iou": 0.92,
-      "lidar_m2": 1350.0,
-      "model_m2": 1403.2,
-      "within_0.5m": 0.857,
-      "model_minus_lidar_m": {
-       "p10": -0.43,
-       "p50": -0.01,
-       "p90": 0.23
-      },
-      "highest_m": {
-       "model": 18.26,
-       "lidar": 18.92
-      }
-     }
-    }
-   }
-  },
   "581": {
    "name": "18 Carrick Place",
    "reason": "it stands in another area of the map (carrick-place), which the campus's LiDAR tiles do not reach"

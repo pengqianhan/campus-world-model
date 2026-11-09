@@ -12,7 +12,7 @@
 // The block stands about 2 degrees off the frame's axis: its corners, the LiDAR's roof edges, are NW (-21.9, -12.6),
 // NE (-22.8, 14.5), SE (20.6, 16.2) and SW (21.4, -11.2). Its roof is nearly flat, 12.45 m at the eave and 12.6 to
 // 13.1 inside; on it plant at 14.6 m and a raised part with a flat red roof at 17.3 m and plant on it; round its west,
-// south and north sides low parts of one storey.
+// south and north sides low parts of one storey, most of them over ground the LiDAR sees (only the annex is drawn).
 export const at = (u, w) => [-u, w];
 /** A height measured above 68.86 m (the provisional ground), as one above the door's ground, 0.01 m higher. */
 export const H = (h) => h - 0.01;

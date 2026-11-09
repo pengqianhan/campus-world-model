@@ -1,4 +1,4 @@
-// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, and the low parts round it
+// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, and the annex on its west
 // (`body`); its east face on Park Avenue, with the balconies of its upper storeys, their rails, the glazing behind them
 // and the brick ground storey (`east`). Sizes from common.js.
 import {
@@ -40,7 +40,7 @@ export function body(b) {
  * bars on posts at its edge, and the glazing behind it. */
 export function east(b) {
   const B = EAST.back, E = EAST, [t0, t1] = EAST_T;
-  prism(b, plan(strip(B - 0.05, B - 0.02, t0, GROUND_T)), 0, E.slabs[0][0], BRICK);
+  prism(b, plan(strip(B - 0.05, B - 0.02, t0, GROUND_T)), FOOT, E.slabs[0][0], BRICK);
   prism(b, plan(strip(B - 0.08, B - 0.05, t0 + 0.02, GROUND_T - 0.02)), E.windows.y[0], E.windows.y[1], GLASS);
   const tops = [...E.slabs.map(([, y1]) => y1)], bottoms = [...E.slabs.slice(1).map(([y0]) => y0), E.fascia];
   tops.forEach((y0, i) => prism(b, plan(strip(B - 0.04, B - 0.02, t0 + 0.01, t1 - 0.01)), y0 + 0.1, bottoms[i] - 0.25, GLASS));
