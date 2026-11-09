@@ -84,8 +84,8 @@ attic fall on the photograph's.
   LiDAR sees the ground under them, and the aerial shows branches there): not drawn.
 - **The canopy** past the north-west end, at 6.6 (the LiDAR's 6.56; u 29.4 to 31.7, w -1.8 to 4.0), hung from the end
   wall, its roof 0.4 m deep (estimated), with a face on its outer edge (the LiDAR's returns on one plane at u 31.2 to
-  31.7, from 3.6 up) and one on its south-west side (from 5.0 up): the LiDAR sees the ground under its outer part and
-  not where the faces end below, and they are drawn to their lowest returns (estimated).
+  31.7, from 3.6 up; one return lower, at 2.6, is left out) and one on its south-west side (its returns from 5.5 up,
+  drawn from 5.0): the LiDAR sees the ground under its outer part and not where the faces end below (estimated).
 - **The south-east end**, the face the photograph sees: two pilasters 0.25 m proud of it (the LiDAR's), 0.7 m wide
   (estimated), and in each of its three bays two red-framed windows in three lights, 2.6 m wide, the lower from 4.05 to
   6.45 and the upper from 8.3 to 10.55 (estimated, in the photograph through its fitted camera; the upper ones' arched

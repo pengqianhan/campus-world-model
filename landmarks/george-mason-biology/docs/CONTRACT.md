@@ -18,7 +18,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   and a low hipped roof to 15.8; the middle wider (u -17.0 to 17.0, w -8.8 to 8.8), its walls to 12.4 to 12.7, its attic
   to 14.4 and roof to 16.4, raised parts at 17.1 to 17.9 over it at each end; two wings to the south-west (to w 12.0)
   whose roofs stand at 14.2; a tower at 15.5 on the north-east side; a canopy at 6.6 past the north-west end, with faces
-  on its outer edge from 3.6 and its south-west side from 5.0, open under it; and low parts round its foot at 4.0 to
+  on its outer edge from 3.6 and its south-west side from 5.5, open under it; and low parts round its foot at 4.0 to
   7.0. A tree's returns at 9 to 13 on the north-east side near the south-east end are not drawn.
 - Walls go down to `FOOT`, 3 m under 37.30 m (2.31 m under the door's ground): the ground lies from 35.9 to 38.8 round
   the building (p5 to p95).
@@ -50,9 +50,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   north-west end a canopy 0.4 m deep (estimated), open under it; the campus map's ring 3.5 m short at each end, not 5.
   972 triangles, 4 draw calls. Top view: footprint IoU 0.928, 85% of 3,932 cells within 0.5 m, the highest point 18.60
   against 18.59; block 106 98.4%. Luma as before.
-- The review's round 2 (2026-11-10): the canopy's faces, which the LiDAR sees on its outer edge from 3.6 up and on its
-  south-west side from 5.0 up, drawn to their lowest returns (where they end below is estimated); 996 triangles, 4 draw
-  calls.
+- The review's round 2 (2026-11-10): the canopy's faces, which the LiDAR sees on its outer edge from 3.6 up (one return
+  lower, at 2.6) and on its south-west side from 5.5 up, drawn from 3.6 and 5.0 (where they end below is estimated); 996
+  triangles, 4 draw calls.
+- The review's round 3 (2026-11-10): words only: the canopy's faces' lowest returns (the outer edge's at 3.6, one lower
+  at 2.6 left out; the south-west side's at 5.5, drawn from 5.0).
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
