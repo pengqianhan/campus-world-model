@@ -189,11 +189,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 68.03,
+ "ground": 68.5,
  "door": {
-  "x": 0.0,
-  "z": 0.0,
-  "note": "to be set at step 7"
+  "x": -1.0,
+  "z": 30.0,
+  "note": "before the entrance under the canopy at the glazed steps' foot, which the photograph shows (the campus map records no lobby or entrance in 507, and the OpenStreetMap snapshot no entrance within 150 m: its entrance is not known from a record): on the pavement 2.25 m out from the canopy's front (u 1.0, w 30.0 in the building's frame; (-1.0, 30.0) in the view frame), where the LiDAR has ground (none under and just before the canopy). The LiDAR's ground within 1 m: 7 returns, p10/p50/p90 68.406/68.504/68.592 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -212,9 +212,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 10,
-  "tower_above": 17,
-  "spine_below": 40,
+  "min_above": 9.53,
+  "tower_above": 16.53,
+  "spine_below": 39.53,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "east",
@@ -230,7 +230,7 @@
    ],
    "tolerance_m": 0.05
   },
-  "thresholds_note": "min_above 10 m over the provisional ground, so that the frame is the building's: the low roofs and the street's things are left out; the centre from its points over 17 m (tower_above), its two blocks' roofs. The walls' axis runs along the street face of the south-east block (bearing 198.3 deg, as 501's and 502's walls run), so z faces east-south-east, toward the street the photograph is taken from"
+  "thresholds_note": "min_above 10 m over the provisional ground, so that the frame is the building's: the low roofs and the street's things are left out; the centre from its points over 17 m (tower_above), its two blocks' roofs. The walls' axis runs along the street face of the south-east block (bearing 198.3 deg, as 501's and 502's walls run), so z faces east-south-east, toward the street the photograph is taken from; all three lowered by 0.47 m with the ground set at the door (step 7), so that they pick the same points"
  },
  "refine": {
   "position_m": 3,
@@ -245,11 +245,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "68.03 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 64.00, p95 68.79); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 68.03 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 108,
   "sunel": 30,
   "exposure": 1.15,
-  "note": "estimated: the photograph is taken at dusk, the street face in shade and lit from inside (its windows and its glazed base bright); the model draws no windows and no light inside. The viewer's sun at 108 deg round (square to the street face) and 30 up and an exposure of 1.15 give the building's luma p50 141 against the photograph's 146 (counted in the model's screen box); with the sun behind the building, as at dusk, it is 58 to 72 at exposures of 1.4 to 1.8"
+  "note": "estimated: the photograph is taken at dusk, the street face in shade and lit from inside (its windows and its glazed base bright); the model draws no windows and no light inside. The viewer's sun at 108 deg round (square to the street face) and 30 up and an exposure of 1.15 give the building's luma p50 142 against the photograph's 147 (counted in the model's screen box); with the sun behind the building, as at dusk, it is 58 to 72 at exposures of 1.4 to 1.8"
  }
 }

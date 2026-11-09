@@ -3,7 +3,7 @@
 // (east-south-east, toward the street); the frame's centre at x = z = 0, the middle of the building's roofs. Owned by
 // the lead: read, do not edit.
 // Measured 2026-11-09 (round 0): every height below is measured above 68.03 m, the median ground in the first crop
-// box, and H moves it on to the door's ground once the door is set (step 7).
+// box, and H moves it on to the door's ground (step 7: 68.50 m, on the pavement before the entrance).
 //
 // The sizes are given in the building's own frame, u along the south-east block's street face toward the south-south-
 // west (the frame's axis, so x = -u) and w toward the street (z = w); `at` and `plan` turn them into the view frame.
@@ -14,8 +14,8 @@
 // end and a canopy over the entrance at the steps' foot. The LiDAR's roofs run up to 3.5 m past the campus map's ring
 // in places (no other block lies within 6 m of it): the model draws the LiDAR's building.
 export const at = (u, w) => [-u, w];
-/** A height measured above 68.03 m, as one above the frame's ground (the door's, once set). */
-export const H = (h) => h;
+/** A height measured above 68.03 m, as one above the door's ground, 68.50 m (the config's `ground`), 0.47 m higher. */
+export const H = (h) => h - 0.47;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 
 // The ground round the building lies from -0.6 to +1.0, and in the sunken courtyard between its blocks (u 6 to 20, w
