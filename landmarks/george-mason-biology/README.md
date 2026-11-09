@@ -83,7 +83,9 @@ attic fall on the photograph's.
   solid. The returns at 9 to 13 on the north-east side near the south-east end are a tree's (no plane fits them, the
   LiDAR sees the ground under them, and the aerial shows branches there): not drawn.
 - **The canopy** past the north-west end, at 6.6 (the LiDAR's 6.56; u 29.4 to 31.7, w -1.8 to 4.0), hung from the end
-  wall, 0.4 m deep (estimated): the LiDAR sees the ground under its outer part.
+  wall, its roof 0.4 m deep (estimated), with a face on its outer edge (the LiDAR's returns on one plane at u 31.2 to
+  31.7, from 3.6 up) and one on its south-west side (from 5.0 up): the LiDAR sees the ground under its outer part and
+  not where the faces end below, and they are drawn to their lowest returns (estimated).
 - **The south-east end**, the face the photograph sees: two pilasters 0.25 m proud of it (the LiDAR's), 0.7 m wide
   (estimated), and in each of its three bays two red-framed windows in three lights, 2.6 m wide, the lower from 4.05 to
   6.45 and the upper from 8.3 to 10.55 (estimated, in the photograph through its fitted camera; the upper ones' arched
@@ -97,7 +99,7 @@ attic fall on the photograph's.
 
 The top view: footprint IoU 0.928 (the LiDAR's 1,055 m² against the model's 1,008, both 992), 85% of the 3,932 cells
 both cover within 0.5 m (p10/p50/p90 -0.15/0.07/0.37), the highest point 18.60 m over the door's ground against the
-LiDAR's 18.59 (p99.9). 972 triangles, 4 draw calls.
+LiDAR's 18.59 (p99.9). 996 triangles, 4 draw calls.
 
 ## On the map (step 7)
 
@@ -123,8 +125,8 @@ against a limit of 0.9 and 87% of its cells within 0.5 m against 90%) has gone; 
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `plain` and `frameRed` are walls.
 - **Its card** says "estimated:" and the config's `estimated`: the windows of the south-east end, their sizes and
-  places, and its pilasters' width, with the photograph as a reference; the depth of the canopy past the north-west
-  end, which the LiDAR sees under; and the faces no photograph shows.
+  places, and its pilasters' width, with the photograph as a reference; the depth of the canopy past the north-west end
+  and how far its faces come down, which the LiDAR does not see; and the faces no photograph shows.
 - **The pictures** in `docs/landmarks/`: `george-mason-biology-front.jpg` and `-above.jpg` are the viewer's renders of
   the model alone, from the street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site
   built from this branch, the map near it and a walker's eyes from the street before its south-east end.

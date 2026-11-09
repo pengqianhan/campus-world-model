@@ -17,9 +17,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   walls to a parapet at 12.2 to 12.6, a grey attic set back about 0.8 m at the ends and 1.4 m on the long sides to 14.7
   and a low hipped roof to 15.8; the middle wider (u -17.0 to 17.0, w -8.8 to 8.8), its walls to 12.4 to 12.7, its attic
   to 14.4 and roof to 16.4, raised parts at 17.1 to 17.9 over it at each end; two wings to the south-west (to w 12.0)
-  whose roofs stand at 14.2; a tower at 15.5 on the north-east side; a canopy at 6.6 past the north-west end, open under
-  it; and low parts round its foot at 4.0 to 7.0. A tree's returns at 9 to 13 on the north-east side near the south-east
-  end are not drawn.
+  whose roofs stand at 14.2; a tower at 15.5 on the north-east side; a canopy at 6.6 past the north-west end, with faces
+  on its outer edge from 3.6 and its south-west side from 5.0, open under it; and low parts round its foot at 4.0 to
+  7.0. A tree's returns at 9 to 13 on the north-east side near the south-east end are not drawn.
 - Walls go down to `FOOT`, 3 m under 37.30 m (2.31 m under the door's ground): the ground lies from 35.9 to 38.8 round
   the building (p5 to p95).
 
@@ -29,7 +29,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 388 triangles, 2 draw
-  calls; step 5: 940, 4; steps 6 and 7: 1,012, 4; the review's round 1: 972, 4.
+  calls; step 5: 940, 4; steps 6 and 7: 1,012, 4; the review's round 1: 972, 4; round 2: 996, 4.
 
 ## Rounds
 - Round 0 (2026-11-10, the lead alone): the parts at the LiDAR's edges, the walls cream (`plain`), the attics grey
@@ -50,6 +50,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   north-west end a canopy 0.4 m deep (estimated), open under it; the campus map's ring 3.5 m short at each end, not 5.
   972 triangles, 4 draw calls. Top view: footprint IoU 0.928, 85% of 3,932 cells within 0.5 m, the highest point 18.60
   against 18.59; block 106 98.4%. Luma as before.
+- The review's round 2 (2026-11-10): the canopy's faces, which the LiDAR sees on its outer edge from 3.6 up and on its
+  south-west side from 5.0 up, drawn to their lowest returns (where they end below is estimated); 996 triangles, 4 draw
+  calls.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

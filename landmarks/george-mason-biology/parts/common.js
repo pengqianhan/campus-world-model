@@ -86,6 +86,15 @@ export const END = {
   lights: 3,
 };
 
-/** Past the north-west end, a canopy at 6.6 (the LiDAR's 6.56, u 29.4 to 31.7, w -1.8 to 4.0), hung from the end wall:
- * the LiDAR sees the ground under its outer part. 0.4 m deep (estimated). */
-export const CANOPY = { y: [H(6.2), H(6.6)], plan: [[29.4, -1.8], [31.7, -1.8], [31.7, 4.0], [29.4, 4.0]] };
+/** Past the north-west end, a canopy at 6.6 (the LiDAR's 6.56, u 29.4 to 31.7, w -1.8 to 4.0), hung from the end wall,
+ * its roof 0.4 m deep (estimated); a face on its outer edge (the LiDAR's returns on one plane at u 31.2 to 31.7, from
+ * 3.6 up) and one on its south-west side (at w 3.5 to 4.0, from 5.0 up). The LiDAR sees the ground under its outer
+ * part and not where the faces end below: they are drawn to their lowest returns (estimated). */
+export const CANOPY = {
+  y: [H(6.2), H(6.6)],
+  plan: [[29.4, -1.8], [31.7, -1.8], [31.7, 4.0], [29.4, 4.0]],
+  faces: [
+    { y: [H(3.6), H(6.2)], plan: [[31.4, -1.8], [31.7, -1.8], [31.7, 4.0], [31.4, 4.0]] },
+    { y: [H(5.0), H(6.2)], plan: [[29.4, 3.7], [31.4, 3.7], [31.4, 4.0], [29.4, 4.0]] },
+  ],
+};

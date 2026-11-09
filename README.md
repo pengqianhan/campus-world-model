@@ -103,6 +103,7 @@ It is built to answer two questions a student actually has:
   grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
   its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
   and its card says what is estimated.
+
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
 <details>
@@ -743,7 +744,7 @@ is within 0.5 m of the LiDAR's height. What the photograph does not show is draw
 
 | | |
 | --- | --- |
-| ![The George Mason Biology Building from the street to its south-west, drawn from code](docs/landmarks/george-mason-biology-front.jpg) | ![The George Mason Biology Building from above, drawn from code](docs/landmarks/george-mason-biology-above.jpg) |
+| ![The George Mason Biology Building from the south, drawn from code](docs/landmarks/george-mason-biology-front.jpg) | ![The George Mason Biology Building from above, drawn from code](docs/landmarks/george-mason-biology-above.jpg) |
 | ![The George Mason Biology Building on the map, drawn from code in the map's colours](docs/landmarks/george-mason-biology-map.jpg) | ![The George Mason Biology Building from the street to its south-east, through the walker's eyes](docs/landmarks/george-mason-biology-eyes.jpg) |
 
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
@@ -1350,15 +1351,16 @@ If you represent the University and would like something changed or removed, ple
   both ways. Its sky is too faint to count a silhouette against, so its likeness was checked by laying the model over
   the photograph through the camera fitted to it. The end's windows, their sizes and places, and its pilasters' width
   are estimated in the photograph, the upper windows' arched heads drawn square, and the depth of a canopy past its
-  north-west end, which the LiDAR sees under, is estimated too. Its long sides, its north-west end and its wings, which
-  no photograph shows, are drawn plainly; the glazing bars, the dormer over the end, the things on the roofs and a flue
-  are not drawn. The campus map's outline is about 3.5 m short at each end of the long block and narrower on the
-  south-west: the model follows the LiDAR, past block 106 at both ends. Its entrance is not known from a record: its
-  door is set on the pavement before the middle of the south-east end, where the map's ground lies 3.0 m under the
-  LiDAR's. Under the model the map's ground rises to 4.0 m above the door's toward the north-west end, the LiDAR's to
-  about 2.5 m, so that end stands about 1.5 m less over the drawn ground than over the real one. While a building beside
-  it is open, it gives way to block 106, which sinks to a footprint on its footing, at most 4 m above the lowest ground
-  under it: that footprint stands above the drawn ground on 65% of its cells, by up to 2.4 m.
+  north-west end and how far its faces come down, which the LiDAR does not see, are estimated too. Its long sides, its
+  north-west end and its wings, which no photograph shows, are drawn plainly; the glazing bars, the dormer over the end,
+  the things on the roofs and a flue are not drawn. The campus map's outline is about 3.5 m short at each end of the
+  long block and narrower on the south-west: the model follows the LiDAR, past block 106 at both ends. Its entrance is
+  not known from a record: its door is set on the pavement before the middle of the south-east end, where the map's
+  ground lies 3.0 m under the LiDAR's. Under the model the map's ground rises to 4.0 m above the door's toward the
+  north-west end, the LiDAR's to about 2.5 m, so that end stands about 1.5 m less over the drawn ground than over the
+  real one. While a building beside it is open, it gives way to block 106, which sinks to a footprint on its footing, at
+  most 4 m above the lowest ground under it: that footprint stands above the drawn ground on 65% of its cells, by up to
+  2.4 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

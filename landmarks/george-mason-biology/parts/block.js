@@ -36,6 +36,7 @@ export function wings(b) {
 export function low(b) {
   for (const L of LOW) block(b, plan(L.plan), FOOT, L.top, WALL, ROOF);
   block(b, plan(CANOPY.plan), CANOPY.y[0], CANOPY.y[1], WALL, ROOF);
+  for (const F of CANOPY.faces) prism(b, plan(F.plan), F.y[0], F.y[1], WALL);
 }
 
 /** A box on the end wall's face, from `d0` to `d1` in front of it, over [w0, w1] and [y0, y1]. */
