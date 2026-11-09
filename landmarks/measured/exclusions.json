@@ -1576,62 +1576,6 @@
     "open_below": 0.065
    }
   },
-  "507": {
-   "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.877 (limit 0.9), 96% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 6.0 degrees, over 59 m2; several faces: 2 mono-pitches over 59 m2; several faces: 2 mono-pitches over 35 m2; a low pitch: hip, 2.6 degrees, over 15 m2): footprint IoU 0.878, 96% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 3583.0,
-    "ground": {
-     "p5": 62.18,
-     "p50": 68.01,
-     "p95": 68.82,
-     "zero": 60.84
-    },
-    "roof_inside_m2": 3221.8,
-    "cover": 0.899,
-    "vegetation": 0.025,
-    "open_below": 0.174,
-    "not_drawn_m2": 4.2,
-    "check": {
-     "iou": 0.877,
-     "lidar_m2": 3479.2,
-     "model_m2": 3609.8,
-     "within_0.5m": 0.956,
-     "model_minus_lidar_m": {
-      "p10": -0.21,
-      "p50": -0.0,
-      "p90": 0.1
-     },
-     "highest_m": {
-      "model": 27.96,
-      "lidar": 28.14
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: hip, 6.0 degrees, over 59 m2",
-      "several faces: 2 mono-pitches over 59 m2",
-      "several faces: 2 mono-pitches over 35 m2",
-      "a low pitch: hip, 2.6 degrees, over 15 m2"
-     ],
-     "check": {
-      "iou": 0.878,
-      "lidar_m2": 3479.2,
-      "model_m2": 3614.5,
-      "within_0.5m": 0.955,
-      "model_minus_lidar_m": {
-       "p10": -0.21,
-       "p50": -0.0,
-       "p90": 0.1
-      },
-      "highest_m": {
-       "model": 27.96,
-       "lidar": 28.14
-      }
-     }
-    }
-   }
-  },
   "509": {
    "name": "9 Glasgow Terrace",
    "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
