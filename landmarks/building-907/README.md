@@ -28,10 +28,10 @@ degrees, within 0.24 degrees of the vault's crown line fitted to the LiDAR; alon
 over 30 m, so it is not used: `tools/photo_camera.py` reads the frame `measure` writes, and `place` and `topview` the
 config's `expected`, so the two must be the same.
 
-Newmarket lies about 1.6 km from the campus's origin, where the map's true north and NZTM's grid north differ by about 1
-degree: the map's metres and the frame's local NZTM metres lie about 31 m apart, and `place` turns one into the other.
-The heightmap figure of the data stage draws the campus map's outline without that turn, so there it stands 31 m off
-the building.
+Newmarket lies about 1.7 km from the campus's origin (to its south-south-east), where the map's true north and NZTM's
+grid north differ by about 1 degree: the map's metres and the frame's local NZTM metres lie about 31 m apart, and
+`place` turns one into the other. The heightmap figure of the data stage draws the campus map's outline without that
+turn, so there it stands 31 m off the building.
 
 ## The data
 
@@ -61,7 +61,8 @@ sizes read there are not used.
   (`renderOrange`, a new colour of the kit's paint shader), its roof (`roofPale`, near white in the aerial) a plane
   falling from 8.5 m where it meets the hall (over the hall's eave by about 2 m) to 7.05 m at its far side.
 - **The openings** (estimated, from the photograph through its fitted camera): on the hall's west-north-west end a band
-  of glazing in dark frames from the ground to 4.4 m, w -7.4 to 9.65, with a pale strip across it from 1.9 to 2.95 m;
+  of glazing in dark frames from the ground to 4.4 m over the provisional ground (4.03 m over the door's), w -7.4 to
+  9.65, with a pale strip across it from 1.9 to 2.95 m (1.53 to 2.58 m over the door's ground);
   on the annex's west-north-west face two columns of windows in dark frames, an upper window over a glazed door and an
   upper window over a lower one; on its south-south-west face a door.
 - **The light**: the photograph is of an overcast day, so the viewer's sun stands behind the building (65 degrees round,
@@ -110,6 +111,6 @@ fourth round, and `massing.py --campus newmarket` leaves it out and writes every
 
 ## Not drawn yet
 
-The ribs of the hall's cladding and the glazing's frames; two dark louvred openings high on the hall's end; the canopy
-over the annex's glazed door, a small one against its neck, and the cap along its top; the flues beside the hall's end;
-the hall's other end and the annex's other faces, which no photograph shows, beyond plain walls.
+The ribs of the hall's cladding and the mullions between the glazing's panes; two dark louvred openings high on the
+hall's end; the canopy over the annex's glazed door, a small one against its neck, and the cap along its top; the flues
+beside the hall's end; the hall's other end and the annex's other faces, which no photograph shows, beyond plain walls.

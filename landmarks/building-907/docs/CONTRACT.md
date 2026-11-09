@@ -6,12 +6,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 ## Frame and sizes
 - View frame, metres: **x** east-south-east (the frame's `-axis`, along the hall's vault), **y** up from the frame's
   ground, 53.56 m NZVD2016, the LiDAR's ground at the door, on the yard before the annex's glazed door (the heights in
-  `parts/common.js` were measured above 53.19 m, the median ground in the first crop box, and `H` moves them on),
-  **z** south-south-west (`toStreet`, toward the annex); the frame's centre, the middle of the vault's top, at
-  x = z = 0. `config/building-907.json`, `frame`: the vault's top (the building's points over 9 m), its principal
-  axis, bearing 284.90 deg, within 0.24 deg of the crown line fitted to the LiDAR. The campus's origin is about
-  1.6 km to the north-west: there the map's true north and NZTM's grid north differ by about 1 degree, so the map's
-  metres and the frame's local NZTM metres lie about 31 m apart (`place` turns one into the other).
+  `parts/common.js` were measured above 53.19 m, the median ground in the first crop box, and `H` moves them on), **z**
+  south-south-west (`toStreet`, toward the annex); the frame's centre, the middle of the vault's top, at x = z = 0.
+  `config/building-907.json`, `frame`: the vault's top (the building's points over 9 m), its principal axis, bearing
+  284.90 deg, within 0.24 deg of the crown line fitted to the LiDAR. The campus's origin is about 1.7 km to the
+  north-north-west: there the map's true north and NZTM's grid north differ by about 1 degree, so the map's metres and
+  the frame's local NZTM metres lie about 31 m apart (`place` turns one into the other).
 - The building's own frame: **u** west-north-west (`-x`), toward the hall's end the photograph sees, and **w** toward
   the annex (`z`). `parts/common.js` gives `at(u, w)`, `plan(corners)` and `rect(u, w)`.
 - What the LiDAR shows (`parts/common.js` holds the numbers):
