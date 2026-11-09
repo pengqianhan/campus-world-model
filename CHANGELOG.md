@@ -25,7 +25,7 @@ A change to what the site does or shows adds its line here, and the README's
   street to its west-south-west, and its card says what is estimated: some sizes, with the photograph as a reference
   (the places and heights of the glazing and of the annex's windows and doors), and the faces no photograph shows.
   On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
-  render and glass (#PR).
+  render and glass (#148).
 
 ## 2026-11-08
 
