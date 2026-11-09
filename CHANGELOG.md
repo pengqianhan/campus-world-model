@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   compared with a photograph from the street, and its card says what is estimated: the windows of the south-east end,
   their sizes and places, and its pilasters' width, with the photograph as a reference; and the faces no photograph
   shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
-  glass, render, frames and roofs (#PR).
+  glass, render, frames and roofs (#153).
 
 ## 2026-11-09
 
