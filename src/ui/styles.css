@@ -2277,6 +2277,19 @@ select optgroup {
   .walking.in-building .walker-panel:not(.touch) :is(.walker-keys, .walker-note, .walker-wander) {
     display: none;
   }
+
+  /* The campus's and the walk's buttons share the foot of the screen with the attribution: the row is at most
+     380 px wide, and the attribution gives way, to its ellipsis, before it would run under it. */
+  .campus-dock {
+    max-width: 380px;
+  }
+
+  .attribution {
+    max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 /* A picture of the view for an agent (scripts/walker): the panels step aside, the labels stay. */

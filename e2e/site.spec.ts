@@ -370,6 +370,32 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await expect(strip).toBeHidden();
 });
 
+test("the campus's and the walk's buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
+  await open(page, "?light=day");
+  // The campus with the longest name the panel offers, from its tabs or its list of campuses further off.
+  await openStrip(page);
+  const longest = await page.evaluate(() => {
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>(".campus-tabs button[data-campus]")].map((b) => ({ id: b.dataset.campus!, name: b.textContent!.trim(), tab: true }));
+    const more = [...document.querySelectorAll<HTMLOptionElement>("#campus-more option")].filter((o) => o.value).map((o) => ({ id: o.value, name: o.text.trim(), tab: false }));
+    return [...tabs, ...more].sort((a, b) => b.name.length - a.name.length)[0]!;
+  });
+  if (longest.tab) await page.locator(`.campus-tabs button[data-campus="${longest.id}"]`).click();
+  else await page.locator("#campus-more").selectOption(longest.id);
+  await settle(page);
+  await expect(page.locator("#status-toggle")).toContainText(longest.name.slice(0, 4));
+  const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
+    a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
+  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const attribution = (await page.locator("#attribution").boundingBox())!;
+    for (const id of ["#status-toggle", "#walk-start"]) {
+      const box = (await page.locator(id).boundingBox())!;
+      expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
+    }
+  }
+});
+
 test("timetable features work end to end when a schedule is present (fixture schedule, never published)", async ({ page }) => {
   // Tuesday 13 Oct 2026, 10:15 in Auckland: the fixture has a class in 303-G23 from 10:00 to 11:00.
   await page.clock.setFixedTime(new Date("2026-10-12T21:15:00Z"));
