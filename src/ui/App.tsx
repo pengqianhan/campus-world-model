@@ -25,7 +25,8 @@ function chooseCampus(id: string): void {
 
 /**
  * Campus-level summary: where we are in the academic year and what is timetabled right now, with
- * the campuses, the walk and the other worlds. Shut, it is a button with the campus's name.
+ * the campuses and the other worlds. Shut, it is a button with the campus's name, and the walk is
+ * a button beside it.
  */
 function StatusStrip() {
   const show = useRef<HTMLButtonElement>(null);
@@ -53,22 +54,38 @@ function StatusStrip() {
   return (
     <>
       {!open && (
-        <button
-          type="button"
-          class="status-toggle"
-          id="status-toggle"
-          ref={show}
-          aria-expanded="false"
-          aria-controls="status-strip"
-          aria-label={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
-          title={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
-          onClick={() => (stripOpen.value = true)}
-        >
-          <Icon name="pin" size={16} />
-          <span class="status-toggle-name">{campusName(d, selCampus.value)}</span>
-          {count > 0 && <i class="status-toggle-count">{count}</i>}
-          <Icon name="chevronUp" size={16} />
-        </button>
+        <div class="campus-dock">
+          <button
+            type="button"
+            class="status-toggle"
+            id="status-toggle"
+            ref={show}
+            aria-expanded="false"
+            aria-controls="status-strip"
+            aria-label={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
+            title={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
+            onClick={() => (stripOpen.value = true)}
+          >
+            <Icon name="pin" size={16} />
+            <span class="status-toggle-name">{campusName(d, selCampus.value)}</span>
+            {count > 0 && <i class="status-toggle-count">{count}</i>}
+            <Icon name="chevronUp" size={16} />
+          </button>
+          <button
+            type="button"
+            class="walk-start"
+            id="walk-start"
+            onClick={() => {
+              startWalking();
+              // A touch screen walks with the thumbs, as in a game, so the walk starts behind the walker.
+              if (isLite()) setView({ view: "follow", name: MY_WALKER });
+            }}
+            title={t("walker.startHint")}
+          >
+            <Icon name="walk" />
+            <span>{t("walker.start")}</span>
+          </button>
+        </div>
       )}
       <section class="status" id="status-strip" aria-live="polite" hidden={!open}>
         <div class="status-top">
@@ -145,20 +162,6 @@ function StatusStrip() {
             </label>
           )}
         </div>
-        <button
-          type="button"
-          class="walk-start"
-          id="walk-start"
-          onClick={() => {
-            startWalking();
-            // A touch screen walks with the thumbs, as in a game, so the walk starts behind the walker.
-            if (isLite()) setView({ view: "follow", name: MY_WALKER });
-          }}
-          title={t("walker.startHint")}
-        >
-          <Icon name="walk" />
-          <span>{t("walker.start")}</span>
-        </button>
         <Worlds />
       </section>
     </>

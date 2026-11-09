@@ -1,6 +1,6 @@
 // The walker: a made-up figure a visitor or an agent walks round the campus, and its views.
 import { expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, openStrip, shot } from "./helpers.ts";
+import { expectRealRender, open, shot } from "./helpers.ts";
 
 type Reply = Record<string, unknown> & { error?: string };
 
@@ -79,8 +79,7 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
 test("walkers meet and hear each other; every walker looks the same; the keyboard walks the visitor's walker", async ({ page }) => {
   await open(page, `?${QUERY}`);
   await ready(page);
-  // Taking a walk from the campus panel, which starts shut. On a wide screen the walk starts on the map.
-  await openStrip(page);
+  // Taking a walk from its button beside the campus's. On a wide screen the walk starts on the map.
   await page.locator("#walk-start").click();
   await expect(page.locator('#walker-panel button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#walker-panel")).toBeVisible();
