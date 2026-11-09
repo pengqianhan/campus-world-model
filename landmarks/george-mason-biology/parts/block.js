@@ -1,6 +1,6 @@
 // Building 106's parts: the long block with its attic and hipped roof, the wider middle with its raised parts, the two
 // wings to the south-west, and the low parts round its foot. Sizes from common.js.
-import { END, FOOT, LOW, MAIN, MIDDLE, WINGS, at, plan } from "./common.js";
+import { CANOPY, END, FOOT, LOW, MAIN, MIDDLE, WINGS, at, plan } from "./common.js";
 import { block, hipRoof, prism } from "./shapes.js";
 
 // The walls cream render, as the photograph shows the south-east end; the attic grey metal and the roofs grey, as the
@@ -35,6 +35,7 @@ export function wings(b) {
 
 export function low(b) {
   for (const L of LOW) block(b, plan(L.plan), FOOT, L.top, WALL, ROOF);
+  block(b, plan(CANOPY.plan), CANOPY.y[0], CANOPY.y[1], WALL, ROOF);
 }
 
 /** A box on the end wall's face, from `d0` to `d1` in front of it, over [w0, w1] and [y0, y1]. */

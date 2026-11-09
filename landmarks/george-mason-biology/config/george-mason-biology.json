@@ -1,7 +1,7 @@
 {
  "name": "george-mason-biology",
  "site": true,
- "estimated": "the windows of the south-east end, their sizes and places, and its pilasters' width, with a photograph as a reference (the upper windows' arched heads drawn square); and the faces no photograph shows, drawn plainly",
+ "estimated": "the windows of the south-east end, their sizes and places, and its pilasters' width, with a photograph as a reference (the upper windows' arched heads drawn square); the depth of the canopy past the north-west end, which the LiDAR sees under; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street south-east of the building, square to its south-east end; the copy the project has is squeezed across (1398 x 953): the pilasters 3.5 m apart and the end wall's 13.1 m in the LiDAR give the same scale both ways only with its width stretched 1.2117 times, to 16:9, so the reference is that stretched copy. Its camera is fitted to the end wall (its foot, its top and its north-east corner, its two pilasters) and the attic's top behind it, the only pick off the wall's plane, the camera held near 1.6 m over the LiDAR's ground (rms 1.39 px): a lens of about 109 degrees across whose principal point lies off the picture to the left (a level picture cut from a wider one: its verticals are upright), about 14.6 m from the end wall and 24 m south-west of its middle. Plane trees and a hazy sky: the sky mask finds almost none (2,523 px), so the silhouette IoU tells little; the model laid over the photograph through the fitted camera is the check",
  "building": {
@@ -15,22 +15,6 @@
     122.27
    ],
    [
-    162.8,
-    123.96
-   ],
-   [
-    163.78,
-    124.95
-   ],
-   [
-    162.0,
-    126.71
-   ],
-   [
-    161.02,
-    125.72
-   ],
-   [
     156.11,
     130.57
    ],
@@ -39,12 +23,12 @@
     132.77
    ],
    [
-    156.16,
-    134.88
+    156.52,
+    134.53
    ],
    [
-    155.95,
-    134.67
+    156.31,
+    134.32
    ],
    [
     133.7,
@@ -249,7 +233,7 @@
     136.4
    ]
   ],
-  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (the south-east end at x 29.1, the north-west end at x -29.4, its long walls at z -6.0 and 6.0), the middle (x -17.0 to 17.0, z -8.8 to 8.8), the two wings to the south-west (to z 12.0), the tower and the strip on the north-east side and the low parts round the foot, taken to the map's frame. campus.json's ring (campus_outline) is about 5 m short at each end (x 25.7 to -25.9) and narrower on the south-west (to z 8.4): within 1.5 m of it the first data run left out the ends of the long block and the wings. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
+  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (the south-east end at x 29.1, the north-west end at x -29.4, its long walls at z -6.0 and 6.0), the middle (x -17.0 to 17.0, z -8.8 to 8.8), the two wings to the south-west (to z 12.0), the tower on the north-east side, the canopy past the north-west end and the low parts round the foot, taken to the map's frame. campus.json's ring (campus_outline) is about 3.5 m short at each end (x 25.7 to -25.9, where the LiDAR's walls stand at 29.1 and -29.4) and narrower on the south-west (to z 8.4, against 12.0): within 1.5 m of it the first data run left out the ends of the long block and the wings. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
  },
  "origin": {
   "lat": -36.8523,
@@ -312,7 +296,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "36.61 m: the LiDAR's ground at the door (11 ground returns within 1 m, 36.55 to 36.65, p10 to p90); the first crop's median ground was 37.30 m, which the frame's thresholds and parts/common.js's heights were measured above: the thresholds moved down with the ground by 0.69 m, so the frame stays the same",
+ "ground_note": "36.61 m: the LiDAR's ground at the door (11 ground returns within 1 m, 36.55 to 36.65, p10 to p90); the first crop's median ground was 37.30 m, which the frame's thresholds and parts/common.js's heights were measured above: the thresholds over the ground were raised by 0.69 m, as the ground is 0.69 m lower, so the frame stays the same",
  "light": {
   "sunaz": 250,
   "sunel": 35,

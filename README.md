@@ -103,26 +103,6 @@ It is built to answer two questions a student actually has:
   grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
   its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
   and its card says what is estimated.
-- **2026-11-07:** beside the Grafton Gully the map draws Architecture - East (421E) in detail: a main block in
-  pale concrete with a pale louvred parapet and a band of windows on each floor of its face to the raised
-  terrace, a face in dark cladding with a row of dormers under its grey hipped roof, a lower wing beside it, and
-  two towers in the same dark cladding, their tops sloping up. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-07:** while a building is open, the buildings drawn in detail beside it give way to their blocks,
-  which sink to footprints on their footings, as every other building's; on a slope a landmark's own footprint
-  could sink under the drawn ground.
-- **2026-11-07:** building 303 of the Science Centre now meets building 303S beside it: its range along
-  the street and its slab run on to 303S's back, as the LiDAR has them, where a gap stood open between the two.
-- **2026-11-07:** on Symonds Street the map draws building 303S of the Science Centre in detail: a block of
-  eight storeys behind a curtain wall of mirror-like blue glass, pale fins and a zigzag of pale braces at its
-  south-east corner, and a top storey set back in pale grey panels. Its sizes come from the LiDAR; it was
-  compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-07:** the map draws building 303 of the Science Centre in detail: a range of four storeys
-  along its street, faced in bands of mauve-grey precast panels over a canopy and a glazed ground storey, before
-  a slab of ten storeys with plant and a round tank on its roof, and six tall stacks behind it. Its sizes come
-  from the LiDAR; it was compared with a photograph, which is not published and with which two heights on its
-  face are estimated, and its card says what is estimated.
-
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
 <details>
@@ -753,12 +733,12 @@ The twenty-seventh is the George Mason Biology Building (106), on the City campu
 block of three storeys in cream render, its walls up to a parapet and a grey attic set back behind it under a low hipped
 roof; its middle wider, with two wings to the south-west and raised parts over the roof; at its south-east end, on the
 street, three bays of red-framed windows between pilasters. Its heights and plans come from the LiDAR, and so does its
-outline, which the campus map gives about 5 m short at each end; the windows of its south-east end and its pilasters'
+outline, which the campus map gives about 3.5 m short at each end; the windows of its south-east end and its pilasters'
 width are estimated with the photograph as a reference. One photograph from the street to its south-east, square to that
 end, through plane trees and under a hazy sky: the copy the project has is squeezed across, and was stretched back to
 16:9 before its camera was fitted (to 1.4 pixels); its sky is too faint to count a silhouette against, so the model was
 checked by laying it over the photograph through that camera, and the brightness of a plain stretch of the end wall is
-the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 84% of the cells both cover it
+the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 85% of the cells both cover it
 is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
 
 | | |
@@ -1369,11 +1349,12 @@ If you represent the University and would like something changed or removed, ple
   to 16:9 before its camera was fitted, as only so do the LiDAR's pilasters and the end wall's height give one scale
   both ways. Its sky is too faint to count a silhouette against, so its likeness was checked by laying the model over
   the photograph through the camera fitted to it. The end's windows, their sizes and places, and its pilasters' width
-  are estimated in the photograph, the upper windows' arched heads drawn square. Its long sides, its north-west end and
-  its wings, which no photograph shows, are drawn plainly; the glazing bars, the dormer over the end, the things on the
-  roofs and a flue are not drawn. The campus map's outline is about 5 m short at each end of the long block and narrower
-  on the south-west: the model follows the LiDAR, past block 106 at both ends. Its entrance is not known from a record:
-  its door is set on the pavement before the middle of the south-east end, where the map's ground lies 3.0 m under the
+  are estimated in the photograph, the upper windows' arched heads drawn square, and the depth of a canopy past its
+  north-west end, which the LiDAR sees under, is estimated too. Its long sides, its north-west end and its wings, which
+  no photograph shows, are drawn plainly; the glazing bars, the dormer over the end, the things on the roofs and a flue
+  are not drawn. The campus map's outline is about 3.5 m short at each end of the long block and narrower on the
+  south-west: the model follows the LiDAR, past block 106 at both ends. Its entrance is not known from a record: its
+  door is set on the pavement before the middle of the south-east end, where the map's ground lies 3.0 m under the
   LiDAR's. Under the model the map's ground rises to 4.0 m above the door's toward the north-west end, the LiDAR's to
   about 2.5 m, so that end stands about 1.5 m less over the drawn ground than over the real one. While a building beside
   it is open, it gives way to block 106, which sinks to a footprint on its footing, at most 4 m above the lowest ground

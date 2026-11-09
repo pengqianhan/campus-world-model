@@ -24,9 +24,9 @@ south-west; the centre, the mean of the building's returns within 1.5 m of the c
 over the first crop box's ground, at x = z = 0. `parts/common.js` gives the building a frame of its own: `u` north-west
 (minus x), along the long walls, and `w` south-west (z).
 
-The campus map's outline for building 106 is about 5 m short at each end of the long block and narrower on its
-south-west side, so within 1.5 m of it the data stage and the top view left out the long block's ends and the wings.
-The config's `building.outline` is traced from the LiDAR (`building.outline_note`), and campus.json's is kept as
+The campus map's outline for building 106 is about 3.5 m short at each end of the long block and narrower on its
+south-west side, so within 1.5 m of it the data stage and the top view left out the long block's ends and the wings. The
+config's `building.outline` is traced from the LiDAR (`building.outline_note`), and campus.json's is kept as
 `campus_outline`. The frame measured on the campus map's outline is kept as `frame.expected`: on the traced outline the
 data stage measures one 1.26 m and 0.37 degrees from it, and the model, the camera and the placement keep the first.
 
@@ -40,7 +40,7 @@ the same 0.69 m.
   ground at its own door.
 - The Overbridge (129) lands on its north-east side; it is a building of its own and is not drawn (10.7% of its block
   lies under the model).
-- 98.5% of block 106 is under the model by the top view's count; the model reaches past the block at both ends of the
+- 98.4% of block 106 is under the model by the top view's count; the model reaches past the block at both ends of the
   long block, as the LiDAR does. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
@@ -69,15 +69,21 @@ attic fall on the photograph's.
 ## The model (`parts/common.js`)
 
 - **The long block**: u -29.1 to 29.4 and w -6.0 to 6.0, its walls to the parapet at 12.3 (the LiDAR's 12.2 to 12.6),
-  the attic set back about 0.8 m to its eaves at 14.7 and a low hipped roof to the ridge at 15.8.
+  the attic set back about 0.8 m at the ends and 1.4 m on the long sides to its eaves at 14.7 and a low hipped roof to
+  the ridge at 15.8.
 - **The middle**, wider on both sides (u -17.0 to 17.0, w -8.8 to 8.8): its walls to 12.5, its attic (w -7.8 to 7.8)
   to 14.4 and its roof to 16.4; over the attic at each end of it a raised part at 17.2 (u -17.5 to -13.0 and 13.0 to
   17.5), each with a vent on its middle at 17.9. A flue at 18.3 to 18.8 (three returns) is not drawn.
 - **The two wings** to the south-west (u -17.0 to -10.4 and 10.6 to 17.0, out to w 12.0): their walls to 12.5 and
   their roofs at 14.2. Between them the LiDAR sees open ground about 1 m up, a courtyard, with a low part at 4 to 6
   beside each wing only.
-- **The low parts**: a tower at 15.5 and a strip at 12.5 on the north-east side, a part at 6.6 past the north-west end,
-  and annexes at 7.0 and 4.1 on the south-west side.
+- **The low parts**: a tower at 15.5 on the north-east side, its top flat (u -17.3 to -14.8, w -9.1 to -6.5), and
+  annexes at 7.0 and 4.1 on the south-west side. The two low parts beside the wings have roofs that the 2023 aerial
+  shows framed, perhaps glass: the LiDAR sees through them to the ground on their courtyard sides, and they are drawn
+  solid. The returns at 9 to 13 on the north-east side near the south-east end are a tree's (no plane fits them, the
+  LiDAR sees the ground under them, and the aerial shows branches there): not drawn.
+- **The canopy** past the north-west end, at 6.6 (the LiDAR's 6.56; u 29.4 to 31.7, w -1.8 to 4.0), hung from the end
+  wall, 0.4 m deep (estimated): the LiDAR sees the ground under its outer part.
 - **The south-east end**, the face the photograph sees: two pilasters 0.25 m proud of it (the LiDAR's), 0.7 m wide
   (estimated), and in each of its three bays two red-framed windows in three lights, 2.6 m wide, the lower from 4.05 to
   6.45 and the upper from 8.3 to 10.55 (estimated, in the photograph through its fitted camera; the upper ones' arched
@@ -89,9 +95,9 @@ attic fall on the photograph's.
   middle bay, in the branches' shade). The metrics' luma over the model's screen box, 161 against 132, takes the
   photograph's leaves, which cover most of it.
 
-The top view: footprint IoU 0.930 (the LiDAR's 1,055 m² against the model's 1,012, both 996), 84% of the 3,945 cells
-both cover within 0.5 m (p10/p50/p90 -0.17/0.07/0.38), the highest point 18.60 m over the door's ground against the
-LiDAR's 18.59 (p99.9). 1,012 triangles, 4 draw calls.
+The top view: footprint IoU 0.928 (the LiDAR's 1,055 m² against the model's 1,008, both 992), 85% of the 3,932 cells
+both cover within 0.5 m (p10/p50/p90 -0.15/0.07/0.37), the highest point 18.60 m over the door's ground against the
+LiDAR's 18.59 (p99.9). 972 triangles, 4 draw calls.
 
 ## On the map (step 7)
 
@@ -117,13 +123,14 @@ against a limit of 0.9 and 87% of its cells within 0.5 m against 90%) has gone; 
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as roofs,
   as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `plain` and `frameRed` are walls.
 - **Its card** says "estimated:" and the config's `estimated`: the windows of the south-east end, their sizes and
-  places, and its pilasters' width, with the photograph as a reference; and the faces no photograph shows.
+  places, and its pilasters' width, with the photograph as a reference; the depth of the canopy past the north-west
+  end, which the LiDAR sees under; and the faces no photograph shows.
 - **The pictures** in `docs/landmarks/`: `george-mason-biology-front.jpg` and `-above.jpg` are the viewer's renders of
   the model alone, from the street and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site
   built from this branch, the map near it and a walker's eyes from the street before its south-east end.
 
 ## Not drawn yet
 
-The windows' glazing bars and the upper ones' arched heads, the dormer over the south-east end, the windows of the
-long sides, the north-west end and the wings, which no photograph shows (drawn plainly), the things on the roofs and a
-flue.
+The windows' glazing bars and the upper ones' arched heads, the dormer over the south-east end, a tree on the north-east
+side near the south-east end (whose returns the LiDAR classes as building), the windows of the long sides, the
+north-west end and the wings, which no photograph shows (drawn plainly), the things on the roofs and a flue.

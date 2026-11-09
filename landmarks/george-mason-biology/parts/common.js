@@ -21,8 +21,8 @@ export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 export const FOOT = H(-3.0);
 
 /** The long block: its walls (u -29.1 at the south-east end, the end the photograph sees, to 29.4; w -6.0 to 6.0) to
- * the parapet at 12.3 (the LiDAR's 12.2 to 12.6 along the walls); the attic set back about 0.8 m (u -28.3 to 28.4, w
- * -4.6 to 4.6) to its eaves at 14.7, and its hipped roof to the ridge at 15.8. */
+ * the parapet at 12.3 (the LiDAR's 12.2 to 12.6 along the walls); the attic set back about 0.8 m at the ends and 1.4 m
+ * on the long sides (u -28.3 to 28.4, w -4.6 to 4.6) to its eaves at 14.7, and its hipped roof to the ridge at 15.8. */
 export const MAIN = {
   plan: [[-29.1, -6.0], [29.4, -6.0], [29.4, 6.0], [-29.1, 6.0]],
   top: H(12.3),
@@ -56,14 +56,14 @@ export const WINGS = [
     roof: { top: H(14.2), plan: [[11.2, 7.8], [16.3, 7.8], [16.3, 11.0], [11.2, 11.0]] } },
 ];
 
-/** The low parts: a tower on the north-east side by the south-east wing (15.5), a strip on the north-east side near the
- * south-east end (12.5), a part past the north-west end (6.6), a part at 4 to 6 beside each wing in the courtyard
- * between them (its ground about 1 m up, open), and two low annexes on the south-west side (7.0 by the south-east
- * wing, 4.1 by the north-west end). */
+/** The low parts: a tower on the north-east side by the south-east wing (15.5, its top flat), a part at 4 to 6 beside
+ * each wing in the courtyard between them (its ground about 1 m up, open; their roofs framed in the 2023 aerial,
+ * perhaps glass, which the LiDAR sees through to the ground on their courtyard sides), and two low annexes on the
+ * south-west side (7.0 by the south-east wing, 4.1 by the north-west end). The returns at 9 to 13 on the north-east
+ * side near the south-east end are a tree's (no plane fits them, the LiDAR sees the ground under them and the aerial
+ * shows branches): not drawn. */
 export const LOW = [
-  { top: H(15.5), plan: [[-17.3, -9.1], [-14.3, -9.1], [-14.3, -8.8], [-17.0, -8.8], [-17.0, -6.0], [-17.3, -6.0]] },
-  { top: H(12.5), plan: [[-26.7, -7.4], [-24.2, -7.4], [-24.2, -6.0], [-26.7, -6.0]] },
-  { top: H(6.6), plan: [[29.4, -1.8], [31.7, -1.8], [31.7, 4.0], [29.4, 4.0]] },
+  { top: H(15.5), plan: [[-17.3, -9.1], [-14.8, -9.1], [-14.8, -6.5], [-17.3, -6.5]] },
   { top: H(5.0), plan: [[-10.4, 8.8], [-7.0, 8.8], [-7.0, 11.8], [-10.4, 11.8]] },
   { top: H(5.0), plan: [[7.0, 8.8], [10.6, 8.8], [10.6, 11.8], [7.0, 11.8]] },
   { top: H(7.0), plan: [[-20.7, 6.0], [-17.0, 6.0], [-17.0, 10.5], [-20.7, 10.5]] },
@@ -85,3 +85,7 @@ export const END = {
   rows: [[H(4.05), H(6.45)], [H(8.3), H(10.55)]],
   lights: 3,
 };
+
+/** Past the north-west end, a canopy at 6.6 (the LiDAR's 6.56, u 29.4 to 31.7, w -1.8 to 4.0), hung from the end wall:
+ * the LiDAR sees the ground under its outer part. 0.4 m deep (estimated). */
+export const CANOPY = { y: [H(6.2), H(6.6)], plan: [[29.4, -1.8], [31.7, -1.8], [31.7, 4.0], [29.4, 4.0]] };
