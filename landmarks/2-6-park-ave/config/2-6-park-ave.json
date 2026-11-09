@@ -3,7 +3,7 @@
  "site": false,
  "estimated": "to be set at step 8",
  "refs": "photos",
- "refs_note": "to be set at step 3",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the footpath of Park Avenue near the block's north-east corner, about 8 m out from its east face, looking south-south-west along it, through a lens of about 36 degrees across, looking up about 6.5 degrees; its camera is fitted to the east face's eave, the top of its south end, the planted bed's kerb along the footpath (where the LiDAR's shrubs end) and two verticals, held near 1.6 m over the LiDAR's ground (2.15 m)",
  "building": {
   "id": "529",
   "also": [],
@@ -176,9 +176,9 @@
  },
  "ground_note": "68.86 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 68.14, p95 71.35); provisional, to be the LiDAR's ground at the door (step 7)",
  "light": {
-  "sunaz": 60,
-  "sunel": 35,
-  "exposure": 1.2,
-  "note": "provisional, as 501's; to be set from the photograph"
+  "sunaz": 290,
+  "sunel": 40,
+  "exposure": 1.0,
+  "note": "estimated: the photograph is taken under an overcast sky, its east face in soft light without shadows. The viewer's sun stands behind the block (290 deg round, 40 up), so that the east face takes the sky's light only, at an exposure of 1.0: the luma (p50) of the east face between the eave and the brick 92 against the photograph's 85, of its brick 87 against 111, of its slabs' fronts 147 against 189, of its glazing 85 against 75 (the compare's figure over the model's screen box, where the photograph has its bright sky, trees and a sign: 82 against 145)"
  }
 }
