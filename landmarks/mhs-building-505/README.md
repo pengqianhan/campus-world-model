@@ -43,12 +43,14 @@ other, as it does for every landmark.
   south edges of 503's roofs north of the atrium and the link, which block 503, drawn from its own offset storeys, does
   not reach. `building.outline` is traced from the LiDAR instead (its `outline_note`), so that the top view counts the
   building's own roofs. The model draws what the LiDAR has of 505, the strip along its south side outside the ring
-  too, and those edges of 503's roofs (`EDGE` in `parts/common.js`), plainly at the LiDAR's heights, so that the map
-  keeps the roof block 505 drew there; once block 505 gives way, no block draws them. The atrium's south side and the
-  strip west of it (about 28 m²) lie inside 504's ring only, where the LiDAR has the atrium's roof.
-- 78.9% of block 505 is under the model above 2.5 m; of the LiDAR's roof inside its ring (2,853 m²), 95.5%. Block 504
-  is 6.1% under it and 503 2.7% (the edges of 503's roofs, drawn on a 0.5 m grid). No other block is under it by half,
-  so `building.also` is empty.
+  too. The atrium's south side and the strip west of it (about 28 m²) lie inside 504's ring only, where the LiDAR has
+  the atrium's roof.
+- Drawn by neither: once block 505 gives way to the model, no block draws the south edges of 503's roofs inside 505's
+  ring (a strip up to 7 m wide north of the atrium and the link, at 29 and 21 m) or a slot up to 2 m wide along the
+  block's west end against block 504 (22.8 to 24.6 m): about 330 m² of the LiDAR's roof, which block 505 covered on
+  `main`. Drawing a neighbour's roof is for the maintainer to decide (the pull request's "Not run").
+- 70.0% of block 505 is under the model above 2.5 m; of the LiDAR's roof inside its ring (2,853 m²), 84.5%, the rest
+  being 503's and 504's. Block 504 is 5.9% under it. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
 
@@ -74,10 +76,11 @@ look and the comparison.
 ## The model (`parts/common.js`)
 
 - **The ground floor**, under the upper storeys, which stand on it from the first floor's slab at 3.9 m (estimated):
-  the LiDAR sees the ground under the roof up to 3.4 m in from the south face, on the whole width of the east end from
-  u 51 and along the cut to w -12.3 to -10.8, so its walls stand behind those returns, at w -14.5 on the south, u 50.5
-  at the east end and on a line between them behind the cut (estimated); on the north, the set-back glass (below).
-  Before the south face a canopy at 4.75 m, 1.8 m out (the LiDAR's returns at 4.2 to 5.1 m, u -31 to 39.5).
+  the LiDAR sees the ground under the roof up to 3.4 m in from the south face, under the east end from u 50.5 (w 3 to
+  7.9), 52.0 (w -1 to 3), 53.4 (w -5 to -1) and 56.6 (w -10 to -6), and along the cut to w -12.3 to -10.8, so its
+  walls stand just behind those returns, at w -14.5 on the south, stepping at the east end and on a line between them
+  behind the cut (estimated); on the north, the set-back glass (below). Before the south face a canopy at 4.75 m, 1.8 m
+  out, where the LiDAR has it outside the face (u -25 to 23; its returns at 4.2 to 5.1 m).
 - **The long block**, u -32.7 (against 504) to its east face, w -18.3 to 7.9. Its east face runs 17 degrees off square
   from the north-east corner (54.3, 7.9) to (60.5, -9.0); its south-east corner is cut back on a straight line from
   (61.3, -11.0) to (37.5, -18.3). Its roofs, each drawn flat: the middle at 20.85 m (20.7 to 21.0), w -10.2 to 1.0;
@@ -97,22 +100,19 @@ look and the comparison.
 - **The east face's glass** from the north-east corner to w -4.3, from 4.4 m to the parapet (estimated).
 - **The atrium** at the block's west end, u -45.5 to -14.5 and w -4.5 to 10.3 (where 503's roof begins): its glass
   roof, in vaults across it, rising from 21.6 m at its south side to 24.6 m at its north side, drawn as one slope.
-- **The link** north of the block's west part, u -14.5 to 4.0, to w 10.3 to 13.5 where 503's east wing begins, 17.3 m:
+- **The link** north of the block's west part, u -14.5 to 4.0, to w 10.3 to 15.5 where 503's roofs begin, 17.3 m:
   glass under a grey band (estimated); **the low strip** west of the atrium, u -48.5 to -45.5, 16.8 m.
-- **The edges of 503's roofs** inside 505's ring, drawn plainly: north of the atrium (u -46 to -14.5, to w 15.5 to 17.5
-  where block 503 begins) its roof rising from 28.7 m at the atrium to 29.8 m (29.0 to 29.3 in the middle); north of the
-  link (u -14.5 to 2, to the ring's edge at w 18 to 22) its east wing at 21.0 m.
 - The light: the photograph has no date, and the sun stands high in the north on the north face. The viewer's sun at
   350 degrees round and 50 up, exposure 1.0: the luma of the white wall at the north-east corner 241 against the
   photograph's 240, of the end bay's wall 240 against 243, of the north face between them 143 against 135, of the dark
   band 85 against 91 (the compare's figure, over the model's screen box, where the photograph has the road, cars and a
-  lawn before the ground floor: 152 against 177).
+  lawn before the ground floor: 157 against 177).
 
-Silhouette IoU 0.923 in the model's screen box (0.945 before the ground floor was set back on the south and the east).
-The top view on the traced outline: footprint IoU 0.917 (the LiDAR's 3,273 m² against the model's 3,136, both 3,066),
-92% of the 12,114 cells both cover within 0.5 m (p10/p50/p90 -0.28/0.03/0.36), the highest point 29.78 m against the
-LiDAR's 30.07 (p99.9: 503's roof, beyond the edge the model draws; 505's own highest, the atrium's north side, 24.6 to
-24.9 m, against the model's 24.56). 1,494 triangles, 5 draw calls.
+Silhouette IoU 0.936 in the model's screen box (0.945 before the ground floor was set back on the south and the east).
+The top view on the traced outline: footprint IoU 0.925 (the LiDAR's 2,930 m² against the model's 2,788, both 2,748),
+92% of the 10,847 cells both cover within 0.5 m (p10/p50/p90 -0.29/0.03/0.36), the highest point 24.56 m against the
+LiDAR's 28.78 (p99.9: 503's roof, which the top view's 1.5 m round the outline takes in; 505's own highest, the
+atrium's north side, 24.6 to 24.9 m). 1,434 triangles, 5 draw calls.
 
 ## On the map (step 7)
 
@@ -145,7 +145,7 @@ outline, which takes in the plaza) has gone; `MASSING.md` notes it in the Grafto
   north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames,
   the east face's glass and its foot, and the glazed front and the link under their grey bands, with a photograph as a
   reference; how far the ground floor stands back on its other sides; the atrium's glass roof, drawn as one slope; and
-  the faces no photograph shows, drawn plainly, as are the edges of the next building's roofs.
+  the faces no photograph shows, drawn plainly.
 - **The pictures** in `docs/landmarks/`: `mhs-building-505-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from the plaza and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site
   built from this branch, the map near it and a walker's eyes on the main road north-east of it, where the

@@ -23,13 +23,14 @@ A change to what the site does or shows adds its line here, and the README's
   panels over a ground floor set back under its upper storeys, behind round columns on the north; on its north face
   twelve bays of silver fins and louvres over set-back glazing between a white wall at each end, glass at its
   north-east corner and a dark band round its cut south-east corner; over the parapet a higher middle of the roof, and
-  at its west end an atrium under a glass roof; and, plainly, the south edges of the next building's roofs inside its
-  outline on the campus map. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the main
-  road, and its card says what is estimated: the north face's storeys, how far its glazing stands behind its fins and
-  louvres, the louvres' spacing, the ground floor's set-back and its columns, the end bay's windows and the east
-  face's glass, with the photograph as a reference; how far the ground floor stands back on its other sides; the
-  atrium's glass roof, drawn as one slope; and the faces no photograph shows. On the map it has the map's colours;
-  from a walker's height on a computer with a graphics card, its own panels, fins, glass and roofs (#154).
+  at its west end an atrium under a glass roof. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the main road, and its card says what is estimated: the north face's storeys, how far its glazing
+  stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at
+  its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their
+  frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, with the
+  photograph as a reference; how far the ground floor stands back on its other sides; the atrium's glass roof, drawn
+  as one slope; and the faces no photograph shows. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own panels, fins, glass and roofs (#154).
 
 ## 2026-11-09
 

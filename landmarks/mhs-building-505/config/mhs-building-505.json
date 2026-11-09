@@ -1,7 +1,7 @@
 {
  "name": "mhs-building-505",
  "site": true,
- "estimated": "the north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, with a photograph as a reference; how far the ground floor stands back on its other sides, behind where the LiDAR sees the ground under the upper storeys; the atrium's glass roof, drawn as one slope; and the faces no photograph shows, drawn plainly, as are the edges of the next building's roofs inside this one's outline on the campus map",
+ "estimated": "the north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, with a photograph as a reference; how far the ground floor stands back on its other sides, behind where the LiDAR sees the ground under the upper storeys; the atrium's glass roof, drawn as one slope; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the main road north-east of the long block, about 42 m from its north-east corner, looking south-south-west at its north face, through a lens of about 59 degrees across, level, its principal point low and left in the frame (a level picture cut from a wider one: its verticals are upright); a second, smaller picture laid over its bottom right corner is left out (the picks' exclude). Its camera is fitted to the north-east corner's top, the north face's parapet, the east face's top and the high middle of the roof, whose north-east corner shows over the parapet 7 m behind it, held 1.6 m over the LiDAR's ground",
  "building": {
@@ -55,60 +55,28 @@
     -1099.99
    ],
    [
-    64.36,
-    -1095.21
+    64.96,
+    -1093.3
    ],
    [
-    62.45,
-    -1094.62
+    58.75,
+    -1091.37
    ],
    [
-    64.84,
-    -1086.98
+    56.25,
+    -1092.68
    ],
    [
-    64.03,
-    -1086.21
+    51.98,
+    -1092.92
    ],
    [
-    48.01,
-    -1085.5
+    47.86,
+    -1092.68
    ],
    [
-    47.74,
-    -1086.36
-   ],
-   [
-    45.35,
-    -1085.61
-   ],
-   [
-    44.91,
-    -1087.04
-   ],
-   [
-    40.13,
-    -1085.55
-   ],
-   [
-    40.73,
-    -1083.64
-   ],
-   [
-    28.32,
-    -1079.77
-   ],
-   [
-    28.17,
-    -1080.25
-   ],
-   [
-    17.67,
-    -1076.97
-   ],
-   [
-    15.67,
-    -1083.36
+    45.74,
+    -1092.75
    ],
    [
     16.15,
@@ -285,7 +253,7 @@
     -1090.4
    ]
   ],
-  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (its west end at x 32.7 against 504, its south face at z -18.3, its north face at z 7.9, its east face 17 degrees off square and its cut south-east corner), the end bay standing out to z 8.5, the link north of the block's west part to 503's east wing, the atrium at the block's west end to 503 (z 10.3) and the low strip west of it; and, north of the atrium and the link, the south edges of 503's roofs inside the campus map's ring of 505 that block 503 as the site draws it does not reach (to z 15.5 to 22), which the model draws so that the map keeps them; taken to the map's frame. campus.json's outlines of 505 (campus_outline) lie about 7 m north-north-east of the LiDAR's building (its storeys fit the LiDAR's when moved so): its ring takes in 10 to 12 m of the plaza north of the block, where the LiDAR has the ground, and misses up to 4 m of the block's south side; within 1.5 m of it the top view counted 503's roof, up to 30 m, as the building's. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
+  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (its west end at x 32.7 against 504, its south face at z -18.3, its north face at z 7.9, its east face 17 degrees off square and its cut south-east corner), the end bay standing out to z 8.5, the link north of the block's west part to 503's roofs (z 10.3 to 15.5), the atrium at the block's west end to 503 (z 10.3) and the low strip west of it, taken to the map's frame. campus.json's outlines of 505 (campus_outline) lie about 7 m north-north-east of the LiDAR's building (its storeys fit the LiDAR's when moved so): its ring takes in 10 to 12 m of the plaza north of the block, where the LiDAR has the ground, misses up to 4 m of the block's south side, and takes in the south edges of 503's roofs north of the atrium and the link, which block 503 does not reach and no block draws once block 505 gives way; within 1.5 m of it the top view counted 503's roof, up to 30 m, as the building's. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
  },
  "origin": {
   "lat": -36.8523,
@@ -354,6 +322,6 @@
   "sunaz": 350,
   "sunel": 50,
   "exposure": 1.0,
-  "note": "estimated: the photograph has no date; the sun stands high in the north and lights the north face. The viewer's sun at 350 deg round and 50 up, exposure 1.0: the luma (p50) of the white wall at the north-east corner 241 against the photograph's 240, of the end bay's wall 240 against 243, of the north face between them 143 against 135, of the dark band 85 against 91 (the compare's figure, over the model's screen box, where the photograph has the road, cars and a lawn before the ground floor: 152 against 177)"
+  "note": "estimated: the photograph has no date; the sun stands high in the north and lights the north face. The viewer's sun at 350 deg round and 50 up, exposure 1.0: the luma (p50) of the white wall at the north-east corner 241 against the photograph's 240, of the end bay's wall 240 against 243, of the north face between them 143 against 135, of the dark band 85 against 91 (the compare's figure, over the model's screen box, where the photograph has the road, cars and a lawn before the ground floor: 157 against 177)"
  }
 }

@@ -25,16 +25,19 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     rising from 21.6 m at its south side to 24.6 m at its north side;
   - **a low link** of 17.3 m north of the block's west part (u -14.5 to 4.0), to 503's east wing, beside **a glazed
     front** (u 4.0 to 8.7) under a grey band, and **a low strip** of 16.8 m west of the atrium;
-  - **the ground** under the roof up to 3.4 m in from the south face, across the east end from u 51 and along the cut:
-    the ground floor set back under the upper storeys there, with **a canopy** of 4.75 m before the south face;
+  - **the ground** under the roof up to 3.4 m in from the south face, under the east end (from u 50.5 to 56.6, deeper
+    toward its south) and along the cut: the ground floor set back under the upper storeys there, with **a canopy** of
+    4.75 m before the middle of the south face (u -25 to 23);
   - inside the campus map's ring of 505 but not of it: 10 to 12 m of **the plaza** north of the block (the campus map's
     outlines of 505 lie about 7 m north-north-east of the LiDAR's building), and the south edges of **503**'s roofs
-    (28.7 to 29.8 m and 21.0 m) north of the atrium and the link, which block 503 does not reach;
+    (28.7 to 29.8 m and 21.0 m) north of the atrium and the link, which block 503 does not reach and the model does not
+    draw;
   - the ground: 0 on the plaza north of the block, rising to about +2.5 by the main road at its south-east corner and
     falling to -3.4 along the street south of its west end: walls go down to `FOOT`, -4.5 m over the provisional
     ground.
-- What it draws: what the LiDAR has of 505 (its south side's strip outside the ring too), and, plainly, the south edges
-  of 503's roofs inside 505's ring, which no block draws once block 505 gives way. The outline (`building.outline`) is
+- What it draws: what the LiDAR has of 505 (its south side's strip outside the ring too). Not 503's roofs' edges inside
+  505's ring, nor the slot along its west end against 504, which no block draws once block 505 gives way (about 330 m²):
+  drawing a neighbour's roof is for the maintainer. The outline (`building.outline`) is
   traced from the LiDAR; the campus map's ring is kept as `campus_outline`.
 
 ## Who owns what
@@ -43,7 +46,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 208 triangles, 3 draw calls; round 1: 1,270, 5; after the review's round 1: 1,494, 5.
+  0: 208 triangles, 3 draw calls; round 1: 1,270, 5; after the review's round 1: 1,494, 5; after round 2: 1,434, 5.
 
 ## Rounds
 - Round 0 (2026-11-10): the long block's four parts and the atrium, the link and the low strip, at the LiDAR's plans
@@ -90,6 +93,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   storeys under the plaza, and where the map's ground stands highest. 1,494 triangles, 5 draw calls. Silhouette IoU
   0.923 in the model's screen box; the top view: footprint IoU 0.917, 92% of the 12,114 cells within 0.5 m; block 505
   under the model 78.9%, the LiDAR's roof in its ring 95.5%.
+- The review's round 2 (2026-11-10): 503's roofs' edges dropped (they stood 4.6 to 4.9 m over block 503 on the map, and
+  no recorded decision lets a landmark draw a neighbour): the strip is drawn by neither, as the docs say; the link runs
+  on to w 15.5, where the LiDAR has its roof; the ground floor's east wall steps behind the ground the LiDAR sees, the
+  canopy only where the LiDAR has it outside the face (u -25 to 23); the lists of what is estimated in full. 1,434
+  triangles, 5 draw calls. Silhouette IoU 0.936 in the model's screen box, luma 157 against 177 over it; the top
+  view: footprint IoU 0.925, 92% of the 10,847 cells within 0.5 m; block 505 under the model 70.0%, the LiDAR's roof
+  in its ring 84.5%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

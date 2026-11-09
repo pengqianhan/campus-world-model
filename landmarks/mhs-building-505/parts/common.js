@@ -17,8 +17,8 @@
 // and north of the atrium 503, each drawn by its own block. The campus map's outlines of 505 lie about 7 m
 // north-north-east of the LiDAR's building (its storeys fit the LiDAR's when moved so): its ring takes in 10 to 12 m
 // of the plaza north of the block, where the LiDAR has only the ground, and the south edges of 503's roofs north of
-// the atrium and the link, which block 503 as the site draws it does not reach. The model draws those edges too
-// (EDGE), plainly, so that the map keeps the roof that block 505 drew there.
+// the atrium and the link, which block 503 as the site draws it does not reach: once block 505 gives way to the model,
+// no block draws them (as on main for 501's strip beside 503).
 export const at = (u, w) => [-u, w];
 /** A height measured above 72.13 m (the provisional ground), as one above the door's ground, 0.03 m higher. */
 export const H = (h) => h - 0.03;
@@ -53,30 +53,19 @@ export const MIDDLE = {
 export const TOP_N = H(17.45), TOP_E = H(17.8), TOP_S = H(17.7);
 
 // The ground floor, under the upper storeys, which stand on it from the first floor's slab at 3.9 m (estimated) on every
-// side. The LiDAR sees the ground under the roof up to 3.4 m in from the south face (w -15.0 to -16.0), on the whole
-// width of the east end from u 51 (w -8 to 7.9), and along the cut to w -12.3 to -10.8: its walls stand behind those
-// returns, at w -14.5 on the south, u 50.5 at the east end and on a line between them behind the cut (estimated); on
-// the north, the set-back glass at w 5.4 (the photograph). Before the south face, a canopy at 4.75 m (4.2 to 5.1),
-// 1.8 m out (to w -20.1), u -31 to 39.5 (285 returns).
+// side. The LiDAR sees the ground under the roof up to 3.4 m in from the south face (w -15.0 to -16.0), under the east
+// end from u 50.5 (w 3 to 7.9), 52.0 (w -1 to 3), 53.4 (w -5 to -1) and 56.6 (w -10 to -6), and along the cut to
+// w -12.3 to -10.8: its walls stand just behind those returns, at w -14.5 on the south, stepping at the east end and on
+// a line between them behind the cut (estimated); on the north, the set-back glass at w 5.4 (the photograph). Before
+// the south face, a canopy at 4.75 m (4.2 to 5.1), 1.8 m out (to w -20.1), where the LiDAR has it outside the face,
+// u -25 to 23.
 export const GROUND = {
-  plan: [[WEST_U, -14.5], [38.0, -14.5], [44.0, -12.0], [50.5, -10.5], [50.5, 5.4], [4.0, 5.4], [4.0, NORTH_W],
+  plan: [[WEST_U, -14.5], [38.0, -14.5], [44.0, -12.0], [50.5, -10.5], [56.0, -10.5], [56.0, -5.0], [53.2, -5.0],
+    [53.2, -1.0], [51.8, -1.0], [51.8, 3.0], [50.3, 3.0], [50.3, 5.4], [4.0, 5.4], [4.0, NORTH_W],
     [-14.5, NORTH_W], [-14.5, -4.5], [WEST_U, -4.5]],
   slab: H(3.9),
 };
-export const CANOPY = { u: [-31.0, 39.5], w: [-20.1, SOUTH_W + 0.1], y: [H(4.55), H(4.75)] };
-
-// The south edges of 503's roofs inside 505's ring, which no block draws once block 505 gives way to the model (the
-// LiDAR's roof cells there under neither the model nor another block, 335 m²): north of the atrium, to block 503's
-// edge (w 15.5 to 17.5), its roof rising from 28.7 m at the atrium to 29.8 m (29.0 to 29.3 at their middle); north of
-// the link, to the ring's edge (w 18 to 22), 503's east wing at 21.0 m (20.9 to 21.0). Drawn plainly.
-export const EDGE = {
-  // north of the atrium, in four strips by how far block 503 leaves it; each roof rising 0.16 m a metre from w 10.3
-  high: { strips: [[[-46.0, -35.0], 17.0], [[-35.0, -22.0], 17.5], [[-22.0, -17.0], 15.5], [[-17.0, -14.5], 17.0]],
-    w0: 10.3, eave: H(28.7), rise: 0.16 },
-  // north of the link
-  low: { plan: [[-14.5, 10.3], [-12.5, 11.0], [-8.5, 12.0], [-4.5, 13.5], [2.0, 13.5], [2.0, 21.5], [1.0, 22.0], [-14.5, 17.9]],
-    top: H(21.0) },
-};
+export const CANOPY = { u: [-25.0, 23.0], w: [-20.1, SOUTH_W + 0.1], y: [H(4.55), H(4.75)] };
 
 // The north face. The photograph, through its fitted camera, gives what the LiDAR does not see (estimated): a ground
 // floor set back under the upper storeys to 4.6 m (the soffit; 3.9 to 4.9 along the face); a white panel wall at the
@@ -112,10 +101,11 @@ export const EAST_GLASS = { w: [-4.3, NORTH_W], y: [H(4.4), TOP_N] };
 // drawn as one slope.
 export const ATRIUM = { u: [-45.5, -14.5], w: [-4.5, 10.3], low: H(21.6), high: H(24.6) };
 // The low link north of the block's west part, between the end bay and 503's east wing: u -14.5 (the atrium) to 4.0,
-// from the north face to w 10.3 to 13.5 (where 503's roof, 20.8 m, begins), 17.3 m (17.1 to 17.5); glass under a grey
-// band (the photograph's right edge: estimated).
+// from the north face to w 10.3 to 15.5 (where 503's roof, 20.8 m, begins: w 12 at u -13, 16.5 near u 1.5), 17.3 m
+// (17.1 to 17.5); glass under a grey band (the photograph's right edge: estimated).
 export const LINK = {
-  plan: [[-14.5, NORTH_W], [4.0, NORTH_W], [4.0, 13.5], [-4.5, 13.5], [-8.5, 12.0], [-12.5, 11.0], [-14.5, 10.3]], top: H(17.3),
+  plan: [[-14.5, NORTH_W], [4.0, NORTH_W], [4.0, 15.5], [-2.5, 15.5], [-4.5, 13.5], [-8.5, 12.0], [-12.5, 11.0], [-14.5, 10.3]],
+  top: H(17.3),
 };
 // The low strip west of the atrium, inside the ring: u -48.5 to -45.5, w -4.5 to 9.0, 16.8 m (16.7 to 16.9).
 export const WEST = { u: [-48.5, -45.5], w: [-4.5, 9.0], top: H(16.8) };

@@ -2,9 +2,9 @@
 // corner and the canopy before its south face (`body`); its north face, with the white end walls, the fins and louvres
 // over the set-back glazing, the parapet, the first floor's slab edge, the columns and the ground floor's glass, and the
 // east face's glass (`north`); the atrium at its west end, the link north of it and the low strip west of the atrium
-// (`west`); and the edges of 503's roofs inside 505's ring (`edge`). Sizes from common.js.
+// (`west`). Sizes from common.js.
 import {
-  ATRIUM, BACK, BAND, BAYS, CANOPY, COLUMNS, EAST_GLASS, EDGE, END_BAY, FIN, FOOT, FRONT, GLAZING, GROUND, LINK, LOUVRES,
+  ATRIUM, BACK, BAND, BAYS, CANOPY, COLUMNS, EAST_GLASS, END_BAY, FIN, FOOT, FRONT, GLAZING, GROUND, LINK, LOUVRES,
   MIDDLE, NORTH_W, SOFFIT, SOUTH_W, STOREY_GLASS, TOP_E, TOP_N, TOP_S, WEST, WEST_U, at, eastU, plan, rect,
 } from "./common.js";
 import { block, inset, prism, tris } from "./shapes.js";
@@ -110,12 +110,4 @@ export function west(b) {
   prism(b, plan(LINK.plan), FOOT, LINK.top - 1.5, GLASS);
   block(b, plan(LINK.plan), LINK.top - 1.5, LINK.top, DARK, ROOF);
   block(b, rect(WEST.u, WEST.w), FOOT, WEST.top, WALL, ROOF);
-}
-
-/** The south edges of 503's roofs inside 505's ring, north of the atrium (its roof rising to the north) and of the link,
- * drawn plainly. */
-export function edge(b) {
-  const E = EDGE.high;
-  for (const [u, w1] of E.strips) wedge(b, u, [E.w0, w1], E.eave, E.eave + E.rise * (w1 - E.w0), WALL, ROOF);
-  block(b, plan(EDGE.low.plan), FOOT, EDGE.low.top, WALL, ROOF);
 }
