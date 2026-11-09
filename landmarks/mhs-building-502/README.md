@@ -64,8 +64,9 @@ skirt over the east end and over the north face, as lines, the main block's nort
 and two upright edges of the east end's panels as verticals, with the camera held 1.6 m over the LiDAR's ground. It
 looks up 15 degrees through a lens of 63.6 degrees across: an rms of 1.58 px. A first fit to the lines and the
 north-east corner alone had 79.4 degrees across and put the north-west corner 85 px short; the lines do not fix where
-along them the corners stand. No size is measured from the photograph but the foot of the skirt and the edge of the
-glazed strip (below); it is a reference for the look and the comparison.
+along them the corners stand. No size is measured from the photograph but the edge of the glazed strip (below); it is
+a reference for the look and the comparison, and shows that the roof's edge is a dark skirt, whose foot the LiDAR
+gives.
 
 ## The model (`parts/common.js`)
 
@@ -75,18 +76,19 @@ glazed strip (below); it is a reference for the look and the comparison.
   slope and the south (rms 0.08 and 0.15 m) meet at w -1.83, at 34.78 m over the provisional ground; beyond them each
   end is a gentler hip, lower, with a step of up to 1.3 m up to the middle (the west end from 33.45 m at u -12, the
   east end fitted to rms 0.02 m). The roof's edge stands at about 31.85 m.
-- **Its faces** (estimated, through the photograph's fitted camera): the roof's dark metal skirt (`screenGrey`) from
-  30.5 m up to the roof's edge, where the LiDAR's outermost roof cells reach down and the skirt stands out over the
-  wall; the east end's near-black glazed strip (`screenBlack`) south of w 3.4 and its pale panels north of it; the
-  north face mid grey (`grey`), for its fins and textured spandrels together.
+- **Its faces** (estimated): the roof's dark metal skirt (`screenGrey`), which the photograph shows, from 30.5 m up
+  to the roof's edge, where the LiDAR's outermost roof cells reach down (their medians 30.3 to 30.7 m: cells that mix
+  the skirt and the wall) and the skirt stands out over the wall; through the photograph's fitted camera, the east
+  end's near-black glazed strip (`screenBlack`) south of w 3.4 and its pale panels north of it; the north face mid
+  grey (`grey`), for its fins and textured spandrels together.
 - **The lower west part**, u -46.71 to -22.9 and w -17.83 to 13.07, under a low hip whose north and south slopes (rms
   0.15 and 0.14 m) meet at w -1.85, at 26.26 m (the LiDAR's ridge band at 25.96 to 26.01 m), its west end falling to
-  25.0 m; the same skirt from 23.7 m (the faces no
-  photograph shows: estimated). **The raised part** beside the main block, u -29.72 to -22.9 and w -9.32 to 3.7, flat
+  25.0 m; the same skirt from 23.7 m, the main block's skirt's depth below its roof's edge (the faces no photograph
+  shows: estimated). **The raised part** beside the main block, u -29.72 to -22.9 and w -9.32 to 3.7, flat
   at 28.8 m.
 - **The plant rooms** on the main roof, about 37.7 m: the east one, u 16.84 to 18.74 and w -3.83 to 1.21, a white
-  lattice in the photograph (`paint`); the west one, u -22.62 to -20.2 and w -5.31 to 1.07. Each starts just below the
-  lowest of the roof under it (31.7 and 32.3 m), so that it stands on the roof.
+  lattice in the photograph (`paint`), from 32.3 m; the west one, u -22.62 to -20.2 and w -5.31 to 1.07, from 31.7 m:
+  each just below the lowest of the roof under it, so that it stands on the roof.
 - The light: the photograph has no date; the east end stands in sun and the north face is lit from the side. The
   viewer's sun at 75 degrees round and 40 up lights the east end; the building's luma median is 138 at an exposure of
   0.6 against the photograph's 137 (counted in the model's screen box).
