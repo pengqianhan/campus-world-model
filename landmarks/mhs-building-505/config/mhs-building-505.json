@@ -8,8 +8,102 @@
   "id": "505",
   "also": [],
   "title": "M&HS Building (505), University of Auckland",
-  "note": "outline: building 505's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 505 by its id.",
+  "note": "outline: traced from the LiDAR (building.outline_note), in the map's frame; chooses the crop box and the building's own points (frame.near_outline, measure and topview). campus_outline: building 505's outer ring from the main project's campus.json, kept for the record; the site replaces block 505 by its id, and topview measures the share of that block under the model.",
   "outline": [
+   [
+    19.84,
+    -1114.63
+   ],
+   [
+    86.86,
+    -1135.56
+   ],
+   [
+    111.76,
+    -1135.68
+   ],
+   [
+    111.72,
+    -1134.83
+   ],
+   [
+    111.6,
+    -1133.53
+   ],
+   [
+    110.59,
+    -1129.03
+   ],
+   [
+    110.66,
+    -1122.77
+   ],
+   [
+    110.72,
+    -1115.55
+   ],
+   [
+    75.64,
+    -1104.6
+   ],
+   [
+    75.82,
+    -1104.03
+   ],
+   [
+    62.87,
+    -1099.99
+   ],
+   [
+    64.36,
+    -1095.21
+   ],
+   [
+    56.25,
+    -1092.68
+   ],
+   [
+    51.98,
+    -1092.92
+   ],
+   [
+    47.86,
+    -1092.68
+   ],
+   [
+    46.94,
+    -1095.64
+   ],
+   [
+    45.03,
+    -1095.05
+   ],
+   [
+    45.74,
+    -1092.75
+   ],
+   [
+    16.15,
+    -1083.51
+   ],
+   [
+    15.76,
+    -1084.75
+   ],
+   [
+    12.89,
+    -1083.86
+   ],
+   [
+    8.87,
+    -1096.75
+   ],
+   [
+    23.95,
+    -1101.46
+   ]
+  ],
+  "campus_outline": [
    [
     114.6,
     -1104.2
@@ -162,7 +256,8 @@
     64.3,
     -1090.4
    ]
-  ]
+  ],
+  "outline_note": "traced from the LiDAR's roofs and walls in the view frame of frame.expected: the long block (its west end at x 32.7 against 504, its south face at z -18.3, its north face at z 7.9, its east face 17 degrees off square and its cut south-east corner), the end bay standing out to z 8.5, the link north of the block's west part to 503's east wing, the atrium at the block's west end to 503 (z 10.3) and the low strip west of it, taken to the map's frame. campus.json's ring (campus_outline) takes in 10 to 12 m of the plaza north of the block (over the storeys below it), a strip of 503's roof north of the atrium and of 504's at the block's west end: within 1.5 m of it the top view counted 503's roof, up to 30 m, as the building's. frame.expected is the frame measured on campus_outline, kept, so that the model, the camera and the placement keep it."
  },
  "origin": {
   "lat": -36.8523,
@@ -228,9 +323,9 @@
  },
  "ground_note": "72.13 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 68.74, p95 74.30); provisional, to be the LiDAR's ground at the door (step 7)",
  "light": {
-  "sunaz": 60,
-  "sunel": 35,
-  "exposure": 1.2,
-  "note": "provisional, as 501's; to be set from the photograph"
+  "sunaz": 350,
+  "sunel": 50,
+  "exposure": 1.0,
+  "note": "estimated: the photograph has no date; the sun stands high in the north and lights the north face. The viewer's sun at 350 deg round and 50 up, exposure 1.0: the luma (p50) of the white wall at the north-east corner 241 against the photograph's 240, of the end bay's wall 240 against 243, of the north face between them 145 against 135, of the dark band 85 against 91 (the compare's figure, over the model's screen box, where the photograph has the road, cars and a lawn before the ground floor: 153 against 177)"
  }
 }

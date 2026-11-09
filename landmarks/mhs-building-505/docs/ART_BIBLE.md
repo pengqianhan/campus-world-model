@@ -7,6 +7,8 @@ from it but the ones its contract names, which are estimated.
 - Its north face, toward the plaza: a white panel wall at each end, and between them twelve bays of a sunscreen
   standing out from the glazing: slim silver fins from the ground floor's top to the parapet, horizontal louvres
   between them at each storey, a frame along their top.
+- West of the bays the end bay, standing a little forward, with a window in each storey in a deep dark frame;
+  beyond it a glazed front under a grey metal band, and the glazed link to the next block.
 - At its north-east corner the east face in dark reflective glass from the ground floor's top to the parapet, and
   beyond it, at the south-east cut, a dark clad band standing a metre over the roof.
 - The ground floor set back under the upper floors behind round columns, glazed; low concrete walls, a lawn and

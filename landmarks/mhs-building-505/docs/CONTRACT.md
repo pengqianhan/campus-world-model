@@ -31,7 +31,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     falling to -3.4 along the street south of its west end: walls go down to `FOOT`, -4.5 m over the provisional
     ground.
 - What it draws: what the LiDAR has of 505 inside its ring, so that it stands over no part of the blocks of 503 and
-  504.
+  504. The outline (`building.outline`) is traced from the LiDAR; the campus map's ring is kept as `campus_outline`.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -39,7 +39,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a large teaching building), merged by material. Round
-  0: 208 triangles, 3 draw calls.
+  0: 208 triangles, 3 draw calls; round 1: 1,270, 5.
 
 ## Rounds
 - Round 0 (2026-11-10): the long block's four parts and the atrium, the link and the low strip, at the LiDAR's plans
@@ -49,6 +49,25 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   3,207 m² against the model's 2,674, both 2,564: 503's strip in the ring is the LiDAR's only), 81% of the 10,132
   cells both cover within 0.5 m (p10/p50/p90 -0.45/0.03/0.50); the highest point 23.01 m against the LiDAR's 30.12
   (p99.9, 503's roof in the ring); block 505 under the model 68.8% (its ring takes in the plaza), 504 5.9%.
+- Round 1 (2026-11-10, the lead alone): the north face, through the photograph's fitted camera (estimated): the
+  ground floor set back 2.5 m under the upper storeys to its soffit at 4.6 m (the first floor's slab edge from 3.9 m),
+  round columns every three bays before it; a white panel wall at the north-east corner (u 50.62 to the corner);
+  twelve bays of 2.755 m with their glazing set back 1 m behind silver fins (`screenSilver`) and twelve louvres a
+  bay, a frame along their top and the white parapet over it; the end bay, a white wall standing out to w 8.5 (the
+  LiDAR) from the last fin to u 8.7, with a window in each storey in a dark frame (`screenGrey`), and the shade the
+  LiDAR has over the top one; the glazed front west of it under a grey band; the east face's glass from the
+  north-east corner to w -4.3 (from 4.4 m); the dark band (`screenGrey`) round the south-east cut to 18.7 m; the
+  atrium's glass roof one slope from 21.6 to 24.6 m; the link glazed under a grey band; the walls `claddingPale`
+  (the photograph's panels are a neutral white; `plain` is the kit's warm white for estimated blocks). The light:
+  the sun at 350 degrees round and 50 up, exposure 1.0 (estimated: the luma of the white wall at the north-east
+  corner 241 against the photograph's 240, of the end bay's wall 240 against 243, of the north face between them 143
+  against 135, of the dark band 85 against 91; the compare's figure over the model's screen box, where the photograph
+  has the road, cars and a lawn before the ground floor, 152 against 177). The outline traced from the LiDAR (the
+  ring kept as `campus_outline`). 1,270 triangles, 5 draw calls. Silhouette IoU 0.934 in the photograph (0.945 in
+  the model's screen box). The top view: footprint IoU 0.917 (the LiDAR's 2,915 m² against the model's 2,695, both
+  2,683), 93% of the 10,600 cells within 0.5 m; the highest point 24.59 m against the LiDAR's 28.81 (p99.9: 503's
+  edge, within the top view's 1.5 m of the outline); block 505 under the model 69.4% (its ring takes in the plaza),
+  504 5.9%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.
