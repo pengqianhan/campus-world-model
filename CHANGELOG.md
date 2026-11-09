@@ -26,6 +26,14 @@ A change to what the site does or shows adds its line here, and the README's
   (the places and heights of the glazing and of the annex's windows and doors), and the faces no photograph shows.
   On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
   render and glass (#148).
+- **The Sir Owen G Glenn Building drawn in detail.** Near the camera the map draws the Sir Owen G Glenn Building
+  (260) from code in place of its block: a curved wing of glass, white spandrels and bands of louvres with a crown
+  of louvres along its top, a Y of three arms round a raised plaza with a sloping canopy in its curve and a top
+  storey along its west side, a lower west wing, a lower building on the plaza's north-east side, and the deck of
+  floors under the plaza. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the
+  plaza, and its card says what is estimated: some heights, with the photograph as a reference, the crown's width,
+  the top of one strip the LiDAR does not see, and the faces no photograph shows. On the map it has the map's
+  colours; from a walker's height on a computer with a graphics card, its own glass, louvres and cladding (#144).
 
 ## 2026-11-08
 

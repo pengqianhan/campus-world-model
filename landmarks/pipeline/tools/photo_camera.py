@@ -6,6 +6,7 @@ pair its pixels with places the LiDAR measures:
    "lines":     [{"px": [[u, v], ...], "from": [x, y, z], "to": [x, y, z], "what": "..."}],
    "verticals": [{"px": [[u, v], [u, v]], "what": "..."}],
    "solve_centre": false,
+   "exclude":   [[u0, v0, u1, v1]],
    "start":     {"at": [x, y], "height_m": 1.6, "height_sd_m": 0.3, "yaw": deg, "pitch": deg, "hfov": deg}}
 x, y are metres east and north in the frame of data/<name>_pts.npy (NZTM less the ring's E0, N0) and z the
 LiDAR's elevation. u, v are the file's pixels as stored: an EXIF orientation is not applied (one
@@ -17,7 +18,10 @@ at the camera's vertical vanishing point, which fixes pitch and roll. Solves the
 pitch, roll and focal length by least squares from "start"; with "solve_centre" the principal point too
 (a photograph whose verticals were straightened, or which was cut off centre: its principal point is not
 its centre). With "height_sd_m" the camera's height above the LiDAR ground where it stands is held near
-"height_m" (a hand-held photograph), one standard deviation weighing as 3 pixels.
+"height_m" (a hand-held photograph), one standard deviation weighing as 3 pixels. "exclude" (left out: none)
+lists rectangles of the file's pixels, u0 to u1 and v0 to v1, that are not the scene, such as a second, smaller
+picture laid over a corner of the photograph: the level cut leaves them out as it leaves out what lies beyond the
+photograph's edges (black, and outside the photograph in the _inside image).
 Writes refs/photos/views.json (photographs named on the command line replace their own views and keep the
 others'), one view per photograph in the form of refs/streetview/views.json (the
 model's view frame: position, target, vfov, width, height), with a "photo_fit" record: the pixel error
@@ -142,6 +146,8 @@ for name in photos:
     src = np.asarray(img, float)
     x0 = np.floor(pu).astype(int); y0 = np.floor(pv).astype(int); fx = (pu - x0)[..., None]; fy = (pv - y0)[..., None]
     ok = (x0 >= 0) & (x0 < W - 1) & (y0 >= 0) & (y0 < H - 1)
+    for e0, f0e, e1, f1e in picks.get("exclude", []):  # not the scene (an inset picture): as beyond the edges
+        ok &= ~((x0 >= e0 - 1) & (x0 < e1) & (y0 >= f0e - 1) & (y0 < f1e))
     x0c, y0c = x0.clip(0, W - 2), y0.clip(0, H - 2)
     lev = (src[y0c, x0c] * (1 - fx) * (1 - fy) + src[y0c, x0c + 1] * fx * (1 - fy) + src[y0c + 1, x0c] * (1 - fx) * fy + src[y0c + 1, x0c + 1] * fx * fy)
     lev[~ok] = 0
