@@ -130,27 +130,27 @@ export interface LandmarkHost {
 
 /**
  * How near, in metres, the outlines of two landmarks drawn from code come for the two to stand on one
- * ground (standHeights). On the site seven pairs come this near. In five the outlines touch or overlap:
+ * ground (standHeights). On the site eight pairs come this near. In six the outlines touch or overlap:
  * the Clock Tower (105, 105S) and its East Wing (119), 9 and 15 Eden Crescent (801, 802), the Thomas
- * Building and its Extension (110, 110N), buildings 303 and 303S of the Science Centre, and Architecture -
- * West and Architecture - East (421W, 421E); Te Pūtahi Tangata (201) stands 0.44 m from the Music School
- * (250) and 0.57 m from the Humanities Building (206). The nearest two landmarks further apart than this,
- * buildings 302 and 303S of the Science Centre, stand 5.6 m apart (the next, the Humanities Building and
- * Okareta (206, 215), 7.4 m, and the Humanities Building and the Sir Owen G Glenn Building (206, 260),
- * 7.9 m): each of those can stand on the map's own ground without a step or an overlap between them that a
- * camera could see.
+ * Building and its Extension (110, 110N), buildings 303 and 303S of the Science Centre, Architecture -
+ * West and Architecture - East (421W, 421E), and buildings 501 and 502 of the M&HS Building; Te Pūtahi
+ * Tangata (201) stands 0.44 m from the Music School (250) and 0.57 m from the Humanities Building (206).
+ * The nearest two landmarks further apart than this, buildings 302 and 303S of the Science Centre, stand
+ * 5.6 m apart (the next, the Humanities Building and Okareta (206, 215), 7.4 m, and the Humanities
+ * Building and the Sir Owen G Glenn Building (206, 260), 7.9 m): each of those can stand on the map's
+ * own ground without a step or an overlap between them that a camera could see.
  */
 export const SHARED_GROUND = 2;
 
 /**
  * The most, in metres, that a group's offsets (the map's ground at each member's door minus the LiDAR's
  * there) may span for the group to share one ground (standHeights). Sharing moves each member by up to half
- * the span. The six groups on the site span 0.23 m (421E and 421W), 0.62 m (110 and 110N), 0.90 m (801 and
- * 802), 1.78 m (303 and 303S), 4.26 m (201 between 206 and 250) and 5.07 m (the Clock Tower and its East
- * Wing): at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's and at the East Wing's
- * about right, so a shared ground would stand both 2.5 m off their real ground, where the fault is the
- * map's ground, not the models (the maintainer chose this, 2026-11-03). Any limit from 1.79 to 4.25 m gives
- * the same groups today.
+ * the span. The seven groups on the site span 0.23 m (421E and 421W), 0.62 m (110 and 110N), 0.90 m (801 and
+ * 802), 1.78 m (303 and 303S), 1.84 m (501 and 502), 4.26 m (201 between 206 and 250) and 5.07 m (the Clock
+ * Tower and its East Wing): at the Clock Tower's door the map's ground is 4.85 m below the LiDAR's and at the
+ * East Wing's about right, so a shared ground would stand both 2.5 m off their real ground, where the fault
+ * is the map's ground, not the models (the maintainer chose this, 2026-11-03). Any limit from 1.84 to 4.25 m
+ * gives the same groups today.
  */
 export const SHARED_SPREAD = 2;
 
