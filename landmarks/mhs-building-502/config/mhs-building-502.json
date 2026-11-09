@@ -1,0 +1,233 @@
+{
+ "name": "mhs-building-502",
+ "site": true,
+ "estimated": "some heights and places, with a photograph as a reference: the foot of the roof's dark skirt and the edge of the east end's glazed strip; and the faces no photograph shows, drawn plainly",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-east of the main block, about 38 m from its north-east corner, through a lens of about 64 degrees across, looking up 15 degrees; its camera is fitted to the top of the roof's skirt over the east end and the north face and at the main block's north-east and north-west corners, with two upright edges of the east end's panels as verticals, held 1.6 m over the LiDAR's ground (rms 1.58 px)",
+ "building": {
+  "id": "502",
+  "also": [],
+  "title": "M&HS Building (502), University of Auckland",
+  "note": "outline: building 502's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 502 by its id.",
+  "outline": [
+   [
+    14.5,
+    -1015.4
+   ],
+   [
+    1.7,
+    -1011.5
+   ],
+   [
+    1.1,
+    -1013.7
+   ],
+   [
+    -2.7,
+    -1012.6
+   ],
+   [
+    -2.3,
+    -1010.5
+   ],
+   [
+    -22.7,
+    -1004.9
+   ],
+   [
+    -22.5,
+    -1003.9
+   ],
+   [
+    -22.8,
+    -1003.8
+   ],
+   [
+    -15.2,
+    -976.5
+   ],
+   [
+    -14.8,
+    -976.3
+   ],
+   [
+    16.3,
+    -984.8
+   ],
+   [
+    17.0,
+    -982.5
+   ],
+   [
+    19.6,
+    -983.2
+   ],
+   [
+    19.0,
+    -985.6
+   ],
+   [
+    38.6,
+    -991.0
+   ],
+   [
+    39.3,
+    -988.6
+   ],
+   [
+    42.0,
+    -989.4
+   ],
+   [
+    41.3,
+    -991.7
+   ],
+   [
+    48.3,
+    -993.6
+   ],
+   [
+    48.1,
+    -994.3
+   ],
+   [
+    49.1,
+    -994.6
+   ],
+   [
+    47.1,
+    -1001.9
+   ],
+   [
+    46.1,
+    -1001.6
+   ],
+   [
+    45.8,
+    -1002.5
+   ],
+   [
+    47.0,
+    -1002.9
+   ],
+   [
+    46.7,
+    -1004.2
+   ],
+   [
+    46.9,
+    -1004.2
+   ],
+   [
+    50.3,
+    -992.3
+   ],
+   [
+    53.4,
+    -993.1
+   ],
+   [
+    44.5,
+    -1025.5
+   ],
+   [
+    41.4,
+    -1024.6
+   ],
+   [
+    43.8,
+    -1016.0
+   ],
+   [
+    43.4,
+    -1015.9
+   ],
+   [
+    41.9,
+    -1021.2
+   ],
+   [
+    40.7,
+    -1020.9
+   ],
+   [
+    40.4,
+    -1022.1
+   ],
+   [
+    30.8,
+    -1019.3
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 60,
+ "ground": 71.49,
+ "door": {
+  "x": -22.8,
+  "z": 6.0,
+  "note": "before the middle of the east end, at the top of the steps the photograph shows at its foot (the campus map records no lobby or entrance in 502, and OpenStreetMap no entrance within 120 m: its entrance is not known from a record): 1.5 m out from that face (u 22.8, w 6.0 in the building's frame; (-22.8, 6.0) in the view frame). The LiDAR's ground within 1 m: 17 returns, p10/p50/p90 71.467/71.494/71.514 m"
+ },
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3804"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 7.31,
+  "tower_above": 27.31,
+  "spine_below": 37.31,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "expected": {
+   "centre": [
+    6.552540361717326,
+    -1005.0592575325004
+   ],
+   "axis": [
+    0.9487046878829861,
+    -0.3161635892838482
+   ],
+   "tolerance_m": 0.05
+  },
+  "thresholds_note": "min_above 10 m over the provisional ground, so that the frame is the building's: the low canopies and the street's things are left out; the centre from its points over 30 m (tower_above), the main block's roof. The walls' axis runs along the main block (bearing 108.5 deg, as 501's beside it), so z faces north-north-east, toward the street the photograph is taken from; all three lowered by 2.69 m with the ground set at the door (step 7), so that they pick the same points"
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-09); the provisional ground was 68.80 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "crop_note": "60 m round the outline, so that the crop box takes in the street north-east of the main block where the photograph is taken",
+ "light": {
+  "sunaz": 75,
+  "sunel": 40,
+  "exposure": 0.6,
+  "note": "estimated: the photograph has no date; it is taken on a clear day, the east end in sun and the north face beside it lit from the side. The viewer's sun at 75 deg round and 40 up lights the east end; the building's luma p50 132 at exposure 0.55 and 138 at 0.6, against the photograph's 137 (counted in the model's screen box)"
+ }
+}
