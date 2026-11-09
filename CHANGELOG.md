@@ -68,7 +68,7 @@ A change to what the site does or shows adds its line here, and the README's
   card says what is estimated: some heights and places, with the photograph as a reference (the foot of the roof's
   skirt, the edge of the glazed strip), and the faces no photograph shows. It shares one ground with building 501
   beside it, which now stands 0.92 m lower against the map's ground at its door. On the map it has the map's colours;
-  from a walker's height on a computer with a graphics card, its own concrete, metal and glass (#PR).
+  from a walker's height on a computer with a graphics card, its own concrete, metal and glass (#149).
 
 ## 2026-11-08
 
