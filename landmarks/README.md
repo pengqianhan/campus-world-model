@@ -3,8 +3,8 @@
 A **landmark** is one real campus building drawn in three.js from code alone, sized by the LINZ
 LiDAR and checked against Street View photographs (the Kate Edger Information Commons, the Humanities
 Building, buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907,
-Auckland Bioengineering House and the Sir Owen G Glenn Building each against another photograph of it: `"refs":
-"photos"`,
+Auckland Bioengineering House, the Sir Owen G Glenn Building and 49 Symonds Street each against another photograph of
+it: `"refs": "photos"`,
 under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
@@ -366,7 +366,7 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 
 With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building,
 buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland
-Bioengineering House, the Sir Owen G Glenn Building),
+Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street),
 refine, compare, metrics, `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
 makes only the masks. `refs/photos/` is gitignored (`landmarks/.gitignore` keeps every `refs/` folder

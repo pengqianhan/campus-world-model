@@ -1962,23 +1962,6 @@
     }
    }
   },
-  "620": {
-   "name": "49 Symonds Street",
-   "reason": "roof cells cover 53% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 2961.8,
-    "ground": {
-     "p5": 54.92,
-     "p50": 57.0,
-     "p95": 58.63,
-     "zero": 54.41
-    },
-    "roof_inside_m2": 1567.0,
-    "cover": 0.529,
-    "vegetation": 0.112,
-    "open_below": 0.101
-   }
-  },
   "621": {
    "name": "Grafton Hall Residences",
    "reason": "decision 6, a place where people live (Grafton Hall Residences by its name, though its floors are marked unmapped): kept until the maintainer decides",
