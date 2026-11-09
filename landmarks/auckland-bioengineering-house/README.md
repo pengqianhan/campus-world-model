@@ -101,7 +101,8 @@ one plane.
 
 `site` is true: `place` writes `placement.json`, and the site draws the model in place of block 439. 439's entry in
 `landmarks/measured/exclusions.json` (the generator's massing of it failed: 88% of its cells within 0.5 m, where 90% is
-asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 32 stand-ins measured.
+asked) has gone; `MASSING.md` lists 439 among the landmarks and counts 31 stand-ins measured
+(with 421E's gone too).
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door, which lies 6.57 m under the LiDAR's there.
   Its walls go down to FOOT, 20.29 m below the door's ground, where the LiDAR's ground falls to the east; the foot check
