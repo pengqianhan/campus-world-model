@@ -27,7 +27,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 0: 86 triangles, 3 draw
-  calls.
+  calls; round 1: 230, 5.
 
 ## Rounds
 - Round 0 (2026-11-09): the hall's walls (`paint`, white metal cladding) and ends up to the vault's arc, the vault
@@ -35,6 +35,15 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   its roof (`roofPale`). Silhouette IoU 0.341, 0.869 in the model's screen box; the building's luma p50 183 against
   the photograph's 150 (the default light). Top view: footprint IoU 0.957, 98% of 5,888 cells within 0.5 m, the
   highest point 10.02 against the LiDAR's 10.12; block 907 89.2% under the model.
+- Round 1 (2026-11-09, the lead alone): the openings, from the photograph through its fitted camera (estimated): the
+  band of glazing on the hall's west-north-west end with its pale strip, the annex's windows and glazed door on its
+  west-north-west face and its door on its south-south-west face, each a dark frame (`screenBlack`) and glass
+  (`glass`) standing a few centimetres out of the wall; the light of an overcast day (the sun behind the building,
+  exposure 0.65). 230 triangles, 5 draw calls. Silhouette IoU 0.862 in the model's screen box; luma 148 against 150.
+- The door (step 7): on the yard before the annex's glazed door, the LiDAR's ground 53.56 m, 0.37 m over the
+  provisional ground; `H` moves every height by it. The map's ground there lies 0.70 m under the LiDAR's.
+- On the site (step 8): `site` true and the card's `estimated`; 907's measured-massing exclusion gone. The faces
+  check found the pale strip's ends in the plane of the glass's: the strip now runs 0.05 m past the glass at each end.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

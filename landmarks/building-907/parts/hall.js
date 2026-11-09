@@ -27,10 +27,11 @@ export function hall(b) {
 }
 
 /** The band of glazing on the west-north-west end: its dark frame standing 0.03 m out of the wall, the glass 0.01 to
- * 0.06 m out over it (0.1 m in from the frame's edge), the pale strip across it 0.02 to 0.09 m out. */
+ * 0.06 m out over it (0.1 m in from the frame's edge), the pale strip across it 0.02 to 0.09 m out (0.05 m past the
+ * glass at each end, so that no side of it lies in a side of the glass). */
 export function glazing(b) {
   const u = HALL.u[1], G = OPENINGS.hallGlazing, [w0, w1] = G.w;
   prism(b, rect([u, u + 0.03], [w0 - 0.1, w1 + 0.1]), FOOT + 0.1, G.top + 0.1, "screenBlack");
   prism(b, rect([u + 0.01, u + 0.06], [w0, w1]), FOOT + 0.2, G.top, "glass");
-  prism(b, rect([u + 0.02, u + 0.09], [w0, w1]), G.strip[0], G.strip[1], WALL);
+  prism(b, rect([u + 0.02, u + 0.09], [w0 - 0.05, w1 + 0.05]), G.strip[0], G.strip[1], WALL);
 }

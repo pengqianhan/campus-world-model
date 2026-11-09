@@ -1,6 +1,7 @@
 {
  "name": "building-907",
- "site": false,
+ "site": true,
+ "estimated": "some sizes, with a photograph as a reference: the places and heights of the band of glazing on the hall's west-north-west end and of the pale strip across it, and of the annex's windows and doors; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street west-south-west of the building, about 27 m from the annex's corner nearest it, through a lens of about 72 degrees across, looking up 6.5 degrees; its camera is fitted to the annex's two corners on its south-south-west face (their tops and feet, and both as verticals) and the vault's crown on the hall's west-north-west end, held 1.6 m over the LiDAR's ground (1.86 m fitted)",
  "building": {
