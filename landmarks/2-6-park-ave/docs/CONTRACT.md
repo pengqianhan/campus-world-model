@@ -17,16 +17,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     16.2) and SW (21.4, -11.2) at the roof's edges, its eave at 12.45 m and its nearly flat roof 12.6 to 13.1 inside;
   - on the roof **plant** at 14.6 m (u -14 to -5, w -5 to 6) and **a raised part** at 17.3 m (u 4 to 16, w -3 to 7),
     its roof red on the 2023 aerial, with plant on it at 18.3;
-  - round its west, south and north sides, inside the campus map's ring, **low parts** of one storey (3.6, 3.6 and
-    6.3 m) where the LiDAR mostly sees the ground under them, or a canopy narrower than a metre; a **one-storey annex**
-    on the west (u -11 to -7, to w -16.4, 3.5 m), which it roofs;
-  - the ground under the eave on the north (to 1.66 m in), east (1.48 m) and south sides, and under the upper storeys
-    at the south-east corner, up to 5.5 m in from the south end (w 8.3 to 14.8): the walls stand behind it, the ground
-    storey open under that corner;
+  - inside the campus map's ring, **a one-storey annex** on the west (u -11 to -5.9, to w -16.4, 3.5 m) and **a low
+    part south-west of the block** (u 9.2 to 22.8, w -23.7 to -27.6 and on under trees to the ring, its roof 3.44 m),
+    both roofed with no ground under them; and low strips along the block's walls, up to about 1.5 m wide (canopies at
+    3.5 to 6.4 m, and the eave's edge);
+  - the ground under the eave on the north (to 1.66 m in), east (1.48 m) and south (1.46 m) sides: the walls stand
+    behind it;
   - the ground: -0.4 to +0.1 m along Park Avenue, falling to about -0.8 on the west: walls go down to `FOOT`, 2.0 m
     under the provisional ground.
-- What it draws: what the LiDAR has inside the campus map's ring of 529, but for the low parts it sees the ground
-  under, which are left open.
+- What it draws: what the LiDAR has inside the campus map's ring of 529, but for the low strips along the walls, which
+  are left open (72 m² of its roof inside the ring, 43 m² of it with no ground seen under it).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -34,7 +34,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 1: 908 triangles, 7 draw
-  calls; after the walls were set behind the eave: 848, 7.
+  calls; after the walls were set behind the eave: 848, 7; after the review's round 1: 864, 7.
 
 ## Rounds
 - Round 1 (2026-11-10, the lead alone): the block at the LiDAR's plan and eave, its walls `claddingPale` to a dark eave
@@ -56,7 +56,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   u 15.5 and w 8.3 (estimated). The raised part's roof is flat at 17.3 m, with plant on it at 18.3. The photograph's
   camera fitted to the planted bed's kerb along the footpath too (w 20.0, where the LiDAR's shrubs end), which holds
   its distance: its field 36.3 degrees, rms 2.28 px. 848 triangles, 7 draw calls.
-- The door (2026-11-10): on the footpath of Park Avenue before the opening under the south-east corner (the campus map
+- The door (2026-11-10): on the footpath of Park Avenue before the east face's south end (the campus map
   records no lobby or entrance in 529, OpenStreetMap none near it), u 17.5, w 17.0; the LiDAR's ground there 68.87 m
   (13 returns, p50), 0.01 m over the crop's median: the frame's thresholds lowered by as much, the heights moved on to
   it through `H`. The map's ground (its 8 m elevation model) is flat at about 79.8 m round the block, 10.9 m above the
@@ -68,6 +68,17 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - On the site (2026-11-10): `site` true, the card's `estimated`; the foot check found the ground storey's brick
   starting at the door's ground: it now starts at `FOOT`. Beside an open neighbour the model gives way to block 529,
   whose footprint stands above the drawn ground on all its cells, by up to 0.84 m. 848 triangles, 7 draw calls.
+
+- The review's round 1 (2026-11-10): the ground storey under the south-east corner was drawn open, but the LiDAR has
+  only the roof there (393 returns at 12.6 to 13.0 m) and sees the ground only under the eaves, behind the walls'
+  lines; the campus map's ground floor has a room there: the corner is closed, the brick and the ground storey's windows
+  run to the south wall. The low part south-west of the block inside the ring, which the LiDAR roofs at 3.44 m (46 m²
+  of it with no ground under it) and block 529 drew, was left out: it is drawn, its walls behind the ground the LiDAR
+  sees under its roof's edges, to the ring under the trees (estimated). The annex runs on to the ring's edge, u -5.9,
+  where the LiDAR roofs it with no ground under it. The roof inside the eave is described as drawn (1.9 m in on the
+  east and west, 3.0 on the north and south). 864 triangles, 7 draw calls. Silhouette IoU 0.912 in the photograph
+  (0.958 in the model's screen box). The top view: footprint IoU 0.871 (the LiDAR's 1,406 m² against the model's 1,296,
+  both 1,258), 89% of the 5,027 cells within 0.5 m (p10/p50/p90 -0.28/0.00/0.34); block 529 under the model 92.8%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

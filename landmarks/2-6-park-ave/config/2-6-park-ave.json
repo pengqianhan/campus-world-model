@@ -1,7 +1,7 @@
 {
  "name": "2-6-park-ave",
  "site": true,
- "estimated": "the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick and windows, with a photograph as a reference; how far the walls stand behind the eave and the opening under the south-east corner, behind where the LiDAR sees the ground; and the faces no photograph shows, drawn plainly",
+ "estimated": "the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick and windows, with a photograph as a reference; how far the walls stand behind the eaves, behind where the LiDAR sees the ground under them; the low part south-west of the block where trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the footpath of Park Avenue near the block's north-east corner, about 8 m out from its east face, looking south-south-west along it, through a lens of about 36 degrees across, looking up about 6.5 degrees; its camera is fitted to the east face's eave, the top of its south end, the planted bed's kerb along the footpath (where the LiDAR's shrubs end) and two verticals, held near 1.6 m over the LiDAR's ground (2.15 m)",
  "building": {
@@ -122,7 +122,7 @@
  "door": {
   "x": -17.5,
   "z": 17.0,
-  "note": "on the footpath of Park Avenue before the opening under the upper storeys at the block's south-east corner, where the LiDAR sees the ground up to 5.5 m in (the campus map records no lobby or entrance in 529, and OpenStreetMap no entrance near it): u 17.5, w 17.0 in the building's frame ((-17.5, 17.0) in the view frame). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 68.713/68.867/68.924 m"
+  "note": "on the footpath of Park Avenue before the east face's south end, 0.9 m out from the eave's edge (the campus map records no lobby or entrance in 529, and OpenStreetMap no entrance near it): u 17.5, w 17.0 in the building's frame ((-17.5, 17.0) in the view frame). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 68.713/68.867/68.924 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",

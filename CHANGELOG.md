@@ -22,11 +22,12 @@ A change to what the site does or shows adds its line here, and the README's
   in place of its block: a long block of four storeys under a thin flat roof with a dark eave; on its east face, on
   Park Avenue, a balcony along each upper storey on a pale slab with a light rail, the glazing behind them, and a
   ground storey of pale grey brick; on its roof grey plant and a raised part with a red roof; a one-storey annex on
-  its west. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from Park Avenue, and its card
-  says what is estimated: the east face's storeys, its balconies' depth and rails, the glazing behind them and the
-  ground storey's brick and windows, with the photograph as a reference; how far the walls stand behind the eave and
-  the opening under the south-east corner; and the faces no photograph shows. On the map it has the map's colours;
-  from a walker's height on a computer with a graphics card, its own walls, rails, glass and roofs (#PR).
+  its west and a low part south-west of it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph
+  from Park Avenue, and its card says what is estimated: the east face's storeys, its balconies' depth and rails, the
+  glazing behind them and the ground storey's brick and windows, with the photograph as a reference; how far the walls
+  stand behind the eaves; the low part south-west of it where trees hide its roof; and the faces no photograph shows.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own walls,
+  rails, glass and roofs (#PR).
 
 ## 2026-11-09
 

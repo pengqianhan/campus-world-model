@@ -1,9 +1,8 @@
-// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, and the annex on its west
-// (`body`); its east face on Park Avenue, with the balconies of its upper storeys, their rails, the glazing behind them
+// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, the annex on its west and the
+// low part south-west of it (`body`); its east face on Park Avenue, with the balconies of its upper storeys, their rails, the glazing behind them
 // and the brick ground storey (`east`). Sizes from common.js.
 import {
-  ANNEX, EAST, EAST_T, EAVE, FOOT, GROUND, GROUND_T, NE, NW, PLANT, RAISED, ROOF_IN, SE, SW, WALLS, inEast, lerp, plan,
-  rect,
+  ANNEX, EAST, EAST_T, EAVE, FOOT, NE, NW, PLANT, RAISED, ROOF_IN, SE, SOUTHWEST, SW, WALLS, inEast, lerp, plan, rect,
 } from "./common.js";
 import { block, prism } from "./shapes.js";
 
@@ -16,12 +15,11 @@ const strip = (d0, d1, t0 = 0, t1 = 1) => {
   return [inEast(a, d0), inEast(b, d0), inEast(b, d1), inEast(a, d1)];
 };
 
-/** The block's walls (the ground storey's with its opening at the south-east corner) to the fascia, the eave over
- * them to the LiDAR's edge, the roof inside rising to 13.0 m, the plant, the raised part with its red roof and the
- * plant on it, and the annex. */
+/** The block's walls to the fascia, the eave over them to the LiDAR's edge, the roof inside rising to 13.0 m, the
+ * plant, the raised part with its red roof and the plant on it, the annex, and the low part south-west of the block,
+ * its roof over its walls. */
 export function body(b) {
-  prism(b, plan(GROUND.plan), FOOT, EAST.slabs[0][0], WALL);
-  prism(b, plan(WALLS), EAST.slabs[0][0], EAST.fascia, WALL);
+  prism(b, plan(WALLS), FOOT, EAST.fascia, WALL);
   block(b, plan([NW, NE, SE, SW]), EAST.fascia, EAVE, DARK, ROOF);
   const c = [(NW[0] + NE[0] + SE[0] + SW[0]) / 4, (NW[1] + NE[1] + SE[1] + SW[1]) / 4];
   const inner = [NW, NE, SE, SW].map((p) => {
@@ -34,14 +32,17 @@ export function body(b) {
   block(b, rect(R.u, R.w), ROOF_IN.top - 0.05, R.top, WALL, TILE);
   block(b, rect(R.plant.u, R.plant.w), R.top - 0.05, R.plant.top, BRICK, ROOF);
   block(b, rect(ANNEX.u, ANNEX.w), FOOT, ANNEX.top, WALL, ROOF);
+  const S = SOUTHWEST;
+  prism(b, rect(S.walls.u, S.walls.w), FOOT, S.soffit, WALL);
+  block(b, rect(S.roof.u, S.roof.w), S.soffit, S.top, WALL, ROOF);
 }
 
 /** The east face: the ground storey's brick and windows, and at each upper storey a balcony on its slab, a rail of two
  * bars on posts at its edge, and the glazing behind it. */
 export function east(b) {
   const B = EAST.back, E = EAST, [t0, t1] = EAST_T;
-  prism(b, plan(strip(B - 0.05, B - 0.02, t0, GROUND_T)), FOOT, E.slabs[0][0], BRICK);
-  prism(b, plan(strip(B - 0.08, B - 0.05, t0 + 0.02, GROUND_T - 0.02)), E.windows.y[0], E.windows.y[1], GLASS);
+  prism(b, plan(strip(B - 0.05, B - 0.02, t0, t1)), FOOT, E.slabs[0][0], BRICK);
+  prism(b, plan(strip(B - 0.08, B - 0.05, t0 + 0.02, t1 - 0.02)), E.windows.y[0], E.windows.y[1], GLASS);
   const tops = [...E.slabs.map(([, y1]) => y1)], bottoms = [...E.slabs.slice(1).map(([y0]) => y0), E.fascia];
   tops.forEach((y0, i) => prism(b, plan(strip(B - 0.04, B - 0.02, t0 + 0.01, t1 - 0.01)), y0 + 0.1, bottoms[i] - 0.25, GLASS));
   const posts = 13;
