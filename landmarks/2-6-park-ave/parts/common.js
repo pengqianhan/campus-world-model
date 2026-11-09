@@ -3,7 +3,8 @@
 // LiDAR's ground at the config's door, z is toStreet (east-south-east, toward Park Avenue); the frame's centre at
 // x = z = 0. Owned by the lead: read, do not edit.
 // Measured 2026-11-10 (round 0), before the door was set: every height below is measured above 68.86 m, the median
-// ground in the first crop box, and H moves it on to the door's ground.
+// ground in the first crop box, and H moves it on to the door's ground, 68.87 m (on the footpath of Park Avenue
+// before the opening at the block's south-east corner).
 //
 // The sizes are given in the building's own frame, u along the east face toward its south end (south-south-west, the
 // frame's axis, so x = -u) and w toward Park Avenue (z = w); `at`, `plan` and `rect` turn them into the view frame.
@@ -13,8 +14,8 @@
 // 13.1 inside; on it plant at 14.6 m and a raised part with a flat red roof at 17.3 m and plant on it; round its west,
 // south and north sides low parts of one storey.
 export const at = (u, w) => [-u, w];
-/** A height measured above 68.86 m (the provisional ground), as one above the door's ground. */
-export const H = (h) => h;
+/** A height measured above 68.86 m (the provisional ground), as one above the door's ground, 0.01 m higher. */
+export const H = (h) => h - 0.01;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 export const rect = ([u0, u1], [w0, w1]) => plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]);
 
@@ -44,12 +45,16 @@ export const RAISED = { u: [4.0, 16.0], w: [-3.0, 7.0], top: H(17.3), plant: { u
 export const EAST = { back: 1.6, slabs: [[3.4, 3.9], [6.5, 7.0], [9.6, 10.1]].map(([a, b]) => [H(a), H(b)]),
   rail: [0.5, 1.05], bar: 0.06, fascia: H(12.0), windows: { y: [H(0.9), H(2.9)] } };
 
-// The low parts, one storey: west of the block, u -18 to 21.4, to w -14.2 (and to -16 over u -14 to -4), 3.6 m
-// (3.5 to 4.3); south of it, u 21.4 to 24.2, w -10 to 8, 3.6 m; north of it, u -24.2 to the north end, w -10 to 6,
-// 6.3 m (6.2 to 6.4).
-export const LOW = [
-  { plan: [[-18.0, -12.4], [21.4, -11.2], [21.4, -14.2], [-4.0, -14.2], [-4.0, -16.0], [-14.0, -16.0], [-14.0, -14.2],
-    [-18.0, -14.2]], top: H(3.6) },
-  { plan: [[21.0, -10.0], [24.2, -10.0], [24.2, 8.0], [20.8, 8.0]], top: H(3.6) },
-  { plan: [[-24.2, -10.0], [-22.1, -10.0], [-22.5, 6.0], [-24.2, 6.0]], top: H(6.3) },
-];
+// The walls stand behind the eave's edge where the LiDAR sees the ground under it: 1.8 m on the north (its returns to
+// 1.66 m in), 1.6 m on the east (1.48 m), 1.8 m on the south and 0.3 m on the west (none): their corners. Under the
+// upper storeys at the south-east corner the ground storey is open (the LiDAR sees the ground up to 5.5 m in from the
+// south end, w 8.3 to 14.8): its walls stop at u 15.5 and w 8.3 (estimated).
+export const WALLS = [[-20.11, -12.24], [-20.95, 12.97], [18.85, 14.53], [19.59, -10.96]];
+export const GROUND = { plan: [[-20.11, -12.24], [-20.95, 12.97], [15.5, 14.4], [15.5, 8.3], [19.03, 8.3], [19.59, -10.96]] };
+// The east face's balconies and glazing run between the north and south walls (t along NE to SE); its brick and
+// ground storey windows to the opening (t 0.8825, u 15.5).
+export const EAST_T = [0.043, 0.96], GROUND_T = 0.8825;
+
+// A low annex west of the block, one storey, u -11 to -7, to w -16.4, 3.5 m (3.1 to 3.5), roofed where the LiDAR
+// has no ground under it. The rest round the block is open ground or a canopy narrower than a metre: not drawn.
+export const ANNEX = { u: [-11.0, -7.0], w: [-16.4, -11.7], top: H(3.5) };

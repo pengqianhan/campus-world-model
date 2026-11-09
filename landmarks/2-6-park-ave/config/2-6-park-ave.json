@@ -118,11 +118,11 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 68.86,
+ "ground": 68.87,
  "door": {
-  "x": 0,
-  "z": 0,
-  "note": "provisional, to be set at step 7"
+  "x": -17.5,
+  "z": 17.0,
+  "note": "on the footpath of Park Avenue before the opening under the upper storeys at the block's south-east corner, where the LiDAR sees the ground up to 5.5 m in (the campus map records no lobby or entrance in 529, and OpenStreetMap no entrance near it): u 17.5, w 17.0 in the building's frame ((-17.5, 17.0) in the view frame). The LiDAR's ground within 1 m: 13 returns, p10/p50/p90 68.713/68.867/68.924 m"
  },
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
@@ -141,9 +141,9 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3,
-  "tower_above": 3,
-  "spine_below": 40,
+  "min_above": 2.99,
+  "tower_above": 2.99,
+  "spine_below": 39.99,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "east",
@@ -159,7 +159,7 @@
    ],
    "tolerance_m": 0.05
   },
-  "thresholds_note": "min_above 3 m over the provisional ground (68.86 m); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long east face (bearing 198 deg), so z faces east-south-east, to Park Avenue"
+  "thresholds_note": "min_above 3 m over the provisional ground (68.86 m); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long east face (bearing 198 deg), so z faces east-south-east, to Park Avenue; all three lowered by 0.01 m with the ground set at the door (step 7), so that they pick the same points"
  },
  "refine": {
   "position_m": 3,
@@ -174,7 +174,7 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "68.86 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 68.14, p95 71.35); provisional, to be the LiDAR's ground at the door (step 7)",
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-10); the provisional ground was 68.86 m, the median LiDAR ground in the first crop box, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
  "light": {
   "sunaz": 290,
   "sunel": 40,
