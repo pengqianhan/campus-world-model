@@ -1385,23 +1385,6 @@
     }
    }
   },
-  "505": {
-   "name": "M&HS Building",
-   "reason": "roof cells cover 81% of the outline (limit 85%)",
-   "measured": {
-    "outline_m2": 3515.3,
-    "ground": {
-     "p5": 68.81,
-     "p50": 72.11,
-     "p95": 73.25,
-     "zero": 68.7
-    },
-    "roof_inside_m2": 2862.2,
-    "cover": 0.814,
-    "vegetation": 0.063,
-    "open_below": 0.065
-   }
-  },
   "509": {
    "name": "9 Glasgow Terrace",
    "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
