@@ -35,8 +35,9 @@ as it does for every landmark.
 
 ## Neighbours on the map
 
-- No other landmark's outline comes within 2 m of its (502 and 503 are blocks), so it stands alone on the map's ground
-  at its door (`../README.md`, "Placement").
+- Building 502's landmark touches its outline (503 is a block), so the two share one ground (`../README.md`,
+  "Placement"): against the map's ground at its own door 501 stands 0.919 m lower and 502 0.919 m higher (their
+  offsets, the map's ground at the door minus the LiDAR's, -1.26 and -3.10 m, span 1.84 m).
 - The model draws what the LiDAR has inside block 501's ring, so that it stands over no part of the blocks of 502 and
   503 beside it (0.1% and 0.3% of them under it). The ring takes in, besides the building, the plaza east of the
   tower, over the floors the campus map has below its ground, and the south edge of building 502's roof: the model
@@ -113,7 +114,8 @@ point 34.3 m against the LiDAR's 34.4 (p99.9). 423 triangles, 5 draw calls.
 outline, which takes in the plaza) has gone; `MASSING.md` notes it in the Grafton round, and
 `massing.py --campus grafton` leaves it out and writes every other Grafton file as before.
 
-- **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 5.61 m under the
+- **The foot.** It shares a ground with 502, its y = 0 0.92 m below the map's ground at its door. Its walls go down to
+  FOOT, 5.61 m under the
   door's ground, below the map's ground under every plan: the foot check of `tests/landmarks.test.ts` passes. Where
   the glazed link and the glazed box run into the walls they meet, their glass starts 0.1 m over FOOT, and so do 502's
   south edge's walls, which the concrete link runs into; the plant room's ends stand 0.1 m inside the part south of
