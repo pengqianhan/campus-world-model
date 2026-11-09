@@ -37,7 +37,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 1: 908 triangles, 7 draw
-  calls; after the walls were set behind the eave: 848, 7; after the review's round 1: 864, 7; after round 2: 888, 7; after round 3: 2,496, 7.
+  calls; after the walls were set behind the eave: 848, 7; after the review's round 1: 864, 7; after round 2: 888, 7;
+  after round 3: 2,496, 7.
 
 ## Rounds
 - Round 1 (2026-11-10, the lead alone): the block at the LiDAR's plan and eave, its walls `claddingPale` to a dark eave
@@ -91,11 +92,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   (0.958 in the model's screen box). The top view: footprint IoU 0.875 (the LiDAR's 1,406 m² against the model's 1,301,
   both 1,263), 89% of the 5,047 cells within 0.5 m (p10/p50/p90 -0.28/0.00/0.34); block 529 under the model 93.1%.
 - The review's round 3 (2026-11-10): the LiDAR has the balconies' slabs and rails on every side, at the same heights
-  (slab tops 3.60, 6.55 and 9.50 m, rails' tops 0.9 m over them), what the west's "canopy" was the lowest of; and the east
-  face's slabs, set through the photograph's camera at 3.9, 7.0 and 10.1 m with the storeys 3.1 m apart, stood 0.3 to
-  0.6 m over them. The balconies are drawn on every side at the LiDAR's heights (`BALCONY`, the `balconies` part), the
-  slabs' depth and the rails' form from the photograph (estimated); the west canopy is gone into them. 2,496 triangles,
-  7 draw calls. Silhouette IoU 0.911 in the photograph (0.956 in the model's screen box); the top view as in round 2.
+  (slab tops 3.60, 6.55 and 9.50 m, rails' tops 0.9 m over them), what the west's "canopy" was the lowest of; and the
+  east face's slabs, set through the photograph's camera at 3.9, 7.0 and 10.1 m with the storeys 3.1 m apart, stood 0.3
+  to 0.6 m over them. The balconies are drawn on every side at the LiDAR's heights (`BALCONY`, the `balconies` part),
+  the slabs' depth and the rails' form from the photograph (estimated); the west canopy is gone into them. 2,496
+  triangles, 7 draw calls. Silhouette IoU 0.911 in the photograph (0.956 in the model's screen box); the top view as in
+  round 2.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

@@ -141,6 +141,6 @@ and the fourth round, and `massing.py --campus grafton` leaves it out and writes
 
 ## Not drawn yet
 
-The balconies' louvred fronts and the canopy on the west, the brick's courses, the windows' frames, the doors, the sign post and the things on the
-roof; the planted bed and the trees. The faces no photograph shows (the north, south and west faces, the annex and the
-low part south-west of the block) are drawn plainly.
+The balconies' louvred fronts and the canopy on the west, the brick's courses, the windows' frames, the doors, the sign
+post and the things on the roof; the planted bed and the trees. The faces no photograph shows (the north, south and west
+faces, the annex and the low part south-west of the block) are drawn plainly.
