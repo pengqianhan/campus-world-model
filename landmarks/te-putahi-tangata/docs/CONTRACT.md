@@ -20,7 +20,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   from the hall's roof); the long block behind (u -43.0 to 34, w -26 to -4.5) at 31.2 to 32.2, with strips 2 to 3 m
   wide at 34.5 to 35 across its middle, raised parts at 37.2 to 38 at each end of it, the stair's core at 33.2 to 33.7
   (u -15 to -2.5), the podium at 7.6 to 8.0 (its parapets to 9) along its south-east side and round its south-west end,
-  and 12, a low roof at -0.5 and a part at 3 to 4 by its south-west end, and a link at 10.9 and 13.5 beside the hall.
+  and 12, a low roof at -0.5 and a part at 3 to 4 by its south-west end, and a link at 13.5 beside the hall, with a
+  strip at 10.6 to 11.8 along the long block and the hall's south-west side.
   Roofs west of the hall (17 to 26 m) stand outside the ring: other buildings, not drawn.
 - Walls go down to `FOOT`, 4.5 m under 28.33 m: the ground falls from 35.5 to 36.1 on the street side to 24.2 to 24.9
   on the south-east side.
@@ -63,6 +64,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   footprint IoU 0.902, 80% of 16,029 cells within 0.5 m; block 201 84.6% under the model by the top view's count,
   which counts only what stands more than 2.5 m over the door's ground (94.4% of its outline counted from the ground
   under each cell, 98.1% of the cells in it where the LiDAR has a roof). Luma and the IoU in the box as before.
+- The review's round 3 (2026-11-10): the long block's north-west extension to u -29.1, where its roof ends, and the
+  strip at 10.9 from there, closing the slot between the extension and the link; the strip at 10.9 along the hall's
+  whole south-west side, to w 31; the part at 3.6 to w -0.5; the two low parts named as under the map's ground on the
+  site. 744 triangles, 5 draw calls. Top view: footprint IoU 0.911, 80% of 16,204 cells within 0.5 m; block 201 85.3%
+  under the model by the top view's count (95.0% of its outline counted from the ground under each cell, 98.9% of the
+  cells in it where the LiDAR has a roof). Luma and the IoU in the box as before.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

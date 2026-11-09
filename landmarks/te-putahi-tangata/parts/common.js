@@ -49,11 +49,10 @@ export const CANOPY = { plan: [[-0.27, 40.1], [6.76, 40.1], [6.76, 42.2], [-0.27
 
 /** The north-east block: its roof at 23.9 to 24.6 (the parapet's cells 25), its front at w 43.0 from u 20.5 to 35.5
  * (the LiDAR's edge, 1.2 m short of the campus map's ring), at 40 south-west of that and 39 north-east of it, its east
- * side at u 36.75; the raised
- * part on it (27.0 to 27.5) from u 14.6, over the hall's end, to 27, its south-west wall standing from the hall's roof
- * (the LiDAR's returns at u 14.5 to 14.75 from 18.5 to 26.5), so it goes down to FOOT; the faces toward the street and
- * the hall pale metal, as the photograph shows the hall's side, the others plain. `pale`: the edges by index that are
- * clad. */
+ * side at u 36.75; the raised part on it (27.0 to 27.5) from u 14.6, over the hall's end, to 27, its south-west wall
+ * standing from the hall's roof (the LiDAR's returns at u 14.5 to 14.75 from 18.5 to 26.5), so it goes down to FOOT;
+ * the faces toward the street and the hall pale metal, as the photograph shows the hall's side, the others plain.
+ * `pale`: the edges by index that are clad. */
 export const NE = {
   plan: [[16.2, 0.0], [36.75, 0.0], [36.75, 39.0], [35.5, 39.0], [35.5, 43.0], [20.5, 43.0], [20.5, 40.0],
     [16.2, 40.0]],
@@ -62,16 +61,17 @@ export const NE = {
   raised: { plan: [[14.6, 8.0], [27.0, 8.0], [27.0, 28.0], [14.6, 28.0]], top: H(27.35) },
 };
 
-/** The long block behind: its roofs at 31.2 to 32.2 (u -43.0 to 34, w -26 to -4.5, and on to w -0.5 at u -39 to -28
+/** The long block behind: its roofs at 31.2 to 32.2 (u -43.0 to 34, w -26 to -4.5, and on to w -0.5 at u -39 to -29.1
  * and to w 0 at u 20 to 30); strips 2 to 3 m wide at 34.5 to 35 across its middle and raised parts at 37.2 to 38 at
  * each end of it, toward the hall; the stair's core at 33.2 to 33.7 on its south-east side (u -15 to -2.5, to w -33);
  * the podium at 7.6 to 8.0 (its parapets to 9) along its south-east side and its south-west end, and 12 beside the core
  * (to u 7); past the podium's south-west end a low roof at -0.4 to -0.7, about 2.6 m over the ground; north of the
- * block's west end a part at 3 to 4; and the link between the long block and the hall's south-west end, at 13.5 to
- * u -19.5 and 10.3 to 11.4 along the long block and along the hall. */
+ * block's west end a part at 3 to 4 (to w -0.5); and the link between the long block and the hall's south-west end, at
+ * 13.5 to u -19.5, and a strip at 10.3 to 11.8 along the long block (from u -29.1, where the north-west extension's
+ * roof ends) and along the hall's whole south-west side (to w 31). */
 export const SOUTH = {
   main: { top: H(31.95), plan: [[-43.0, -26.0], [34.0, -26.0], [34.0, -4.5], [30.0, -4.5], [30.0, 0.0], [20.0, 0.0],
-    [20.0, -4.5], [-28.0, -4.5], [-28.0, -0.5], [-39.0, -0.5], [-39.0, -4.5], [-43.0, -4.5]] },
+    [20.0, -4.5], [-29.1, -4.5], [-29.1, -0.5], [-39.0, -0.5], [-39.0, -4.5], [-43.0, -4.5]] },
   raised: [
     // their north sides 0.1 m back from the block's, so that the block's roof edge and their walls do not lie in one
     // plane
@@ -89,9 +89,10 @@ export const SOUTH = {
     { top: H(12.0), plan: [[-2.5, -35.0], [7.0, -35.0], [7.0, -26.0], [-2.5, -26.0]] },
     { top: H(7.9), plan: [[7.0, -33.0], [37.0, -33.0], [37.0, -26.0], [7.0, -26.0]] },
     { top: H(-0.5), plan: [[-48.5, -21.0], [-46.0, -21.0], [-46.0, -7.5], [-48.5, -7.5]] },
-    { top: H(3.6), plan: [[-45.7, -4.5], [-39.0, -4.5], [-39.0, 0.3], [-45.7, 0.3]] },
+    { top: H(3.6), plan: [[-45.7, -4.5], [-39.0, -4.5], [-39.0, -0.5], [-45.7, -0.5]] },
     // the link: 10.9 along the long block and along the hall, 13.5 between
-    { top: H(10.9), plan: [[-26.8, -4.5], [-18.2, -4.5], [-18.2, 4.7], [-19.5, 4.7], [-19.5, -2.0], [-26.8, -2.0]] },
+    { top: H(10.9), plan: [[-29.1, -4.5], [-18.2, -4.5], [-18.2, 31.0], [-19.5, 31.0], [-19.5, -2.0], [-26.8, -2.0],
+      [-26.8, -0.5], [-29.1, -0.5]] },
     { top: H(13.5), plan: [[-26.8, -2.0], [-19.5, -2.0], [-19.5, 4.7], [-26.8, 4.7]] },
   ],
 };

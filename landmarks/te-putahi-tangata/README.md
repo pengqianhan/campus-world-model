@@ -39,10 +39,10 @@ the one the model was drawn in (0.000 m, 0.000 degrees).
   6.87 m (250), all below: a span of 4.26 m, more than `SHARED_SPREAD`, so each stands on the map's ground at its own
   door, as the Clock Tower and its East Wing do, and 206 and 250 stand where they stood.
 - The roofs west of the hall (17 to 26 m) stand outside the outline: other buildings, not drawn.
-- 84.6% of block 201 is under the model by the top view's count, which counts only what stands more than
-  2.5 m over the door's ground: the site falls 11 m, and the podium and the low parts on its south side stand under
-  that. Counted from the ground under each cell, 94.4% of the block's outline is under the model, and 98.1% of the
-  cells in it where the LiDAR has a roof. No other block is under it by half, so `building.also` is empty.
+- 85.3% of block 201 is under the model by the top view's count, which counts only what stands more than 2.5 m over the
+  door's ground: the site falls 11 m, and the podium and the low parts on its south side stand under that. Counted from
+  the ground under each cell, 95.0% of the block's outline is under the model, and 98.9% of the cells in it where the
+  LiDAR has a roof. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
 
@@ -85,27 +85,27 @@ underside along the glass fall on the photograph's.
   wall standing from the hall's roof, where the LiDAR has a wall from 18.5 to 26.5, down to `FOOT`. Its faces
   toward the street and the hall pale metal (`claddingPale`), as the photograph shows the hall's side; the others
   plain.
-- **The long block** behind: its roofs at 31.95 (the LiDAR's 31.2 to 32.2), u -43.0 to 34 and w -26 to -4.5, and on to
-  w -0.5 at u -39 to -28 and to w 0 at u 20 to 30; raised parts at 37.7 at each end of its north side (37.2 to 38);
+- **The long block** behind: its roofs at 31.95 (the LiDAR's 31.2 to 32.2), u -43.0 to 34 and w -26 to -4.5, and on to w
+  -0.5 at u -39 to -29.1 and to w 0 at u 20 to 30; raised parts at 37.7 at each end of its north side (37.2 to 38);
   across its middle seven strips 2 to 3 m wide at 34.8, 1 to 2 m apart (u -20 to 11, w -18 to -6.5), drawn solid: the
   LiDAR's returns there lie both at the strips' top and on the roof under them (screens or roof lights, which no
   photograph shows); the stair's core on its south-east side at 33.4 (u -15 to -2.5, to w -33); the podium at 7.9 (its
   roof 7.6 to 8.0, its parapets to 9) along its south-east side and round its south-west end (u -46 to -43), and 12
   beside the core (to u 7); past the podium's south-west end a low roof at -0.5, about 2.6 m over the ground; north of
-  the block's west end a part at 3.6; and the link between it and the hall's south-west end at 13.5 (to u -19.5), with a
-  strip at 10.9 along the long block and along the hall.
-  Every face plain mid grey
-  (`grey`), the roofs `roofGrey`.
+  the block's west end a part at 3.6 (to w -0.5); and the link between it and the hall's south-west end at 13.5 (to u
+  -19.5), with a strip at 10.9 (the LiDAR's 10.6 to 11.8) along the long block, from u -29.1, where the north-west
+  extension's roof ends, and along the hall's whole south-west side, to w 31. Every face plain mid grey (`grey`), the
+  roofs `roofGrey`.
 - The light: the photograph's light is soft and bright, the front lit under the trees; the viewer's sun stands behind
   the camera, low in the north-west (300 degrees round, 35 up), at an exposure of 1.15: the building's luma median 213
   against the photograph's 203 as the metrics take it (the model at any height, and under the ground line the
   photograph shows the street) and 198 against 209 above the ground line.
 
-The top view: footprint IoU 0.902 (the LiDAR's 4,176 m² against the model's 4,463, both 4,096; of the 367 m² only the
+The top view: footprint IoU 0.911 (the LiDAR's 4,176 m² against the model's 4,507, both 4,140; of the 367 m² only the
 model covers, most is the hall's roof over its glazed strips, which the LiDAR does not see, and over a
 planted part at its north-east end, whose returns at the roof's height the LiDAR classes as vegetation), 80% of the
-16,029 cells both cover within 0.5 m (p10/p50/p90 -0.39/0.06/0.64), the highest point 30.54 m over the door's ground
-against the LiDAR's 30.93 (p99.9). 728 triangles, 5 draw calls.
+16,204 cells both cover within 0.5 m (p10/p50/p90 -0.39/0.06/0.63), the highest point 30.54 m over the door's ground
+against the LiDAR's 30.93 (p99.9). 744 triangles, 5 draw calls.
 
 ## On the map (step 7)
 
@@ -124,6 +124,10 @@ against a limit of 0.9 and 84% of its cells within 0.5 m against 90%) has gone; 
 
 - **The foot.** Its y = 0 is the map's ground at its door. Its walls go down to FOOT, 11.67 m under the door's ground,
   below the map's ground under every plan: the foot check of `tests/landmarks.test.ts` passes, as does its faces check.
+- **Under the drawn ground.** The map's ground falls about 7 m across the site where the LiDAR's falls about 11 m, so
+  the low roof at -0.5 past the podium's south-west end (its top 7.67 m under the door's ground) and the part at 3.6
+  north of the block's west end (3.57 m under it) stand wholly under the map's ground there, by 4.0 to 5.4 m and 1.2 to
+  1.9 m: the site does not show them; the viewer does.
 - **While a building is open** its neighbours sink to footprints, and the model gives way to block 201, which sinks on
   its footing, at most 4 m above the lowest ground under it (`updateLandmarks` in `src/scene/CampusScene.ts`), and whose
   footprint shows above the drawn ground on 70% of its cells, by up to 4.6 m.
