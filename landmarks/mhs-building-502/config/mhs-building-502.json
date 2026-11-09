@@ -1,6 +1,8 @@
 {
  "name": "mhs-building-502",
  "site": false,
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street north-east of the main block, about 41 m from its north-east corner, through a lens of about 79 degrees across, looking up 6.9 degrees; its camera is fitted to the top of the roof's skirt over the east end and the north face and at their corner, with two upright edges of the east end's panels as verticals, held 1.6 m over the LiDAR's ground (rms 0.46 px)",
  "building": {
   "id": "502",
   "also": [],
@@ -162,7 +164,7 @@
   "lon": 174.7691,
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
- "crop_margin": 25,
+ "crop_margin": 60,
  "ground": 68.8,
  "door": {
   "x": 0.0,
@@ -219,5 +221,6 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "68.8 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 67.93, p95 72.07); provisional, to be the LiDAR's ground at the door (step 7)"
+ "ground_note": "68.8 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 67.93, p95 72.07); provisional, to be the LiDAR's ground at the door (step 7)",
+ "crop_note": "60 m round the outline, so that the crop box takes in the street north-east of the main block where the photograph is taken"
 }
