@@ -2,7 +2,7 @@
  "name": "mhs-building-507",
  "site": false,
  "refs": "photos",
- "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken at dusk from across the street east-south-east of the south-east block, square to its street face, about 16 m from it, through a lens of about 99 degrees across whose principal point is off its centre (a shifted lens: its verticals are upright); its camera is fitted to the street face's parapet and its north-east corner, and to the fronts of the three glazed steps north of it, whose tops the LiDAR gives, held 1.6 m over the LiDAR's ground (rms 1.38 px)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken at dusk from across the street east-south-east of the south-east block, square to its street face, about 16 m from it, through a lens of about 98 degrees across whose principal point is off its centre (a shifted lens: its verticals are upright); its camera is fitted to the street face's parapet (2 degrees off the frame's axis) and its north-east corner, and to the fronts of the three glazed steps north of it, whose tops the LiDAR gives, held 1.6 m over the LiDAR's ground (rms 0.59 px)",
  "building": {
   "id": "507",
   "also": [],
@@ -245,5 +245,11 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "ground_note": "68.03 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 64.00, p95 68.79); provisional, to be the LiDAR's ground at the door (step 7)"
+ "ground_note": "68.03 m: the median LiDAR ground (class 2) in the first crop, 25 m round the outline (p5 64.00, p95 68.79); provisional, to be the LiDAR's ground at the door (step 7)",
+ "light": {
+  "sunaz": 108,
+  "sunel": 30,
+  "exposure": 1.15,
+  "note": "estimated: the photograph is taken at dusk, the street face in shade and lit from inside (its windows and its glazed base bright); the model draws no windows and no light inside. The viewer's sun at 108 deg round (square to the street face) and 30 up and an exposure of 1.15 give the building's luma p50 141 against the photograph's 146 (counted in the model's screen box); with the sun behind the building, as at dusk, it is 58 to 72 at exposures of 1.4 to 1.8"
+ }
 }
