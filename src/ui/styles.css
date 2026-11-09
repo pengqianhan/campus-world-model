@@ -2277,18 +2277,23 @@ select optgroup {
   .walking.in-building .walker-panel:not(.touch) :is(.walker-keys, .walker-note, .walker-wander) {
     display: none;
   }
+}
 
-  /* The campus's and the walk's buttons share the foot of the screen with the attribution: the row is at most
-     380 px wide, and the attribution gives way, to its ellipsis, before it would run under it. */
-  .campus-dock {
-    max-width: 380px;
-  }
-
+/* Wider than the phone's layout (a zoomed page can be 720.5 px wide, which neither 720 nor 721 takes), the campus's
+   and the walk's buttons share the foot of the screen with the attribution: it gives way, to its ellipsis, before it
+   would run under them, and where the screen is narrow enough for that the row is at most 380 px wide. */
+@media (width > 720px) {
   .attribution {
     max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+@media (720px < width < 1000px) {
+  .campus-dock {
+    max-width: 380px;
   }
 }
 
