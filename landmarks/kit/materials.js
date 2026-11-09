@@ -340,6 +340,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     finBrown: painted(0x86695c, 0.6, space),
     // the Science Centre (303): the paint's shader in a mauve grey, its precast concrete panels (its photograph)
     concreteMauve: painted(0x9b8f8d, 0.75, space),
+    // Building 907: the paint's shader in orange, its annex's rendered walls (its photograph)
+    renderOrange: painted(0xe0861c, 0.7, space),
   };
   return m;
 }
