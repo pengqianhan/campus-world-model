@@ -72,6 +72,8 @@ It is built to answer two questions a student actually has:
   block whose finned upper storeys stand over a glazed base, three glazed bays north of it each set back further, and
   a block behind them under flat roofs. Its sizes come from the LiDAR; it was compared with a photograph, which is not
   published, and its card says what is estimated.
+- **2026-11-09:** "Take a walk" is a button of its own beside the campus's name in the bottom-left corner, on
+  every school's map, no longer a line inside the campus panel.
 - **2026-11-09:** on the Newmarket campus the map draws Building 907 in detail: a hall under a shallow barrel
   vault in white metal cladding, a band of glazing at the foot of its end toward the street, and beside it an annex
   of two storeys in orange render. Its sizes come from the LiDAR; it was compared with a photograph, which is not
@@ -241,8 +243,8 @@ GitHub gives it no secrets.
 
 ## Walk the campus
 
-**In the browser:** "Take a walk" in the campus panel (the button with the campus's name in the
-bottom-left corner), or `?walk=1` in the address, puts a small made-up person near the Clock Tower.
+**In the browser:** "Take a walk", the button beside the campus's name in the bottom-left corner,
+or `?walk=1` in the address, puts a small made-up person near the Clock Tower.
 W A S D or the arrow keys walk it, and Shift breaks into a run. On a phone or tablet it is steered as
 in a game: a stick under the left thumb walks and turns it, and the other thumb drags the view round.
 Its panel switches between the map, the view from behind it and the view through its eyes. There a

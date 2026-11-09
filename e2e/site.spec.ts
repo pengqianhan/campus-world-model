@@ -312,7 +312,7 @@ test("the top bar links straight to the source code on GitHub, beside About", as
   await expect(link).toBeVisible();
 });
 
-test("the campus panel starts shut, as a small button with the campus's name, and opens and shuts from there or with Escape", async ({ page }) => {
+test("the campus panel starts shut, as a small button with the campus's name and the walk's beside it, and opens and shuts from there or with Escape", async ({ page }) => {
   await open(page, "?light=day");
   const toggle = page.locator("#status-toggle");
   const strip = page.locator("#status-strip");
@@ -327,12 +327,22 @@ test("the campus panel starts shut, as a small button with the campus's name, an
   expect(box.height).toBeLessThanOrEqual(44);
   expect(box.x).toBeLessThan(30);
   expect(view.height - (box.y + box.height)).toBeLessThan(30);
+  // The walk is a button of its own beside it, on the same line and as tall, not inside the panel.
+  const walk = page.locator("#walk-start");
+  await expect(walk).toBeVisible();
+  await expect(walk).toContainText("Take a walk");
+  const wbox = (await walk.boundingBox())!;
+  expect(wbox.x).toBeGreaterThanOrEqual(box.x + box.width);
+  expect(wbox.x - (box.x + box.width)).toBeLessThan(20);
+  expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
+  expect(wbox.height).toBeLessThanOrEqual(44);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
-  for (const part of [".campus-tabs", "#walk-start", 'a[data-world="tsinghua"]']) await expect(strip.locator(part)).toBeVisible();
+  for (const part of [".campus-tabs", 'a[data-world="tsinghua"]']) await expect(strip.locator(part)).toBeVisible();
+  await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();
   await shot(page, "01-campus-panel-open");
@@ -358,6 +368,32 @@ test("the campus panel starts shut, as a small button with the campus's name, an
   await settle(page);
   await expect(toggle).toBeVisible();
   await expect(strip).toBeHidden();
+});
+
+test("the campus's and the walk's buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
+  await open(page, "?light=day");
+  // The campus with the longest name the panel offers, from its tabs or its list of campuses further off.
+  await openStrip(page);
+  const longest = await page.evaluate(() => {
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>(".campus-tabs button[data-campus]")].map((b) => ({ id: b.dataset.campus!, name: b.textContent!.trim(), tab: true }));
+    const more = [...document.querySelectorAll<HTMLOptionElement>("#campus-more option")].filter((o) => o.value).map((o) => ({ id: o.value, name: o.text.trim(), tab: false }));
+    return [...tabs, ...more].sort((a, b) => b.name.length - a.name.length)[0]!;
+  });
+  if (longest.tab) await page.locator(`.campus-tabs button[data-campus="${longest.id}"]`).click();
+  else await page.locator("#campus-more").selectOption(longest.id);
+  await settle(page);
+  await expect(page.locator("#status-toggle")).toContainText(longest.name.slice(0, 4));
+  const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
+    a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
+  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1440]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const attribution = (await page.locator("#attribution").boundingBox())!;
+    for (const id of ["#status-toggle", "#walk-start"]) {
+      const box = (await page.locator(id).boundingBox())!;
+      expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
+    }
+  }
 });
 
 test("timetable features work end to end when a schedule is present (fixture schedule, never published)", async ({ page }) => {
