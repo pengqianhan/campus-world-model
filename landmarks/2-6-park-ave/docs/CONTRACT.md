@@ -17,16 +17,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
     16.2) and SW (21.4, -11.2) at the roof's edges, its eave at 12.45 m and its nearly flat roof 12.6 to 13.1 inside;
   - on the roof **plant** at 14.6 m (u -14 to -5, w -5 to 6) and **a raised part** at 17.3 m (u 4 to 16, w -3 to 7),
     its roof red on the 2023 aerial, with plant on it at 18.3;
-  - inside the campus map's ring, **a one-storey annex** on the west (u -11 to -5.9, to w -16.4, 3.5 m) and **a low
+  - inside the campus map's ring, **a one-storey annex** on the west (u -11 to -5.9, to w -17.4, 3.5 m) and **a low
     part south-west of the block** (u 9.2 to 22.8, w -23.7 to -27.6 and on under trees to the ring, its roof 3.44 m),
     both roofed with no ground under them; and low strips along the block's walls, up to about 1.5 m wide (canopies at
     3.5 to 6.4 m, and the eave's edge);
-  - the ground under the eave on the north (to 1.66 m in), east (1.48 m) and south (1.46 m) sides: the walls stand
-    behind it;
+  - the ground under the eave on the north (to 1.66 m in), east (1.48 m) and south (1.46 m) sides, and a canopy at
+    3.65 m under it all along the west (up to 1.61 m in): the walls stand behind them;
   - the ground: -0.4 to +0.1 m along Park Avenue, falling to about -0.8 on the west: walls go down to `FOOT`, 2.0 m
     under the provisional ground.
 - What it draws: what the LiDAR has inside the campus map's ring of 529, but for the low strips along the walls, which
-  are left open (72 m² of its roof inside the ring, 43 m² of it with no ground seen under it).
+  are left open (67.5 m² of its roof inside the ring, 41 m² of it with no ground seen under it).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the building's frame): the lead.
@@ -34,7 +34,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2), merged by material. Round 1: 908 triangles, 7 draw
-  calls; after the walls were set behind the eave: 848, 7; after the review's round 1: 864, 7.
+  calls; after the walls were set behind the eave: 848, 7; after the review's round 1: 864, 7; after round 2: 888, 7.
 
 ## Rounds
 - Round 1 (2026-11-10, the lead alone): the block at the LiDAR's plan and eave, its walls `claddingPale` to a dark eave
@@ -79,6 +79,14 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   east and west, 3.0 on the north and south). 864 triangles, 7 draw calls. Silhouette IoU 0.912 in the photograph
   (0.958 in the model's screen box). The top view: footprint IoU 0.871 (the LiDAR's 1,406 m² against the model's 1,296,
   both 1,258), 89% of the 5,027 cells within 0.5 m (p10/p50/p90 -0.28/0.00/0.34); block 529 under the model 92.8%.
+- The review's round 2 (2026-11-10): the west wall stood 0.3 m behind the eave, but the LiDAR sees a canopy at 3.65 m
+  under the eave all along that side, up to 1.61 m in: the wall stands 1.8 m in, as on the north and south, and the
+  canopy is drawn from it to the eave's edge. The annex stopped at w -16.4, where the LiDAR still has its roof: its
+  outer wall stands at w -16.85, where the LiDAR sees a wall's face, its roof runs to the ring's edge (w -17.3), its
+  north end behind a ground return; it runs into the block's west wall. The east face's parts run between the walls'
+  lines (t 0.0412 to 0.9582, not the eave's). 888 triangles, 7 draw calls. Silhouette IoU 0.912 in the photograph
+  (0.958 in the model's screen box). The top view: footprint IoU 0.875 (the LiDAR's 1,406 m² against the model's 1,301,
+  both 1,263), 89% of the 5,047 cells within 0.5 m (p10/p50/p90 -0.28/0.00/0.34); block 529 under the model 93.1%.
 
 ## Rules
 - Measure, don't guess: a size the LiDAR gives is taken from it; one it does not is estimated and said to be.

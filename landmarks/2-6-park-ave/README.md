@@ -36,9 +36,9 @@ other, as it does for every landmark.
   map's ground at its door (`../README.md`, "Placement").
 - The campus map's ring of 529 takes in, besides the block, a one-storey annex on its west and a low part south-west of
   it, joined to the block on the map by a sliver: both are drawn. Its other low strips along the block's walls, up to
-  about 1.5 m wide (canopies at 3.5 to 6.4 m, and the eave's edge), are left open: 72 m² of the LiDAR's roof inside the
-  ring, 43 m² of it with no ground seen under it.
-- 92.8% of block 529 is under the model above 2.5 m. No other block is under it by half, so `building.also` is empty.
+  about 1.5 m wide (canopies at 3.5 to 6.4 m, and the eave's edge), are left open: 67.5 m² of the LiDAR's roof inside
+  the ring, 41 m² of it with no ground seen under it.
+- 93.1% of block 529 is under the model above 2.5 m. No other block is under it by half, so `building.also` is empty.
 
 ## The reference
 
@@ -63,9 +63,11 @@ section names as estimated; it is a reference for the look and the comparison.
   14.5), SE (20.6, 16.2) and SW (21.4, -11.2) (u, w): a dark eave (`screenGrey`) from 12.0 m to the roof's edge at
   12.45 m (12.4 to 12.5 on every edge); inside it the roof, 12.6 to 13.1 m, drawn as a flat top of 13.0 m
   (`roofGrey`) whose edges stand 1.9 m in from the eave's on the east and west and 3.0 m on the north and south.
-- **The walls** (`claddingPale`) stand behind the eave's edge where the LiDAR sees the ground under it (estimated):
-  1.8 m on the north (its returns to 1.66 m in), 1.6 m on the east (1.48 m), 1.8 m on the south (1.46 m, near the
-  south-east corner) and 0.3 m on the west, where it sees none. Inside them it has the roof and no ground.
+- **The walls** (`claddingPale`) stand behind the eave's edge (estimated): 1.8 m on the north, 1.6 m on the east and 1.8
+  m on the south, behind the ground the LiDAR sees under the eave (its returns to 1.66, 1.48 and 1.46 m in), and 1.8 m
+  on the west, behind a canopy at 3.65 m (3.62 to 3.69) that it sees under the eave all along that side, up to 1.61 m in
+  from the eave's edge; the canopy is drawn there, from the wall to the eave's edge (`claddingPale`). Inside the walls
+  the LiDAR has the roof and no ground.
 - **On the roof** plant at 14.6 m (14.4 to 14.8) over u -14 to -5, w -5 to 6 (`renderGrey`); a raised part with a
   flat roof at 17.3 m (17.1 to 17.5), red on the 2023 aerial (`roofTile`), over u 4 to 16, w -3 to 7, and plant on it
   at 18.3 m (17.9 to 18.3) over u 8 to 11, w 2 to 5.
@@ -74,22 +76,24 @@ section names as estimated; it is a reference for the look and the comparison.
   storeys 3.1 m apart), each with a rail of two bars at 0.5 and 1.05 m on fourteen posts (`screenSilver`), and the
   glazing (`glass`) behind it; the ground storey in pale grey brick (`renderGrey`) from the north wall to the south wall,
   its windows from 0.9 to 2.9 m under the first slab.
-- **The annex** west of the block, one storey, u -11 to -5.9 (the ring's edge), out to w -16.4, 3.5 m (its returns
-  3.48 to 3.53), where the LiDAR has no ground under its roof; beyond w -16.4 it sees the ground.
+- **The annex** west of the block, one storey, its roof at 3.5 m (its returns 3.48 to 3.53) from u -11 to -5.9 and out
+  to w -17.3, the ring's edges (the LiDAR's roof runs to about -17.4), with no ground under it; its outer wall at w
+  -16.85, where the LiDAR sees a wall's face (its returns at -16.85 to -17.15) and the ground beyond, and its north end
+  at u -10.7, behind a ground return (estimated); its roof over them from 3.2 m. It runs into the block's west wall.
 - **The low part south-west of the block**, inside the ring (u 9.1 to 23.0, w -23.6 to -30.4): its flat roof at 3.44 m
   (3.40 to 3.49) from the LiDAR from u 9.2 to 22.8 and w -23.7 to -27.6, where trees hide the rest of it, so it is drawn
   to the ring's outer edge, w -29.9 (estimated; the campus map's ground floor has its rooms there). The LiDAR sees the
-  ground under its roof's edges, up to 1.0 m in on the north and 0.75 m on the north-east: its walls stand behind them,
-  its roof over them from 3.2 m (estimated).
+  ground under its roof's edges, up to 1.0 m in on the north and 0.75 m on the east: its walls stand behind them, its
+  roof over them from 3.2 m (estimated).
 - The light: the photograph is overcast, its east face in soft light without shadows. The viewer's sun stands behind
   the block (290 degrees round, 40 up), so that the east face takes the sky's light only, at an exposure of 1.0: the
   luma of the east face between the eave and the brick 92 against the photograph's 85, of its brick 87 against 111, of
   its slabs' fronts 147 against 189, of its glazing 85 against 75 (the compare's figure over the model's screen box,
   where the photograph has its bright sky, trees and a sign: 82 against 145).
 
-Silhouette IoU 0.912 in the photograph, 0.958 in the model's screen box. The top view: footprint IoU 0.871 (the
-LiDAR's 1,406 m² against the model's 1,296, both 1,258), 89% of the 5,027 cells both cover within 0.5 m
-(p10/p50/p90 -0.28/0.00/0.34); the highest point 18.3 m against the LiDAR's 18.15 (p99.9). 864 triangles, 7 draw
+Silhouette IoU 0.912 in the photograph, 0.958 in the model's screen box. The top view: footprint IoU 0.875 (the
+LiDAR's 1,406 m² against the model's 1,301, both 1,263), 89% of the 5,047 cells both cover within 0.5 m
+(p10/p50/p90 -0.28/0.00/0.34); the highest point 18.3 m against the LiDAR's 18.15 (p99.9). 888 triangles, 7 draw
 calls.
 
 ## On the map (step 7)
@@ -120,8 +124,8 @@ and the fourth round, and `massing.py --campus grafton` leaves it out and writes
   `screenSilver` and `screenGrey` are walls.
 - **Its card** says "estimated:" and the config's `estimated`: the east face's storeys, its balconies' depth and rails,
   the glazing behind them and the ground storey's brick and windows, with a photograph as a reference; how far the walls
-  stand behind the eaves, behind where the LiDAR sees the ground under them; the low part south-west of the block where
-  trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly.
+  stand behind the eaves, behind where the LiDAR sees the ground or a canopy under them; the low part south-west of the
+  block where trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly.
 - **The pictures** in `docs/landmarks/`: `2-6-park-ave-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from Park Avenue and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of the site
   built from this branch, the map near it and a walker's eyes on Park Avenue north-east of it, where the photograph is

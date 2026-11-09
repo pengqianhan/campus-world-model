@@ -733,8 +733,9 @@ LiDAR's height. What the photograph does not show is drawn plainly.
 The twenty-seventh is 2-6 Park Ave (529), on the Grafton campus: a long block of four storeys under a thin flat roof
 with a dark eave; on its east face, on Park Avenue, a balcony along each upper storey on a pale slab with a light rail,
 the glazing behind them, and a ground storey of pale grey brick; on its roof grey plant and a raised part with a red
-roof. Its heights and plans come from the LiDAR, which also sees the ground under its eaves, where the walls are drawn
-set back; the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick
+roof. Its heights and plans come from the LiDAR, which also sees the ground, or a canopy, under its eaves, where the
+walls are drawn set back, but for the part of a low wing south-west of it that trees hide, drawn to the campus map's
+outline; the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick
 and windows are estimated with the photograph as a reference. One photograph from the footpath of Park Avenue, looking
 along the east face; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in
 it, and the brightness of that face is within 8 of the photograph's. From above its outline covers the LiDAR's with an
@@ -1349,14 +1350,15 @@ If you represent the University and would like something changed or removed, ple
   the footpath near its north-east corner; its camera's distance is held by the planted bed's kerb along the footpath,
   where the LiDAR's shrubs end. The east face's storeys, its balconies' depth and rails, the glazing behind them and the
   ground storey's brick and windows are estimated in the photograph. The LiDAR sees the ground under the eave on its
-  north, east and south sides: the walls are drawn behind it, by estimated depths. Of the low parts the campus map's
-  block takes in, a one-storey annex on the west and a low part south-west of the block are drawn, the second to the
-  block's outline where trees hide its roof; low strips along the walls, up to about 1.5 m wide, are left open. Its
-  other faces, which no photograph shows, are drawn plainly. Its entrance is not known from a record: its door is set on
-  the footpath before the east face's south end. The map's ground round it stands about 11 m over the LiDAR's (the 8 m
-  elevation model is flat at about 80 m there), so the model stands on the drawn ground at its door, 10.9 m higher than
-  the real one, as the blocks round it do. While a building beside it is open, it gives way to block 529, which sinks to
-  a footprint on its footing: that footprint stands above the drawn ground on all its cells, by up to 0.8 m.
+  north, east and south sides, and a canopy under it on the west: the walls are drawn behind them, by estimated depths.
+  Of the low parts the campus map's block takes in, a one-storey annex on the west and a low part south-west of the
+  block are drawn, the second to the block's outline where trees hide its roof; low strips along the walls, up to about
+  1.5 m wide, are left open. Its other faces, which no photograph shows, are drawn plainly. Its entrance is not known
+  from a record: its door is set on the footpath before the east face's south end. The map's ground round it stands
+  about 11 m over the LiDAR's (the 8 m elevation model is flat at about 80 m there), so the model stands on the drawn
+  ground at its door, 10.9 m higher than the real one, as the blocks round it do. While a building beside it is open, it
+  gives way to block 529, which sinks to a footprint on its footing: that footprint stands above the drawn ground on all
+  its cells, by up to 0.8 m.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

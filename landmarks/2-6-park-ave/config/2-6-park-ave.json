@@ -1,7 +1,7 @@
 {
  "name": "2-6-park-ave",
  "site": true,
- "estimated": "the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick and windows, with a photograph as a reference; how far the walls stand behind the eaves, behind where the LiDAR sees the ground under them; the low part south-west of the block where trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
+ "estimated": "the east face's storeys, its balconies' depth and rails, the glazing behind them and the ground storey's brick and windows, with a photograph as a reference; how far the walls stand behind the eaves, behind where the LiDAR sees the ground or a canopy under them; the low part south-west of the block where trees hide its roof, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the footpath of Park Avenue near the block's north-east corner, about 8 m out from its east face, looking south-south-west along it, through a lens of about 36 degrees across, looking up about 6.5 degrees; its camera is fitted to the east face's eave, the top of its south end, the planted bed's kerb along the footpath (where the LiDAR's shrubs end) and two verticals, held near 1.6 m over the LiDAR's ground (2.15 m)",
  "building": {

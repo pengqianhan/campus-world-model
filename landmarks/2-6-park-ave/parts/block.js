@@ -1,8 +1,9 @@
-// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, the annex on its west and the
-// low part south-west of it (`body`); its east face on Park Avenue, with the balconies of its upper storeys, their rails, the glazing behind them
-// and the brick ground storey (`east`). Sizes from common.js.
+// 2-6 Park Ave's block: its walls, eave and roof, the plant and the raised part on it, the canopy under its west eave,
+// the annex on its west and the low part south-west of it (`body`); its east face on Park Avenue, with the balconies of
+// its upper storeys, their rails, the glazing behind them and the brick ground storey (`east`). Sizes from common.js.
 import {
-  ANNEX, EAST, EAST_T, EAVE, FOOT, NE, NW, PLANT, RAISED, ROOF_IN, SE, SOUTHWEST, SW, WALLS, inEast, lerp, plan, rect,
+  ANNEX, CANOPY, EAST, EAST_T, EAVE, FOOT, NE, NW, PLANT, RAISED, ROOF_IN, SE, SOUTHWEST, SW, WALLS, inEast, lerp, plan,
+  rect,
 } from "./common.js";
 import { block, prism } from "./shapes.js";
 
@@ -16,8 +17,8 @@ const strip = (d0, d1, t0 = 0, t1 = 1) => {
 };
 
 /** The block's walls to the fascia, the eave over them to the LiDAR's edge, the roof inside rising to 13.0 m, the
- * plant, the raised part with its red roof and the plant on it, the annex, and the low part south-west of the block,
- * its roof over its walls. */
+ * plant, the raised part with its red roof and the plant on it, the canopy under the west eave, and the annex and the
+ * low part south-west of the block, each with its roof over its walls. */
 export function body(b) {
   prism(b, plan(WALLS), FOOT, EAST.fascia, WALL);
   block(b, plan([NW, NE, SE, SW]), EAST.fascia, EAVE, DARK, ROOF);
@@ -31,10 +32,11 @@ export function body(b) {
   const R = RAISED;
   block(b, rect(R.u, R.w), ROOF_IN.top - 0.05, R.top, WALL, TILE);
   block(b, rect(R.plant.u, R.plant.w), R.top - 0.05, R.plant.top, BRICK, ROOF);
-  block(b, rect(ANNEX.u, ANNEX.w), FOOT, ANNEX.top, WALL, ROOF);
-  const S = SOUTHWEST;
-  prism(b, rect(S.walls.u, S.walls.w), FOOT, S.soffit, WALL);
-  block(b, rect(S.roof.u, S.roof.w), S.soffit, S.top, WALL, ROOF);
+  prism(b, plan(CANOPY.plan), CANOPY.y[0], CANOPY.y[1], WALL);
+  for (const S of [ANNEX, SOUTHWEST]) {
+    prism(b, rect(S.walls.u, S.walls.w), FOOT, S.soffit, WALL);
+    block(b, rect(S.roof.u, S.roof.w), S.soffit, S.top, WALL, ROOF);
+  }
 }
 
 /** The east face: the ground storey's brick and windows, and at each upper storey a balcony on its slab, a rail of two
