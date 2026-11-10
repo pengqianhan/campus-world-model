@@ -127,6 +127,11 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .top svg{width:20px;height:20px}
 main{padding-top:24px}
 #about{margin-top:48px}
+#about:not(:target):not(:has(:target)){display:none}
+#about>h2{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+#about-close{font:600 .9375rem/1 var(--font)}
+.inspired{margin-top:32px}
+.inspired .facts{color:var(--text)}
 #about>h2{margin:0 0 12px;font:600 1.75rem/1.2 var(--font-display)}
 #about h3{margin:28px 0 8px;font:600 1.375rem/1.25 var(--font-display)}
 #about h4{margin:18px 0 6px;font:600 1rem/1.3 var(--font)}
@@ -151,16 +156,34 @@ main{padding-top:24px}
 const github = () =>
   `<svg viewBox="${ICON_BOXES.github}" aria-hidden="true" focusable="false"><path d="${ICON_PATHS.github}" fill="currentColor"/></svg>`;
 
-/** About: the site's own parts (what inspired it, its code), then each school's section in the list's order. */
+/**
+ * The Tsinghua World Model, which inspired the site: a card under the schools, as they are drawn, with what
+ * it inspired (the maintainer, 2026-11-10).
+ */
+function inspiredBy(shared: Words): string {
+  const e = escapeHtml;
+  return [
+    `<ul class="schools inspired" aria-label="${e(word(shared, "about.inspirationTitle"))}">`,
+    `<li data-world="${e(INSPIRED_BY.id)}">`,
+    `<p class="site">${e(word(shared, "about.inspirationTitle"))}</p>`,
+    `<h2><a id="inspired-by" href="${e(INSPIRED_BY.url)}" rel="noopener noreferrer">${e(word(shared, `travel.worlds.${INSPIRED_BY.id}.name`))}</a></h2>`,
+    `<p class="facts" id="inspiration">${e(word(shared, "about.inspiration"))}</p>`,
+    `</li>`,
+    `</ul>`,
+  ].join("");
+}
+
+/**
+ * About: the site's code, then each school's section in the list's order. Hidden until asked for: shown while
+ * the address points at it (the bar's About link, #about) or at a section in it (a school's page links to its
+ * own, #about-<id>), and hidden again by its Close link; a browser without :has() shows it always.
+ */
 function about(shared: Words, schools: PickerSchool[]): string {
   const e = escapeHtml;
   const links = { repo: REPO, landmarkLidar: LANDMARK_LIDAR, linzElevationCredit: LINZ_ELEVATION_CREDIT };
   return [
     `<section id="about" aria-labelledby="about-title">`,
-    `<h2 id="about-title">${e(word(shared, "about.title"))}</h2>`,
-    `<h3>${e(word(shared, "about.inspirationTitle"))}</h3>`,
-    `<p id="inspiration">${e(word(shared, "about.inspiration"))}</p>`,
-    `<p><a id="inspired-by" href="${e(INSPIRED_BY.url)}" rel="noopener noreferrer">${e(word(shared, `travel.worlds.${INSPIRED_BY.id}.name`))}</a></p>`,
+    `<h2><span id="about-title">${e(word(shared, "about.title"))}</span><a id="about-close" href="#">${e(word(shared, "nav.close"))}</a></h2>`,
     `<h3>${e(word(shared, "about.codeTitle"))}</h3>`,
     `<p>${e(word(shared, "about.code"))} <a href="${e(REPO)}" rel="noopener noreferrer">${e(word(shared, "about.repo"))}</a></p>`,
     `<h3>${e(word(shared, "picker.aboutSchools"))}</h3>`,
@@ -171,7 +194,8 @@ function about(shared: Words, schools: PickerSchool[]): string {
 
 /**
  * One page: the bar with the source code and About, the heading and its lead, the notice, the list of
- * schools, and on the picker About below it (the page for an unknown path links to the picker's).
+ * schools, and on the picker the Tsinghua World Model's card and About below it, hidden until asked for (the
+ * page for an unknown path links to the picker's).
  */
 function page(shared: Words, schools: PickerSchool[], words: { documentTitle: string; heading: string; lead: string }, withAbout: boolean): string {
   const e = escapeHtml;
@@ -212,7 +236,7 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
 <ul class="schools" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${items.join("\n")}
 </ul>
-${withAbout ? about(shared, schools) : ""}
+${withAbout ? `${inspiredBy(shared)}\n${about(shared, schools)}` : ""}
 </main>
 </body>
 </html>
