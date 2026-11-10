@@ -9,6 +9,7 @@ from it but the ones its contract names, which are estimated.
   strips down to a floor band. The ground storey: a row of windows between dark posts, white panels under them, set a
   little back, with plants along its foot.
 - Near the middle of the south-west face, a glass stair tower the height of the walls, its glazing in a white grid, red
-  double doors at its foot up three or four brick steps.
-- The north-west end is out of the photograph; the south-east end steps down to a lower part beside it.
-- The light: a clear summer day, the sun high and to the south-west of the face, the sky deep blue.
+  double doors at its foot up four brick steps. A second glass stair tower stands on the north-west half of that face,
+  with a canopy beside it; no photograph shows them.
+- The north-west end is out of the photograph; past the south-east end stands a lower building, Lippincott Cottage.
+- The light: a clear day, the sun high, the sky deep blue.

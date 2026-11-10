@@ -40,7 +40,8 @@ export function front(b) {
   for (const t of TOWER_FRONT.transoms) on(b, w, 0, 0.05, [u0, u1], [t - 0.04, t + 0.04], WHITE);
   const [d0, d1] = TOWER_FRONT.doors.u;
   on(b, w, 0.01, 0.03, [d0, d1], [WALLS.floor, TOWER_FRONT.doors.top - 0.04], DOOR);
-  // the steps: a landing at the floor, then four treads down to the ground, each a block from the ground up
+  // the steps: a landing at the floor, then three treads down to the ground (four risers), each a block from below
+  // the ground up
   const S = TOWER_FRONT.steps, rise = (WALLS.floor - S.ground) / 4;
   let w0 = w, w1 = w + S.landing;
   for (let i = 0; i < 4; i++) {

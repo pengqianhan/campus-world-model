@@ -3,13 +3,14 @@
 // ?only=body) builds just those parts. Every landmark's model.js exports build(materials, only), which returns a Group.
 // The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
-import { body, roof, tower } from "./parts/block.js";
+import { body, northwest, roof, tower } from "./parts/block.js";
 import { face, front } from "./parts/facade.js";
 
 const PARTS = {
   body: (b) => body(b),
   roof: (b) => roof(b),
   tower: (b) => tower(b),
+  northwest: (b) => northwest(b),
   face: (b) => face(b),
   front: (b) => front(b),
 };
