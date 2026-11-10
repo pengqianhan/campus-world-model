@@ -58,7 +58,8 @@ estimated; it is a reference for the look and the comparison.
 ## The model (`parts/common.js`)
 
 - **The walls** (`paint`), u -28.6 to 28.2 and w -9.0 to 8.1, behind the eave: the LiDAR sees the ground under the
-  south-west eave up to w 8.0 and has returns on that face from 8.0 to 8.5, the ground under the north-east eave up to
+  south-west eave up to w 8.0 (in to 7.7 in places: u -25 to -22, 6 to 14 and 25 to 28) and has returns on that face
+  from 8.0 to 8.5, the ground under the north-east eave up to
   -8.87 to -9.25 in each 4 m along it from u -28 to 24 and returns on that wall at -8.99 to -9.20, but in to -8.32 over
   its last 1.7 m by the north corner, where the wall is drawn at -8.3; and returns on the end walls at u
   -28.6 and 28.2 (p50). The ground storey's floor at 0.15 m (the LiDAR's ground inside the stair tower, seen through
@@ -74,8 +75,9 @@ estimated; it is a reference for the look and the comparison.
   17.35 to 20.65, w 8.96 to 9.39 (p50 9.11), at 1.9 to 5.5 m, at the heights of the first one's transoms and landings,
   and the ground inside its plan at 39.41 m, which it sees through it. It is drawn glass (`glassPale`) from that ground
   to the eave's underside, u 17.2 to 20.8 and out to w 9.2, on a plinth, with no frames (its look estimated). Beside
-  it, u 13.8 to 17.15, a canopy from the wall at 3.95 to 4.15 m, out to w 9.2 (`paint`): the LiDAR has 14 returns over
-  it at 3.93 to 4.11 m, with the ground seen under them; its slab's thickness is estimated.
+  it, u 13.8 to 17.15, a canopy from the wall at 3.95 to 4.15 m, out to w 9.2 (`paint`): the LiDAR has 14 returns
+  along it at 3.93 to 4.11 m, out to w 9.37 (11 over the plan drawn), with the ground seen under them; its slab's
+  thickness is estimated.
 - **The south-west face** where the photograph sees it, u -28.6 to -3.1, through its fitted camera (estimated): the
   upper storey's window band from 6.25 to 8.0 m (`glassPale`) with white mullions about 1.17 m apart, the cladding under
   it down to a floor band from 3.4 to 3.8 m, the ground storey's windows from 2.0 to 3.4 m between dark posts (`grey`)
@@ -126,6 +128,7 @@ leaves it out, as it does every landmark on the site, and writes every other fil
 
 The cladding's joints, the windows' frames in the ground storey, the blinds behind the upper windows, the two steel
 struts under the south-west eave, the north-west stair tower's frames, the flues on the roof, the plants, the lawn and
-the steps' rail; two recesses about 1 m wide near the middle of each end, where the LiDAR sees the ground about 1.1 m
-inside the end walls. The rest of the
+the steps' rail; a recess about 1 m wide near the middle of each end, where the LiDAR sees the ground about 1.1 m
+inside the end wall; the ground storey's setback on the south-west face, where the LiDAR sees the ground in to w 7.7
+under the eave in places (the art bible's "set a little back"; it is drawn flush). The rest of the
 south-west face and the other faces, which no photograph shows, are drawn plainly.

@@ -20,7 +20,8 @@ export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 // its north-west end, and down to 36.5 along the north-east face); the walls go down to FOOT, 36.05 m.
 export const FOOT = H(-2.6);
 
-/** The walls: the south-west face at w 8.1 (the LiDAR sees the ground under the eave up to w 8.0, and its returns on
+/** The walls: the south-west face at w 8.1 (the LiDAR sees the ground under the eave up to w 8.0, and in to 7.7 in
+ * places, u -25 to -22, 6 to 14 and 25 to 28, where the ground storey may stand set back, not drawn; its returns on
  * the face at 8.0 to 8.5), the north-east at -9.0 (the ground seen under the eave to -8.87 to -9.25 in each 4 m
  * along it from u -28 to 24, and the returns on that wall at -8.99 to -9.20) but for its last 1.7 m, from u 26.5 to
  * the north corner, at -8.3 (the ground seen there to -8.32 and -8.35, the end wall's returns near the corner to
@@ -56,9 +57,10 @@ export const TOWER = {
  * 17.35 to 20.65, w 8.96 to 9.39 (p50 9.11), at 1.9 to 5.5 m over 38.65 m, at the heights of the south-east tower's
  * transoms and landings, and the ground inside its plan at 39.41 m (p50 of 8), which the LiDAR sees through it: a
  * second glass stair tower, drawn glass from that ground to the eave's underside, its frames not drawn (estimated, as
- * no photograph shows it), on a plinth from the walls' foot. Beside it, 17 returns over u 13.8 to 17.7, w 8.66 to
- * 9.37 (14 over the plan drawn, u 13.8 to 17.15, at 3.93 to 4.11 m), with the ground seen under them (39.48 m, p50 of
- * 15): a canopy from the wall out to their edge, its slab 0.2 m thick (estimated). */
+ * no photograph shows it), on a plinth from the walls' foot. Beside it, 17 returns over u 13.8 to 17.7, w 8.59 to
+ * 9.37 (14 over the canopy's length, u 13.8 to 17.15, at 3.93 to 4.11 m, 11 of them over its plan), with the ground
+ * seen under them (39.48 m, p50 of 15): a canopy from the wall out to w 9.2, short of their edge at 9.37, its slab 0.2
+ * m thick (estimated). */
 export const TOWER2 = {
   plan: [[17.2, 8.1], [20.8, 8.1], [20.8, 9.2], [17.2, 9.2]],
   base: H(0.8),

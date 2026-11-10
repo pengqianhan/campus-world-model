@@ -63,6 +63,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   sees the ground in to -8.32; the steps' landing 1.6 m deep and treads 0.4 m, as the LiDAR's ground lies before the
   doors; the counts of the returns by the second stair tower and the canopy, and the canopy's slab named by its
   thickness. 704 triangles, 6 draw calls.
+- The review's round 3, the last (2026-11-11): words only: the canopy's returns (w 8.59 to 9.37, 11 over its plan,
+  drawn short of their edge), one recess at each end, and the ground the LiDAR sees in to w 7.7 under the south-west
+  eave in places, where the ground storey's setback is not drawn.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
