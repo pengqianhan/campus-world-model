@@ -22,7 +22,7 @@ A change to what the site does or shows adds its line here, and the README's
   from the LINZ 2024 LiDAR in place of its block: its roofs and their heights, and now the eaves of its main
   roof over the outline, which the generator measures since this change on every layer of a building that
   fails its check without them. Its walls and windows are drawn by rule, as every measured massing's are; its
-  card says so. No other building changes.
+  card says so. No other building changes (#157).
 
 - **2-6 Park Ave drawn in detail.** Near the camera the map draws 2-6 Park Ave (529), on the Grafton campus, from code
   in place of its block: a long block of four storeys under a thin flat roof with a dark eave; at each upper storey a
