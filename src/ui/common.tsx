@@ -6,7 +6,7 @@ import type { AppData } from "../app/data.ts";
 import { formatMinutes, weekdayKey } from "../shared/time.ts";
 import { buildingCode, type Building, type Layer, type LayerVerdict, type Session } from "../shared/types.ts";
 import { aboutHref } from "../app/links.ts";
-import { ICON_BOXES, ICON_PATHS } from "./icons.ts";
+import { ICON_BOXES, ICON_LINES, ICON_PATHS } from "./icons.ts";
 
 /**
  * About lives at the site's root, one section a school (scripts/lib/about.ts; the maintainer, 2026-11-10):
@@ -15,9 +15,14 @@ import { ICON_BOXES, ICON_PATHS } from "./icons.ts";
 export const ABOUT_HREF = aboutHref(import.meta.env.BASE_URL, school.id);
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
+  const line = ICON_LINES[name];
   return (
     <svg class="icon" width={size} height={size} viewBox={ICON_BOXES[name] ?? "0 0 24 24"} aria-hidden="true" focusable="false">
-      <path d={ICON_PATHS[name] ?? ""} fill="currentColor" />
+      {line ? (
+        <path d={line} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      ) : (
+        <path d={ICON_PATHS[name] ?? ""} fill="currentColor" />
+      )}
     </svg>
   );
 }

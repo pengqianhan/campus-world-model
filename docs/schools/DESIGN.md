@@ -88,7 +88,7 @@ waits on its snapshots.
   `uc`.
 - **The view** is the query string after the path, with the same parameters for every school:
   `building`, `floor`, `room`, `campus`, `time`, `date`, `t`, `light`, `panel`, `lang`, `walk`,
-  `view` (`src/app/state.ts`). Building and room codes are each school's own, so a link keeps to
+  `view`, `ride` (`src/app/state.ts`, `src/app/walker.ts`). Building and room codes are each school's own, so a link keeps to
   its school.
 - **Published data** is at `/<id>/data/<file>`. The app fetches `${import.meta.env.BASE_URL}data/<file>`
   (`getJson` in `src/app/data.ts`) and needs no change: each school's build carries only its own
