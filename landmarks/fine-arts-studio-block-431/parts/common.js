@@ -41,23 +41,27 @@ export const EAVE = { west: 23.15, east: -17.0, eastNorth: -21.2, north: -7.9, s
 export const WALL = { south: 7.95, north: -6.85, in: 0.35 };
 /** The roof's two pitches, each a plane over w' (the LiDAR's returns, p50 in 0.5 m strips across the faces from u -15
  * to 21): the north one from 49.9 m at its eave to 51.33 at the step over w' 0, the south one from 48.3 at the step to
- * 46.6 at its eave (w' 9.0); and east of u -17.0 over w' -4 to 5 one roof falling to the south, from 50.4 m at w' -4 to
- * 49.6 at 0 and 48.8 at 5 (the LiDAR's p50 over u -21.0 to -17.6); each slab 0.3 m thick (estimated). */
+ * 46.6 at its eave (w' 9.0); and at the east end over w' -4 to 5 one roof falling to the south, from 50.4 m at w' -4 to
+ * 49.6 at 0 and 48.8 at 5 (the LiDAR's p50 over u -21.0 to -17.6): north of w' 0 from u -21.2 to the north pitch at
+ * -17.0, south of it from -20.2 (its returns' east edge south of the stair tower; the ground seen east of that) to
+ * -16.35, where its returns stop over the south pitch's; each slab 0.3 m thick (estimated). */
 export const ROOF = {
   north: (wp) => 51.33 + 0.181 * wp,
   south: (wp) => 48.3 - 0.1889 * wp,
   east: (wp) => 49.69 - 0.178 * wp,
   eastSouth: 5.0,
+  eastU: { north: [-21.2, -17.0], south: [-20.2, -16.35] },
   t: 0.3,
 };
 
 /** The east end, from the LiDAR's returns: the glass stair tower (its glass as the photograph of the east entrance
  * shows it) at 51.45 m (p50 of its returns over 51 m, at u -23.25 to -19.64 and w 0.36 to 3.12); north of it a lower
- * roof at 50.2 m (50.0 to 50.8; p50 50.18), u -24.3 to -21.2 and w -3.5 to 0.35; and the entrance's glass canopy east
+ * roof at 50.2 m (50.0 to 50.8; p50 50.18), u -24.3 to -20.85 (to the east end's walls) and w -3.5 to 0.35; and the
+ * entrance's glass canopy east
  * of that at 36.25 m (16 returns at u -26.0 to -24.65, w -1.5 to 0.9), out of the campus map's ring. */
 export const EAST = {
   stair: { plan: [[-23.25, 0.35], [-19.65, 0.35], [-19.65, 3.1], [-23.25, 3.1]], top: 51.45 },
-  low: { plan: [[-24.3, -3.5], [-21.2, -3.5], [-21.2, 0.35], [-24.3, 0.35]], top: 50.2 },
+  low: { plan: [[-24.3, -3.5], [-20.85, -3.5], [-20.85, 0.35], [-24.3, 0.35]], top: 50.2 },
   canopy: { plan: [[-26.0, -1.5], [-24.28, -1.5], [-24.28, 0.9], [-26.0, 0.9]], y: [36.1, 36.25] },
 };
 
@@ -84,7 +88,7 @@ export const FACE = {
   column: 0.6,
   ends: [-16.4, 22.6],
   rows: [[45.16, 46.35], [40.07, 43.97], [36.85, 38.14]],
-  bigDoor: { u: [20.2, 22.9], top: 37.1 },
+  bigDoor: { u: [20.2, 22.75], top: 37.1 },
   boxFront: [12.5, 16.0],
   boxEnd: [9.75, 10.5],
   boxDoorTop: 35.3,

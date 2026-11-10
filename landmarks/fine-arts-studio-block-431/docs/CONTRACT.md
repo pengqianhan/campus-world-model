@@ -16,12 +16,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   its north part, north of w' -4) to 23.15 and from w' -7.9 to 9.0, its long walls about 1.05 m in under the eave (w'
   7.95 and -6.85, where the returns on them peak), its end walls at u -16.75 to -16.25; a roof of two pitches: the north
   one from 49.9 m at its eave to 51.33 at a step over w' 0, the south one from 48.3 there to 46.6 at its eave; east of u
-  -17.0 over w' -4 to 5 one roof falling to the south from 50.4 m to 48.8; at the east end a stair tower at 51.45 m (u
-  -23.25 to -19.65, w 0.35 to 3.1), a lower roof at 50.2 m north of it, and the entrance's canopy at 36.25 m (out of the
-  campus map's ring); on the north side an annex at 42.76 m, its north edge past the ring's north side by up to 2.5 m
-  (east of it the roof at 41.4 to 43.3 m is building 432's); before the south face a low box at 36.3 m, u 11.3 to 19.3.
-  The ground: the lane and its car park at 33.1 m, the garden north of the main block at 38.0. That the stair tower and
-  the canopy are glass is the photograph of the east entrance's.
+  -17.0 over w' -4 to 5 one roof falling to the south from 50.4 m to 48.8 (south of w' 0 from u -20.2 to -16.35); at the
+  east end a stair tower at 51.45 m (u -23.25 to -19.65, w 0.35 to 3.1), a lower roof at 50.2 m north of it, and the
+  entrance's canopy at 36.25 m (out of the campus map's ring); on the north side an annex at 42.76 m, its north edge
+  past the ring's north side by up to 2.5 m (east of it the roof at 41.4 to 43.3 m is building 432's); before the south
+  face a low box at 36.3 m, u 11.3 to 19.3. The ground: the lane and its car park at 33.1 m, the garden north of the
+  main block at 38.0. That the stair tower and the canopy are glass is the photograph of the east entrance's.
 - Walls go down to `FOOT`, 31.5 m, 1.59 m under the door's ground.
 
 ## Who owns what
@@ -51,6 +51,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   the LiDAR's line out to u -13.1. The light at an exposure of 0.55. 1,944 triangles, 5 draw calls; silhouette IoU 0.952
   (0.954 in the model's box), luma 144 against 150; top view: footprint IoU 0.927, 97% of 3,390 cells within 0.5 m,
   block 431 95.6% under the model.
+
+- The review's round 2 (2026-11-11): the east end's roof south of w' 0 from u -20.2 (its returns' east edge south of the
+  stair tower; the ground seen east of it) to -16.35, where its returns stop over the south pitch's, and its walls 0.35
+  m in under it (an open strip had stood between that roof's edge at -17.0 and the walls' west end at -16.5); the lower
+  roof north of the stair tower on to the east end's walls (u -20.85); the big roller door to the wall's end. 1,970
+  triangles, 5 draw calls; silhouette IoU 0.952 (0.954 in the model's box), luma 143 against 150; top view: footprint
+  IoU 0.926, 97% of 3,383 cells within 0.5 m, block 431 95.5% under the model.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

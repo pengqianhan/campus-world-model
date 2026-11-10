@@ -871,7 +871,7 @@ a ground storey of roller doors, and a low box with roller doors before it. Its 
 the columns, the windows and the roller doors are estimated with the photograph as a reference, and a second photograph,
 of its east entrance, shows the stair tower and the canopy there to be glass. One photograph from the car park at the
 lane's west end, looking along the south face; counted inside the rectangle the model fills on the screen, its
-silhouette has an IoU of 0.95 in it, and the brightness over it is within 6 of the photograph's. From above its outline
+silhouette has an IoU of 0.95 in it, and the brightness over it is within 7 of the photograph's. From above its outline
 covers the LiDAR's with an IoU of 0.93, and on 97% of the cells both cover it is within 0.5 m of the LiDAR's height.
 What the photographs do not show is drawn plainly.
 

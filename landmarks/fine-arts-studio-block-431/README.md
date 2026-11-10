@@ -68,12 +68,14 @@ look and the comparison.
   to -16.25), down to the walls' foot.
 - **The roof** (`roofPale`, light grey as the 2023 aerial shows it), the LiDAR's returns in 0.5 m strips across the
   faces: the north pitch from 49.9 m at its eave to 51.33 at a step over w' 0, the south pitch from 48.3 at the step to
-  46.6 at its eave; east of u -17.0 over w' -4 to 5 one roof falling to the south, from 50.4 m to 48.8; each slab 0.3 m
-  thick (estimated), its edges a fascia in the walls' colour.
-- **The east end**: the glass stair tower (`glassPale`, glass as the photograph of the east entrance shows it) at
-  51.45 m (u -23.25 to -19.65, w 0.35 to 3.1, the LiDAR's returns over 51 m); north of it a lower roof at 50.2 m (u
-  -24.3 to -21.2, w -3.5 to 0.35); and the entrance's glass canopy east of that at 36.25 m (16 returns), out of the
-  campus map's ring.
+  46.6 at its eave; at the east end over w' -4 to 5 one roof falling to the south, from 50.4 m to 48.8 (north of w' 0
+  from u -21.2 to the north pitch at -17.0, south of it from -20.2, its returns' east edge, to -16.35, where they stop
+  over the south pitch's), its walls 0.35 m in under it; each slab 0.3 m thick (estimated), its edges a fascia in the
+  walls' colour.
+- **The east end**: the glass stair tower (`glassPale`, glass as the photograph of the east entrance shows it) at 51.45
+  m (u -23.25 to -19.65, w 0.35 to 3.1, the LiDAR's returns over 51 m); north of it a lower roof at 50.2 m (u -24.3 to
+  -20.85, w -3.5 to 0.35); and the entrance's glass canopy east of that at 36.25 m (16 returns), out of the campus map's
+  ring.
 - **The annex** on the north side at 42.76 m (737 returns, p50), its north edge the LiDAR's, from w -11.8 at u 3.05 to
   -14.7 at -13.1, the ring's east side (past the ring's north side by up to 2.5 m).
 - **The low box** before the south face at 36.3 m, u 11.3 to 19.3 and out to w 11.4 (the LiDAR's returns on its roof;
@@ -82,18 +84,17 @@ look and the comparison.
   0.53, -3.77, -8.07 and -12.19 (4.1 to 4.9 m apart), from 38.0 m to under the eave, three lights a bay in white frames
   (`paint`, `glassPale`): the upper row from 45.16 to 46.35 m, the middle from 40.07 to 43.97, the ground storey's high
   windows from 36.85 to 38.14 east of the big roller door; the roller doors (`screenSilver`): the big one on the face
-  west of the box, from u 20.2 to its west end (its west edge out of the photograph, drawn to 22.9), to 37.1 m; on the
-  box one on its front (u 12.5 to 16.0) and one on its west end (w 9.75 to 10.5), to 35.3 m.
+  west of the box, from u 20.2 to its west end (its west edge out of the photograph, drawn to the wall's end, 22.75), to
+  37.1 m; on the box one on its front (u 12.5 to 16.0) and one on its west end (w 9.75 to 10.5), to 35.3 m.
 - The light: the photograph is taken under broken cloud. The viewer's sun stands to the south-south-east (160 degrees
-  round, 50 up), at an exposure of 0.55: over the model's screen box the luma 144 against the photograph's 150; the
-  face's panels under the middle windows halfway along it 144 against 149, but near the camera 214 against 168 and
-  under the upper windows 216 against 168, where the photograph's face lies in a softer light than the viewer's sun
-  gives.
+  round, 50 up), at an exposure of 0.55: over the model's screen box the luma 143 against the photograph's 150; the
+  face's panels under the middle windows halfway along it 144 against 149, but near the camera 214 against 168 and under
+  the upper windows 216 against 168, where the photograph's face lies in a softer light than the viewer's sun gives.
 
 Silhouette IoU 0.952 over the photograph (0.954 in the model's screen box). The top view: footprint IoU 0.927 (the
-LiDAR's 910 m² against the model's 872, both 857), 97% of the 3,390 cells both cover within 0.5 m (p10/p50/p90
--0.07/0.02/0.12 m); the highest point 18.36 m over the door's ground against the LiDAR's 18.60 (p99.9); block 431
-95.6% under the model. 1,944 triangles, 5 draw calls.
+LiDAR's 910 m² against the model's 868, both 855), 97% of the 3,383 cells both cover within 0.5 m (p10/p50/p90
+-0.07/0.02/0.12 m); the highest point 18.36 m over the door's ground against the LiDAR's 18.60 (p99.9); block 431 95.5%
+under the model. 1,970 triangles, 5 draw calls.
 
 ## On the map (step 7)
 

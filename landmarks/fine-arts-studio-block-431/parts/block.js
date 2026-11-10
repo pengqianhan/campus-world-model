@@ -57,21 +57,25 @@ export function roof(b) {
   slab(b, [EAVE.eastNorth, EAVE.west], [EAVE.north, P], ROOF.north);
   slab(b, [EAVE.east, EAVE.west], [P, 0], ROOF.north);
   slab(b, [EAVE.east, EAVE.west], [0, EAVE.south], ROOF.south);
-  slab(b, [EAVE.eastNorth, EAVE.east], [P, ROOF.eastSouth], ROOF.east);
+  slab(b, ROOF.eastU.north, [P, 0], ROOF.east);
+  slab(b, ROOF.eastU.south, [0, ROOF.eastSouth], ROOF.east);
 }
 
 /** The east end: under its roof the walls (into the main block's by 0.15 m, and into the north part's by 0.2 m), up to
- * the roof's underside; the glass stair tower (from 2 cm under the walls' foot, so that its floor and the walls' do
- * not lie in one plane), the lower roof north of it and the entrance's glass canopy from that roof's east face, open
- * under it. */
+ * the roof's underside, 0.35 m in from its edges: north of w' 0 from u -20.85, south of it from -19.85; the glass stair
+ * tower (from 2 cm under the walls' foot, so that its floor and the walls' do not lie in one plane), the lower roof
+ * north of it and the entrance's glass canopy from that roof's east face, open under it. */
 export function east(b) {
   const w0 = P - 0.2, w1 = ROOF.eastSouth - WALL.in, u1 = U0 + 0.15, e = (wp) => ROOF.east(wp) - ROOF.t;
-  const top = e(w1);
-  prism(b, plan([[U0N, w0], [u1, w0], [u1, w1], [U0N, w1]]), FOOT, Y(top), WALLS);
-  // its two end walls up to the roof (the west one closes it over the south pitch, which stands lower)
-  for (const u of [U0N, u1]) {
-    const gable = quad(p3(u, w0, top), p3(u, w1, top), p3(u, w1, e(w1)), p3(u, w0, e(w0)));
-    tris(b, gable, WALLS, awayFrom((U0N + u1) / 2, 0));
+  const uS = ROOF.eastU.south[0] + WALL.in;
+  // the north part to the roof's underside over w' 0, the south part to its underside over its south wall; and the
+  // end walls up to the roof (the west one closes it over the south pitch, which stands lower)
+  for (const [ue, a, c, top] of [[U0N, w0, 0, e(0)], [uS, 0, w1, e(w1)]]) {
+    prism(b, plan([[ue, a], [u1, a], [u1, c], [ue, c]]), FOOT, Y(top), WALLS);
+    for (const u of [ue, u1]) {
+      const gable = quad(p3(u, a, top), p3(u, c, top), p3(u, c, e(c)), p3(u, a, e(a)));
+      tris(b, gable, WALLS, awayFrom((ue + u1) / 2, (a + c) / 2));
+    }
   }
   const { stair, low, canopy } = EAST;
   prism(b, planW(stair.plan), FOOT - 0.02, Y(stair.top), GLASS);
