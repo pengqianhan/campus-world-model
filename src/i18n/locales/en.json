@@ -348,21 +348,14 @@
       "calendar": "semester dates",
       "subjects": "the course list"
     },
-    "show": "{campus}: the term, other campuses and other worlds",
-    "showBuildings": "{campus}: what the site shows of it, and the way to other worlds",
+    "show": "{campus}: the term and other campuses",
+    "showBuildings": "{campus}: what the site shows of it",
     "hide": "Hide the campus panel"
   },
   "travel": {
-    "heading": "Other worlds",
-    "go": "Travel to {name}. This leaves UoA World Model.",
-    "label": "Travelling to {name}",
-    "leaving": "Leaving Auckland",
-    "distance": "{km} km",
-    "stay": "Stay in Auckland",
     "worlds": {
       "tsinghua": {
-        "name": "Tsinghua World Model",
-        "place": "Tsinghua University, Beijing"
+        "name": "Tsinghua World Model"
       }
     }
   },
@@ -407,6 +400,8 @@
     "lead": "Unofficial 3D maps of university campuses in New Zealand. Choose a school.",
     "notice": "An unofficial student project. Not affiliated with any of these universities.",
     "listLabel": "Schools",
+    "navLabel": "Source code and About",
+    "aboutSchools": "Each school's map: what it shows, its sources and their licences, its coverage and its limits",
     "form": {
       "floors": "Buildings, floors and rooms",
       "roomCodes": "Buildings and room codes",

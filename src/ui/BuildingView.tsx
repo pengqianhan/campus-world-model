@@ -10,7 +10,6 @@ import {
   marker,
   openFloor,
   openRoom,
-  panel,
   plansLoaded,
   selBuilding,
   selFloor,
@@ -23,7 +22,7 @@ import { groundLevel } from "../shared/massing.ts";
 import { sessionsOnDate } from "../shared/schedule.ts";
 import { formatMinutes } from "../shared/time.ts";
 import type { Building, Floor, Session, SpaceKind } from "../shared/types.ts";
-import { buildingCode, buildingTitle, campusName, componentName, noIndoor, sessionTimes } from "./common.tsx";
+import { ABOUT_HREF, buildingCode, buildingTitle, campusName, componentName, noIndoor, sessionTimes } from "./common.tsx";
 import { notTeachingReason } from "./TimePanel.tsx";
 
 /** The groups of unnamed spaces, in the order the legend lists them. */
@@ -146,9 +145,9 @@ function RoomSchedule({ d, code }: { d: AppData; code: string }) {
       <div class="room-schedule none" id="no-timetable">
         <strong>{t("room.noTimetable")}</strong>
         <p>{t("room.noTimetableWhy")}</p>
-        <button type="button" class="link" onClick={() => (panel.value = "about")}>
+        <a class="link" href={ABOUT_HREF}>
           {t("nav.about")}
-        </button>
+        </a>
       </div>
     );
   }

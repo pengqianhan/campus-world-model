@@ -22,9 +22,6 @@ const words = JSON.parse(fs.readFileSync(`src/schools/${SCHOOL}/locales/en.json`
 const texts = overlayWords(JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words, words as unknown as Words);
 const text = (key: string) => lookupWords(texts, key)!;
 
-/** The limit in About that says why each layer is absent (src/ui/AboutPanel.tsx). */
-const LIMIT: Partial<Record<Layer, string>> = { indoor: "rooms", timetable: "timetable", calendar: "calendar", subjects: "subjects" };
-
 async function published<T>(page: Page, file: string): Promise<T> {
   return page.evaluate((f) => fetch(`data/${f}`).then((r) => r.json()), file) as Promise<T>;
 }
@@ -85,27 +82,7 @@ test(`${SCHOOL}: each campus in an area of its own opens from the campus picker,
   }
 });
 
-test(`${SCHOOL}: About has the unofficial notice with the school's full name, and every source with its link and snapshot date`, async ({ page }) => {
-  await open(page, `${DAY}&panel=about`);
-  const about = page.locator(".about-panel");
-  const notice = about.locator("#unofficial-notice");
-  await expect(notice).toContainText(words.about.unofficial);
-  // The school's full name, in the words that say the site is not the school's.
-  expect(words.about.unofficial).toMatch(/not affiliated with, endorsed by or maintained by [A-Z][\w ]+[a-z]/);
-  const meta = await published<Meta>(page, "meta.json");
-  const sources = about.locator("#data-sources > li");
-  await expect(sources).toHaveCount(meta.sources.length);
-  for (const [k, s] of meta.sources.entries()) {
-    await expect(sources.nth(k).locator("a")).toHaveAttribute("href", s.url);
-    await expect(sources.nth(k).locator("a")).toHaveText(s.name);
-    await expect(sources.nth(k).locator("time")).toHaveAttribute("datetime", s.snapshotDate);
-    await expect(sources.nth(k)).toContainText(s.licence);
-  }
-  await expect(about.locator("#osm-attribution a")).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
-  await shot(page, `schools-${SCHOOL}-about`);
-});
-
-test(`${SCHOOL}: each absent layer says why, in About, the status strip and the time panel`, async ({ page }) => {
+test(`${SCHOOL}: each absent layer says why, in the status strip and the time panel, and links to its reason in About`, async ({ page }) => {
   await open(page, DAY);
   const meta = await published<Meta>(page, "meta.json");
   const absent = (Object.entries(meta.layers ?? {}) as [Layer, string][]).filter(([, v]) => v !== "usable").map(([l]) => l);
@@ -115,15 +92,8 @@ test(`${SCHOOL}: each absent layer says why, in About, the status strip and the 
   const strip = page.locator("#status-absent");
   await expect(strip).toBeVisible();
   for (const layer of absent) await expect(strip).toContainText(text(`status.layer.${layer}`));
-  await expect(strip.getByRole("button", { name: "Why?" })).toBeVisible();
-
-  await page.getByRole("button", { name: "About", exact: true }).click();
-  for (const layer of absent) {
-    const key = LIMIT[layer];
-    if (!key) continue;
-    await expect(page.locator(`#limitations li[data-layer="${layer}"]`)).toHaveText(words.about.limits[key]!);
-  }
-  await page.keyboard.press("Escape");
+  // About, with each reason, is on the page at the site's root (tests/picker.test.ts).
+  await expect(strip.getByRole("link", { name: "Why?" })).toHaveAttribute("href", `/#about-${SCHOOL}`);
 
   if (absent.includes("calendar")) {
     await page.locator(".topbar .chip").click();
@@ -187,7 +157,7 @@ test(`${SCHOOL}: ?lang= falls back to English, in the school's words`, async ({ 
   await expect(page).toHaveTitle(words.app.documentTitle);
 });
 
-test(`${SCHOOL}: on a phone the top bar holds the name, the source link, About, Search and the time side by side, down to 360 px`, async ({ page }) => {
+test(`${SCHOOL}: on a phone the top bar holds the name, the source link, Search and the time side by side, down to 360 px`, async ({ page }) => {
   const campus = { buildings: [] as Building[] };
   for (const width of [390, 360]) {
     await page.setViewportSize({ width, height: 780 });
@@ -203,7 +173,7 @@ test(`${SCHOOL}: on a phone the top bar holds the name, the source link, About, 
           .filter((r) => r.width > 0)
           .map((r) => ({ left: r.left, right: r.right, width: r.width })),
       );
-      expect(boxes.length).toBe(5);
+      expect(boxes.length).toBe(4);
       expect(boxes[0]!.left).toBeGreaterThanOrEqual(0);
       expect(boxes.at(-1)!.right, `${width} px, ${query}`).toBeLessThanOrEqual(width);
       for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.left, `${width} px, ${query}, item ${i}`).toBeGreaterThanOrEqual(boxes[i - 1]!.right);

@@ -5,8 +5,12 @@ import { lang, setLang, t } from "./app/i18n.ts";
 import { data, loadError, readUrl, startClock, startUrlSync } from "./app/state.ts";
 import { startWalkerFromUrl } from "./app/walker.ts";
 import { App } from "./ui/App.tsx";
+import { ABOUT_HREF } from "./ui/common.tsx";
 import { loadWeather } from "./ui/weather.ts";
 import "./ui/styles.css";
+
+// About left the map for the site's root on 2026-11-10: an address saved while it was open goes there.
+if (new URLSearchParams(location.search).get("panel") === "about") location.replace(ABOUT_HREF);
 
 // Language first, so even the loading message is in the requested language.
 setLang(new URLSearchParams(location.search).get("lang"));

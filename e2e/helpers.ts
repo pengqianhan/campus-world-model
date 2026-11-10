@@ -1,6 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import type { Meta } from "../src/shared/types.ts";
+import type { Words } from "../src/shared/school.ts";
+import { loadSchoolAbout } from "../scripts/lib/about.ts";
+import { pickerPages, schoolWords } from "../scripts/lib/picker.ts";
+import { parseSchoolList } from "../scripts/lib/school-list.ts";
 
 export const SHOTS = path.join("e2e", "screenshots");
 
@@ -147,4 +152,29 @@ export function fixtureSchedule() {
 
 export async function withFixtureSchedule(page: Page): Promise<void> {
   await page.route("**/data/schedule.json", (route) => route.fulfill({ json: fixtureSchedule() }));
+}
+
+/**
+ * The page at the site's root, where About is since 2026-11-10. On the Cloudflare site, the one it
+ * serves. Anywhere else (a local build, the GitHub Pages copy) the server serves one school's site
+ * only, so the page is built as scripts/build-root.ts builds it, from every school's published data in
+ * the checkout, and served at site-root/ beside it.
+ */
+export async function openRoot(page: Page, hash = ""): Promise<void> {
+  const live = process.env.E2E_BASE_URL?.match(/^https:\/\/campusworldmodel\.com\//);
+  if (live) {
+    await page.goto(`${live[0]}${hash}`);
+    return;
+  }
+  const root = process.cwd();
+  const shared = JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words;
+  const schools = parseSchoolList(fs.readFileSync(".github/schools.json", "utf8")).map((id) => ({
+    id,
+    words: schoolWords(root, id, shared),
+    meta: JSON.parse(fs.readFileSync(path.join("public", "data", id, "meta.json"), "utf8")) as Meta,
+    about: loadSchoolAbout(root, path.join("public", "data", id), id),
+  }));
+  const html = pickerPages(schools, shared).index;
+  await page.route("**/site-root/", (route) => route.fulfill({ contentType: "text/html; charset=utf-8", body: html }));
+  await page.goto(`site-root/${hash}`);
 }

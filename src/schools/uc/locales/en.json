@@ -42,10 +42,5 @@
   },
   "weather": {
     "label": "Weather at UC's Ilam campus"
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves UC World Model.",
-    "leaving": "Leaving UC",
-    "stay": "Stay at UC"
   }
 }

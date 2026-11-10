@@ -1,5 +1,7 @@
-// The bar across the top: site name (click to return to the campus), the source code, About, Search, and the time chip.
-import { formatDate, pick, t } from "../app/i18n.ts";
+// The bar across the top: site name (click to return to the campus), the language menu once there are two, the
+// source code, Search, and the time chip. About is at the site's root since 2026-11-10 (the maintainer); the
+// attribution links there.
+import { formatDate, lang, languages, pick, setLang, t } from "../app/i18n.ts";
 import { REPO } from "../app/links.ts";
 import { data, goHome, panel, selBuilding, shown, status, timeMode, type PanelId } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -53,10 +55,16 @@ export function TopBar() {
         </button>
       )}
       <div class="topbar-spacer" />
+      {languages.length > 1 && (
+        <select class="btn lang" aria-label={t("nav.language")} title={t("nav.language")} value={lang.value} onChange={(e) => setLang((e.target as HTMLSelectElement).value)}>
+          {languages.map((l) => (
+            <option value={l.code}>{l.name}</option>
+          ))}
+        </select>
+      )}
       <a class="btn square" id="repo-link" href={REPO} target="_blank" rel="noopener noreferrer" aria-label={t("about.repo")} title={t("about.repo")}>
         <Icon name="github" />
       </a>
-      <IconButton icon="info" label={t("nav.about")} text={t("nav.about")} class="hide-text-sm" pressed={panel.value === "about"} onClick={() => toggle("about")} />
       <IconButton
         id="search-button"
         icon="search"

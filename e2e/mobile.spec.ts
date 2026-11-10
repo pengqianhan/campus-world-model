@@ -1,6 +1,6 @@
 // Criterion 6: on a 390 px wide phone the campus is visible and search leads to building and room details.
 import { expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, openStrip, params, settle, shot } from "./helpers.ts";
+import { expectRealRender, open, openRoot, params, settle, shot } from "./helpers.ts";
 
 test("6. phone: search for a room and see the building and class information", async ({ page }) => {
   await open(page, "?light=day");
@@ -65,9 +65,12 @@ test("6. phone: search for a room and see the building and class information", a
   await settle(page);
   await expect(bar).toContainText("Engineering");
 
-  // About is reachable and readable.
-  await page.getByRole("button", { name: "About", exact: true }).tap();
-  await expect(page.locator("#unofficial-notice")).toBeVisible();
+  // About is reachable and readable: on the page at the site's root since 2026-11-10, from its bar.
+  await openRoot(page);
+  await page.locator("#about-link").tap();
+  await expect(page.locator("#about")).toBeInViewport();
+  await expect(page.locator("#about-uoa .unofficial")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width);
   await shot(page, "06-mobile-about");
 });
 
@@ -88,7 +91,7 @@ test("phone: a tap on an unnamed space says its type on the campus map, inside t
   await expect(tip).toHaveCount(0);
 });
 
-test("phone: the top bar holds the site name, the source link, About, Search and the time side by side, down to a 360 px screen", async ({ page }) => {
+test("phone: the top bar holds the site name, the source link, Search and the time side by side, down to a 360 px screen", async ({ page }) => {
   for (const width of [390, 360]) {
     await page.setViewportSize({ width, height: 780 });
     for (const query of ["?light=day", "?light=day&building=260"]) {
@@ -100,7 +103,7 @@ test("phone: the top bar holds the site name, the source link, About, Search and
           .filter((r) => r.width > 0)
           .map((r) => ({ left: r.left, right: r.right, width: r.width })),
       );
-      expect(boxes.length).toBe(5);
+      expect(boxes.length).toBe(4);
       expect(boxes[0]!.left).toBeGreaterThanOrEqual(0);
       expect(boxes.at(-1)!.right, `${width} px, ${query}`).toBeLessThanOrEqual(width);
       for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.left, `${width} px, ${query}, item ${i}`).toBeGreaterThanOrEqual(boxes[i - 1]!.right);
@@ -108,34 +111,6 @@ test("phone: the top bar holds the site name, the source link, About, Search and
       for (const b of boxes) expect(b.width).toBeGreaterThanOrEqual(36);
     }
   }
-});
-
-test("phone: the way to other worlds sits in the status strip, inside the screen, and starts a flight that can be called off", async ({ page }) => {
-  // The other site is never called. The flight is called off long before it would be.
-  await page.route("https://tsinghua-world-model.pages.dev/**", (route) => route.abort());
-  for (const width of [390, 360]) {
-    await page.setViewportSize({ width, height: 780 });
-    await open(page, "?light=day");
-    await openStrip(page);
-    const link = page.locator('#status-strip a[data-world="tsinghua"]');
-    await expect(link).toBeVisible();
-    const box = (await link.boundingBox())!;
-    expect(box.x).toBeGreaterThanOrEqual(0);
-    expect(box.x + box.width, `${width} px`).toBeLessThanOrEqual(width);
-    // The strip leaves the top bar and most of the map alone.
-    const strip = (await page.locator("#status-strip").boundingBox())!;
-    expect(strip.y, `${width} px`).toBeGreaterThan(780 * 0.6);
-    expect(strip.x + strip.width).toBeLessThanOrEqual(width);
-  }
-  await shot(page, "13-mobile-worlds");
-
-  await page.locator('#status-strip a[data-world="tsinghua"]').tap();
-  const flight = page.getByRole("dialog", { name: "Travelling to Tsinghua World Model" });
-  await expect(flight).toBeVisible();
-  await expect(flight.locator(".travel-distance")).toHaveText(/^[\d,]+ km$/);
-  await flight.getByRole("button", { name: "Stay in Auckland" }).tap();
-  await expect(flight).toHaveCount(0);
-  await expect(page.locator("#status-strip")).toBeVisible();
 });
 
 /**

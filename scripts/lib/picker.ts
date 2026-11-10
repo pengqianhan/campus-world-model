@@ -9,12 +9,17 @@
 // copyright page in the recon of 2026-10-22 ("Te Herenga Waka"), UC's own text as docs/schools/uc.md
 // quotes it ("Te Whare Wānanga o Waitaha"), and the title of Massey's home page as
 // docs/schools/massey.md quotes it ("Te Kunenga ki Pūrehuroa"). scripts/build-root.ts writes the two
-// pages in the deploy jobs; tests/picker.test.ts checks them.
+// pages in the deploy jobs; tests/picker.test.ts checks them. Since 2026-11-10 (the maintainer) the root
+// carries what each school's page had in its top bar and its About: a link to the source code on GitHub,
+// About with each school's section (scripts/lib/about.ts), and the Tsinghua World Model, which inspired it.
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../../src/shared/school.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../../src/app/links.ts";
 import type { Meta } from "../../src/shared/types.ts";
 import { lookupWords, overlayWords } from "../../src/shared/words.ts";
+import { ICON_BOXES, ICON_PATHS } from "../../src/ui/icons.ts";
+import { type SchoolAbout, schoolAboutHtml } from "./about.ts";
 
 /** A school on the list, with what its line on the picker is made from. */
 export interface PickerSchool {
@@ -23,6 +28,8 @@ export interface PickerSchool {
   words: Words;
   /** Its published meta.json. */
   meta: Meta;
+  /** What its section of About is made from (scripts/lib/about.ts, loadSchoolAbout). */
+  about: SchoolAbout;
 }
 
 /** How much of a school the site shows, in the forms of docs/schools/DESIGN.md, section 2. */
@@ -102,22 +109,71 @@ main{max-width:44rem;margin:0 auto;padding:56px 16px 48px}
 h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhere}
 .lead{margin:0 0 16px;color:#33424d}
 .notice{margin:0;padding:10px 14px;border-left:4px solid var(--accent);border-radius:8px;background:rgba(255,255,255,.6);font-size:.9375rem}
-ul{display:grid;gap:12px;margin:28px 0 0;padding:0;list-style:none}
-li{position:relative;padding:16px 48px 16px 18px;border:1px solid transparent;border-radius:12px;background:var(--panel);color:var(--text);box-shadow:0 10px 34px rgba(5,12,18,.18)}
-li::after{content:"";position:absolute;top:50%;right:22px;width:10px;height:10px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:translateY(-50%) rotate(45deg)}
-li:hover{border-color:var(--accent)}
-li:focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.schools{display:grid;gap:12px;margin:28px 0 0;padding:0;list-style:none}
+.schools>li{position:relative;padding:16px 48px 16px 18px;border:1px solid transparent;border-radius:12px;background:var(--panel);color:var(--text);box-shadow:0 10px 34px rgba(5,12,18,.18)}
+.schools>li::after{content:"";position:absolute;top:50%;right:22px;width:10px;height:10px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:translateY(-50%) rotate(45deg)}
+.schools>li:hover{border-color:var(--accent)}
+.schools>li:focus-within{outline:2px solid var(--accent);outline-offset:3px}
 .site{margin:0 0 2px;color:var(--accent);font:600 .75rem/1.3 var(--font);letter-spacing:.06em;text-transform:uppercase}
-h2{margin:0 0 6px;font:600 1.375rem/1.25 var(--font-display);overflow-wrap:anywhere}
-h2 a{color:inherit;text-decoration:none}
-h2 a::before{content:"";position:absolute;inset:0;border-radius:12px}
-h2 a:focus{outline:none}
+.schools h2{margin:0 0 6px;font:600 1.375rem/1.25 var(--font-display);overflow-wrap:anywhere}
+.schools h2 a{color:inherit;text-decoration:none}
+.schools h2 a::before{content:"";position:absolute;inset:0;border-radius:12px}
+.schools h2 a:focus{outline:none}
 .reo{margin:-2px 0 6px;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
 .facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:var(--muted);font-size:.9375rem}
+.top{display:flex;justify-content:flex-end;gap:8px;max-width:44rem;margin:0 auto;padding:12px 16px 0}
+.top a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:10px;background:var(--panel);color:var(--text);font:600 .9375rem/1 var(--font);text-decoration:none}
+.top a:hover,.top a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top svg{width:20px;height:20px}
+main{padding-top:24px}
+#about{margin-top:48px}
+#about>h2{margin:0 0 12px;font:600 1.75rem/1.2 var(--font-display)}
+#about h3{margin:28px 0 8px;font:600 1.375rem/1.25 var(--font-display)}
+#about h4{margin:18px 0 6px;font:600 1rem/1.3 var(--font)}
+#about p,#about li,#about dd,#about td,#about th{font-size:.9375rem}
+#about a{color:#0b4f7c}
+.about-school{margin-top:20px;padding:4px 18px 16px;border-radius:12px;background:rgba(255,255,255,.6)}
+.callout{margin:12px 0;padding:10px 14px;border-left:4px solid var(--accent);border-radius:8px;background:rgba(255,255,255,.7)}
+.callout p{margin:4px 0 0}
+.sources{margin:0;padding-left:18px}
+.sources dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:4px 0 10px}
+.sources dt{color:#4a5a66}
+.sources dd{margin:0}
+.coverage{border-collapse:collapse}
+.coverage th{padding:2px 16px 2px 0;font-weight:400;text-align:left}
+.coverage td{text-align:right}
+.coverage .sub th{padding-left:14px;color:#4a5a66}
+.limits{margin:0;padding-left:18px}
+.built{color:#4a5a66}
 `.trim();
 
-/** One page: the head, the heading and its lead, the notice, and the list of schools. */
-function page(shared: Words, schools: PickerSchool[], words: { documentTitle: string; heading: string; lead: string }): string {
+/** The GitHub mark, as the app draws it (src/ui/icons.ts). */
+const github = () =>
+  `<svg viewBox="${ICON_BOXES.github}" aria-hidden="true" focusable="false"><path d="${ICON_PATHS.github}" fill="currentColor"/></svg>`;
+
+/** About: the site's own parts (what inspired it, its code), then each school's section in the list's order. */
+function about(shared: Words, schools: PickerSchool[]): string {
+  const e = escapeHtml;
+  const links = { repo: REPO, landmarkLidar: LANDMARK_LIDAR, linzElevationCredit: LINZ_ELEVATION_CREDIT };
+  return [
+    `<section id="about" aria-labelledby="about-title">`,
+    `<h2 id="about-title">${e(word(shared, "about.title"))}</h2>`,
+    `<h3>${e(word(shared, "about.inspirationTitle"))}</h3>`,
+    `<p id="inspiration">${e(word(shared, "about.inspiration"))}</p>`,
+    `<p><a id="inspired-by" href="${e(INSPIRED_BY.url)}" rel="noopener noreferrer">${e(word(shared, `travel.worlds.${INSPIRED_BY.id}.name`))}</a></p>`,
+    `<h3>${e(word(shared, "about.codeTitle"))}</h3>`,
+    `<p>${e(word(shared, "about.code"))} <a href="${e(REPO)}" rel="noopener noreferrer">${e(word(shared, "about.repo"))}</a></p>`,
+    `<h3>${e(word(shared, "picker.aboutSchools"))}</h3>`,
+    ...schools.map((s) => schoolAboutHtml(s.id, word(s.words, "app.title"), s.words, s.about, links)),
+    `</section>`,
+  ].join("\n");
+}
+
+/**
+ * One page: the bar with the source code and About, the heading and its lead, the notice, the list of
+ * schools, and on the picker About below it (the page for an unknown path links to the picker's).
+ */
+function page(shared: Words, schools: PickerSchool[], words: { documentTitle: string; heading: string; lead: string }, withAbout: boolean): string {
   const e = escapeHtml;
   const items = schools.map((school) => {
     const s = schoolLine(school, shared);
@@ -145,13 +201,18 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
 <style>${STYLE}</style>
 </head>
 <body>
+<nav class="top" aria-label="${e(word(shared, "picker.navLabel"))}">
+<a id="repo-link" href="${e(REPO)}" rel="noopener noreferrer" aria-label="${e(word(shared, "about.repo"))}" title="${e(word(shared, "about.repo"))}">${github()}</a>
+<a id="about-link" href="${withAbout ? "#about" : "/#about"}">${e(word(shared, "nav.about"))}</a>
+</nav>
 <main>
 <h1>${e(words.heading)}</h1>
 <p class="lead">${e(words.lead)}</p>
 <p class="notice">${e(word(shared, "picker.notice"))}</p>
-<ul aria-label="${e(word(shared, "picker.listLabel"))}">
+<ul class="schools" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${items.join("\n")}
 </ul>
+${withAbout ? about(shared, schools) : ""}
 </main>
 </body>
 </html>
@@ -166,11 +227,11 @@ export function pickerPages(schools: PickerSchool[], shared: Words): { index: st
       documentTitle: word(shared, "picker.documentTitle"),
       heading: word(shared, "picker.heading"),
       lead: word(shared, "picker.lead"),
-    }),
+    }, true),
     notFound: page(shared, schools, {
       documentTitle: word(shared, "picker.notFound.documentTitle"),
       heading: word(shared, "picker.notFound.heading"),
       lead: word(shared, "picker.notFound.lead"),
-    }),
+    }, false),
   };
 }

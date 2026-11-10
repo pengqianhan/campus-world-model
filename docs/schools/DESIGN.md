@@ -53,7 +53,7 @@ the first migration pull request does, once approved.
 | "Vite `base` is `/campus-world-model/`" | The default build (`SCHOOL=uoa`, no `BASE_PATH`) stays exactly this; another school's default base is `/<id>/` | Replace with: "Vite `base` is `/campus-world-model/` for the University of Auckland and `/<id>/` for any other school (`SCHOOL`; override with `BASE_PATH`)." |
 | "All network fetching goes through `scripts/lib/snapshot.ts`" | Every school's fetch scripts use it. A raw snapshot two schools share is fetched once | none |
 | "The street look": "Only the walker views change" | The map of `/uoa/` stays the same picture, checked by the map's pixel diff | none |
-| "Other worlds" | A school hosted here is meant to join the "Other worlds" row. That stays optional (decision 12) | none |
+| "Other worlds" | A school hosted here was meant to join the "Other worlds" row (decision 12). Since 2026-11-10 there is no row: the page at the root links to the Tsinghua World Model, and holds About for every school (section 7) | none |
 | "Timetable features are tested with a fixture served only inside Playwright" | Each school's tests keep the rule: a fixture is never written to `public/data/` | none |
 | "Stack" and "No new dependency" (in "The street look") | The design adds no package: the Vite plugin and the picker builder are a few lines of TypeScript | none |
 
@@ -324,7 +324,7 @@ built in. Each goes one of two ways:
 | Base path: `base` in `vite.config.ts`, `baseURL` in `playwright.config.ts` | `BASE_PATH=/<id>/`. With no `BASE_PATH` the default stays `/campus-world-model/` for `uoa`, and is `/<id>/` for any other school. `playwright.config.ts` takes `SCHOOL` too: its `baseURL` (and the `webServer` address it waits on) becomes `http://localhost:4273/<id>/` for a school other than `uoa`, and it picks the tests (section 8). `LOCAL` in `scripts/walker/daemon.ts` follows the same rule |
 | Names and words: `index.html`, `en.json`, `REPO`, `USER_AGENT`, `CAMPUS_SPAN` | `index.html` and the locale overlay for each school; `REPO` and `USER_AGENT` shared (one project); `CAMPUS_SPAN` in the descriptor |
 | Look: `src/scene/palette.ts`, `public/favicon.svg`, the accent | shared, the project's own (section 6) |
-| Other worlds: `WORLDS` | shared |
+| About and the Tsinghua World Model: `scripts/lib/about.ts`, `INSPIRED_BY` | shared: one page at the root, one section of About a school (section 7) |
 | Landmarks: `landmarks/<name>/placement.json` | gains `school`; a file without it is the University of Auckland's, so the Clock Tower's does not change. `src/app/landmarks.ts` keeps the landmarks of the school being built |
 
 **How the app gets its school.** `vite.config.ts` reads `SCHOOL` (default `uoa`) and points the
@@ -337,8 +337,8 @@ descriptor and checks its fields.
 **Words.** `src/i18n/locales/en.json` keeps every key and text it has: they are the University of
 Auckland's words. A school's overlay, `src/schools/<id>/locales/en.json`, replaces the keys that name a
 school, its campus map or its verdicts: 35 of the 292 keys when this was written (33 of 342 on 2026-10-27), among them `app.*`,
-`about.unofficial`, `about.limits.*`, `attribution.short`, `room.noTimetableWhy`, `travel.leaving`
-and `travel.stay`. A unit test makes every school other than `uoa` override each of these keys.
+`about.unofficial`, `about.limits.*`, `attribution.short` and `room.noTimetableWhy`. A unit test makes every
+school other than `uoa` override each of these keys.
 Two more keys, `TERM_KEYS` in `src/shared/words.ts`, name the school's teaching periods where its
 dates are not shown ("semester dates"): a school that teaches in trimesters, as VUW does, replaces
 them, and a school that teaches in semesters keeps them. A unit test checks that each school's words
@@ -402,6 +402,13 @@ the same Vite plugin. Two of those texts are not in `en.json` today (the `og:des
 - **How.** `scripts/build-root.ts` writes `site/index.html` in the deploy job from the descriptors,
   each school's `meta.json` and the `picker.*` keys of the locale files. No new package. A unit test
   checks that the page lists every school and links to its path.
+- **About (the maintainer, 2026-11-10).** Under the list, About: the project, the Tsinghua World
+  Model that inspired it (with a link), its source code, and one section a school, made by
+  `scripts/lib/about.ts` from the files its site publishes and, for its landmarks, `landmarks/`: its
+  unofficial notice, what it shows, its sources with their snapshot dates and licences, its
+  coverage, its limits and its privacy. A bar at the top links to the source code on GitHub, with
+  its mark, and to About. A school's page has no About of its own: its attribution and its "Why?"
+  links open its section, `/#about-<id>`.
 - **`_redirects`.** The line `/ /uoa/ 302` comes out in the same commit that ships the picker, and
   not before. That is deployment, so it is a gate.
 - **When.** With the second school (decision 6). Until then the root keeps redirecting. A visitor
@@ -596,7 +603,8 @@ pull request, after the migration.)
     (proposed), or wait for LiDAR heights, which need a new dependency.
 11. **The amendments** to `PROGRESS.md` in "What this design rests on": who applies them, and when.
 12. **Other worlds.** Whether a school hosted here also joins the "Other worlds" row, with the
-    flight between campuses. Not needed for the first school.
+    flight between campuses. Not needed for the first school. Settled on 2026-11-10: the row and
+    the flight are gone, and the page at the root links to the Tsinghua World Model.
 13. **Previews of a new school.** Previews build only the schools on `main`'s list, so a new
     school is on the site only once merged (proposed). The cost: the pull request that adds a
     school has no online preview of it, and is looked at on the author's and the maintainer's own
