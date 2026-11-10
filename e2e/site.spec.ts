@@ -278,6 +278,11 @@ test("7. About carries the unofficial notice, every source with link and snapsho
   await expect(page.locator("#inspired-by")).toHaveAttribute("href", /^https:\/\/tsinghua-world-model\.pages\.dev\//);
   await expect(page.locator("#repo-link")).toHaveAttribute("href", "https://github.com/pengqianhan/campus-world-model");
   await shot(page, "07-about");
+
+  // The short attribution is always on the map.
+  await open(page, "?light=day");
+  await expect(page.locator("#attribution")).toContainText("© OpenStreetMap");
+  await expect(page.locator("#attribution")).toContainText("LINZ");
 });
 
 test("the map has no About of its own: its attribution, a room's card and an address saved with About open go to its section at the site's root", async ({ page }) => {
@@ -286,8 +291,6 @@ test("the map has no About of its own: its attribution, a room's card and an add
   await expect(page.getByRole("button", { name: "About", exact: true })).toHaveCount(0);
   await expect(page.locator('a[href*="tsinghua-world-model"]')).toHaveCount(0);
   const attribution = page.locator("#attribution");
-  await expect(attribution).toContainText("© OpenStreetMap");
-  await expect(attribution).toContainText("LINZ");
   await expect(attribution).toHaveAttribute("href", /^(\/|https:\/\/campusworldmodel\.com\/)#about-uoa$/);
   await open(page, "?light=day&building=260&floor=0&room=260-098");
   await expect(page.locator("#no-timetable a")).toHaveAttribute("href", /#about-uoa$/);
