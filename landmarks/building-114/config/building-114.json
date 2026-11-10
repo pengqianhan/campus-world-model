@@ -1,9 +1,9 @@
 {
  "name": "building-114",
  "site": false,
- "estimated": "(to be written)",
+ "estimated": "(to be written at step 5)",
  "refs": "photos",
- "refs_note": "(to be written)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the car park south-west of the building, about 15 m out from its south-west face, before its south-east half, looking north-east along bearing 58 degrees through a lens of about 80 degrees across; its camera is fitted to the south-west eave's fascia against the sky, the eave's south-east corner and two verticals, held near 1.6 m over the LiDAR's ground (1.59 m)",
  "building": {
   "id": "114",
   "also": [],
