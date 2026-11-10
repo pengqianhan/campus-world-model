@@ -2369,6 +2369,13 @@ select optgroup {
   --hud-glass: rgba(14, 24, 32, 0.76);
 }
 
+/* A phone redraws a blur behind every panel each frame of the walk: its panels are a little darker instead. */
+.hud.touch .hud-card,
+.hud.touch .walker-moves button {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .hud.touch .hud-brand {
   padding: 4px 10px 4px 4px;
 }
