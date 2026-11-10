@@ -50,10 +50,5 @@
     "layer": {
       "calendar": "trimester dates"
     }
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves VUW World Model.",
-    "leaving": "Leaving VUW",
-    "stay": "Stay at VUW"
   }
 }

@@ -8,8 +8,8 @@ import type { Words } from "./school.ts";
 /**
  * The keys every school other than the University of Auckland replaces in its overlay: the site's
  * name and the page's head, the unofficial notice, the known limits, the credit line, why no
- * timetable is shown, the weather's place (in the weather line and in Privacy), the room-code
- * examples, and leaving the school's city.
+ * timetable is shown, the weather's place (in the weather line and in Privacy), and the room-code
+ * examples.
  * A key ending in ".*" stands for every key under it. tests/schools.test.ts checks the list.
  */
 export const SCHOOL_KEYS: readonly string[] = [
@@ -23,9 +23,6 @@ export const SCHOOL_KEYS: readonly string[] = [
   "search.hint",
   "search.noResultsHint",
   "weather.label",
-  "travel.go",
-  "travel.leaving",
-  "travel.stay",
 ];
 
 /**

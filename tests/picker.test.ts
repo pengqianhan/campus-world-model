@@ -1,5 +1,6 @@
 // The school picker and the 404 page at the Cloudflare site's root (docs/schools/DESIGN.md,
-// section 7), as scripts/build-root.ts writes them from the list, each school's meta.json and words.
+// section 7), as scripts/build-root.ts writes them from the list, each school's meta.json and words;
+// and, since 2026-11-10, About under the picker, with each school's section (scripts/lib/about.ts).
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -8,7 +9,9 @@ import { describe, expect, it } from "vitest";
 import { locales } from "../src/app/i18n.ts";
 import type { Words } from "../src/shared/school.ts";
 import type { Meta } from "../src/shared/types.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
+import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
 import { type PickerSchool, escapeHtml, pickerPages, schoolForm, schoolLine, schoolWords } from "../scripts/lib/picker.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
 
@@ -16,7 +19,8 @@ const root = process.cwd();
 const shared = JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words;
 const ids = parseSchoolList(fs.readFileSync(".github/schools.json", "utf8"));
 const meta = (id: string) => JSON.parse(fs.readFileSync(path.join("public", "data", id, "meta.json"), "utf8")) as Meta;
-const schools: PickerSchool[] = ids.map((id) => ({ id, words: schoolWords(root, id, shared), meta: meta(id) }));
+const aboutOf = (id: string) => loadSchoolAbout(root, path.join("public", "data", id), id);
+const schools: PickerSchool[] = ids.map((id) => ({ id, words: schoolWords(root, id, shared), meta: meta(id), about: aboutOf(id) }));
 const pages = pickerPages(schools, shared);
 
 /** The links of the list, in order. */
@@ -31,7 +35,7 @@ const unescape = (text: string) =>
  * description, title and list label. Text that sits next to other text with no tag between is one.
  */
 function shownTexts(html: string): string[] {
-  const body = html.replace(/<style>[\s\S]*?<\/style>/g, "");
+  const body = html.replace(/<style>[\s\S]*?<\/style>/g, "").replace(/<section id="about"[\s\S]*?<\/section>\n<\/main>/, "</main>");
   const between = [...body.matchAll(/>([^<]+)</g)].map((m) => unescape(m[1]!).trim()).filter(Boolean);
   const attrs = [...body.matchAll(/(?:name="description"|property="og:(?:title|description)") content="([^"]*)"|aria-label="([^"]*)"/g)].map((m) => unescape(m[1] ?? m[2]!));
   return [...between, ...attrs];
@@ -39,7 +43,7 @@ function shownTexts(html: string): string[] {
 
 /** Every text the page may show: each picker.* text, and each school's facts from its meta.json and words. */
 function allowedTexts(): Set<string> {
-  const picker = wordKeys(shared).filter((k) => k.startsWith("picker.")).map((k) => lookupWords(shared, k)!);
+  const picker = [...wordKeys(shared).filter((k) => k.startsWith("picker.")), "nav.about", "about.repo"].map((k) => lookupWords(shared, k)!);
   const facts = schools.flatMap((s) => {
     const line = schoolLine(s, shared);
     return [line.site, line.name, line.city, line.form, line.snapshot];
@@ -58,7 +62,7 @@ describe("the school picker at the site's root", () => {
       expect(html).not.toMatch(/<script|javascript:|\bon[a-z]+=|<canvas|<iframe|<object|<embed/i);
     });
 
-    it(`${page} shows only texts from picker.*, each school's words or its meta.json`, () => {
+    it(`${page} shows, above About, only texts from picker.*, each school's words or its meta.json`, () => {
       const allowed = allowedTexts();
       const texts = shownTexts(html);
       expect(texts.length).toBeGreaterThan(5);
@@ -112,14 +116,14 @@ describe("the school picker at the site's root", () => {
     const words = JSON.parse(JSON.stringify(shared)) as { picker: { schools: Record<string, { name: string }> }; app: { title: string } };
     words.picker.schools.uoa!.name = evil;
     (words.picker.schools.uoa as { reo?: string }).reo = evil;
-    const html = pickerPages([{ id: "uoa", words: { ...shared, app: { title: evil } }, meta: meta("uoa") }], words as unknown as Words).index;
+    const html = pickerPages([{ id: "uoa", words: { ...shared, app: { title: evil } }, meta: meta("uoa"), about: aboutOf("uoa") }], words as unknown as Words).index;
     expect(html).not.toContain("<script");
     expect(html).toContain(escapeHtml(evil));
   });
 
   it("stops on a school with no words or no campus snapshot", () => {
-    expect(() => pickerPages([{ id: "nowhere", words: shared, meta: meta("uoa") }], shared)).toThrow(/picker\.schools\.nowhere\.name/);
-    expect(() => pickerPages([{ id: "uoa", words: shared, meta: { ...meta("uoa"), sources: [] } }], shared)).toThrow(/snapshot/);
+    expect(() => pickerPages([{ id: "nowhere", words: shared, meta: meta("uoa"), about: aboutOf("uoa") }], shared)).toThrow(/picker\.schools\.nowhere\.name/);
+    expect(() => pickerPages([{ id: "uoa", words: shared, meta: { ...meta("uoa"), sources: [] }, about: aboutOf("uoa") }], shared)).toThrow(/snapshot/);
     expect(() => pickerPages([], shared)).toThrow();
   });
 
@@ -134,7 +138,7 @@ describe("the school picker at the site's root", () => {
     try {
       for (const id of ids) {
         fs.mkdirSync(path.join(dir, id, "data"), { recursive: true });
-        fs.copyFileSync(path.join("public", "data", id, "meta.json"), path.join(dir, id, "data", "meta.json"));
+        for (const f of ["meta.json", "schedule.json", "campus.json"]) fs.copyFileSync(path.join("public", "data", id, f), path.join(dir, id, "data", f));
       }
       execFileSync(process.execPath, ["scripts/build-root.ts", ".github/schools.json", dir], { stdio: "pipe" });
       expect(fs.readFileSync(path.join(dir, "index.html"), "utf8")).toBe(pages.index);
@@ -147,5 +151,104 @@ describe("the school picker at the site's root", () => {
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("About, at the site's root since 2026-11-10", () => {
+  /** A school's section of About, as the picker shows it. */
+  const article = (id: string) => {
+    const m = pages.index.match(new RegExp(`<article class="about-school" id="about-${id}" data-school="${id}">[\\s\\S]*?</article>`));
+    expect(m, id).not.toBeNull();
+    return m![0];
+  };
+  const words = (id: string) => schools.find((s) => s.id === id)!.words;
+
+  it("the bar of each page links to the source code on GitHub, with its mark, and to About", () => {
+    for (const html of [pages.index, pages.notFound]) {
+      expect(html).toContain(`<a id="repo-link" href="${escapeHtml(REPO)}" rel="noopener noreferrer" aria-label="Source code on GitHub"`);
+      expect(html).toMatch(/<a id="repo-link"[^>]*><svg viewBox="-2 -2 28 28"[^>]*><path d="M12 \.297/);
+    }
+    expect(pages.index).toContain('<a id="about-link" href="#about">About</a>');
+    // the page for an unknown path has no About of its own, and sends to the picker's
+    expect(pages.notFound).toContain('<a id="about-link" href="/#about">About</a>');
+    expect(pages.notFound).not.toContain('<section id="about"');
+  });
+
+  it("names the Tsinghua World Model, which inspired the site, and links to it", () => {
+    expect(INSPIRED_BY.url).toBe("https://tsinghua-world-model.pages.dev/?campus=1&classMode=live");
+    expect(pages.index).toContain(`<p id="inspiration">${escapeHtml(lookupWords(shared, "about.inspiration")!)}</p>`);
+    expect(pages.index).toContain(`<a id="inspired-by" href="${escapeHtml(INSPIRED_BY.url)}" rel="noopener noreferrer">Tsinghua World Model</a>`);
+    expect(pages.index).toContain(`${escapeHtml(lookupWords(shared, "about.code")!)} <a href="${escapeHtml(REPO)}"`);
+  });
+
+  for (const id of ids) {
+    it(`${id}: its section has its unofficial notice, every source with its link, snapshot date and licence, and OpenStreetMap's credit`, () => {
+      const a = article(id);
+      const w = words(id);
+      expect(a).toContain(`<h3>${escapeHtml(lookupWords(w, "app.title")!)}</h3>`);
+      expect(a).toContain(escapeHtml(lookupWords(w, "about.unofficial")!));
+      expect(lookupWords(w, "about.unofficial")).toMatch(/not affiliated with, endorsed by or maintained by \S/);
+      const sources = meta(id).sources;
+      expect(sources.length).toBeGreaterThan(0);
+      for (const src of sources) {
+        expect(a).toContain(`<a href="${escapeHtml(src.url)}" rel="noopener noreferrer">${escapeHtml(src.name)}</a>`);
+        expect(a).toContain(`<time datetime="${src.snapshotDate}">${escapeHtml(longDate(src.snapshotDate, w))}</time>`);
+        expect(a).toContain(`<dd>${escapeHtml(src.licence)}</dd>`);
+      }
+      expect(a).toContain('<a href="https://www.openstreetmap.org/copyright" rel="noopener noreferrer">');
+      expect(a).toContain('<table class="coverage">');
+    });
+
+    it(`${id}: each layer its data says it cannot show has its reason among the limits`, () => {
+      const a = article(id);
+      const key = { indoor: "rooms", timetable: "timetable", calendar: "calendar", subjects: "subjects" } as Record<string, string>;
+      for (const layer of absentLayers(meta(id))) {
+        expect(a).toContain(`<li data-layer="${layer}">${escapeHtml(lookupWords(words(id), `about.limits.${key[layer]}`)!)}</li>`);
+      }
+    });
+  }
+
+  it("the University of Auckland's section names the buildings drawn in detail and credits the LiDAR as LINZ asks", () => {
+    const a = article("uoa");
+    const about = aboutOf("uoa");
+    expect(about.landmarks.detailed).toContain("105 The Clock Tower");
+    expect(about.landmarks.detailed.length).toBeGreaterThan(30);
+    expect(a).toContain('<p class="landmarks">Drawn in detail from code: ');
+    expect(a).toContain("105 The Clock Tower");
+    expect(a).toContain(`<a href="${escapeHtml(LANDMARK_LIDAR)}" rel="noopener noreferrer">`);
+    expect(a).toContain(`<a href="${escapeHtml(LINZ_ELEVATION_CREDIT)}" rel="noopener noreferrer">`);
+    expect(a).toContain("licensed by Regional Software Holdings Limited");
+    expect(a).toContain("Creative Commons Attribution 4.0");
+    for (const b of about.landmarks.detailed) expect(a).toContain(escapeHtml(b));
+    // Sizes measured by something besides the LiDAR (the Kenneth Myers Centre's west part) credit that source.
+    expect(about.landmarks.credits.flatMap((c) => c.buildings)).toContain("820 Kenneth Myers Centre");
+    const credits = [...a.matchAll(/<p class="landmark-credit">(.*?)<\/p>/g)].map((m) => m[1]!);
+    expect(credits).toHaveLength(about.landmarks.credits.length);
+    for (const [k, c] of about.landmarks.credits.entries()) {
+      expect(credits[k]).toContain(escapeHtml(c.credit));
+      for (const b of c.buildings) expect(credits[k]).toContain(escapeHtml(b));
+    }
+    expect(about.landmarks.measured.length).toBeGreaterThan(10);
+    for (const b of about.landmarks.measured) expect(a).toContain(escapeHtml(b));
+  });
+
+  it("the University of Auckland's section names its sources, the ground's licence, its coverage and the limits of its data", () => {
+    const a = article("uoa");
+    for (const text of ["OpenStreetMap", "maps.auckland.ac.nz", "Land Information New Zealand", "CC BY 3.0 NZ", "© OpenStreetMap contributors", "No class times yet", "not surveyed", "Learning spaces with an outline"]) {
+      expect(a, text).toContain(escapeHtml(text));
+    }
+  });
+
+  it("no other school's section names a landmark: each is drawn only on its own school's site", () => {
+    for (const id of ids.filter((x) => x !== "uoa")) expect(article(id)).not.toContain('<p class="landmarks">');
+  });
+
+  it("a school's page links to its section on the root it is served from, or on campusworldmodel.com from any other copy", () => {
+    expect(aboutHref("/uoa/", "uoa")).toBe("/#about-uoa");
+    expect(aboutHref("/aut/", "aut")).toBe("/#about-aut");
+    // The GitHub Pages copy, at /campus-world-model/, has no page at its root.
+    expect(aboutHref("/campus-world-model/", "uoa")).toBe(`${SITE}#about-uoa`);
+    expect(SITE).toBe("https://campusworldmodel.com/");
+    for (const id of ids) expect(pages.index).toContain(`id="about-${id}"`);
   });
 });

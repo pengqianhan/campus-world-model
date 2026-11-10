@@ -17,7 +17,7 @@ const ON_SITE = fs
   .filter((d) => d.isDirectory() && fs.existsSync(`landmarks/${d.name}/placement.json`))
   .map((d) => ({ name: d.name, placement: JSON.parse(fs.readFileSync(`landmarks/${d.name}/placement.json`, "utf8")) }))
   .filter((l) => l.placement.site === true)
-  .map(({ name, placement: p }) => ({ name, buildings: [p.building, ...(p.also ?? [])] as string[], centre: p.centre as [number, number], part: p.part as string | undefined, estimated: p.estimated as string | undefined, measuredBy: p.measuredBy as string | undefined, credit: p.credit as string | undefined }))
+  .map(({ name, placement: p }) => ({ name, buildings: [p.building, ...(p.also ?? [])] as string[], centre: p.centre as [number, number], part: p.part as string | undefined, estimated: p.estimated as string | undefined, measuredBy: p.measuredBy as string | undefined }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
 /** The measured massings, as their data files say: one building each, and where it stands. */
@@ -25,7 +25,7 @@ const MEASURED = fs
   .readdirSync("landmarks/measured/buildings")
   .filter((f) => f.endsWith(".json"))
   .map((f) => JSON.parse(fs.readFileSync(`landmarks/measured/buildings/${f}`, "utf8")).place as { building: string; centre: [number, number] })
-  .map((p) => ({ name: `measured/${p.building}`, buildings: [p.building], centre: p.centre, part: undefined, estimated: undefined, measuredBy: undefined, credit: undefined }))
+  .map((p) => ({ name: `measured/${p.building}`, buildings: [p.building], centre: p.centre, part: undefined, estimated: undefined, measuredBy: undefined }))
   .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 /** The measured massings tested one by one: the first three. */
 const MEASURED_TESTED = MEASURED.slice(0, 3);
@@ -61,14 +61,7 @@ test("near it, the map draws the Clock Tower from code in its own colours, in pl
   // Any other building says that its height is estimated.
   await open(page, `?building=440&${T}`);
   await expect(page.locator("#height-note")).toContainText("estimated from the number of floors");
-
-  // About names the buildings drawn in detail, and credits the LiDAR as LINZ asks: its licensor, the
-  // licence, and a link to LINZ's page on attributing elevation data.
-  await page.getByRole("button", { name: "About", exact: true }).click();
-  await expect(page.locator("#landmarks")).toContainText("105 The Clock Tower");
-  await expect(page.locator("#landmarks")).toContainText("licensed by Regional Software Holdings Limited");
-  await expect(page.locator("#landmarks")).toContainText("Creative Commons Attribution 4.0");
-  await expect(page.locator("#landmark-links a").nth(1)).toHaveAttribute("href", /linz\.govt\.nz\/.*attributing-elevation/);
+  // About, at the site's root, names the buildings drawn in detail and credits the LiDAR (tests/picker.test.ts).
 });
 
 test("from a walker's height the Clock Tower is drawn in its own stone on a graphics card, and in the map's colours in software", async ({ page }) => {
@@ -148,7 +141,7 @@ test("from a walker's height a measured massing takes the facades drawn by rule"
   await shot(page, "31-measured-eyes");
 });
 
-for (const { name, buildings, centre, part, estimated, measuredBy, credit } of [...ON_SITE, ...MEASURED_TESTED]) {
+for (const { name, buildings, centre, part, estimated, measuredBy } of [...ON_SITE, ...MEASURED_TESTED]) {
   test(`near ${name}, the map draws it in its light form in place of its blocks, and a click opens its building`, async ({ page }) => {
     await open(page, `?${T}`);
     // From the campus view its blocks are drawn, and it is not even made.
@@ -176,17 +169,9 @@ for (const { name, buildings, centre, part, estimated, measuredBy, credit } of [
     // A size that nothing measures (the Clock Tower East Wing's link's underside) is called estimated on the card.
     if (estimated) await expect(page.locator("#height-note")).toContainText(`estimated: ${estimated}`);
     // Sizes measured by something besides the LiDAR (the Kenneth Myers Centre's west part: an aerial photograph
-    // and a Street View photograph) are named on the card, and About credits that source.
-    if (measuredBy) {
-      await expect(page.locator("#height-note")).toContainText(`to sizes measured ${measuredBy}`);
-      await page.getByRole("button", { name: "About", exact: true }).click();
-      await expect(page.locator(".landmark-credit")).toContainText(credit!);
-      await expect(page.locator(".landmark-credit")).toContainText(buildings[0]!);
-    }
-    if (name.startsWith("measured/")) {
-      await expect(page.locator("#height-note")).toContainText("walls and windows drawn by rule");
-      await page.getByRole("button", { name: "About", exact: true }).click();
-      await expect(page.locator("#measured")).toContainText(buildings[0]!);
-    }
+    // and a Street View photograph) are named on the card; About, at the site's root, credits that source
+    // (tests/picker.test.ts).
+    if (measuredBy) await expect(page.locator("#height-note")).toContainText(`to sizes measured ${measuredBy}`);
+    if (name.startsWith("measured/")) await expect(page.locator("#height-note")).toContainText("walls and windows drawn by rule");
   });
 }

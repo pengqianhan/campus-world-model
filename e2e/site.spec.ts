@@ -251,35 +251,21 @@ test("5. a copied URL restores the same building, floor, room and time", async (
   await expectRealRender(copy);
 });
 
-test("7. About carries the unofficial notice, every source with link and snapshot date, attribution and limitations", async ({ page }) => {
+test("7. About is on the page at the site's root: the map has no About of its own, and its attribution and its reasons link there", async ({ page }) => {
   await open(page, "?light=day");
-  await page.getByRole("button", { name: "About", exact: true }).click();
-  const about = page.locator(".about-panel");
-  await expect(about.locator("#unofficial-notice")).toContainText("not affiliated with");
+  await expect(page.getByRole("button", { name: "About", exact: true })).toHaveCount(0);
+  await expect(page.locator(".about-panel")).toHaveCount(0);
+  // Nor does it link to the Tsinghua World Model: the page at the root does (tests/picker.test.ts).
+  await expect(page.locator('a[href*="tsinghua-world-model"]')).toHaveCount(0);
 
-  const sources = about.locator("#data-sources > li");
-  expect(await sources.count()).toBeGreaterThanOrEqual(3);
-  for (const li of await sources.all()) {
-    await expect(li.locator("a")).toHaveAttribute("href", /^https:\/\//);
-    await expect(li.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
-  }
-  await expect(about.locator("#data-sources")).toContainText("OpenStreetMap");
-  await expect(about.locator("#data-sources")).toContainText("maps.auckland.ac.nz");
-  // The ground's heights, with the Crown copyright and licence its source asks for.
-  await expect(about.locator("#data-sources")).toContainText("Land Information New Zealand");
-  await expect(about.locator("#data-sources")).toContainText("CC BY 3.0 NZ");
-  await expect(about.locator("#osm-attribution")).toContainText("© OpenStreetMap contributors");
-  await expect(about.locator("#osm-attribution a")).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
-  await expect(about.locator("#limitations")).toContainText("No class times yet");
-  await expect(about.locator("#limitations")).toContainText("not surveyed");
-  await expect(about.locator("#coverage")).toContainText("Learning spaces with an outline");
-  await shot(page, "07-about");
-
-  // The short attribution is always on the map.
-  await page.keyboard.press("Escape");
-  await expect(about).toHaveCount(0);
-  await expect(page.locator("#attribution")).toContainText("© OpenStreetMap");
-  await expect(page.locator("#attribution")).toContainText("LINZ");
+  // The short attribution is always on the map, and opens this school's section of About.
+  const attribution = page.locator("#attribution");
+  await expect(attribution).toContainText("© OpenStreetMap");
+  await expect(attribution).toContainText("LINZ");
+  await expect(attribution).toHaveAttribute("href", /^(\/|https:\/\/campusworldmodel\.com\/)#about-uoa$/);
+  // A room's card says where its timetable is not, and links to the same section.
+  await open(page, "?light=day&building=260&floor=0&room=260-098");
+  await expect(page.locator("#no-timetable a")).toHaveAttribute("href", /#about-uoa$/);
 });
 
 test("8. ?lang= is honoured and unknown languages fall back to English", async ({ page }) => {
@@ -291,7 +277,7 @@ test("8. ?lang= is honoured and unknown languages fall back to English", async (
   await expect(page.locator(".brand-name")).toHaveText("UoA World Model");
 });
 
-test("the top bar links straight to the source code on GitHub, beside About", async ({ page }) => {
+test("the top bar links straight to the source code on GitHub, beside Search", async ({ page }) => {
   await open(page, "?light=day");
   const link = page.locator(".topbar").getByRole("link", { name: "Source code on GitHub" });
   await expect(link).toBeVisible();
@@ -302,10 +288,10 @@ test("the top bar links straight to the source code on GitHub, beside About", as
   const markWidth = await link.locator("svg path").evaluate((el) => (el as SVGPathElement).getBBox().width);
   expect(markWidth).toBeGreaterThan(20);
   const here = (await link.boundingBox())!;
-  const about = (await page.getByRole("button", { name: "About", exact: true }).boundingBox())!;
-  expect(Math.abs(here.y - about.y)).toBeLessThan(2);
-  expect(about.x - (here.x + here.width)).toBeGreaterThanOrEqual(0);
-  expect(about.x - (here.x + here.width)).toBeLessThan(16);
+  const search = (await page.locator("#search-button").boundingBox())!;
+  expect(Math.abs(here.y + here.height / 2 - (search.y + search.height / 2))).toBeLessThan(2);
+  expect(search.x - (here.x + here.width)).toBeGreaterThanOrEqual(0);
+  expect(search.x - (here.x + here.width)).toBeLessThan(16);
 
   // It is still there inside a building.
   await open(page, "?light=day&building=260");
@@ -341,7 +327,7 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await toggle.click();
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
-  for (const part of [".campus-tabs", 'a[data-world="tsinghua"]']) await expect(strip.locator(part)).toBeVisible();
+  await expect(strip.locator(".campus-tabs")).toBeVisible();
   await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();

@@ -42,10 +42,5 @@
   },
   "weather": {
     "label": "Weather at AUT's City Campus"
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves AUT World Model.",
-    "leaving": "Leaving AUT",
-    "stay": "Stay at AUT"
   }
 }

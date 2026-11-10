@@ -42,10 +42,5 @@
   },
   "weather": {
     "label": "Weather at Massey's Manawatū campus"
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves Massey World Model.",
-    "leaving": "Leaving Massey",
-    "stay": "Stay at Massey"
   }
 }

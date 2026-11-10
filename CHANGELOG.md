@@ -51,6 +51,16 @@ A change to what the site does or shows adds its line here, and the README's
   shows. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
   glass, render, frames and roofs (#153).
 
+### Changed
+
+- **About on the page at the site's root.** https://campusworldmodel.com/ holds About under its list of schools: the
+  project, a link to the Tsinghua World Model that inspired it, the source code, and a section for each school's map
+  with its unofficial notice, what it shows, its sources with their snapshot dates and licences, its landmarks, its
+  coverage, its limits and its privacy. A bar at its top links to the source code on GitHub, with its mark, and to
+  About; the page for an unknown address has the same bar. A school's map has no About button, no "Other worlds" link
+  and no flight to the Tsinghua World Model any more; it keeps its GitHub button, and its credit line at the bottom and
+  its "Why?" links open its section of About. The copy on GitHub Pages links to the one at campusworldmodel.com.
+
 ## 2026-11-09
 
 ### Added

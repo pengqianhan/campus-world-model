@@ -26,7 +26,7 @@ const glArgs = software
 // E2E_HALF=1 runs the specs FIRST_HALF names; E2E_HALF=2 runs every other one, so a new spec file
 // runs in the second half without being listed here. Measured on CI (2026-10-26), the two take
 // about as long. Without E2E_HALF, every spec runs.
-const FIRST_HALF = /[\\/](site|sky|travel|mobile)\.spec\.ts$/;
+const FIRST_HALF = /[\\/](site|sky|mobile)\.spec\.ts$/;
 // The phone's spec, matched as FIRST_HALF matches it, so that no other file can run in both halves.
 const MOBILE = /[\\/]mobile\.spec\.ts$/;
 const half = process.env.E2E_HALF || undefined;
