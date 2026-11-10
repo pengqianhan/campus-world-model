@@ -26,7 +26,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 100k triangles and ≤ 10 draw calls (tier 2, a stand-in measured massing drawn in detail), merged by
-  material. Round 0 and steps 5 to 7: 816 triangles, 4 draw calls; the review's round 1: 744, 4.
+  material. Round 0 and steps 5 to 7: 816 triangles, 4 draw calls; the review's round 1: 744, 4; round 2: 856, 4.
 
 ## Rounds
 - Round 0 to step 7 (2026-11-11, the lead alone): the podium on the campus map's ring at the LiDAR's roof, the tower at
@@ -39,8 +39,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   door on the walkway before the porch (63.49 m; no record of the entrance), `H`, the thresholds and the camera moved
   with it. The light: the sun high to the north-north-east (15 deg, 45 up), exposure 0.62: the south face's plain panels
   143 against 144, the east face's 198 against 194. Silhouette IoU 0.944 in the model's box (0.697 over the photograph);
-  luma p50 144 against 152. Top view: footprint IoU 0.929, 79% of 5,200 cells within 0.5 m (the podium's parapets and
-  the plant on its roof, not drawn, make most of the rest); the highest point 32.52 m over the door's ground against the
+  luma p50 144 against 152. Top view: footprint IoU 0.929, 79% of 5,200 cells within 0.5 m (the parapets and plant on
+  the roofs make most of the rest); the highest point 32.52 m over the door's ground against the
   LiDAR's 32.66; block 619 99.9% under the model.
 
 - Step 8 (2026-11-11): on the site; the tower's walls down to the walls' foot, the podium's south side 0.1 m inside
@@ -56,6 +56,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   under the roof's deck; the porch's plan named as the campus map's (estimated); the stand-ins the generator measures
   26. 744 triangles, 4 draw calls; silhouette IoU 0.947 in the model's box (0.698 over the photograph), luma p50 144
   against 152; top view: footprint IoU 0.929, 80% of 5,200 cells within 0.5 m.
+- The review's round 2 (2026-11-11): the east face's fifth row of windows back (round 1 took the south face's fifth,
+  which the porch's pyramid hides, and the east face's with it, which the photograph sees behind the tree's branches);
+  over the tower's roof the plant between the bar's end and the turned block (93.34 m) and a low plant room (92.47 m),
+  which the LiDAR has and the narrower bar left bare. 856 triangles, 4 draw calls; silhouette IoU 0.947 in the model's
+  box, top view 0.929 and 80% within 0.5 m, as round 1.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

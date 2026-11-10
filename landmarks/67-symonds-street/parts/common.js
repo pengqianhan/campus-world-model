@@ -57,27 +57,34 @@ export const TOWER = {
 
 /** Over the tower's roof, from the LiDAR's returns: a square block turned 45 degrees (its sides on u + w = 1.65 and
  * 15.74 and u - w = -18.79 and -6.2, p0.5 and p99.5 of its returns over 95 m) to 96.0 m (40.34; p50 95.53, p90
- * 96.05); east of it a bar (u -17.1 to -7.5, w 5.0 to 7.2, its returns over 94 m) to 95.2 m (39.54; p50 95.14); and two
- * plant rooms at 92.8 m (37.14; p50 92.77), u -14.1 to -8.6, w -1.0 to 1.6, and u -14.2 to -8.9, w 3.2 to 5.0. */
+ * 96.05); east of it a bar (u -17.1 to -7.5, w 5.0 to 7.2, its returns over 94 m) to 95.2 m (39.54; p50 95.14); two
+ * plant rooms at 92.8 m (37.14; p50 92.77), u -14.1 to -8.6, w -1.0 to 1.6, and u -14.2 to -8.9, w 3.2 to 5.0; plant
+ * between the bar's end and the turned block's north-east side, to 0.02 m short of it (228 returns at 92.6 to 94.2 m,
+ * p50 93.34, u -8.2 to -3.4, w 4.5 to 8.3) to 93.34 m (37.68); and a low plant room at 92.47 m (36.81; 45 returns,
+ * p50 92.47), u -13.6 to -8.9, w 12.1 to 14.2. */
 export const CORE = [
   { plan: [[-2.28, 3.93], [4.77, 10.97], [-1.53, 17.27], [-8.57, 10.22]], top: H(40.34) },
   { plan: [[-17.1, 5.0], [-7.5, 5.0], [-7.5, 7.2], [-17.1, 7.2]], top: H(39.54) },
   { plan: [[-14.1, -1.0], [-8.6, -1.0], [-8.6, 1.6], [-14.1, 1.6]], top: H(37.14) },
   { plan: [[-14.2, 3.2], [-8.9, 3.2], [-8.9, 5.0], [-14.2, 5.0]], top: H(37.14) },
+  { plan: [[-7.5, 4.5], [-2.87, 4.5], [-6.67, 8.3], [-8.2, 8.3], [-8.2, 7.2], [-7.5, 7.2]], top: H(37.68) },
+  { plan: [[-13.6, 12.1], [-8.9, 12.1], [-8.9, 14.2], [-13.6, 14.2]], top: H(36.81) },
 ];
 
 /** The faces the photograph sees, every place and height estimated through its fitted camera (rms 2.25 px): storeys
  * 4.04 m apart, the top windows' heads at 34.48 (the camera puts them at 34.78, 0.14 m over the roof's deck at 34.64:
- * drawn 0.3 m lower, under it) and each window 2.46 m tall, the four rows the photograph sees over the porch. On the
- * south face (w 19.65) three columns of windows (u -9.34 to -7.45, -12.14 to -10.29, -15.16 to -13.17), a curved
+ * drawn 0.3 m lower, under it) and each window 2.46 m tall: on the south face the four rows the photograph sees over
+ * the porch (`south.rows`), on the east face five, the fifth behind the tree's branches. On the south face (w 19.65)
+ * three columns of windows (u -9.34 to -7.45, -12.14 to -10.29, -15.16 to -13.17), a curved
  * glazed bay (u -6.38 to -2.24) with dark bands from 31.08 to 33.96 a storey, and plain panels either side; on the
  * east face (u -19.9) a louvred panel (w 12.55 to 15.13) and three windows (w 9.30 to 11.81, 5.65 to 8.39, 1.89 to
  * 4.66) a storey, the rest behind a tree. */
 export const FACES = {
-  heads: [0, 1, 2, 3].map((k) => H(34.48 - 4.04 * k)),
+  heads: [0, 1, 2, 3, 4].map((k) => H(34.48 - 4.04 * k)),
   window: 2.46,
   south: {
     w: 19.65,
+    rows: 4,
     windows: [[-9.34, -7.45], [-12.14, -10.29], [-15.16, -13.17]],
     bay: [-6.38, -2.24],
     band: [H(31.08), H(33.96)],
