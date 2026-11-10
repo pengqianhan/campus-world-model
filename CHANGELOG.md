@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   doors and steps and the eave's underside, with the photograph as a reference, the second stair tower's glass and
   the canopy beside it, and the faces no photograph shows.
   Its measured massing's data file has gone. On the map it has the map's colours; from a walker's height on a
-  computer with a graphics card, its own walls, glass, doors, steps and roofs (#PR).
+  computer with a graphics card, its own walls, glass, doors, steps and roofs (#160).
 
 ## 2026-11-10
 
