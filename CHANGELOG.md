@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-11
+
+### Added
+
+- **Fine Arts Studio Block 431 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 431, on the City
+  campus, from code in place of the measured massing that stood for it: a long block of three storeys under a roof of
+  two pitches with a step between them, a lower annex on its north side, a glass stair tower by the entrance at its east
+  end; on its south face over the lane rows of windows between columns, a ground storey of roller doors and a low box
+  before it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the lane's car park, and
+  its card says what is estimated: the south face's columns, windows and roller doors, with the photograph as a
+  reference, the walls' place under the eave, the roof's slab and the fascia, where the low box's walls stop, and the
+  faces no photograph shows. Its measured massing's data file has gone. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own walls, glass, doors and roofs (#PR).
+
 ## 2026-11-10
 
 ### Added

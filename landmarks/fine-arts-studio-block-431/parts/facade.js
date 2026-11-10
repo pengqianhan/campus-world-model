@@ -43,6 +43,7 @@ export function face(b) {
   });
   on(b, 0.02, 0.06, FACE.bigDoor.u, [33.1, FACE.bigDoor.top], DOOR);
   for (const [u0, u1] of FACE.boxDoors) {
-    prism(b, planW([[u0, BOX.w], [u1, BOX.w], [u1, BOX.w + 0.04], [u0, BOX.w + 0.04]]), Y(33.1), Y(FACE.boxDoorTop), DOOR);
+    const front = planW([[u0, BOX.w], [u1, BOX.w], [u1, BOX.w + 0.04], [u0, BOX.w + 0.04]]);
+    prism(b, front, Y(33.1), Y(FACE.boxDoorTop), DOOR);
   }
 }

@@ -1,6 +1,6 @@
 {
  "name": "fine-arts-studio-block-431",
- "site": false,
+ "site": true,
  "estimated": "the south face's columns, windows, mullions, sills and heads and its roller doors, with a photograph as a reference; the walls standing 0.35 m in under the eave, the roof's slab and the fascia; the low box's walls stopping short of its roof's west end; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the car park at the lane's west end, about 7 m out from the south face near its west end, looking east-north-east along it (bearing 7 degrees) through a lens of about 88 degrees across, its principal point solved (the photograph is the upper left of a wider frame); its camera is fitted to the south eave against the sky, the eave's east corner, the low box's corner and four verticals, held near 1.6 m over the LiDAR's ground",
@@ -221,11 +221,11 @@
   "sunaz": 160,
   "sunel": 50,
   "exposure": 0.38,
-  "note": "estimated: the photograph is taken under broken cloud, the south face in soft light with no hard shadow. The viewer's sun stands to the south-south-east (160 deg round, 50 up), before the face, at an exposure of 0.38: (to be measured)"
+  "note": "estimated: the photograph is taken under broken cloud, the south face in soft light with no hard shadow. The viewer's sun stands to the south-south-east (160 deg round, 50 up), before the face, at an exposure of 0.38: the luma (p50) of the face's panels under the middle windows 145 against the photograph's 149 halfway along it and 182 against 168 near the camera, of the panels under the upper windows 183 against 168 (the compare's figure over the model's screen box: 153 against 150)"
  },
  "door": {
   "x": 26.5,
   "z": 1.0,
-  "note": "under the glass canopy before the east entrance, beside the glass stair tower (the campus map records no lobby or entrance in 431; the entrance's sign names the building): u -26.5, w 1.0 in the building's frame ((26.5, 1.0) in the view frame). The LiDAR's ground within 1 m: 5 returns, p10/p50/p90 33.053/33.090/33.135 m (the canopy hides the ground under it from the LiDAR); the lane before the south face lies at 33.06 to 33.21"
+  "note": "under the glass canopy before the east entrance, beside the glass stair tower (the campus map records no lobby or entrance in 431): u -26.5, w 1.0 in the building's frame ((26.5, 1.0) in the view frame). The LiDAR's ground within 1 m: 5 returns, p10/p50/p90 33.053/33.090/33.135 m (the canopy hides the ground under it from the LiDAR); the lane before the south face lies at 33.06 to 33.21"
  }
 }

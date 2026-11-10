@@ -26,7 +26,9 @@ export function body(b) {
   prism(b, plan([[N.u0, N.w0], [N.u1, N.w0], [S.u1, S.w1], [S.u0, S.w1], [S.u0, 0], [N.u0, 0]]), FOOT, Y(BASE), WALL);
   const s = (wp) => ROOF.south(wp) - ROOF.t, n = (wp) => ROOF.north(wp) - ROOF.t, list = [];
   for (const u of [S.u0, S.u1]) list.push([p3(u, 0, BASE), p3(u, S.w1, BASE), p3(u, 0, s(0))]);
-  for (const u of [N.u0, N.u1]) list.push(...quad(p3(u, N.w0, BASE), p3(u, 0, BASE), p3(u, 0, n(0)), p3(u, N.w0, n(N.w0))));
+  for (const u of [N.u0, N.u1]) {
+    list.push(...quad(p3(u, N.w0, BASE), p3(u, 0, BASE), p3(u, 0, n(0)), p3(u, N.w0, n(N.w0))));
+  }
   list.push(...quad(p3(N.u0, N.w0, BASE), p3(N.u1, N.w0, BASE), p3(N.u1, N.w0, n(N.w0)), p3(N.u0, N.w0, n(N.w0))));
   list.push(...quad(p3(N.u0, 0, BASE), p3(N.u1, 0, BASE), p3(N.u1, 0, n(0)), p3(N.u0, 0, n(0))));
   tris(b, list, WALL, ([x, z]) => { const m = at((N.u0 + N.u1) / 2, -2); return [2 * x - m[0], 2 * z - m[1]]; });
@@ -52,13 +54,14 @@ export function roof(b) {
 }
 
 /** The east end: the flat block east of the south half (into the main block's walls by 0.15 m), the glass stair
- * tower and the lower roof north of it, each from the walls' foot; and the entrance's glass canopy from the stair
+ * tower and the lower roof north of it, each from the walls' foot (the stair tower from 2 cm under it, so that its
+ * floor and the block's, which overlap, do not lie in one plane); and the entrance's glass canopy from the stair
  * tower's east face, open under it. */
 export function east(b) {
   const { block: k, stair, low, canopy } = EAST;
   block(b, plan([[k.u[0], k.wp[0] - 0.2], [S.u0 + 0.15, k.wp[0] - 0.2], [S.u0 + 0.15, k.wp[1]], [k.u[0], k.wp[1]]]),
     FOOT, Y(k.top), WALL, ROOFS);
-  prism(b, planW(stair.plan), FOOT, Y(stair.top), GLASS);
+  prism(b, planW(stair.plan), FOOT - 0.02, Y(stair.top), GLASS);
   block(b, planW(low.plan), FOOT, Y(low.top), WALL, ROOFS);
   prism(b, planW(canopy.plan), Y(canopy.y[0]), Y(canopy.y[1]), GLASS);
 }
@@ -71,7 +74,8 @@ export function annex(b) {
 /** The low box before the south face, from 0.15 m inside the face out to its front: its walls, and its roof over
  * them and on west of them as a canopy, open under it. */
 export function box(b) {
-  const [u0, u1] = BOX.u, w = (u) => across(u, S.w1 - 0.15), at4 = (a, c) => planW([[a, w(a)], [c, w(c)], [c, BOX.w], [a, BOX.w]]);
+  const [u0, u1] = BOX.u, w = (u) => across(u, S.w1 - 0.15);
+  const at4 = (a, c) => planW([[a, w(a)], [c, w(c)], [c, BOX.w], [a, BOX.w]]);
   prism(b, at4(u0, u1), FOOT, Y(BOX.top - 0.15), WALL);
   prism(b, at4(u0, BOX.roof), Y(BOX.top - 0.15), Y(BOX.top + 0.01), ROOFS);
 }
