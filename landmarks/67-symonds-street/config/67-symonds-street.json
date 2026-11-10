@@ -1,0 +1,184 @@
+{
+ "name": "67-symonds-street",
+ "site": false,
+ "estimated": "(to be written)",
+ "refs": "photos",
+ "refs_note": "(to be written)",
+ "building": {
+  "id": "619",
+  "also": [],
+  "title": "67 Symonds Street (619), University of Auckland",
+  "note": "outline: building 619's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 619 by its id.",
+  "outline": [
+   [
+    -428.9,
+    -444.0
+   ],
+   [
+    -425.5,
+    -443.9
+   ],
+   [
+    -425.5,
+    -444.8
+   ],
+   [
+    -420.5,
+    -444.8
+   ],
+   [
+    -417.1,
+    -445.9
+   ],
+   [
+    -415.1,
+    -447.2
+   ],
+   [
+    -412.1,
+    -450.6
+   ],
+   [
+    -409.7,
+    -452.3
+   ],
+   [
+    -407.5,
+    -453.1
+   ],
+   [
+    -402.8,
+    -453.8
+   ],
+   [
+    -400.8,
+    -454.9
+   ],
+   [
+    -398.8,
+    -457.6
+   ],
+   [
+    -398.3,
+    -460.6
+   ],
+   [
+    -393.9,
+    -460.5
+   ],
+   [
+    -393.2,
+    -485.7
+   ],
+   [
+    -394.0,
+    -485.7
+   ],
+   [
+    -395.3,
+    -487.1
+   ],
+   [
+    -398.8,
+    -487.2
+   ],
+   [
+    -401.3,
+    -490.0
+   ],
+   [
+    -405.6,
+    -486.0
+   ],
+   [
+    -418.5,
+    -486.4
+   ],
+   [
+    -418.9,
+    -472.9
+   ],
+   [
+    -424.3,
+    -467.9
+   ],
+   [
+    -424.9,
+    -468.5
+   ],
+   [
+    -436.5,
+    -468.9
+   ],
+   [
+    -437.3,
+    -448.5
+   ],
+   [
+    -437.7,
+    -448.6
+   ],
+   [
+    -437.8,
+    -444.3
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 55.66,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3703"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 2.99,
+  "tower_above": 2.99,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "thresholds_note": "min_above 3 m over the provisional ground (55.66 m, the median LiDAR ground within the outline's band, as the measured massing took it; the ground falls from about 62 m on the south to about 53 m on the north); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's south face (bearing 270 deg), so z faces south, to the entrance and the street",
+  "expected": {
+   "centre": [
+    -422.312220189206,
+    -458.7321654872046
+   ],
+   "axis": [
+    -0.9999753093798243,
+    -0.007027135314242092
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ }
+}
