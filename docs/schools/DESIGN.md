@@ -402,13 +402,14 @@ the same Vite plugin. Two of those texts are not in `en.json` today (the `og:des
 - **How.** `scripts/build-root.ts` writes `site/index.html` in the deploy job from the descriptors,
   each school's `meta.json` and the `picker.*` keys of the locale files. No new package. A unit test
   checks that the page lists every school and links to its path.
-- **About (the maintainer, 2026-11-10).** Under the list, About: the project, the Tsinghua World
-  Model that inspired it (with a link), its source code, and one section a school, made by
+- **About (the maintainer, 2026-11-10).** Under the list, a card like the schools' that links to
+  the Tsinghua World Model and says what it inspired. Then About, hidden until asked for, by CSS
+  alone (`:target`, `:has()`): its source code, and one section a school, made by
   `scripts/lib/about.ts` from the files its site publishes and, for its landmarks, `landmarks/`: its
   unofficial notice, what it shows, its sources with their snapshot dates and licences, its
   coverage, its limits and its privacy. A bar at the top links to the source code on GitHub, with
   its mark, and to About. A school's page has no About of its own: its attribution and its "Why?"
-  links open its section, `/#about-<id>`.
+  links open its section, `/#about-<id>`, which shows About.
 - **`_redirects`.** The line `/ /uoa/ 302` comes out in the same commit that ships the picker, and
   not before. That is deployment, so it is a gate.
 - **When.** With the second school (decision 6). Until then the root keeps redirecting. A visitor
