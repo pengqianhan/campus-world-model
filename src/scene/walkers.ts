@@ -222,6 +222,7 @@ export class WalkerWorld {
     const w = this.walkers.get(name);
     if (!w) return false;
     this.cancel(w, "removed");
+    this.endLift(w);
     this.group.remove(w.figure.root);
     w.figure.dispose();
     if (w.drone) {
@@ -657,10 +658,16 @@ export class WalkerWorld {
     } else if (w.ride === "fly") {
       w.speed = approach(w.speed, w.drive.forward, DRONE_ACCEL * dt);
       if (w.lift) {
-        // Taking off: up to its height over the ground, slowing as it comes to it.
-        const dz = this.host.groundAt(w.at[0], w.at[1]) + w.lift.above - w.alt;
+        // Taking off: up to its height over the ground, slowing as it comes to it. Beside a roof
+        // that stands higher (it took off by a wall), it is up already, at the roof.
+        const want = this.host.groundAt(w.at[0], w.at[1]) + w.lift.above;
+        const dz = want - w.alt;
         w.climb = Math.max(-DRONE_CLIMB, Math.min(DRONE_CLIMB, dz * 2));
-        if (Math.abs(dz) <= Math.max(0.02, Math.abs(w.climb) * dt)) {
+        if (this.floorUnder(w.at) >= want - 0.02) {
+          this.rise(w, 0);
+          w.climb = 0;
+          this.endLift(w);
+        } else if (Math.abs(dz) <= Math.max(0.02, Math.abs(w.climb) * dt)) {
           this.rise(w, dz);
           w.climb = 0;
           this.endLift(w);

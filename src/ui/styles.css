@@ -1957,6 +1957,11 @@ select optgroup {
   display: none;
 }
 
+/* With a mouse, the menu keeps above the speed and a building's way in, scrolling if it must. */
+.hud:not(.touch) .hud-menu {
+  max-height: calc(100vh - 300px);
+}
+
 .walker-go {
   display: flex;
   gap: 6px;
@@ -2415,6 +2420,39 @@ select optgroup {
   .hud:not(.touch) .hud-menu {
     max-height: calc(100vh - 380px);
   }
+
+  /* Inside, the ways of getting about step aside: the sign stands on the building's card, and the
+     views and the way out stand small at the foot between the card and the floor list. */
+  .hud.hud-indoor:not(.touch) .hud-bl {
+    bottom: var(--hud-lift, var(--hud-b));
+  }
+
+  .hud.hud-indoor:not(.touch) .hud-br {
+    bottom: var(--hud-b);
+  }
+
+  .hud.hud-indoor:not(.touch) :is(.hud-gauge, .hud-views > .icon, .hud-views kbd) {
+    display: none;
+  }
+
+  .hud.hud-indoor:not(.touch) .hud-cluster {
+    width: auto;
+    padding: 5px;
+  }
+
+  .hud.hud-indoor:not(.touch) .hud-views {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .hud.hud-indoor:not(.touch) .hud-views button {
+    padding: 0 8px;
+  }
+
+  .hud.hud-indoor:not(.touch) .walker-moves {
+    flex-direction: column;
+    align-items: flex-end;
+  }
 }
 
 /* On a touch screen, as in a game on a phone: the ways of getting about across the foot, the stick
@@ -2443,6 +2481,21 @@ select optgroup {
 
 .hud.touch .hud-title {
   font-size: 13px;
+}
+
+/* The brand gives way before the toolbar: its line under the name is cut short first. */
+.hud.touch .hud-brand {
+  min-width: 0;
+  max-width: calc(100vw - 2 * var(--hud-edge) - 165px);
+}
+
+.hud.touch .hud-names {
+  overflow: hidden;
+}
+
+.hud.touch .hud-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hud.touch #walker-close {

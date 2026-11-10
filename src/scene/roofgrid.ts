@@ -8,7 +8,8 @@ import type { RoofGrid } from "../shared/roofmap.ts";
 
 /** The roofs of a model in the scene, metres above sea level on a grid of `cell` metres; undefined when it has no faces. */
 export function roofGrid(root: Object3D, cell = 1): RoofGrid | undefined {
-  root.updateMatrixWorld(true);
+  // As the scene stands now, not as the last frame drew it.
+  root.updateWorldMatrix(true, true);
   // Each mesh's corners in map metres: east, north and height. A mesh drawn twice (once for the
   // depth only) counts once.
   const seen = new Set<string>();
@@ -57,6 +58,12 @@ export function roofGrid(root: Object3D, cell = 1): RoofGrid | undefined {
     if (h > top[i]!) top[i] = h;
   };
   const step = cell / 2;
+  // An edge, every half cell: a wall seen from above is only its edges.
+  const edge = (px: number, py: number, ph: number, qx: number, qy: number, qh: number) => {
+    const h = Math.max(ph, qh);
+    const n = Math.max(1, Math.ceil(Math.hypot(qx - px, qy - py) / step));
+    for (let j = 0; j <= n; j++) mark(px + ((qx - px) * j) / n, py + ((qy - py) * j) / n, h);
+  };
   for (const s of sets) {
     const at = (k: number) => (s.index ? s.index[k]! : k);
     for (let k = 0; k + 2 < s.count; k += 3) {
@@ -66,16 +73,9 @@ export function roofGrid(root: Object3D, cell = 1): RoofGrid | undefined {
       const ax = s.east[a]!, ay = s.north[a]!, ah = s.height[a]!;
       const bx = s.east[b]!, by = s.north[b]!, bh = s.height[b]!;
       const cx = s.east[c]!, cy = s.north[c]!, ch = s.height[c]!;
-      // The edges, every half cell: a wall seen from above is only its edges.
-      for (const [px, py, ph, qx, qy, qh] of [
-        [ax, ay, ah, bx, by, bh],
-        [bx, by, bh, cx, cy, ch],
-        [cx, cy, ch, ax, ay, ah],
-      ] as const) {
-        const h = Math.max(ph, qh);
-        const n = Math.max(1, Math.ceil(Math.hypot(qx - px, qy - py) / step));
-        for (let j = 0; j <= n; j++) mark(px + ((qx - px) * j) / n, py + ((qy - py) * j) / n, h);
-      }
+      edge(ax, ay, ah, bx, by, bh);
+      edge(bx, by, bh, cx, cy, ch);
+      edge(cx, cy, ch, ax, ay, ah);
       // The middles of the cells under the face.
       const area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay);
       if (Math.abs(area) < 1e-6) continue;

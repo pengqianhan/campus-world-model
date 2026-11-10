@@ -1513,11 +1513,12 @@ export class CampusScene {
    */
   private roofMap(): RoofMap | undefined {
     if (!this.campus) return undefined;
-    // A landmark made since the map was built brings its roofs as drawn: one a call, as each takes
-    // a few milliseconds; until then its blocks' estimated roofs stand in.
-    const fresh = this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm());
+    // A landmark made since the map was built brings its roofs as drawn: one a frame, as the largest
+    // takes tens of milliseconds; until then its blocks' estimated roofs stand in.
+    const fresh = this.gridFrame !== this.frames ? this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm()) : undefined;
     if (fresh) {
-      this.landmarkGrids.set(fresh, roofGrid(fresh.madeForm()!) ?? null);
+      this.gridFrame = this.frames;
+      this.landmarkGrids.set(fresh, this.landmarkGrid(fresh));
       this.roofMapCache = undefined;
     }
     if (this.roofMapCache) return this.roofMapCache;
@@ -1550,6 +1551,23 @@ export class CampusScene {
     this.roofMapCache = new RoofMap([...shapes, ...this.contextRoofs], grids);
     return this.roofMapCache;
   }
+
+  /**
+   * A landmark's roofs as it stands, its y = 0 on its ground and at its full height: an open
+   * building squashes every landmark for a while (applyFocus), which its roofs do not keep.
+   */
+  private landmarkGrid(l: Landmark): RoofGrid | null {
+    const form = l.madeForm();
+    if (!form) return null;
+    const was = l.group.scale.clone();
+    l.group.scale.setScalar(l.placement.scale);
+    const grid = roofGrid(form) ?? null;
+    l.group.scale.copy(was);
+    l.group.updateWorldMatrix(false, true);
+    return grid;
+  }
+  /** The frame the last landmark's roofs were taken in. */
+  private gridFrame = -1;
 
   /** The highest roof over a point, metres above sea level, as a drone keeps over it; for tests. */
   roofAt(east: number, north: number): number | undefined {

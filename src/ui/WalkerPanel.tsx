@@ -214,6 +214,11 @@ export function WalkerPanel() {
   useEffect(() => {
     if (on) setMore(!touch);
   }, [on]);
+  // Going into a building shuts the menu: the building's floors and card take that part of the screen.
+  const inside = !!walkerStatus.value?.indoor;
+  useEffect(() => {
+    if (inside) setMore(false);
+  }, [inside]);
   // A change of the way it gets about while the stick is held goes on at the new pace.
   const rideNow = walkerRide.value;
   useEffect(() => {
@@ -276,6 +281,16 @@ export function WalkerPanel() {
           t(ride === "fly" && status.nearMetres === 0 ? "walker.over" : "walker.near", { place: status.near })
         : t("walker.standing");
   const kmh = Math.round((gauge?.speed ?? 0) * 3.6);
+  // The time the view shows: now, or a preview of another time, as the top bar's chip says. On a
+  // wide screen in the toolbar; on a touch screen with the speed, where the top row has no room.
+  const label = `${preview ? t("time.preview") : t("time.now")} ${formatDate(clock.date)} ${formatMinutes(clock.minutes)}`;
+  const time = (
+    <span class={`hud-time ${preview ? "preview" : ""}`} id="walker-time" role="img" aria-label={label} title={label}>
+      <span class="hud-time-mode">{preview ? t("time.preview") : t("time.now")}</span>
+      {preview && !touch && <span class="hud-time-date">{formatDate(clock.date)}</span>}
+      <span class="hud-time-clock">{formatMinutes(clock.minutes)}</span>
+    </span>
+  );
   // Over the open building's card: the sign, and on a touch screen the stick, and the right thumb's buttons where it reaches across.
   const lift = dock.lift ? { "--hud-lift": `${dock.lift + 8}px`, ...(dock.wide ? { "--hud-lift-r": `${dock.lift + 8}px` } : {}) } : undefined;
 
@@ -306,19 +321,12 @@ export function WalkerPanel() {
 
       <div class="hud-corner hud-tr">
         <div class="hud-card hud-toolbar">
-          {/* The time the view shows: now, or a preview of another time, as the top bar's chip says. */}
-          <span
-            class={`hud-time ${preview ? "preview" : ""}`}
-            id="walker-time"
-            role="img"
-            aria-label={`${preview ? t("time.preview") : t("time.now")} ${formatDate(clock.date)} ${formatMinutes(clock.minutes)}`}
-            title={`${preview ? t("time.preview") : t("time.now")} ${formatDate(clock.date)} ${formatMinutes(clock.minutes)}`}
-          >
-            <span class="hud-time-mode">{preview ? t("time.preview") : t("time.now")}</span>
-            {preview && !touch && <span class="hud-time-date">{formatDate(clock.date)}</span>}
-            <span class="hud-time-clock">{formatMinutes(clock.minutes)}</span>
-          </span>
-          <span class="hud-divider" aria-hidden="true" />
+          {!touch && (
+            <>
+              {time}
+              <span class="hud-divider" aria-hidden="true" />
+            </>
+          )}
           <button
             type="button"
             class="hud-tool"
@@ -439,6 +447,7 @@ export function WalkerPanel() {
           <div class="hud-gauge">
             <div class="hud-gauge-top">
               <span class="hud-gauge-name">{t(`walker.ride.${ride}Name`)}</span>
+              {touch && time}
               {ride === "fly" && (
                 <span class="hud-alt" id="walker-altitude">
                   {t("walker.altitude", { metres: Math.round(gauge?.altitude ?? 0) })}

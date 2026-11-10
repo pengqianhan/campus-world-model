@@ -176,8 +176,9 @@ test("a walk to a room goes into its building, up to its floor and into the room
   const st = ((await walker(page, "list")) as { walkers: { height: number; indoor: { floor: number } }[] }).walkers[0]!;
   expect(st.indoor.floor).toBe(30);
   // The walk's panels keep clear of the floor list and the building's dock; inside, only a walk goes
-  // on, so the ways of getting about step aside.
+  // on, so the ways of getting about step aside, and the menu shuts.
   await expect(page.locator(".hud-rides")).toBeHidden();
+  await expect(page.locator("#walker-menu")).toBeHidden();
   for (const part of [".hud-brand", ".hud-toolbar", ".hud-sign", ".hud-cluster", ".walker-moves"]) {
     const panel = (await page.locator(part).boundingBox())!;
     for (const other of [".floors", ".dock"]) {
@@ -297,18 +298,19 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect(page.locator(".topbar")).toBeVisible();
 });
 
-test("in a narrower window with a mouse the walk's panels keep apart", async ({ page }) => {
-  for (const [width, height] of [
-    [760, 600],
-    [900, 680],
+test("in a narrower window with a mouse the walk's panels keep apart, out of doors and inside", async ({ page }) => {
+  for (const [width, height, to] of [
+    [760, 600, "105"],
+    [900, 680, "105"],
+    [900, 680, "109-305"],
   ] as const) {
     await page.setViewportSize({ width, height });
     await open(page, `?walk=1&${QUERY}`);
     await ready(page);
-    // Beside a building, so that its way in shows above the speed.
-    expect(((await walker(page, "walk", { to: "105", speed: 40 })) as Reply & { arrived: boolean }).arrived).toBe(true);
-    await expect(page.locator("#walker-enter")).toBeVisible();
-    const parts = [".hud-brand", "#walker-close", ".hud-toolbar", ".hud-menu", ".hud-sign", ".hud-rides", ".hud-cluster", ".walker-moves"];
+    // Beside a building, so that its way in shows above the speed; or inside one, with its card and its floors.
+    expect(((await walker(page, "walk", { to, speed: 40 })) as Reply & { arrived: boolean }).arrived).toBe(true);
+    await expect(page.locator(to === "105" ? "#walker-enter" : "#walker-exit")).toBeVisible();
+    const parts = [".hud-brand", "#walker-close", ".hud-toolbar", ".hud-menu", ".hud-sign", ".hud-rides", ".hud-cluster", ".walker-moves", ".dock", ".floors"];
     const boxes: { name: string; x: number; y: number; width: number; height: number }[] = [];
     for (const name of parts) {
       const l = page.locator(name).first();

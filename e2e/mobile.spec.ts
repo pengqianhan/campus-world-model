@@ -178,6 +178,13 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   const cluster = (await page.locator(".hud-cluster").boundingBox())!;
   expect(cluster.y).toBeGreaterThanOrEqual(toolbar.y + toolbar.height);
   expect(cluster.y + cluster.height).toBeLessThan(844 * 0.3);
+  // The top row: the site's name and Stop on the left stay clear of the toolbar on the right.
+  for (const left of [".hud-brand", "#walker-close"]) {
+    const b = (await page.locator(left).boundingBox())!;
+    expect(b.x + b.width, `${left} and the toolbar`).toBeLessThanOrEqual(toolbar.x);
+  }
+  // The time the view shows goes with the speed, here a preview.
+  await expect(page.locator(".hud-cluster #walker-time")).toHaveClass(/preview/);
   await expect(page.locator("#walker-to")).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await shot(page, "20-walker-phone-bar");
