@@ -639,7 +639,7 @@ shows in patches where it stood above their 14.4 m blocks before.
 - 132 and 509: no new form. 84 m² of 132's roof and 73 m² of 509's lie on no smooth plane, so
   each of their layers has one face at most.
 - Low pitches whose heights now fit: 274 (0.858, 99%) and 803 (0.864, 97%); their footprints
-  differ from their outlines, as before.
+  differ from their outlines, as before. 803 is drawn since the fifth round (below).
 - The other reasons (7; 18 then, 106, 201, 302, 303, 303S, 315, 439, 502, 507, 529 and 907 among them, now
   landmarks): as
   before. The new forms bring some nearer (106 to 0.950 and 89.5%; 302
@@ -800,6 +800,38 @@ rounds of fresh browsers; whether that ends the maintainer's exception is the ma
 both, in `massing.py` would close them and let their walls go too (about 12 ms more in the paired
 table); that changes every data file of a building of several layers, and what shows inside the
 gaps.
+
+### The fifth round (2026-11-10): eaves over the outline on every layer
+
+Until this round only the lowest layer had eaves measured over the outline, and in a building with a
+layer drawn as its faces, the sloping layers on the plinth. A flat roof standing on a lower plinth
+ended at the outline. On 17 Eden Crescent (803) the roof at 10.19 m stands on a plinth at 6.2 m: the
+plinth's eaves are measured at 6.2 m, where the LiDAR sees no roof at the outline, and the roof
+over it had none. The 73.5 m² of the LiDAR's footprint that the model missed all lay outside the
+outline, half of it within 0.49 m of it and nine tenths within 0.87 m: an eave all round. Its
+heights already fitted (97% of cells within 0.5 m); its footprint IoU, 0.864, did not.
+
+Since this round, a building that still fails the check, with and without the forms of the fourth
+round, is measured once more with eaves on every layer whose edges lie on the outline (`EAVES` in
+`massing.py`; `--no-eaves` leaves them out): edge by edge, as the lowest layer's are (`edge_eaves`),
+from the building points within 0.6 m of the layer's own roof, its height if it is flat or its
+plane if not. It is drawn if it passes the check with a larger footprint IoU than without them.
+Otherwise its block stays, and its entry in `exclusions.json` gives both checks (`measured.eaves`,
+and its reason).
+
+A building that passes before this try is not measured again: every data file of the earlier rounds
+came out byte for byte as before when the City campus, Grafton and Newmarket were run again.
+
+- **803 17 Eden Crescent passes and is drawn**: footprint IoU 0.864 to 0.942, 96.4% of cells within
+  0.5 m, model minus LiDAR −0.19 / −0.01 / 0.11 m (p10 / p50 / p90); 10 layers, eaves on five of
+  them; 3,215 triangles. Its highest point is 12.93 m to the LiDAR's 15.25 m: a tree classed as
+  building over its north-east corner, which no layer draws.
+- **14 others try it and keep their blocks**: 118, 132, 212, 219, 225, 226, 401, 402, 432, 503, 504,
+  509, 632 and 908. It raises the footprint IoU of 132 (0.797 to 0.918), 401 (0.964 to 0.975), 402
+  (0.927 to 0.936), 432 (0.921 to 0.944) and 509 (0.828 to 0.863), but none of them reaches 90% of
+  cells within 0.5 m. 401 and 402 miss it at the edges of their layers: about 97% of their cells
+  out by more than 0.5 m lie within 1 m of a step in height, the model's or the LiDAR's. That is
+  for another round.
 
 ### How the numbers were measured
 
