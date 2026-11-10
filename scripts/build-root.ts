@@ -5,11 +5,13 @@
 // the favicon both pages name. The pages are static: no script and no WebGL (scripts/lib/picker.ts).
 //   node scripts/build-root.ts <list.json> <site>
 // Each school's meta.json is read from <site>/<id>/data/, the file the site publishes, so a school
-// on the list that was not laid out stops the job.
+// on the list that was not laid out stops the job; About's section for it from the same folder
+// (scripts/lib/about.ts) and, for its landmarks, the repository's landmarks/.
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../src/shared/school.ts";
 import type { Meta } from "../src/shared/types.ts";
+import { loadSchoolAbout } from "./lib/about.ts";
 import { pickerPages, schoolWords } from "./lib/picker.ts";
 import { parseSchoolList } from "./lib/school-list.ts";
 
@@ -27,7 +29,7 @@ try {
   const schools = ids.map((id) => {
     const meta = path.join(site, id, "data", "meta.json");
     if (!fs.existsSync(meta)) throw new Error(`${meta} is missing: lay out every school on the list before the picker`);
-    return { id, words: schoolWords(root, id, shared), meta: readJson<Meta>(meta) };
+    return { id, words: schoolWords(root, id, shared), meta: readJson<Meta>(meta), about: loadSchoolAbout(root, path.join(site, id, "data"), id) };
   });
   const { index, notFound } = pickerPages(schools, shared);
   fs.writeFileSync(path.join(site, "index.html"), index);

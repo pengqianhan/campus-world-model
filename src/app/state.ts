@@ -15,7 +15,7 @@ import type { Building, FloorPlans, Session, SpaceType } from "../shared/types.t
 import { findIndexedRoom, loadRoomIndex, type AppData } from "./data.ts";
 import { DEFAULT_LANG, lang, languages, setLang } from "./i18n.ts";
 
-export type PanelId = "none" | "search" | "about" | "time";
+export type PanelId = "none" | "search" | "time";
 export type LightMode = "auto" | "day" | "night";
 
 /** A room that is not drawn as an outline: located as a point, a floor or only a building. */
@@ -285,7 +285,7 @@ export function readUrl(d: AppData): void {
   if (light === "day" || light === "night") lightMode.value = light;
 
   const p = q.get("panel");
-  if (p === "about" || p === "search" || p === "time") panel.value = p;
+  if (p === "search" || p === "time") panel.value = p;
 
   if (!d.campusById.has(homeCampus)) {
     homeCampus = d.campus.campuses.find((c) => c.onMap)?.id ?? homeCampus;
@@ -333,7 +333,6 @@ export function currentUrl(): string {
     q.set("t", formatMinutes(previewMinutes.value));
   }
   if (lightMode.value !== "auto") q.set("light", lightMode.value);
-  if (panel.value === "about") q.set("panel", "about");
   if (lang.value !== DEFAULT_LANG || languages.length > 1) q.set("lang", lang.value);
   for (const [k, v] of Object.entries(urlExtras.value)) q.set(k, v);
   const qs = q.toString().replace(/%3A/g, ":");

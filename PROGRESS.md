@@ -666,14 +666,17 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   `docs/schools/DESIGN.md` sets out: one build per school (`SCHOOL`, `BASE_PATH=/<id>/`), each
   school's published data in `public/data/<id>/`, and a school picker at the root from the second
   school on. `www.campusworldmodel.com` is not set up.
-- **Other worlds (the user, 2026-10-14).** The site names the Tsinghua World Model
-  (`tsinghua-world-model.pages.dev`, an independent student project) as its inspiration, in About
-  and in the README, and offers it on the campus view under "Other worlds". Following that link
-  plays a 2.2 s flight through space, counting the great-circle distance from the City Campus,
-  before the browser leaves for the other site; Escape or "Stay in Auckland" calls it off, and a
-  visitor who asked for less motion gets a plain link. The other site is linked to and nothing is
-  loaded from it. The list is `WORLDS` in `src/app/links.ts`; a school hosted here under its own
-  path is meant to join the same row, which has not been built.
+- **Other worlds (the user, 2026-10-14; changed by the user, 2026-11-10).** The site names the
+  Tsinghua World Model (`tsinghua-world-model.pages.dev`, an independent student project) as its
+  inspiration, with a link to it, in About and in the README. Since 2026-11-10 About is on the page
+  at the site's root, under the list of schools: the project, that inspiration, the source code, and
+  one section a school (`scripts/lib/about.ts`) with its unofficial notice, sources, licences,
+  coverage, limits and privacy. A bar at the top of that page links to the source code on GitHub,
+  with its mark, and to About. A school's page has no About and no link to the Tsinghua World Model
+  of its own; it keeps its GitHub link, and its attribution and its "Why?" links open its section
+  of About (`aboutHref` in `src/app/links.ts`: the root it is served from, or campusworldmodel.com's
+  from the GitHub Pages copy). The "Other worlds" row and its 2.2 s flight, from 2026-10-14 to
+  2026-11-10, are gone. The other site is linked to and nothing is loaded from it.
 - **How a University building looks from outside (the user, 2026-10-14).** After comparing with
   the Tsinghua World Model the user asked for five changes, in this order: roofs in a colour of
   their own; floors that are alike drawn as one block; a rim and firmer edges on roofs; storeys and

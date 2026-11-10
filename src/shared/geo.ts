@@ -25,15 +25,6 @@ export function makeUnprojector(origin: Origin): (x: number, y: number) => [numb
   return (x, y) => [origin.lon + x / mPerDegLon, origin.lat + y / mPerDegLat];
 }
 
-/** Great-circle distance in kilometres on a sphere of the Earth's mean radius. */
-export function greatCircleKm(a: Origin, b: Origin): number {
-  const rad = Math.PI / 180;
-  const dLat = (b.lat - a.lat) * rad;
-  const dLon = (b.lon - a.lon) * rad;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
-  return 2 * 6371.0088 * Math.asin(Math.min(1, Math.sqrt(h)));
-}
-
 /** Signed area; positive when the ring is counter-clockwise. */
 export function signedArea(ring: Ring): number {
   let a = 0;

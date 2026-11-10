@@ -42,10 +42,5 @@
   },
   "weather": {
     "label": "Weather at Otago's Dunedin campus"
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves Otago World Model.",
-    "leaving": "Leaving Otago",
-    "stay": "Stay at Otago"
   }
 }

@@ -5,7 +5,8 @@
 An **unofficial**, student-made 3D map of University of Auckland buildings, floors and teaching rooms.
 
 **Live site: https://campusworldmodel.com/uoa/**<br>
-(also at https://pengqianhan.github.io/campus-world-model/)
+(also at https://pengqianhan.github.io/campus-world-model/)<br>
+About, with every school's sources, licences and limits: https://campusworldmodel.com/#about
 
 Also on the site: **AUT World Model**, an **unofficial** 3D map of the buildings of Auckland
 University of Technology's City, North and South campuses, at https://campusworldmodel.com/aut/; **VUW World
@@ -68,6 +69,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
+  for each school's map, a link to the Tsinghua World Model that inspired the project and a GitHub link at the top.
+  A school's map no longer has an About button or the flight to the Tsinghua World Model; its credit line at the
+  bottom opens its section.
 - **2026-11-10:** on the Grafton campus the map draws 2-6 Park Ave (529) in detail: a long block of four storeys with a
   balcony along each upper storey of every face, a ground storey of pale brick, a dark eave and a raised part with a red
   roof. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and its card says what
@@ -983,7 +988,7 @@ never read or published.
    `zh.json`).
 2. Translate the values. Keep the keys and the `{placeholders}`. Set `_meta.name` to the language's own
    name; that is what the language menu shows.
-3. That is all. The file is picked up automatically, the language appears in the menu in About, and
+3. That is all. The file is picked up automatically, the language appears in a menu in the top bar, and
    `?lang=<code>` selects it. Missing keys fall back to English.
 
 Names in the data are language-keyed too (`"name": { "en": "…" }`), so a translation of a building or
@@ -1168,7 +1173,7 @@ the walker's body. Lincoln's main website, which holds its campus maps, key date
 is closed to this project by its `robots.txt`, so no agent of the project reads it: see
 [docs/schools/lincoln.md](docs/schools/lincoln.md).
 
-Snapshot dates are shown in the site's About panel and recorded in `public/data/uoa/meta.json`,
+Snapshot dates are shown in About, on the page at the site's root, and recorded in `public/data/uoa/meta.json`,
 `public/data/aut/meta.json`, `public/data/vuw/meta.json`, `public/data/otago/meta.json`,
 `public/data/uc/meta.json`, `public/data/massey/meta.json`, `public/data/waikato/meta.json` and
 `public/data/lincoln/meta.json`.

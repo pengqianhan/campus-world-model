@@ -50,10 +50,5 @@
     "layer": {
       "calendar": "trimester dates"
     }
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves Waikato World Model.",
-    "leaving": "Leaving Waikato",
-    "stay": "Stay at Waikato"
   }
 }

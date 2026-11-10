@@ -2,15 +2,13 @@
 import { effect, signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import { intlLocale, pick, t, tn } from "../app/i18n.ts";
-import { Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
+import { ABOUT_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
-import { AboutPanel } from "./AboutPanel.tsx";
 import { BuildingView } from "./BuildingView.tsx";
 import { SceneHost, isLite } from "./SceneHost.tsx";
 import { SearchPanel } from "./SearchPanel.tsx";
 import { TimePanel, notTeachingReason, previewTeachingDay } from "./TimePanel.tsx";
 import { TopBar, statusLine } from "./TopBar.tsx";
-import { TravelOverlay, Worlds, cancelTravel, travel } from "./Travel.tsx";
 import { WalkerPanel } from "./WalkerPanel.tsx";
 import { MY_WALKER, setView, startWalkerKeys, startWalking, walkerOn, walkerView } from "../app/walker.ts";
 
@@ -25,7 +23,7 @@ function chooseCampus(id: string): void {
 
 /**
  * Campus-level summary: where we are in the academic year and what is timetabled right now, with
- * the campuses and the other worlds. Shut, it is a button with the campus's name, and the walk is
+ * the campuses. Shut, it is a button with the campus's name, and the walk is
  * a button beside it.
  */
 function StatusStrip() {
@@ -109,16 +107,16 @@ function StatusStrip() {
             {absentLines.map((g) => (
               <span data-verdict={g.verdict}>{t(`status.absent.${g.verdict}`, { layers: list.format(g.layers) })} </span>
             ))}
-            <button type="button" class="link" onClick={() => (panel.value = "about")}>
+            <a class="link" href={ABOUT_HREF}>
               {t("status.why")}
-            </button>
+            </a>
           </p>
         ) : !d.schedule.available ? (
           <p class="status-detail">
             {t("status.noTimetable")}{" "}
-            <button type="button" class="link" onClick={() => (panel.value = "about")}>
+            <a class="link" href={ABOUT_HREF}>
               {t("status.why")}
-            </button>
+            </a>
           </p>
         ) : reason ? (
           <p class="status-detail">
@@ -162,7 +160,6 @@ function StatusStrip() {
             </label>
           )}
         </div>
-        <Worlds />
       </section>
     </>
   );
@@ -170,9 +167,9 @@ function StatusStrip() {
 
 function Attribution() {
   return (
-    <button type="button" class="attribution" id="attribution" onClick={() => (panel.value = "about")} title={t("attribution.open")}>
+    <a class="attribution" id="attribution" href={ABOUT_HREF} title={t("attribution.open")}>
       {t("attribution.short")}
-    </button>
+    </a>
   );
 }
 
@@ -182,8 +179,7 @@ export function App() {
       const target = e.target as HTMLElement | null;
       const typing = !!target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA");
       if (e.key === "Escape") {
-        if (travel.value) cancelTravel();
-        else if (walkerView.value !== "map") setView({ view: "map", name: MY_WALKER });
+        if (walkerView.value !== "map") setView({ view: "map", name: MY_WALKER });
         else if (panel.value !== "none") panel.value = "none";
         else if (stripOpen.value) stripOpen.value = false;
         else if (selRoom.value) {
@@ -195,12 +191,7 @@ export function App() {
         panel.value = "search";
       }
     };
-    // Coming back with the browser's Back button can restore the page as it was left: mid-flight.
-    const onShow = (e: PageTransitionEvent) => {
-      if (e.persisted) travel.value = undefined;
-    };
     window.addEventListener("keydown", onKey);
-    window.addEventListener("pageshow", onShow);
     const stopKeys = startWalkerKeys();
     // Opening a building or taking a walk leaves the campus view; back there, the panel starts shut again.
     const stopStrip = effect(() => {
@@ -210,14 +201,13 @@ export function App() {
       stopStrip();
       stopKeys();
       window.removeEventListener("keydown", onKey);
-      window.removeEventListener("pageshow", onShow);
     };
   }, []);
 
   const loaded = !!data.value;
   return (
     <div
-      class={`app ${selBuilding.value ? "in-building" : "in-campus"} ${night.value > 0.5 ? "is-night" : "is-day"} panel-${panel.value} ${travel.value ? "travelling" : ""} ${walkerOn.value ? `walking walker-${walkerView.value}` : ""}`}
+      class={`app ${selBuilding.value ? "in-building" : "in-campus"} ${night.value > 0.5 ? "is-night" : "is-day"} panel-${panel.value} ${walkerOn.value ? `walking walker-${walkerView.value}` : ""}`}
     >
       <SceneHost />
       <TopBar />
@@ -235,10 +225,8 @@ export function App() {
       <BuildingView />
       {panel.value === "search" && <SearchPanel />}
       {panel.value === "time" && <TimePanel />}
-      {panel.value === "about" && <AboutPanel />}
       <WalkerPanel />
       <Attribution />
-      <TravelOverlay />
     </div>
   );
 }

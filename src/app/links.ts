@@ -6,17 +6,21 @@ export const LANDMARK_LIDAR = "https://doi.org/10.5069/G9HH6H8T";
 /** LINZ's page on attributing elevation data, which its short credit ("Sourced from LINZ. CC BY 4.0") asks a web page to link to. */
 export const LINZ_ELEVATION_CREDIT = "https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data";
 
-/** A campus map of another university, made by someone else, that this site links to. */
-export interface World {
-  /** Its name and place are under `travel.worlds.<id>` in the locale files. */
-  id: string;
-  url: string;
-  /** Where that campus is, for the distance counted on the way there. */
-  lat: number;
-  lon: number;
+/**
+ * The project this one was inspired by, an independent student project (PROGRESS.md, "Decisions", Other worlds):
+ * its campus view with live classes. The page at the site's root links to it (scripts/lib/picker.ts); its name is
+ * under `travel.worlds.<id>` in the locale files.
+ */
+export const INSPIRED_BY = { id: "tsinghua", url: "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live" };
+
+/** The site whose root carries About, one section a school (scripts/lib/about.ts). */
+export const SITE = "https://campusworldmodel.com/";
+
+/**
+ * The address of a school's section of About. Served at /<id>/, as on the Cloudflare site and its
+ * previews, the page links to the root it is served from; any other copy (the GitHub Pages one at
+ * /campus-world-model/) has no such root, so it links to SITE's.
+ */
+export function aboutHref(base: string, id: string): string {
+  return `${base === `/${id}/` ? "/" : SITE}#about-${id}`;
 }
-
-/** The project this one was inspired by. The address is its campus view with live classes. */
-export const INSPIRED_BY: World = { id: "tsinghua", url: "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live", lat: 40.0, lon: 116.327 };
-
-export const WORLDS: World[] = [INSPIRED_BY];

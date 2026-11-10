@@ -42,10 +42,5 @@
   },
   "weather": {
     "label": "Weather at the Lincoln campus"
-  },
-  "travel": {
-    "go": "Travel to {name}. This leaves Lincoln World Model.",
-    "leaving": "Leaving Lincoln",
-    "stay": "Stay at Lincoln"
   }
 }
