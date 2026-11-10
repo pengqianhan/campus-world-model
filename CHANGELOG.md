@@ -18,10 +18,14 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **17 Eden Crescent drawn as a measured massing.** On the City campus the map draws 17 Eden Crescent (803)
+  from the LINZ 2024 LiDAR in place of its block: its roofs and their heights, and now the eaves of its main
+  roof over the outline, which the generator measures since this change on every layer of a building that
+  fails its check without them. Its walls and windows are drawn by rule, as every measured massing's are; its
+  card says so. No other building changes (#157).
 - **The Tsinghua World Model as a card on the home page.** Under the schools on https://campusworldmodel.com/, a
   card like theirs links to the Tsinghua World Model and says what it inspired. About, below it, is hidden until
   its link in the bar, or a school's map, asks for it, and has a Close link (#158).
-
 - **2-6 Park Ave drawn in detail.** Near the camera the map draws 2-6 Park Ave (529), on the Grafton campus, from code
   in place of its block: a long block of four storeys under a thin flat roof with a dark eave; at each upper storey a
   balcony along every face on a pale slab with a light rail; on its east face, on Park Avenue, the glazing behind them

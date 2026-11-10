@@ -208,7 +208,7 @@
   },
   "132": {
    "name": "George Fraser Gallery",
-   "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 11.73 m; mono at 12.55 m): footprint IoU 0.918, 86% of cells within 0.5 m",
    "measured": {
     "outline_m2": 118.3,
     "ground": {
@@ -235,6 +235,27 @@
      "highest_m": {
       "model": 12.34,
       "lidar": 9.82
+     }
+    },
+    "eaves": {
+     "layers": [
+      "mono at 11.73 m",
+      "mono at 12.55 m"
+     ],
+     "check": {
+      "iou": 0.918,
+      "lidar_m2": 147.5,
+      "model_m2": 139.8,
+      "within_0.5m": 0.861,
+      "model_minus_lidar_m": {
+       "p10": -0.3,
+       "p50": 0.0,
+       "p90": 0.42
+      },
+      "highest_m": {
+       "model": 12.34,
+       "lidar": 9.82
+      }
      }
     }
    }
@@ -416,7 +437,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 154 m2): footprint IoU 0.887, 98% of cells within 0.5 m",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 154 m2): footprint IoU 0.887, 98% of cells within 0.5 m; with the eaves of the fifth round (flat at 4.3 m): footprint IoU 0.887, 98% of cells within 0.5 m",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -448,6 +469,26 @@
     "forms": {
      "roofs": [
       "several faces: 4 mono-pitches over 154 m2"
+     ],
+     "check": {
+      "iou": 0.887,
+      "lidar_m2": 188.2,
+      "model_m2": 187.2,
+      "within_0.5m": 0.981,
+      "model_minus_lidar_m": {
+       "p10": -0.09,
+       "p50": -0.01,
+       "p90": 0.09
+      },
+      "highest_m": {
+       "model": 7.27,
+       "lidar": 7.8
+      }
+     }
+    },
+    "eaves": {
+     "layers": [
+      "flat at 4.3 m"
      ],
      "check": {
       "iou": 0.887,
@@ -876,7 +917,7 @@
   },
   "401": {
    "name": "Engineering Block 1",
-   "reason": "top-view check: footprint IoU 0.964 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.0 degrees, over 6 m2; a low pitch: mono, 1.4 degrees, over 6 m2; a low pitch: hip, 3.7 degrees, over 14 m2; a low pitch: mono, 2.0 degrees, over 240 m2; a low pitch: mono, 3.0 degrees, over 9 m2; a low pitch: mono, 3.9 degrees, over 34 m2): footprint IoU 0.964, 87% of cells within 0.5 m",
+   "reason": "top-view check: footprint IoU 0.964 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 2.0 degrees, over 6 m2; a low pitch: mono, 1.4 degrees, over 6 m2; a low pitch: hip, 3.7 degrees, over 14 m2; a low pitch: mono, 2.0 degrees, over 240 m2; a low pitch: mono, 3.0 degrees, over 9 m2; a low pitch: mono, 3.9 degrees, over 34 m2): footprint IoU 0.964, 87% of cells within 0.5 m; with the eaves of the fifth round (flat at 7.5 m; flat at 7.52 m; mono at 8.25 m; flat at 9.49 m): footprint IoU 0.975, 87% of cells within 0.5 m",
    "measured": {
     "outline_m2": 2389.9,
     "ground": {
@@ -929,12 +970,35 @@
        "lidar": 41.48
       }
      }
+    },
+    "eaves": {
+     "layers": [
+      "flat at 7.5 m",
+      "flat at 7.52 m",
+      "mono at 8.25 m",
+      "flat at 9.49 m"
+     ],
+     "check": {
+      "iou": 0.975,
+      "lidar_m2": 2449.8,
+      "model_m2": 2464.0,
+      "within_0.5m": 0.87,
+      "model_minus_lidar_m": {
+       "p10": -0.28,
+       "p50": 0.01,
+       "p90": 0.13
+      },
+      "highest_m": {
+       "model": 41.4,
+       "lidar": 41.48
+      }
+     }
     }
    }
   },
   "402": {
    "name": "Engineering Block 2",
-   "reason": "top-view check: footprint IoU 0.927 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: gable, 4.9 degrees, over 96 m2; a low pitch: mono, 8.7 degrees, over 4 m2): footprint IoU 0.927, 87% of cells within 0.5 m",
+   "reason": "top-view check: footprint IoU 0.927 (limit 0.9), 87% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: gable, 4.9 degrees, over 96 m2; a low pitch: mono, 8.7 degrees, over 4 m2): footprint IoU 0.927, 87% of cells within 0.5 m; with the eaves of the fifth round (flat at 12.08 m; flat at 14.42 m; flat at 16.96 m; mono at 36.03 m; mono at 35.77 m): footprint IoU 0.936, 88% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1936.4,
     "ground": {
@@ -980,6 +1044,30 @@
       },
       "highest_m": {
        "model": 36.0,
+       "lidar": 36.94
+      }
+     }
+    },
+    "eaves": {
+     "layers": [
+      "flat at 12.08 m",
+      "flat at 14.42 m",
+      "flat at 16.96 m",
+      "mono at 36.03 m",
+      "mono at 35.77 m"
+     ],
+     "check": {
+      "iou": 0.936,
+      "lidar_m2": 1946.0,
+      "model_m2": 2047.8,
+      "within_0.5m": 0.876,
+      "model_minus_lidar_m": {
+       "p10": -0.46,
+       "p50": -0.01,
+       "p90": 0.15
+      },
+      "highest_m": {
+       "model": 36.1,
        "lidar": 36.94
       }
      }
@@ -1055,7 +1143,7 @@
   },
   "432": {
    "name": "Fine Arts Studio Block 432",
-   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.3 degrees, over 5 m2): footprint IoU 0.921, 86% of cells within 0.5 m",
+   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.3 degrees, over 5 m2): footprint IoU 0.921, 86% of cells within 0.5 m; with the eaves of the fifth round (flat at 10.12 m; mono at 10.31 m; flat at 10.4 m): footprint IoU 0.944, 86% of cells within 0.5 m",
    "measured": {
     "outline_m2": 785.0,
     "ground": {
@@ -1095,6 +1183,28 @@
       "within_0.5m": 0.859,
       "model_minus_lidar_m": {
        "p10": -0.73,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 17.69,
+       "lidar": 17.7
+      }
+     }
+    },
+    "eaves": {
+     "layers": [
+      "flat at 10.12 m",
+      "mono at 10.31 m",
+      "flat at 10.4 m"
+     ],
+     "check": {
+      "iou": 0.944,
+      "lidar_m2": 854.0,
+      "model_m2": 864.2,
+      "within_0.5m": 0.863,
+      "model_minus_lidar_m": {
+       "p10": -0.72,
        "p50": -0.01,
        "p90": 0.07
       },
@@ -1333,7 +1443,7 @@
   },
   "504": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 41 m2; a low pitch: mono, 3.8 degrees, over 10 m2): footprint IoU 0.871, 89% of cells within 0.5 m",
+   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 41 m2; a low pitch: mono, 3.8 degrees, over 10 m2): footprint IoU 0.871, 89% of cells within 0.5 m; with the eaves of the fifth round (flat at 28.82 m; flat at 30.25 m): footprint IoU 0.880, 89% of cells within 0.5 m",
    "measured": {
     "outline_m2": 1132.3,
     "ground": {
@@ -1382,12 +1492,33 @@
        "lidar": 33.62
       }
      }
+    },
+    "eaves": {
+     "layers": [
+      "flat at 28.82 m",
+      "flat at 30.25 m"
+     ],
+     "check": {
+      "iou": 0.88,
+      "lidar_m2": 1125.2,
+      "model_m2": 1161.8,
+      "within_0.5m": 0.891,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.0,
+       "p90": 0.21
+      },
+      "highest_m": {
+       "model": 33.64,
+       "lidar": 33.62
+      }
+     }
     }
    }
   },
   "509": {
    "name": "9 Glasgow Terrace",
-   "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%)",
+   "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 8.86 m; mono at 8.76 m; mono at 8.35 m; mono at 8.86 m): footprint IoU 0.863, 85% of cells within 0.5 m",
    "measured": {
     "outline_m2": 141.0,
     "ground": {
@@ -1414,6 +1545,29 @@
      "highest_m": {
       "model": 8.84,
       "lidar": 10.2
+     }
+    },
+    "eaves": {
+     "layers": [
+      "mono at 8.86 m",
+      "mono at 8.76 m",
+      "mono at 8.35 m",
+      "mono at 8.86 m"
+     ],
+     "check": {
+      "iou": 0.863,
+      "lidar_m2": 156.5,
+      "model_m2": 162.5,
+      "within_0.5m": 0.846,
+      "model_minus_lidar_m": {
+       "p10": -0.22,
+       "p50": 0.02,
+       "p90": 0.46
+      },
+      "highest_m": {
+       "model": 8.93,
+       "lidar": 10.2
+      }
      }
     }
    }
@@ -1776,61 +1930,6 @@
     "cover": 0.222,
     "vegetation": 0.0,
     "open_below": 0.533
-   }
-  },
-  "803": {
-   "name": "17 Eden Crescent",
-   "reason": "top-view check: footprint IoU 0.862 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 4.1 degrees, over 53 m2; several faces: 4 mono-pitches over 53 m2; a low pitch: gable, 9.4 degrees, over 11 m2): footprint IoU 0.864, 97% of cells within 0.5 m",
-   "measured": {
-    "outline_m2": 677.8,
-    "ground": {
-     "p5": 16.75,
-     "p50": 17.34,
-     "p95": 20.42,
-     "zero": 16.93
-    },
-    "roof_inside_m2": 653.8,
-    "cover": 0.964,
-    "vegetation": 0.014,
-    "open_below": 0.132,
-    "not_drawn_m2": 8.5,
-    "check": {
-     "iou": 0.862,
-     "lidar_m2": 736.5,
-     "model_m2": 678.5,
-     "within_0.5m": 0.937,
-     "model_minus_lidar_m": {
-      "p10": -0.18,
-      "p50": 0.01,
-      "p90": 0.13
-     },
-     "highest_m": {
-      "model": 11.36,
-      "lidar": 15.25
-     }
-    },
-    "forms": {
-     "roofs": [
-      "a low pitch: hip, 4.1 degrees, over 53 m2",
-      "several faces: 4 mono-pitches over 53 m2",
-      "a low pitch: gable, 9.4 degrees, over 11 m2"
-     ],
-     "check": {
-      "iou": 0.864,
-      "lidar_m2": 736.5,
-      "model_m2": 693.8,
-      "within_0.5m": 0.968,
-      "model_minus_lidar_m": {
-       "p10": -0.16,
-       "p50": -0.0,
-       "p90": 0.11
-      },
-      "highest_m": {
-       "model": 12.93,
-       "lidar": 15.25
-      }
-     }
-    }
    }
   },
   "810": {

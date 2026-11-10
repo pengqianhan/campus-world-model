@@ -69,6 +69,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-10:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
+  measured heights, with the eaves of its main roof.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
@@ -1209,8 +1211,8 @@ If you represent the University and would like something changed or removed, ple
   Biology Building and 2-6 Park Ave are estimated in a photograph, as is the place of one of Auckland Bioengineering
   House's stone fins). The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
-  Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Six of them,
+  Alfred Nathan House and 17 Eden Crescent among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
   building during building works: the LiDAR of May 2024 has scaffold decks over its north-east
