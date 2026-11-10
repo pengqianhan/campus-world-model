@@ -22,11 +22,11 @@ export const FOOT = H(-16.7);
 
 /** The podium: the campus map's ring (in the frame), its roof at 16.94 (the LiDAR's 72.5 to 73.8 m over it, 72.6 the
  * most), with the tower standing on it; but for the ring's triangle south of the tower's south-east part (the porch,
- * below), which the LiDAR sees the ground under (120 returns at 61.9 to 65.4 m), the ring's south side drawn along
- * the tower's south face. */
+ * below), which the LiDAR sees the ground under (120 returns at 61.9 to 65.4 m), the ring's south side drawn 0.1 m
+ * inside the tower's south face, which goes down to the ground. */
 export const PODIUM = {
   plan: [[23.42, -22.81], [23.43, -18.51], [23.02, -18.6], [22.74, 1.81], [11.14, 1.71], [10.53, 1.12], [5.26, 6.26],
-    [5.2, 19.65], [-20.11, 19.65],
+    [5.2, 19.55], [-20.11, 19.55],
     [-20.05, -5.5], [-15.65, -5.51], [-15.23, -8.52], [-13.3, -11.27], [-11.32, -12.42], [-6.64, -13.24],
     [-4.47, -14.1], [-2.11, -15.86], [0.8, -19.33], [2.77, -20.68], [6.14, -21.87], [11.14, -22.0], [11.11, -22.9],
     [14.51, -22.88]],

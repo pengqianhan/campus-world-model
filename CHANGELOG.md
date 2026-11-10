@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-11
+
+### Added
+
+- **67 Symonds Street drawn in detail.** Near the camera the map draws 67 Symonds Street (619), on the City campus,
+  from code in place of the measured massing that stood in for it: a white office tower of about eight storeys with a
+  block turned 45 degrees and plant over its roof, on a podium that runs down the slope to the gully on its north and
+  west; on its south face three columns of windows and a curved bay of dark glass bands, on its east face louvred
+  panels and windows; a glass porch over its entrance. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the street, and its card says what is estimated: the windows, the bay's bands and the louvres, with
+  the photograph as a reference, the parapet's thickness, the porch's roof drawn as a slab, the podium's walls drawn
+  to the campus map's outline, and the faces no photograph shows. Its measured massing's data file has gone. On the
+  map it has the map's colours; from a walker's height on a computer with a graphics card, its own walls, glass and
+  roofs (#PR).
+
 ## 2026-11-10
 
 ### Added

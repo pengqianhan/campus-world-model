@@ -1,6 +1,6 @@
 {
  "name": "67-symonds-street",
- "site": false,
+ "site": true,
  "estimated": "the south and east faces' windows, the curved bay's dark bands and the louvred panels, with a photograph as a reference; the parapet's thickness; the porch's glass roof as a slab (its pyramid not drawn); the podium's walls, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street south-east of the tower, about 57 m from its south-east corner, looking north-west along bearing 323 degrees through a lens of about 47 degrees across; its camera is fitted to the tower's south and east roof edges against the sky, its south-east and south-west corners and their verticals, held near 1.6 m over the LiDAR's ground (1.67 m)",

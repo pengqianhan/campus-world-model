@@ -31,17 +31,22 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 ## Rounds
 - Round 0 to step 7 (2026-11-11, the lead alone): the podium on the campus map's ring at the LiDAR's roof, the tower at
   its parapet and roof, the core's block, bar and plant at the LiDAR's edges and heights; the porch's glass roof; the
-  walls white (`paint`), the roofs light grey (`roofPale`). The photograph's camera fitted to the tower's two roof
-  edges against the sky, its south-east and south-west corners and their verticals (rms 2.25 px, 1.67 m over the
-  LiDAR's ground at the camera, a lens of 46.6 degrees, about 57 m from the south-east corner). The faces it sees,
-  estimated through it: storeys 4.04 m apart, five rows of windows (`glass`) on the south face's three columns and the
-  east face's three, its louvred panels (`claddingPale`), the curved bay's dark bands. The door on the walkway before
-  the porch (63.49 m; no record of the entrance), `H`, the thresholds and the camera moved with it. The light: the sun
-  high to the north-north-east (15 deg, 45 up), exposure 0.62: the south face's plain panels 143 against 144, the east
-  face's 198 against 194. Silhouette IoU 0.943 in the model's box (0.696 over the photograph); luma p50 144 against
-  152. Top view: footprint IoU 0.929, 79% of 5,200 cells within 0.5 m (the podium's and the tower's parapets and the
-  plant over the roofs, not drawn, make most of the rest); the highest point 32.52 m over the door's ground against
-  the LiDAR's 32.66; block 619 99.9% under the model.
+  walls white (`paint`), the roofs mid-grey (`roofGrey`, as the 2023 aerial shows them). The photograph's camera fitted
+  to the tower's two roof edges against the sky, its south-east and south-west corners and their verticals (rms 2.25 px,
+  1.67 m over the LiDAR's ground at the camera, a lens of 46.6 degrees, about 57 m from the south-east corner). The
+  faces it sees, estimated through it: storeys 4.04 m apart, five rows of windows (`glass`) on the south face's three
+  columns and the east face's three, its louvred panels (`claddingPale`), the curved bay's dark bands. The door on the
+  walkway before the porch (63.49 m; no record of the entrance), `H`, the thresholds and the camera moved with it. The
+  light: the sun high to the north-north-east (15 deg, 45 up), exposure 0.62: the south face's plain panels 143 against
+  144, the east face's 198 against 194. Silhouette IoU 0.944 in the model's box (0.697 over the photograph); luma p50
+  144 against 152. Top view: footprint IoU 0.929, 79% of 5,200 cells within 0.5 m (the podium's and the tower's parapets
+  and the plant over the roofs, not drawn, make most of the rest); the highest point 32.52 m over the door's ground
+  against the LiDAR's 32.66; block 619 99.9% under the model.
+
+- Step 8 (2026-11-11): on the site; the tower's walls down to the walls' foot, the podium's south side 0.1 m inside
+  the tower's south face and the parapet from 1 cm over the roof's slab, where the landmark tests' faces check found
+  faces of two materials in one plane; the roofs mid-grey (`roofGrey`), as the 2023 aerial shows them (luma 124 to
+  184). 816 triangles, 4 draw calls.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
