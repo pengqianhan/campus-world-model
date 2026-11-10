@@ -233,6 +233,9 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect(page.locator('#walker-panel [data-ride="fly"]')).toHaveAttribute("aria-pressed", "true");
   await expect.poll(async () => (await state()).altitude ?? 0, { message: "the drone takes off" }).toBeGreaterThan(10);
   await expect(page.locator("#walker-altitude")).toContainText("m up");
+  // Every landmark made so far brings its roofs as drawn, one at a time, before the drone is sent over them.
+  await page.waitForFunction(() => window.__scene!.loading === 0, undefined, { timeout: 60_000 });
+  await expect.poll(() => page.evaluate(() => window.__scene!.roofsReady()), { timeout: 60_000 }).toBe(true);
   // Sent to the General Library, it flies over it, clear of its roof.
   const flown = (await walker(page, "walk", { to: "109", speed: 40 })) as Reply & { arrived: boolean };
   expect(flown.arrived).toBe(true);
@@ -247,8 +250,8 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   expect((await state()).height).toBeGreaterThanOrEqual(roof!);
   // Over the Clock Tower's wings it keeps over their roofs as the model draws them, below the
   // tower's top, and it does not come down into them.
+  // And any made on the way.
   await page.waitForFunction(() => window.__scene!.loading === 0, undefined, { timeout: 60_000 });
-  // Each landmark made so far brings its roofs as drawn, one at a time.
   await expect.poll(() => page.evaluate(() => window.__scene!.roofsReady()), { timeout: 60_000 }).toBe(true);
   const clock = await page.evaluate(() => {
     const points: { at: [number, number]; roof: number }[] = [];

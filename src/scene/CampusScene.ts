@@ -1520,7 +1520,6 @@ export class CampusScene {
     const now = performance.now();
     const fresh = now - this.gridAt >= GRID_GAP ? this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm()) : undefined;
     if (fresh) {
-      this.gridAt = now;
       this.landmarkGrids.set(fresh, this.landmarkGrid(fresh));
       this.roofMapCache = undefined;
     }
@@ -1552,6 +1551,8 @@ export class CampusScene {
       top: (this.terrain ? this.terrain.footing(cb.p).base : 0) + cb.h + (cb.roof?.h ?? 0),
     }));
     this.roofMapCache = new RoofMap([...shapes, ...this.contextRoofs], grids);
+    // The next landmark waits from the end of this one, its roofs and the map made again.
+    if (fresh) this.gridAt = performance.now();
     return this.roofMapCache;
   }
 
