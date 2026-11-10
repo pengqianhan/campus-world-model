@@ -43,7 +43,9 @@ function shownTexts(html: string): string[] {
 
 /** Every text the page may show: each picker.* text, and each school's facts from its meta.json and words. */
 function allowedTexts(): Set<string> {
-  const picker = [...wordKeys(shared).filter((k) => k.startsWith("picker.")), "nav.about", "about.repo"].map((k) => lookupWords(shared, k)!);
+  // the bar's words, and the Tsinghua World Model's card under the schools
+  const bar = ["nav.about", "about.repo", "about.inspirationTitle", "about.inspiration", "travel.worlds.tsinghua.name"];
+  const picker = [...wordKeys(shared).filter((k) => k.startsWith("picker.")), ...bar].map((k) => lookupWords(shared, k)!);
   const facts = schools.flatMap((s) => {
     const line = schoolLine(s, shared);
     return [line.site, line.name, line.city, line.form, line.snapshot];
@@ -174,11 +176,25 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(pages.notFound).not.toContain('<section id="about"');
   });
 
-  it("names the Tsinghua World Model, which inspired the site, and links to it", () => {
+  it("names the Tsinghua World Model, which inspired the site, in a card under the schools that links to it", () => {
     expect(INSPIRED_BY.url).toBe("https://tsinghua-world-model.pages.dev/?campus=1&classMode=live");
-    expect(pages.index).toContain(`<p id="inspiration">${escapeHtml(lookupWords(shared, "about.inspiration")!)}</p>`);
-    expect(pages.index).toContain(`<a id="inspired-by" href="${escapeHtml(INSPIRED_BY.url)}" rel="noopener noreferrer">Tsinghua World Model</a>`);
+    const card = pages.index.match(/<ul class="schools inspired"[\s\S]*?<\/ul>/)?.[0] ?? "";
+    expect(card).toContain(`<p class="site">Inspiration</p>`);
+    expect(card).toContain(`<h2><a id="inspired-by" href="${escapeHtml(INSPIRED_BY.url)}" rel="noopener noreferrer">Tsinghua World Model</a></h2>`);
+    expect(card).toContain(`<p class="facts" id="inspiration">${escapeHtml(lookupWords(shared, "about.inspiration")!)}</p>`);
+    // after the schools and before About, once
+    const at = (s: string) => pages.index.indexOf(s);
+    expect(at('<ul class="schools" aria-label')).toBeLessThan(at('<ul class="schools inspired"'));
+    expect(at('<ul class="schools inspired"')).toBeLessThan(at('<section id="about"'));
+    expect(pages.index.split('id="inspired-by"')).toHaveLength(2);
+    expect(pages.notFound).not.toContain('id="inspired-by"');
     expect(pages.index).toContain(`${escapeHtml(lookupWords(shared, "about.code")!)} <a href="${escapeHtml(REPO)}"`);
+  });
+
+  it("About is hidden until asked for: shown while the address points at it or at a section in it, with a link that hides it", () => {
+    expect(pages.index).toContain("#about:not(:target):not(:has(:target)){display:none}");
+    expect(pages.index).toContain('<a id="about-close" href="#">Close</a>');
+    for (const id of ids) expect(pages.index).toMatch(new RegExp(`<section id="about"[\\s\\S]*id="about-${id}"[\\s\\S]*</section>`));
   });
 
   for (const id of ids) {

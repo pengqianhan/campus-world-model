@@ -69,6 +69,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
+  inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
   for each school's map, a link to the Tsinghua World Model that inspired the project and a GitHub link at the top.
   A school's map no longer has an About button or the flight to the Tsinghua World Model; its credit line at the

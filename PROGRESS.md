@@ -668,11 +668,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   school on. `www.campusworldmodel.com` is not set up.
 - **Other worlds (the user, 2026-10-14; changed by the user, 2026-11-10).** The site names the
   Tsinghua World Model (`tsinghua-world-model.pages.dev`, an independent student project) as its
-  inspiration, with a link to it, in About and in the README. Since 2026-11-10 About is on the page
-  at the site's root, under the list of schools: the project, that inspiration, the source code, and
-  one section a school (`scripts/lib/about.ts`) with its unofficial notice, sources, licences,
-  coverage, limits and privacy. A bar at the top of that page links to the source code on GitHub,
-  with its mark, and to About. A school's page has no About and no link to the Tsinghua World Model
+  inspiration, with a link to it, on the page at the site's root and in the README. Since 2026-11-10
+  that page shows the list of schools and, under it, a card like theirs that links to the Tsinghua
+  World Model and says what it inspired. About is on the same page, hidden until asked for (its link
+  in the bar at the top, or a school's page linking to its section): the source code, and one
+  section a school (`scripts/lib/about.ts`) with its unofficial notice, sources, licences, coverage,
+  limits and privacy. The bar also links to the source code on GitHub, with its mark. A school's page has no About and no link to the Tsinghua World Model
   of its own; it keeps its GitHub link, and its attribution and its "Why?" links open its section
   of About (`aboutHref` in `src/app/links.ts`: the root it is served from, or campusworldmodel.com's
   from the GitHub Pages copy). The "Other worlds" row and its 2.2 s flight, from 2026-10-14 to

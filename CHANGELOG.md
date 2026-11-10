@@ -18,6 +18,10 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **The Tsinghua World Model as a card on the home page.** Under the schools on https://campusworldmodel.com/, a
+  card like theirs links to the Tsinghua World Model and says what it inspired. About, below it, is hidden until
+  its link in the bar, or a school's map, asks for it, and has a Close link (#158).
+
 - **2-6 Park Ave drawn in detail.** Near the camera the map draws 2-6 Park Ave (529), on the Grafton campus, from code
   in place of its block: a long block of four storeys under a thin flat roof with a dark eave; at each upper storey a
   balcony along every face on a pale slab with a light rail; on its east face, on Park Avenue, the glazing behind them
