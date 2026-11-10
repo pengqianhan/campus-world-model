@@ -91,7 +91,7 @@ look and the comparison.
   face's panels under the middle windows halfway along it 144 against 149, but near the camera 214 against 168 and under
   the upper windows 216 against 168, where the photograph's face lies in a softer light than the viewer's sun gives.
 
-Silhouette IoU 0.952 over the photograph (0.954 in the model's screen box). The top view: footprint IoU 0.927 (the
+Silhouette IoU 0.952 over the photograph (0.954 in the model's screen box). The top view: footprint IoU 0.926 (the
 LiDAR's 910 m² against the model's 868, both 855), 97% of the 3,383 cells both cover within 0.5 m (p10/p50/p90
 -0.07/0.02/0.12 m); the highest point 18.36 m over the door's ground against the LiDAR's 18.60 (p99.9); block 431 95.5%
 under the model. 1,970 triangles, 5 draw calls.

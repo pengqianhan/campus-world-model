@@ -33,9 +33,11 @@ export function body(b) {
     list.push(...quad(p3(u, w0, BASE), p3(u, w1, BASE), p3(u, w1, n(w1)), p3(u, w0, n(w0))));
   }
   list.push(...quad(p3(U0N, WN, BASE), p3(U1, WN, BASE), p3(U1, WN, n(WN)), p3(U0N, WN, n(WN))));
-  list.push(...quad(p3(U0N, P, BASE), p3(U0, P, BASE), p3(U0, P, n(P)), p3(U0N, P, n(P))));
   list.push(...quad(p3(U0, 0, BASE), p3(U1, 0, BASE), p3(U1, 0, n(0)), p3(U0, 0, n(0))));
   tris(b, list, WALLS, awayFrom((U0 + U1) / 2, -2.5));
+  // the face over w' -4 where the north part runs on east of the main block: the north part's own, facing south
+  const face = quad(p3(U0N, P, BASE), p3(U0, P, BASE), p3(U0, P, n(P)), p3(U0N, P, n(P)));
+  tris(b, face, WALLS, awayFrom((U0N + U0) / 2, P - 2));
 }
 
 /** A sloped slab over u0 to u1 and w'0 to w'1, its top on the plane `top` (a function of w'), `t` thick: its top in

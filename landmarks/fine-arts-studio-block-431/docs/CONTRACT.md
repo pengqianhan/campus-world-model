@@ -15,9 +15,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers): a long block, its roof's edge from u -17.0 (and -21.2 for
   its north part, north of w' -4) to 23.15 and from w' -7.9 to 9.0, its long walls about 1.05 m in under the eave (w'
   7.95 and -6.85, where the returns on them peak), its end walls at u -16.75 to -16.25; a roof of two pitches: the north
-  one from 49.9 m at its eave to 51.33 at a step over w' 0, the south one from 48.3 there to 46.6 at its eave; east of u
-  -17.0 over w' -4 to 5 one roof falling to the south from 50.4 m to 48.8 (south of w' 0 from u -20.2 to -16.35); at the
-  east end a stair tower at 51.45 m (u -23.25 to -19.65, w 0.35 to 3.1), a lower roof at 50.2 m north of it, and the
+  one from 49.9 m at its eave to 51.33 at a step over w' 0, the south one from 48.3 there to 46.6 at its eave; at the
+  east end over w' -4 to 5 one roof falling to the south from 50.4 m to 48.8 (south of w' 0 from u -20.2 to -16.35); at
+  the east end a stair tower at 51.45 m (u -23.25 to -19.65, w 0.35 to 3.1), a lower roof at 50.2 m north of it, and the
   entrance's canopy at 36.25 m (out of the campus map's ring); on the north side an annex at 42.76 m, its north edge
   past the ring's north side by up to 2.5 m (east of it the roof at 41.4 to 43.3 m is building 432's); before the south
   face a low box at 36.3 m, u 11.3 to 19.3. The ground: the lane and its car park at 33.1 m, the garden north of the
