@@ -360,7 +360,9 @@ export async function ride(args: { name?: unknown; ride?: unknown; height?: unkn
   let climbed: WalkResult | undefined;
   if (height !== undefined) climbed = await s.walkers.climbTo(name, height);
   else if (took) await s.walkers.airborne(name);
-  const st = s.walkers.state(name)!;
+  // Taken off the map meanwhile (the walk stopped, or an agent removed it), it has nothing to say.
+  const st = s.walkers.state(name);
+  if (!st) return { walker: name, error: `${name} left the map before it was up.` };
   return {
     walker: name,
     ride: st.ride,
@@ -781,7 +783,7 @@ function startUrlWalk(): void {
   if (!asked || !scene || !data.value) return;
   try {
     startWalking({ near: asked.walk && asked.walk !== "1" ? asked.walk : undefined });
-    if (asked.ride && asked.ride !== "walk") void ride({ name: MY_WALKER, ride: asked.ride });
+    if (asked.ride && asked.ride !== "walk") void run("ride", { name: MY_WALKER, ride: asked.ride });
     if (asked.view) setView({ view: asked.view, name: MY_WALKER });
   } catch (e) {
     console.error("walker", e);

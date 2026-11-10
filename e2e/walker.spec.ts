@@ -248,9 +248,9 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   // Over the Clock Tower's wings it keeps over their roofs as the model draws them, below the
   // tower's top, and it does not come down into them.
   await page.waitForFunction(() => window.__scene!.loading === 0, undefined, { timeout: 60_000 });
+  // Each landmark made so far brings its roofs as drawn, one at a time.
+  await expect.poll(() => page.evaluate(() => window.__scene!.roofsReady()), { timeout: 60_000 }).toBe(true);
   const clock = await page.evaluate(() => {
-    // Each landmark's roofs come in one a call.
-    for (let i = 0; i < 80; i++) window.__scene!.roofAt(0, 0);
     const points: { at: [number, number]; roof: number }[] = [];
     for (let n = 205; n <= 255; n += 2) for (let e = 0; e <= 60; e += 2) points.push({ at: [e, n], roof: window.__scene!.roofAt(e, n) ?? -Infinity });
     const top = Math.max(...points.map((p) => p.roof));

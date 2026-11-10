@@ -160,6 +160,8 @@ const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }>
 };
 /** Degrees the view through the eyes looks down at first: the drone's camera, more. */
 const EYES_PITCH: Record<Ride, number> = { walk: -4, scooter: -4, fly: -14 };
+/** Milliseconds at least between taking one landmark's roofs and the next's (roofMap). */
+const GRID_GAP = 30;
 /** Crowns of deciduous trees in April and May, in winter, and in early spring. */
 const AUTUMN_LEAVES = 0xd38b3c;
 const BARE_BRANCHES = 0x9a8a76;
@@ -1513,11 +1515,12 @@ export class CampusScene {
    */
   private roofMap(): RoofMap | undefined {
     if (!this.campus) return undefined;
-    // A landmark made since the map was built brings its roofs as drawn: one a frame, as the largest
-    // takes tens of milliseconds; until then its blocks' estimated roofs stand in.
-    const fresh = this.gridFrame !== this.frames ? this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm()) : undefined;
+    // A landmark made since the map was built brings its roofs as drawn: one at a time, a few frames
+    // apart, as the largest takes tens of milliseconds; until then its blocks' estimated roofs stand in.
+    const now = performance.now();
+    const fresh = now - this.gridAt >= GRID_GAP ? this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm()) : undefined;
     if (fresh) {
-      this.gridFrame = this.frames;
+      this.gridAt = now;
       this.landmarkGrids.set(fresh, this.landmarkGrid(fresh));
       this.roofMapCache = undefined;
     }
@@ -1566,8 +1569,14 @@ export class CampusScene {
     l.group.updateWorldMatrix(false, true);
     return grid;
   }
-  /** The frame the last landmark's roofs were taken in. */
-  private gridFrame = -1;
+  /** When the last landmark's roofs were taken, ms (performance.now). */
+  private gridAt = -Infinity;
+
+  /** Whether every landmark made so far has brought its roofs as drawn; for tests. */
+  roofsReady(): boolean {
+    this.roofMap();
+    return this.landmarks.every((l) => !l.madeForm() || this.landmarkGrids.has(l));
+  }
 
   /** The highest roof over a point, metres above sea level, as a drone keeps over it; for tests. */
   roofAt(east: number, north: number): number | undefined {
