@@ -12,13 +12,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   it, so across them `parts/common.js` uses **w'**, the distance from the line through w 0 at u 23.1 that runs with
   them (w = w' + 0.0355 (23.1 - u)). It gives `at` and `plan` for (u, w'), `atW` and `planW` for (u, w), and `Y`,
   which turns an elevation into a height over the door's ground.
-- What the LiDAR shows (`parts/common.js` holds the numbers): a long block, its roof's edge from u -17.0 (the south
-  half; the north half to -21.2) to 23.15 and from w' -7.9 to 9.0, under a roof of two pitches: the north one from
-  49.9 m at its eave to 51.33 at a step over w' 0, the south one from 48.3 there to 46.6 at its eave; at the east end a
-  flat block at 49.2 m, a glass stair tower at 51.65 m, a lower roof at 50.35 m north of it and the entrance's canopy
-  at 36.25 m (out of the campus map's ring); on the north side an annex at 42.76 m inside the ring (its roof runs on
-  east of the ring at the same height, not drawn); before the south face a low box at 36.3 m. The ground: the lane and
-  its car park at 33.1 m, the garden north of the main block at 38.0.
+- What the LiDAR shows (`parts/common.js` holds the numbers): a long block, its roof's edge from u -17.0 (and -21.2 for
+  its north part, north of w' -4) to 23.15 and from w' -7.9 to 9.0, its long walls about 1.05 m in under the eave (w'
+  7.95 and -6.85, where the returns on them peak), its end walls at u -16.75 to -16.25; a roof of two pitches: the north
+  one from 49.9 m at its eave to 51.33 at a step over w' 0, the south one from 48.3 there to 46.6 at its eave; east of u
+  -17.0 over w' -4 to 5 one roof falling to the south from 50.4 m to 48.8; at the east end a stair tower at 51.45 m (u
+  -23.25 to -19.65, w 0.35 to 3.1), a lower roof at 50.2 m north of it, and the entrance's canopy at 36.25 m (out of the
+  campus map's ring); on the north side an annex at 42.76 m, its north edge past the ring's north side by up to 2.5 m
+  (east of it the roof at 41.4 to 43.3 m is building 432's); before the south face a low box at 36.3 m, u 11.3 to 19.3.
+  The ground: the lane and its car park at 33.1 m, the garden north of the main block at 38.0. That the stair tower and
+  the canopy are glass is the photograph of the east entrance's.
 - Walls go down to `FOOT`, 31.5 m, 1.59 m under the door's ground.
 
 ## Who owns what
@@ -39,7 +42,17 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - Step 8 (2026-11-11): on the site; the stair tower's floor 2 cm under the walls' foot, where the landmark tests'
   faces check found it in one plane with the east block's.
 
+- The review's round 1 (2026-11-11): the low box from u 11.3, where the LiDAR's returns on its roof begin (it had been
+  drawn from 7.7, over ground the LiDAR sees), and the photograph's camera fitted again to that corner (rms 0.40 px, 6.9
+  m further west), and through it the columns, the rows and the roller doors estimated again; the long walls where the
+  LiDAR's returns on them peak (w' 7.95 and -6.85, not 0.35 m in); east of the main block one roof falling to the south
+  over w' -4 to 5, where the north pitch had been drawn on with its step; the stair tower to its returns over 51 m (u
+  -23.25 to -19.65, w 0.35 to 3.1, at 51.45 m) and the lower roof and the canopy to meet it; the annex's north edge to
+  the LiDAR's line out to u -13.1. The light at an exposure of 0.55. 1,944 triangles, 5 draw calls; silhouette IoU 0.952
+  (0.954 in the model's box), luma 144 against 150; top view: footprint IoU 0.927, 97% of 3,390 cells within 0.5 m,
+  block 431 95.6% under the model.
+
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.
 - No two faces of different materials face the same way in one plane (the landmark tests' faces check).
-- Nothing of the photograph goes into git.
+- Nothing of the photographs goes into git.

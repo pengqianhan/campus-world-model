@@ -1,9 +1,9 @@
 {
  "name": "fine-arts-studio-block-431",
  "site": true,
- "estimated": "the south face's columns, windows, mullions, sills and heads and its roller doors, with a photograph as a reference; the walls standing 0.35 m in under the eave, the roof's slab and the fascia; the low box's walls stopping short of its roof's west end; and the faces no photograph shows, drawn plainly",
+ "estimated": "the south face's columns, windows, mullions, sills and heads and its roller doors, with a photograph as a reference; the stair tower's and the entrance canopy's glass, with a second photograph, of the east entrance, as a reference; the end walls standing 0.35 m in under the eave, the roof's slab and the fascia; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
- "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the car park at the lane's west end, about 7 m out from the south face near its west end, looking east-north-east along it (bearing 7 degrees) through a lens of about 88 degrees across, its principal point solved (the photograph is the upper left of a wider frame); its camera is fitted to the south eave against the sky, the eave's east corner, the low box's corner and four verticals, held near 1.6 m over the LiDAR's ground",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its photograph of the south face is taken from the car park at the lane's west end, about 6 m west of the building's west end and 8 m out from the line of its south face, looking north-east along it, through a lens of about 78 degrees across, its optical axis at bearing 8 degrees and its principal point solved (the photograph is the upper right of a wider frame); its camera is fitted to the south eave against the sky, the eave's east corner, the low box's east corner (the LiDAR's u 11.3) and four verticals, held near 1.6 m over the LiDAR's ground. A second photograph, of the east entrance, has no camera fitted: it is a reference for the glass of the stair tower and the canopy there",
  "building": {
   "id": "431",
   "also": [],
@@ -220,8 +220,8 @@
  "light": {
   "sunaz": 160,
   "sunel": 50,
-  "exposure": 0.38,
-  "note": "estimated: the photograph is taken under broken cloud, the south face in soft light with no hard shadow. The viewer's sun stands to the south-south-east (160 deg round, 50 up), before the face, at an exposure of 0.38: the luma (p50) of the face's panels under the middle windows 145 against the photograph's 149 halfway along it and 182 against 168 near the camera, of the panels under the upper windows 183 against 168 (the compare's figure over the model's screen box: 153 against 150)"
+  "exposure": 0.55,
+  "note": "estimated: the photograph is taken under broken cloud, the south face in soft light with no hard shadow. The viewer's sun stands to the south-south-east (160 deg round, 50 up), before the face, at an exposure of 0.55: the luma (p50) over the model's screen box 144 against the photograph's 150; of the face's panels under the middle windows halfway along it 144 against 149, but near the camera 214 against 168 and under the upper windows 216 against 168, where the photograph's face lies in a softer light than the viewer's sun gives"
  },
  "door": {
   "x": 26.5,

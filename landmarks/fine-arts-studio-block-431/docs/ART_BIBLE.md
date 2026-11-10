@@ -10,6 +10,7 @@ from it but the ones its contract names, which are estimated.
   frames; a row of short upper windows under the eave, a row of tall windows with transoms, and over the ground storey
   a row of short high windows. The ground storey: grey roller doors, a dark painted plinth, and a low box with two
   roller doors and a side door standing out from the face.
-- At the east end, a glass stair tower beside the entrance, under a glass canopy; the entrance faces a small court.
+- At the east end, a glass stair tower beside the entrance, under a glass canopy, with a brick wall beside them
+  (the second photograph, of the east entrance); the entrance faces a small court.
 - On the north side, a lower annex; no photograph shows it.
 - The light: broken cloud, the south face in soft light with no hard shadow.

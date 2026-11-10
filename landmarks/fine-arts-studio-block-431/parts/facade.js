@@ -1,11 +1,12 @@
 // Fine Arts Studio Block 431's south face where the photograph sees it: the columns between its bays, the three rows
 // of windows with their mullions, sills and heads, the big roller door in the west bay and the low box's roller
-// doors. Sizes from common.js, every one estimated through the photograph's fitted camera.
-import { BOX, EAVE, FACE, IN, Y, plan, planW } from "./common.js";
+// doors on its front and its west end. Sizes from common.js, every one estimated through the photograph's fitted
+// camera.
+import { BOX, FACE, WALL as FACES, Y, plan, planW } from "./common.js";
 import { prism } from "./shapes.js";
 
 const WALL = "claddingPale", WHITE = "paint", GLASS = "glassPale", DOOR = "screenSilver";
-const W = EAVE.south - IN;  // the south face, w'
+const W = FACES.south;  // the south face, w'
 
 /** A box on the south face, from d0 to d1 in front of it, over [u0, u1] and the elevations [z0, z1]. */
 function on(b, d0, d1, [u0, u1], [z0, z1], material) {
@@ -28,7 +29,7 @@ function spans(from, to) {
  * the doors 2 to 6 cm out. No two faces of different materials lie in one plane facing one way (the landmark tests'
  * faces check). */
 export function face(b) {
-  for (const k of FACE.columns) on(b, 0.01, 0.13, [k - FACE.column / 2, k + FACE.column / 2], [38.0, 46.3], WALL);
+  for (const k of FACE.columns) on(b, 0.01, 0.13, [k - FACE.column / 2, k + FACE.column / 2], [38.0, 46.4], WALL);
   FACE.rows.forEach(([z0, z1], r) => {
     const to = r === 2 ? FACE.bigDoor.u[0] : FACE.ends[1];
     for (const [a, c] of spans(FACE.ends[0], to)) {
@@ -42,8 +43,8 @@ export function face(b) {
     }
   });
   on(b, 0.02, 0.06, FACE.bigDoor.u, [33.1, FACE.bigDoor.top], DOOR);
-  for (const [u0, u1] of FACE.boxDoors) {
-    const front = planW([[u0, BOX.w], [u1, BOX.w], [u1, BOX.w + 0.04], [u0, BOX.w + 0.04]]);
-    prism(b, front, Y(33.1), Y(FACE.boxDoorTop), DOOR);
-  }
+  const [u0, u1] = FACE.boxFront, [w0, w1] = FACE.boxEnd, e = BOX.u[1];
+  const front = planW([[u0, BOX.w], [u1, BOX.w], [u1, BOX.w + 0.04], [u0, BOX.w + 0.04]]);
+  prism(b, front, Y(33.1), Y(FACE.boxDoorTop), DOOR);
+  prism(b, planW([[e, w0], [e + 0.04, w0], [e + 0.04, w1], [e, w1]]), Y(33.1), Y(FACE.boxDoorTop), DOOR);
 }

@@ -866,13 +866,14 @@ within 0.5 m of the LiDAR's height. What the photograph does not show is drawn p
 The thirty-third is Fine Arts Studio Block 431, on the City campus, until now a measured massing: a long block of three
 storeys under a roof of two pitches, the north one rising to a step over the middle and the south one falling to the
 eave over the lane, with a lower annex on its north side; at its east end a glass stair tower beside the entrance; on
-its south face, over the lane and its car park, columns every 4.38 m, three rows of windows of three lights a bay and a
-ground storey of roller doors, and a low box with roller doors before it. Its heights and plans come from the LiDAR; the
-columns, the windows and the roller doors are estimated with the photograph as a reference. One photograph from the car
-park at the lane's west end, looking along the south face; counted inside the rectangle the model fills on the screen,
-its silhouette has an IoU of 0.98 in it, and the brightness over it is within 3 of the photograph's. From above its
-outline covers the LiDAR's with an IoU of 0.92, and on 95% of the cells both cover it is within 0.5 m of the LiDAR's
-height. What the photograph does not show is drawn plainly.
+its south face, over the lane and its car park, columns every 4 to 5 m, three rows of windows of three lights a bay and
+a ground storey of roller doors, and a low box with roller doors before it. Its heights and plans come from the LiDAR;
+the columns, the windows and the roller doors are estimated with the photograph as a reference, and a second photograph,
+of its east entrance, shows the stair tower and the canopy there to be glass. One photograph from the car park at the
+lane's west end, looking along the south face; counted inside the rectangle the model fills on the screen, its
+silhouette has an IoU of 0.95 in it, and the brightness over it is within 6 of the photograph's. From above its outline
+covers the LiDAR's with an IoU of 0.93, and on 97% of the cells both cover it is within 0.5 m of the LiDAR's height.
+What the photographs do not show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -1094,6 +1095,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of the George Mason Biology Building from the street to its south-east | The look its model was compared with while it was drawn, and, as a reference, the sizes and places of the windows of its south-east end and its pilasters' width, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 505 of the M&HS Building from the main road to its north-east | The look its model was compared with while it was drawn, and, as a reference, its north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 431 from the car park at the west end of the lane to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's columns, the heights of its rows of windows and the places of its roller doors, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Fine Arts Studio Block 431's east entrance | That its stair tower and the canopy over its entrance are glass; no size is taken from it | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of 2-6 Park Ave from the footpath of Park Avenue | The look its model was compared with while it was drawn, and, as a reference, its balconies' slabs' depth and their rails' bars and posts, the glazing behind them on the east face and its ground storey's brick and windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1577,15 +1579,16 @@ If you represent the University and would like something changed or removed, ple
   model is flat at about 80 m there), so the model stands on the drawn ground at its door, 10.9 m higher than the real
   one, as the blocks round it do. While a building beside it is open, it gives way to block 529, which sinks to a
   footprint on its footing: that footprint stands above the drawn ground on all its cells, by up to 0.8 m.
-- **Fine Arts Studio Block 431 is seen from its south only.** One photograph, under broken cloud, looks along its south
-  face from the car park at the west end of the lane; its camera is fitted to the eave against the sky, the eave's east
-  corner and the low box's corner, its principal point solved (the photograph is the upper left of a wider frame). The
-  columns, the windows and the roller doors are estimated in the photograph, and so are the walls' place 0.35 m in under
-  the eave and where the low box's walls stop under its roof. The other faces, which no photograph shows, are drawn
-  plainly, and the annex's roof, which the LiDAR finds running on east of the campus map's outline, is drawn only inside
-  it. Its entrance is not known from a record: its door is set under the glass canopy at its east end, by the stair
-  tower. The map's ground there is 2.80 m over the LiDAR's, so the model stands that much higher than the real building,
-  on the drawn ground at its door.
+- **Fine Arts Studio Block 431 is seen from its south and at its east entrance only.** One photograph, under broken
+  cloud, looks along its south face from the car park at the west end of the lane; its camera is fitted to the eave
+  against the sky, the eave's east corner and the low box's corner, its principal point solved (the photograph is the
+  upper right of a wider frame). The columns, the windows and the roller doors are estimated in the photograph. A second
+  photograph, of the east entrance, shows the stair tower and the canopy there to be glass; nothing is measured from it.
+  The north face, which no photograph shows, is drawn plainly, and the brick beside the stair tower is not drawn. Its
+  entrance is not known from a record: its door is set under the glass canopy at its east end. The map's ground there is
+  2.80 m over the LiDAR's, so the model stands that much higher than the real building, on the drawn ground at its door;
+  and along the south face the map's ground rises from the door's to 2.46 m over it at the west end, over the level
+  lane, so that on the site most of the ground storey's roller doors and the low box stand under the drawn ground.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

@@ -246,7 +246,7 @@ queue puts the others in two tiers, whose buildings it measures only as stand-in
   302, 303, 303S, 305, 310, 311, 315, 401, 402, 405, 421E, 421W, 439, 440, 441, 442, 614, 616,
   619, 620, 810, 818, 820 and 831 to 837.
 
-Every other City campus building is the generator's (tier 3): 48 of them lie in the eight tiles.
+Every other City campus building is the generator's (tier 3): 46 of them lie in the eight tiles.
 A building moves out of tier 3 when the maintainer plans a landmark for it: 431, Fine Arts Studio Block 431, drawn as a
 measured massing since the fourth round (#127), is a landmark now, and its data file has gone.
 

@@ -1,37 +1,41 @@
 // Fine Arts Studio Block 431's parts: the main block's walls up to its two pitches and the step between them, the
-// roof's two slabs, the east end's block, stair tower and lower roof, the annex on the north side and the low box
-// before the south face. Sizes from common.js.
-import { ANNEX, BOX, EAST, EAVE, FOOT, IN, ROOF, Y, across, at, plan, planW } from "./common.js";
+// roof's slabs, the east end's roof falling to the south, its glass stair tower, lower roof and canopy, the annex on
+// the north side and the low box before the south face. Sizes from common.js.
+import { ANNEX, BOX, EAST, EAVE, FOOT, ROOF, WALL, Y, across, at, plan, planW } from "./common.js";
 import { block, prism, tris } from "./shapes.js";
 
 // The walls and the fascia the beige-grey of the photograph's panels; the roofs light grey, as the 2023 aerial shows
-// them (luma 200 on the sunlit north pitch, 123 on the south); the stair tower glass.
-const WALL = "claddingPale", ROOFS = "roofPale", GLASS = "glassPale";
+// them (luma 200 on the sunlit north pitch, 123 on the south); the stair tower and the canopy glass, as the photograph
+// of the east entrance shows them.
+const WALLS = "claddingPale", ROOFS = "roofPale", GLASS = "glassPale";
 
 /** A point [x, y, z] of the view frame at (u, w') and the elevation z. */
 const p3 = (u, wp, z) => { const [x, zz] = at(u, wp); return [x, Y(z), zz]; };
 /** A quad of four points as two triangles. */
 const quad = (a, b2, c, d) => [[a, b2, c], [a, c, d]];
-/** Faces turned away from the plan's middle (u, w'). */
-const away = (u, wp) => () => at(u, wp);
+/** Faces turned away from a point (u, w') of the plan. */
+const awayFrom = (u, wp) => ([x, z]) => { const m = at(u, wp); return [2 * x - m[0], 2 * z - m[1]]; };
 
-const S = { u0: EAVE.east.south + IN, u1: EAVE.west - IN, w1: EAVE.south - IN };  // the south half's walls
-const N = { u0: EAVE.east.north + IN, u1: EAVE.west - IN, w0: EAVE.north + IN };  // the north half's walls
-const BASE = ROOF.south(S.w1) - ROOF.t;                                            // the south wall's top
+const U0 = EAVE.east + WALL.in, U0N = EAVE.eastNorth + WALL.in, U1 = EAVE.west - WALL.in;   // the walls' ends
+const WS = WALL.south, WN = WALL.north, P = EAVE.part;
+const BASE = ROOF.south(WS) - ROOF.t;                                                    // the south wall's top
+const s = (wp) => ROOF.south(wp) - ROOF.t, n = (wp) => ROOF.north(wp) - ROOF.t;           // the slabs' undersides
 
-/** The walls: all round from the walls' foot to the south wall's top, under the south pitch the two end walls up to
- * its slab, and under the north pitch its north wall, its two end walls and the step's face over w' 0, up to its
- * slab. */
+/** The walls: all round from the walls' foot to the south wall's top; under the south pitch its two end walls up to
+ * its slab; under the north pitch, north of w' -4 from the east end of its north part and south of it from the main
+ * block's east end, its north wall, its end walls, the face over w' -4 where the north part runs on east, and the
+ * step's face over w' 0, up to its slab. */
 export function body(b) {
-  prism(b, plan([[N.u0, N.w0], [N.u1, N.w0], [S.u1, S.w1], [S.u0, S.w1], [S.u0, 0], [N.u0, 0]]), FOOT, Y(BASE), WALL);
-  const s = (wp) => ROOF.south(wp) - ROOF.t, n = (wp) => ROOF.north(wp) - ROOF.t, list = [];
-  for (const u of [S.u0, S.u1]) list.push([p3(u, 0, BASE), p3(u, S.w1, BASE), p3(u, 0, s(0))]);
-  for (const u of [N.u0, N.u1]) {
-    list.push(...quad(p3(u, N.w0, BASE), p3(u, 0, BASE), p3(u, 0, n(0)), p3(u, N.w0, n(N.w0))));
+  prism(b, plan([[U0N, WN], [U1, WN], [U1, WS], [U0, WS], [U0, P], [U0N, P]]), FOOT, Y(BASE), WALLS);
+  const list = [];
+  for (const u of [U0, U1]) list.push([p3(u, 0, BASE), p3(u, WS, BASE), p3(u, 0, s(0))]);
+  for (const [u, w0, w1] of [[U0N, WN, P], [U0, P, 0], [U1, WN, 0]]) {
+    list.push(...quad(p3(u, w0, BASE), p3(u, w1, BASE), p3(u, w1, n(w1)), p3(u, w0, n(w0))));
   }
-  list.push(...quad(p3(N.u0, N.w0, BASE), p3(N.u1, N.w0, BASE), p3(N.u1, N.w0, n(N.w0)), p3(N.u0, N.w0, n(N.w0))));
-  list.push(...quad(p3(N.u0, 0, BASE), p3(N.u1, 0, BASE), p3(N.u1, 0, n(0)), p3(N.u0, 0, n(0))));
-  tris(b, list, WALL, ([x, z]) => { const m = at((N.u0 + N.u1) / 2, -2); return [2 * x - m[0], 2 * z - m[1]]; });
+  list.push(...quad(p3(U0N, WN, BASE), p3(U1, WN, BASE), p3(U1, WN, n(WN)), p3(U0N, WN, n(WN))));
+  list.push(...quad(p3(U0N, P, BASE), p3(U0, P, BASE), p3(U0, P, n(P)), p3(U0N, P, n(P))));
+  list.push(...quad(p3(U0, 0, BASE), p3(U1, 0, BASE), p3(U1, 0, n(0)), p3(U0, 0, n(0))));
+  tris(b, list, WALLS, awayFrom((U0 + U1) / 2, -2.5));
 }
 
 /** A sloped slab over u0 to u1 and w'0 to w'1, its top on the plane `top` (a function of w'), `t` thick: its top in
@@ -39,43 +43,49 @@ export function body(b) {
 function slab(b, [u0, u1], [w0, w1], top) {
   const T = (u, wp) => p3(u, wp, top(wp)), B = (u, wp) => p3(u, wp, top(wp) - ROOF.t);
   tris(b, quad(T(u0, w0), T(u1, w0), T(u1, w1), T(u0, w1)), ROOFS, "up");
-  tris(b, quad(B(u0, w0), B(u1, w0), B(u1, w1), B(u0, w1)), WALL, "down");
-  const mid = at((u0 + u1) / 2, (w0 + w1) / 2), out = ([x, z]) => [2 * x - mid[0], 2 * z - mid[1]];
+  tris(b, quad(B(u0, w0), B(u1, w0), B(u1, w1), B(u0, w1)), WALLS, "down");
   tris(b, [
     ...quad(B(u0, w0), B(u1, w0), T(u1, w0), T(u0, w0)), ...quad(B(u0, w1), B(u1, w1), T(u1, w1), T(u0, w1)),
     ...quad(B(u0, w0), B(u0, w1), T(u0, w1), T(u0, w0)), ...quad(B(u1, w0), B(u1, w1), T(u1, w1), T(u1, w0)),
-  ], WALL, out);
+  ], WALLS, awayFrom((u0 + u1) / 2, (w0 + w1) / 2));
 }
 
-/** The roof: the north pitch's slab from its eave to the step, the south pitch's from the step to its eave. */
+/** The roof: the north pitch's slab, from its eave to w' -4 along the whole block with its north part, and from there
+ * to the step along the main block; the south pitch's from the step to its eave; and east of the main block the roof
+ * falling to the south over w' -4 to 5. */
 export function roof(b) {
-  slab(b, [EAVE.east.north, EAVE.west], [EAVE.north, 0], ROOF.north);
-  slab(b, [EAVE.east.south, EAVE.west], [0, EAVE.south], ROOF.south);
+  slab(b, [EAVE.eastNorth, EAVE.west], [EAVE.north, P], ROOF.north);
+  slab(b, [EAVE.east, EAVE.west], [P, 0], ROOF.north);
+  slab(b, [EAVE.east, EAVE.west], [0, EAVE.south], ROOF.south);
+  slab(b, [EAVE.eastNorth, EAVE.east], [P, ROOF.eastSouth], ROOF.east);
 }
 
-/** The east end: the flat block east of the south half (into the main block's walls by 0.15 m), the glass stair
- * tower and the lower roof north of it, each from the walls' foot (the stair tower from 2 cm under it, so that its
- * floor and the block's, which overlap, do not lie in one plane); and the entrance's glass canopy from the stair
- * tower's east face, open under it. */
+/** The east end: under its roof the walls (into the main block's by 0.15 m, and into the north part's by 0.2 m), up to
+ * the roof's underside; the glass stair tower (from 2 cm under the walls' foot, so that its floor and the walls' do
+ * not lie in one plane), the lower roof north of it and the entrance's glass canopy from that roof's east face, open
+ * under it. */
 export function east(b) {
-  const { block: k, stair, low, canopy } = EAST;
-  block(b, plan([[k.u[0], k.wp[0] - 0.2], [S.u0 + 0.15, k.wp[0] - 0.2], [S.u0 + 0.15, k.wp[1]], [k.u[0], k.wp[1]]]),
-    FOOT, Y(k.top), WALL, ROOFS);
+  const w0 = P - 0.2, w1 = ROOF.eastSouth - WALL.in, u1 = U0 + 0.15, e = (wp) => ROOF.east(wp) - ROOF.t;
+  const top = e(w1);
+  prism(b, plan([[U0N, w0], [u1, w0], [u1, w1], [U0N, w1]]), FOOT, Y(top), WALLS);
+  // its two end walls up to the roof (the west one closes it over the south pitch, which stands lower)
+  for (const u of [U0N, u1]) {
+    const gable = quad(p3(u, w0, top), p3(u, w1, top), p3(u, w1, e(w1)), p3(u, w0, e(w0)));
+    tris(b, gable, WALLS, awayFrom((U0N + u1) / 2, 0));
+  }
+  const { stair, low, canopy } = EAST;
   prism(b, planW(stair.plan), FOOT - 0.02, Y(stair.top), GLASS);
-  block(b, planW(low.plan), FOOT, Y(low.top), WALL, ROOFS);
+  block(b, planW(low.plan), FOOT, Y(low.top), WALLS, ROOFS);
   prism(b, planW(canopy.plan), Y(canopy.y[0]), Y(canopy.y[1]), GLASS);
 }
 
 /** The annex on the north side, its plan into the main block's north wall. */
 export function annex(b) {
-  block(b, planW(ANNEX.plan), FOOT, Y(ANNEX.top), WALL, ROOFS);
+  block(b, planW(ANNEX.plan), FOOT, Y(ANNEX.top), WALLS, ROOFS);
 }
 
-/** The low box before the south face, from 0.15 m inside the face out to its front: its walls, and its roof over
- * them and on west of them as a canopy, open under it. */
+/** The low box before the south face, from 0.15 m inside the face out to its front. */
 export function box(b) {
-  const [u0, u1] = BOX.u, w = (u) => across(u, S.w1 - 0.15);
-  const at4 = (a, c) => planW([[a, w(a)], [c, w(c)], [c, BOX.w], [a, BOX.w]]);
-  prism(b, at4(u0, u1), FOOT, Y(BOX.top - 0.15), WALL);
-  prism(b, at4(u0, BOX.roof), Y(BOX.top - 0.15), Y(BOX.top + 0.01), ROOFS);
+  const [u0, u1] = BOX.u, w = (u) => across(u, WS - 0.15);
+  block(b, planW([[u0, w(u0)], [u1, w(u1)], [u1, BOX.w], [u0, BOX.w]]), FOOT, Y(BOX.top), WALLS, ROOFS);
 }

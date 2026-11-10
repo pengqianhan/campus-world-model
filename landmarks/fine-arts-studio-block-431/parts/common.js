@@ -3,7 +3,8 @@
 // ground, z is toStreet (south-south-east); the frame's centre at x = z = 0, the middle of the building's points near
 // the campus map's ring.
 // Owned by the lead: read, do not edit.
-// Measured 2026-11-11 (round 0): every height below is an elevation (NZVD2016) and Y moves it on to the door's ground.
+// Measured 2026-11-11 (round 0, and the review's round 1): every height below is an elevation (NZVD2016) and Y moves
+// it on to the door's ground.
 //
 // The sizes are given in the building's own frame. u runs along the frame's axis toward the west-south-west (x = -u);
 // the long faces lie 2.0 degrees off it, so across them the frame uses w', the distance from the line through w 0 at
@@ -13,7 +14,8 @@
 //
 // Fine Arts Studio Block 431: a long block of three storeys under a roof of two pitches, the north one rising to a
 // step over the middle and the south one falling to the eave over the lane; a lower annex on its north side, a low box
-// with roller doors before the south face, and at its east end a glass stair tower and two lower roofs.
+// with roller doors before the south face, and at its east end a roof falling to the south, a glass stair tower and a
+// lower roof.
 /** The long faces' slant against the frame's axis: w grows by K a metre toward the east-north-east (the LiDAR's south
  * eave runs from w 9.0 at u 23.1 to 10.4 at -17.0, its north eave from -7.84 at u 22 to -6.22 at -20). */
 export const K = 0.0355;
@@ -31,57 +33,59 @@ export const Y = (z) => z - GROUND;
 export const FOOT = Y(31.5);
 
 /** The roof's edge, the LiDAR's returns to p0.5 and p99.5 across the faces (w' -7.9 to 9.0) and along them (the west
- * end at u 23.15; the south half's east end at -17.0, the north half's at -21.2); the walls 0.35 m in under it
- * (estimated: the fascia's depth over the wall, as the photograph shows it). */
-export const EAVE = { west: 23.15, east: { south: -17.0, north: -21.2 }, north: -7.9, south: 9.0 };
-export const IN = 0.35;
+ * end at u 23.15, the east end at -17.0, and -21.2 for the north part north of w' -4). The long walls stand where the
+ * LiDAR's returns on them peak, about 1.05 m in under the eave: the south one at w' 7.95 (188 of its 428 returns at
+ * 7.9 to 8.0, the ground seen under the eave out from 7.95), the north one at -6.85 (its returns peak at -6.88 in every
+ * 3 m along it); the end walls 0.35 m in (their returns at u -16.75 to -16.25). */
+export const EAVE = { west: 23.15, east: -17.0, eastNorth: -21.2, north: -7.9, south: 9.0, part: -4 };
+export const WALL = { south: 7.95, north: -6.85, in: 0.35 };
 /** The roof's two pitches, each a plane over w' (the LiDAR's returns, p50 in 0.5 m strips across the faces from u -15
- * to 21): the north one from 49.9 m at its eave (w' -7.9) to 51.33 at the step over w' 0, the south one from 48.3 at
- * the step to 46.6 at its eave (w' 9.0); the slab 0.3 m thick (estimated). */
+ * to 21): the north one from 49.9 m at its eave to 51.33 at the step over w' 0, the south one from 48.3 at the step to
+ * 46.6 at its eave (w' 9.0); and east of u -17.0 over w' -4 to 5 one roof falling to the south, from 50.4 m at w' -4 to
+ * 49.6 at 0 and 48.8 at 5 (the LiDAR's p50 over u -21.0 to -17.6); each slab 0.3 m thick (estimated). */
 export const ROOF = {
   north: (wp) => 51.33 + 0.181 * wp,
   south: (wp) => 48.3 - 0.1889 * wp,
+  east: (wp) => 49.69 - 0.178 * wp,
+  eastSouth: 5.0,
   t: 0.3,
 };
 
-/** The east end, from the LiDAR's returns on a 1 m grid: a flat block at 49.2 m (48.8 to 49.9) east of the south half,
- * u -21.2 to -17.0, w' 0 to 5.0; the glass stair tower at 51.65 m (51.4 to 51.7), u -24.4 to -20.0 and w -0.5 to 3.5;
- * north of it a lower roof at 50.35 m (50.0 to 50.8), u -25.0 to -21.2 and w -3.5 to -0.5; and the entrance's glass
- * canopy east of the stair tower at 36.25 m (18 returns, u -26.0 to -24.65, w -1.5 to 0.9), out of the campus map's
- * ring. */
+/** The east end, from the LiDAR's returns: the glass stair tower (its glass as the photograph of the east entrance
+ * shows it) at 51.45 m (p50 of its returns over 51 m, at u -23.25 to -19.64 and w 0.36 to 3.12); north of it a lower
+ * roof at 50.2 m (50.0 to 50.8; p50 50.18), u -24.3 to -21.2 and w -3.5 to 0.35; and the entrance's glass canopy east
+ * of that at 36.25 m (16 returns at u -26.0 to -24.65, w -1.5 to 0.9), out of the campus map's ring. */
 export const EAST = {
-  block: { u: [-21.2, -17.0], wp: [0, 5.0], top: 49.2 },
-  stair: { plan: [[-24.4, -0.5], [-20.0, -0.5], [-20.0, 3.5], [-24.4, 3.5]], top: 51.65 },
-  low: { plan: [[-25.0, -3.5], [-21.2, -3.5], [-21.2, -0.5], [-25.0, -0.5]], top: 50.35 },
-  canopy: { plan: [[-26.0, -1.5], [-24.38, -1.5], [-24.38, 0.9], [-26.0, 0.9]], y: [36.1, 36.25] },
+  stair: { plan: [[-23.25, 0.35], [-19.65, 0.35], [-19.65, 3.1], [-23.25, 3.1]], top: 51.45 },
+  low: { plan: [[-24.3, -3.5], [-21.2, -3.5], [-21.2, 0.35], [-24.3, 0.35]], top: 50.2 },
+  canopy: { plan: [[-26.0, -1.5], [-24.28, -1.5], [-24.28, 0.9], [-26.0, 0.9]], y: [36.1, 36.25] },
 };
 
-/** The annex on the north side, inside the campus map's ring (u -13.1 to 3.05; the LiDAR's roof runs on east of the
- * ring at the same height, not drawn): its roof at 42.76 m (p50 of 737 returns, 42.6 to 42.86), its north edge from
- * w -11.8 at u 3.05 to -13.4 at u -6 and east of it (the returns to p0.5). */
+/** The annex on the north side: its roof at 42.76 m (p50 of 737 returns, 42.6 to 42.86), its north edge the LiDAR's
+ * (to p0.5: one line from w -11.8 at u 3.05 to -14.6 at -12.5, past the campus map's ring by up to 2.5 m), from u 3.05
+ * to -13.1, the ring's east side; east of that the roof at 41.4 to 43.3 m is building 432's (inside its ring). */
 export const ANNEX = {
-  plan: [[3.05, -6.5], [3.05, -11.8], [0, -12.3], [-4.0, -13.1], [-6.0, -13.4], [-13.1, -13.4], [-13.1, -5.9]],
+  plan: [[3.05, -5.8], [3.05, -11.8], [-13.1, -14.73], [-13.1, -5.2]],
   top: 42.76,
 };
 
-/** The low box with roller doors before the south face: its roof at 36.3 m (36.07 to 36.47) over u 7.7 to 19.3 and
- * out to w 11.4 from the face (the LiDAR's returns, p0.5 and p99.5); its walls to u 17.1 and the roof west of them a
- * canopy, open under it, before the big roller door (estimated: through the photograph's camera the door stands in
- * the main face's plane from u 17.15 westward, its head level at 37.0 m, which the box's walls would hide). */
-export const BOX = { u: [7.7, 17.1], roof: 19.3, w: 11.4, top: 36.3 };
+/** The low box with roller doors before the south face: its roof at 36.3 m (69 returns, 35.9 to 36.6) over u 11.3 to
+ * 19.3 and out to w 11.4 (the returns to p0.5 and p99.5; the ground in every 0.5 m east of 11.3). */
+export const BOX = { u: [11.3, 19.3], w: 11.4, top: 36.3 };
 
 /** The south face where the photograph sees it, every place and height estimated through its fitted camera (rms 0.40
- * px): columns 0.55 m wide every 4.38 m (their centres at u 20.2 to -14.84), three lights a bay; the upper windows from
- * 44.55 to 46.3 m (under the eave's slab), the middle ones from 39.77 to 43.43, the ground storey's high windows from
- * 36.74 to 37.95 east of the big roller door; the big roller door from the ground to 37.0, its west edge out of the
- * photograph (estimated), the box's roller doors to 35.27 (u 8.8
- * to 11.85 and 16.08 to 16.92). */
+ * px): the columns' middles (u 19.17 to -12.19, 4.1 to 4.9 m apart), 0.6 m wide, from 38.0 m to under the eave, three
+ * lights a bay; the upper windows from 45.16 to 46.35 m (under the eave's slab), the middle ones from 40.07 to 43.97,
+ * the ground storey's high windows from 36.85 to 38.14 east of the big roller door; the big roller door on the face
+ * from u 20.2 to its west end (its west edge out of the photograph) up to 37.1 m; on the box, a roller door on its
+ * front (u 12.5 to 16.0) and one on its west end (w 9.75 to 10.5), both up to 35.3 m. */
 export const FACE = {
-  columns: Array.from({ length: 9 }, (_, k) => 20.2 - 4.38 * k),
-  column: 0.55,
-  ends: [-16.4, 22.5],
-  rows: [[44.55, 46.3], [39.77, 43.43], [36.74, 37.95]],
-  bigDoor: { u: [17.15, 21.9], top: 37.0 },
-  boxDoors: [[8.8, 11.85], [16.08, 16.92]],
-  boxDoorTop: 35.27,
+  columns: [19.17, 14.31, 9.44, 5.05, 0.53, -3.77, -8.07, -12.19],
+  column: 0.6,
+  ends: [-16.4, 22.6],
+  rows: [[45.16, 46.35], [40.07, 43.97], [36.85, 38.14]],
+  bigDoor: { u: [20.2, 22.9], top: 37.1 },
+  boxFront: [12.5, 16.0],
+  boxEnd: [9.75, 10.5],
+  boxDoorTop: 35.3,
 };
