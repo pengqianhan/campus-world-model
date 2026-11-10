@@ -70,8 +70,8 @@ It is built to answer two questions a student actually has:
 ## What's new
 
 - **2026-11-10:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
-  in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone
-  over the roofs, up to 120 m above the ground.
+  in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
+  the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section

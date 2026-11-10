@@ -39,6 +39,10 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
   await page.waitForFunction(() => window.__scene!.groundState(0, 0).terrain);
   const ground = await page.evaluate(([x, y]) => window.__scene!.groundState(x!, y!).ground, start.at);
   expect(Math.abs(start.height - ground)).toBeLessThan(0.6);
+  // At the City Campus's start, on the lawn across the road west of the Clock Tower, facing it (its model's middle at
+  // (31, 229)).
+  const toTower = (Math.atan2(31 - start.at[0], 229 - start.at[1]) * 180) / Math.PI;
+  expect(Math.abs(((start.heading - toTower + 540) % 360) - 180)).toBeLessThan(1);
   // Near the Clock Tower, not inside a building.
   const before = (await walker(page, "look")) as { nearby: { id: string; distance: number }[]; summary: string };
   expect(before.nearby.some((b) => b.id.startsWith("105"))).toBe(true);
@@ -369,6 +373,9 @@ test("a walk the address asks for starts when the data comes in before the scene
   const list = (await walker(page, "list")) as { walkers: { name: string }[]; view: string; viewing: string };
   expect(list.walkers.map((w) => w.name)).toEqual(["Walker"]);
   expect(list).toMatchObject({ view: "follow", viewing: "Walker" });
+  // A link to the campus's start opens as Take a walk does: the view behind the walker 12 degrees lower than usual,
+  // so that it takes in the whole Clock Tower.
+  expect((await page.evaluate(() => window.__scene!.walkerLook())).pitch).toBeCloseTo(-12, 5);
   await keptWalk();
   await page.waitForFunction(() => window.__scene!.loading === 0);
   await page.clock.runFor(500);

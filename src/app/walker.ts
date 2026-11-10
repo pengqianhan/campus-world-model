@@ -27,15 +27,19 @@ export const AGENT_SPEED = 4;
 const MAX_WALK = 4000;
 /** Metres a second for a walk a visitor starts with a click. */
 export const CLICK_SPEED = 3;
+/** The University of Auckland's site: the starts below are its own (another school's campus can share a campus id, as
+ * AUT's `city` does, and starts at its campus's middle). */
+const UOA = school.id === "uoa";
 /** Where a walker starts on each campus, metres east and north: on the City Campus, the lawn across the road west of
  * the Clock Tower, from where the view behind the walker takes in the whole tower. */
-const START: Record<string, Pt> = { city: [-48, 218] };
+const START: Record<string, Pt> = UOA ? { city: [-48, 218] } : {};
 /** What a walker started at its campus's start faces, metres east and north: on the City Campus, the Clock Tower. */
-const START_FACING: Record<string, Pt> = { city: [31, 229] };
-/** How the view behind a walker just started at its campus's start looks, as setView's pitch: on the City Campus 12
- * degrees lower than the usual view behind (4 degrees over the walker, not 16), so that it takes in the whole Clock
- * Tower, its crown and all. */
-const START_PITCH: Record<string, number> = { city: -12 };
+const START_FACING: Record<string, Pt> = UOA ? { city: [31, 229] } : {};
+/** How the view behind a walker just started at its campus's start on foot looks, as setView's pitch: on the City
+ * Campus 12 degrees lower than the usual view behind on foot (4 degrees over the walker, not 16), so that it takes in
+ * the whole Clock Tower, its crown and all. It stays so until the view or the way of getting about changes, or the
+ * visitor drags the view round. */
+const START_PITCH: Record<string, number> = UOA ? { city: -12 } : {};
 
 /** The look for the view behind a walker, given `startWalking`'s reply: START_PITCH's for one it has just started at
  * its campus's start, none for any other. */
@@ -803,9 +807,12 @@ function startUrlWalk(): void {
   const asked = urlWalk.peek();
   if (!asked || !scene || !data.value) return;
   try {
-    startWalking({ near: asked.walk && asked.walk !== "1" ? asked.walk : undefined });
-    if (asked.ride && asked.ride !== "walk") void run("ride", { name: MY_WALKER, ride: asked.ride });
-    if (asked.view) setView({ view: asked.view, name: MY_WALKER });
+    const reply = startWalking({ near: asked.walk && asked.walk !== "1" ? asked.walk : undefined });
+    const ride = asked.ride && asked.ride !== "walk" ? asked.ride : undefined;
+    if (ride) void run("ride", { name: MY_WALKER, ride });
+    // A link to the campus's start opens behind the walker on foot as Take a walk does, with the start's look.
+    const lookAt = asked.view === "follow" && !ride ? startLook(reply) : {};
+    if (asked.view) setView({ view: asked.view, name: MY_WALKER, ...lookAt });
   } catch (e) {
     console.error("walker", e);
   }
