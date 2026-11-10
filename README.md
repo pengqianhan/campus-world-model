@@ -69,9 +69,11 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-11-10:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
+- **2026-11-11:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
   in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
   the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
+- **2026-11-11:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
+  measured heights, with the eaves of its main roof.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
@@ -124,15 +126,6 @@ It is built to answer two questions a student actually has:
   board-marked concrete under a dark crown at the east end of a long block, a strip of windows up its face, a
   glazed box at its foot and a glazed link beside it. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** on Symonds Street the map draws Auckland Bioengineering House (439) in detail: a tower clad all
-  round in glass, its corners cut, two stone fins on its north face rising above its top and a plant room on its roof,
-  with a lower building round its north and east sides. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** the map draws Architecture - West (421W) in detail: a slab in pale concrete with a pale
-  louvred parapet and a band of windows on each floor of its north-east faces above its glazed storey of doors, a
-  grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
-  its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
-  and its card says what is estimated.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -1217,8 +1210,8 @@ If you represent the University and would like something changed or removed, ple
   Biology Building and 2-6 Park Ave are estimated in a photograph, as is the place of one of Auckland Bioengineering
   House's stone fins). The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
-  Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Six of them,
+  Alfred Nathan House and 17 Eden Crescent among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
   building during building works: the LiDAR of May 2024 has scaffold decks over its north-east
