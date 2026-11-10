@@ -69,6 +69,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-11:** on the City campus the map draws Building 114 in detail, where it stood as a measured massing: a
+  long block of two storeys under a deep eave, a band of windows under it over white cladding, and a glass stair
+  tower with red doors up brick steps. Its sizes come from the LiDAR; it was compared with a photograph, which is not
+  published, and its card says what is estimated.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
@@ -121,15 +125,6 @@ It is built to answer two questions a student actually has:
   board-marked concrete under a dark crown at the east end of a long block, a strip of windows up its face, a
   glazed box at its foot and a glazed link beside it. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** on Symonds Street the map draws Auckland Bioengineering House (439) in detail: a tower clad all
-  round in glass, its corners cut, two stone fins on its north face rising above its top and a plant room on its roof,
-  with a lower building round its north and east sides. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** the map draws Architecture - West (421W) in detail: a slab in pale concrete with a pale
-  louvred parapet and a band of windows on each floor of its north-east faces above its glazed storey of doors, a
-  grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
-  its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
-  and its card says what is estimated.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -310,7 +305,8 @@ model is used. The LINZ 2024 LiDAR gives its sizes, and Street View photographs 
 that each render is compared with (for the Kate Edger Information Commons, the Humanities Building, buildings 302, 303
 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House,
 the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te
-Pūtahi Tangata, the George Mason Biology Building and 2-6 Park Ave, another photograph of each). A lead agent and five
+Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave and Building 114, another photograph of each). A lead
+agent and five
 agents in parallel made the first one, the Clock Tower, each agent owning one part (the tower, the entrance bay, the
 pavilions, the light and
 materials, the pipeline). Seen from the three Street View panoramas in front of the building, the
@@ -867,6 +863,22 @@ within 0.5 m of the LiDAR's height. What the photograph does not show is drawn p
 | ![2-6 Park Ave from Park Avenue, drawn from code](docs/landmarks/2-6-park-ave-front.jpg) | ![2-6 Park Ave from above, drawn from code](docs/landmarks/2-6-park-ave-above.jpg) |
 | ![2-6 Park Ave on the map, drawn from code in the map's colours](docs/landmarks/2-6-park-ave-map.jpg) | ![2-6 Park Ave from Park Avenue, through the walker's eyes](docs/landmarks/2-6-park-ave-eyes.jpg) |
 
+The thirty-third is Building 114, on the City campus, until now a measured massing: a long block of two storeys under a
+flat roof with a deep eave all round and a raised strip down the middle of its roof; on its south-west face, on a lawn
+and a car park, a band of windows under the eave over white cladding, a floor band, a ground storey of windows between
+dark posts, and a glass stair tower with red doors up four brick steps. Its heights and plans come from the LiDAR,
+which also sees the ground under its eaves, where the walls are drawn set back; the windows, the floor band, the
+posts, the stair tower's frames, doors and steps and the eave's underside are estimated with the photograph as a
+reference. One photograph from the car park, looking at the south-east half of the south-west face; counted inside
+the rectangle the model fills on the screen, its silhouette has an IoU of 0.95 in it, and the brightness of its
+cladding is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.94, and on 99% of
+the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 114 from the car park, drawn from code](docs/landmarks/building-114-front.jpg) | ![Building 114 from above, drawn from code](docs/landmarks/building-114-above.jpg) |
+| ![Building 114 on the map, drawn from code in the map's colours](docs/landmarks/building-114-map.jpg) | ![Building 114 from the car park, through the walker's eyes](docs/landmarks/building-114-eyes.jpg) |
+
 The site draws each landmark in place of its buildings' blocks (the Clock Tower in place of buildings
 105 and 105S, its south range; Old Government House in place of 102; the General Library in place
 of 109; Old Choral Hall in place of 104; Maclaurin Chapel in place of 107; the Clock Tower East Wing
@@ -879,7 +891,8 @@ Architecture - West in place of 421W; Architecture - East in place of 421E; Buil
 Bioengineering House in place of 439; the Sir Owen G Glenn Building in place of 260; 49 Symonds Street in place of 620;
 Okareta in place of 215; building 501 of the M&HS Building in place of 501; building 502 of the M&HS Building in place
 of 502; building 505 of the M&HS Building in place of 505; building 507 of the M&HS Building in place of 507; Te Pūtahi
-Tangata in place of 201; the George Mason Biology Building in place of 106; 2-6 Park Ave in place of 529) when the
+Tangata in place of 201; the George Mason Biology Building in place of 106; 2-6 Park Ave in place of 529; Building 114
+in place of 114) when the
 camera comes
 near: on the map in the map's colours, and from a walker's height in its own materials on a
 computer with a graphics card. The blocks still answer a click and open on their floors. The
@@ -897,10 +910,10 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Fourteen are on the site
-  (`landmarks/measured/`): on the City campus six plain buildings, and three of the buildings planned
+  measured heights, walls, storeys and windows by the street look's rules. Twenty-one are on the site
+  (`landmarks/measured/`): on the City campus nine plain buildings, and five of the buildings planned
   as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
-  the Newmarket campus four. The other buildings it measures keep their blocks, each with its reason
+  the Newmarket campus six. Building 114, one of the plain buildings, is now a landmark. The other buildings it measures keep their blocks, each with its reason
   in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
@@ -1064,7 +1077,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | [OpenStreetMap](https://www.openstreetmap.org/copyright) via the Overpass API | Surrounding buildings, streets, paths, parks, trees | © OpenStreetMap contributors, [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/). The snapshot in `data/raw/osm/` and the derived `public/data/uoa/context.json` are under the same licence. |
 | [University of Auckland Calendar 2026](https://www.auckland.ac.nz/en/about-us/about-the-university/the-university/official-publications/university-calendar/current-calendar.html) | Semester dates, breaks, holidays; list of subject codes | © University of Auckland. Dates and codes are quoted as facts with a link to the source. |
 | [LINZ 8 m Digital Elevation Model (2012)](https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/), via the [AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/) | The height of the ground | New Zealand terrain data © Land Information New Zealand and the New Zealand Government, [CC BY 3.0 NZ](https://creativecommons.org/licenses/by/3.0/nz/). The tiles also hold SRTM and GMTED2010 data (U.S. Geological Survey) and ETOPO1 (U.S. NOAA) at the coast. The tiles in `data/raw/terrain/` and the derived `public/data/uoa/terrain/` are under the same terms. |
-| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315), the Humanities Building (206), building 302 of the Science Centre (302), building 303 of the Science Centre (303), building 303S of the Science Centre (303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), Te Pūtahi Tangata (201), the George Mason Biology Building (106) and 2-6 Park Ave (529), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/`, `landmarks/humanities-building/`, `landmarks/science-centre-302/`, `landmarks/science-centre-303/`, `landmarks/science-centre-303s/`, `landmarks/architecture-west/`, `landmarks/architecture-east/`, `landmarks/building-907/`, `landmarks/auckland-bioengineering-house/`, `landmarks/owen-g-glenn-building/`, `landmarks/49-symonds-street/`, `landmarks/okareta/`, `landmarks/mhs-building-501/`, `landmarks/mhs-building-502/`, `landmarks/mhs-building-505/`, `landmarks/mhs-building-507/`, `landmarks/te-putahi-tangata/`, `landmarks/george-mason-biology/` and `landmarks/2-6-park-ave/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
+| [Auckland Part 1 LiDAR point cloud (2024)](https://doi.org/10.5069/G9HH6H8T), tiles `CL2_BA32_2024_1000_*`, captured by Woolpert for Regional Software Holdings Limited and distributed by OpenTopography and LINZ | The sizes of the Clock Tower (buildings 105 and 105S), Old Government House (102), the General Library (109), the range of Old Choral Hall (104) on Symonds Street, Maclaurin Chapel (107), the Clock Tower East Wing (119), 9 Eden Crescent (801), 15 Eden Crescent (802), the Fisher Building (804), the Thomas Building Extension (110N), the Kenneth Myers Centre (820) but for its west part, the Thomas Building (110), the Music School (250), the Kate Edger Information Commons (315), the Humanities Building (206), building 302 of the Science Centre (302), building 303 of the Science Centre (303), building 303S of the Science Centre (303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), Te Pūtahi Tangata (201), the George Mason Biology Building (106), 2-6 Park Ave (529) and Building 114 (114), measured for their models in `landmarks/clocktower/`, `landmarks/old-government-house/`, `landmarks/general-library/`, `landmarks/old-choral-hall/`, `landmarks/maclaurin-chapel/`, `landmarks/clock-tower-east-wing/`, `landmarks/nine-eden-crescent/`, `landmarks/fifteen-eden-crescent/`, `landmarks/fisher-building/`, `landmarks/thomas-building-extension/`, `landmarks/kenneth-myers-centre/`, `landmarks/thomas-building/`, `landmarks/music-school/`, `landmarks/kate-edger-information-commons/`, `landmarks/humanities-building/`, `landmarks/science-centre-302/`, `landmarks/science-centre-303/`, `landmarks/science-centre-303s/`, `landmarks/architecture-west/`, `landmarks/architecture-east/`, `landmarks/building-907/`, `landmarks/auckland-bioengineering-house/`, `landmarks/owen-g-glenn-building/`, `landmarks/49-symonds-street/`, `landmarks/okareta/`, `landmarks/mhs-building-501/`, `landmarks/mhs-building-502/`, `landmarks/mhs-building-505/`, `landmarks/mhs-building-507/`, `landmarks/te-putahi-tangata/`, `landmarks/george-mason-biology/`, `landmarks/2-6-park-ave/` and `landmarks/building-114/`; the heights and roofs of the measured massings, in `landmarks/measured/buildings/` | Sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's config and `parts/common.js` and in the measured massings' data files; the tiles stay on the computer that fetched them. |
 | Google Street View, through the Map Tiles API | Photographs the models of the Clock Tower, Old Government House, the General Library, Old Choral Hall, Maclaurin Chapel, the Clock Tower East Wing, 9 Eden Crescent, 15 Eden Crescent, the Fisher Building, the Thomas Building Extension, the Kenneth Myers Centre, the Thomas Building and the Music School were compared with while they were drawn, and the heights of the Kenneth Myers Centre's west part were measured in | © Google. Used as references only: never published, traced or sampled, and kept on the computer that fetched them. |
 | A photograph of the Kate Edger Information Commons from Alfred Street | The look its model was compared with while it was drawn, and the heights of its screens, glazing, mesh panels and shopfront toward Alfred Street and of the lower edge of its end over the sunken court, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of the Humanities Building from its courtyard | The look its model was compared with while it was drawn, and the upper edge of its top brick band, the sill of its lowest windows and the sides of its entrance on its face to the courtyard, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1079,6 +1092,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of Te Pūtahi Tangata from the street to its north-west | The look its model was compared with while it was drawn, and, as a reference, the depth of its folded roof's plates at the front and of its canopy, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of the George Mason Biology Building from the street to its south-east | The look its model was compared with while it was drawn, and, as a reference, the sizes and places of the windows of its south-east end and its pilasters' width, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of building 505 of the M&HS Building from the main road to its north-east | The look its model was compared with while it was drawn, and, as a reference, its north face's storeys, how far its glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their frames, the east face's glass and its foot, and the glazed front and the link under their grey bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Building 114 from the car park to its south-west | The look its model was compared with while it was drawn, and, as a reference, its upper window band and mullions, its floor band, its ground storey's windows and posts, its stair tower's frames, doors and steps, and its eave's underside, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of 2-6 Park Ave from the footpath of Park Avenue | The look its model was compared with while it was drawn, and, as a reference, its balconies' slabs' depth and their rails' bars and posts, the glazing behind them on the east face and its ground storey's brick and windows, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - West from the paved level to its north | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets and windows on its north-east faces | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1200,13 +1214,13 @@ If you represent the University and would like something changed or removed, ple
   Science Centre (302, 303, 303S), Architecture - West (421W), Architecture - East (421E), Building 907 (907), Auckland
   Bioengineering House (439), the Sir Owen G Glenn Building (260), 49 Symonds Street (620), Okareta (215), buildings
   501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), Te Pūtahi Tangata (201), the George Mason Biology
-  Building (106) and 2-6 Park Ave (529) are the exceptions:
+  Building (106), 2-6 Park Ave (529) and Building 114 (114) are the exceptions:
   their models are drawn to
   sizes measured from LiDAR (the Kenneth Myers Centre's west part from an aerial photograph; some heights
   of the Kate Edger Information Commons, the Humanities Building, buildings 302, 303 and 303S of the Science Centre,
   Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House, the Sir Owen G Glenn Building,
   49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te Pūtahi Tangata, the George Mason
-  Biology Building and 2-6 Park Ave are estimated in a photograph, as is the place of one of Auckland Bioengineering
+  Biology Building, 2-6 Park Ave and Building 114 are estimated in a photograph, as is the place of one of Auckland Bioengineering
   House's stone fins). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
@@ -1562,6 +1576,14 @@ If you represent the University and would like something changed or removed, ple
   model is flat at about 80 m there), so the model stands on the drawn ground at its door, 10.9 m higher than the real
   one, as the blocks round it do. While a building beside it is open, it gives way to block 529, which sinks to a
   footprint on its footing: that footprint stands above the drawn ground on all its cells, by up to 0.8 m.
+- **Building 114 is seen from its south-west only.** One photograph, on a clear day, looks at the south-east half of
+  its south-west face from the car park; its camera is fitted to the eave's fascia against the sky and its south-east
+  corner. The walls stand behind the eave where the LiDAR sees the ground under it; the windows, the floor band, the
+  posts, the stair tower's frames, doors and steps and the eave's underside are estimated in the photograph. The
+  rest of that face and the other faces, which no photograph shows, are drawn plainly, and the flues and vents on the
+  roof are not drawn. Its entrance is not known from a record: its door is set on the path before the steps up to
+  the stair tower's doors. The map's ground there is 0.83 m under the LiDAR's, so the model stands that much lower
+  than the real building, on the drawn ground at its door.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its

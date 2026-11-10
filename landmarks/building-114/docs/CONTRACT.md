@@ -14,7 +14,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers): one long block of two storeys, its walls (u -28.6 to 28.2,
   w -8.2 to 8.1) under a flat roof with a deep eave all round, the roof's edge at 8.35 (u -29.6 to 29.1, w -9.6 to
   9.8: 1.7 m out on the south-west, about 1 m at the ends), the flat roof at 8.55 inside it and a raised strip down its
-  middle at 10.05 (u -26 to 25, w -4 to 4); a glass stair tower on the south-west face (u -18.0 to -14.2, its front at
+  middle at 10.05 (u -26 to 25, w -4 to 4); a glass stair tower on the south-west face (u -18.0 to -14.5, its front at
   w 9.3, under the eave). The LiDAR's roof reaches 2 to 3 m past the campus map's ring at the south-east end and along
   the north-east face: the model follows the LiDAR. The lower part past the south-east end (its roof at 5.4, u -45 to
   -32) lies outside 114's ring and is not drawn. A few returns over the roof up to 12 m (flues, vents) are not drawn,
@@ -23,8 +23,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   to 36.5 along the north-east face.
 
 ## Who owns what
-- `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/shapes.js` (106's), `model.js`: the
-  lead.
+- `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/facade.js`, `parts/shapes.js` (106's),
+  `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by
@@ -43,6 +43,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   no record of the entrance), `H`, the thresholds and the camera moved with it, `FOOT` down to 36.5 m. The light: the
   sun high to the west-north-west (300 deg, 65 up), exposure 0.92: the cladding's luma 185 against 193 and 189.
   Silhouette IoU 0.934 (0.951 in the box), luma p50 183 against 173; top view as before.
+- Step 8 (2026-11-11): on the site; the glass bands start 1 cm over their sills and stop 1 cm under the eave or
+  2 cm under the floor band, the posts stand 1 cm off the wall and the stair tower's uprights run 2 cm past its glass,
+  where the landmark tests' faces check found faces of two materials in one plane. 648 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

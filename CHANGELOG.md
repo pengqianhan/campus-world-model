@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-11
+
+### Added
+
+- **Building 114 drawn in detail.** Near the camera the map draws Building 114, on the City campus, from code in
+  place of the measured massing that stood for it: a long block of two storeys under a flat roof with a deep eave all
+  round and a raised strip down the middle of its roof; on its south-west face a band of windows under the eave over
+  white cladding, a floor band, a ground storey of windows between dark posts, and a glass stair tower with red doors
+  up four brick steps. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the car park,
+  and its card says what is estimated: the south-west face's windows, floor band and posts, the stair tower's frames,
+  doors and steps and the eave's underside, with the photograph as a reference, and the faces no photograph shows.
+  Its measured massing's data file has gone. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own walls, glass, doors, steps and roofs (#PR).
+
 ## 2026-11-10
 
 ### Added
