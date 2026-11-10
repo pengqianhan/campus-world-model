@@ -1,9 +1,9 @@
 {
  "name": "67-symonds-street",
  "site": false,
- "estimated": "(to be written)",
+ "estimated": "the south and east faces' windows, the curved bay's dark bands and the louvred panels, with a photograph as a reference; the parapet's thickness; the porch's glass roof as a slab (its pyramid not drawn); the podium's walls, drawn to the campus map's outline; and the faces no photograph shows, drawn plainly",
  "refs": "photos",
- "refs_note": "(to be written)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the street south-east of the tower, about 57 m from its south-east corner, looking north-west along bearing 323 degrees through a lens of about 47 degrees across; its camera is fitted to the tower's south and east roof edges against the sky, its south-east and south-west corners and their verticals, held near 1.6 m over the LiDAR's ground (1.67 m)",
  "building": {
   "id": "619",
   "also": [],
@@ -130,7 +130,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 55.66,
+ "ground": 63.49,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -148,14 +148,14 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 2.99,
-  "tower_above": 2.99,
-  "spine_below": 39.99,
+  "min_above": -4.84,
+  "tower_above": -4.84,
+  "spine_below": 32.16,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "east",
   "axis_from": "walls",
-  "thresholds_note": "min_above 3 m over the provisional ground (55.66 m, the median LiDAR ground within the outline's band, as the measured massing took it; the ground falls from about 62 m on the south to about 53 m on the north); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's south face (bearing 270 deg), so z faces south, to the entrance and the street",
+  "thresholds_note": "min_above 3 m over the provisional ground (55.66 m, the median LiDAR ground within the outline's band, as the measured massing took it; the ground falls from about 62 m on the south to about 53 m on the north and 40 m in the gully on the west); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's south face (bearing 270 deg), so z faces south, to the entrance and the street; all three lowered by 7.83 m with the ground set at the door (step 7), so that they pick the same points",
   "expected": {
    "centre": [
     -422.312220189206,
@@ -180,5 +180,17 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true
- }
+ },
+ "light": {
+  "sunaz": 15,
+  "sunel": 45,
+  "exposure": 0.62,
+  "note": "estimated: the photograph is taken under an overcast sky, its east face brighter than its south. The viewer's sun stands high to the north-north-east (15 deg round, 45 up), so that the east face takes more light than the south, at an exposure of 0.62: the luma (p50) of the south face's plain panels 143 against the photograph's 144 (west end) and 149 (by the windows), of the east face's 198 against 194 (the compare's figure over the model's screen box: 144 against 152)"
+ },
+ "door": {
+  "x": 12.5,
+  "z": 25.0,
+  "note": "on the walkway before the entrance's porch, at the south side of the tower (the campus map records no lobby or entrance in 619): u -12.5, w 25.0 in the building's frame ((12.5, 25.0) in the view frame), 1.2 m out from the porch's roof; the walkway falls from the street (66.1 m) to the porch. The LiDAR's ground within 1 m: 30 returns, p10/p50/p90 63.252/63.491/63.813 m"
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-11); the provisional ground was 55.66 m, the median LiDAR ground in the outline's band, from which the heights in parts/common.js are measured (its H moves them on to this ground)"
 }
