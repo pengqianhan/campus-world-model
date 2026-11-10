@@ -258,7 +258,7 @@ export class WalkerWorld {
       height: w.height,
       indoor: !!w.indoor,
       ride: w.ride,
-      eye: flying ? w.alt + DRONE_MIDDLE - 0.08 : w.height + lift + EYE_HEIGHT,
+      eye: flying ? w.alt + DRONE_MIDDLE - 0.1 : w.height + lift + EYE_HEIGHT,
       aim: flying ? w.alt + DRONE_MIDDLE : w.height + lift + 1.35,
     };
   }

@@ -1,7 +1,7 @@
 // What a walker rides besides its feet: a stand-up electric scooter, and a small drone with four
 // rotors that it flies in its place. Both are made up and drawn here from boxes and cylinders, in
 // greys with the site's teal; neither is any real make, and neither is any of the University's
-// colours. Each faces north with no turn (-z), as the figure does, and stands with its base at its
+// colours. The drone is pale, so that it shows against trees and roofs from behind it. Each faces north with no turn (-z), as the figure does, and stands with its base at its
 // origin: the scooter's wheels on the ground, the drone's skids.
 import {
   BoxGeometry,
@@ -24,10 +24,12 @@ export const RIDES: readonly Ride[] = ["walk", "scooter", "fly"];
 export const DECK = 0.15;
 /** Where the scooter's grips are in its own frame, metres: either side, up, and ahead (-z). */
 export const GRIP = { x: 0.23, y: 1.1, z: -0.38 } as const;
+/** How much larger than a small drone's 0.55 m across the drone is drawn, so that it reads on a phone. */
+const DRONE_SIZE = 1.3;
 /** Metres from the drone's skids to the middle of its body, which a camera behind it looks at. */
-export const DRONE_MIDDLE = 0.12;
+export const DRONE_MIDDLE = 0.12 * DRONE_SIZE;
 /** Metres from the drone's middle to the tips of its rotors: how close it comes to a wall. */
-export const DRONE_REACH = 0.42;
+export const DRONE_REACH = 0.42 * DRONE_SIZE;
 
 const TEAL = 0x6ed3c8;
 
@@ -139,8 +141,8 @@ export class Drone {
   private spin = 0;
 
   constructor() {
-    const shell = marked(new MeshStandardMaterial({ color: 0x3a4148, roughness: 0.4, metalness: 0.35 }));
-    const dark = marked(new MeshStandardMaterial({ color: 0x1b1f23, roughness: 0.6, metalness: 0.4 }));
+    const shell = marked(new MeshStandardMaterial({ color: 0xe3e7ea, roughness: 0.45, metalness: 0.1 }));
+    const dark = marked(new MeshStandardMaterial({ color: 0x2a3036, roughness: 0.6, metalness: 0.4 }));
     const trim = marked(new MeshStandardMaterial({ color: TEAL, roughness: 0.5, metalness: 0.2 }));
     const blade = marked(new MeshStandardMaterial({ color: 0x24282c, roughness: 0.5 }));
     const glass = marked(new MeshStandardMaterial({ color: 0x0a0d10, roughness: 0.08, metalness: 0.9 }));
@@ -148,8 +150,9 @@ export class Drone {
     this.tail = new MeshBasicMaterial({ color: 0xff3b30 });
     const front = new MeshBasicMaterial({ color: 0xf4fbff });
     this.root.add(this.body);
-    this.body.position.y = DRONE_MIDDLE;
-    // The body: a shell with a lighter top and a teal line round it.
+    this.root.scale.setScalar(DRONE_SIZE);
+    this.body.position.y = DRONE_MIDDLE / DRONE_SIZE;
+    // The body: a pale shell with a dark top and a teal line round it.
     this.body.add(part(new BoxGeometry(0.2, 0.075, 0.3), shell, 0, 0, 0));
     this.body.add(part(new BoxGeometry(0.16, 0.03, 0.22), dark, 0, 0.05, 0.02));
     this.body.add(part(new BoxGeometry(0.205, 0.012, 0.305), trim, 0, -0.012, 0));
@@ -171,7 +174,7 @@ export class Drone {
       [1, 1],
     ] as const) {
       const at = { x: x * 0.2, z: z * 0.18 };
-      const a = part(arm, dark, at.x / 2, 0, at.z / 2);
+      const a = part(arm, shell, at.x / 2, 0, at.z / 2);
       a.rotation.y = Math.atan2(at.x, at.z);
       a.scale.z = Math.hypot(at.x, at.z);
       this.body.add(a);
@@ -199,7 +202,7 @@ export class Drone {
     skid.rotateX(Math.PI / 2);
     for (const x of [-0.07, 0.07]) {
       for (const z of [-0.06, 0.06]) this.body.add(part(leg, dark, x, -0.075, z));
-      this.body.add(part(skid, dark, x, -DRONE_MIDDLE + 0.008, 0));
+      this.body.add(part(skid, dark, x, -DRONE_MIDDLE / DRONE_SIZE + 0.008, 0));
     }
     this.root.userData.noPick = true;
   }
@@ -222,7 +225,7 @@ export class Drone {
     const roll = -Math.max(-0.25, Math.min(0.25, (turn / 90) * Math.min(1, Math.abs(forward) / 4 + 0.3) * 0.25));
     this.body.rotation.x += (pitch - this.body.rotation.x) * k;
     this.body.rotation.z += (roll - this.body.rotation.z) * k;
-    this.body.position.y = DRONE_MIDDLE + (flying ? Math.sin(t * 2.1) * 0.025 + Math.max(-0.03, Math.min(0.03, climb * -0.006)) : 0);
+    this.body.position.y = DRONE_MIDDLE / DRONE_SIZE + (flying ? Math.sin(t * 2.1) * 0.025 + Math.max(-0.03, Math.min(0.03, climb * -0.006)) : 0);
     this.tail.color.setHex(Math.sin(t * 5) > 0 || !flying ? 0xff3b30 : 0x5a120f);
   }
 
