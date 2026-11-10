@@ -28,7 +28,7 @@ A change to what the site does or shows adds its line here, and the README's
   second photograph, of its east entrance, shows its stair tower and canopy to be glass. On the site the map's ground
   along its south face stands over the real lane, so its ground storey stands partly under it. Its measured massing's
   data file has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
-  its own walls, glass, doors and roofs (#PR).
+  its own walls, glass, doors and roofs (#162).
 
 ## 2026-11-10
 
