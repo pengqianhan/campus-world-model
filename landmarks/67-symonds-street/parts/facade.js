@@ -11,7 +11,8 @@ function south(b, d0, d1, [u0, u1], [y0, y1], material) {
   prism(b, [[-u0, w + d0], [-u1, w + d0], [-u1, w + d1], [-u0, w + d1]], y0, y1, material);
 }
 
-/** A box on the east face (u = FACES.east.u), from d0 to d1 in front of it (to the east), over [w0, w1] and [y0, y1]. */
+/** A box on the east face (u = FACES.east.u), from d0 to d1 in front of it (to the east), over [w0, w1] and
+ * [y0, y1]. */
 function east(b, d0, d1, [w0, w1], [y0, y1], material) {
   const u = FACES.east.u;
   prism(b, [[-(u - d0), w0], [-(u - d1), w0], [-(u - d1), w1], [-(u - d0), w1]], y0, y1, material);

@@ -61,17 +61,23 @@ estimated; it is a reference for the look and the comparison.
   p99.5), its top at 91.35 m (91.30 to 91.36 along every edge), 0.4 m thick (estimated); its roof inside at 90.3 m
   (`roofGrey`). Its south face goes down to the walls' foot.
 - **Over its roof**: a block turned 45 degrees (its sides on u + w = 1.65 and 15.74 and u - w = -18.79 and -6.2) to 96.0
-  m, a bar along its south-east side (u -16.6 to 2.1, w 4.6 to 8.6) to 95.8 m, and plant at 92.8 m (u -14.1 to -8.1, w
-  -1.0 to 1.9): the LiDAR's returns over 95 m and at 92.8.
-- **The podium** (`paint`, its roof `roofGrey`): the campus map's ring, its roof at 72.6 m (the LiDAR's 72.5 to 73.8
+  m; east of it a bar (u -17.1 to -7.5, w 5.0 to 7.2) to 95.2 m; and two plant rooms at 92.8 m (u -14.1 to -8.6, w -1.0
+  to 1.6, and u -14.2 to -8.9, w 3.2 to 5.0): the LiDAR's returns over 95 m, over 94 m and at 92.4 to 93.2 m.
+- **The podium** (`paint`, its roof `roofGrey`): the campus map's ring, its south and east sides drawn 0.1 m inside the
+  tower's faces (on the east the ring stands 0.15 to 0.21 m out from the tower, where the LiDAR's returns on that face
+  run on from 56 to 90 m with no step at the podium's roof), its roof at 72.6 m (the LiDAR's 72.5 to 73.8
   over it), down to the walls' foot; it runs down the slope to the gully on the west, where the ground lies at about 40
   m. Its walls follow the ring (estimated); the LiDAR's roof reaches past it by up to about 1 m in places.
 - **The porch**: in the ring's triangle south of the tower's south-east part, the LiDAR has a roof at 71.0 to 72.3 m
-  (p50 71.9) over the ground it sees through it (120 returns at 61.9 to 65.4 m): a glass roof (`glass`) from 71.66 to
-  72.26 m on the tower's face, open under it. The glass pyramid the photograph shows on it (its top about 74.8 m
-  through the photograph's camera) is not drawn.
+  (p50 71.9) over the ground it sees through it and round it (120 ground returns at 61.9 to 65.4 m over u -20 to -7, w
+  19.8 to 24.5, 3 of them inside the triangle itself): a glass roof (`glass`) from 71.66 to
+  72.26 m on the tower's face, open under it. Its plan is the ring's triangle (estimated: the LiDAR's roof at that
+  height runs on into the walkway's canopy outside the ring, with no edge between them). The glass pyramid the
+  photograph shows on it (its top about 74.8 m through the photograph's camera) is not drawn, nor a flat layer under its
+  roof at 65.3 to 65.9 m (about 38 returns: a landing or the walkway's deck).
 - **The faces the photograph sees**, through its fitted camera (estimated): storeys 4.04 m apart, the top windows' heads
-  0.9 m under the parapet's top and each window 2.46 m tall, five rows seen over the porch; on the south face three
+  at 90.0 m (the camera puts them at 90.44, 0.14 m over the roof's deck: drawn 0.3 m lower, under it) and each window
+  2.46 m tall, the four rows the photograph sees over the porch; on the south face three
   columns of windows (`glass`; u -9.34 to -7.45, -12.14 to -10.29, -15.16 to -13.17), the curved bay (u -6.38 to -2.24)
   as dark bands from 31.08 to 33.96 m over 55.66 m a storey, and plain panels either side; on the east face a louvred
   panel (`claddingPale`, w 12.55 to 15.13) and three windows (w 9.30 to 11.81, 5.65 to 8.39, 1.89 to 4.66) a storey.
@@ -81,10 +87,10 @@ estimated; it is a reference for the look and the comparison.
   against the photograph's 144 and 149, of the east face's 198 against 194 (the compare's figure over the model's screen
   box: 144 against 152).
 
-Silhouette IoU 0.944 in the model's screen box (0.697 over the photograph, whose neighbouring towers, tree and canopy
+Silhouette IoU 0.947 in the model's screen box (0.698 over the photograph, whose neighbouring towers, tree and canopy
 the model does not draw). The top view: footprint IoU 0.929 (the LiDAR's 1,400 m² against the model's 1,303, both
-1,302), 79% of the 5,200 cells both cover within 0.5 m (p10/p50/p90 -1.09/0.05/0.19 m: the parapets and plant on the
-roofs make most of the rest); the highest point 32.52 m over the door's ground against the LiDAR's 32.66 (p99.9). 816
+1,302), 80% of the 5,200 cells both cover within 0.5 m (p10/p50/p90 -1.13/0.04/0.10 m: the parapets and plant on the
+roofs make most of the rest); the highest point 32.52 m over the door's ground against the LiDAR's 32.66 (p99.9). 744
 triangles, 4 draw calls.
 
 ## On the map (step 7)

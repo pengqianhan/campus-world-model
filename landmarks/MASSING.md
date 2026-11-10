@@ -258,7 +258,7 @@ leaves out every building that the site draws as a landmark (it reads each
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 27 (40 before 250, the Music School, 315, the Kate Edger
+leaving out the landmarks and `SOON`, it measures 26 (40 before 250, the Music School, 315, the Kate Edger
 Information Commons, 206, the Humanities Building, 302, the Science Centre's tower, 303, building 303 of
 the Science Centre, 303S, building 303S of the Science Centre, 421E, Architecture - East, 421W,
 Architecture - West, 439, Auckland Bioengineering House, 260, the Sir Owen G Glenn Building, 620, 49

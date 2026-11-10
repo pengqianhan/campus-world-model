@@ -11,16 +11,19 @@ export function podium(b) {
 }
 
 /** The tower: its walls from the walls' foot (its south face goes down to the ground, the podium standing inside it
- * elsewhere) to its roof, the roof inside the parapet, and the parapet round it. */
+ * elsewhere) to the roof slab's underside, the parapet on them round its edge to its top, and the roof inside the
+ * parapet, so that the walls are white up to the parapet's top. */
 export function tower(b) {
   const [u0, u1] = TOWER.u, [w0, w1] = TOWER.w, t = TOWER.thick;
-  block(b, plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]), FOOT, TOWER.roof, WALL, ROOFS);
+  prism(b, plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]), FOOT, TOWER.roof - 0.15, WALL);
+  const inner = [[u0 + t, w0 + t], [u1 - t, w0 + t], [u1 - t, w1 - t], [u0 + t, w1 - t]];
+  prism(b, plan(inner), TOWER.roof - 0.15, TOWER.roof, ROOFS);
   for (const p of [
     [[u0, w0], [u1, w0], [u1, w0 + t], [u0, w0 + t]],
     [[u0, w1 - t], [u1, w1 - t], [u1, w1], [u0, w1]],
     [[u0, w0 + t], [u0 + t, w0 + t], [u0 + t, w1 - t], [u0, w1 - t]],
     [[u1 - t, w0 + t], [u1, w0 + t], [u1, w1 - t], [u1 - t, w1 - t]],
-  ]) prism(b, plan(p), TOWER.roof + 0.01, TOWER.parapet, WALL);
+  ]) prism(b, plan(p), TOWER.roof - 0.15, TOWER.parapet, WALL);
 }
 
 /** The porch's glass roof on the tower's south face, open under it. */

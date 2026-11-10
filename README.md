@@ -868,12 +868,12 @@ white office tower of about eight storeys over Symonds Street, with a block turn
 on a podium that runs down the slope to the gully on its north and west; on its south face three columns of windows
 and a curved bay of dark glass bands, on its east face louvred panels and windows; a glass porch over its entrance.
 Its heights and plans come from the LiDAR, which also sees the ground under the porch's roof; the windows, the bay's
-bands and the louvres are estimated with the photograph as a reference, and the podium's walls follow the campus map's
-outline. One photograph from the street south-east of the tower, under an overcast sky; counted inside the rectangle
-the model fills on the screen, its silhouette has an IoU of 0.94 in it, and the brightness of its faces is within 8
-of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 79% of the cells both cover
-it is within 0.5 m of the LiDAR's height (the parapets and plant on its roofs make most of the rest). What the
-photograph does not show is drawn plainly.
+bands and the louvres are estimated with the photograph as a reference, and the porch's plan and the podium's walls
+follow the campus map's outline. One photograph from the street south-east of the tower, under an overcast sky; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.95 in it, and the brightness of its
+faces is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 80% of the
+cells both cover it is within 0.5 m of the LiDAR's height (the parapets and plant on its roofs make most of the rest).
+What the photograph does not show is drawn plainly.
 
 | | |
 | --- | --- |
@@ -914,9 +914,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
   measured heights, walls, storeys and windows by the street look's rules. Twenty-one are on the site
   (`landmarks/measured/`): on the City campus ten plain buildings, and four of the buildings planned
   as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
-  the Newmarket campus six. 67 Symonds Street, one of those planned as landmarks, is now one. The other buildings it
-  measures keep their blocks, each with its reason
-  in `landmarks/measured/exclusions.json`.
+  the Newmarket campus six. 67 Symonds Street, which a measured massing stood in for, is now a landmark. The other
+  buildings it measures keep their blocks, each with its reason in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
   collect the Street View references (or fit a photograph's camera), correct their cameras, render and
