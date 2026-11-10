@@ -1,7 +1,7 @@
 {
  "name": "building-114",
  "site": false,
- "estimated": "(to be written at step 5)",
+ "estimated": "the south-west face's window bands, mullions, floor band and posts, the stair tower's frames, its red doors and the brick steps before them, the eave's underside, with a photograph as a reference; the rest of that face and the other faces, which no photograph shows, drawn plainly",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the car park south-west of the building, about 15 m out from its south-west face, before its south-east half, looking north-east along bearing 58 degrees through a lens of about 80 degrees across; its camera is fitted to the south-west eave's fascia against the sky, the eave's south-east corner and two verticals, held near 1.6 m over the LiDAR's ground (1.59 m)",
  "building": {
@@ -74,7 +74,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 38.65,
+ "ground": 38.04,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -92,14 +92,14 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 2.99,
-  "tower_above": 2.99,
-  "spine_below": 39.99,
+  "min_above": 3.6,
+  "tower_above": 3.6,
+  "spine_below": 40.6,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "min_above 3 m over the provisional ground (38.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 316 deg), so z faces south-west (bearing 226 deg), to the car park and the lawn",
+  "thresholds_note": "min_above 3 m over the provisional ground (38.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 316 deg), so z faces south-west (bearing 226 deg), to the car park and the lawn; all three raised by 0.61 m with the ground set at the door (step 7), so that they pick the same points",
   "expected": {
    "centre": [
     117.9767474729128,
@@ -124,5 +124,17 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true
+ },
+ "door": {
+  "x": 16.05,
+  "z": 13.0,
+  "note": "on the path before the foot of the brick steps up to the stair tower's red doors on the south-west face (the campus map records no lobby or entrance in 114): u -16.05, w 13.0 in the building's frame ((16.05, 13.0) in the view frame). The LiDAR's ground within 1 m: 30 returns, p10/p50/p90 37.969/38.043/38.102 m"
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-11); the provisional ground was 38.65 m, the median LiDAR ground in the outline's band, from which the heights in parts/common.js are measured (its H moves them on to this ground)",
+ "light": {
+  "sunaz": 300,
+  "sunel": 65,
+  "exposure": 0.92,
+  "note": "estimated: the photograph is taken on a clear day under a high sun, the south-west face bright and the eave's underside and the ground storey under the floor band in shade. The viewer's sun stands high to the west-north-west (300 deg round, 65 up), so that it falls on the face at a glancing angle, at an exposure of 0.92: the luma (p50) of the upper storey's cladding 185 against the photograph's 193 left of the stair tower and 189 right of it (the compare's figure over the model's screen box: 183 against 173)"
  }
 }

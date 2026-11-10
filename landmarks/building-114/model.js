@@ -4,11 +4,14 @@
 // The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
 import { body, roof, tower } from "./parts/block.js";
+import { face, front } from "./parts/facade.js";
 
 const PARTS = {
   body: (b) => body(b),
   roof: (b) => roof(b),
   tower: (b) => tower(b),
+  face: (b) => face(b),
+  front: (b) => front(b),
 };
 
 export function build(materials, only) {
