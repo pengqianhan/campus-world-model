@@ -1,0 +1,128 @@
+{
+ "name": "building-114",
+ "site": false,
+ "estimated": "(to be written)",
+ "refs": "photos",
+ "refs_note": "(to be written)",
+ "building": {
+  "id": "114",
+  "also": [],
+  "title": "Building 114 (114), University of Auckland",
+  "note": "outline: building 114's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 114 by its id.",
+  "outline": [
+   [
+    141.7,
+    191.8
+   ],
+   [
+    129.6,
+    179.6
+   ],
+   [
+    121.7,
+    187.4
+   ],
+   [
+    121.1,
+    186.9
+   ],
+   [
+    118.4,
+    189.5
+   ],
+   [
+    119.0,
+    190.1
+   ],
+   [
+    95.8,
+    212.9
+   ],
+   [
+    95.2,
+    212.3
+   ],
+   [
+    91.2,
+    216.1
+   ],
+   [
+    90.9,
+    215.9
+   ],
+   [
+    89.5,
+    217.2
+   ],
+   [
+    90.4,
+    218.1
+   ],
+   [
+    87.7,
+    220.8
+   ],
+   [
+    99.8,
+    233.0
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 38.65,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3604"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1802"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 2.99,
+  "tower_above": 2.99,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "thresholds_note": "min_above 3 m over the provisional ground (38.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 316 deg), so z faces south-west (bearing 226 deg), to the car park and the lawn",
+  "expected": {
+   "centre": [
+    117.9767474729128,
+    203.72932807174973
+   ],
+   "axis": [
+    -0.6990444831285586,
+    0.7150781849612854
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ }
+}
