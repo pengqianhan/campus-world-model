@@ -27,8 +27,22 @@ export const AGENT_SPEED = 4;
 const MAX_WALK = 4000;
 /** Metres a second for a walk a visitor starts with a click. */
 export const CLICK_SPEED = 3;
-/** Where a walker starts on each campus, metres east and north: on the City Campus, the Clock Tower lawn. */
-const START: Record<string, Pt> = { city: [28, 205] };
+/** Where a walker starts on each campus, metres east and north: on the City Campus, the lawn across the road west of
+ * the Clock Tower, from where the view behind the walker takes in the whole tower. */
+const START: Record<string, Pt> = { city: [-48, 218] };
+/** What a walker started at its campus's start faces, metres east and north: on the City Campus, the Clock Tower. */
+const START_FACING: Record<string, Pt> = { city: [31, 229] };
+/** How the view behind a walker just started at its campus's start looks, as setView's pitch: on the City Campus 12
+ * degrees lower than the usual view behind (4 degrees over the walker, not 16), so that it takes in the whole Clock
+ * Tower, its crown and all. */
+const START_PITCH: Record<string, number> = { city: -12 };
+
+/** The look for the view behind a walker, given `startWalking`'s reply: START_PITCH's for one it has just started at
+ * its campus's start, none for any other. */
+export function startLook(reply: Reply): { pitch?: number } {
+  const pitch = reply.home === true ? START_PITCH[selCampus.value] : undefined;
+  return pitch === undefined ? {} : { pitch };
+}
 
 export const walkerOn = signal(false);
 export const walkerView = signal<WalkerView>("map");
@@ -302,8 +316,13 @@ function startPoint(near: unknown): { at: Pt; heading: number; campus?: string }
     campusId = target.campus ?? target.building?.campus;
   }
   const campus = d.campusById.get(selCampus.value);
+  const home = p === undefined;
   p ??= START[selCampus.value] ?? campus?.center ?? [0, 0];
-  return { ...(map?.openNear(p, 60) ?? { at: p, heading: 0 }), campus: campusId };
+  const start = map?.openNear(p, 60) ?? { at: p, heading: 0 };
+  // At its campus's own start a walker faces what the start was chosen for.
+  const face = home ? START_FACING[selCampus.value] : undefined;
+  if (face) start.heading = ((Math.atan2(face[0] - start.at[0], face[1] - start.at[1]) * 180) / Math.PI + 360) % 360;
+  return { ...start, campus: campusId };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -315,8 +334,10 @@ export function startWalking(opts: { name?: string; near?: unknown } = {}): Repl
   const s = need();
   walkerOn.value = true;
   const name = cleanName(opts.name);
+  // A walker started here with no place asked for stands at its campus's start (`home`).
+  const home = !s.walkers.has(name) && opts.near === undefined;
   if (!s.walkers.has(name)) spawn({ name, near: opts.near });
-  return { walkers: s.walkers.names().map((n) => s.walkers.state(n)) };
+  return { walkers: s.walkers.names().map((n) => s.walkers.state(n)), home };
 }
 
 /** Turns walking off: every walker leaves and the view goes back to the map. */

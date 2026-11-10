@@ -10,7 +10,7 @@ import { SearchPanel } from "./SearchPanel.tsx";
 import { TimePanel, notTeachingReason, previewTeachingDay } from "./TimePanel.tsx";
 import { TopBar, statusLine } from "./TopBar.tsx";
 import { WalkerPanel } from "./WalkerPanel.tsx";
-import { MY_WALKER, setView, startWalkerKeys, startWalking, stopWalking, walkerOn, walkerView } from "../app/walker.ts";
+import { MY_WALKER, setView, startLook, startWalkerKeys, startWalking, stopWalking, walkerOn, walkerView } from "../app/walker.ts";
 
 /** Whether the campus panel is open. It starts shut, as a small button, so the map has the screen. */
 const stripOpen = signal(false);
@@ -74,10 +74,11 @@ function StatusStrip() {
             class="walk-start"
             id="walk-start"
             onClick={() => {
-              // The walk is a game: it starts behind the walker, with the whole screen.
+              // The walk is a game: it starts behind the walker, with the whole screen; at the campus's start the view
+              // takes in what the start faces (on the City Campus, the Clock Tower).
               panel.value = "none";
-              startWalking();
-              setView({ view: "follow", name: MY_WALKER });
+              const reply = startWalking();
+              setView({ view: "follow", name: MY_WALKER, ...startLook(reply) });
             }}
             title={t("walker.startHint")}
           >
