@@ -206,13 +206,13 @@ export function WalkerPanel() {
   const [to, setTo] = useState("");
   const [message, setMessage] = useState<string | undefined>(undefined);
   // The walk to a place, wandering, how to steer and that all of it is made up: a menu from the top
-  // right, open as a walk starts on a wide screen, shut on a touch screen, where the walk needs it.
-  const [more, setMore] = useState(() => !touch);
+  // right, shut as a walk starts on every screen, so that the walk has the view; Go to opens it.
+  const [more, setMore] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const dock = useDock(walkerOn.value);
   const on = walkerOn.value;
   useEffect(() => {
-    if (on) setMore(!touch);
+    if (on) setMore(false);
   }, [on]);
   // Going into a building shuts the menu: the building's floors and card take that part of the screen.
   const inside = !!walkerStatus.value?.indoor;

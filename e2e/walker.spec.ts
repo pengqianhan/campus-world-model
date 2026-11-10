@@ -117,9 +117,12 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   const to = ((await walker(page, "list")) as { walkers: { name: string; at: [number, number] }[] }).walkers.find((w) => w.name === "Walker")!.at;
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(0.3);
 
-  // On a wide screen the menu at the top right is open as the walk starts: a walk to a place,
-  // wandering, how to steer, and that the walker, its scooter and its drone are made up. Its button
-  // folds it away.
+  // The menu at the top right is shut as the walk starts, on a wide screen too. Go to opens it: a walk
+  // to a place, wandering, how to steer, and that the walker, its scooter and its drone are made up;
+  // and folds it away.
+  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("#walker-menu")).toBeHidden();
+  await page.locator("#walker-more").click();
   await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("#walker-menu")).toContainText("Space or E to climb");
   await expect(page.locator("#walker-menu")).toContainText("made-up figure, scooter and drone");
