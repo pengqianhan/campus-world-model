@@ -187,10 +187,11 @@ describe("About, at the site's root since 2026-11-10", () => {
       const w = words(id);
       expect(a).toContain(`<h3>${escapeHtml(lookupWords(w, "app.title")!)}</h3>`);
       expect(a).toContain(escapeHtml(lookupWords(w, "about.unofficial")!));
-      expect(lookupWords(w, "about.unofficial")).toMatch(/not affiliated with, endorsed by or maintained by \S/);
+      expect(lookupWords(w, "about.unofficial")).toMatch(/not affiliated with, endorsed by or maintained by (the )?[A-Z][\w ]+[a-z]/);
       const sources = meta(id).sources;
       expect(sources.length).toBeGreaterThan(0);
       for (const src of sources) {
+        expect(src.url).toMatch(/^https:\/\//);
         expect(a).toContain(`<a href="${escapeHtml(src.url)}" rel="noopener noreferrer">${escapeHtml(src.name)}</a>`);
         expect(a).toContain(`<time datetime="${src.snapshotDate}">${escapeHtml(longDate(src.snapshotDate, w))}</time>`);
         expect(a).toContain(`<dd>${escapeHtml(src.licence)}</dd>`);
@@ -241,6 +242,12 @@ describe("About, at the site's root since 2026-11-10", () => {
 
   it("no other school's section names a landmark: each is drawn only on its own school's site", () => {
     for (const id of ids.filter((x) => x !== "uoa")) expect(article(id)).not.toContain('<p class="landmarks">');
+  });
+
+  it("a date that is not one is shown as it is, and does not stop the page", () => {
+    expect(longDate("2026-10-13", shared)).toBe("13 October 2026");
+    expect(longDate("", shared)).toBe("");
+    expect(longDate("soon", shared)).toBe("soon");
   });
 
   it("a school's page links to its section on the root it is served from, or on campusworldmodel.com from any other copy", () => {

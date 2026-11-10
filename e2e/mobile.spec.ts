@@ -1,6 +1,6 @@
 // Criterion 6: on a 390 px wide phone the campus is visible and search leads to building and room details.
 import { expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, params, settle, shot } from "./helpers.ts";
+import { expectRealRender, open, openRoot, params, settle, shot } from "./helpers.ts";
 
 test("6. phone: search for a room and see the building and class information", async ({ page }) => {
   await open(page, "?light=day");
@@ -64,6 +64,14 @@ test("6. phone: search for a room and see the building and class information", a
   await page.locator(".result-main").first().tap();
   await settle(page);
   await expect(bar).toContainText("Engineering");
+
+  // About is reachable and readable: on the page at the site's root since 2026-11-10, from its bar.
+  await openRoot(page);
+  await page.locator("#about-link").tap();
+  await expect(page.locator("#about")).toBeInViewport();
+  await expect(page.locator("#about-uoa .unofficial")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width);
+  await shot(page, "06-mobile-about");
 });
 
 test("phone: a tap on an unnamed space says its type on the campus map, inside the screen, and selects nothing", async ({ page }) => {

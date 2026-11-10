@@ -59,7 +59,8 @@ A change to what the site does or shows adds its line here, and the README's
   coverage, its limits and its privacy. A bar at its top links to the source code on GitHub, with its mark, and to
   About; the page for an unknown address has the same bar. A school's map has no About button, no "Other worlds" link
   and no flight to the Tsinghua World Model any more; it keeps its GitHub button, and its credit line at the bottom and
-  its "Why?" links open its section of About. The copy on GitHub Pages links to the one at campusworldmodel.com.
+  its "Why?" links open its section of About. The copy on GitHub Pages links to the one at campusworldmodel.com
+  (#156).
 
 ## 2026-11-09
 

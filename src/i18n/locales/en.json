@@ -348,8 +348,8 @@
       "calendar": "semester dates",
       "subjects": "the course list"
     },
-    "show": "{campus}: the term, other campuses and other worlds",
-    "showBuildings": "{campus}: what the site shows of it, and the way to other worlds",
+    "show": "{campus}: the term and other campuses",
+    "showBuildings": "{campus}: what the site shows of it",
     "hide": "Hide the campus panel"
   },
   "travel": {

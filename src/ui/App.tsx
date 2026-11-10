@@ -23,7 +23,7 @@ function chooseCampus(id: string): void {
 
 /**
  * Campus-level summary: where we are in the academic year and what is timetabled right now, with
- * the campuses and the other worlds. Shut, it is a button with the campus's name, and the walk is
+ * the campuses. Shut, it is a button with the campus's name, and the walk is
  * a button beside it.
  */
 function StatusStrip() {

@@ -93,9 +93,10 @@ function word(words: Words, key: string, params: Record<string, string | number>
 
 const locale = (words: Words) => lookupWords(words, "_meta.intl") ?? "en-NZ";
 
-/** A date such as 2026-10-13 in long form, "13 October 2026", as About shows it. */
+/** A date such as 2026-10-13 in long form, "13 October 2026", as About shows it; anything else as it is. */
 export function longDate(date: string, words: Words): string {
-  const [y, m, d] = date.split("-").map(Number) as [number, number, number];
+  const [y, m, d] = date.split("-").map(Number);
+  if (!y || !m || !d) return date;
   return new Intl.DateTimeFormat(locale(words), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
 }
 

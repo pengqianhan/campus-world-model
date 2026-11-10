@@ -1,7 +1,7 @@
 // End-to-end checks of the acceptance criteria, numbered as in the project brief.
 // They run against a local build by default and against the deployed site when E2E_BASE_URL is set.
 import { expect, test } from "@playwright/test";
-import { expectRealRender, open, openStrip, params, settle, shot, withFixtureSchedule } from "./helpers.ts";
+import { expectRealRender, open, openRoot, openStrip, params, settle, shot, withFixtureSchedule } from "./helpers.ts";
 
 /** What the clocks in Auckland show right now, computed independently of the app. */
 function aucklandNow(): { hhmm: string; minutes: number } {
@@ -251,21 +251,50 @@ test("5. a copied URL restores the same building, floor, room and time", async (
   await expectRealRender(copy);
 });
 
-test("7. About is on the page at the site's root: the map has no About of its own, and its attribution and its reasons link there", async ({ page }) => {
+test("7. About carries the unofficial notice, every source with link and snapshot date, attribution and limitations", async ({ page }) => {
+  // Since 2026-11-10 About is on the page at the site's root, one section a school; the map links to its own.
+  await openRoot(page, "#about-uoa");
+  const about = page.locator("#about-uoa");
+  await expect(about.locator(".unofficial")).toBeInViewport();
+  await expect(about.locator(".unofficial")).toContainText("not affiliated with");
+
+  const sources = about.locator("ul.sources > li");
+  expect(await sources.count()).toBeGreaterThanOrEqual(3);
+  for (const li of await sources.all()) {
+    await expect(li.locator("a")).toHaveAttribute("href", /^https:\/\//);
+    await expect(li.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  }
+  await expect(about.locator("ul.sources")).toContainText("OpenStreetMap");
+  await expect(about.locator("ul.sources")).toContainText("maps.auckland.ac.nz");
+  // The ground's heights, with the Crown copyright and licence its source asks for.
+  await expect(about.locator("ul.sources")).toContainText("Land Information New Zealand");
+  await expect(about.locator("ul.sources")).toContainText("CC BY 3.0 NZ");
+  await expect(about.locator(".osm-attribution")).toContainText("© OpenStreetMap contributors");
+  await expect(about.locator(".osm-attribution a")).toHaveAttribute("href", "https://www.openstreetmap.org/copyright");
+  await expect(about.locator("ul.limits")).toContainText("No class times yet");
+  await expect(about.locator("ul.limits")).toContainText("not surveyed");
+  await expect(about.locator("table.coverage")).toContainText("Learning spaces with an outline");
+  // The page names the Tsinghua World Model, which inspired the site, and links to the source code.
+  await expect(page.locator("#inspired-by")).toHaveAttribute("href", /^https:\/\/tsinghua-world-model\.pages\.dev\//);
+  await expect(page.locator("#repo-link")).toHaveAttribute("href", "https://github.com/pengqianhan/campus-world-model");
+  await shot(page, "07-about");
+
+  // The map has no About of its own, nor a link to the Tsinghua World Model. Its short attribution is
+  // always on the map, and opens this school's section; so does a room card's word on its timetable.
   await open(page, "?light=day");
   await expect(page.getByRole("button", { name: "About", exact: true })).toHaveCount(0);
-  await expect(page.locator(".about-panel")).toHaveCount(0);
-  // Nor does it link to the Tsinghua World Model: the page at the root does (tests/picker.test.ts).
   await expect(page.locator('a[href*="tsinghua-world-model"]')).toHaveCount(0);
-
-  // The short attribution is always on the map, and opens this school's section of About.
   const attribution = page.locator("#attribution");
   await expect(attribution).toContainText("© OpenStreetMap");
   await expect(attribution).toContainText("LINZ");
   await expect(attribution).toHaveAttribute("href", /^(\/|https:\/\/campusworldmodel\.com\/)#about-uoa$/);
-  // A room's card says where its timetable is not, and links to the same section.
   await open(page, "?light=day&building=260&floor=0&room=260-098");
   await expect(page.locator("#no-timetable a")).toHaveAttribute("href", /#about-uoa$/);
+
+  // An address saved while About was open on the map goes to its section.
+  await page.route("https://campusworldmodel.com/**", (route) => route.fulfill({ contentType: "text/html", body: "" }));
+  await page.goto("?panel=about");
+  await expect(page).toHaveURL(/#about-uoa$/);
 });
 
 test("8. ?lang= is honoured and unknown languages fall back to English", async ({ page }) => {
