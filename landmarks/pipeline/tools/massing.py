@@ -24,6 +24,8 @@ Run from the repository root, with the pipeline's Python:
       (DROP_BARE_ON: on for Grafton and Newmarket, off for the City campus until the maintainer decides)
   --no-forms   leaves out the roof forms of the fourth round (FORMS: low pitches and roofs of several faces, tried
       only for a building that fails the top-view check without them), as the generator measured before them
+  --no-eaves   leaves out the eaves of the fifth round (EAVES: eaves over the outline on every layer, tried only for
+      a building that still fails), as the generator measured before them
 """
 import json, math, os, re, subprocess, sys
 from collections import deque
@@ -77,6 +79,12 @@ FACE_MIN = 0.04      # a face of a sloping roof: at least this share of its slop
 # mono-pitch, where the lowest of the layer's planes fits worse. A face's neighbouring cells lie on its plane
 # within FACE_STEP.
 FORMS = True
+# The eaves of the fifth round (MASSING.md, "The fifth round"), tried only for a building that fails the check
+# with and without the forms above (EAVES; --no-eaves leaves them out): every layer whose edges lie on the outline
+# has eaves there, edge by edge, measured at its own roof as the lowest layer's are (edge_eaves). Without them only
+# the lowest layer and the sloping layers of a roof drawn as its faces have eaves, so a flat roof standing on a
+# lower plinth (803's) ends at the outline where the LiDAR sees it reach past it.
+EAVES = True
 LOW_DEG = 1.0        # degrees
 LOW_R = 2.0          # m
 FACE_STEP = 0.3      # m
@@ -502,7 +510,7 @@ def along(ring, step=0.25):
     return np.array(pts)
 
 
-def measure(b, P, others, campus_origin, forms=False):
+def measure(b, P, others, campus_origin, forms=False, eaves=False):
     rings = [ccw(decode(b["outline"][0]))] + [ccw(decode(r))[::-1] for r in b["outline"][1:]]
     outer = rings[0]
     x0, y0 = np.floor(outer.min(0) - 3); x1, y1 = np.ceil(outer.max(0) + 3)
@@ -728,8 +736,11 @@ def measure(b, P, others, campus_origin, forms=False):
         # In a building with a layer drawn as its faces (FORMS), every sloping layer on the plinth (each face, and any
         # other sloping layer) has eaves too, edge by edge as the outline's (edge_eaves), from the building points
         # within 0.6 m of its plane, on the edges of its ring that lie on the outline; 0 elsewhere
-        if not split or f["form"] == "flat": return 0.0
-        e = edge_eaves(xy[B & (np.abs(z - zero - roof_at(f["planes"], xy[:, 0] - centre[0], xy[:, 1] - centre[1])) <= 0.6)], ring)
+        # With the eaves of the fifth round (EAVES), every layer has them so, a flat one too, measured at its height.
+        if not eaves and (not split or f["form"] == "flat"): return 0.0
+        at = (np.full(len(xy), f["height"]) if f["form"] == "flat"
+              else roof_at(f["planes"], xy[:, 0] - centre[0], xy[:, 1] - centre[1]))
+        e = edge_eaves(xy[B & (np.abs(z - zero - at) <= 0.6)], ring)
         if not isinstance(e, list): return 0.0
         nxt = np.roll(ring, -1, axis=0)
         on = edge_distance([outer], np.vstack([ring, nxt, (ring + nxt) / 2])).reshape(3, -1).max(0) <= 0.1
@@ -740,7 +751,7 @@ def measure(b, P, others, campus_origin, forms=False):
     lost = 0.0
     for k in layers[1:]:
         for ring in traced(k):
-            rec_k = layer_record([ring], info[k], out[0]["wall"], 0.0, levels, centre)
+            rec_k = layer_record([ring], info[k], out[0]["wall"], face_eaves(ring, info[k]) if eaves else 0.0, levels, centre)
             if stands(rec_k): out.append(rec_k)
             else: lost = max(lost, rec_k["m2"])
     # When the lowest layer covers less than half of the outline and the rule above would lose a roof (the
@@ -792,6 +803,10 @@ def measure(b, P, others, campus_origin, forms=False):
     }
     # the roof forms of the fourth round that this building takes (FORMS), in a key that only they add
     if changed: data["forms"] = changed
+    # the eaves of the fifth round (EAVES) that it takes: the layers above the lowest with eaves over the outline
+    if eaves:
+        over = [f"{l['roof']} at {l.get('eave', l.get('ridge'))} m" for l in out[1:] if isinstance(l.get("eaves"), list)]
+        if over: data["eaves"] = over
     rec["skip"] = np.c_[CX[skip], CY[skip]]
     return rec, data, None
 
@@ -986,7 +1001,7 @@ def landmark_buildings():
 
 def options(argv):
     """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, --drop-bare or --keep-bare
-    (DROP_BARE), --no-forms (FORMS), and building ids."""
+    (DROP_BARE), --no-forms (FORMS), --no-eaves (EAVES), and building ids."""
     args, campus, flags = [], "city", set()
     it = iter(argv)
     for a in it:
@@ -995,7 +1010,7 @@ def options(argv):
         elif a.startswith("--"): flags.add(a)
         else: args.append(a)
     if campus not in CAMPUS_TILES: sys.exit(f"--campus: one of {', '.join(CAMPUS_TILES)}")
-    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare", "--no-forms"}
+    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare", "--no-forms", "--no-eaves"}
     if unknown: sys.exit(f"unknown option {', '.join(sorted(unknown))}")
     if {"--drop-bare", "--keep-bare"} <= flags: sys.exit("--drop-bare or --keep-bare, not both")
     return campus, flags, args
@@ -1014,9 +1029,10 @@ def fetch_tiles(tiles):
 
 
 def main():
-    global CAMPUS, TILES, DROP_BARE, FORMS
+    global CAMPUS, TILES, DROP_BARE, FORMS, EAVES
     CAMPUS, flags, ask = options(sys.argv[1:])
     FORMS = "--no-forms" not in flags
+    EAVES = "--no-eaves" not in flags
     TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
     DROP_BARE = "--drop-bare" in flags or (DROP_BARE_ON[CAMPUS] and "--keep-bare" not in flags)
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
@@ -1107,6 +1123,19 @@ def main():
                             rec["forms"] = {"roofs": data2["forms"], "check": c2}
                             why += (f"; with the roof forms of the fourth round ({'; '.join(data2['forms'])}): footprint IoU "
                                     f"{c2['iou']:.3f}, {c2['within_0.5m']:.0%} of cells within 0.5 m")
+                # Only then the eaves of the fifth round (EAVES), with the forms: drawn if it passes the check with a
+                # larger footprint IoU than without them; else its block stays, as before, and its reason says why.
+                if why and EAVES and not policy:
+                    rec3, data3, why3 = measure(b, P, others, origin, forms=FORMS, eaves=True)
+                    if data3 and not why3 and data3.get("eaves"):
+                        c3 = topview(b, data3, P, others, rec3.pop("skip", None), "-eaves")
+                        if c3["iou"] >= IOU_MIN and c3["within_0.5m"] >= WITHIN_MIN and c3["iou"] > c["iou"]:
+                            data3["check"] = rec3["check"] = c3
+                            rec, data, why = rec3, data3, None
+                        else:
+                            rec["eaves"] = {"layers": data3["eaves"], "check": c3}
+                            why += (f"; with the eaves of the fifth round ({'; '.join(data3['eaves'])}): footprint IoU "
+                                    f"{c3['iou']:.3f}, {c3['within_0.5m']:.0%} of cells within 0.5 m")
         why = policy or why
         if why:
             rec.pop("skip", None)
