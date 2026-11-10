@@ -29,6 +29,24 @@ A change to what the site does or shows adds its line here, and the README's
   the canopy beside it, and the faces no photograph shows.
   Its measured massing's data file has gone. On the map it has the map's colours; from a walker's height on a
   computer with a graphics card, its own walls, glass, doors, steps and roofs (#160).
+- **The walk as a game, on every school's map.** "Take a walk" gives the whole screen to the view from behind the
+  walker, with small panels in its corners: the site's name and Stop at the top left; a walk to a place and a button
+  that hides the panels at the top right; where the walker is, on a sign, at the bottom left; its speed (and, flying,
+  its height) with the views Behind, Eyes and Map at the bottom right; and at the foot how it gets about: Walk, Scooter
+  or Fly. The keys 1, 2 and 3 choose one, V changes the view, H hides the panels, and Esc goes back to the map and then
+  ends the walk. On the City Campus the walk starts on the lawn across the road west of the Clock Tower, facing it, the
+  view behind the walker low enough to take in the whole tower. On a made-up electric scooter, drawn in code, it rides
+  the same ways as a walk at up to 25 km/h, speeding up, braking, rolling on when let go and leaning into turns. To fly,
+  a made-up drone with four rotors takes off in its place: Space or E climbs and Q or C comes down, no higher than 120 m
+  above the ground and never into a roof, as high as the map draws the roofs; a click flies it over the roofs to a
+  building or a point, and Walk lands it, the walker stepping out on open ground under it. On a phone the stick steers
+  all three, with Up and Down under the right thumb for the drone. Agents get a `ride` command and a `walker_ride` tool
+  (#159).
+- **17 Eden Crescent drawn as a measured massing.** On the City campus the map draws 17 Eden Crescent (803)
+  from the LINZ 2024 LiDAR in place of its block: its roofs and their heights, and now the eaves of its main
+  roof over the outline, which the generator measures since this change on every layer of a building that
+  fails its check without them. Its walls and windows are drawn by rule, as every measured massing's are; its
+  card says so. No other building changes (#157).
 
 ## 2026-11-10
 
@@ -37,7 +55,6 @@ A change to what the site does or shows adds its line here, and the README's
 - **The Tsinghua World Model as a card on the home page.** Under the schools on https://campusworldmodel.com/, a
   card like theirs links to the Tsinghua World Model and says what it inspired. About, below it, is hidden until
   its link in the bar, or a school's map, asks for it, and has a Close link (#158).
-
 - **2-6 Park Ave drawn in detail.** Near the camera the map draws 2-6 Park Ave (529), on the Grafton campus, from code
   in place of its block: a long block of four storeys under a thin flat roof with a dark eave; at each upper storey a
   balcony along every face on a pale slab with a light rail; on its east face, on Park Avenue, the glazing behind them

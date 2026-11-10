@@ -28,6 +28,7 @@ import {
   type Object3D,
 } from "three";
 import type { Gear } from "./figureBuild.ts";
+import { DECK, GRIP, Scooter, type Ride } from "./rides.ts";
 
 /** Where the eyes are, for the view from the walker. */
 export const EYE_HEIGHT = 1.6;
@@ -73,6 +74,16 @@ const RUN_AT = 3.5;
 /** The fastest the legs go, metres a second of stride: a walker sped up past it glides a little. */
 const WALK_CADENCE_MAX = 3.2;
 const RUN_CADENCE_MAX = 7;
+/** The rider on a scooter: where each leg points, in the seat's frame, one foot before the other on the deck. */
+const RIDE_LEGS: [bone: string, child: string, dir: [number, number, number]][] = [
+  ["LeftUpLeg", "LeftLeg", [0.07, -1, -0.12]],
+  ["LeftLeg", "LeftFoot", [0.04, -1, -0.04]],
+  ["RightUpLeg", "RightLeg", [-0.07, -1, 0.14]],
+  ["RightLeg", "RightFoot", [-0.04, -1, 0.06]],
+];
+/** Radians the rider leans at most into a turn, and the share of the lean that would hold it up that it takes. */
+const MAX_LEAN = 0.2;
+const LEAN = 0.6;
 
 interface Body {
   root: Object3D;
@@ -89,6 +100,12 @@ interface Body {
 export class Figure {
   /** At the feet; turn with `setHeading`. */
   readonly root = new Group();
+  /** What the body stands in: leans into a turn, with the scooter, while the ring stays flat on the ground. */
+  private seat = new Group();
+  private ride: Ride = "walk";
+  private scooter?: Scooter;
+  /** Bones the ride turned after the mixer, as the mixer left them, put back before the next pose. */
+  private riding?: [Bone, Quaternion][];
   private body?: Body;
   private build?: typeof import("./figureBuild.ts");
   /** What it wears, from figureBuild.ts. */
@@ -119,7 +136,7 @@ export class Figure {
     this.ring = new Mesh(ringGeometry, new MeshBasicMaterial({ color: ringColour, transparent: true, opacity: 0.85, depthWrite: false }));
     this.ring.position.y = 0.1;
     this.ring.renderOrder = 2;
-    this.root.add(this.ring, this.umbrella);
+    this.root.add(this.ring, this.umbrella, this.seat);
     // Where a building or a tree hides the walker, its shape shows through in the ring's colour.
     // The figure marks the pixels it is seen at in the stencil; the shape is drawn behind other
     // things (GreaterDepth) and only off those pixels, so it never covers the figure itself.
@@ -177,6 +194,35 @@ export class Figure {
   }
 
   /**
+   * On foot, on the scooter, its feet on the deck and its hands on the grips, or away while a
+   * drone flies in its place (walkers.ts), when the figure is not drawn at all.
+   */
+  setRide(ride: Ride): void {
+    if (ride === this.ride) return;
+    this.ride = ride;
+    if (ride === "scooter" && !this.scooter) {
+      this.scooter = new Scooter();
+      this.seat.add(this.scooter.root);
+    }
+    if (this.scooter) this.scooter.root.visible = ride === "scooter";
+    if (this.body) this.body.root.position.y = ride === "scooter" ? DECK : 0;
+    this.root.visible = ride !== "fly";
+    if (ride !== "scooter") this.seat.rotation.z = 0;
+    this.changed = true;
+  }
+
+  /** On the scooter: rolls its wheels by `metres`, and leans into a turn of `turnRate` degrees a second at `speed` metres a second. */
+  rideOn(metres: number, speed: number, turnRate: number, dt: number): void {
+    if (this.ride !== "scooter" || !this.scooter) return;
+    if (metres) this.scooter.roll(metres);
+    // Leaning so that the turn holds it up: tan(lean) = speed * rate of turn / g.
+    const want = -Math.max(-MAX_LEAN, Math.min(MAX_LEAN, LEAN * Math.atan((speed * ((turnRate * Math.PI) / 180)) / 9.81)));
+    const was = this.seat.rotation.z;
+    this.seat.rotation.z += (want - was) * Math.min(1, dt * 5);
+    if (metres || Math.abs(this.seat.rotation.z - was) > 1e-4) this.changed = true;
+  }
+
+  /**
    * Poses the figure: `moving` is 0 standing to 1 on the move, `speed` metres a second, `t`
    * seconds, the clock the walk and the breathing of a figure standing still keep to.
    */
@@ -184,6 +230,11 @@ export class Figure {
     this.stance = { moving, speed, t };
     const b = this.body;
     if (!b) return;
+    // The bones the scooter turned go back to where the mixer left them, which it may not set again.
+    for (const [bone, q] of this.riding ?? []) bone.quaternion.copy(q);
+    this.riding = undefined;
+    // On the scooter it stands at ease, however fast it goes.
+    if (this.ride === "scooter") moving = 0;
     const dt = this.last === undefined ? 0 : Math.max(0, Math.min(1, t - this.last));
     this.last = t;
     const run = Math.max(0, Math.min(1, (speed - RUN_FROM) / (RUN_AT - RUN_FROM)));
@@ -199,7 +250,8 @@ export class Figure {
     // Standing still, it stands at ease; coming to a stop, it comes into it.
     b.stand.setEffectiveWeight(1 - moving);
     b.mixer.update(0);
-    if (this.umbrellaOpen && this.headVisible) this.holdUmbrella(b);
+    if (this.ride === "scooter") this.holdBars(b);
+    else if (this.umbrellaOpen && this.headVisible) this.holdUmbrella(b);
   }
 
   dispose(): void {
@@ -209,6 +261,7 @@ export class Figure {
       this.body.mixer.stopAllAction();
       this.root.remove(this.body.root);
     }
+    this.scooter?.dispose();
     (this.ring.geometry as BufferGeometry).dispose();
     (this.ring.material as Material).dispose();
     this.xrayMaterial.dispose();
@@ -252,7 +305,7 @@ export class Figure {
     // Smaller hands; the clips have no scale either.
     for (const side of ["Left", "Right"]) bone(`${side}Hand`).scale.setScalar(HANDS);
     const body = { root, mesh, mixer, idle: action("idle"), walk: action("walk"), run: action("run"), bone };
-    this.root.add(root);
+    this.seat.add(root);
     const stand = mixer.clipAction(this.standing(body));
     stand.play();
     this.body = { ...body, stand };
@@ -367,6 +420,8 @@ export class Figure {
       b.bone(to).attach(part);
     }
     this.root.add(gear.blot);
+    // On the scooter the body stands on its deck.
+    b.root.position.y = this.ride === "scooter" ? DECK : 0;
     // The umbrella stays upright over the right hand; holdUmbrella moves it there.
     this.umbrella.add(gear.umbrella);
     this.umbrella.visible = this.umbrellaOpen && this.headVisible;
@@ -392,6 +447,28 @@ export class Figure {
     b.bone("Head").scale.setScalar(this.headVisible ? 1 : 1e-3);
     // Seen through its own eyes, the walker has no shape to show through anything.
     if (this.xray) this.xray.visible = this.headVisible;
+  }
+
+  /**
+   * On the scooter: a foot before the other on the deck, and the arms reaching down and forward to
+   * the grips, the elbows bent out a little. Remembers the bones as the mixer left them first.
+   */
+  private holdBars(b: Body): void {
+    const names = ["LeftArm", "LeftForeArm", "RightArm", "RightForeArm", ...RIDE_LEGS.map(([n]) => n)];
+    this.riding = names.map((n) => [b.bone(n), b.bone(n).quaternion.clone()]);
+    this.root.updateMatrixWorld(true);
+    const seat = this.seat;
+    const local = (name: string) => seat.worldToLocal(b.bone(name).getWorldPosition(new Vector3()));
+    for (const [bone, child, dir] of RIDE_LEGS) aim(b.bone(bone), b.bone(child), seat, new Vector3(...dir));
+    for (const [s, side] of [
+      ["Left", -1],
+      ["Right", 1],
+    ] as const) {
+      const grip = new Vector3(side * GRIP.x, GRIP.y, GRIP.z);
+      const reach = grip.clone().sub(local(`${s}Arm`)).normalize();
+      aim(b.bone(`${s}Arm`), b.bone(`${s}ForeArm`), seat, reach.add(new Vector3(side * 0.28, 0.05, 0.12)).normalize());
+      aim(b.bone(`${s}ForeArm`), b.bone(`${s}Hand`), seat, grip.clone().sub(local(`${s}ForeArm`)));
+    }
   }
 
   /** Raises the right forearm and puts the umbrella's handle in that hand. */

@@ -323,6 +323,11 @@ export class Landmark {
     return [dx * c - dz * s, dx * s + dz * c];
   }
 
+  /** A form that has been made, the light one first: the model's shape, for the roofs a drone keeps over (roofgrid.ts). */
+  madeForm(): Object3D | undefined {
+    return this.forms.light ?? this.forms.full;
+  }
+
   /** Stands the model's y = 0 at `height` metres up: the map's ground at its door, or its group's (standHeights). */
   stand(height: number): void {
     this.group.position.y = height;

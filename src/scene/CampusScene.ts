@@ -50,9 +50,11 @@ import { MeshBuilder, drape, levelSlope, ringsBounds, type FacadeSpec } from "./
 import { SEA_PLANE, Terrain } from "./terrain.ts";
 import { WALL_HEIGHT, buildInterior, disposeGroup, inset } from "./interior.ts";
 import { LabelLayer, type LabelSpec } from "./labels.ts";
-import { EYE_HEIGHT } from "./figure.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
+import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
+import { roofGrid } from "./roofgrid.ts";
+import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
@@ -150,6 +152,16 @@ const EYES_FOV = 64;
 const EYES_NEAR = 0.2;
 const FOLLOW_FOV = 55;
 const FOLLOW_NEAR = 0.3;
+/** Where the view from behind starts, for each way of getting about: degrees up, and metres back. */
+const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }> = {
+  walk: { yaw: 0, elevation: 16, distance: 7.5 },
+  scooter: { yaw: 0, elevation: 14, distance: 8.5 },
+  fly: { yaw: 0, elevation: 14, distance: 5 },
+};
+/** Degrees the view through the eyes looks down at first: the drone's camera, more. */
+const EYES_PITCH: Record<Ride, number> = { walk: -4, scooter: -4, fly: -14 };
+/** Milliseconds at least between taking one landmark's roofs and the next's (roofMap). */
+const GRID_GAP = 30;
 /** Crowns of deciduous trees in April and May, in winter, and in early spring. */
 const AUTUMN_LEAVES = 0xd38b3c;
 const BARE_BRANCHES = 0x9a8a76;
@@ -439,6 +451,14 @@ export class CampusScene {
   /** Floor outlines in metres, by building and floor, for walkers steered by hand indoors. */
   private floorRingCache = new Map<string, [number, number][][][]>();
   private walkMapCache?: WalkMap;
+  /** How high the buildings reach, for a drone a walker flies; built when first wanted after the data changes. */
+  private roofMapCache?: RoofMap;
+  /** The roofs of each landmark's model as drawn, once a form of it has been made; null when it has no faces. */
+  private landmarkGrids = new Map<Landmark, RoofGrid | null>();
+  /** Each University building's blocks on its footing, for the roof map: its roofs as estimated. */
+  private uniRoofs?: Map<string, RoofShape[]>;
+  /** The surrounding buildings in the roof map. */
+  private contextRoofs?: RoofShape[];
   /** The camera of the walker views: behind a walker, or at its eyes. */
   private persp = new PerspectiveCamera(FOLLOW_FOV, 1, FOLLOW_NEAR, 6000);
   /** The walker views' sky, light and effects (street/look.ts); off on the map. */
@@ -448,6 +468,8 @@ export class CampusScene {
   /** Degrees and metres, set by dragging and the wheel in the walker views. */
   private follow = { yaw: 0, elevation: 16, distance: 7.5 };
   private eyes = { yaw: 0, pitch: -4 };
+  /** How the walker the view follows gets about, when the view last set its distance for it. */
+  private viewRide?: Ride;
   private drag?: { x: number; y: number; moved: boolean };
   private lastFrame = 0;
   /** The walkers' labelsVersion the labels were last built for; a new world starts at 0, with none. */
@@ -549,6 +571,7 @@ export class CampusScene {
         if (!rings) this.floorRingCache.set(key, (rings = floorRings(b, i)));
         return rings.some(([outer, ...holes]) => !!outer && pointInRing(p, outer) && !holes.some((h) => pointInRing(p, h)));
       },
+      roofs: () => this.roofMap(),
       rain: () => this.weather?.wet ?? 0,
       ringColour: () => this.palette.accent,
     });
@@ -601,6 +624,8 @@ export class CampusScene {
   setCampus(campus: CampusData): void {
     this.campus = campus;
     this.walkMapCache = undefined;
+    this.roofMapCache = undefined;
+    this.uniRoofs = undefined;
     this.buildings.clear();
     this.roomsByBuilding.clear();
     this.roomsByCode.clear();
@@ -696,6 +721,9 @@ export class CampusScene {
     };
     const heights = standHeights(this.landmarks, outline, (x, y) => this.groundAt(x, y));
     this.landmarks.forEach((l, i) => l.stand(heights[i]!));
+    // The landmarks' roofs stood where they stood: a drone's roof map takes them again.
+    this.landmarkGrids.clear();
+    this.roofMapCache = undefined;
     this.needsLandmarks = true;
   }
 
@@ -823,6 +851,8 @@ export class CampusScene {
   setContext(ctx: ContextData): void {
     this.lastContext = ctx;
     this.walkMapCache = undefined;
+    this.roofMapCache = undefined;
+    this.contextRoofs = undefined;
     // A walker steered by hand keeps a grid of the ground round it: rebuild it with the surroundings.
     this.walkers.refresh();
     this.contextGroup.clear();
@@ -1478,6 +1508,82 @@ export class CampusScene {
     return this.walkMapCache;
   }
 
+  /**
+   * How high the buildings reach, as the map draws them: each University building's blocks on its
+   * footing, up to the top of its parapet, or the top of the landmark drawn in its place where that
+   * stands higher; and each surrounding building to the top of its roof.
+   */
+  private roofMap(): RoofMap | undefined {
+    if (!this.campus) return undefined;
+    // A landmark made since the map was built brings its roofs as drawn: one at a time, a few frames
+    // apart, as the largest takes tens of milliseconds; until then its blocks' estimated roofs stand in.
+    const now = performance.now();
+    const fresh = now - this.gridAt >= GRID_GAP ? this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm()) : undefined;
+    if (fresh) {
+      this.landmarkGrids.set(fresh, this.landmarkGrid(fresh));
+      this.roofMapCache = undefined;
+    }
+    if (this.roofMapCache) return this.roofMapCache;
+    if (!this.uniRoofs) {
+      this.uniRoofs = new Map();
+      for (const b of this.campus.buildings) {
+        if (b.offMap) continue;
+        const base = this.baseOf(b);
+        const shapes: RoofShape[] = [];
+        for (const block of massing(b, this.campus.floorHeight)) {
+          for (const poly of block.outline) shapes.push({ rings: poly.map((ring) => decodeRing(ring)), top: base + block.y1 + RIM_HEIGHT });
+        }
+        this.uniRoofs.set(b.id, shapes);
+      }
+    }
+    // A building a landmark draws whole has the landmark's roofs; one drawn in part keeps its block too.
+    const grids: RoofGrid[] = [];
+    const drawn = new Set<string>();
+    for (const [l, grid] of this.landmarkGrids) {
+      if (!grid) continue;
+      grids.push(grid);
+      if (!l.placement.part) for (const id of l.buildings) drawn.add(id);
+    }
+    const shapes: RoofShape[] = [];
+    for (const [id, list] of this.uniRoofs) if (!drawn.has(id)) shapes.push(...list);
+    this.contextRoofs ??= (this.lastContext?.buildings ?? []).filter(drawnContext).map((cb) => ({
+      rings: [decodeRing(cb.p)],
+      top: (this.terrain ? this.terrain.footing(cb.p).base : 0) + cb.h + (cb.roof?.h ?? 0),
+    }));
+    this.roofMapCache = new RoofMap([...shapes, ...this.contextRoofs], grids);
+    // The next landmark waits from the end of this one, its roofs and the map made again.
+    if (fresh) this.gridAt = performance.now();
+    return this.roofMapCache;
+  }
+
+  /**
+   * A landmark's roofs as it stands, its y = 0 on its ground and at its full height: an open
+   * building squashes every landmark for a while (applyFocus), which its roofs do not keep.
+   */
+  private landmarkGrid(l: Landmark): RoofGrid | null {
+    const form = l.madeForm();
+    if (!form) return null;
+    const was = l.group.scale.clone();
+    l.group.scale.setScalar(l.placement.scale);
+    const grid = roofGrid(form) ?? null;
+    l.group.scale.copy(was);
+    l.group.updateWorldMatrix(false, true);
+    return grid;
+  }
+  /** When the last landmark's roofs were taken, ms (performance.now). */
+  private gridAt = -Infinity;
+
+  /** Whether every landmark made so far has brought its roofs as drawn; for tests. */
+  roofsReady(): boolean {
+    this.roofMap();
+    return this.landmarks.every((l) => !l.madeForm() || this.landmarkGrids.has(l));
+  }
+
+  /** The highest roof over a point, metres above sea level, as a drone keeps over it; for tests. */
+  roofAt(east: number, north: number): number | undefined {
+    return this.roofMap()?.at([east, north]);
+  }
+
   /** The ground a University building stands on (see Terrain.footing). */
   private baseOf(b: Building): number {
     return this.footingOf(b).base;
@@ -2113,17 +2219,21 @@ export class CampusScene {
     if (was) {
       this.walkers.figure(was)?.setHeadVisible(true);
       this.walkers.figure(was)?.setRingVisible(true);
+      const drone = this.walkers.droneOf(was);
+      if (drone) drone.root.visible = true;
     }
     const from = this.view;
     this.view = view;
     this.viewWalker = view === "map" ? undefined : name;
     this.controls.enabled = view === "map";
+    const ride = name ? this.walkers.rideOf(name) : undefined;
     if (view === "eyes") {
       this.walkers.figure(name!)?.setHeadVisible(false);
       this.walkers.figure(name!)?.setRingVisible(false);
-      this.eyes = { yaw: 0, pitch: -4 };
+      this.eyes = { yaw: 0, pitch: EYES_PITCH[ride ?? "walk"] };
     }
-    if (view === "follow" && from !== "follow") this.follow = { yaw: 0, elevation: 16, distance: 7.5 };
+    if (view === "follow" && from !== "follow") this.follow = { ...FOLLOW[ride ?? "walk"] };
+    this.viewRide = ride;
     if (view === "map" && from !== "map" && was) {
       const pose = this.walkers.pose(was);
       if (pose) this.flyTo(new Vector3(pose.at[0], pose.height, -pose.at[1]), Math.max(this.camera.zoom, 4), false);
@@ -2165,6 +2275,16 @@ export class CampusScene {
       return;
     }
     const [x, y] = pose.at;
+    // On the scooter or in the air, the view stands back as far as suits it, and the drone's
+    // camera looks down a little.
+    if (pose.ride !== this.viewRide) {
+      this.viewRide = pose.ride;
+      this.follow = { ...this.follow, elevation: FOLLOW[pose.ride].elevation, distance: FOLLOW[pose.ride].distance };
+      this.eyes = { ...this.eyes, pitch: EYES_PITCH[pose.ride] };
+    }
+    // Seen through the drone's camera, the drone itself is not drawn.
+    const drone = this.walkers.droneOf(this.viewWalker!);
+    if (drone) drone.root.visible = this.view !== "eyes";
     // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
     // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
     // By the clock, so that it comes round on a renderer that takes a second or more a frame too.
@@ -2173,11 +2293,12 @@ export class CampusScene {
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
       else this.follow.yaw = towardsAhead(this.follow.yaw, k);
     }
+    const flying = pose.ride === "fly";
     if (this.view === "eyes") {
       const yaw = ((pose.heading + this.eyes.yaw) * Math.PI) / 180;
       const pitch = (this.eyes.pitch * Math.PI) / 180;
-      this.persp.position.set(x, pose.height + EYE_HEIGHT, -y);
-      this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), pose.height + EYE_HEIGHT + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
+      this.persp.position.set(x, pose.eye, -y);
+      this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), pose.eye + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
     } else {
       const yaw = ((pose.heading + this.follow.yaw) * Math.PI) / 180;
       const up = (this.follow.elevation * Math.PI) / 180;
@@ -2186,24 +2307,39 @@ export class CampusScene {
       let blocked = false;
       const reach = Math.cos(up) * d;
       const map = pose.indoor ? undefined : this.walkMap();
-      if (map && reach > 1) {
-        const t = map.wallAlong([x, y], [x - Math.sin(yaw) * reach, y - Math.cos(yaw) * reach]);
+      const back: [number, number] = [x - Math.sin(yaw) * reach, y - Math.cos(yaw) * reach];
+      // A drone flies over the walls: what hides it is a roof, or the ground, higher than the line to the camera.
+      const roofs = flying ? this.roofMap() : undefined;
+      if (flying && reach > 1) {
+        const n = Math.ceil(reach);
+        for (let i = 1; i <= n; i++) {
+          const t = i / n;
+          const p: [number, number] = [x + (back[0] - x) * t, y + (back[1] - y) * t];
+          const under = Math.max(this.groundAt(p[0], p[1]), roofs?.at(p) ?? -Infinity);
+          if (under + 0.6 > pose.aim + 0.15 + Math.sin(up) * d * t) {
+            d = Math.max(1.2, (t * reach - 0.6) / Math.cos(up));
+            blocked = true;
+            break;
+          }
+        }
+      } else if (map && reach > 1) {
+        const t = map.wallAlong([x, y], back);
         if (t !== undefined) {
           d = Math.max(1.2, (t * reach - 0.6) / Math.cos(up));
           blocked = true;
         }
       }
-      let cy = pose.height + 1.5 + Math.sin(up) * d;
+      let cy = pose.aim + 0.15 + Math.sin(up) * d;
       const cx = x - Math.sin(yaw) * Math.cos(up) * d;
       const cn = y - Math.cos(yaw) * Math.cos(up) * d;
-      // Never under the ground behind a walker on a slope.
-      cy = Math.max(cy, this.groundAt(cx, cn) + 0.8);
+      // Never under the ground behind a walker on a slope, nor in a roof behind a drone.
+      cy = Math.max(cy, this.groundAt(cx, cn) + 0.8, (roofs?.at([cx, cn]) ?? -Infinity) + 0.8);
       // It glides after the walker, but out from behind a wall at once.
       const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * 7);
       const want = new Vector3(cx, cy, -cn);
       if (k >= 1) this.persp.position.copy(want);
       else this.persp.position.lerp(want, k);
-      this.persp.lookAt(x + Math.sin(yaw) * 2, pose.height + 1.35, -y - Math.cos(yaw) * 2);
+      this.persp.lookAt(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
     }
     this.persp.updateMatrixWorld();
     // The shadows follow the walker round the map.
