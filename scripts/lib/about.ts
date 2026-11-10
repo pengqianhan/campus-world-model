@@ -100,8 +100,9 @@ export function longDate(date: string, words: Words): string {
   return new Intl.DateTimeFormat(locale(words), { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
 }
 
-/** The date, in Auckland, that an ISO time falls on (aucklandWallTime of src/shared/time.ts). */
+/** The date, in Auckland, that an ISO time falls on (aucklandWallTime of src/shared/time.ts); anything else as it is. */
 function aucklandDate(iso: string): string {
+  if (Number.isNaN(Date.parse(iso))) return iso;
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Pacific/Auckland", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(iso));
   const get = (t: string) => parts.find((p) => p.type === t)!.value;
   return `${get("year")}-${get("month")}-${get("day")}`;

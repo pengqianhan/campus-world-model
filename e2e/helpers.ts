@@ -155,11 +155,17 @@ export async function withFixtureSchedule(page: Page): Promise<void> {
 }
 
 /**
- * The page at the site's root, where About is since 2026-11-10, as scripts/build-root.ts writes it from
- * every school's published data. The server under test serves one school's site, so the page is served
- * from the repository's data at site-root/ beside it.
+ * The page at the site's root, where About is since 2026-11-10. On the Cloudflare site, the one it
+ * serves. Anywhere else (a local build, the GitHub Pages copy) the server serves one school's site
+ * only, so the page is built as scripts/build-root.ts builds it, from every school's published data in
+ * the checkout, and served at site-root/ beside it.
  */
 export async function openRoot(page: Page, hash = ""): Promise<void> {
+  const live = process.env.E2E_BASE_URL?.match(/^https:\/\/campusworldmodel\.com\//);
+  if (live) {
+    await page.goto(`${live[0]}${hash}`);
+    return;
+  }
   const root = process.cwd();
   const shared = JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words;
   const schools = parseSchoolList(fs.readFileSync(".github/schools.json", "utf8")).map((id) => ({

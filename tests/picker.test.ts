@@ -248,6 +248,11 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(longDate("2026-10-13", shared)).toBe("13 October 2026");
     expect(longDate("", shared)).toBe("");
     expect(longDate("soon", shared)).toBe("soon");
+    const m = { ...meta("uoa"), generatedAt: "soon", sources: meta("uoa").sources.map((s, k) => (k ? s : { ...s, snapshotDate: "soon" })) };
+    const words = schools.find((s) => s.id === "uoa")!.words;
+    const html = pickerPages([{ id: "uoa", words, meta: meta("uoa"), about: { ...aboutOf("uoa"), meta: m } }], shared).index;
+    expect(html).toContain('<time datetime="soon">soon</time>');
+    expect(html).toMatch(/<p class="built">[^<]*soon/);
   });
 
   it("a school's page links to its section on the root it is served from, or on campusworldmodel.com from any other copy", () => {

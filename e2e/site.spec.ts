@@ -278,9 +278,10 @@ test("7. About carries the unofficial notice, every source with link and snapsho
   await expect(page.locator("#inspired-by")).toHaveAttribute("href", /^https:\/\/tsinghua-world-model\.pages\.dev\//);
   await expect(page.locator("#repo-link")).toHaveAttribute("href", "https://github.com/pengqianhan/campus-world-model");
   await shot(page, "07-about");
+});
 
-  // The map has no About of its own, nor a link to the Tsinghua World Model. Its short attribution is
-  // always on the map, and opens this school's section; so does a room card's word on its timetable.
+test("the map has no About of its own: its attribution, a room's card and an address saved with About open go to its section at the site's root", async ({ page }) => {
+  // Nor does it link to the Tsinghua World Model; the page at the root does (test 7).
   await open(page, "?light=day");
   await expect(page.getByRole("button", { name: "About", exact: true })).toHaveCount(0);
   await expect(page.locator('a[href*="tsinghua-world-model"]')).toHaveCount(0);
@@ -291,8 +292,10 @@ test("7. About carries the unofficial notice, every source with link and snapsho
   await open(page, "?light=day&building=260&floor=0&room=260-098");
   await expect(page.locator("#no-timetable a")).toHaveAttribute("href", /#about-uoa$/);
 
-  // An address saved while About was open on the map goes to its section.
-  await page.route("https://campusworldmodel.com/**", (route) => route.fulfill({ contentType: "text/html", body: "" }));
+  // An address saved while About was open on the map goes to its section. The root it goes to is
+  // answered here: from a local build or the GitHub Pages copy it is campusworldmodel.com's.
+  await page.route(/^https:\/\/campusworldmodel\.com\/$/, (route) => route.fulfill({ contentType: "text/html", body: "" }));
+  await page.route(/^http:\/\/localhost:\d+\/$/, (route) => route.fulfill({ contentType: "text/html", body: "" }));
   await page.goto("?panel=about");
   await expect(page).toHaveURL(/#about-uoa$/);
 });
