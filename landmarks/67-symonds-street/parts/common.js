@@ -60,15 +60,15 @@ export const TOWER = {
  * 96.05); east of it a bar (u -17.1 to -7.5, w 5.0 to 7.2, its returns over 94 m) to 95.2 m (39.54; p50 95.14); two
  * plant rooms at 92.8 m (37.14; p50 92.77), u -14.1 to -8.6, w -1.0 to 1.6, and u -14.2 to -8.9, w 3.2 to 5.0; plant
  * between the bar's end and the turned block's north-east side, to 0.02 m short of it (228 returns at 92.6 to 94.2 m,
- * p50 93.34, u -8.2 to -3.4, w 4.5 to 8.3) to 93.34 m (37.68); and a low plant room at 92.47 m (36.81; 45 returns,
- * p50 92.47), u -13.6 to -8.9, w 12.1 to 14.2. */
+ * p50 93.34, u -8.2 to -3.4, w 4.5 to 8.3) to 93.34 m (37.68); and a low plant room at 92.47 m (36.81; 44 returns
+ * over 92 m, p50 92.47, at u -10.15 to -8.31, w 12.73 to 14.22; the deck at 90.3 m round it). */
 export const CORE = [
   { plan: [[-2.28, 3.93], [4.77, 10.97], [-1.53, 17.27], [-8.57, 10.22]], top: H(40.34) },
   { plan: [[-17.1, 5.0], [-7.5, 5.0], [-7.5, 7.2], [-17.1, 7.2]], top: H(39.54) },
   { plan: [[-14.1, -1.0], [-8.6, -1.0], [-8.6, 1.6], [-14.1, 1.6]], top: H(37.14) },
   { plan: [[-14.2, 3.2], [-8.9, 3.2], [-8.9, 5.0], [-14.2, 5.0]], top: H(37.14) },
   { plan: [[-7.5, 4.5], [-2.87, 4.5], [-6.67, 8.3], [-8.2, 8.3], [-8.2, 7.2], [-7.5, 7.2]], top: H(37.68) },
-  { plan: [[-13.6, 12.1], [-8.9, 12.1], [-8.9, 14.2], [-13.6, 14.2]], top: H(36.81) },
+  { plan: [[-10.2, 12.7], [-8.3, 12.7], [-8.3, 14.3], [-10.2, 14.3]], top: H(36.81) },
 ];
 
 /** The faces the photograph sees, every place and height estimated through its fitted camera (rms 2.25 px): storeys

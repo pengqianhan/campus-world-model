@@ -13,7 +13,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   one above the door's ground (7.83 m higher).
 - What the LiDAR shows (`parts/common.js` holds the numbers): a tower (u -19.9 to 5.5, w -5.65 to 19.65) with its
   parapet's top at 91.30 to 91.36 m and its roof at 90.3 m, a block turned 45 degrees and a bar over its roof to 96.0
-  and 95.2 m and two plant rooms at 92.8 m; a podium round its north and west, inside the campus map's ring, its roof at
+  and 95.2 m, two plant rooms at 92.8 m, plant between the bar's end and the block at 93.34 m and a low plant room
+  at 92.47 m; a podium round its north and west, inside the campus map's ring, its roof at
   72.5 to 73.8 m, running down the slope to the gully on the west (its ground at about 40 m); in the ring's triangle
   south of the tower's south-east part a roof at 71.0 to 72.3 m over ground the LiDAR sees through it (the porch). The
   walkway and its canopy, outside the ring, and the lower block to the south-west (65 m) are not drawn.
@@ -61,6 +62,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   over the tower's roof the plant between the bar's end and the turned block (93.34 m) and a low plant room (92.47 m),
   which the LiDAR has and the narrower bar left bare. 856 triangles, 4 draw calls; silhouette IoU 0.947 in the model's
   box, top view 0.929 and 80% within 0.5 m, as round 1.
+- The review's round 3 (2026-11-11): the low plant room to its returns over 92 m (u -10.2 to -8.3, w 12.7 to 14.3);
+  it had been drawn over a box that took in the deck east of it. 856 triangles, 4 draw calls; the figures as round 2.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.

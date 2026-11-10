@@ -63,7 +63,7 @@ estimated; it is a reference for the look and the comparison.
 - **Over its roof**: a block turned 45 degrees (its sides on u + w = 1.65 and 15.74 and u - w = -18.79 and -6.2) to 96.0
   m; east of it a bar (u -17.1 to -7.5, w 5.0 to 7.2) to 95.2 m; two plant rooms at 92.8 m (u -14.1 to -8.6, w -1.0
   to 1.6, and u -14.2 to -8.9, w 3.2 to 5.0); plant between the bar's end and the turned block to 93.34 m (u -8.2 to
-  the block's side, w 4.5 to 8.3); and a low plant room at 92.47 m (u -13.6 to -8.9, w 12.1 to 14.2): the LiDAR's
+  the block's side, w 4.5 to 8.3); and a low plant room at 92.47 m (u -10.2 to -8.3, w 12.7 to 14.3): the LiDAR's
   returns over 95 m, over 94 m, at 92.4 to 93.2 m, at 92.6 to 94.2 m (p50 93.34) and at 92.0 to 93.2 m (p50 92.47).
 - **The podium** (`paint`, its roof `roofGrey`): the campus map's ring, its south and east sides drawn 0.1 m inside the
   tower's faces (on the east the ring stands 0.15 to 0.21 m out from the tower, where the LiDAR's returns on that face
