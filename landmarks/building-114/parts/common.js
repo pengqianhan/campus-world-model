@@ -21,12 +21,14 @@ export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 export const FOOT = H(-2.6);
 
 /** The walls: the south-west face at w 8.1 (the LiDAR sees the ground under the eave up to w 8.0, and its returns on
- * the face at 8.0 to 8.5), the north-east at -9.0 (the ground seen under the eave to -8.87 to -9.25 in each 4 m along
- * it, and the returns on that wall at -8.99 to -9.20), the south-east end at u -28.6 and the north-west end at 28.2 (the
- * returns on the end walls, p50); the ground storey's floor at 0.15 (the LiDAR's ground inside the south-east stair
- * tower, seen through its glass, 38.81 m, p50 of 15; on the landing before its doors 38.75). */
+ * the face at 8.0 to 8.5), the north-east at -9.0 (the ground seen under the eave to -8.87 to -9.25 in each 4 m
+ * along it from u -28 to 24, and the returns on that wall at -8.99 to -9.20) but for its last 1.7 m, from u 26.5 to
+ * the north corner, at -8.3 (the ground seen there to -8.32 and -8.35, the end wall's returns near the corner to
+ * -8.51), the south-east end at u -28.6 and the north-west end at 28.2 (the returns on the end walls, p50); the ground
+ * storey's floor at 0.15 (the LiDAR's ground inside the south-east stair tower, seen through its glass, 38.81 m, p50
+ * of 15; on the landing before its doors 38.75). */
 export const WALLS = {
-  plan: [[-28.6, -9.0], [28.2, -9.0], [28.2, 8.1], [-28.6, 8.1]],
+  plan: [[-28.6, -9.0], [26.5, -9.0], [26.5, -8.3], [28.2, -8.3], [28.2, 8.1], [-28.6, 8.1]],
   floor: H(0.15),
 };
 
@@ -52,11 +54,11 @@ export const TOWER = {
 
 /** On the part of the south-west face the photograph does not see, a second projection the LiDAR has: its returns at u
  * 17.35 to 20.65, w 8.96 to 9.39 (p50 9.11), at 1.9 to 5.5 m over 38.65 m, at the heights of the south-east tower's
- * transoms and landings, and the ground inside its plan at 39.44 m (p50 of 23), which the LiDAR sees through it: a
+ * transoms and landings, and the ground inside its plan at 39.41 m (p50 of 8), which the LiDAR sees through it: a
  * second glass stair tower, drawn glass from that ground to the eave's underside, its frames not drawn (estimated, as
- * no photograph shows it), on a plinth from the walls' foot. Beside it, u 13.8 to 17.15, 17 returns at 3.89 to 4.25 m,
- * w 8.66 to 9.3, with the ground seen under them (39.45 m, p50 of 31): a canopy from the wall, its slab 0.2 m deep
- * (estimated). */
+ * no photograph shows it), on a plinth from the walls' foot. Beside it, 17 returns over u 13.8 to 17.7, w 8.66 to
+ * 9.37 (14 over the plan drawn, u 13.8 to 17.15, at 3.93 to 4.11 m), with the ground seen under them (39.48 m, p50 of
+ * 15): a canopy from the wall out to their edge, its slab 0.2 m thick (estimated). */
 export const TOWER2 = {
   plan: [[17.2, 8.1], [20.8, 8.1], [20.8, 9.2], [17.2, 9.2]],
   base: H(0.8),
@@ -82,14 +84,15 @@ export const FACE = {
   posts: [-5.1, -8.4, -11.6, -21.2, -24.3, -27.5],
 };
 
-/** The stair tower's front (estimated through the photograph's camera, its edges at the LiDAR's): white mullions at
- * u -15.6 and -16.9 between its edges, transoms at 2.35 (the doors' head), 2.8, 3.45, 4.9, 5.45 and 6.85; the red double
+/** The stair tower's front (estimated through the photograph's camera, its edges at the LiDAR's): white mullions at u
+ * -15.6 and -16.9 between its edges, transoms at 2.35 (the doors' head), 2.8, 3.45, 4.9, 5.45 and 6.85; the red double
  * doors from the floor to 2.35, u -17.45 to -15.85; brick steps before them from the floor down to the ground at their
- * foot (38.04 m, the LiDAR's p50 of 49 at w 12.5 to 14, the door's ground): a landing 1.1 m deep and three treads each
- * 0.6 m deep (estimated), four risers, u -17.8 to -14.3. */
+ * foot (38.04 m, the LiDAR's p50 of 49 at w 12.5 to 14, the door's ground): a landing 1.6 m deep and three treads each
+ * 0.4 m deep, four risers, u -17.8 to -14.3 (the LiDAR's ground before the doors lies flat at 38.70 to 38.78 m out to w
+ * 10.9 and falls to 38.09 by w 12.1). */
 export const TOWER_FRONT = {
   mullions: [-15.6, -16.9],
   transoms: [H(2.35), H(2.8), H(3.45), H(4.9), H(5.45), H(6.85)],
   doors: { u: [-17.45, -15.85], top: H(2.35) },
-  steps: { u: [-17.8, -14.3], landing: 1.1, tread: 0.6, ground: H(-0.61) },
+  steps: { u: [-17.8, -14.3], landing: 1.6, tread: 0.4, ground: H(-0.61) },
 };

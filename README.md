@@ -914,7 +914,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
   measured heights, walls, storeys and windows by the street look's rules. Twenty-one are on the site
   (`landmarks/measured/`): on the City campus nine plain buildings, and five of the buildings planned
   as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
-  the Newmarket campus six. Building 114, one of the plain buildings, is now a landmark. The other buildings it measures keep their blocks, each with its reason
+  the Newmarket campus six. Building 114, one of the plain buildings, is now a landmark. The other buildings it measures
+  keep their blocks, each with its reason
   in `landmarks/measured/exclusions.json`.
 - What every landmark shares ([`landmarks/`](landmarks/README.md)): the kit the models are built
   with, the viewer, and the pipeline (`landmarks/pipeline/run.sh <name>`: measure from the LiDAR,
@@ -1221,7 +1222,8 @@ If you represent the University and would like something changed or removed, ple
   of the Kate Edger Information Commons, the Humanities Building, buildings 302, 303 and 303S of the Science Centre,
   Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House, the Sir Owen G Glenn Building,
   49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te Pūtahi Tangata, the George Mason
-  Biology Building, 2-6 Park Ave and Building 114 are estimated in a photograph, as is the place of one of Auckland Bioengineering
+  Biology Building, 2-6 Park Ave and Building 114 are estimated in a photograph, as is the place of one of Auckland
+  Bioengineering
   House's stone fins). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
@@ -1583,7 +1585,8 @@ If you represent the University and would like something changed or removed, ple
   posts, the stair tower's frames, doors and steps and the eave's underside are estimated in the photograph. The
   rest of that face and the other faces, which no photograph shows, are drawn plainly: on that face a second stair
   tower, which the LiDAR sees through, is drawn glass with no frames, and a canopy beside it from the LiDAR's returns,
-  its depth estimated; the flues and vents on the roof are not drawn. Its entrance is not known from a record: its door is set on the path before the steps up to
+  its thickness estimated; the flues and vents on the roof are not drawn. Its entrance is not known from a record: its
+  door is set on the path before the steps up to
   the stair tower's doors. The map's ground there is 0.83 m under the LiDAR's, so the model stands that much lower
   than the real building, on the drawn ground at its door.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west

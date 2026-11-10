@@ -17,7 +17,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   raised strip down its middle at 10.05 (u -26 to 25, w -4 to 4); a glass stair tower on the south-west face (its
   front's returns at u -17.8 to -14.4 and w 9.3, under the eave; drawn from -18.0 to -14.5, between those and its edges
   in the photograph, -18.06 and -14.73); a second one on the part of that face the photograph does not see (its returns
-  at u 17.35 to 20.65, front w 9.11, the ground seen inside it at 39.44 m), with a canopy beside it at about 4.05 m (u
+  at u 17.35 to 20.65, front w 9.11, the ground seen inside it at 39.41 m), with a canopy beside it at about 4.05 m (u
   13.8 to 17.15, the ground seen under it). The LiDAR's roof reaches past the campus map's ring by its eave (p50 0.9 m
   on the south-west, 0.4 at the ends, 0.2 on the north-east): the model follows the LiDAR. The lower part past the
   south-east end (its roof at 5.4, u -45 to -32) is Lippincott Cottage (118), which keeps its block, and is not drawn. A
@@ -32,7 +32,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by
-  material. Round 0: 72 triangles, 3 draw calls; steps 5 to 7: 648, 6; the review's round 1: 696, 6.
+  material. Round 0: 72 triangles, 3 draw calls; steps 5 to 7: 648, 6; the review's round 1: 696, 6; round 2: 704, 6.
 
 ## Rounds
 - Round 0 (2026-11-11, the lead alone): the walls, the eave and the roofs at the LiDAR's edges and heights, the walls
@@ -59,6 +59,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   measured (it was said to be 2 to 3 m); the part past the south-east end named as Lippincott Cottage (118). 696
   triangles, 6 draw calls. Silhouette IoU 0.934 (0.951 in the box), luma p50 183 against 173. Top view: footprint
   IoU 0.942, 99% of 4,458 cells within 0.5 m.
+- The review's round 2 (2026-11-11): the north-east wall's last 1.7 m by the north corner at w -8.3, where the LiDAR
+  sees the ground in to -8.32; the steps' landing 1.6 m deep and treads 0.4 m, as the LiDAR's ground lies before the
+  doors; the counts of the returns by the second stair tower and the canopy, and the canopy's slab named by its
+  thickness. 704 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: a size not from the LiDAR is named in the config's `estimated`, here and on the card.
