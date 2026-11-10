@@ -1,0 +1,220 @@
+{
+ "name": "fine-arts-studio-block-431",
+ "site": false,
+ "estimated": "(to be written)",
+ "refs": "photos",
+ "refs_note": "(to be written)",
+ "building": {
+  "id": "431",
+  "also": [],
+  "title": "Fine Arts Studio Block 431 (431), University of Auckland",
+  "note": "outline: building 431's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 431 by its id.",
+  "outline": [
+   [
+    -131.1,
+    -398.6
+   ],
+   [
+    -131.4,
+    -398.7
+   ],
+   [
+    -130.7,
+    -401.1
+   ],
+   [
+    -138.3,
+    -403.4
+   ],
+   [
+    -139.0,
+    -400.9
+   ],
+   [
+    -143.0,
+    -402.1
+   ],
+   [
+    -143.7,
+    -399.4
+   ],
+   [
+    -145.5,
+    -399.9
+   ],
+   [
+    -148.8,
+    -388.8
+   ],
+   [
+    -146.8,
+    -388.2
+   ],
+   [
+    -147.4,
+    -386.0
+   ],
+   [
+    -139.8,
+    -383.8
+   ],
+   [
+    -139.2,
+    -385.9
+   ],
+   [
+    -135.3,
+    -384.8
+   ],
+   [
+    -135.7,
+    -383.4
+   ],
+   [
+    -132.2,
+    -382.4
+   ],
+   [
+    -131.8,
+    -383.8
+   ],
+   [
+    -127.9,
+    -382.6
+   ],
+   [
+    -128.9,
+    -379.3
+   ],
+   [
+    -125.0,
+    -378.2
+   ],
+   [
+    -125.5,
+    -376.5
+   ],
+   [
+    -121.7,
+    -375.3
+   ],
+   [
+    -122.0,
+    -374.4
+   ],
+   [
+    -118.3,
+    -373.3
+   ],
+   [
+    -118.6,
+    -372.3
+   ],
+   [
+    -114.5,
+    -371.1
+   ],
+   [
+    -112.5,
+    -378.0
+   ],
+   [
+    -102.2,
+    -375.0
+   ],
+   [
+    -101.5,
+    -377.3
+   ],
+   [
+    -100.7,
+    -377.0
+   ],
+   [
+    -99.7,
+    -380.3
+   ],
+   [
+    -100.8,
+    -380.6
+   ],
+   [
+    -100.3,
+    -382.6
+   ],
+   [
+    -102.8,
+    -383.4
+   ],
+   [
+    -101.9,
+    -386.5
+   ],
+   [
+    -105.2,
+    -387.5
+   ],
+   [
+    -104.2,
+    -390.7
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 33.16,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 2.99,
+  "tower_above": 2.99,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "east",
+  "axis_from": "walls",
+  "thresholds_note": "min_above 3 m over the provisional ground (33.16 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 252.6 deg), so z faces south-south-east (bearing 162.6 deg), to the lane and its car park, which the photograph looks along",
+  "expected": {
+   "centre": [
+    -130.19000479939984,
+    -384.28823677530886
+   ],
+   "axis": [
+    -0.954339542729053,
+    -0.2987240150769638
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ }
+}
