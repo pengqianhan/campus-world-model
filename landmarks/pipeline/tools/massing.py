@@ -810,7 +810,8 @@ def measure(b, P, others, campus_origin, forms=False, eaves=False):
     }
     # the roof forms of the fourth round that this building takes (FORMS), in a key that only they add
     if changed: data["forms"] = changed
-    # the eaves of the fifth round (EAVES) that it takes: the layers above the lowest with eaves over the outline
+    # the eaves of the fifth round (EAVES) that it takes: the layers that fifth() marked, whose eaves over the outline
+    # only that round gives (not those of a roof's faces, which the fourth round gives too)
     over = [f"{l['roof']} at {l.get('eave', l.get('ridge'))} m" for l in out if l.pop("fifth", False)]
     if over: data["eaves"] = over
     rec["skip"] = np.c_[CX[skip], CY[skip]]

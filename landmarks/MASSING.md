@@ -826,14 +826,16 @@ came out byte for byte as before when the City campus, Grafton and Newmarket wer
 
 - **803 17 Eden Crescent passes and is drawn**: footprint IoU 0.864 to 0.942, 96.4% of cells within
   0.5 m, model minus LiDAR −0.19 / −0.01 / 0.11 m (p10 / p50 / p90); 10 layers, of which the round
-  gives eaves to its two flat roofs at 10.19 m (five have eaves in all); 3,215 triangles. Its highest point is 12.93 m to the LiDAR's 15.25 m: a tree classed as
-  building over its north-east corner, which no layer draws.
+  gives eaves to its two flat roofs at 10.19 m (five have eaves in all); 3,215 triangles. Its
+  highest point is 12.93 m to the LiDAR's 15.25 m: a tree classed as building over its north-east
+  corner, which no layer draws.
 - **7 others try it and keep their blocks**: 132, 225, 401, 402, 432, 504 and 509. It raises the
   footprint IoU of 132 (0.797 to 0.918), 401 (0.964 to 0.975), 402 (0.927 to 0.936), 432 (0.921 to
-  0.944), 504 (0.871 to 0.880) and 509 (0.828 to 0.863), and leaves 225's at 0.887, but none of them
-  reaches 90% of cells within 0.5 m. To the other failing buildings it adds no eave. 401 and 402 miss it at the edges of their layers: about 97% of their cells
-  out by more than 0.5 m lie within 1 m of a step in height, the model's or the LiDAR's. That is
-  for another round.
+  0.944), 504 (0.871 to 0.880) and 509 (0.828 to 0.863), and leaves 225's at 0.887. 225 fits in
+  height (98% of cells within 0.5 m) but not in footprint; the other six do not reach 90% of cells
+  within 0.5 m. To the other failing buildings the round adds no eave. 401 and 402 miss the 90% at
+  the edges of their layers: about 97% of their cells out by more than 0.5 m lie within 1 m of a
+  step in height, the model's or the LiDAR's. That is for another round.
 
 ### How the numbers were measured
 
