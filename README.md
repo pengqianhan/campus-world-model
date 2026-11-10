@@ -69,7 +69,10 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-11-10:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
+- **2026-11-11:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
+  in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
+  the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
+- **2026-11-11:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
   measured heights, with the eaves of its main roof.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
@@ -123,15 +126,6 @@ It is built to answer two questions a student actually has:
   board-marked concrete under a dark crown at the east end of a long block, a strip of windows up its face, a
   glazed box at its foot and a glazed link beside it. Its sizes come from the LiDAR; it was compared with a
   photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** on Symonds Street the map draws Auckland Bioengineering House (439) in detail: a tower clad all
-  round in glass, its corners cut, two stone fins on its north face rising above its top and a plant room on its roof,
-  with a lower building round its north and east sides. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-08:** the map draws Architecture - West (421W) in detail: a slab in pale concrete with a pale
-  louvred parapet and a band of windows on each floor of its north-east faces above its glazed storey of doors, a
-  grey hipped roof with a tower in dark cladding on it, its top falling to the north-west, and two lower blocks at
-  its north-west end. Its sizes come from the LiDAR; it was compared with a photograph, which is not published,
-  and its card says what is estimated.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
@@ -254,11 +248,16 @@ GitHub gives it no secrets.
 ## Walk the campus
 
 **In the browser:** "Take a walk", the button beside the campus's name in the bottom-left corner,
-or `?walk=1` in the address, puts a small made-up person near the Clock Tower.
-W A S D or the arrow keys walk it, and Shift breaks into a run. On a phone or tablet it is steered as
-in a game: a stick under the left thumb walks and turns it, and the other thumb drags the view round.
-Its panel switches between the map, the view from behind it and the view through its eyes. There a
-drag looks round, and a click on a building or the ground walks it there; as it walks by hand, the
+or `?walk=1` in the address, puts a small made-up person near the Clock Tower. The button gives the
+view from behind it the whole screen, as in a game, with small panels in the corners: where it is,
+its speed, the views, and how it gets about. W A S D or the arrow keys walk it, and Shift breaks
+into a run. Scooter (2) puts it on a made-up electric scooter, on the same ways at up to 25 km/h;
+Fly (3) sends a made-up drone up in its place, which Space or E climbs and Q or C brings down, over
+the roofs and no higher than 120 m above the ground, and Walk (1) lands it. On a phone or tablet it
+is steered as in a game: a stick under the left thumb walks and turns it, and the other thumb drags
+the view round; flying, Up and Down are under the right thumb. The panel at the bottom right
+switches between the view from behind it, the view through its eyes and the map (V); there a
+drag looks round, and a click on a building or the ground sends it there; as it goes by hand, the
 view comes back round behind it. "Let it wander" sends it strolling on its own from building to
 building. Every walker looks the
 same: a student with nothing meant to mark a sex or a gender, who opens an umbrella when Open-Meteo
