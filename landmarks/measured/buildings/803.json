@@ -612,11 +612,8 @@
   "a low pitch: gable, 9.4 degrees, over 11 m2"
  ],
  "eaves": [
-  "gable at 6.72 m",
-  "mono at 9.56 m",
   "flat at 10.19 m",
-  "flat at 10.19 m",
-  "mono at 12.05 m"
+  "flat at 10.19 m"
  ],
  "check": {
   "iou": 0.942,

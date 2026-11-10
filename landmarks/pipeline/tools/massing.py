@@ -747,11 +747,18 @@ def measure(b, P, others, campus_origin, forms=False, eaves=False):
         e = [v if o else 0.0 for v, o in zip(e, on)]
         return e if any(e) else 0.0
 
+    def fifth(r, f, plinth):
+        # marks the eaves that only the fifth round (EAVES) gives: every one off the plinth (the layers above the lowest
+        # had none there before), and on the plinth those of a flat layer or of a building with no layer drawn as faces
+        if eaves and isinstance(r.get("eaves"), list) and (not plinth or not split or f["form"] == "flat"):
+            r["fifth"] = True
+        return r
+
     out.append(layer_record(rings, bi, -1.0, eaves_at(eave0), levels, centre))
     lost = 0.0
     for k in layers[1:]:
         for ring in traced(k):
-            rec_k = layer_record([ring], info[k], out[0]["wall"], face_eaves(ring, info[k]) if eaves else 0.0, levels, centre)
+            rec_k = fifth(layer_record([ring], info[k], out[0]["wall"], face_eaves(ring, info[k]) if eaves else 0.0, levels, centre), info[k], False)
             if stands(rec_k): out.append(rec_k)
             else: lost = max(lost, rec_k["m2"])
     # When the lowest layer covers less than half of the outline and the rule above would lose a roof (the
@@ -764,10 +771,10 @@ def measure(b, P, others, campus_origin, forms=False, eaves=False):
     # The faces of one layer stand on a body: a flat layer over all of them, up to the lowest edge of their roofs,
     # so that no wall stands inside the building between two faces from the plinth up.
     if small and (flattened or lost > info[base]["m2"]) or split:
-        ups = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in layers if k not in face
+        ups = [fifth(layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre), info[k], True) for k in layers if k not in face
                for ring in traced(k)]
         for g in groups:
-            fu = [layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre) for k in g for ring in traced(k)]
+            fu = [fifth(layer_record([ring], info[k], 0.0, face_eaves(ring, info[k]), levels, centre), info[k], True) for k in g for ring in traced(k)]
             if not fu: continue
             hb = min(u["wall"] for u in fu)
             ups += [layer_record([ring], {"form": "flat", "height": hb, "m2": sum(info[k]["m2"] for k in g)}, 0.0, 0.0, levels, centre)
@@ -804,9 +811,8 @@ def measure(b, P, others, campus_origin, forms=False, eaves=False):
     # the roof forms of the fourth round that this building takes (FORMS), in a key that only they add
     if changed: data["forms"] = changed
     # the eaves of the fifth round (EAVES) that it takes: the layers above the lowest with eaves over the outline
-    if eaves:
-        over = [f"{l['roof']} at {l.get('eave', l.get('ridge'))} m" for l in out[1:] if isinstance(l.get("eaves"), list)]
-        if over: data["eaves"] = over
+    over = [f"{l['roof']} at {l.get('eave', l.get('ridge'))} m" for l in out if l.pop("fifth", False)]
+    if over: data["eaves"] = over
     rec["skip"] = np.c_[CX[skip], CY[skip]]
     return rec, data, None
 
@@ -1112,6 +1118,7 @@ def main():
                 why = f"top-view check: footprint IoU {c['iou']:.3f} (limit {IOU_MIN}), {c['within_0.5m']:.0%} of cells within 0.5 m (limit {WITHIN_MIN:.0%})"
                 # Only now the roof forms of the fourth round (FORMS): a building measured with them is drawn if it
                 # passes the check with more cells within 0.5 m than without them; else its block stays, as before.
+                c2 = None
                 if FORMS and not policy:
                     rec2, data2, why2 = measure(b, P, others, origin, forms=True)
                     if data2 and not why2 and data2.get("forms"):
@@ -1124,12 +1131,13 @@ def main():
                             why += (f"; with the roof forms of the fourth round ({'; '.join(data2['forms'])}): footprint IoU "
                                     f"{c2['iou']:.3f}, {c2['within_0.5m']:.0%} of cells within 0.5 m")
                 # Only then the eaves of the fifth round (EAVES), with the forms: drawn if it passes the check with a
-                # larger footprint IoU than without them; else its block stays, as before, and its reason says why.
+                # larger footprint IoU than without them (with the forms, if it took any); else its block stays, as
+                # before, and its reason says why. A building to which they add no eave is not measured again.
                 if why and EAVES and not policy:
                     rec3, data3, why3 = measure(b, P, others, origin, forms=FORMS, eaves=True)
                     if data3 and not why3 and data3.get("eaves"):
                         c3 = topview(b, data3, P, others, rec3.pop("skip", None), "-eaves")
-                        if c3["iou"] >= IOU_MIN and c3["within_0.5m"] >= WITHIN_MIN and c3["iou"] > c["iou"]:
+                        if c3["iou"] >= IOU_MIN and c3["within_0.5m"] >= WITHIN_MIN and c3["iou"] > (c2 or c)["iou"]:
                             data3["check"] = rec3["check"] = c3
                             rec, data, why = rec3, data3, None
                         else:
