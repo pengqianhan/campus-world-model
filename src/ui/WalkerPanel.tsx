@@ -6,8 +6,9 @@
 // with the stick while the other drags the view round. The walker, its scooter and its drone are
 // made up; the walk's menu says so, and that doors are not mapped.
 import { useEffect, useRef, useState } from "preact/hooks";
-import { t } from "../app/i18n.ts";
-import { data, selBuilding, selCampus } from "../app/state.ts";
+import { formatDate, t } from "../app/i18n.ts";
+import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
+import { formatMinutes } from "../shared/time.ts";
 import {
   ENTER_REACH,
   MY_WALKER,
@@ -52,11 +53,18 @@ function axis(v: number): number {
   return a <= DEAD_ZONE ? 0 : (Math.sign(v) * (a - DEAD_ZONE)) / (1 - DEAD_ZONE);
 }
 
-/** What the thumbs ask for: the stick forward and round, the buttons up and down. Each sets its part. */
+/**
+ * What the thumbs ask for: the stick forward (-1 to 1) and round (-1 to 1), the buttons up and down
+ * (metres a second). Each sets its part; the stick's speeds are those of the way it gets about now,
+ * so that held through a change of it, the stick goes on at the new pace.
+ */
 const hand = { forward: 0, turn: 0, climb: 0 };
 function steerHand(part: Partial<typeof hand>): void {
   Object.assign(hand, part);
-  steerByHand(hand.forward, hand.turn, hand.climb);
+  const ride = walkerRide.peek();
+  const f = hand.forward;
+  // Squared, so that a little push to the side turns a little and the stick can hold a line.
+  steerByHand(f > 0 ? f * STICK_TOP[ride] : f * PACE[ride].back, hand.turn * Math.abs(hand.turn) * STICK_TURN, hand.climb);
 }
 
 /**
@@ -87,11 +95,7 @@ function Stick({ onSteer }: { onSteer: () => void }) {
       y /= m;
     }
     if (knob.current) knob.current.style.transform = `translate(${x * reach * KNOB_TRAVEL}px, ${y * reach * KNOB_TRAVEL}px)`;
-    const forward = -axis(y);
-    const turn = axis(x);
-    const ride = walkerRide.peek();
-    // Squared, so that a little push to the side turns a little and the stick can hold a line.
-    steerHand({ forward: forward > 0 ? forward * STICK_TOP[ride] : forward * PACE[ride].back, turn: turn * Math.abs(turn) * STICK_TURN });
+    steerHand({ forward: -axis(y), turn: axis(x) });
   };
   const release = (e: PointerEvent) => {
     if (e.pointerId !== finger.current) return;
@@ -201,19 +205,20 @@ export function WalkerPanel() {
   const touch = isLite();
   const [to, setTo] = useState("");
   const [message, setMessage] = useState<string | undefined>(undefined);
-  // The walk to a place, wandering, and how to steer: a menu from the top right, shut at first.
-  const [more, setMore] = useState(false);
+  // The walk to a place, wandering, how to steer and that all of it is made up: a menu from the top
+  // right, open as a walk starts on a wide screen, shut on a touch screen, where the walk needs it.
+  const [more, setMore] = useState(() => !touch);
   const input = useRef<HTMLInputElement>(null);
   const dock = useDock(walkerOn.value);
-  // Each walk starts with the menu shut.
   const on = walkerOn.value;
   useEffect(() => {
-    if (on) setMore(false);
+    if (on) setMore(!touch);
   }, [on]);
-  // Opened, the menu's field takes the keys, for whoever is typing a place.
+  // A change of the way it gets about while the stick is held goes on at the new pace.
+  const rideNow = walkerRide.value;
   useEffect(() => {
-    if (more && !touch) input.current?.focus();
-  }, [more]);
+    if (hand.forward || hand.turn || hand.climb) steerHand({});
+  }, [rideNow]);
   if (!walkerOn.value) return null;
   const d = data.value;
   const status = walkerStatus.value;
@@ -223,6 +228,8 @@ export function WalkerPanel() {
   const hidden = hudHidden.value;
   const wandering = wanderingNow.value.has(MY_WALKER);
   const indoor = !!status?.indoor;
+  const clock = shown.value;
+  const preview = timeMode.value === "preview";
 
   const act = async (command: string, args: Record<string, unknown>) => {
     const r = await run(command, { name: MY_WALKER, ...args });
@@ -299,6 +306,19 @@ export function WalkerPanel() {
 
       <div class="hud-corner hud-tr">
         <div class="hud-card hud-toolbar">
+          {/* The time the view shows: now, or a preview of another time, as the top bar's chip says. */}
+          <span
+            class={`hud-time ${preview ? "preview" : ""}`}
+            id="walker-time"
+            role="img"
+            aria-label={`${preview ? t("time.preview") : t("time.now")} ${formatDate(clock.date)} ${formatMinutes(clock.minutes)}`}
+            title={`${preview ? t("time.preview") : t("time.now")} ${formatDate(clock.date)} ${formatMinutes(clock.minutes)}`}
+          >
+            <span class="hud-time-mode">{preview ? t("time.preview") : t("time.now")}</span>
+            {preview && !touch && <span class="hud-time-date">{formatDate(clock.date)}</span>}
+            <span class="hud-time-clock">{formatMinutes(clock.minutes)}</span>
+          </span>
+          <span class="hud-divider" aria-hidden="true" />
           <button
             type="button"
             class="hud-tool"
@@ -307,7 +327,11 @@ export function WalkerPanel() {
             aria-controls="walker-menu"
             aria-label={t("walker.more")}
             title={t("walker.more")}
-            onClick={() => setMore(!more)}
+            onClick={() => {
+              setMore(!more);
+              // Opened with a click on a wide screen, its field takes the keys, for a place to type.
+              if (!more && !touch) requestAnimationFrame(() => input.current?.focus());
+            }}
           >
             <Icon name="pin" size={16} />
             <span class="hud-label">{t("walker.goTo")}</span>

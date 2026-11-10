@@ -1901,6 +1901,40 @@ select optgroup {
   color: var(--text);
 }
 
+/* The time the view shows, as the top bar's chip: now, or a preview in the accent. */
+.hud-time {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 8px 0 10px;
+  color: var(--text);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.hud-time-mode {
+  color: var(--hud-text-2);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hud-time.preview .hud-time-mode,
+.hud-time.preview .hud-time-clock {
+  color: var(--accent);
+}
+
+/* On a phone only the time, in the accent when it is a preview; its label says which. */
+.hud.touch .hud-time-mode {
+  display: none;
+}
+
+.hud.touch .hud-time {
+  padding: 0 4px 0 6px;
+}
+
 .hud-divider {
   width: 1px;
   height: 20px;
@@ -2359,6 +2393,28 @@ select optgroup {
 
 .walking .hud:not(.touch) .hud-bc {
   bottom: calc(var(--hud-b) + 8px);
+}
+
+/* A narrower window with a mouse: the ways of getting about keep the foot to themselves, the sign
+   and the speed stand above them, and the hint, which the menu also has, steps aside. */
+@media (max-width: 1080px) {
+  .hud:not(.touch) .hud-hint {
+    display: none;
+  }
+
+  .hud:not(.touch) .hud-bl,
+  .hud:not(.touch) .hud-br {
+    bottom: calc(var(--hud-lift, var(--hud-b)) + 70px);
+  }
+
+  .hud:not(.touch) .hud-bl {
+    max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 290px);
+  }
+
+  /* The menu keeps above the speed, scrolling if it must. */
+  .hud:not(.touch) .hud-menu {
+    max-height: calc(100vh - 380px);
+  }
 }
 
 /* On a touch screen, as in a game on a phone: the ways of getting about across the foot, the stick

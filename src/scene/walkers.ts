@@ -43,6 +43,8 @@ const SCOOTER_COAST = 1.8;
 export const DRONE_CEILING = 120;
 /** Metres above the ground a drone rises to when it takes off. */
 export const TAKE_OFF = 12;
+/** Metres a second the drone flies at most, flown by hand or flying itself: about 58 km/h. */
+export const DRONE_TOP = 16;
 /** Metres a second the drone climbs or comes down at most, and how fast its speeds change. */
 export const DRONE_CLIMB = 5;
 const DRONE_ACCEL = 7;
@@ -149,8 +151,13 @@ class Walker {
   /** Flying: the height of the drone's skids, metres above sea level. */
   alt = 0;
   drone?: Drone;
-  /** A flight it makes by itself: taking off, or to a place. */
+  /** A flight it makes by itself: to a height, or to a place. Steering by hand ends it. */
   flight?: Flight;
+  /**
+   * Taking off: metres above the ground it rises to, while it can be steered round by hand all the
+   * same; and who waits for it to get there. Climbing or coming down by hand ends it.
+   */
+  lift?: { above: number; done: (() => void)[] };
   /** Degrees a second it turns, smoothed: the scooter leans into it, the drone banks. */
   turnRate = 0;
   /** The ground under it when it was last placed, metres: a drone keeps its height over the ground when the ground arrives. */
@@ -296,9 +303,10 @@ export class WalkerWorld {
       }
       w.drone.root.visible = true;
       w.alt = w.height;
-      w.flight = { alt: w.alt + TAKE_OFF, above: TAKE_OFF, speed: 0, metres: 0, startedAt: this.now };
+      w.lift = { above: TAKE_OFF, done: [] };
     } else if (was === "fly") {
       if (w.drone) w.drone.root.visible = false;
+      this.endLift(w);
       // It lands where there is room round the walker, facing the way that is open furthest.
       const open = this.host.walkMap()?.openNear(w.at, 60);
       if (open) {
@@ -312,12 +320,22 @@ export class WalkerWorld {
     return this.state(name);
   }
 
+  /** Resolves when a drone taking off has got to its height (at once when it is not taking off). */
+  airborne(name: string): Promise<void> {
+    const w = this.walkers.get(name);
+    if (!w?.lift) return Promise.resolve();
+    const lift = w.lift;
+    return new Promise((done) => lift.done.push(done));
+  }
+
   /** Flies the drone up or down to `metres` above the ground where it is. Resolves when it gets there or is stopped. */
   climbTo(name: string, metres: number): Promise<WalkResult> {
     const w = this.walkers.get(name);
     if (!w || w.ride !== "fly") return Promise.resolve({ arrived: false, reason: !w ? "no such walker" : "it is not flying", metres: 0, seconds: 0 });
     this.cancel(w, "another command");
+    this.endLift(w);
     w.drive = { forward: 0, turn: 0, climb: 0 };
+    w.speed = 0;
     const above = Math.min(DRONE_CEILING, Math.max(0, metres));
     return new Promise((resolve) => {
       w.flight = { alt: this.host.groundAt(w.at[0], w.at[1]) + above, above, speed: 0, metres: 0, startedAt: this.now, resolve };
@@ -332,6 +350,7 @@ export class WalkerWorld {
     const w = this.walkers.get(name);
     if (!w || w.ride !== "fly") return Promise.resolve({ arrived: false, reason: !w ? "no such walker" : "it is not flying", metres: 0, seconds: 0 });
     this.cancel(w, "another command");
+    this.endLift(w);
     w.drive = { forward: 0, turn: 0, climb: 0 };
     const roofs = this.host.roofs();
     const ground = (p: Pt) => this.host.groundAt(p[0], p[1]);
@@ -339,7 +358,7 @@ export class WalkerWorld {
     const ceiling = Math.min(ground(w.at), ground(to)) + DRONE_CEILING;
     const alt = Math.min(ceiling, Math.max(w.alt, over));
     return new Promise((resolve) => {
-      w.flight = { to: [to[0], to[1]], alt, speed: Math.max(0.5, Math.min(MAX_SPEED, speed)), metres: 0, startedAt: this.now, resolve };
+      w.flight = { to: [to[0], to[1]], alt, speed: Math.max(0.5, Math.min(DRONE_TOP, speed)), metres: 0, startedAt: this.now, resolve };
     });
   }
 
@@ -360,7 +379,7 @@ export class WalkerWorld {
       w.walk = {
         points: plan.points.slice(),
         leg: 1,
-        speed: Math.max(0.3, Math.min(MAX_SPEED, speed)),
+        speed: Math.max(0.3, Math.min(w.ride === "scooter" ? SCOOTER_TOP : MAX_SPEED, speed)),
         metres: 0,
         startedAt: this.now,
         resolve,
@@ -389,12 +408,15 @@ export class WalkerWorld {
     return this.follow(name, plan, speed);
   }
 
-  /** Stops a walk in progress. */
+  /** Stops a walk in progress, and a scooter or a drone where it is. */
   stop(name: string): void {
     const w = this.walkers.get(name);
     if (w) {
       this.cancel(w, "stopped");
+      this.endLift(w);
       w.drive = { forward: 0, turn: 0, climb: 0 };
+      w.speed = 0;
+      w.climb = 0;
     }
   }
 
@@ -422,12 +444,22 @@ export class WalkerWorld {
     // A key held until now counts for all the time it was held, though no frame was drawn meanwhile.
     this.driveUntil(w, performance.now());
     if (forward || turn || climb) this.cancel(w, "steered by hand");
+    // Climbing or coming down by hand takes over from a take-off; going round does not.
+    if (climb) this.endLift(w);
     w.drive = { forward, turn, climb: w.ride === "fly" ? climb : 0 };
   }
 
   /** Whether steering by hand still moves it: held, or let go of a scooter or a drone still going. */
   private driven(w: Walker): boolean {
-    return !!(w.drive.forward || w.drive.turn || w.drive.climb || w.speed || w.climb);
+    return !!(w.drive.forward || w.drive.turn || w.drive.climb || w.speed || w.climb || w.lift);
+  }
+
+  /** A take-off ends: at its height, taken over, or landed. Whoever waited for it goes on. */
+  private endLift(w: Walker): void {
+    const lift = w.lift;
+    if (!lift) return;
+    w.lift = undefined;
+    for (const done of lift.done) done();
   }
 
   /**
@@ -514,23 +546,28 @@ export class WalkerWorld {
     for (const w of this.walkers.values()) {
       const was = { x: w.at[0], y: w.at[1], h: w.heading, m: w.moving, a: w.alt };
       let travelled = 0;
-      if (w.walk) travelled = this.advance(w, dt);
-      else if (w.flight) travelled = this.flyOn(w, dt);
-      else travelled = this.driveUntil(w, now);
+      if (w.walk || w.flight) {
+        travelled = w.walk ? this.advance(w, dt) : this.flyOn(w, dt);
+        // Steered by hand after it, it goes on from now, not from before it.
+        w.driveFrom = now;
+      } else travelled = this.driveUntil(w, now);
       const target = travelled > 0 ? 1 : 0;
       w.moving += (target - w.moving) * Math.min(1, dt * 6);
       if (Math.abs(w.moving) < 0.01) w.moving = 0;
       if (dt > 0) w.pace += (travelled / dt - w.pace) * Math.min(1, dt * 8);
       if (travelled === 0 && w.moving === 0) w.pace = 0;
       if (dt > 0) w.turnRate += ((((w.heading - was.h + 540) % 360) - 180) / dt - w.turnRate) * Math.min(1, dt * 6);
+      // Come to rest, it is at rest: a rate dwindling for ever would lean the rider or bank the drone a hair each frame.
+      if (Math.abs(w.turnRate) < 0.5) w.turnRate = 0;
       w.figure.setUmbrella(rain > 0 && !w.indoor && w.ride === "walk");
       if (travelled > 0 || w.moving > 0 || w.alt !== was.a) this.place(w);
       w.figure.pose(w.moving, w.pace, now / 1000);
       w.figure.rideOn(travelled, w.pace, w.turnRate, dt);
-      // A drone in the air is never still: its rotors spin and it bobs where it hovers.
       if (w.ride === "fly" && w.drone) {
-        w.drone.fly(dt, w.pace * Math.sign(w.speed || 1), w.turnRate, w.climb, now / 1000, true);
-        changed = true;
+        // It turns on the spot as well as on the way.
+        w.drone.root.rotation.y = (-w.heading * Math.PI) / 180;
+        // Leaning and banking draw a frame; a drone hovering still is drawn once.
+        if (w.drone.fly(dt, w.pace * Math.sign(w.speed || 1), w.turnRate)) changed = true;
       }
       if (w.figure.takeChanged()) changed = true;
       if (w.speech && w.speech.until === undefined) w.speech.until = now + w.speech.ms;
@@ -619,8 +656,19 @@ export class WalkerWorld {
       pace = w.speed;
     } else if (w.ride === "fly") {
       w.speed = approach(w.speed, w.drive.forward, DRONE_ACCEL * dt);
-      w.climb = approach(w.climb, w.drive.climb, DRONE_ACCEL * dt);
-      this.rise(w, w.climb * dt);
+      if (w.lift) {
+        // Taking off: up to its height over the ground, slowing as it comes to it.
+        const dz = this.host.groundAt(w.at[0], w.at[1]) + w.lift.above - w.alt;
+        w.climb = Math.max(-DRONE_CLIMB, Math.min(DRONE_CLIMB, dz * 2));
+        if (Math.abs(dz) <= Math.max(0.02, Math.abs(w.climb) * dt)) {
+          this.rise(w, dz);
+          w.climb = 0;
+          this.endLift(w);
+        } else this.rise(w, w.climb * dt);
+      } else {
+        w.climb = approach(w.climb, w.drive.climb, DRONE_ACCEL * dt);
+        this.rise(w, w.climb * dt);
+      }
       pace = w.speed;
     }
     if (!pace) return 0;
@@ -677,13 +725,17 @@ export class WalkerWorld {
     const f = w.flight!;
     if (f.above !== undefined) f.alt = Math.max(this.floorUnder(w.at), this.host.groundAt(w.at[0], w.at[1]) + f.above);
     const dz = f.alt - w.alt;
-    w.climb = Math.max(-DRONE_CLIMB, Math.min(DRONE_CLIMB, dz * 1.5));
+    w.climb = Math.max(-DRONE_CLIMB, Math.min(DRONE_CLIMB, dz * 2));
     const before = w.alt;
-    this.rise(w, w.climb * dt);
+    // Close to its height it comes to it exactly, rather than ever more slowly.
+    const there = Math.abs(dz) <= Math.max(0.02, Math.abs(w.climb) * dt);
+    this.rise(w, there ? dz : w.climb * dt);
     // Held under its height by a roof or the ceiling, it goes on from where it is.
-    const level = Math.abs(f.alt - w.alt) < 1 || (dt > 0 && Math.abs(dz) > 1e-3 && Math.abs(w.alt - before) < 1e-4);
+    const held = dt > 0 && Math.abs(dz) > 1e-3 && Math.abs(w.alt - before) < 1e-4;
+    const level = Math.abs(f.alt - w.alt) < 1 || held;
     if (!f.to) {
-      if (level) this.finishFlight(w, true);
+      w.speed = 0;
+      if (Math.abs(f.alt - w.alt) < 0.03 || held) this.finishFlight(w, true);
       return 0;
     }
     // A roof on the way that came in after the flight was planned (a landmark's model) raises it.
@@ -698,6 +750,7 @@ export class WalkerWorld {
     const d = Math.hypot(dx, dy);
     if (d < 0.3) {
       w.speed = 0;
+      w.climb = 0;
       this.finishFlight(w, true);
       return 0;
     }

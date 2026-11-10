@@ -41,10 +41,14 @@ function marked<M extends Material>(m: M): M {
   return m;
 }
 
+/**
+ * A part of a ride. It casts no shadow: the scene draws its shadow map again only now and then
+ * (CampusScene: a change of view, the walker gone some way), and a moving ride's would stay behind.
+ */
 function part(geometry: BufferGeometry, material: Material, x: number, y: number, z: number): Mesh {
   const m = new Mesh(geometry, material);
   m.position.set(x, y, z);
-  m.castShadow = true;
+  m.castShadow = false;
   m.receiveShadow = true;
   m.userData.noPick = true;
   return m;
@@ -129,16 +133,13 @@ export class Scooter {
 
 /**
  * A small drone with four rotors on arms, a camera under its nose, two skids and lights: white at
- * the front, red at the back.
+ * the front, red at the back, steady.
  */
 export class Drone {
   readonly root = new Group();
-  /** Leans with the way it flies; the rotors spin on it. */
+  /** Leans with the way it flies; the rotors are on it. */
   private body = new Group();
-  private rotors: Group[] = [];
   private blur: MeshBasicMaterial;
-  private tail: MeshBasicMaterial;
-  private spin = 0;
 
   constructor() {
     const shell = marked(new MeshStandardMaterial({ color: 0xe3e7ea, roughness: 0.45, metalness: 0.1 }));
@@ -146,8 +147,8 @@ export class Drone {
     const trim = marked(new MeshStandardMaterial({ color: TEAL, roughness: 0.5, metalness: 0.2 }));
     const blade = marked(new MeshStandardMaterial({ color: 0x24282c, roughness: 0.5 }));
     const glass = marked(new MeshStandardMaterial({ color: 0x0a0d10, roughness: 0.08, metalness: 0.9 }));
-    this.blur = new MeshBasicMaterial({ color: 0x9aa6ae, transparent: true, opacity: 0, depthWrite: false });
-    this.tail = new MeshBasicMaterial({ color: 0xff3b30 });
+    this.blur = new MeshBasicMaterial({ color: 0x9aa6ae, transparent: true, opacity: 0.28, depthWrite: false });
+    const tail = new MeshBasicMaterial({ color: 0xff3b30 });
     const front = new MeshBasicMaterial({ color: 0xf4fbff });
     this.root.add(this.body);
     this.root.scale.setScalar(DRONE_SIZE);
@@ -181,18 +182,19 @@ export class Drone {
       this.body.add(part(motor, dark, at.x, 0.02, at.z));
       const rotor = new Group();
       rotor.position.set(at.x, 0.048, at.z);
+      // The blades, as they would stand still; in the air the blur is drawn in their place.
       for (const turn of [0, Math.PI / 2]) {
         const p = part(prop, blade, 0, 0, 0);
         p.rotation.y = turn;
+        p.visible = false;
         rotor.add(p);
       }
       const d = new Mesh(disc, this.blur);
       d.userData.noPick = true;
       d.renderOrder = 2;
       rotor.add(d);
-      this.rotors.push(rotor);
       this.body.add(rotor);
-      const light = part(new SphereGeometry(0.012, 8, 6), z < 0 ? front : this.tail, at.x, -0.01, at.z);
+      const light = part(new SphereGeometry(0.012, 8, 6), z < 0 ? front : tail, at.x, -0.01, at.z);
       light.castShadow = false;
       this.body.add(light);
     }
@@ -208,25 +210,20 @@ export class Drone {
   }
 
   /**
-   * Moves it on by `dt` seconds: the rotors spin, blurred the faster they go, and the body leans
-   * into the way it flies, `forward` metres a second, and banks into a turn of `turn` degrees a
-   * second. `t` seconds keep it bobbing a little where it hovers.
+   * Moves it on by `dt` seconds: the body leans into the way it flies, `forward` metres a second,
+   * and banks into a turn of `turn` degrees a second. In the air its rotors are a blur, which looks
+   * the same however they turn, and it hovers still: returns whether it looks any different, so that
+   * a drone hovering still costs no frames (a frame drawn in software takes the best part of a second).
    */
-  fly(dt: number, forward: number, turn: number, climb: number, t: number, flying: boolean): void {
-    // Spinning, the blades are a blur; standing, they are still.
-    this.spin = (this.spin + dt * (flying ? 70 : 0)) % (Math.PI * 2);
-    this.rotors.forEach((r, i) => {
-      r.rotation.y = i % 3 === 0 ? this.spin : -this.spin;
-      r.children.forEach((c, k) => (c.visible = k < 2 ? !flying : flying));
-    });
-    this.blur.opacity = flying ? 0.28 : 0;
+  fly(dt: number, forward: number, turn: number): boolean {
     const k = Math.min(1, dt * 4);
     const pitch = -Math.max(-0.22, Math.min(0.22, forward * 0.018));
     const roll = -Math.max(-0.25, Math.min(0.25, (turn / 90) * Math.min(1, Math.abs(forward) / 4 + 0.3) * 0.25));
-    this.body.rotation.x += (pitch - this.body.rotation.x) * k;
-    this.body.rotation.z += (roll - this.body.rotation.z) * k;
-    this.body.position.y = DRONE_MIDDLE / DRONE_SIZE + (flying ? Math.sin(t * 2.1) * 0.025 + Math.max(-0.03, Math.min(0.03, climb * -0.006)) : 0);
-    this.tail.color.setHex(Math.sin(t * 5) > 0 || !flying ? 0xff3b30 : 0x5a120f);
+    const was = { x: this.body.rotation.x, z: this.body.rotation.z };
+    const ease = (v: number, to: number) => (Math.abs(to - v) < 1e-3 ? to : v + (to - v) * k);
+    this.body.rotation.x = ease(this.body.rotation.x, pitch);
+    this.body.rotation.z = ease(this.body.rotation.z, roll);
+    return this.body.rotation.x !== was.x || this.body.rotation.z !== was.z;
   }
 
   dispose(): void {

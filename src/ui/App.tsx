@@ -192,7 +192,7 @@ export function App() {
           selRoom.value = undefined;
           marker.value = undefined;
         } else if (selBuilding.value) goHome();
-      } else if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey) {
+      } else if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !walkerOn.value) {
         e.preventDefault();
         panel.value = "search";
       }

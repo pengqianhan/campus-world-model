@@ -117,17 +117,24 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   const to = ((await walker(page, "list")) as { walkers: { name: string; at: [number, number] }[] }).walkers.find((w) => w.name === "Walker")!.at;
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(0.3);
 
-  // A walk to a place, wandering and how to steer wait in a menu at the top right, shut at first.
-  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "false");
+  // On a wide screen the menu at the top right is open as the walk starts: a walk to a place,
+  // wandering, how to steer, and that the walker, its scooter and its drone are made up. Its button
+  // folds it away.
+  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#walker-menu")).toContainText("Space or E to climb");
+  await expect(page.locator("#walker-menu")).toContainText("made-up figure, scooter and drone");
+  await page.locator("#walker-more").click();
   await expect(page.locator("#walker-wander")).toBeHidden();
   await expect(page.locator("#walker-panel button[data-view]")).toHaveCount(3);
   await expect(page.locator("#walker-panel button[data-ride]")).toHaveCount(3);
   // There is no stick: the keys walk it.
   await expect(page.locator("#walker-stick")).toHaveCount(0);
+  // The time the view shows stays in sight with the top bar gone: here a preview.
+  await expect(page.locator("#walker-time")).toContainText("15:00");
+  await expect(page.locator("#walker-time")).toHaveClass(/preview/);
 
   // Let it wander: it strolls off on its own, and Stop wandering stops it.
   await page.locator("#walker-more").click();
-  await expect(page.locator("#walker-menu")).toContainText("Space or E to climb");
   await page.locator("#walker-wander").click();
   await page.locator("#walker-more").click();
   await expect(page.locator("#walker-wander")).toHaveAttribute("aria-pressed", "true");
@@ -199,6 +206,8 @@ test("a walk to a room goes into its building, up to its floor and into the room
 });
 
 test("on a scooter the walker goes faster on the same ways; a drone flies in its place, over the roofs and no higher than 120 m, and lands it again", async ({ page }) => {
+  // Three flights and two climbs, each taking the seconds a drone takes.
+  test.slow();
   await open(page, `?walk=1&${QUERY}`);
   await ready(page);
   const state = async () => ((await walker(page, "list")) as { walkers: { at: [number, number]; height: number; ride: string; speed: number; altitude?: number; indoor?: unknown }[] }).walkers[0]!;
@@ -235,6 +244,26 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect.poll(async () => (await state()).height, { message: "Q brings it down to the roof" }).toBeLessThan(roof! + 1);
   await page.keyboard.up("q");
   expect((await state()).height).toBeGreaterThanOrEqual(roof!);
+  // Over the Clock Tower's wings it keeps over their roofs as the model draws them, below the
+  // tower's top, and it does not come down into them.
+  await page.waitForFunction(() => window.__scene!.loading === 0, undefined, { timeout: 60_000 });
+  const clock = await page.evaluate(() => {
+    // Each landmark's roofs come in one a call.
+    for (let i = 0; i < 80; i++) window.__scene!.roofAt(0, 0);
+    const points: { at: [number, number]; roof: number }[] = [];
+    for (let n = 205; n <= 255; n += 2) for (let e = 0; e <= 60; e += 2) points.push({ at: [e, n], roof: window.__scene!.roofAt(e, n) ?? -Infinity });
+    const top = Math.max(...points.map((p) => p.roof));
+    // A point of a wing well clear of the tower: its roof well below the tower's top, and the same all round it.
+    const wing = points.find((p) => p.roof < top - 8 && p.roof > top - 20 && [-3, 3].every((d) => (window.__scene!.roofAt(p.at[0] + d, p.at[1]) ?? 0) === p.roof && (window.__scene!.roofAt(p.at[0], p.at[1] + d) ?? 0) === p.roof));
+    return { top, wing };
+  });
+  expect(clock.wing, "a wing of the Clock Tower lower than its tower").toBeDefined();
+  expect(((await walker(page, "walk", { to: `${clock.wing!.at[0]},${clock.wing!.at[1]}`, speed: 40 })) as Reply & { arrived: boolean }).arrived).toBe(true);
+  await page.keyboard.down("q");
+  await expect.poll(async () => (await state()).height, { message: "Q brings it down over the wing, below the tower's top" }).toBeLessThan(clock.wing!.roof + 1);
+  await page.keyboard.up("q");
+  expect((await state()).height).toBeGreaterThanOrEqual(clock.wing!.roof);
+  expect((await state()).height).toBeLessThan(clock.top - 5);
   // An agent sends it as high as it may go, and no higher.
   const climbed = (await walker(page, "ride", { ride: "fly", height: 500 })) as Reply;
   expect(climbed.error).toMatch(/0 to 120/);
@@ -266,6 +295,34 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await page.keyboard.press("Escape");
   await expect(page.locator("#walker-panel")).toHaveCount(0);
   await expect(page.locator(".topbar")).toBeVisible();
+});
+
+test("in a narrower window with a mouse the walk's panels keep apart", async ({ page }) => {
+  for (const [width, height] of [
+    [760, 600],
+    [900, 680],
+  ] as const) {
+    await page.setViewportSize({ width, height });
+    await open(page, `?walk=1&${QUERY}`);
+    await ready(page);
+    // Beside a building, so that its way in shows above the speed.
+    expect(((await walker(page, "walk", { to: "105", speed: 40 })) as Reply & { arrived: boolean }).arrived).toBe(true);
+    await expect(page.locator("#walker-enter")).toBeVisible();
+    const parts = [".hud-brand", "#walker-close", ".hud-toolbar", ".hud-menu", ".hud-sign", ".hud-rides", ".hud-cluster", ".walker-moves"];
+    const boxes: { name: string; x: number; y: number; width: number; height: number }[] = [];
+    for (const name of parts) {
+      const l = page.locator(name).first();
+      if (await l.isVisible()) boxes.push({ name, ...(await l.boundingBox())! });
+    }
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const [a, b] = [boxes[i]!, boxes[j]!];
+        const apart = a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
+        expect(apart, `${a.name} and ${b.name} at ${width} x ${height}`).toBe(true);
+      }
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
 });
 
 test("a walk the address asks for starts when the data comes in before the scene, as in a tab opened in the background", async ({ page }) => {

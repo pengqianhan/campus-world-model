@@ -5,7 +5,7 @@
 // visitor's browser.
 import { batch, effect, signal } from "@preact/signals";
 import type { CampusScene, WalkerView } from "../scene/CampusScene.ts";
-import { DRONE_CEILING, MAX_SPEED, SCOOTER_TOP, WALK_SPEED, type Ride, type WalkResult } from "../scene/walkers.ts";
+import { DRONE_CEILING, DRONE_TOP, MAX_SPEED, SCOOTER_TOP, WALK_SPEED, type Ride, type WalkResult } from "../scene/walkers.ts";
 import { RIDES } from "../scene/rides.ts";
 import type { Pt } from "../shared/geo.ts";
 import { school } from "@school";
@@ -43,7 +43,7 @@ export const walkerGauge = signal<{ ride: Ride; speed: number; altitude?: number
 export const PACE = {
   walk: { forward: WALK_SPEED, fast: WALK_SPEED * 2.5, back: WALK_SPEED * 0.6, turn: 100 },
   scooter: { forward: 16 / 3.6, fast: SCOOTER_TOP, back: 1, turn: 90 },
-  fly: { forward: 8, fast: 16, back: 4, turn: 90, climb: 4 },
+  fly: { forward: 8, fast: DRONE_TOP, back: 4, turn: 90, climb: 4 },
 } as const;
 /** What the panel shows about the visitor's walker, refreshed a few times a second. */
 export const walkerStatus = signal<
@@ -347,16 +347,19 @@ export async function ride(args: { name?: unknown; ride?: unknown; height?: unkn
   const name = walkerNamed(args.name as string | undefined);
   const want = String(args.ride ?? "").trim().toLowerCase() as Ride;
   if (!RIDES.includes(want)) throw new Error(`ride: ${RIDES.join(", ")}.`);
+  const height = args.height === undefined ? undefined : Number(args.height);
+  if (height !== undefined && (want !== "fly" || !Number.isFinite(height) || height < 0 || height > DRONE_CEILING)) {
+    throw new Error(`height: flying, metres above the ground, 0 to ${DRONE_CEILING}.`);
+  }
   wandering.delete(name);
   if (want !== "walk" && s.walkers.state(name)!.indoor) leaveBuilding(name);
+  const took = want === "fly" && s.walkers.state(name)!.ride !== "fly";
   s.walkers.setRide(name, want);
   if (shownWalker(name) && name === MY_WALKER) walkerRide.value = want;
+  // A drone that takes off answers once it is up, or at the height asked for.
   let climbed: WalkResult | undefined;
-  if (want === "fly" && args.height !== undefined) {
-    const h = Number(args.height);
-    if (!Number.isFinite(h) || h < 0 || h > DRONE_CEILING) throw new Error(`height: metres above the ground, 0 to ${DRONE_CEILING}.`);
-    climbed = await s.walkers.climbTo(name, h);
-  }
+  if (height !== undefined) climbed = await s.walkers.climbTo(name, height);
+  else if (took) await s.walkers.airborne(name);
   const st = s.walkers.state(name)!;
   return {
     walker: name,

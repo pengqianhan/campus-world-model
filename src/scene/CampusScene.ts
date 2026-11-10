@@ -2,7 +2,6 @@
 // OpenStreetMap context, with a cut-away floor view for the selected building.
 import {
   AmbientLight,
-  Box3,
   BufferGeometry,
   CanvasTexture,
   Color,
@@ -53,7 +52,8 @@ import { WALL_HEIGHT, buildInterior, disposeGroup, inset } from "./interior.ts";
 import { LabelLayer, type LabelSpec } from "./labels.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
-import { RoofMap, type RoofShape } from "../shared/roofmap.ts";
+import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
+import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
 import { floorRings } from "../shared/indoor.ts";
@@ -451,9 +451,11 @@ export class CampusScene {
   private walkMapCache?: WalkMap;
   /** How high the buildings reach, for a drone a walker flies; built when first wanted after the data changes. */
   private roofMapCache?: RoofMap;
-  /** The top of each landmark's model as drawn, metres above sea level, once it has arrived. */
-  private landmarkTops = new Map<Landmark, number>();
-  /** The surrounding buildings in the roof map, kept while a landmark's arrival makes the University's again. */
+  /** The roofs of each landmark's model as drawn, once a form of it has been made; null when it has no faces. */
+  private landmarkGrids = new Map<Landmark, RoofGrid | null>();
+  /** Each University building's blocks on its footing, for the roof map: its roofs as estimated. */
+  private uniRoofs?: Map<string, RoofShape[]>;
+  /** The surrounding buildings in the roof map. */
   private contextRoofs?: RoofShape[];
   /** The camera of the walker views: behind a walker, or at its eyes. */
   private persp = new PerspectiveCamera(FOLLOW_FOV, 1, FOLLOW_NEAR, 6000);
@@ -581,9 +583,6 @@ export class CampusScene {
         loading: (change) => (this.loading += change),
         prepare: (form) => this.prepareLandmark(form),
         ready: () => {
-          // A drone keeps over the model as drawn, which may stand higher than the block.
-          this.landmarkTops.delete(landmark);
-          this.roofMapCache = undefined;
           this.needsLandmarks = true;
           this.needsShadow = true;
           this.needsRender = true;
@@ -624,6 +623,7 @@ export class CampusScene {
     this.campus = campus;
     this.walkMapCache = undefined;
     this.roofMapCache = undefined;
+    this.uniRoofs = undefined;
     this.buildings.clear();
     this.roomsByBuilding.clear();
     this.roomsByCode.clear();
@@ -719,7 +719,8 @@ export class CampusScene {
     };
     const heights = standHeights(this.landmarks, outline, (x, y) => this.groundAt(x, y));
     this.landmarks.forEach((l, i) => l.stand(heights[i]!));
-    this.landmarkTops.clear();
+    // The landmarks' roofs stood where they stood: a drone's roof map takes them again.
+    this.landmarkGrids.clear();
     this.roofMapCache = undefined;
     this.needsLandmarks = true;
   }
@@ -1512,40 +1513,47 @@ export class CampusScene {
    */
   private roofMap(): RoofMap | undefined {
     if (!this.campus) return undefined;
+    // A landmark made since the map was built brings its roofs as drawn: one a call, as each takes
+    // a few milliseconds; until then its blocks' estimated roofs stand in.
+    const fresh = this.landmarks.find((l) => !this.landmarkGrids.has(l) && l.madeForm());
+    if (fresh) {
+      this.landmarkGrids.set(fresh, roofGrid(fresh.madeForm()!) ?? null);
+      this.roofMapCache = undefined;
+    }
     if (this.roofMapCache) return this.roofMapCache;
-    const shapes: RoofShape[] = [];
-    for (const b of this.campus.buildings) {
-      if (b.offMap) continue;
-      const base = this.baseOf(b);
-      const landmark = this.landmarkBlocks.get(b.id);
-      const drawn = landmark ? this.landmarkTop(landmark) : undefined;
-      for (const block of massing(b, this.campus.floorHeight)) {
-        const top = Math.max(base + block.y1 + RIM_HEIGHT, drawn ?? -Infinity);
-        for (const poly of block.outline) shapes.push({ rings: poly.map((ring) => decodeRing(ring)), top });
+    if (!this.uniRoofs) {
+      this.uniRoofs = new Map();
+      for (const b of this.campus.buildings) {
+        if (b.offMap) continue;
+        const base = this.baseOf(b);
+        const shapes: RoofShape[] = [];
+        for (const block of massing(b, this.campus.floorHeight)) {
+          for (const poly of block.outline) shapes.push({ rings: poly.map((ring) => decodeRing(ring)), top: base + block.y1 + RIM_HEIGHT });
+        }
+        this.uniRoofs.set(b.id, shapes);
       }
     }
+    // A building a landmark draws whole has the landmark's roofs; one drawn in part keeps its block too.
+    const grids: RoofGrid[] = [];
+    const drawn = new Set<string>();
+    for (const [l, grid] of this.landmarkGrids) {
+      if (!grid) continue;
+      grids.push(grid);
+      if (!l.placement.part) for (const id of l.buildings) drawn.add(id);
+    }
+    const shapes: RoofShape[] = [];
+    for (const [id, list] of this.uniRoofs) if (!drawn.has(id)) shapes.push(...list);
     this.contextRoofs ??= (this.lastContext?.buildings ?? []).filter(drawnContext).map((cb) => ({
       rings: [decodeRing(cb.p)],
       top: (this.terrain ? this.terrain.footing(cb.p).base : 0) + cb.h + (cb.roof?.h ?? 0),
     }));
-    this.roofMapCache = new RoofMap([...shapes, ...this.contextRoofs]);
+    this.roofMapCache = new RoofMap([...shapes, ...this.contextRoofs], grids);
     return this.roofMapCache;
   }
 
   /** The highest roof over a point, metres above sea level, as a drone keeps over it; for tests. */
   roofAt(east: number, north: number): number | undefined {
     return this.roofMap()?.at([east, north]);
-  }
-
-  /** The top of a landmark's model as drawn, metres above sea level; undefined until it has arrived. */
-  private landmarkTop(l: Landmark): number | undefined {
-    if (this.landmarkTops.has(l)) return this.landmarkTops.get(l);
-    if (!l.shown) return undefined;
-    l.group.updateMatrixWorld(true);
-    const box = new Box3().setFromObject(l.group);
-    const top = box.isEmpty() ? undefined : box.max.y;
-    if (top !== undefined) this.landmarkTops.set(l, top);
-    return top;
   }
 
   /** The ground a University building stands on (see Terrain.footing). */

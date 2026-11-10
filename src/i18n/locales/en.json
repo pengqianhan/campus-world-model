@@ -412,7 +412,7 @@
     "more": "Go to a place, let it wander, and how to steer",
     "keys": "W A S D or the arrow keys to go and turn, Shift to hurry; flying, Space or E to climb and Q or C to come down. 1, 2 and 3 walk, ride the scooter and fly; V changes the view and H hides the panels; Esc goes back to the map, and on the map ends the walk. Drag to look round; click a building or the ground to go there.",
     "keysTouch": "Push the stick with one thumb to go and turn, and drag the view with the other to look round; flying, hold Up or Down to climb or come down. Tap a building or the ground to go there.",
-    "note": "A made-up figure, scooter and drone: none stands for a real one, and where they go stays in your browser. The scooter keeps to the same ways as a walk; the drone flies up to {ceiling} m above the ground and over the roofs, as high as the map draws them. Doors are not mapped, so a walk ends beside the nearest side of a building, and inside it keeps to corridors where it can.",
+    "note": "A made-up figure, scooter and drone: none stands for a real one, and where they go stays in your browser. The scooter keeps to the same ways as a walk; the drone flies up to {ceiling} m above the ground and over the roofs, as high as the map draws them, which for most buildings are estimated. Doors are not mapped, so a walk ends beside the nearest side of a building, and inside it keeps to corridors where it can.",
     "inside": "Inside {place}, floor {floor}",
     "moves": "In and out",
     "enter": "Go into {place}",
