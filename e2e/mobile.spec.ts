@@ -163,37 +163,29 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   await open(page, "?light=day&time=preview&date=2026-03-20&t=15:00");
   await page.locator("#walk-start").click();
   await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
-  // The walker's panel waits folded, as a small button under the top bar, so the walk has the screen.
+  // The walk has the screen, as in a game: the top bar steps aside for its panels in the corners.
   const panel = page.locator("#walker-panel");
-  const fold = page.locator("#walker-toggle");
-  await expect(panel).toBeHidden();
-  await expect(fold).toBeVisible();
-  const top = (await page.locator(".topbar").boundingBox())!;
-  const folded = (await fold.boundingBox())!;
-  expect(folded.y).toBeGreaterThanOrEqual(top.y + top.height);
-  expect(folded.width).toBeLessThan(160);
-  expect(folded.height).toBeLessThanOrEqual(44);
-  // Opened, it is a bar under the top bar; the rest waits behind its ⋯ button.
-  await fold.tap();
-  await expect(panel).toBeVisible();
-  // On a touch screen the walk starts from behind the walker.
+  await expect(panel).toHaveClass(/touch/);
+  await expect(page.locator(".topbar")).toHaveCount(0);
+  // It starts from behind the walker.
   await expect(panel.locator('button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
-  const bar = (await panel.boundingBox())!;
-  expect(bar.x).toBeGreaterThanOrEqual(0);
-  expect(bar.x + bar.width).toBeLessThanOrEqual(390);
-  expect(bar.y).toBeGreaterThanOrEqual(top.y + top.height);
-  expect(bar.height).toBeLessThan(844 * 0.13);
+  // How it gets about, across the foot of the screen; the speed and the view under the top right.
+  const rides = (await page.locator(".hud-rides").boundingBox())!;
+  expect(rides.x).toBeGreaterThanOrEqual(0);
+  expect(rides.x + rides.width).toBeLessThanOrEqual(390);
+  expect(rides.y + rides.height).toBeGreaterThan(844 - 70);
+  const toolbar = (await page.locator(".hud-toolbar").boundingBox())!;
+  const cluster = (await page.locator(".hud-cluster").boundingBox())!;
+  expect(cluster.y).toBeGreaterThanOrEqual(toolbar.y + toolbar.height);
+  expect(cluster.y + cluster.height).toBeLessThan(844 * 0.3);
   await expect(page.locator("#walker-to")).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await shot(page, "20-walker-phone-bar");
-  await page.locator("#walker-hide").tap();
-  await expect(panel).toBeHidden();
-  await expect(fold).toBeVisible();
-  // The stick in the bottom left corner, for the left thumb, above the attribution.
+  // The stick in the bottom left corner, for the left thumb, above the ways of getting about.
   const stick = (await page.locator("#walker-stick").boundingBox())!;
   expect(stick.x).toBeLessThan(24);
-  expect(stick.y).toBeGreaterThan(844 * 0.7);
-  expect(stick.y + stick.height).toBeLessThan(844 - 20);
+  expect(stick.y).toBeGreaterThan(844 * 0.6);
+  expect(stick.y + stick.height).toBeLessThanOrEqual(rides.y);
 
   // Two thumbs at once: the left pushes the stick forward while the right drags the view round.
   // Each step waits for what it does, not for a time: on CI's software renderer a frame of the
@@ -234,16 +226,13 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   await touch.lift();
   expect(turn, "to the right, the way the stick was pushed").toBeGreaterThan(0);
 
-  // The rest waits behind its button: a walk to a place, wandering, and how to steer.
-  await fold.tap();
+  // The rest waits behind its button at the top right: a walk to a place, wandering, and how to steer.
   await page.locator("#walker-more").tap();
   await expect(page.locator("#walker-to")).toBeVisible();
   await expect(page.locator("#walker-menu")).toContainText("Push the stick");
   await shot(page, "20-walker-phone-menu");
   await page.locator("#walker-more").tap();
   await expect(page.locator("#walker-to")).toBeHidden();
-  await page.locator("#walker-hide").tap();
-  await expect(panel).toBeHidden();
 
   // Beside a building, the way in is under the right thumb.
   expect(((await page.evaluate(() => window.__walker!.run("walk", { to: "109", speed: 40 }))) as { arrived: boolean }).arrived).toBe(true);
@@ -251,13 +240,16 @@ test("phone: a walk is steered with two thumbs, as in a game: a stick walks and 
   await expect(enter).toBeVisible();
   const e = (await enter.boundingBox())!;
   expect(e.x + e.width).toBeGreaterThan(390 - 30);
-  expect(e.y).toBeGreaterThan(844 * 0.7);
+  expect(e.y).toBeGreaterThan(844 * 0.6);
+  expect(e.y + e.height).toBeLessThanOrEqual(rides.y);
   await enter.tap();
   await expect.poll(() => params(page).get("building")).toBe("109");
   await settle(page);
-  // Inside, the floor strip stays in sight above the folded panel, and the thumbs' controls stand above the building's card.
+  // Inside, the floor strip stays in sight below the top row and above the speed and the view, and
+  // the thumbs' controls stand above the building's card.
   const floors = (await page.locator(".floors").boundingBox())!;
-  expect((await fold.boundingBox())!.y).toBeGreaterThanOrEqual(floors.y + floors.height);
+  expect(floors.y).toBeGreaterThanOrEqual(toolbar.y + toolbar.height);
+  expect((await page.locator(".hud-cluster").boundingBox())!.y).toBeGreaterThanOrEqual(floors.y + floors.height);
   const dock = (await page.locator("#building-bar").boundingBox())!;
   const lifted = (await page.locator("#walker-stick").boundingBox())!;
   expect(lifted.y + lifted.height).toBeLessThanOrEqual(dock.y);
@@ -282,17 +274,22 @@ test("phone on its side: the map keeps the screen, and a walk puts the stick und
   await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
   const panel = page.locator("#walker-panel");
   await expect(panel).toHaveClass(/touch/);
-  // Folded at first; opened, the bar still stays clear of the stick.
-  await expect(panel).toBeHidden();
+  // The stick under the left thumb, clear of the sign above it and of the ways of getting about at
+  // the foot; the speed and the view clear of the top row.
   const stick = (await page.locator("#walker-stick").boundingBox())!;
-  const folded = (await page.locator("#walker-toggle").boundingBox())!;
-  expect(folded.y + folded.height).toBeLessThan(stick.y);
+  const boxes = {
+    sign: (await page.locator(".hud-sign").boundingBox())!,
+    rides: (await page.locator(".hud-rides").boundingBox())!,
+    cluster: (await page.locator(".hud-cluster").boundingBox())!,
+    toolbar: (await page.locator(".hud-toolbar").boundingBox())!,
+    brand: (await page.locator(".hud-brand").boundingBox())!,
+  };
+  const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
+    a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
+  for (const [name, b] of Object.entries(boxes)) expect(apart(stick, b), `the stick and ${name}`).toBe(true);
+  expect(apart(boxes.cluster, boxes.toolbar), "the speed and the top row").toBe(true);
+  expect(apart(boxes.rides, boxes.cluster), "the ways of getting about and the speed").toBe(true);
   await shot(page, "20-walker-phone-landscape");
-  await page.locator("#walker-toggle").tap();
-  const bar = (await panel.boundingBox())!;
-  expect(bar.width).toBeLessThanOrEqual(440);
-  expect(bar.y + bar.height).toBeLessThan(stick.y);
-  await page.locator("#walker-hide").tap();
   expect(stick.x).toBeLessThan(30);
   expect(stick.y + stick.height).toBeLessThanOrEqual(390);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(844);
@@ -308,6 +305,32 @@ test("phone on its side: the map keeps the screen, and a walk puts the stick und
   const to = await walkerAt(page);
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(1);
   await expectRealRender(page);
+});
+
+test("phone: flying, Up is held under the right thumb to climb, and Walk lands the drone", async ({ page }) => {
+  // On the map, which CI draws faster: the buttons are the same in every view.
+  await open(page, "?walk=1&ride=fly&light=day&time=preview&date=2026-03-20&t=15:00");
+  await page.waitForFunction(() => window.__walker?.ready(), undefined, { timeout: 30_000 });
+  const state = async () => ((await page.evaluate(() => window.__walker!.run("list"))) as { walkers: { ride: string; altitude?: number }[] }).walkers[0]!;
+  await expect.poll(async () => (await state()).altitude ?? 0, { message: "the drone takes off" }).toBeGreaterThan(10);
+  // Up and Down under the right thumb, above the ways of getting about.
+  const up = (await page.locator("#walker-climb").boundingBox())!;
+  const rides = (await page.locator(".hud-rides").boundingBox())!;
+  await expect(page.locator("#walker-descend")).toBeVisible();
+  expect(up.x + up.width).toBeGreaterThan(390 / 2);
+  expect(up.y + up.height).toBeLessThanOrEqual(rides.y);
+  // Held, Up climbs; let go, it stops.
+  await expect.poll(async () => (await state()).altitude ?? 0).toBeLessThan(13);
+  const before = (await state()).altitude!;
+  const touch = await fingers(page);
+  await touch.down(1, up.x + up.width / 2, up.y + up.height / 2);
+  await expect.poll(async () => (await state()).altitude ?? 0, { message: "held, Up climbs" }).toBeGreaterThan(before + 3);
+  await touch.lift();
+  await shot(page, "20-walker-phone-drone");
+  // Walk lands it, and the buttons go.
+  await page.locator('#walker-panel [data-ride="walk"]').tap();
+  await expect.poll(async () => (await state()).ride).toBe("walk");
+  await expect(page.locator("#walker-climb")).toHaveCount(0);
 });
 
 test("phone on its side: in the passage under the Clock Tower East Wing's link, the view from behind still sees the walker", async ({ page }) => {

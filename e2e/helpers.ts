@@ -20,6 +20,8 @@ interface SceneHandle {
   spaceAt(x: number, y: number): { text: string; kind: string } | undefined;
   spaceFloors(): { kind: string; colour: number }[];
   groundState(x: number, y: number, building?: string): { terrain: boolean; ground: number; base?: number; low?: number; meshY?: number };
+  /** The highest roof over a point, metres above sea level, as a drone keeps over it. */
+  roofAt(east: number, north: number): number | undefined;
   buildingsAcross(ax: number, ay: number, bx: number, by: number, height: number): string[];
   openFloorAcross(ax: number, ay: number, bx: number, by: number, above: number): string[];
   showCampus(center: [number, number], span: number, animate?: boolean): void;

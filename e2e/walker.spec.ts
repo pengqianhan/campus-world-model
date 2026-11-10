@@ -28,8 +28,9 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
   await open(page, `?walk=1&${QUERY}`);
   await ready(page);
   await expect(page.locator("#walker-panel")).toBeVisible();
-  // The status strip makes way for the walker's panel.
+  // The status strip and the top bar make way for the walk's panels.
   await expect(page.locator("#status-strip")).toHaveCount(0);
+  await expect(page.locator(".topbar")).toHaveCount(0);
 
   const list = (await walker(page, "list")) as { walkers: { name: string; at: [number, number]; height: number; heading: number }[] };
   expect(list.walkers.map((w) => w.name)).toEqual(["Walker"]);
@@ -67,9 +68,12 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
   // The address keeps the walk and the view, so a copied link starts the same walk.
   await expect.poll(() => new URL(page.url()).searchParams.get("view")).toBe("eyes");
   expect(new URL(page.url()).searchParams.get("walk")).toBe("1");
-  // Escape goes back to the map.
+  // Escape goes back to the map; V turns to the next view, from behind the walker.
   await page.keyboard.press("Escape");
   await expect(page.locator('#walker-panel button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("v");
+  await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
+  await walker(page, "view", { view: "map" });
   // An agent taking the last walker away leaves no name on the map.
   expect((await walker(page, "remove")).removed).toBe("Walker");
   await expect(page.locator("#walker-panel")).toHaveCount(0);
@@ -79,10 +83,14 @@ test("a walker stands on the ground by the Clock Tower, walks round the building
 test("walkers meet and hear each other; every walker looks the same; the keyboard walks the visitor's walker", async ({ page }) => {
   await open(page, `?${QUERY}`);
   await ready(page);
-  // Taking a walk from its button beside the campus's. On a wide screen the walk starts on the map.
+  // Taking a walk from its button beside the campus's: as in a game, the walk has the screen and
+  // starts behind the walker.
   await page.locator("#walk-start").click();
-  await expect(page.locator('#walker-panel button[data-view="map"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#walker-panel")).toBeVisible();
+  await expect(page.locator(".topbar")).toHaveCount(0);
+  // The rest is seen on the map, which CI draws faster.
+  await walker(page, "view", { view: "map" });
 
   const kea = (await walker(page, "spawn", { name: "Kea", near: "201" })) as { spawned: Record<string, unknown> };
   expect(kea.spawned.name).toBe("Kea");
@@ -109,17 +117,19 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   const to = ((await walker(page, "list")) as { walkers: { name: string; at: [number, number] }[] }).walkers.find((w) => w.name === "Walker")!.at;
   expect(Math.hypot(to[0] - from[0], to[1] - from[1])).toBeGreaterThan(0.3);
 
-  // On a wide screen everything in the panel shows, and its button folds the rest away.
-  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "true");
-  await page.locator("#walker-more").click();
+  // A walk to a place, wandering and how to steer wait in a menu at the top right, shut at first.
+  await expect(page.locator("#walker-more")).toHaveAttribute("aria-expanded", "false");
   await expect(page.locator("#walker-wander")).toBeHidden();
   await expect(page.locator("#walker-panel button[data-view]")).toHaveCount(3);
-  await page.locator("#walker-more").click();
+  await expect(page.locator("#walker-panel button[data-ride]")).toHaveCount(3);
   // There is no stick: the keys walk it.
   await expect(page.locator("#walker-stick")).toHaveCount(0);
 
   // Let it wander: it strolls off on its own, and Stop wandering stops it.
+  await page.locator("#walker-more").click();
+  await expect(page.locator("#walker-menu")).toContainText("Space or E to climb");
   await page.locator("#walker-wander").click();
+  await page.locator("#walker-more").click();
   await expect(page.locator("#walker-wander")).toHaveAttribute("aria-pressed", "true");
   const before = ((await walker(page, "list")) as { walkers: { name: string; at: [number, number] }[] }).walkers.find((w) => w.name === "Walker")!.at;
   await expect
@@ -131,9 +141,10 @@ test("walkers meet and hear each other; every walker looks the same; the keyboar
   await page.locator("#walker-wander").click();
   await expect(page.locator("#walker-wander")).toHaveAttribute("aria-pressed", "false");
 
-  // Stopping the walk takes every walker away, and their names and words with them.
+  // Stopping the walk takes every walker away, and their names and words with them; the top bar comes back.
   await page.locator("#walker-close").click();
   await expect(page.locator("#walker-panel")).toHaveCount(0);
+  await expect(page.locator(".topbar")).toBeVisible();
   // The campus panel comes back as its button, shut.
   await expect(page.locator("#status-toggle")).toBeVisible();
   await expect(page.locator("#status-strip")).toBeHidden();
@@ -157,13 +168,17 @@ test("a walk to a room goes into its building, up to its floor and into the room
   // On the floor, not in the air or under it.
   const st = ((await walker(page, "list")) as { walkers: { height: number; indoor: { floor: number } }[] }).walkers[0]!;
   expect(st.indoor.floor).toBe(30);
-  // The walker's panel keeps clear of the floor list and the building's dock.
-  const panel = (await page.locator("#walker-panel").boundingBox())!;
-  for (const other of [".floors", ".dock"]) {
-    const box = await page.locator(other).first().boundingBox();
-    if (!box) continue;
-    const overlap = Math.max(0, Math.min(panel.x + panel.width, box.x + box.width) - Math.max(panel.x, box.x)) * Math.max(0, Math.min(panel.y + panel.height, box.y + box.height) - Math.max(panel.y, box.y));
-    expect(overlap, other).toBe(0);
+  // The walk's panels keep clear of the floor list and the building's dock; inside, only a walk goes
+  // on, so the ways of getting about step aside.
+  await expect(page.locator(".hud-rides")).toBeHidden();
+  for (const part of [".hud-brand", ".hud-toolbar", ".hud-sign", ".hud-cluster", ".walker-moves"]) {
+    const panel = (await page.locator(part).boundingBox())!;
+    for (const other of [".floors", ".dock"]) {
+      const box = await page.locator(other).first().boundingBox();
+      if (!box) continue;
+      const overlap = Math.max(0, Math.min(panel.x + panel.width, box.x + box.width) - Math.max(panel.x, box.x)) * Math.max(0, Math.min(panel.y + panel.height, box.y + box.height) - Math.max(panel.y, box.y));
+      expect(overlap, `${part} and ${other}`).toBe(0);
+    }
   }
   await walker(page, "view", { view: "follow" });
   await page.waitForTimeout(400);
@@ -181,6 +196,76 @@ test("a walk to a room goes into its building, up to its floor and into the room
   expect(out.indoor).toBeUndefined();
   expect(out.nearby[0]).toMatchObject({ id: "109" });
   expect(out.nearby[0]!.distance).toBeLessThan(3);
+});
+
+test("on a scooter the walker goes faster on the same ways; a drone flies in its place, over the roofs and no higher than 120 m, and lands it again", async ({ page }) => {
+  await open(page, `?walk=1&${QUERY}`);
+  await ready(page);
+  const state = async () => ((await walker(page, "list")) as { walkers: { at: [number, number]; height: number; ride: string; speed: number; altitude?: number; indoor?: unknown }[] }).walkers[0]!;
+  await expect(page.locator('#walker-panel [data-ride="walk"]')).toHaveAttribute("aria-pressed", "true");
+  await page.locator("canvas").first().focus();
+
+  // 2 rides the scooter: held, W speeds it up past a walk, on the ground, and the address keeps it.
+  await page.keyboard.press("2");
+  await expect(page.locator('#walker-panel [data-ride="scooter"]')).toHaveAttribute("aria-pressed", "true");
+  expect((await state()).ride).toBe("scooter");
+  await expect.poll(() => new URL(page.url()).searchParams.get("ride")).toBe("scooter");
+  await page.keyboard.down("w");
+  await expect.poll(async () => (await state()).speed, { message: "the scooter goes faster than a walk" }).toBeGreaterThan(2.5);
+  await page.keyboard.up("w");
+  await expect(page.locator("#walker-speed")).not.toHaveText("");
+  const rode = await state();
+  const ground = await page.evaluate(([x, y]) => window.__scene!.groundState(x!, y!).ground, rode.at);
+  expect(Math.abs(rode.height - ground)).toBeLessThan(0.6);
+
+  // 3 flies a drone in its place: it takes off and rises to 12 m.
+  await page.keyboard.press("3");
+  await expect(page.locator('#walker-panel [data-ride="fly"]')).toHaveAttribute("aria-pressed", "true");
+  await expect.poll(async () => (await state()).altitude ?? 0, { message: "the drone takes off" }).toBeGreaterThan(10);
+  await expect(page.locator("#walker-altitude")).toContainText("m up");
+  // Sent to the General Library, it flies over it, clear of its roof.
+  const flown = (await walker(page, "walk", { to: "109", speed: 40 })) as Reply & { arrived: boolean };
+  expect(flown.arrived).toBe(true);
+  const over = await state();
+  const roof = await page.evaluate(([x, y]) => window.__scene!.roofAt(x!, y!), over.at);
+  expect(roof, "the library's roof under the drone").toBeGreaterThan(ground + 10);
+  expect(over.height).toBeGreaterThan(roof!);
+  // Held down, Q brings it down no lower than the roof under it.
+  await page.keyboard.down("q");
+  await expect.poll(async () => (await state()).height, { message: "Q brings it down to the roof" }).toBeLessThan(roof! + 1);
+  await page.keyboard.up("q");
+  expect((await state()).height).toBeGreaterThanOrEqual(roof!);
+  // An agent sends it as high as it may go, and no higher.
+  const climbed = (await walker(page, "ride", { ride: "fly", height: 500 })) as Reply;
+  expect(climbed.error).toMatch(/0 to 120/);
+  await walker(page, "ride", { ride: "fly", height: 120 });
+  expect((await state()).altitude).toBeLessThanOrEqual(120.5);
+  expect((await state()).altitude).toBeGreaterThan(110);
+  await shot(page, "20-walker-drone");
+
+  // 1 lands it: the walker stands on the ground again, beside the library, not on it.
+  await page.keyboard.press("1");
+  await expect(page.locator('#walker-panel [data-ride="walk"]')).toHaveAttribute("aria-pressed", "true");
+  const landed = await state();
+  expect(landed.ride).toBe("walk");
+  expect(landed.altitude).toBeUndefined();
+  const there = await page.evaluate(([x, y]) => window.__scene!.groundState(x!, y!).ground, landed.at);
+  expect(Math.abs(landed.height - there)).toBeLessThan(0.6);
+  const look = (await walker(page, "look")) as { nearby: { id: string; distance: number }[] };
+  expect(look.nearby[0]!.distance).toBeGreaterThan(0);
+  expect(new URL(page.url()).searchParams.get("ride")).toBeNull();
+
+  // Hidden, the panels leave only the eye that brings them back.
+  await page.keyboard.press("h");
+  await expect(page.locator(".hud-rides")).toBeHidden();
+  await expect(page.locator("#walker-hud")).toBeVisible();
+  await page.locator("#walker-hud").click();
+  await expect(page.locator(".hud-rides")).toBeVisible();
+  // Esc on the map ends the walk.
+  await walker(page, "view", { view: "map" });
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#walker-panel")).toHaveCount(0);
+  await expect(page.locator(".topbar")).toBeVisible();
 });
 
 test("a walk the address asks for starts when the data comes in before the scene, as in a tab opened in the background", async ({ page }) => {

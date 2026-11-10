@@ -1,10 +1,12 @@
 // Walkers on the map: a made-up figure a visitor steers with the keyboard, and that an agent can
 // steer through the page (window.__walker), for example from Claude Code through the local
-// controller in scripts/walker/. It never stands for a real person, and nothing about where it
-// goes leaves the visitor's browser.
+// controller in scripts/walker/. It walks, rides a scooter, or flies a drone in its place, all
+// made up as well. It never stands for a real person, and nothing about where it goes leaves the
+// visitor's browser.
 import { batch, effect, signal } from "@preact/signals";
 import type { CampusScene, WalkerView } from "../scene/CampusScene.ts";
-import { MAX_SPEED, WALK_SPEED, type WalkResult } from "../scene/walkers.ts";
+import { DRONE_CEILING, MAX_SPEED, SCOOTER_TOP, WALK_SPEED, type Ride, type WalkResult } from "../scene/walkers.ts";
+import { RIDES } from "../scene/rides.ts";
 import type { Pt } from "../shared/geo.ts";
 import { school } from "@school";
 import { parseRoomCode } from "../shared/roomcode.ts";
@@ -30,6 +32,19 @@ const START: Record<string, Pt> = { city: [28, 205] };
 
 export const walkerOn = signal(false);
 export const walkerView = signal<WalkerView>("map");
+/** How the visitor's walker gets about. */
+export const walkerRide = signal<Ride>("walk");
+/** Whether the walk's panels are hidden, for a clean view; the button that brings them back stays. */
+export const hudHidden = signal(false);
+/** What the speed and height read, refreshed ten times a second while walking. */
+export const walkerGauge = signal<{ ride: Ride; speed: number; altitude?: number; heading: number } | undefined>(undefined);
+
+/** Metres a second the keys and the stick ask for: on foot, on the scooter, and flying. */
+export const PACE = {
+  walk: { forward: WALK_SPEED, fast: WALK_SPEED * 2.5, back: WALK_SPEED * 0.6, turn: 100 },
+  scooter: { forward: 16 / 3.6, fast: SCOOTER_TOP, back: 1, turn: 90 },
+  fly: { forward: 8, fast: 16, back: 4, turn: 90, climb: 4 },
+} as const;
 /** What the panel shows about the visitor's walker, refreshed a few times a second. */
 export const walkerStatus = signal<
   { near?: string; nearId?: string; nearMetres?: number; walking: boolean; indoor?: string; floor?: string } | undefined
@@ -126,6 +141,13 @@ function shownWalker(name: string): boolean {
   return name === MY_WALKER || scene?.viewedWalker === name;
 }
 
+/** The words for how a walker gets about, in the look report. */
+function riding(st: { ride: Ride; altitude?: number }): string {
+  if (st.ride === "scooter") return "on a scooter, ";
+  if (st.ride === "fly") return `flying its drone ${Math.round(st.altitude ?? 0)} m above the ground, `;
+  return "";
+}
+
 /** What a walker sees, as data and in a few sentences. */
 export async function lookFrom(name?: string): Promise<Reply> {
   const s = need();
@@ -201,7 +223,7 @@ export async function lookFrom(name?: string): Promise<Reply> {
   const lines: string[] = [];
   if (indoor) lines.push(...inLines);
   else {
-    lines.push(`${n} is out of doors, facing ${seen.facing.compass} (${seen.facing.bearing}°).`);
+    lines.push(`${n} is out of doors, ${riding(st)}facing ${seen.facing.compass} (${seen.facing.bearing}°).`);
     if (seen.ahead) lines.push(`Straight ahead: ${seen.ahead.id}${seen.ahead.name && !/^Building /.test(seen.ahead.name) ? ` ${seen.ahead.name}` : ""}, ${seen.ahead.distance} m.`);
     if (seen.nearby.length) lines.push(`Nearby: ${seen.nearby.map(describeBuilding).join("; ")}.`);
     else lines.push("No University building within 400 m.");
@@ -215,6 +237,8 @@ export async function lookFrom(name?: string): Promise<Reply> {
     walker: n,
     at: { east: st.at[0], north: st.at[1] },
     heightAboveSea: st.height,
+    ride: st.ride,
+    altitude: st.altitude,
     facing: seen.facing,
     indoor,
     ahead: indoor ? undefined : seen.ahead,
@@ -223,7 +247,7 @@ export async function lookFrom(name?: string): Promise<Reply> {
     time: { date: shown.value.date, time: formatMinutes(shown.value.minutes), mode: timeMode.value, light: night.value > 0.5 ? "night" : "day" },
     weather: now && w ? { kind: w.kind, temperatureC: Math.round(w.temperature), source: "Open-Meteo" } : undefined,
     notes: [
-      "The walker is a made-up figure on a model of the campus; it stands for no real person.",
+      "The walker is a made-up figure on a model of the campus; it stands for no real person. Its scooter and its drone are made up too.",
       "Doors and entrances are not mapped: a walk to a building ends beside its nearest wall, and inside it keeps to corridors where it can.",
       "Building heights are estimated from the number of floors, except those of the landmarks and the measured massings, which are measured: by the LiDAR, and where a building's card says so, in part by other sources.",
     ],
@@ -305,8 +329,47 @@ export function stopWalking(): void {
   batch(() => {
     walkerOn.value = false;
     walkerView.value = "map";
+    walkerRide.value = "walk";
+    hudHidden.value = false;
     walkerStatus.value = undefined;
+    walkerGauge.value = undefined;
   });
+}
+
+/**
+ * How a walker gets about: "walk", "scooter", or "fly", a drone flown in its place. The scooter and
+ * the drone go out of doors only, so a walker inside comes out first; a drone lands, and the walker
+ * stands on the free ground nearest the point under it. Flying, `height` sends the drone up or down
+ * to so many metres above the ground.
+ */
+export async function ride(args: { name?: unknown; ride?: unknown; height?: unknown }): Promise<Reply> {
+  const s = need();
+  const name = walkerNamed(args.name as string | undefined);
+  const want = String(args.ride ?? "").trim().toLowerCase() as Ride;
+  if (!RIDES.includes(want)) throw new Error(`ride: ${RIDES.join(", ")}.`);
+  wandering.delete(name);
+  if (want !== "walk" && s.walkers.state(name)!.indoor) leaveBuilding(name);
+  s.walkers.setRide(name, want);
+  if (shownWalker(name) && name === MY_WALKER) walkerRide.value = want;
+  let climbed: WalkResult | undefined;
+  if (want === "fly" && args.height !== undefined) {
+    const h = Number(args.height);
+    if (!Number.isFinite(h) || h < 0 || h > DRONE_CEILING) throw new Error(`height: metres above the ground, 0 to ${DRONE_CEILING}.`);
+    climbed = await s.walkers.climbTo(name, h);
+  }
+  const st = s.walkers.state(name)!;
+  return {
+    walker: name,
+    ride: st.ride,
+    altitude: st.altitude,
+    climbed,
+    note:
+      want === "fly"
+        ? `A made-up drone flies in the walker's place, up to ${DRONE_CEILING} m above the ground and over the roofs; the walker stands down again where it lands.`
+        : want === "scooter"
+          ? "A made-up scooter, on the same paths as a walk, at up to 25 km/h."
+          : "On foot.",
+  };
 }
 
 /** Puts a walker on the map. Every walker looks the same (figure.ts); its name is over its head. */
@@ -334,6 +397,12 @@ export async function walk(args: { name?: unknown; to?: unknown; speed?: unknown
   const far = Math.hypot(goal[0] - st.at[0], goal[1] - st.at[1]);
   if (far > MAX_WALK) {
     throw new Error(`${target.label} is ${(far / 1000).toFixed(1)} km away, too far to walk on this map. Start a walker there instead: spawn with near "${target.campus ?? target.building?.id ?? args.to}".`);
+  }
+  // A drone flies straight there, over the roofs, and hovers over the place; a room is inside, so
+  // it lands and the walker goes in on foot.
+  if (st.ride === "fly" && !target.room) {
+    const result = await s.walkers.flyTo(name, goal, speed);
+    return { walker: name, to: target.label, ...result, look: result.arrived ? await lookFrom(name) : undefined };
   }
 
   // A room: its building, then its floor, then the room, keeping to corridors where it can.
@@ -397,6 +466,8 @@ export async function enter(args: { name?: unknown; building?: unknown; speed?: 
   }
   if (st.indoor?.building === b.id) return { walker: name, entered: b.id, floor: floorNameOf(b, st.indoor.floor), note: "Already inside." };
   if (st.indoor) leaveBuilding(name);
+  // Into a building on foot: off the scooter, or down from the air.
+  if (st.ride !== "walk") await ride({ name, ride: "walk" });
   st = s.walkers.state(name)!;
   if (s.walkingMap()!.distanceTo(st.at, b.id) > ENTER_REACH) {
     const r = await s.walkers.walkToBuilding(name, b.id, speedOf(args.speed, AGENT_SPEED));
@@ -468,7 +539,7 @@ export async function step(args: { name?: unknown; metres?: unknown; speed?: unk
   if (st.indoor) leaveBuilding(name);
   const rad = (st.heading * Math.PI) / 180;
   const to: Pt = [st.at[0] + Math.sin(rad) * metres, st.at[1] + Math.cos(rad) * metres];
-  const result = await s.walkers.walkTo(name, to, speedOf(args.speed, AGENT_SPEED));
+  const result = st.ride === "fly" ? await s.walkers.flyTo(name, to, speedOf(args.speed, AGENT_SPEED)) : await s.walkers.walkTo(name, to, speedOf(args.speed, AGENT_SPEED));
   return { walker: name, ...result, at: s.walkers.state(name)!.at };
 }
 
@@ -609,6 +680,7 @@ export const COMMANDS: Record<string, (args: Record<string, unknown>) => Reply |
   wander: (a) => wander(a),
   remove: (a) => removeWalker(a),
   list: () => listWalkers(),
+  ride: (a) => ride(a),
 };
 
 /** Runs a command by name; an error comes back as `{ error }` rather than a throw. */
@@ -632,27 +704,41 @@ export function bindWalkerScene(s: CampusScene | undefined): void {
     const name = s.viewedWalker ?? MY_WALKER;
     const st = s.walkers.state(name);
     if (!st) return;
-    if (pick.building) void s.walkers.walkToBuilding(name, pick.building, CLICK_SPEED);
-    else if (pick.at) void s.walkers.walkTo(name, pick.at, CLICK_SPEED);
+    // A drone flies over the roofs to the place, and hovers over a building; a scooter rides there.
+    if (st.ride === "fly") {
+      const to = pick.at ?? (pick.building ? data.value?.buildingById.get(pick.building)?.center : undefined);
+      if (to) void s.walkers.flyTo(name, to, PACE.fly.forward);
+      return;
+    }
+    const speed = st.ride === "scooter" ? PACE.scooter.forward : CLICK_SPEED;
+    if (pick.building) void s.walkers.walkToBuilding(name, pick.building, speed);
+    else if (pick.at) void s.walkers.walkTo(name, pick.at, speed);
   };
+  let tick = 0;
   statusTimer = window.setInterval(() => {
     if (!walkerOn.value) return;
     const st = s.walkers.state(MY_WALKER);
     if (!st) {
       walkerStatus.value = undefined;
+      walkerGauge.value = undefined;
       return;
     }
+    walkerGauge.value = { ride: st.ride, speed: st.speed, altitude: st.altitude, heading: st.heading };
+    if (walkerRide.peek() !== st.ride) walkerRide.value = st.ride;
+    // Where it is, less often: the buildings near it take a little working out.
+    if (tick++ % 4) return;
     const near = st.indoor ? undefined : buildingsNear(st.at, 150)[0];
     const inB = st.indoor ? data.value?.buildingById.get(st.indoor.building) : undefined;
     walkerStatus.value = {
-      near: near ? `${called(near.b, true)} · ${Math.round(near.distance)} m` : undefined,
+      // Over a building, the distance to its walls says nothing.
+      near: near ? (st.ride === "fly" && near.distance === 0 ? called(near.b, true) : `${called(near.b, true)} · ${Math.round(near.distance)} m`) : undefined,
       nearId: near?.b.id,
       nearMetres: near ? Math.round(near.distance) : undefined,
       walking: st.walking,
       indoor: inB ? called(inB, true) : undefined,
       floor: inB && st.indoor ? floorNameOf(inB, st.indoor.floor) : undefined,
     };
-  }, 400);
+  }, 100);
   // Ready once the campus and its surroundings are in, so the first walk goes round everything.
   (window as unknown as { __walker?: unknown }).__walker = { run, commands: Object.keys(COMMANDS), ready: () => !!data.value && !!s.walkingMap() && s.loading === 0 && s.frames > 2 };
   // The visitor's walker keeps in step with the building view: leaving the building takes it
@@ -684,7 +770,7 @@ export function bindWalkerScene(s: CampusScene | undefined): void {
 let syncStop: (() => void) | undefined;
 
 /** The walk the address asks for, until the scene and the data are both in to start it. */
-const urlWalk = signal<{ walk: string; view?: "follow" | "eyes" } | undefined>(undefined);
+const urlWalk = signal<{ walk: string; view?: "follow" | "eyes"; ride?: Ride } | undefined>(undefined);
 
 /** Starts the walk the address asks for, once, when the scene and the data are both in. */
 function startUrlWalk(): void {
@@ -692,6 +778,7 @@ function startUrlWalk(): void {
   if (!asked || !scene || !data.value) return;
   try {
     startWalking({ near: asked.walk && asked.walk !== "1" ? asked.walk : undefined });
+    if (asked.ride && asked.ride !== "walk") void ride({ name: MY_WALKER, ride: asked.ride });
     if (asked.view) setView({ view: asked.view, name: MY_WALKER });
   } catch (e) {
     console.error("walker", e);
@@ -701,16 +788,18 @@ function startUrlWalk(): void {
 
 /**
  * Starts walking when the address asks: `walk=1` (or `walk=<building or place>` to start there),
- * `view=follow|eyes`. Then keeps those in the address, so a copied link starts the same walk.
+ * `view=follow|eyes`, `ride=scooter|fly`. Then keeps those in the address, so a copied link starts
+ * the same walk.
  */
 export function startWalkerFromUrl(): void {
   const q = new URLSearchParams(location.search);
   const walkParam = q.get("walk");
   const v = q.get("view");
+  const r = q.get("ride") as Ride | null;
   // The data and the scene come in either order: the scene is made after the first frame, and a
   // tab opened in the background draws none until it comes to the front. Whichever comes second
   // starts the walk (see bindWalkerScene).
-  if (walkParam !== null) urlWalk.value = { walk: walkParam, view: v === "follow" || v === "eyes" ? v : undefined };
+  if (walkParam !== null) urlWalk.value = { walk: walkParam, view: v === "follow" || v === "eyes" ? v : undefined, ride: r && RIDES.includes(r) ? r : undefined };
   startUrlWalk();
   effect(() => {
     const extras: Record<string, string> = {};
@@ -719,9 +808,11 @@ export function startWalkerFromUrl(): void {
       // Until it has started, with its view, the address goes on asking for it.
       extras.walk = asked.walk;
       if (asked.view) extras.view = asked.view;
+      if (asked.ride) extras.ride = asked.ride;
     } else if (walkerOn.value) {
       extras.walk = "1";
       if (walkerView.value !== "map") extras.view = walkerView.value;
+      if (walkerRide.value !== "walk") extras.ride = walkerRide.value;
     }
     const cur = urlExtras.peek();
     if (JSON.stringify(cur) !== JSON.stringify(extras)) urlExtras.value = extras;
@@ -730,32 +821,67 @@ export function startWalkerFromUrl(): void {
 
 /**
  * Steers the visitor's walker by hand, for as long as it is held: metres a second forward (negative
- * back) and degrees a second of turn (positive to the right). The keys and the thumb stick use it.
+ * back), degrees a second of turn (positive to the right) and, flying, metres a second up (negative
+ * down). The keys and the thumb stick use it.
  */
-export function steerByHand(forward: number, turnRate: number): void {
+export function steerByHand(forward: number, turnRate: number, climb = 0): void {
   const s = scene;
   if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
-  s.walkers.steer(MY_WALKER, forward, turnRate);
+  s.walkers.steer(MY_WALKER, forward, turnRate, climb);
 }
 
-/** The keyboard steers the visitor's walker: W A S D or the arrow keys, Shift to hurry. */
+/** The visitor's walker gets about another way: from the buttons, the number keys and the address. */
+export function rideAs(want: Ride): void {
+  if (!walkerOn.value) return;
+  void run("ride", { name: MY_WALKER, ride: want });
+}
+
+/** The visitor's view, the next in turn: from behind, through the eyes, the map. */
+export function nextView(): void {
+  const order: WalkerView[] = ["follow", "eyes", "map"];
+  setView({ view: order[(order.indexOf(walkerView.value) + 1) % order.length], name: MY_WALKER });
+}
+
+/**
+ * The keyboard steers the visitor's walker: W A S D or the arrow keys, Shift to hurry; flying,
+ * Space or E to climb and Q or C to come down. 1, 2 and 3 walk, ride the scooter and fly; V changes
+ * the view, and H hides the panels or shows them again.
+ */
 export function startWalkerKeys(): () => void {
   const held = new Set<string>();
   const apply = () => {
-    const fast = held.has("shift") ? 2.5 : 1;
+    const pace = PACE[walkerRide.value];
+    const fast = held.has("shift");
     const forward = (held.has("w") || held.has("arrowup") ? 1 : 0) - (held.has("s") || held.has("arrowdown") ? 1 : 0);
     const turnDir = (held.has("d") || held.has("arrowright") ? 1 : 0) - (held.has("a") || held.has("arrowleft") ? 1 : 0);
-    steerByHand(forward * WALK_SPEED * fast * (forward < 0 ? 0.6 : 1), turnDir * 100);
+    const climbDir = (held.has(" ") || held.has("e") ? 1 : 0) - (held.has("q") || held.has("c") ? 1 : 0);
+    const speed = forward > 0 ? (fast ? pace.fast : pace.forward) : forward < 0 ? -pace.back : 0;
+    steerByHand(speed, turnDir * pace.turn, "climb" in pace ? climbDir * pace.climb * (fast ? 1.5 : 1) : 0);
   };
-  const keys = new Set(["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", "shift"]);
+  const keys = new Set(["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright", "shift", " ", "e", "q", "c"]);
   const typing = (e: KeyboardEvent) => {
     const t = e.target as HTMLElement | null;
     return !!t && (t.tagName === "INPUT" || t.tagName === "SELECT" || t.tagName === "TEXTAREA");
   };
   const down = (e: KeyboardEvent) => {
     const k = e.key.toLowerCase();
-    if (!walkerOn.value || typing(e) || e.ctrlKey || e.metaKey || e.altKey || !keys.has(k)) return;
-    if (k.startsWith("arrow")) e.preventDefault();
+    if (!walkerOn.value || typing(e) || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!e.repeat && (k === "1" || k === "2" || k === "3")) {
+      rideAs(RIDES[Number(k) - 1]!);
+      return;
+    }
+    if (!e.repeat && k === "v") {
+      nextView();
+      return;
+    }
+    if (!e.repeat && k === "h") {
+      hudHidden.value = !hudHidden.value;
+      return;
+    }
+    if (!keys.has(k)) return;
+    // Space climbs only in the air; elsewhere it is left to the page, to press a button.
+    if (k === " " && walkerRide.value !== "fly") return;
+    if (k.startsWith("arrow") || k === " ") e.preventDefault();
     held.add(k);
     apply();
   };
@@ -771,7 +897,16 @@ export function startWalkerKeys(): () => void {
   window.addEventListener("keydown", down);
   window.addEventListener("keyup", up);
   window.addEventListener("blur", blur);
+  // Keys still held when it gets about another way go on steering it, at that way's pace.
+  let wasRide = walkerRide.peek();
+  const stopRide = effect(() => {
+    const now = walkerRide.value;
+    if (now === wasRide) return;
+    wasRide = now;
+    if (held.size) apply();
+  });
   return () => {
+    stopRide();
     window.removeEventListener("keydown", down);
     window.removeEventListener("keyup", up);
     window.removeEventListener("blur", blur);

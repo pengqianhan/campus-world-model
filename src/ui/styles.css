@@ -871,7 +871,7 @@ select optgroup {
 }
 
 /* Shut, the panel is a button with the campus's name, in the corner it opens from, and the walk a
-   button beside it. The walker's panel on a touch screen folds into one like the first. */
+   button beside it. */
 .campus-dock {
   position: absolute;
   z-index: 20;
@@ -889,8 +889,7 @@ select optgroup {
   min-width: 0;
 }
 
-.status-toggle,
-.walker-toggle {
+.status-toggle {
   position: absolute;
   z-index: 20;
   bottom: var(--edge-b);
@@ -910,19 +909,16 @@ select optgroup {
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.status-toggle:hover,
-.walker-toggle:hover {
+.status-toggle:hover {
   border-color: rgba(255, 255, 255, 0.28);
   background: rgba(24, 40, 53, 0.96);
 }
 
-.status-toggle .icon:first-child,
-.walker-toggle .icon:first-child {
+.status-toggle .icon:first-child {
   color: var(--accent);
 }
 
-.status-toggle .icon:last-child,
-.walker-toggle .icon:last-child {
+.status-toggle .icon:last-child {
   color: var(--muted);
 }
 
@@ -1685,7 +1681,7 @@ select optgroup {
   }
 }
 
-/* ---- The walker: a made-up figure to walk the campus with ---------------------------------- */
+/* ---- The walk: the view takes the screen, with a game's panels in its corners ------------------- */
 
 /* Beside the campus's button and as tall, in the accent: the way into a walk. */
 .walk-start {
@@ -1710,112 +1706,221 @@ select optgroup {
   background: rgba(24, 40, 53, 0.96);
 }
 
-.walker-panel {
+/* Quiet glass in the corners, the accent for whatever is chosen, so that the campus stays the picture. */
+.hud {
+  --hud-glass: rgba(14, 24, 32, 0.6);
+  --hud-strong: rgba(12, 21, 29, 0.9);
+  --hud-line: rgba(255, 255, 255, 0.1);
+  --hud-hover: rgba(255, 255, 255, 0.08);
+  --hud-text-2: rgba(238, 243, 246, 0.7);
+  --hud-text-3: rgba(238, 243, 246, 0.46);
+  --hud-edge: 18px;
+  --hud-l: max(var(--hud-edge), env(safe-area-inset-left, 0px));
+  --hud-r: max(var(--hud-edge), env(safe-area-inset-right, 0px));
+  --hud-b: max(var(--hud-edge), env(safe-area-inset-bottom, 0px));
+  --hud-t: max(var(--hud-edge), env(safe-area-inset-top, 0px));
   position: absolute;
   z-index: 25;
-  right: var(--gap);
-  bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: min(330px, calc(100vw - 2 * var(--gap)));
-  padding: 10px 12px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--panel);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
+  inset: 0;
+  pointer-events: none;
 }
 
-.walker-head {
+/* Soft shade along the top and the foot, so that small words read over a bright sky or street. */
+.hud::before,
+.hud::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  content: "";
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hud::before {
+  top: 0;
+  height: 110px;
+  background: linear-gradient(rgba(5, 12, 18, 0.32), rgba(5, 12, 18, 0));
+}
+
+.hud::after {
+  bottom: 0;
+  height: 170px;
+  background: linear-gradient(rgba(5, 12, 18, 0), rgba(5, 12, 18, 0.38));
+}
+
+.hud-corner {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hud-corner > * {
+  pointer-events: auto;
+}
+
+.hud-card {
+  border: 1px solid var(--hud-line);
+  border-radius: 16px;
+  background: var(--hud-glass);
+  backdrop-filter: blur(14px) saturate(1.25);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hud button {
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.hud kbd {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  color: var(--hud-text-2);
+  font: 650 10.5px/1 var(--font);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Top left: the site's name, how the walker gets about, and the way out. */
+.hud-tl {
+  top: var(--hud-t);
+  left: var(--hud-l);
+  align-items: stretch;
+}
+
+.hud-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
 }
 
-.walker-head h2 {
-  color: var(--accent);
-  font: 700 16px/1.2 var(--font-display);
+.hud-badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
-.walker-where {
-  flex: 1;
+.hud-names {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  line-height: 1.2;
+}
+
+.hud-title {
+  color: var(--text);
+  font: 700 15px/1.2 var(--font-display);
+  white-space: nowrap;
+}
+
+.hud-sub {
   overflow: hidden;
-  color: var(--muted);
-  font-size: 12px;
+  color: var(--hud-text-2);
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.walker-head .btn.ghost {
-  flex: none;
-  color: var(--muted);
-}
-
-.walker-head .btn.ghost:hover,
-.walker-more[aria-expanded="true"] {
+.hud-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px 0 12px;
   color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.walker-more[aria-expanded="true"] {
-  background: rgba(255, 255, 255, 0.08);
+.hud .hud-btn {
+  border: 1px solid var(--hud-line);
+  background: var(--hud-glass);
 }
 
-.walker-menu {
-  display: flex;
+.hud .hud-btn:hover {
+  background: var(--hud-strong);
+}
+
+/* Top right: a walk to a place, and the eye that hides the panels. */
+.hud-tr {
+  z-index: 2;
+  top: var(--hud-t);
+  right: var(--hud-r);
   flex-direction: column;
-  gap: 8px;
+  align-items: flex-end;
 }
 
-.walker-menu[hidden] {
-  display: none;
-}
-
-.walker-views {
+.hud-toolbar {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
 }
 
-.walker-views button {
-  flex: 1;
-  height: 30px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.walker-views button:hover {
+.hud-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 11px;
   color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.walker-views button.on {
-  border-color: var(--accent);
-  background: rgba(255, 180, 84, 0.1);
+.hud-tool:hover,
+.hud-tool[aria-expanded="true"] {
+  background: var(--hud-hover);
+}
+
+.hud-tool .icon:first-child {
   color: var(--accent);
 }
 
-.walker-moves {
+.hud-eye .icon:first-child {
+  color: var(--text);
+}
+
+.hud-divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--hud-line);
+}
+
+.hud-menu {
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 10px;
+  width: min(340px, calc(100vw - var(--hud-l) - var(--hud-r)));
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--hud-strong);
 }
 
-.walker-moves button {
-  flex: 1;
-  height: 30px;
-  border: 1px solid rgba(110, 211, 200, 0.45);
-  border-radius: 8px;
-  background: rgba(110, 211, 200, 0.1);
-  color: var(--teal);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.walker-moves button:hover {
-  background: rgba(110, 211, 200, 0.2);
+.hud-menu[hidden] {
+  display: none;
 }
 
 .walker-go {
@@ -1826,36 +1931,31 @@ select optgroup {
 .walker-go input {
   flex: 1;
   min-width: 0;
-  height: 34px;
+  height: 36px;
   padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  border: 1px solid var(--hud-line);
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.06);
   color: var(--text);
 }
 
 .walker-go .btn {
-  height: 34px;
+  height: 36px;
   box-shadow: none;
 }
 
-.walker-message {
-  color: var(--teal);
-  font-size: 12px;
-}
-
-.walker-wander {
-  height: 30px;
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  background: transparent;
+.hud .walker-wander {
+  height: 32px;
+  border: 1px dashed var(--hud-line);
+  border-radius: 10px;
   color: var(--muted);
   font-size: 12px;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.walker-wander:hover,
-.walker-wander.on {
+.hud .walker-wander:hover,
+.hud .walker-wander.on {
   border-style: solid;
   border-color: var(--teal);
   color: var(--teal);
@@ -1864,53 +1964,260 @@ select optgroup {
 .walker-keys,
 .walker-note {
   color: var(--muted);
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: 11.5px;
+  line-height: 1.45;
 }
 
 .walker-note {
   color: #8496a3;
 }
 
-/* ---- On a touch screen: a bar at the top, and the thumbs steer, as in a game ---------------- */
+/* Bottom left: where the walker is, on a sign like a street's, and what a walk to a place came to. */
+.hud-bl {
+  bottom: var(--hud-lift, var(--hud-b));
+  left: var(--hud-l);
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: min(440px, calc(50vw - 180px));
+}
 
-.walker-panel[hidden] {
+.hud-sign {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #0e5a54;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85), 0 3px 10px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hud-message {
+  max-width: 100%;
+  padding: 7px 11px;
+  border-radius: 10px;
+  color: var(--teal);
+  font-size: 12.5px;
+}
+
+/* At the foot in the middle: how to steer, and how the walker gets about. */
+.hud-bc {
+  bottom: var(--hud-b);
+  left: 50%;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+}
+
+.hud-hint {
+  max-width: min(720px, 46vw);
+  color: var(--hud-text-2);
+  font-size: 12px;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.hud-rides {
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+}
+
+.hud-rides button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px 0 13px;
+  border-radius: 11px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.hud-rides button:hover {
+  background: var(--hud-hover);
+}
+
+.hud-rides button.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.hud-rides button.on kbd {
+  background: rgba(26, 18, 6, 0.12);
+  box-shadow: none;
+  color: rgba(26, 18, 6, 0.75);
+}
+
+/* Bottom right: speed, height and the view; a building's way in, up, down and out above them. */
+.hud-br {
+  right: var(--hud-r);
+  bottom: var(--hud-b);
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hud-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 268px;
+  padding: 12px 12px 8px 14px;
+}
+
+.hud-gauge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hud-gauge-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--hud-text-2);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.hud-alt {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-speed {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+#walker-speed {
+  font-size: 38px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hud-unit {
+  color: var(--hud-text-2);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.hud-meter {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hud-meter span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.12s linear;
+}
+
+.hud-views {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hud-line);
+  color: var(--hud-text-2);
+}
+
+.hud-views > .icon {
+  flex: none;
+  margin: 0 5px 0 1px;
+}
+
+.hud-views button {
+  flex: 1;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--hud-text-2);
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.hud-views button:hover {
+  background: var(--hud-hover);
+  color: var(--text);
+}
+
+.hud-views button.on {
+  background: rgba(255, 255, 255, 0.13);
+  color: var(--text);
+}
+
+.hud-views kbd {
+  margin-left: 4px;
+}
+
+.hud .walker-moves {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.hud .walker-moves button {
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(110, 211, 200, 0.5);
+  border-radius: 999px;
+  background: rgba(10, 40, 40, 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.hud .walker-moves button:hover {
+  background: rgba(14, 58, 56, 0.9);
+}
+
+/* Hidden, the panels leave the view clean: only the eye that brings them back stays, and on a
+   touch screen the controls the thumbs steer with. */
+.hud-hidden::before,
+.hud-hidden::after {
+  opacity: 0;
+}
+
+.hud-hidden .hud-corner:not(.hud-thumb-r) > :not(.hud-toolbar, .hud-stick-wrap) {
+  visibility: hidden;
+}
+
+.hud-hidden .hud-toolbar > :not(.hud-eye) {
   display: none;
 }
 
-/* Folded, the bar is a small button where it opens, under the top bar. */
-.walker-toggle {
-  z-index: 25;
-  top: calc(var(--top) + 4px);
-  bottom: auto;
-}
-
-.walker-panel.touch {
-  top: calc(var(--top) + 4px);
-  right: auto;
-  bottom: auto;
-  left: var(--edge-l);
-  width: min(440px, calc(100vw - var(--edge-l) - var(--edge-r)));
-  max-height: calc(100% - var(--top) - 4px - var(--edge-b));
-  overflow-y: auto;
+/* The stick: one thumb goes and turns. Ticks on its ring show the four ways to push it. */
+.hud-stick-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 6px;
-  padding: 6px 6px 8px 12px;
 }
 
-.walker-panel.touch .walker-views {
-  margin-right: 6px;
-}
-
-.walker-panel.touch .walker-menu {
-  margin-right: 6px;
-}
-
-/* The stick: the left thumb walks and turns. Ticks on its ring show the four ways to push it. */
 .walker-stick {
-  position: absolute;
-  z-index: 24;
-  bottom: var(--stick-lift, calc(var(--edge-b) + 26px));
-  left: calc(var(--edge-l) + 4px);
   display: grid;
   place-items: center;
   width: 124px;
@@ -1948,29 +2255,41 @@ select optgroup {
   transition: none;
 }
 
-/* Into a building, up, down and out: under the right thumb, which also drags the view round. */
-.walker-actions {
-  position: absolute;
-  z-index: 24;
-  right: calc(var(--edge-r) + 4px);
-  bottom: var(--moves-lift, calc(var(--edge-b) + 26px));
+.hud-caption {
+  color: var(--hud-text-2);
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Flying on a touch screen: held to climb or come down, under the right thumb. */
+.hud-holds {
+  display: flex;
+  gap: 10px;
+}
+
+.hud-hold {
+  display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(14, 24, 32, 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+  color: var(--text);
+  font-size: 10.5px;
+  font-weight: 700;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.walker-actions button {
-  flex: none;
-  height: 44px;
-  padding: 0 18px;
-  border-radius: 999px;
-  background-color: rgba(16, 28, 38, 0.88);
-  box-shadow: var(--shadow);
-  font-size: 13px;
-}
-
-.walker-actions button:hover {
-  background-color: rgba(24, 40, 53, 0.96);
+.hud-hold.held {
+  background: var(--accent) !important;
+  color: var(--accent-ink);
 }
 
 /* The walker's name over its head, in the site's amber, and what it says in a bubble above. */
@@ -1992,19 +2311,15 @@ select optgroup {
   white-space: normal;
 }
 
-/* In a building the floor list takes the right-hand side, so the walker's panel stands beside the
-   building's dock instead. */
-@media (min-width: 721px) {
-  .walking.in-building .walker-panel:not(.touch) {
-    right: auto;
-    left: calc(min(410px, 100vw - 2 * var(--gap)) + 2 * var(--gap));
-    bottom: var(--gap);
-  }
+/* A walk inside a building: the building's card is at the foot on the left, and the walk's sign
+   and message stand above it (--hud-lift). Only a walk goes on inside, so the ways of getting about
+   step aside (1, 2 and 3 still take it out); the speed and the way out stand left of the floor list. */
+.hud.hud-indoor .hud-bc {
+  display: none;
+}
 
-  /* Short, so that it stays below the walker in the view from behind. */
-  .walking.in-building .walker-panel:not(.touch) :is(.walker-keys, .walker-note, .walker-wander) {
-    display: none;
-  }
+.hud.hud-indoor:not(.touch) .hud-br {
+  right: calc(var(--hud-r) + 100px);
 }
 
 /* Where the attribution could reach the campus's and the walk's buttons, in a wide font with a long campus name and
@@ -2017,9 +2332,7 @@ select optgroup {
 
 /* A picture of the view for an agent (scripts/walker): the panels step aside, the labels stay. */
 .shot-clean .topbar,
-.shot-clean .walker-panel,
-.shot-clean .walker-thumbs,
-.shot-clean .walker-toggle,
+.shot-clean .hud,
 .shot-clean .status,
 .shot-clean .campus-dock,
 .shot-clean .dock,
@@ -2029,20 +2342,171 @@ select optgroup {
   visibility: hidden;
 }
 
-/* The stick and the buttons beside it place themselves; their holder is no box of its own. */
-.walker-thumbs {
-  display: contents;
+/* The attribution steps under the walk's panels: at the very foot, in the middle. */
+.walking .attribution {
+  right: auto;
+  bottom: 3px;
+  left: 50%;
+  max-width: 60vw;
+  padding: 0 6px;
+  border-color: transparent;
+  background: transparent;
+  color: rgba(238, 243, 246, 0.7);
+  font-size: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  transform: translateX(-50%);
+}
+
+.walking .hud:not(.touch) .hud-bc {
+  bottom: calc(var(--hud-b) + 8px);
+}
+
+/* On a touch screen, as in a game on a phone: the ways of getting about across the foot, the stick
+   above them under the left thumb, the buttons under the right, and the speed and the view under
+   the top right. Words give way to icons where the screen is narrow. */
+.hud.touch {
+  --hud-edge: 10px;
+  --hud-glass: rgba(14, 24, 32, 0.76);
+}
+
+.hud.touch .hud-brand {
+  padding: 4px 10px 4px 4px;
+}
+
+.hud.touch .hud-badge {
+  width: 28px;
+  height: 28px;
+}
+
+.hud.touch .hud-title {
+  font-size: 13px;
+}
+
+.hud.touch #walker-close {
+  width: 40px;
+  justify-content: center;
+  padding: 0;
+}
+
+.hud.touch #walker-close .hud-label,
+.hud.touch .hud-tool .hud-label,
+.hud.touch .hud-tool .icon:last-child:not(:first-child) {
+  display: none;
+}
+
+.hud.touch .hud-tool {
+  min-width: 40px;
+  height: 40px;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+.hud.touch .hud-bc {
+  bottom: var(--hud-b);
+}
+
+.hud.touch .hud-rides button {
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  width: 64px;
+  height: 50px;
+  padding: 0;
+  font-size: 10.5px;
+}
+
+.hud.touch .hud-bl {
+  bottom: var(--hud-lift, calc(var(--hud-b) + 74px));
+  max-width: calc(100vw - var(--hud-l) - var(--hud-r));
+}
+
+.hud.touch .hud-thumb-r {
+  right: var(--hud-r);
+  bottom: var(--hud-lift-r, calc(var(--hud-b) + 74px));
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hud.touch .walker-moves {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hud.touch .walker-moves button {
+  height: 44px;
+  padding: 0 18px;
+}
+
+.hud.touch .hud-br {
+  top: calc(var(--hud-t) + 58px);
+  bottom: auto;
+}
+
+/* Small under the top right: the speed and the height on one line, and the views. */
+.hud.touch .hud-cluster {
+  width: auto;
+  gap: 4px;
+  padding: 6px 6px 4px 10px;
+  border-radius: 14px;
+}
+
+.hud.touch .hud-gauge {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.hud.touch .hud-gauge-name,
+.hud.touch .hud-meter,
+.hud.touch .hud-views > .icon {
+  display: none;
+}
+
+.hud.touch #walker-speed {
+  font-size: 17px;
+}
+
+.hud.touch .hud-unit {
+  font-size: 11px;
+}
+
+.hud.touch .hud-views {
+  padding-top: 4px;
+}
+
+.hud.touch .hud-views button {
+  height: 32px;
+  padding: 0 9px;
+  font-size: 12px;
+}
+
+/* Inside, on a touch screen, the building's floors take the top and its card the foot: the speed
+   goes under the floors, and the sign steps aside, as the floors and the card say where it is. */
+.hud.touch.hud-indoor .hud-sign {
+  display: none;
+}
+
+.hud.touch.hud-indoor .hud-br {
+  top: 124px;
 }
 
 @media (max-width: 720px) {
-  /* Across the screen under the top bar, and under the floor strip in a building. */
-  .walker-panel.touch {
-    right: var(--edge-r);
-    width: auto;
+  /* The floor strip, under the walk's top row rather than the top bar. */
+  .walking .floors {
+    top: 68px;
   }
 
-  .in-building :is(.walker-panel.touch, .walker-toggle) {
-    top: calc(var(--top) + 52px);
+  .walking .attribution {
+    top: calc(var(--hud-edge, 10px) + 52px);
+    bottom: auto;
+    left: 10px;
+    max-width: calc(100vw - 230px);
+    transform: none;
+  }
+
+  .hud-sub {
+    max-width: 38vw;
   }
 }
 
@@ -2058,8 +2522,12 @@ select optgroup {
     height: 48px;
   }
 
-  .walker-actions button {
+  .hud.touch .walker-moves button {
     height: 40px;
+  }
+
+  .hud-caption {
+    display: none;
   }
 }
 

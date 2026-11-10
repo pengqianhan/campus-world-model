@@ -1,21 +1,46 @@
-// The walker's panel: where it is, the three views, a walk to a place, and on a touch screen a
-// thumb stick, as in a game: one thumb walks and turns the walker while the other drags the view
-// round. The walker is made up; the panel says so, and that doors are not mapped.
+// The walk as a game: the view takes the whole screen, and small panels in its corners say where the
+// walker is and how to steer it. Top left, the site's name and the way out; top right, a walk to a
+// place and a button that hides the panels; bottom left, where it is and, on a touch screen, a thumb
+// stick; at the foot in the middle, how it gets about: on foot, on a scooter, or flying a drone in
+// its place; bottom right, its speed and height, and the view. On a touch screen one thumb steers
+// with the stick while the other drags the view round. The walker, its scooter and its drone are
+// made up; the walk's menu says so, and that doors are not mapped.
 import { useEffect, useRef, useState } from "preact/hooks";
 import { t } from "../app/i18n.ts";
-import { data, selBuilding } from "../app/state.ts";
-import { ENTER_REACH, MY_WALKER, run, setView, steerByHand, stopWalking, walkerOn, walkerStatus, walkerView, wanderingNow } from "../app/walker.ts";
-import { Icon } from "./common.tsx";
+import { data, selBuilding, selCampus } from "../app/state.ts";
+import {
+  ENTER_REACH,
+  MY_WALKER,
+  PACE,
+  hudHidden,
+  rideAs,
+  run,
+  setView,
+  steerByHand,
+  stopWalking,
+  walkerGauge,
+  walkerOn,
+  walkerRide,
+  walkerStatus,
+  walkerView,
+  wanderingNow,
+} from "../app/walker.ts";
+import { RIDES, type Ride } from "../scene/rides.ts";
+import { DRONE_CEILING, WALK_SPEED } from "../scene/walkers.ts";
+import { Icon, campusName } from "./common.tsx";
 import { isLite } from "./SceneHost.tsx";
-import { WALK_SPEED } from "../scene/walkers.ts";
 
-const VIEWS = ["map", "follow", "eyes"] as const;
+const VIEWS = ["follow", "eyes", "map"] as const;
+const RIDE_ICON: Record<Ride, string> = { walk: "walkLine", scooter: "scooter", fly: "drone" };
+/** The keys the panels name, as a keyboard has them. */
+const KEY = { view: "V", hud: "H" } as const;
+/** Kilometres an hour at which the speed's bar is full, for each way of getting about. */
+const GAUGE_TOP: Record<Ride, number> = { walk: 15, scooter: 25, fly: 60 };
 
 /** How far the stick must be pushed, as a share of its reach, before it does anything. */
 const DEAD_ZONE = 0.18;
-/** Metres a second with the stick pushed all the way up: a jog. Pulled down, it steps back at a walk. */
-const STICK_FORWARD = WALK_SPEED * 2.2;
-const STICK_BACK = WALK_SPEED;
+/** Metres a second with the stick pushed all the way up: on foot a jog; on the scooter and flying, flat out. */
+const STICK_TOP: Record<Ride, number> = { walk: WALK_SPEED * 2.2, scooter: PACE.scooter.fast, fly: PACE.fly.fast };
 /** Degrees a second with the stick pushed all the way to one side. */
 const STICK_TURN = 120;
 /** Share of the stick's reach that its knob travels. */
@@ -27,10 +52,17 @@ function axis(v: number): number {
   return a <= DEAD_ZONE ? 0 : (Math.sign(v) * (a - DEAD_ZONE)) / (1 - DEAD_ZONE);
 }
 
+/** What the thumbs ask for: the stick forward and round, the buttons up and down. Each sets its part. */
+const hand = { forward: 0, turn: 0, climb: 0 };
+function steerHand(part: Partial<typeof hand>): void {
+  Object.assign(hand, part);
+  steerByHand(hand.forward, hand.turn, hand.climb);
+}
+
 /**
- * A thumb stick, as in a game on a phone: pushed up the walker walks on, faster the further it
- * goes; pulled down it steps back; pushed to a side it turns. It steers as the keys do, and like
- * them it stops a walk to a place.
+ * A thumb stick, as in a game on a phone: pushed up the walker goes on, faster the further it goes;
+ * pulled down it goes back; pushed to a side it turns. It steers as the keys do, and like them it
+ * stops a walk to a place.
  */
 function Stick({ onSteer }: { onSteer: () => void }) {
   const base = useRef<HTMLDivElement>(null);
@@ -39,7 +71,7 @@ function Stick({ onSteer }: { onSteer: () => void }) {
   // A stick let go of by the page (the walk closed under the thumb) stops the walker.
   useEffect(
     () => () => {
-      if (finger.current !== undefined) steerByHand(0, 0);
+      if (finger.current !== undefined) steerHand({ forward: 0, turn: 0 });
     },
     [],
   );
@@ -57,45 +89,83 @@ function Stick({ onSteer }: { onSteer: () => void }) {
     if (knob.current) knob.current.style.transform = `translate(${x * reach * KNOB_TRAVEL}px, ${y * reach * KNOB_TRAVEL}px)`;
     const forward = -axis(y);
     const turn = axis(x);
+    const ride = walkerRide.peek();
     // Squared, so that a little push to the side turns a little and the stick can hold a line.
-    steerByHand(forward > 0 ? forward * STICK_FORWARD : forward * STICK_BACK, turn * Math.abs(turn) * STICK_TURN);
+    steerHand({ forward: forward > 0 ? forward * STICK_TOP[ride] : forward * PACE[ride].back, turn: turn * Math.abs(turn) * STICK_TURN });
   };
   const release = (e: PointerEvent) => {
     if (e.pointerId !== finger.current) return;
     finger.current = undefined;
     base.current?.classList.remove("held");
     if (knob.current) knob.current.style.transform = "";
-    steerByHand(0, 0);
+    steerHand({ forward: 0, turn: 0 });
   };
 
   return (
-    <div
-      class="walker-stick"
-      id="walker-stick"
-      ref={base}
-      aria-hidden="true"
+    <div class="hud-stick-wrap">
+      <div
+        class="walker-stick"
+        id="walker-stick"
+        ref={base}
+        aria-hidden="true"
+        onPointerDown={(e) => {
+          if (finger.current !== undefined) return;
+          finger.current = e.pointerId;
+          // The thumb keeps the stick when it slides off it. A pointer the browser no longer knows cannot be kept.
+          try {
+            (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+          } catch {
+            // Steered all the same, while it stays over the stick.
+          }
+          base.current?.classList.add("held");
+          onSteer();
+          push(e);
+        }}
+        onPointerMove={(e) => {
+          if (e.pointerId === finger.current) push(e);
+        }}
+        onPointerUp={release}
+        onPointerCancel={release}
+        onLostPointerCapture={release}
+      >
+        <span class="walker-knob" ref={knob} />
+      </div>
+      <span class="hud-caption">{t("walker.stick")}</span>
+    </div>
+  );
+}
+
+/** A button held to climb or come down, flying: for as long as the finger or the mouse is on it. */
+function Hold({ id, climb, icon, label }: { id: string; climb: number; icon: string; label: string }) {
+  const [held, setHeld] = useState(false);
+  const stop = () => {
+    setHeld(false);
+    steerHand({ climb: 0 });
+  };
+  useEffect(() => () => steerHand({ climb: 0 }), []);
+  return (
+    <button
+      type="button"
+      id={id}
+      class={`hud-hold ${held ? "held" : ""}`}
+      aria-label={label}
+      title={label}
       onPointerDown={(e) => {
-        if (finger.current !== undefined) return;
-        finger.current = e.pointerId;
-        // The thumb keeps the stick when it slides off it. A pointer the browser no longer knows cannot be kept.
         try {
           (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         } catch {
-          // Steered all the same, while it stays over the stick.
+          // Held all the same, while it stays on the button.
         }
-        base.current?.classList.add("held");
-        onSteer();
-        push(e);
+        setHeld(true);
+        steerHand({ climb });
       }}
-      onPointerMove={(e) => {
-        if (e.pointerId === finger.current) push(e);
-      }}
-      onPointerUp={release}
-      onPointerCancel={release}
-      onLostPointerCapture={release}
+      onPointerUp={stop}
+      onPointerCancel={stop}
+      onLostPointerCapture={stop}
     >
-      <span class="walker-knob" ref={knob} />
-    </div>
+      <Icon name={icon} size={22} />
+      <span>{label}</span>
+    </button>
   );
 }
 
@@ -113,8 +183,10 @@ function useDock(active: boolean): { lift: number; wide: boolean } {
       return;
     }
     const measure = () => {
+      // The dock may have gone between a change of its size and this.
+      if (!el.isConnected || !el.parentElement) return;
       const r = el.getBoundingClientRect();
-      const app = el.parentElement!.getBoundingClientRect();
+      const app = el.parentElement.getBoundingClientRect();
       setDock({ lift: Math.max(0, Math.round(app.bottom - r.top)), wide: r.right > app.left + app.width * 0.6 });
     };
     measure();
@@ -129,115 +201,107 @@ export function WalkerPanel() {
   const touch = isLite();
   const [to, setTo] = useState("");
   const [message, setMessage] = useState<string | undefined>(undefined);
-  // Everything but the views and the way in and out: shown on a wide screen, behind a button on a touch screen.
-  const [more, setMore] = useState(() => !touch);
-  // On a touch screen the whole panel waits as a small button, so the walk has the screen.
-  const [open, setOpen] = useState(false);
-  const shown = !touch || open;
+  // The walk to a place, wandering, and how to steer: a menu from the top right, shut at first.
+  const [more, setMore] = useState(false);
   const input = useRef<HTMLInputElement>(null);
-  const show = useRef<HTMLButtonElement>(null);
-  const hide = useRef<HTMLButtonElement>(null);
-  const dock = useDock(touch && walkerOn.value);
-  // Each walk starts with the panel folded away.
+  const dock = useDock(walkerOn.value);
+  // Each walk starts with the menu shut.
   const on = walkerOn.value;
   useEffect(() => {
-    if (on) setOpen(false);
+    if (on) setMore(false);
   }, [on]);
-  // Focus goes with the panel, for whoever is using the keyboard: into it, and back to its button.
-  const was = useRef(open);
+  // Opened, the menu's field takes the keys, for whoever is typing a place.
   useEffect(() => {
-    if (was.current === open) return;
-    was.current = open;
-    (open ? hide : show).current?.focus();
-  }, [open]);
+    if (more && !touch) input.current?.focus();
+  }, [more]);
   if (!walkerOn.value) return null;
+  const d = data.value;
   const status = walkerStatus.value;
+  const gauge = walkerGauge.value;
   const view = walkerView.value;
+  const ride = walkerRide.value;
+  const hidden = hudHidden.value;
   const wandering = wanderingNow.value.has(MY_WALKER);
+  const indoor = !!status?.indoor;
 
   const act = async (command: string, args: Record<string, unknown>) => {
     const r = await run(command, { name: MY_WALKER, ...args });
     setMessage(r.error ? String(r.error) : undefined);
-    // What went wrong is said in the panel, so the panel opens to say it.
-    if (r.error) setOpen(true);
   };
 
   const go = async (e: Event) => {
     e.preventDefault();
     const where = to.trim();
     if (!where) return;
-    // On a touch screen the panel folds away, so that the walk can be watched.
-    if (touch) {
-      setMore(false);
-      setOpen(false);
-    }
-    setMessage(t("walker.walking"));
-    const r = await run("walk", { name: MY_WALKER, to: where, speed: 3 });
-    if (r.error) {
-      setMessage(String(r.error));
-      setOpen(true);
-    } else setMessage(r.arrived ? t("walker.arrived", { place: String(r.to) }) : t("walker.stopped"));
+    // The menu shuts, so that the walk can be watched.
+    setMore(false);
+    setMessage(t(ride === "fly" ? "walker.flying" : ride === "scooter" ? "walker.riding" : "walker.walking"));
+    const r = await run("walk", { name: MY_WALKER, to: where, speed: ride === "fly" ? PACE.fly.forward : ride === "scooter" ? PACE.scooter.forward : 3 });
+    if (r.error) setMessage(String(r.error));
+    else setMessage(r.arrived ? t("walker.arrived", { place: String(r.to) }) : t("walker.stopped"));
   };
 
-  const moves =
-    status?.indoor ? (
-      <>
-        <button type="button" id="walker-up" onClick={() => act("floor", { to: "up" })}>
-          {t("walker.up")}
-        </button>
-        <button type="button" id="walker-down" onClick={() => act("floor", { to: "down" })}>
-          {t("walker.down")}
-        </button>
-        <button type="button" id="walker-exit" onClick={() => act("exit", {})}>
-          {t("walker.exit")}
-        </button>
-      </>
-    ) : status?.nearId && (status.nearMetres ?? Infinity) <= ENTER_REACH && (data.value?.buildingById.get(status.nearId)?.floors.length ?? 0) > 0 ? (
-      // A building with no floors (the Buildings form) has nothing inside to stand on.
-      <button type="button" id="walker-enter" onClick={() => act("enter", {})}>
-        {t("walker.enter", { place: status.nearId })}
+  const moves = indoor ? (
+    <>
+      <button type="button" id="walker-up" onClick={() => act("floor", { to: "up" })}>
+        {t("walker.up")}
       </button>
-    ) : undefined;
+      <button type="button" id="walker-down" onClick={() => act("floor", { to: "down" })}>
+        {t("walker.down")}
+      </button>
+      <button type="button" id="walker-exit" onClick={() => act("exit", {})}>
+        {t("walker.exit")}
+      </button>
+    </>
+  ) : ride !== "fly" && status?.nearId && (status.nearMetres ?? Infinity) <= ENTER_REACH && (data.value?.buildingById.get(status.nearId)?.floors.length ?? 0) > 0 ? (
+    // A building with no floors (the Buildings form) has nothing inside to stand on.
+    <button type="button" id="walker-enter" onClick={() => act("enter", {})}>
+      {t("walker.enter", { place: status.nearId })}
+    </button>
+  ) : undefined;
+
+  const where = indoor
+    ? t("walker.inside", { place: status!.indoor!, floor: status!.floor ?? "" })
+    : status?.walking
+      ? t(ride === "fly" ? "walker.flying" : ride === "scooter" ? "walker.riding" : "walker.walking")
+      : status?.near
+        ? // Flying over a building, the drone is over it, not near it.
+          t(ride === "fly" && status.nearMetres === 0 ? "walker.over" : "walker.near", { place: status.near })
+        : t("walker.standing");
+  const kmh = Math.round((gauge?.speed ?? 0) * 3.6);
+  // Over the open building's card: the sign, and on a touch screen the stick, and the right thumb's buttons where it reaches across.
+  const lift = dock.lift ? { "--hud-lift": `${dock.lift + 8}px`, ...(dock.wide ? { "--hud-lift-r": `${dock.lift + 8}px` } : {}) } : undefined;
 
   return (
-    <>
-      {!shown && (
-        <button
-          type="button"
-          class="walker-toggle"
-          id="walker-toggle"
-          ref={show}
-          aria-expanded="false"
-          aria-controls="walker-panel"
-          aria-label={t("walker.show")}
-          title={t("walker.show")}
-          onClick={() => setOpen(true)}
-        >
-          <Icon name="walk" size={16} />
-          <span>{t("walker.heading")}</span>
-          <Icon name="chevronDown" size={16} />
-        </button>
-      )}
-      <section
-        class={`walker-panel view-${view} ${touch ? "touch" : ""} ${more ? "more" : ""}`}
-        id="walker-panel"
-        aria-label={t("walker.heading")}
-        hidden={!shown}
-      >
-        <div class="walker-head">
-          <h2>{t("walker.heading")}</h2>
-          <span class="walker-where" id="walker-where" aria-live="polite">
-            {status?.walking
-              ? t("walker.walking")
-              : status?.indoor
-                ? t("walker.inside", { place: status.indoor, floor: status.floor ?? "" })
-                : status?.near
-                  ? t("walker.near", { place: status.near })
-                  : t("walker.standing")}
+    <section
+      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""}`}
+      id="walker-panel"
+      aria-label={t("walker.heading")}
+      style={lift}
+    >
+      <header class="hud-corner hud-tl">
+        <div class="hud-card hud-brand">
+          <span class="hud-badge" aria-hidden="true">
+            <Icon name={RIDE_ICON[ride]} size={18} />
           </span>
+          <span class="hud-names">
+            <span class="hud-title">{t("app.title")}</span>
+            <span class="hud-sub">
+              {d ? campusName(d, selCampus.value) : ""} · {t("app.tagline")}
+            </span>
+          </span>
+        </div>
+        <button type="button" class="hud-card hud-btn" id="walker-close" aria-label={t("walker.closeHint")} title={t("walker.closeHint")} onClick={stopWalking}>
+          <Icon name="close" size={16} />
+          <span class="hud-label">{t("walker.close")}</span>
+        </button>
+      </header>
+
+      <div class="hud-corner hud-tr">
+        <div class="hud-card hud-toolbar">
           <button
             type="button"
-            class="btn ghost walker-more"
+            class="hud-tool"
             id="walker-more"
             aria-expanded={more}
             aria-controls="walker-menu"
@@ -245,45 +309,25 @@ export function WalkerPanel() {
             title={t("walker.more")}
             onClick={() => setMore(!more)}
           >
-            <Icon name="more" />
+            <Icon name="pin" size={16} />
+            <span class="hud-label">{t("walker.goTo")}</span>
+            <Icon name="chevronDown" size={14} />
           </button>
-          {touch && (
-            <button
-              type="button"
-              class="btn ghost"
-              id="walker-hide"
-              ref={hide}
-              aria-expanded="true"
-              aria-controls="walker-panel"
-              aria-label={t("walker.hide")}
-              title={t("walker.hide")}
-              onClick={() => setOpen(false)}
-            >
-              <Icon name="chevronUp" />
-            </button>
-          )}
-          <button type="button" class="btn ghost" id="walker-close" aria-label={t("walker.close")} title={t("walker.close")} onClick={stopWalking}>
-            <Icon name="close" />
+          <span class="hud-divider" aria-hidden="true" />
+          <button
+            type="button"
+            class="hud-tool hud-eye"
+            id="walker-hud"
+            aria-pressed={hidden}
+            aria-label={t(hidden ? "walker.hud.show" : "walker.hud.hide")}
+            title={t(hidden ? "walker.hud.show" : "walker.hud.hide")}
+            onClick={() => (hudHidden.value = !hidden)}
+          >
+            <Icon name={hidden ? "eyeOff" : "eye"} size={18} />
+            {!touch && <kbd>{KEY.hud}</kbd>}
           </button>
         </div>
-        <div class="walker-views" role="group" aria-label={t("walker.view.label")}>
-          {VIEWS.map((v) => (
-            <button type="button" class={v === view ? "on" : ""} aria-pressed={v === view} data-view={v} onClick={() => setView({ view: v, name: MY_WALKER })}>
-              {t(`walker.view.${v}`)}
-            </button>
-          ))}
-        </div>
-        {moves && !touch && (
-          <div class="walker-moves" role="group" aria-label={t("walker.moves")}>
-            {moves}
-          </div>
-        )}
-        {message && (
-          <p class="walker-message" id="walker-message" role="status">
-            {message}
-          </p>
-        )}
-        <div class="walker-menu" id="walker-menu" hidden={!more}>
+        <div class="hud-card hud-menu" id="walker-menu" hidden={!more}>
           <form class="walker-go" onSubmit={go}>
             <label class="sr-only" for="walker-to">
               {t("walker.goTo")}
@@ -299,26 +343,103 @@ export function WalkerPanel() {
             id="walker-wander"
             aria-pressed={wandering}
             onClick={() => {
-              if (touch && !wandering) setMore(false);
+              if (!wandering) setMore(false);
               void run(wandering ? "stop" : "wander", { name: MY_WALKER });
             }}
           >
             {wandering ? t("walker.wanderStop") : t("walker.wander")}
           </button>
           <p class="walker-keys">{touch ? t("walker.keysTouch") : t("walker.keys")}</p>
-          <p class="walker-note">{t("walker.note")}</p>
+          <p class="walker-note">{t("walker.note", { ceiling: DRONE_CEILING })}</p>
         </div>
-      </section>
-      {touch && (
-        <div class="walker-thumbs" style={dock.lift ? { "--stick-lift": `${dock.lift + 8}px`, ...(dock.wide ? { "--moves-lift": `${dock.lift + 8}px` } : {}) } : undefined}>
-          <Stick onSteer={() => setMessage(undefined)} />
+      </div>
+
+      <div class="hud-corner hud-bl">
+        <p class="hud-sign" id="walker-where" aria-live="polite">
+          {where}
+        </p>
+        {message && (
+          <p class="hud-card hud-message" id="walker-message" role="status">
+            {message}
+          </p>
+        )}
+        {touch && <Stick onSteer={() => setMessage(undefined)} />}
+      </div>
+
+      <footer class="hud-corner hud-bc">
+        {!touch && <p class="hud-hint">{t(`walker.hint.${ride}`)}</p>}
+        <div class="hud-card hud-rides" role="group" aria-label={t("walker.ride.label")}>
+          {RIDES.map((r, i) => (
+            <button
+              type="button"
+              class={r === ride ? "on" : ""}
+              aria-pressed={r === ride}
+              data-ride={r}
+              title={t(`walker.ride.${r}Hint`)}
+              onClick={() => {
+                setMessage(undefined);
+                rideAs(r);
+              }}
+            >
+              <Icon name={RIDE_ICON[r]} size={20} />
+              <span class="hud-label">{t(`walker.ride.${r}`)}</span>
+              {!touch && <kbd>{i + 1}</kbd>}
+            </button>
+          ))}
+        </div>
+      </footer>
+
+      {touch && (moves || ride === "fly") && (
+        <div class="hud-corner hud-thumb-r">
           {moves && (
-            <div class="walker-moves walker-actions" role="group" aria-label={t("walker.moves")}>
+            <div class="walker-moves" role="group" aria-label={t("walker.moves")}>
               {moves}
+            </div>
+          )}
+          {ride === "fly" && (
+            <div class="hud-holds">
+              <Hold id="walker-climb" climb={PACE.fly.climb} icon="chevronUp" label={t("walker.climb")} />
+              <Hold id="walker-descend" climb={-PACE.fly.climb} icon="chevronDown" label={t("walker.descend")} />
             </div>
           )}
         </div>
       )}
-    </>
+
+      <div class="hud-corner hud-br">
+        {!touch && moves && (
+          <div class="walker-moves" role="group" aria-label={t("walker.moves")}>
+            {moves}
+          </div>
+        )}
+        <section class="hud-card hud-cluster" aria-label={t("walker.gauge")}>
+          <div class="hud-gauge">
+            <div class="hud-gauge-top">
+              <span class="hud-gauge-name">{t(`walker.ride.${ride}Name`)}</span>
+              {ride === "fly" && (
+                <span class="hud-alt" id="walker-altitude">
+                  {t("walker.altitude", { metres: Math.round(gauge?.altitude ?? 0) })}
+                </span>
+              )}
+            </div>
+            <div class="hud-speed">
+              <span id="walker-speed">{kmh}</span>
+              <span class="hud-unit">{t("walker.kmh")}</span>
+            </div>
+            <div class="hud-meter" aria-hidden="true">
+              <span style={{ width: `${Math.min(100, (kmh / GAUGE_TOP[ride]) * 100)}%` }} />
+            </div>
+          </div>
+          <div class="hud-views walker-views" role="group" aria-label={t("walker.view.label")}>
+            <Icon name="camera" size={16} />
+            {VIEWS.map((v) => (
+              <button type="button" class={v === view ? "on" : ""} aria-pressed={v === view} data-view={v} onClick={() => setView({ view: v, name: MY_WALKER })}>
+                {t(`walker.view.${v}`)}
+              </button>
+            ))}
+            {!touch && <kbd>{KEY.view}</kbd>}
+          </div>
+        </section>
+      </div>
+    </section>
   );
 }

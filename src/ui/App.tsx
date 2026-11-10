@@ -5,12 +5,12 @@ import { intlLocale, pick, t, tn } from "../app/i18n.ts";
 import { ABOUT_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
 import { BuildingView } from "./BuildingView.tsx";
-import { SceneHost, isLite } from "./SceneHost.tsx";
+import { SceneHost } from "./SceneHost.tsx";
 import { SearchPanel } from "./SearchPanel.tsx";
 import { TimePanel, notTeachingReason, previewTeachingDay } from "./TimePanel.tsx";
 import { TopBar, statusLine } from "./TopBar.tsx";
 import { WalkerPanel } from "./WalkerPanel.tsx";
-import { MY_WALKER, setView, startWalkerKeys, startWalking, walkerOn, walkerView } from "../app/walker.ts";
+import { MY_WALKER, setView, startWalkerKeys, startWalking, stopWalking, walkerOn, walkerView } from "../app/walker.ts";
 
 /** Whether the campus panel is open. It starts shut, as a small button, so the map has the screen. */
 const stripOpen = signal(false);
@@ -74,9 +74,10 @@ function StatusStrip() {
             class="walk-start"
             id="walk-start"
             onClick={() => {
+              // The walk is a game: it starts behind the walker, with the whole screen.
+              panel.value = "none";
               startWalking();
-              // A touch screen walks with the thumbs, as in a game, so the walk starts behind the walker.
-              if (isLite()) setView({ view: "follow", name: MY_WALKER });
+              setView({ view: "follow", name: MY_WALKER });
             }}
             title={t("walker.startHint")}
           >
@@ -179,8 +180,13 @@ export function App() {
       const target = e.target as HTMLElement | null;
       const typing = !!target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA");
       if (e.key === "Escape") {
-        if (walkerView.value !== "map") setView({ view: "map", name: MY_WALKER });
-        else if (panel.value !== "none") panel.value = "none";
+        // In a walk Esc goes back to the map, and on the map ends the walk; in the walk's field it is
+        // left to the field.
+        if (walkerOn.value) {
+          if (typing) return;
+          if (walkerView.value !== "map") setView({ view: "map", name: MY_WALKER });
+          else stopWalking();
+        } else if (panel.value !== "none") panel.value = "none";
         else if (stripOpen.value) stripOpen.value = false;
         else if (selRoom.value) {
           selRoom.value = undefined;
@@ -210,7 +216,8 @@ export function App() {
       class={`app ${selBuilding.value ? "in-building" : "in-campus"} ${night.value > 0.5 ? "is-night" : "is-day"} panel-${panel.value} ${walkerOn.value ? `walking walker-${walkerView.value}` : ""}`}
     >
       <SceneHost />
-      <TopBar />
+      {/* A walk has the whole screen, with its own panels (WalkerPanel). */}
+      {!walkerOn.value && <TopBar />}
       {!loaded && (
         <div class="splash" role="status">
           {loadError.value ? t("app.loadError") : t("app.loading")}
@@ -223,8 +230,8 @@ export function App() {
       )}
       <StatusStrip />
       <BuildingView />
-      {panel.value === "search" && <SearchPanel />}
-      {panel.value === "time" && <TimePanel />}
+      {panel.value === "search" && !walkerOn.value && <SearchPanel />}
+      {panel.value === "time" && !walkerOn.value && <TimePanel />}
       <WalkerPanel />
       <Attribution />
     </div>
