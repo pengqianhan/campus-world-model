@@ -27,7 +27,7 @@ A change to what the site does or shows adds its line here, and the README's
   the photograph as a reference, the parapet's thickness, the porch's roof drawn as a slab, the porch's plan and the
   podium's walls drawn to the campus map's outline, and the faces no photograph shows. Its measured massing's data file
   has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
-  walls, glass and roofs (#PR).
+  walls, glass and roofs (#161).
 
 ## 2026-11-10
 
