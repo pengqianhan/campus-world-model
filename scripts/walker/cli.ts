@@ -25,6 +25,8 @@ export const HELP = `Walk the campus map as a made-up figure.
   see [--view follow|eyes] [--yaw d]  save a picture of the view and print where it is
   spawn <name> [--near <place>]       another walker, with a name of its own
   wander                              stroll on its own from building to building until stopped
+  ride <walk | scooter | fly>         on foot, on a scooter (up to 25 km/h), or fly a drone in its
+       [--height <m>]                 place over the roofs, up to 120 m; --height climbs to it
   list | remove <name> | stop-walker  the walkers; take one away; stop one walking (or wandering)
   stop                                close the browser and stop the controller
 
@@ -98,6 +100,9 @@ export function toCommand(p: Parsed): { name: string; args: Record<string, unkno
       return { name: "stop", args: { name } };
     case "wander":
       return { name: "wander", args: { name, speed } };
+    case "ride":
+    case "fly":
+      return { name: "ride", args: { name, ride: p.cmd === "fly" ? "fly" : rest, height: typeof p.flags.height === "string" ? Number(p.flags.height) : undefined } };
     default:
       return undefined;
   }
@@ -156,6 +161,9 @@ ${look?.summary ?? ""}`.trim();
       return `The browser shows ${r.view === "map" ? "the map from above" : r.view === "eyes" ? `what ${String(r.walker)} sees` : `${String(r.walker)} from behind`}.`;
     case "remove":
       return `${String(r.removed)} has left the map.`;
+    case "ride":
+    case "fly":
+      return `${r.ride === "fly" ? `Flying, ${String(r.altitude ?? 0)} m above the ground` : r.ride === "scooter" ? "On the scooter" : "On foot"}. ${String(r.note ?? "")}`.trim();
     case "stop-walker":
       return "Stopped.";
     default:

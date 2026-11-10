@@ -30,6 +30,9 @@ npm run walker -- say "Kia ora"           # walkers within 25 m hear it
 npm run walker -- listen                  # what other walkers said nearby
 npm run walker -- spawn Kea --near 201    # a second walker; steer it with --as Kea
 npm run walker -- wander                  # stroll on its own until stop-walker or another command
+npm run walker -- ride scooter            # on a made-up scooter, the same ways, up to 25 km/h
+npm run walker -- ride fly --height 40    # a made-up drone flies in its place; walk 109 flies over it
+npm run walker -- ride walk               # the drone lands; the walker stands on open ground under it
 npm run walker -- stop                    # close the map when done
 ```
 

@@ -73,6 +73,11 @@ It is built to answer two questions a student actually has:
   for it: a white tower of about eight storeys with its windows, a curved bay of dark glass and louvred panels, on a
   podium down the slope, a block turned on its roof and a glass porch over its entrance. Its sizes come from the
   LiDAR; it was compared with a photograph, which is not published, and its card says what is estimated.
+- **2026-11-11:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
+  in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
+  the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
+- **2026-11-11:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
+  measured heights, with the eaves of its main roof.
 - **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
   inspired the project; About opens from its link at the top.
 - **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
@@ -247,11 +252,16 @@ GitHub gives it no secrets.
 ## Walk the campus
 
 **In the browser:** "Take a walk", the button beside the campus's name in the bottom-left corner,
-or `?walk=1` in the address, puts a small made-up person near the Clock Tower.
-W A S D or the arrow keys walk it, and Shift breaks into a run. On a phone or tablet it is steered as
-in a game: a stick under the left thumb walks and turns it, and the other thumb drags the view round.
-Its panel switches between the map, the view from behind it and the view through its eyes. There a
-drag looks round, and a click on a building or the ground walks it there; as it walks by hand, the
+or `?walk=1` in the address, puts a small made-up person near the Clock Tower. The button gives the
+view from behind it the whole screen, as in a game, with small panels in the corners: where it is,
+its speed, the views, and how it gets about. W A S D or the arrow keys walk it, and Shift breaks
+into a run. Scooter (2) puts it on a made-up electric scooter, on the same ways at up to 25 km/h;
+Fly (3) sends a made-up drone up in its place, which Space or E climbs and Q or C brings down, over
+the roofs and no higher than 120 m above the ground, and Walk (1) lands it. On a phone or tablet it
+is steered as in a game: a stick under the left thumb walks and turns it, and the other thumb drags
+the view round; flying, Up and Down are under the right thumb. The panel at the bottom right
+switches between the view from behind it, the view through its eyes and the map (V); there a
+drag looks round, and a click on a building or the ground sends it there; as it goes by hand, the
 view comes back round behind it. "Let it wander" sends it strolling on its own from building to
 building. Every walker looks the
 same: a student with nothing meant to mark a sex or a gender, who opens an umbrella when Open-Meteo
@@ -911,8 +921,8 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Twenty-one are on the site
-  (`landmarks/measured/`): on the City campus ten plain buildings, and four of the buildings planned
+  measured heights, walls, storeys and windows by the street look's rules. Twenty-two are on the site
+  (`landmarks/measured/`): on the City campus ten plain buildings, and five of the buildings planned
   as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
   the Newmarket campus six. 67 Symonds Street, which a measured massing stood in for, is now a landmark. The other
   buildings it measures keep their blocks, each with its reason in `landmarks/measured/exclusions.json`.
@@ -1225,8 +1235,8 @@ If you represent the University and would like something changed or removed, ple
   Bioengineering
   House's stone fins). The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Four of them,
-  Alfred Nathan House among them, are buildings planned as landmarks: until their landmarks come
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
+  Alfred Nathan House and 17 Eden Crescent among them, are buildings planned as landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
   building during building works: the LiDAR of May 2024 has scaffold decks over its north-east

@@ -86,6 +86,16 @@ export const TOOLS = [
     inputSchema: { type: "object", properties: { name: NAME } },
   },
   {
+    name: "walker_ride",
+    description:
+      "How the walker gets about: 'walk'; 'scooter', a made-up electric scooter on the same ways as a walk, up to 25 km/h; or 'fly', a made-up drone that flies in its place over the roofs, up to 120 m above the ground. Flying, walker_walk flies straight to a place and hovers over it, and height climbs or comes down to so many metres above the ground. Back to 'walk', the drone lands and the walker stands on open ground under it. Out of doors only: a walker inside comes out first.",
+    inputSchema: {
+      type: "object",
+      properties: { ride: { type: "string", enum: ["walk", "scooter", "fly"] }, height: { type: "number", description: "Flying: metres above the ground, 0-120." }, name: NAME },
+      required: ["ride"],
+    },
+  },
+  {
     name: "walker_stop",
     description: "Stop the walker where it is: a walk, or wandering.",
     inputSchema: { type: "object", properties: { name: NAME } },
@@ -123,6 +133,7 @@ const COMMAND_OF: Record<string, string> = {
   walker_say: "say",
   walker_listen: "listen",
   walker_wander: "wander",
+  walker_ride: "ride",
   walker_stop: "stop",
   walker_spawn: "spawn",
   walker_list: "list",
