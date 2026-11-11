@@ -1,0 +1,129 @@
+{
+ "name": "58-symonds-street",
+ "site": true,
+ "estimated": "the faces the photograph sees, with it as a reference: the slab bands' depth, the window wall's place behind them, the sill panels, the mullions, the louvres, the corner columns and the piers between them; the dark ground storey; and the faces no photograph shows, drawn on the same grid",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its photograph is taken from the ground north of the tower's north corner, looking south and up at the north-east face (left) and the north-west face (right), through a lens of about 50 degrees across, its optical axis at bearing 180 degrees and 15 degrees up; the photograph is cut off centre (its principal point solved, at (417, 666) of 1000 by 1143). Its camera is fitted to seven floor slabs' bands where they meet at the north corner (their tops 58.8 to 77.04 m, from the LiDAR's returns on the faces, 3.04 m apart) and to both faces' roof edges against the sky (80.15 m, the outer slab's top: a fit to the roof 2.2 m in, at 83.1 m, leaves 2.99 px against 0.99), held near 1.6 m over the LiDAR's ground. The fit stands it 1.6 m over the ground (54.9 m) about 20 m north of the north corner; rms 0.99 px over 38 residuals.",
+ "building": {
+  "id": "435",
+  "also": [],
+  "title": "58 Symonds Street (435), University of Auckland",
+  "note": "outline: building 435's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 435 by its id.",
+  "outline": [
+   [
+    -176.6,
+    -388.8
+   ],
+   [
+    -179.2,
+    -386.6
+   ],
+   [
+    -179.5,
+    -387.0
+   ],
+   [
+    -181.4,
+    -385.4
+   ],
+   [
+    -181.0,
+    -385.0
+   ],
+   [
+    -189.2,
+    -377.9
+   ],
+   [
+    -189.4,
+    -376.6
+   ],
+   [
+    -186.8,
+    -373.6
+   ],
+   [
+    -191.3,
+    -369.7
+   ],
+   [
+    -180.7,
+    -357.7
+   ],
+   [
+    -162.9,
+    -373.2
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 25,
+ "ground": 53.03,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3704"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "1902"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 0.61,
+  "tower_above": 0.61,
+  "spine_below": 37.61,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "thresholds_note": "min_above 2.99 m over the provisional ground (50.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's long faces (bearing 313.6 deg), so z faces south-west (bearing 223.6 deg). The ground falls from about 56 m on the north-west side to 38 to 47 m on the south-east; all three lowered by 2.38 m with the ground set at the door (step 7), so that they pick the same points",
+  "expected": {
+   "centre": [
+    -182.89173991865997,
+    -369.06016225909144
+   ],
+   "axis": [
+    -0.7246887878973677,
+    0.689076309776968
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "light": {
+  "sunaz": 20.0,
+  "sunel": 45.0,
+  "sun": 3.0,
+  "env": 3.2,
+  "exposure": 0.82,
+  "note": "estimated: the photograph is taken on a bright day under a thin high haze, looking south at the two faces that face north-east and north-west, which it shows about equally bright. The viewer's sun stands to the north-north-east (20 deg round, 45 up), between those two faces, weaker than by default (3, against 8) and its sky's light stronger (3.2, against 2.25), at an exposure of 0.82: over the model's screen box the luma (p50) 175 against the photograph's 176. With the sun at 0 deg, 4 and 3.0 at 0.9 it is 181; with 433's overcast light (2.5, 3.6, 0.88) 193."
+ },
+ "door": {
+  "x": -11.0,
+  "z": -10.6,
+  "note": "on the platform before the tower's north-east face, 2 m out from its bands' edge and 2.4 m from the north corner, where the photograph shows the ground storey (the campus map records no entrance in 435): u 11.0, w -10.6 in the building's frame ((-11.0, -10.6) in the view frame); the platform runs at 53.0 to 53.4 m along that face, the ground rising to 55.6 m north-west of the tower and falling to 42.4 m on its south-east. The LiDAR's ground within 1 m: 14 returns, p10/p50/p90 52.992/53.032/53.064 m"
+ }
+}

@@ -32,11 +32,11 @@ of the building in the LiDAR's local metres (it is in the map's frame); `place` 
 
 ## Neighbours on the map
 
-- No other landmark's outline comes within 2 m of its (the nearest, Building 907's, is about 105 m off), so it stands
+- No other landmark's outline comes within 2 m of its (the nearest, Building 903's, is 8.3 m off), so it stands
   alone on the map's ground at its door (`../README.md`, "Placement").
 - The model stands over 98.0% of block 906 and over no other block. `building.also` is empty.
-- The nearest buildings are Building 903, 8.3 m to the west, and Building 904, 8.5 m to the north-west, both measured
-  massings on the site.
+- The nearest buildings are Building 903, 8.3 m to the west, a landmark too, and Building 904, 8.5 m to the north-west,
+  a measured massing on the site.
 
 ## The reference
 
@@ -118,10 +118,9 @@ notes it.
   the door's ground, under the map's ground at every corner of the walls (the lowest, 0.28 m under the door's, at the
   lower block's south-east corner; 0.30 m to spare). Toward the west end the map's ground rises up to 1.20 m over the
   door's, so there the ground storey stands partly in it.
-- **Its neighbour's massing.** Building 903's measured massing, 8.3 m to the west, stands on the map's ground at its
-  own door too, 7.08 m over the LiDAR's ground at the lowest point of its outline, where the model stands 3.80 m over
-  the LiDAR's: so on the map 903's roof, about 0.4 m under this one's south edge in the LiDAR, stands about 2.9 m over
-  it.
+- **Its neighbour.** Building 903, 8.3 m to the west and a landmark too, stands on the map's ground at its own door,
+  5.01 m over the LiDAR's ground there, where this model stands 3.80 m over the LiDAR's: so on the map 903's roof,
+  about 0.4 m under this one's south edge in the LiDAR, stands about 0.8 m over it.
 - **While a building is open** its neighbours sink to footprints, and the model gives way to block 906, which sinks on
   its footing (`updateLandmarks` in `src/scene/CampusScene.ts`).
 - **The light form** (the map, and the walker views of the basic tier) draws `glassPale` as glass and `roofPale` as a

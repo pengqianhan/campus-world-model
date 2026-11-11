@@ -1,0 +1,28 @@
+{
+ "note": "Where the landmark stands on the campus map. Written by landmarks/pipeline/tools/data/place.py from the config's frame.expected; do not edit. Map metres: east and north of the campus origin, true north, as public/data/uoa/campus.json. In three.js (scene x east, y up, z south), put the model at (centre[0], the map's ground at door.map, -centre[1]) and turn it by rotationY about y; landmarks whose outlines come within 2 m of each other share one ground instead, each at its `ground` (the LiDAR's at the door) plus their mean of the map's ground at door.map minus `ground`, when those differences span 2 m or less (src/scene/landmarks.ts, standHeights). It stands in place of the blocks of `building` and of the buildings in `also`.",
+ "site": true,
+ "building": "435",
+ "also": [],
+ "centre": [
+  -176.049,
+  -372.417
+ ],
+ "bearing": {
+  "x": 132.495,
+  "z": 222.499
+ },
+ "rotationY": 5.541504,
+ "scale": 1.00012,
+ "door": {
+  "model": [
+   -11.0,
+   -10.6
+  ],
+  "map": [
+   -176.999,
+   -357.169
+  ]
+ },
+ "ground": 53.03,
+ "estimated": "the faces the photograph sees, with it as a reference: the slab bands' depth, the window wall's place behind them, the sill panels, the mullions, the louvres, the corner columns and the piers between them; the dark ground storey; and the faces no photograph shows, drawn on the same grid"
+}
