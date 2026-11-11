@@ -47,3 +47,25 @@ export const STREET = [
   { u: [-8.54, -3.53], w: [8.7, 12.53], top: Y(84.14) },
   { u: [-3.53, 5.86], w: [6.68, 12.11], top: Y(89.16) },
 ];
+
+/** The faces (step 5), all but the bands' tops and the outer edge estimated through the photograph's camera: each slab's
+ * band 0.5 m deep from its top (at the near corner 19 to 20 px of the photograph, where 0.5 m is 19 to 20 px and
+ * 0.7 m 27 to 28); the window wall FACE.set behind the bands' outer edge (the LiDAR's returns on the
+ * slabs' tops run 1.2 m in from it before the band above shades them); a sill panel 0.9 m high on each slab; mullions
+ * FACE.bay apart; under each band FACE.slats slats of louvres, FACE.slatGap apart, FACE.louvre in from the outer edge;
+ * a column FACE.column[1] square at each corner, FACE.column[0] in; between them piers as wide, from FACE.column[0] in
+ * to the window wall, on a grid of 6.6 m from the north corner's column (the photograph's piers on the north-east
+ * face near u 6.0, -0.8 and -7.0, on the north-west face near w -1.5 and, behind the tree, near 5; the faces it does
+ * not see on the same grid); the ground storey FACE.ground in, under the lowest band. */
+export const FACE = {
+  band: 0.5,
+  set: 1.2,
+  sill: 0.9,
+  bay: 1.6,
+  slats: 5,
+  slatGap: 0.14,
+  louvre: [0.15, 0.4],
+  column: [0.25, 0.9],
+  piers: { u: [6.1, -0.5, -7.1], w: [-1.3, 5.3] },
+  ground: 1.6,
+};
