@@ -18,6 +18,17 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Fine Arts Studio Block 431 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 431, on the City
+  campus, from code in place of the measured massing that stood for it: a long block of three storeys under a roof of
+  two pitches with a step between them, a lower annex on its north side, a glass stair tower by the entrance at its east
+  end; on its south face over the lane rows of windows between columns, a ground storey of roller doors and a low box
+  before it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the lane's car park, and
+  its card says what is estimated: the south face's columns, windows and roller doors, with the photograph as a
+  reference, the end walls' place under the eave, the roof's slab and the fascia, and the faces no photograph shows; a
+  second photograph, of its east entrance, shows its stair tower and canopy to be glass. On the site the map's ground
+  along its south face stands over the real lane, so its ground storey stands partly under it. Its measured massing's
+  data file has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
+  its own walls, glass, doors and roofs (#162).
 - **67 Symonds Street drawn in detail.** Near the camera the map draws 67 Symonds Street (619), on the City campus,
   from code in place of the measured massing that stood in for it: a white office tower of about eight storeys with a
   block turned 45 degrees and plant over its roof, on a podium that runs down the slope to the gully on its north and
