@@ -847,8 +847,8 @@ came out byte for byte as before when the City campus, Grafton and Newmarket wer
 401 and 402, Engineering Blocks 1 and 2, fitted in footprint (IoU 0.964 and 0.927) but not in height:
 87% of their cells within 0.5 m. Moving the whole model a cell either way fitted no better, so the
 layers' edges were not off. Most of the cells out by more than 0.5 m lie at the steps between their
-many layers (within 1 m of one, about 97%, as the fifth round found; on a step by this round's rule
-below, 65% of 401's and 58% of 402's): a 0.5 m cell across a step keeps the highest point in it, so it takes the upper level's
+many layers (on a step by this round's rule below, 65% of 401's and 58% of 402's; within 1 m of one,
+88.5% and 69.7%): a 0.5 m cell across a step keeps the highest point in it, so it takes the upper level's
 height in one heightmap and may take the lower's in the other, though the wall stands less than a
 cell off. Each such cell then counts a whole storey of difference.
 
@@ -885,8 +885,8 @@ Four buildings pass so and are drawn:
 The limit of a third was set after the first run, which held it at a quarter: 401 (28.9%) and 402
 (27.6%) failed on it alone. With a third, no other building passes. Thirteen still fail: eleven on
 their footprint IoU (118, 212, 219, 225, 226, 274, 503, 504, 509, 910 and 911, 0.805 to 0.899), and
-132 and 432 with 87.3% and 88.2% of the other cells within 0.5 m (their models with the eaves and with the
-forms). Each one's entry in `exclusions.json` gives this round's numbers for each model it tried (`measured.steps`:
+132 and 432 with 87.3% and 88.2% of the other cells within 0.5 m, both with the eaves (132's first model has
+90.4% and fails on its footprint IoU, 0.797; 432's model with the forms has 87.8%). Each one's entry in `exclusions.json` gives this round's numbers for each model it tried (`measured.steps`:
 `first`, `forms` or `eaves`), and its reason names them.
 
 ### How the numbers were measured
