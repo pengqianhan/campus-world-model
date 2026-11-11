@@ -26,6 +26,8 @@ Run from the repository root, with the pipeline's Python:
       only for a building that fails the top-view check without them), as the generator measured before them
   --no-eaves   leaves out the eaves of the fifth round (EAVES: eaves over the outline on every layer, tried only for
       a building that still fails), as the generator measured before them
+  --no-steps   leaves out the step cells of the sixth round (STEPS: a building that still fails is checked once more
+      with the cells on a step in height left out of its share within 0.5 m), as the generator checked before it
 """
 import json, math, os, re, subprocess, sys
 from collections import deque
@@ -85,6 +87,14 @@ FORMS = True
 # the lowest layer and the sloping layers of a roof drawn as its faces have eaves, so a flat roof standing on a
 # lower plinth (803's) ends at the outline where the LiDAR sees it reach past it.
 EAVES = True
+# The step cells of the sixth round (MASSING.md, "The sixth round"; the maintainer, 2026-11-11), tried only for a
+# building that still fails the check: its share within 0.5 m leaves out the cells on a step in height, the model's
+# or the LiDAR's (a cell next to one of its heightmap's cells more than STEP higher or lower). A 0.5 m cell across a
+# step takes the upper level's height in one heightmap and may take the lower's in the other, though the wall
+# stands less than a cell off. The footprint IoU still counts every cell, and no more than STEPS_MAX of the cells
+# both heightmaps cover may be left out: two thirds of them at least are still checked.
+STEPS = True
+STEPS_MAX = 1 / 3
 LOW_DEG = 1.0        # degrees
 LOW_R = 2.0          # m
 FACE_STEP = 0.3      # m
@@ -904,9 +914,23 @@ def layer_record(rings, li, y0, over, levels, centre):
 
 # ---- the check from above ----------------------------------------------------------------------------------
 
-def topview(b, data, P, others, skip=None, tag=""):
+def stepped(h, cover):
+    """The cells of a heightmap (where `cover`) next to one of its cells more than STEP higher or lower."""
+    H = np.where(cover, h, np.nan)
+    pad = np.pad(H, 1, constant_values=np.nan)
+    ny, nx = H.shape
+    out = np.zeros(H.shape, bool)
+    with np.errstate(invalid="ignore"):
+        for di in (-1, 0, 1):
+            for dj in (-1, 0, 1):
+                if di or dj: out |= np.abs(pad[1 + di:1 + di + ny, 1 + dj:1 + dj + nx] - H) > STEP
+    return out
+
+
+def topview(b, data, P, others, skip=None, tag="", steps=False):
     """The model and the LiDAR as heightmaps on a 0.5 m grid (as tools/topview.py does for a landmark):
-    footprint IoU, model minus LiDAR heights on the cells both cover, and a picture."""
+    footprint IoU, model minus LiDAR heights on the cells both cover, and a picture. With `steps` (the sixth
+    round, STEPS) also the share within 0.5 m of the cells on no step in height, and the share on one."""
     os.makedirs(WORK, exist_ok=True)
     src = os.path.join(WORK, f"{b['id']}.json"); tri = os.path.join(WORK, f"{b['id']}_triangles.bin")
     json.dump(data, open(src, "w"))
@@ -966,6 +990,11 @@ def topview(b, data, P, others, skip=None, tag=""):
          "model_minus_lidar_m": {k: round(float(np.percentile(diff, q)), 2) for k, q in (("p10", 10), ("p50", 50), ("p90", 90))} if both.any() else None,
          "highest_m": {"model": round(float(model[M].max() - zero), 2) if M.any() else None,
                        "lidar": round(float(lidar[L & np.isfinite(lidar)].max() - zero), 2) if (L & np.isfinite(lidar)).any() else None}}
+    if steps:
+        on = both & (stepped(model, M) | stepped(lidar, L & np.isfinite(lidar)))
+        off = both & ~on
+        r["within_0.5m_off_steps"] = round(float((np.abs(model[off] - lidar[off]) <= 0.5).mean()), 3) if off.any() else 0.0
+        r["step_share"] = round(float(on.sum() / max(1, both.sum())), 3)
     picture(b["id"] + tag, np.where(L, lidar - zero, np.nan), np.where(M, model - zero, np.nan))
     for f in (src, tri): os.remove(f)
     return r
@@ -1008,7 +1037,7 @@ def landmark_buildings():
 
 def options(argv):
     """--campus <id> (CAMPUS_TILES; the City campus when not given), --tier3, --fetch, --drop-bare or --keep-bare
-    (DROP_BARE), --no-forms (FORMS), --no-eaves (EAVES), and building ids."""
+    (DROP_BARE), --no-forms (FORMS), --no-eaves (EAVES), --no-steps (STEPS), and building ids."""
     args, campus, flags = [], "city", set()
     it = iter(argv)
     for a in it:
@@ -1017,7 +1046,7 @@ def options(argv):
         elif a.startswith("--"): flags.add(a)
         else: args.append(a)
     if campus not in CAMPUS_TILES: sys.exit(f"--campus: one of {', '.join(CAMPUS_TILES)}")
-    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare", "--no-forms", "--no-eaves"}
+    unknown = flags - {"--tier3", "--fetch", "--drop-bare", "--keep-bare", "--no-forms", "--no-eaves", "--no-steps"}
     if unknown: sys.exit(f"unknown option {', '.join(sorted(unknown))}")
     if {"--drop-bare", "--keep-bare"} <= flags: sys.exit("--drop-bare or --keep-bare, not both")
     return campus, flags, args
@@ -1036,10 +1065,11 @@ def fetch_tiles(tiles):
 
 
 def main():
-    global CAMPUS, TILES, DROP_BARE, FORMS, EAVES
+    global CAMPUS, TILES, DROP_BARE, FORMS, EAVES, STEPS
     CAMPUS, flags, ask = options(sys.argv[1:])
     FORMS = "--no-forms" not in flags
     EAVES = "--no-eaves" not in flags
+    STEPS = "--no-steps" not in flags
     TILES = [f"CL2_BA32_2024_1000_{t}" for t in CAMPUS_TILES[CAMPUS]]
     DROP_BARE = "--drop-bare" in flags or (DROP_BARE_ON[CAMPUS] and "--keep-bare" not in flags)
     campus = json.load(open(os.path.join(ROOT, "public", "data", "uoa", "campus.json"), encoding="utf-8"))
@@ -1112,8 +1142,11 @@ def main():
             policy = "decision 6, a childcare centre: kept until the maintainer decides"
         if not policy and any(f.get("noPlan") == "residential" for f in floors): policy = RESIDENTIAL
         if data and not why:
-            data["check"] = topview(b, data, P, others, rec.pop("skip", None))
+            skip1 = rec.pop("skip", None)
+            data["check"] = topview(b, data, P, others, skip1)
             c = data["check"]
+            tried = [(rec, data, skip1, "")]  # the models measured, in the rounds' order (for the sixth round)
+            ROUND = {"": "first", "-forms": "forms", "-eaves": "eaves"}
             rec["check"] = c
             if c["iou"] < IOU_MIN or c["within_0.5m"] < WITHIN_MIN:
                 why = f"top-view check: footprint IoU {c['iou']:.3f} (limit {IOU_MIN}), {c['within_0.5m']:.0%} of cells within 0.5 m (limit {WITHIN_MIN:.0%})"
@@ -1123,7 +1156,9 @@ def main():
                 if FORMS and not policy:
                     rec2, data2, why2 = measure(b, P, others, origin, forms=True)
                     if data2 and not why2 and data2.get("forms"):
-                        c2 = topview(b, data2, P, others, rec2.pop("skip", None), "-forms")
+                        skip2 = rec2.pop("skip", None)
+                        c2 = topview(b, data2, P, others, skip2, "-forms")
+                        tried.append((rec2, data2, skip2, "-forms"))
                         if c2["iou"] >= IOU_MIN and c2["within_0.5m"] >= WITHIN_MIN and c2["within_0.5m"] > c["within_0.5m"]:
                             data2["check"] = rec2["check"] = c2
                             rec, data, why = rec2, data2, None
@@ -1137,7 +1172,9 @@ def main():
                 if why and EAVES and not policy:
                     rec3, data3, why3 = measure(b, P, others, origin, forms=FORMS, eaves=True)
                     if data3 and not why3 and data3.get("eaves"):
-                        c3 = topview(b, data3, P, others, rec3.pop("skip", None), "-eaves")
+                        skip3 = rec3.pop("skip", None)
+                        c3 = topview(b, data3, P, others, skip3, "-eaves")
+                        tried.append((rec3, data3, skip3, "-eaves"))
                         if c3["iou"] >= IOU_MIN and c3["within_0.5m"] >= WITHIN_MIN and c3["iou"] > (c2 or c)["iou"]:
                             data3["check"] = rec3["check"] = c3
                             rec, data, why = rec3, data3, None
@@ -1145,6 +1182,25 @@ def main():
                             rec["eaves"] = {"layers": data3["eaves"], "check": c3}
                             why += (f"; with the eaves of the fifth round ({'; '.join(data3['eaves'])}): footprint IoU "
                                     f"{c3['iou']:.3f}, {c3['within_0.5m']:.0%} of cells within 0.5 m")
+                # Last the step cells of the sixth round (STEPS): each model measured above, in that order, is checked
+                # once more with the cells on a step in height left out of its share within 0.5 m; the first that
+                # passes so, with no more than STEPS_MAX of its cells on a step, is drawn; else its block stays, as
+                # before, and its reason says why.
+                if why and STEPS and not policy:
+                    steps = []
+                    for rk, dk, sk, tk in tried:
+                        ck = topview(b, dk, P, others, sk, tk + "-steps", steps=True)
+                        steps.append({"model": ROUND[tk], **ck})
+                        if ck["iou"] >= IOU_MIN and ck["within_0.5m_off_steps"] >= WITHIN_MIN and ck["step_share"] <= STEPS_MAX:
+                            dk["check"] = rk["check"] = ck
+                            rec, data, why = rk, dk, None
+                            break
+                    else:
+                        rec["steps"] = steps
+                        why += "; leaving out the cells on a step in height (the sixth round): " + "; ".join(
+                            f"the {s['model']} model, footprint IoU {s['iou']:.3f}, {s['within_0.5m_off_steps']:.0%} of the "
+                            f"other cells within 0.5 m, {s['step_share']:.0%} of cells on a step" for s in steps) + \
+                            f" (limit {STEPS_MAX:.0%})"
         why = policy or why
         if why:
             rec.pop("skip", None)

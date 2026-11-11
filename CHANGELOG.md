@@ -18,6 +18,13 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Four more measured massings.** Engineering Block 1 and Engineering Block 2 (401, 402) on the City campus,
+  Carlton Pines (632) on the Grafton campus and Building 908 (908) on the Newmarket campus are drawn from the
+  LINZ 2024 LiDAR in place of their blocks: their roofs and their heights; their walls and windows by rule, as
+  every measured massing's are, and their cards say so. The generator's check now leaves out of its share of
+  cells within 0.5 m the cells on a step in height, where a cell across the step takes one level's height in
+  the LiDAR and the other's in the model; it does so only for a building that fails without it, so no other
+  building changes (#166).
 - **Fine Arts Studio Block 433 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 433, on the City
   campus, from code in place of the measured massing that stood for it: a long block of four storeys under a shallow
   vault whose ends bow out, a lower block rounded in plan at its east-north-east end; on its face to the lane a wall of

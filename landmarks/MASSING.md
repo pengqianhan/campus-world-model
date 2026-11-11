@@ -129,7 +129,9 @@ Every measured massing passes the top-view check of the landmark pipeline (`topv
 - the highest point of each, and a picture (LiDAR | model | difference).
 
 A measured massing goes on the site only if its footprint IoU is 0.90 or more and 90% or more of
-its cells are within 0.5 m (decision 3). For a landmark made by hand, Old Government House reached
+its cells are within 0.5 m (decision 3). Since the sixth round (the maintainer, 2026-11-11), a building
+that fails only after the roof forms and the eaves is checked once more with the cells on a step in
+height left out of that share (see "The sixth round"). For a landmark made by hand, Old Government House reached
 0.935 and 92% in its first round. The generator fits the LiDAR directly, so it should do as well.
 A batch's pull request gives a table of these numbers, one row a building, and the pictures of the
 worst five.
@@ -838,7 +840,55 @@ came out byte for byte as before when the City campus, Grafton and Newmarket wer
   height (98% of cells within 0.5 m) but not in footprint; the other six do not reach 90% of cells
   within 0.5 m. To the other failing buildings the round adds no eave. 401 and 402 miss the 90% at
   the edges of their layers: about 97% of their cells out by more than 0.5 m lie within 1 m of a
-  step in height, the model's or the LiDAR's. That is for another round.
+  step in height, the model's or the LiDAR's (by a measure of a step this round did not record; by the
+  sixth round's rule, 88.5% and 69.7%). The sixth round takes them up.
+
+### The sixth round (2026-11-11): steps in height
+
+401 and 402, Engineering Blocks 1 and 2, fitted in footprint (IoU 0.964 and 0.927) but not in height:
+87% of their cells within 0.5 m. Moving the whole model a cell either way fitted no better, so the
+layers' edges were not off. Most of the cells out by more than 0.5 m lie at the steps between their
+many layers (on a step by this round's rule below, 65% of 401's and 58% of 402's; within 1 m of one,
+88.5% and 69.7%): a 0.5 m cell across a step keeps the highest point in it, so it takes the upper level's
+height in one heightmap and may take the lower's in the other, though the wall stands less than a
+cell off. Each such cell then counts a whole storey of difference.
+
+Since this round (the maintainer, 2026-11-11), a building that still fails the check after the roof
+forms and the eaves is checked once more with the cells on a step left out of its share within
+0.5 m (`STEPS`; `--no-steps` leaves the round out). A cell is on a step where one of its eight
+neighbours in the model's heightmap, or in the LiDAR's, is more than `STEP` (1 m, the height that
+splits two layers) higher or lower. The footprint IoU still counts every cell, and no more than a
+third of the cells both heightmaps cover may be left out (`STEPS_MAX`), so that at least two thirds
+are still checked. The models the earlier rounds measured are checked so in their order (without
+the forms, with them, with the eaves), and the first that passes is drawn; its data file's `check`
+gives the share without the steps (`within_0.5m_off_steps`) and the share of cells on a step
+(`step_share`) beside the share of all its cells. A building that passes before this round is not
+checked again: when the City campus, Grafton and Newmarket were run again, every data file of the
+earlier rounds came out byte for byte as before.
+
+Four buildings pass so and are drawn:
+
+| Building | Model | Footprint IoU | All cells within 0.5 m | Other cells within 0.5 m | Cells on a step | Layers |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 401 Engineering Block 1 (City, a stand-in) | without the forms | 0.964 | 87.4% | 93.9% | 28.9% | 25 |
+| 402 Engineering Block 2 (City, a stand-in) | without the forms | 0.927 | 87.2% | 92.6% | 27.6% | 19 |
+| 632 Carlton Pines (Grafton) | with the forms | 0.930 | 89.6% | 96.1% | 21.9% | 13 |
+| 908 Building 908 (Newmarket) | with the forms | 0.926 | 89.8% | 95.6% | 15.3% | 9 |
+
+- In 401's and 402's top views the differences are lines along the steps between their layers.
+  402's model has a small piece at its north-east end over few LiDAR returns, inside the footprint
+  IoU.
+- 632's model draws one face of a hip about 1 m low (as the fourth round found) and leaves out
+  something about 6 m over its roof at its south-east corner, a few square metres (its highest point
+  20.74 m in the LiDAR, 14.45 m in the model).
+- 908's model stands about 2 m low on a strip where its two wings meet.
+
+The limit of a third was set after the first run, which held it at a quarter: 401 (28.9%) and 402
+(27.6%) failed on it alone. With a third, no other building passes. Thirteen still fail: eleven on
+their footprint IoU (118, 212, 219, 225, 226, 274, 503, 504, 509, 910 and 911, 0.805 to 0.899), and
+132 and 432 with 87.3% and 88.2% of the other cells within 0.5 m, both with the eaves (132's first model has
+90.4% and fails on its footprint IoU, 0.797; 432's model with the forms has 87.8%). Each one's entry in `exclusions.json` gives this round's numbers for each model it tried (`measured.steps`:
+`first`, `forms` or `eaves`), and its reason names them.
 
 ### How the numbers were measured
 
