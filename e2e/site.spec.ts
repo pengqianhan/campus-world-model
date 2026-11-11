@@ -451,10 +451,14 @@ test("below 1280 px All schools stands above the campus's and the walk's buttons
     expect(Math.abs(home.x - toggle.x), `All schools at the left at ${width} px`).toBeLessThan(2);
     expect(home.x + home.width).toBeLessThanOrEqual(width);
     // beside All schools and beside the walk's button the point is the map's, not the row's empty box
-    for (const [x, y] of [[home.x + home.width + 12, home.y + home.height / 2], [walk.x + walk.width + 12, walk.y + walk.height / 2]]) {
-      const hit = await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.tagName, [x, y]);
+    const beside: [number, number][] = [[home.x + home.width + 12, home.y + home.height / 2], [walk.x + walk.width + 12, walk.y + walk.height / 2]];
+    for (const [x, y] of beside) {
+      const hit = await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.tagName, [x, y] as [number, number]);
       expect(hit, `the map at (${Math.round(x)}, ${Math.round(y)}), ${width} px`).toBe("CANVAS");
     }
+    // and All schools itself takes it
+    const onLink = await page.evaluate(([px, py]) => !!document.elementFromPoint(px, py)?.closest("#all-schools-dock"), [home.x + home.width / 2, home.y + home.height / 2] as [number, number]);
+    expect(onLink, `All schools under the pointer at ${width} px`).toBe(true);
   }
 });
 
