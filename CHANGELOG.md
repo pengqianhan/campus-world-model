@@ -28,6 +28,10 @@ A change to what the site does or shows adds its line here, and the README's
   podium's walls drawn to the campus map's outline, and the faces no photograph shows. Its measured massing's data file
   has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
   walls, glass and roofs (#161).
+- **A way back to every school's map, on every school's map.** "All schools", at the foot of the screen on the left
+  beside the campus's button and "Take a walk" (on a line above them on a screen narrower than 1280 px), and at the
+  end of the campus panel's row of campuses, is a link to the page at https://campusworldmodel.com/ that lists every
+  school's map (on the site and its previews, the root the map is served from) (#164).
 - **Building 114 drawn in detail.** Near the camera the map draws Building 114, on the City campus, from code in
   place of the measured massing that stood for it: a long block of two storeys under a flat roof with a deep eave all
   round and a raised strip down the middle of its roof; on its south-west face a band of windows under the eave over

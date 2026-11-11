@@ -63,6 +63,25 @@ test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ pag
   for (const b of [...onMap].sort((a, z) => z.height - a.height).slice(0, 3)) expect(labelled.map(shown), `${shown(b)}`).toContain(shown(b));
 });
 
+test(`${SCHOOL}: the campus panel links back to the page of every school's map, shut and open`, async ({ page }) => {
+  await open(page, DAY);
+  // the root this page is served from (the Cloudflare site and its previews serve a school at /<id>/), or the site's
+  const home = new URL(page.url()).pathname.startsWith(`/${SCHOOL}/`) ? "/" : "https://campusworldmodel.com/";
+  // shut: beside the campus's button and the walk's, at the foot of the screen on the left
+  const dock = page.locator(".campus-dock #all-schools-dock");
+  await expect(dock).toBeVisible();
+  await expect(dock).toHaveAttribute("href", home);
+  const walk = (await page.locator("#walk-start").boundingBox())!;
+  const box = (await dock.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(walk.x + walk.width);
+  expect(Math.abs(box.y + box.height / 2 - (walk.y + walk.height / 2))).toBeLessThan(2);
+  // open: after the campuses
+  await openStrip(page);
+  const link = page.locator(".campus-tabs #all-schools");
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute("href", home);
+});
+
 test(`${SCHOOL}: each campus in an area of its own opens from the campus picker, with its buildings labelled`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");

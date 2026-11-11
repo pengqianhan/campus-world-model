@@ -29,6 +29,8 @@
   "campus": {
     "label": "Campus",
     "more": "Other campuses…",
+    "allSchools": "All schools",
+    "allSchoolsTitle": "Campus World Model: every school's map",
     "notOnMap": "Not on the 3D map yet",
     "notOnMapLong": "This campus is in the data, but not modelled in 3D."
   },
