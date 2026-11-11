@@ -36,10 +36,9 @@ export const FOOT = Y(52.0);
 /** The southern block, to its roof's outer edges (the outermost roof returns on each face): p -22.4 to 32.05, from
  * the line between the blocks (q 2.7) to the south face's fascia (q 16.0). Its roof, one slope of 0.1036 a metre
  * (5.9 degrees; a plane through 4,967 returns, rms 0.023 m), rises from 70.52 m at the south edge to 71.90 m at the
- * line; the fascia's top, 70.6 m (p90 of the returns along the edge), is the photograph's roof edge. */
+ * line; the fascia's top, 70.6 m (p90 of the returns along the edge), is the photograph's roof edge (FASCIA). */
 export const SOUTH = { p0: -22.4, p1: 32.05, q0: 2.7, q1: 16.0 };
 export const southRoof = (q) => Y(72.182 - 0.1036 * q);
-export const FASCIA = Y(70.6);
 
 /** The northern block: p -23.95 to 23.05, from its north face's eave (q -16.13) to the line between the blocks. Its
  * roof, one slope of 0.1321 a metre (7.5 degrees; 6,294 returns, rms 0.059 m), rises from 71.61 m at the north eave
@@ -53,6 +52,41 @@ export const LOW = { p0: -30.95, p1: -23.95, q0: -15.8, q1: 2.55, top: Y(68.31) 
 
 /** The three stacks on the line between the blocks, 15 m apart (the LiDAR's returns over 76.8 m): each about 2.5 m
  * square, from q 1.95 to 4.6, its top falling from 77.4 m at its south edge to 76.6 m at its north (a plane through
- * about 63 returns on each, rms 0.05 m). */
+ * about 63 returns on each, rms 0.05 m). Through the photograph's camera, on their south faces: a light band from the
+ * top down to 76.43 m, dark louvres from there to 74.34 m, a light base under them. */
 export const STACKS = [[17.73, 20.26], [2.73, 5.23], [-12.28, -9.75]];
-export const STACK = { q0: 1.95, q1: 4.6, south: Y(77.4), north: Y(76.6) };
+export const STACK = { q0: 1.95, q1: 4.6, south: Y(77.4), north: Y(76.6), band: Y(76.43), louvre: Y(74.34) };
+
+/** The face the northern block turns south over the southern block's roof, from 71.9 to 74.1 m: the LiDAR has no
+ * return on it between 72.1 and 73.6 m along its whole length (36 on its edges), where its north face gives returns at
+ * every height: drawn as a band of glazing, 72.0 to 73.7 m (estimated). */
+export const CLERESTORY = { y0: Y(72.0), y1: Y(73.7) };
+
+/** The south face, which the photograph sees (estimated through its fitted camera, on the planes the LiDAR gives).
+ * Three glazed storeys stand from the box's underside at 56.62 m to the fascia, their glass at q 15.4 (the LiDAR's
+ * returns on the face, 60.5 to 66.5 m, at q 15.25 to 15.5); the fascia along the roof edge, 70.2 to 70.6 m, stands
+ * out to q 16.0 (the roof's returns reach it). Light bands at the box's foot, 56.62 to 57.65 m, and between the storeys
+ * (60.46 to 62.37 m and 65.2 to 67.05 m), each with a joint at its middle. A dark frame 0.55 m wide at each end, from
+ * just under the box to 70.8 m (the LiDAR's highest returns at the west end, 70.83 m). Between the frames 36 equal
+ * bays (1.482 m) of glass, a mullion between each two and a heavier one every second bay: the photograph's mullions
+ * through the camera fall 1.47 to 1.52 m apart, and 36 bays lie between the frames. */
+export const FACE = 15.4, FASCIA = { q: 16.0, y0: Y(70.2), top: Y(70.6) };
+export const BOX = Y(56.62);
+export const BANDS = [[BOX, Y(57.65)], [Y(60.46), Y(62.37)], [Y(65.2), Y(67.05)]];
+export const FRAME = { w: 0.55, top: Y(70.8) };
+export const BAYS = { west: SOUTH.p1 - FRAME.w, east: SOUTH.p0 + FRAME.w, n: 36 };
+/** The p of the line k bays from the west frame. */
+export const bay = (k) => BAYS.west - (k * (BAYS.west - BAYS.east)) / BAYS.n;
+
+/** The ground storey under the box, through the camera: its wall set back to q 14.3 (the LiDAR's returns at 52.5 to
+ * 55.5 m, q 14.25 to 14.75), from the east frame's inner edge to the west end; a band of dark windows, 53.9 to
+ * 55.3 m, from p 27.0 to the entrance; a dark door at the west end (p 29.64 to 31.05, to 56.3 m) and a dark glazed
+ * entrance (p -17.35 to -13.3, to 56.4 m) under a thin canopy (55.65 to 55.8 m); piers 0.4 m wide under the box's
+ * face on every fourth bay's line from the second (the photograph's nine piers fall within 0.3 m of them), and a V of
+ * two braces from the piers' tops to the ground at the middle of the bays from line 10 to 14 and from 22 to 26. */
+export const WALL_Q = 14.3, GS_EAST = BAYS.east;
+export const WINDOWS_GS = { p0: -12.9, p1: 27.0, y0: Y(53.9), y1: Y(55.3) };
+export const DOOR = { p0: 29.64, p1: 31.05, top: Y(56.3) };
+export const ENTRANCE = { p0: -17.35, p1: -13.3, top: Y(56.4), canopy: [Y(55.65), Y(55.8)], out: 15.3 };
+export const PIERS = { from: 2, every: 4, w: 0.4, q0: 14.8, q1: 15.2 };
+export const BRACES = [[10, 14], [22, 26]];

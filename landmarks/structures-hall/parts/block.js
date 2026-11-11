@@ -3,11 +3,13 @@
 // common.js.
 import * as THREE from "three";
 import {
-  DIR, FASCIA, FOOT, LOW, NORTH, SOUTH, STACK, STACKS, northRoof, pt, southRoof,
+  BOX, DIR, FACE, FOOT, GS_EAST, LOW, NORTH, SOUTH, STACK, STACKS, WALL_Q, northRoof, pt, southRoof,
 } from "./common.js";
 
-// The walls a pale grey; the roofs light grey, as the aerial shows them.
-export const WALL = "claddingPale", ROOFS = "roofPale", GLASS = "glass";
+// The walls, the bands and the fascia the pale grey of the photograph's panels; the roofs light grey, as the aerial
+// shows them; the glass the light glazing that shows the sky; the mullions, louvres and the ground storey's windows
+// near black; the frames at the south face's ends brown.
+export const WALL = "claddingPale", ROOFS = "roofPale", GLASS = "glassPale", DARK = "screenBlack", FRAMES = "finBrown";
 
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
@@ -46,13 +48,19 @@ export function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
   }
 }
 
-/** The southern block, from FOOT to its roof, its south face's top the fascia's. Its side along the line between the
- * blocks is drawn only west of the northern block (p 23.05 on): east of that it lies within the northern block. */
+/** The southern block: the ground storey from FOOT to the box's underside, its wall set back to WALL_Q, and over it
+ * the glazed box to its roof, its glass at FACE. Their sides along the line between the blocks are drawn only west
+ * of the northern block (p 23.05 on): east of that they lie within it. */
 export function south(b) {
-  const { p0, p1, q0, q1 } = SOUTH;
-  const section = [[q0, FOOT], [q1, FOOT], [q1, FASCIA], [q0, southRoof(q0)]];
-  along(b, p0, NORTH.p1, section, [WALL, WALL, ROOFS, null], WALL, [true, false]);
-  along(b, NORTH.p1, p1, section, [WALL, WALL, ROOFS, WALL], WALL, [false, true]);
+  const { p0, p1, q0 } = SOUTH;
+  const parts = [
+    [GS_EAST, [[q0, FOOT], [WALL_Q, FOOT], [WALL_Q, BOX], [q0, BOX]], [null, WALL, null]],
+    [p0, [[q0, BOX], [FACE, BOX], [FACE, southRoof(FACE)], [q0, southRoof(q0)]], [WALL, GLASS, ROOFS]],
+  ];
+  for (const [from, section, [m0, m1, m2]] of parts) {
+    along(b, from, NORTH.p1, section, [m0, m1, m2, null], WALL, [true, false]);
+    along(b, NORTH.p1, p1, section, [m0, m1, m2, WALL], WALL, [false, true]);
+  }
 }
 
 /** The northern block, from FOOT to its roof; its south side, over the southern block's roof, is the face that looks
@@ -68,11 +76,15 @@ export function low(b) {
   along(b, p0, p1, [[q0, FOOT], [q1, FOOT], [q1, top], [q0, top]], [WALL, WALL, ROOFS, WALL], WALL, [true, false]);
 }
 
-/** The three stacks, each standing from within the southern block's roof to its sloping top. */
+/** The three stacks, each standing from within the southern block's roof: a light base, dark louvres, and a light
+ * band to its sloping top. */
 export function stacks(b) {
-  const base = southRoof(STACK.q1) - 0.2;
+  const { q0, q1 } = STACK, base = southRoof(q1) - 0.2;
   for (const [p0, p1] of STACKS) {
-    along(b, p0, p1, [[STACK.q0, base], [STACK.q1, base], [STACK.q1, STACK.south], [STACK.q0, STACK.north]],
+    along(b, p0, p1, [[q0, base], [q1, base], [q1, STACK.louvre], [q0, STACK.louvre]], [null, WALL, null, WALL], WALL);
+    along(b, p0, p1, [[q0, STACK.louvre], [q1, STACK.louvre], [q1, STACK.band], [q0, STACK.band]],
+      [null, DARK, null, DARK], DARK);
+    along(b, p0, p1, [[q0, STACK.band], [q1, STACK.band], [q1, STACK.south], [q0, STACK.north]],
       [null, WALL, ROOFS, WALL], WALL);
   }
 }
