@@ -48,6 +48,34 @@ export const RIDGE = { q: 1.0, y: Y(70.3), fall: 0.066 };
 export const roofAt = (q) => RIDGE.y - RIDGE.fall * Math.abs(q - RIDGE.q);
 export const CAP = { q0: 0.0, q1: 2.0, top: Y(70.75) };
 
+/** The two upper storeys, the clad box, stand from its underside at 61.25 m (the LiDAR's returns under the faces
+ * stop there, and the photograph's camera puts the box's lower edge at 61.2 to 61.5 m on both faces); the two storeys
+ * under it are set back 0.45 m on the south and forward faces and the east end (their returns, 54 to 61 m, at q 15.25
+ * to 15.5 and p -38.0 to -37.75), on a plinth to 53.0 m (the foot of the glazing through the camera), with a band at
+ * the floor between them, 57.7 to 58.4 m (returns at 58.0 m on both faces; the band through the camera). */
+export const SOFFIT = Y(61.25), SET = 0.45, PLINTH = Y(53.0), BAND = { y0: Y(57.7), y1: Y(58.4) };
+
+/** The clad storeys' windows, estimated in the photograph through its fitted camera, [from, to] along the face and
+ * their sills and heads. On the south face (q 15.84): the upper storey's at 66.35 to 67.95 m and the lower's at 63.25
+ * to 64.72 m, a pair of wide ones by the corner (p -37.75 to -33.62) and a band of five from p -27.2 to -11.5 (its
+ * ends through the camera, its units counted on the photograph). On the east end (p -38.27), from the corner: the
+ * upper storey's two at 66.3 to 67.7 m (q 12.4 to 9.7 and 4.95 to 3.15), the lower's two side by side (q 12.4 to 7.2)
+ * and a band of twelve to the north corner (q 5.05 to -15.4), 63.85 to 65.15 m. */
+export const SILLS = { upper: [Y(66.35), Y(67.95)], lower: [Y(63.25), Y(64.72)] };
+export const EAST_SILLS = { upper: [Y(66.3), Y(67.7)], lower: [Y(63.85), Y(65.15)] };
+export const WINDOWS = {
+  south: [[-37.75, -33.62, 1], [-27.2, -11.5, 5]],
+  east: { upper: [[12.4, 9.7, 1], [4.95, 3.15, 1]], lower: [[12.4, 7.2, 2], [5.05, -15.4, 12]] },
+};
+
+/** The glazed storeys' piers, estimated in the photograph through the camera: one 0.7 m square at the corner; on
+ * the south face one 1.5 m wide at p -33.62 to -32.13, and the rest along the south and forward faces every 7.6 m
+ * from it, as it stands from the corner; on the east end one at q 5.04 to 2.7 and one by the north corner (q -13.9
+ * to -16.0). The canopy over the corner's entrance: p -37.9 to -34.2, out to q 17.6, its top at 55.6 m (12 returns,
+ * 55.5 to 56.0 m, in front of the face there), 0.35 m deep. */
+export const PIERS = { corner: 0.7, south: [-33.62, -32.13], step: 7.6, east: [[2.7, 5.04], [-16.0, -13.9]] };
+export const CANOPY = { p0: -37.9, p1: -34.2, q: 17.6, top: Y(55.6), deep: 0.35 };
+
 /** The parapet along the south face, its top at 70.05 m (p90 of the returns within 0.6 m of the face, 70.01 to
  * 70.07), 0.3 m thick; at the east end a gable within its parapet, its top 70.08 m at the south corner, 70.97 m over
  * the ridge and 69.85 m at the north corner (p90 of the returns on it, in 1 m strips of q). */

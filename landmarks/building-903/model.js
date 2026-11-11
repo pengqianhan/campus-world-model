@@ -4,11 +4,16 @@
 // Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
 import { body, cap, parapet } from "./parts/block.js";
+import { canopy, glazed, piers, windows } from "./parts/facade.js";
 
 const PARTS = {
   body: (b) => body(b),
   parapet: (b) => parapet(b),
   cap: (b) => cap(b),
+  glazed: (b) => glazed(b),
+  piers: (b) => piers(b),
+  canopy: (b) => canopy(b),
+  windows: (b) => windows(b),
 };
 
 export function build(materials, only) {

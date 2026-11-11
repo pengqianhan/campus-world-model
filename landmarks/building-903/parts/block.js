@@ -1,21 +1,21 @@
-// Building 903's parts: the block under its roof of two slopes, the parapets round the south face and the east end's
-// gable, and the cap along the ridge. Sizes from common.js.
+// Building 903's parts: the clad box under its roof of two slopes, the parapets round the south face and the east
+// end's gable, and the cap along the ridge; and `along`, the shape every part is made of. Sizes from common.js.
 import * as THREE from "three";
 import {
-  CAP, DIR, EAST, FOOT, FORWARD, GABLE, NORTH, PARAPET, RIDGE, SOUTH, STEP, WEST, pt, roofAt,
+  CAP, DIR, EAST, FORWARD, GABLE, NORTH, PARAPET, RIDGE, SOFFIT, SOUTH, STEP, WEST, pt, roofAt,
 } from "./common.js";
 
 // The walls the pale grey of the photograph's corrugated cladding; the roofs light grey, as the aerial shows them.
-const WALL = "claddingPale", ROOFS = "roofPale";
+export const WALL = "claddingPale", ROOFS = "roofPale", GLASS = "glass";
 
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 
 /** A closed solid: the convex profile [[q, y], ...] carried along p from p0 to p1. mats[i] is the material of the
- * side from point i to point i + 1 (null: not drawn), `cap` that of the two ends, `caps` which ends are drawn. Every
- * triangle faces out. */
-function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
+ * side from point i to point i + 1 (null: not drawn), `cap` that of the two ends (or [at p0, at p1]), `caps` which
+ * ends are drawn. Every triangle faces out. */
+export function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
   const n = profile.length, byMat = new Map();
   let area = 0;
   profile.forEach(([q, y], i) => { const [q1, y1] = profile[(i + 1) % n]; area += q * y1 - q1 * y; });
@@ -35,8 +35,8 @@ function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
   });
   [[p0, DIR.p.map((v) => -v)], [p1, DIR.p]].forEach(([p, out], k) => {
     if (!caps[k]) return;
-    const ring = profile.map(([q, y]) => pt(p, q, y));
-    for (let i = 1; i < n - 1; i++) put(cap, [ring[0], ring[i], ring[i + 1]], out);
+    const ring = profile.map(([q, y]) => pt(p, q, y)), m = Array.isArray(cap) ? cap[k] : cap;
+    for (let i = 1; i < n - 1; i++) put(m, [ring[0], ring[i], ring[i + 1]], out);
   });
   for (const [m, list] of byMat) {
     const g = new THREE.BufferGeometry();
@@ -45,17 +45,17 @@ function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
   }
 }
 
-/** The block's section under its roof, from its foot to the south face at `q` and the north face. */
-const section = (q) => [[NORTH, FOOT], [q, FOOT], [q, roofAt(q)], [RIDGE.q, RIDGE.y], [NORTH, roofAt(NORTH)]];
-const SIDES = [null, WALL, ROOFS, ROOFS, WALL];
+/** The clad box's section under its roof, from its underside to the south face at `q` and the north face. */
+const section = (q) => [[NORTH, SOFFIT], [q, SOFFIT], [q, roofAt(q)], [RIDGE.q, RIDGE.y], [NORTH, roofAt(NORTH)]];
+const SIDES = [WALL, WALL, ROOFS, ROOFS, WALL];
 
-/** The block: its east part to the south face, its west part stepped forward to the forward face, and the step's
- * return between them. */
+/** The clad box: its east part to the south face, its west part stepped forward to the forward face, and the step's
+ * return between them; its underside drawn, where it overhangs the glazed storeys. */
 export function body(b) {
   along(b, EAST, STEP, section(SOUTH), SIDES, WALL, [true, false]);
   along(b, STEP, WEST, section(FORWARD), SIDES, WALL, [false, true]);
-  along(b, STEP, STEP + 0.01, [[SOUTH, FOOT], [FORWARD, FOOT], [FORWARD, roofAt(FORWARD)], [SOUTH, roofAt(SOUTH)]],
-    [null, null, null, null], WALL, [true, false]);
+  along(b, STEP, STEP + 0.01, [[SOUTH, SOFFIT], [FORWARD, SOFFIT], [FORWARD, roofAt(FORWARD)],
+    [SOUTH, roofAt(SOUTH)]], [null, null, null, null], WALL, [true, false]);
 }
 
 /** The parapets: the east end's gable within its parapet, along the south face, round the step's return and along

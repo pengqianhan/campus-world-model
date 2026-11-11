@@ -121,5 +121,13 @@
   "max_solid": 0.5,
   "keep_fixes": true
  },
- "crop_note": "45 m round the outline, so that the crop box takes in the road south and east of the building; the ring is in the map's frame, about 29 m east-north-east of where it stands in local metres here"
+ "crop_note": "45 m round the outline, so that the crop box takes in the road south and east of the building; the ring is in the map's frame, about 29 m east-north-east of where it stands in local metres here",
+ "light": {
+  "sunaz": 0.0,
+  "sunel": 50.0,
+  "sun": 1.0,
+  "env": 3.4,
+  "exposure": 0.78,
+  "note": "estimated: the photograph is taken under a bright overcast, looking north-west at faces that face south-south-west and east-south-east, evenly lit and with no shadow cast. The viewer's sun stands behind the building, to the north (0 deg round, 50 up), weak (1.0, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.78: over the model's screen box the luma (p50) 162 against the photograph's 157, p90 174 against 178 (with the sun at 20 deg and 1.5, at 0.95, 178 and 200; at 0.85, 170 and 182)."
+ }
 }

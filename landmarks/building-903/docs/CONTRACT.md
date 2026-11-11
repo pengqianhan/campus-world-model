@@ -18,16 +18,22 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   69.15 m; a parapet along the south face to 70.05 m, and at the east end a low gable within a parapet (70.08 m,
   70.97 m over the ridge, 69.85 m). The roof runs on to the west-north-west past p 36.5 at the same height, over the
   next building: the campus map's ring ends the model there.
+- The clad box stands from its underside at 61.25 m; the two glazed storeys under it are set back 0.45 m on the
+  south and forward faces and the east end (the LiDAR's returns on them), on a plinth to 53.0 m, with a band at the
+  floor between them (57.7 to 58.4 m). The windows of the clad storeys, the glazed storeys' piers and the canopy over
+  the corner's entrance are estimated in the photograph through its fitted camera (`parts/common.js` says where).
 - Walls go down to `FOOT`, 52.0 m: the ground along the walls lies from 52.2 m on the road south-east of the east
   end to 52.8 m before the south face.
 
 ## Who owns what
-- `parts/common.js` (the measured sizes and the frame), `parts/block.js` (with `along`, a profile carried along p),
-  `model.js`: the lead.
+- `parts/common.js` (the measured sizes and the frame), `parts/block.js` (the clad box, its parapets and its ridge's
+  cap, and `along`, a profile carried along p), `parts/facade.js` (the glazed storeys, their piers, band and
+  mullions, the canopy, the windows), `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by material.
-  Round 0: 78 triangles, 2 draw calls.
+  Round 0: 78 triangles, 2 draw calls. Round 1: 3,810 triangles, 3 draw calls (`claddingPale`, `glass`,
+  `roofPale`).
 
 ## Rounds
 - Round 0 (2026-11-12, the lead alone): the block with its step forward, its roof of two slopes and the cap along
@@ -36,3 +42,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   and three corners (rms 0.85 px, 1.62 m over the LiDAR's ground about 27 m south-east of the south-east corner, a
   lens of 59.4 degrees, looking up 15.0 degrees). Silhouette IoU 0.872 over the photograph, 0.960 in the model's
   box; luma p50 149 against 157 (the light is not set yet).
+- Round 1 (2026-11-12, the lead alone): the faces. The clad box from its underside; under it the two glazed storeys
+  set back, with a plinth, a band at their floor, piers (one at the corner, one 1.5 m wide on the south face and its
+  like every 7.6 m along it, two on the east end) and a mullion every 1.5 m; the canopy over the corner's entrance;
+  the clad storeys' windows in frames 0.07 m proud, as the photograph shows them on the south face and the east end,
+  the forward face's bands as the south face's, and the north face, which no photograph shows, drawn as the south
+  face. The light: a weak sun behind the building and a strong sky, at an exposure of 0.78. Silhouette IoU 0.866,
+  0.963 in the model's box; luma p50 162 against 157, p90 174 against 178.
