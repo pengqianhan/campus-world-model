@@ -30,9 +30,13 @@ function ring(b, outer, inner, y0, y1, material) {
 
 /** A bar in the building's frame, `w` wide across the line from (p0, q0) to (p1, q1) and raised from y0 to y1. */
 function bar(b, [p0, q0], [p1, q1], w, y0, y1, material) {
-  const l = Math.hypot(p1 - p0, q1 - q0), n = [(-(q1 - q0) / l) * (w / 2), ((p1 - p0) / l) * (w / 2)];
-  prism(b, plan([[p0 + n[0], q0 + n[1]], [p1 + n[0], q1 + n[1]], [p1 - n[0], q1 - n[1]], [p0 - n[0], q0 - n[1]]]), y0, y1, material);
+  const l = Math.hypot(p1 - p0, q1 - q0), [np, nq] = [(-(q1 - q0) / l) * (w / 2), ((p1 - p0) / l) * (w / 2)];
+  const corners = [[p0 + np, q0 + nq], [p1 + np, q1 + nq], [p1 - np, q1 - nq], [p0 - np, q0 - nq]];
+  prism(b, plan(corners), y0, y1, material);
 }
+
+/** A square in the view frame, `h` from its centre (x, z) to each side. */
+const square = (x, z, h) => [[x - h, z - h], [x + h, z - h], [x + h, z + h], [x - h, z + h]];
 
 /** The ground storey: its glazing from the floor to the soffit (its top within the band), with frames 1.6 m apart
  * just outside it, over a dark base 5 cm inside it down to the walls' foot. */
@@ -42,10 +46,10 @@ export function storey(b) {
   prism(b, glass, FLOOR, SOFFIT + 0.1, GLASS);
   const out = inward(glass, -0.04);
   out.forEach((p, i) => {
-    const q = out[(i + 1) % out.length], l = Math.hypot(q[0] - p[0], q[1] - p[1]), n = Math.max(1, Math.round(l / 1.6));
+    const q = out[(i + 1) % out.length], n = Math.max(1, Math.round(Math.hypot(q[0] - p[0], q[1] - p[1]) / 1.6));
     for (let k = 0; k < n; k++) {
-      const t = k / n, x = p[0] + t * (q[0] - p[0]), z = p[1] + t * (q[1] - p[1]);
-      prism(b, [[x - 0.04, z - 0.04], [x + 0.04, z - 0.04], [x + 0.04, z + 0.04], [x - 0.04, z + 0.04]], FLOOR - 0.05, SOFFIT + 0.05, FRAME);
+      const t = k / n;
+      prism(b, square(p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1]), 0.04), FLOOR - 0.05, SOFFIT + 0.05, FRAME);
     }
   });
 }
@@ -59,8 +63,7 @@ export function band(b) {
   ring(b, outer, inward(outer, PARAPET.thick), ROOF - 0.2, PARAPET.top, CONCRETE);
   prism(b, inward(outer, PARAPET.thick + 0.01), ROOF - 0.1, ROOF + 0.01, ROOFS);
   for (const [p, q] of [OUTLINE[OUTLINE.length - 1], OUTLINE[0]]) {
-    const [x, z] = at(p, q);
-    prism(b, [[x - 0.09, z - 0.09], [x + 0.09, z - 0.09], [x + 0.09, z + 0.09], [x - 0.09, z + 0.09]], SOFFIT - 0.02, PARAPET.top - 0.04, FRAME);
+    prism(b, square(...at(p, q), 0.09), SOFFIT - 0.02, PARAPET.top - 0.04, FRAME);
   }
 }
 
@@ -74,16 +77,21 @@ export function columns(b) {
 export function deck(b) {
   prism(b, plan(DECK.plan), FOOT, FLOOR, DARK);
   for (let i = 0; i + 1 < DECK.rail.length; i++) {
-    const [p0, q0] = DECK.rail[i], [p1, q1] = DECK.rail[i + 1], l = Math.hypot(p1 - p0, q1 - q0), n = Math.round(l / 0.15);
+    const [p0, q0] = DECK.rail[i], [p1, q1] = DECK.rail[i + 1], n = Math.round(Math.hypot(p1 - p0, q1 - q0) / 0.15);
     const off = (t) => [p0 + t * (p1 - p0), q0 + t * (q1 - q0)];
     bar(b, off(0), off(1), 0.05, FLOOR + 0.95, FLOOR + 1.0, FRAME);
     bar(b, off(0), off(1), 0.05, FLOOR + 0.08, FLOOR + 0.12, FRAME);
-    for (let k = 0; k <= n; k++) { const [p, q] = off(k / n); bar(b, [p - 0.015, q], [p + 0.015, q], 0.03, FLOOR - 0.05, FLOOR + 0.97, FRAME); }
+    for (let k = 0; k <= n; k++) {
+      const [p, q] = off(k / n);
+      bar(b, [p - 0.015, q], [p + 0.015, q], 0.03, FLOOR - 0.05, FLOOR + 0.97, FRAME);
+    }
   }
-  const { foot: [fp, fq], dir: [dp, dq], width, run, steps } = DECK.stair, rise = (FLOOR - COURT) / steps, g = run / steps;
-  const [ep, eq] = [dq * (width / 2), -dp * (width / 2)], pt = (s, e) => [fp + s * dp + e * ep, fq + s * dq + e * eq];
+  const { foot: [fp, fq], dir: [dp, dq], width, run, steps } = DECK.stair;
+  const rise = (FLOOR - COURT) / steps, g = run / steps, [ep, eq] = [dq * (width / 2), -dp * (width / 2)];
+  const pt = (s, e) => [fp + s * dp + e * ep, fq + s * dq + e * eq];
   for (let i = 1; i < steps; i++) {
-    prism(b, plan([pt((i - 1) * g, -1), pt((i - 1) * g, 1), pt(i * g, 1), pt(i * g, -1)]), FOOT, COURT + i * rise, CONCRETE);
+    const tread = [pt((i - 1) * g, -1), pt((i - 1) * g, 1), pt(i * g, 1), pt(i * g, -1)];
+    prism(b, plan(tread), FOOT, COURT + i * rise, CONCRETE);
   }
 }
 

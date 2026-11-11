@@ -3,7 +3,7 @@
 // (north-west); the frame's centre at x = z = 0, the middle of the building's points.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-12 (round 0): every height below is the LiDAR's elevation, and Y turns it into one above the
-// config's ground, 43.45 m (the median ground in the outline's band; the door's ground replaces it at step 7).
+// config's ground, 43.6 m, the door's (step 7: on the court at the foot of the steps up to the deck).
 //
 // The sizes are given in the building's own frame: p along its long faces toward the north-east and q toward the
 // north-west, the road. Its faces run 1.8 degrees off the frame's axis (the LiDAR's long faces and ends alike: their
@@ -14,7 +14,7 @@
 // Security, building 409: a block of two storeys whose upper storey is a band of concrete over a glazed ground storey,
 // on ground that falls from the road on its north-west side (46.3 m) to a paved court on its south-east (43.4 m); a
 // flat roof within a parapet, and on it a box at its west corner and a lower block toward its east end.
-export const GROUND = 43.45;
+export const GROUND = 43.6;
 const T = (1.8 * Math.PI) / 180;
 export const at = (p, q) => {
   const u = p * Math.cos(T) - q * Math.sin(T), w = p * Math.sin(T) + q * Math.cos(T);
@@ -50,13 +50,13 @@ export const ROOF = Y(51.13), PARAPET = { top: Y(51.5), thick: 0.3 };
  * glazing 1.85 m behind the south-east face (where the camera puts its head at the soffit: q -11.0) and, under the
  * south corner, 3.65 m behind the south-west end (p -15.2), a porch; elsewhere 1.85 m in, as no photograph shows.
  * Its floor and the deck before it at 45.3 m, at the camera's eye (the deck's edge on its horizon), as the LiDAR's
- * ground by the south-west end reaches 45.3 m at q -2 to 2. Columns 0.45 m
- * square under the band's edge, 0.55 m in: the two the photograph shows (p -15.15 on the south-east face, q -7.7 on
- * the south-west end), the rest on a grid of 6.5 m from them. A deck under the south corner and along the south-east
- * face, out to q -16.0, where the camera puts its railing's top 1 m over it (q -15.6 to -16.9 from p -18.2 to 2.0),
- * and a flight of 11 steps from the court (43.4 m) up to its west corner, its foot 1.7 m wide where the camera puts
- * it (p -21.35, q -17.93 to p -19.84, q -18.66), rising along the chamfer's normal. */
-export const SOFFIT = Y(49.1), FLOOR = Y(45.3), COURT = Y(43.4);
+ * ground by the south-west end reaches 45.3 m at q -2 to 2. Columns 0.45 m square under the band's edge, 0.55 m in:
+ * the two the photograph shows (p -15.15 on the south-east face, q -7.7 on the south-west end), the rest on a grid of
+ * 6.5 m from them. A deck under the south corner and along the south-east face, out to q -16.0, where the camera puts
+ * its railing's top 1 m over it (q -15.6 to -16.9 from p -18.2 to 2.0), and a flight of 11 steps from the court
+ * (43.6 m, the door's ground) up to its west corner, its foot 1.7 m wide where the camera puts it (p -21.35, q -17.93
+ * to p -19.84, q -18.66), rising along the chamfer's normal. */
+export const SOFFIT = Y(49.1), FLOOR = Y(45.3), COURT = Y(43.6);
 export const STOREY = [[-15.2, -11.0], [15.85, -11.0], [15.85, 11.3], [-14.5, 11.3], [-14.5, 5.5], [-15.2, 5.5]];
 export const COLUMNS = [
   [-15.15, -12.3], [-8.65, -12.3], [-2.15, -12.3], [4.35, -12.3], [10.85, -12.3],

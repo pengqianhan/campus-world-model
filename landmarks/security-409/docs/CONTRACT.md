@@ -4,10 +4,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the config's ground (43.45 m NZVD2016,
-  the provisional ground until the door's replaces it), **z** north-west (`toStreet`, the road); the frame's centre at
-  x = z = 0. `config/security-409.json`, `frame`: the building's returns more than 2.99 m over that ground, the axis
-  along its long faces (bearing 42.0 deg).
+- View frame, metres: **x** south-west (the frame's `-axis`), **y** up from the door's ground (43.6 m NZVD2016, on
+  the court at the foot of the steps up to the deck), **z** north-west (`toStreet`, the road); the frame's centre at
+  x = z = 0. `config/security-409.json`, `frame`: the building's returns more than 2.84 m over that ground (2.99 m
+  over the provisional 43.45 m), the axis along its long faces (bearing 42.0 deg).
 - The building's own frame: **p** along its long faces toward the north-east and **q** toward the north-west. Its
   faces run 1.8 degrees off the frame's axis, so `parts/common.js` turns p and q by that before `at` and `plan` give
   the view frame; `Y` turns an elevation measured in the LiDAR into a height over the config's ground.
@@ -43,3 +43,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   corner, all placed through the photograph's camera and estimated; the faces no photograph shows drawn as the ones
   it does. The light: the sun weak to the west-north-west and a strong sky, as the photograph's overcast, exposure
   0.95: luma 165 against 158. Silhouette IoU 0.745, 0.778 in the model's box.
+- Step 7 (2026-11-12): the door at the foot of the steps, on the court (43.6 m, 8 returns within 1 m), the frame's
+  thresholds lowered with it (the frame unchanged), the camera fitted again with its ground (rms 0.76 px). Top view:
+  footprint IoU 0.937, 86% of 3,603 cells within 0.5 m (p10/p50/p90 -0.95/-0.03/0.22: the model lower under the
+  tree's crown over the north corner and a row of small units on the roof), the highest point 10.29 m over the door's
+  ground against 10.37 (p99.9 of the building's returns but the crown's), block 409 94.8% under the model.

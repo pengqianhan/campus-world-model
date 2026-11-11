@@ -82,7 +82,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 25,
- "ground": 43.45,
+ "ground": 43.6,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -100,14 +100,14 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 2.99,
-  "tower_above": 2.99,
-  "spine_below": 39.99,
+  "min_above": 2.84,
+  "tower_above": 2.84,
+  "spine_below": 39.84,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "min_above 2.99 m over the provisional ground (43.45 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the long faces (bearing 42.0 deg), so z faces north-west (bearing 312.0 deg), toward the road along that side. The ground falls from about 46.5 m on the north-east to 39 m south-west of the building",
+  "thresholds_note": "min_above 2.99 m over the provisional ground (43.45 m, the median LiDAR ground within the outline's band, as the measured massing took it), all three lowered by 0.15 m with the ground set at the door (step 7), so that they pick the same points; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the long faces (bearing 42.0 deg), so z faces north-west (bearing 312.0 deg), toward the road along that side. The ground falls from about 46.5 m on the north-east to 39 m south-west of the building",
   "expected": {
    "centre": [
     -17.817539463268478,
@@ -140,5 +140,10 @@
   "env": 3.4,
   "exposure": 0.95,
   "note": "estimated: the photograph is taken under a bright, pale overcast, looking north-north-west at faces that face south-west, south and south-east, evenly lit and with no shadow cast. The viewer's sun stands to the west-north-west (300 deg round, 45 up), weak (1.5, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.95: over the model's screen box the luma (p50) 165 against the photograph's 158. At 0.8 it is 122, at 1.0 167."
+ },
+ "door": {
+  "x": 20.02,
+  "z": -18.94,
+  "note": "at the foot of the flight of steps up to the deck before the south corner, on the paved court, where the photograph's camera puts the flight's foot (the campus map records no entrance in 409): p -20.6, q -18.3 in the building's frame ((20.02, -18.94) in the view frame); the court runs at 43.3 to 43.6 m along the south-east face, the ground rising to 46.5 m by the road on the north-west. The LiDAR's ground within 1 m: 8 returns, p10/p50/p90 43.487/43.599/43.636 m"
  }
 }
