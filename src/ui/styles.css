@@ -871,34 +871,16 @@ select optgroup {
 }
 
 /* Shut, the panel is a button with the campus's name, in the corner it opens from, and the walk a
-   button beside it, then All schools: in one row from 1280 px, and below that on a line of its own above
-   them (the lines wrap upward, from the foot of the screen), so that the campus's and the walk's buttons
-   keep the room they have without it. Only the buttons take the pointer: the rest of the box is the map. */
+   button beside it. */
 .campus-dock {
   position: absolute;
   z-index: 20;
   bottom: var(--edge-b);
   left: var(--edge-l);
   display: flex;
-  flex-wrap: wrap-reverse;
   align-items: center;
   gap: 8px;
   max-width: calc(100vw - var(--edge-l) - var(--edge-r));
-  pointer-events: none;
-}
-.campus-dock .status-toggle,
-.campus-dock .walk-start,
-.campus-dock .dock-home {
-  pointer-events: auto;
-}
-
-/* The campus's and the walk's buttons keep to one line: All schools is what goes above them. */
-.campus-dock-row {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
 }
 
 /* In the row, the campus's name gives way first, to its ellipsis. */
@@ -1440,8 +1422,8 @@ select optgroup {
   font-size: 11px;
   text-decoration: none;
   /* It shares the foot of the screen with the campus's and the walk's buttons (at most 380 px wide where it could
-     reach them, below; All schools goes above them there): it gives way, to its ellipsis, before it would run under
-     them. The phone's layout, which puts it below them, sets its own. */
+     reach them, below): it gives way, to its ellipsis, before it would run under them. The phone's layout, which
+     puts it below them, sets its own. */
   max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1562,8 +1544,7 @@ select optgroup {
   }
 
   .status-toggle,
-  .walk-start,
-  .dock-home {
+  .walk-start {
     font-size: 13px;
   }
 
@@ -1740,29 +1721,6 @@ select optgroup {
 
 .walk-start:hover {
   border-color: var(--accent);
-  background: rgba(24, 40, 53, 0.96);
-}
-
-/* After the walk, as tall and as quiet as the campus's button: the way back to the page of every school's map. */
-.dock-home {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
-  color: var(--text);
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.dock-home:hover {
-  border-color: rgba(255, 255, 255, 0.28);
   background: rgba(24, 40, 53, 0.96);
 }
 
@@ -2426,14 +2384,6 @@ select optgroup {
 @media (max-width: 1099.98px) {
   .campus-dock {
     max-width: min(380px, calc(100vw - var(--edge-l) - var(--edge-r)));
-  }
-}
-
-/* Below 1280 px All schools stands on the line above the campus's and the walk's buttons, which keep a line of their
-   own (at 1100 px, in a wide font with the longest campus name, the three in one row ran under the attribution). */
-@media (max-width: 1279.98px) {
-  .campus-dock-row {
-    flex-basis: 100%;
   }
 }
 

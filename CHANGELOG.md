@@ -82,6 +82,12 @@ A change to what the site does or shows adds its line here, and the README's
   fails its check without them. Its walls and windows are drawn by rule, as every measured massing's are; its
   card says so. No other building changes (#157).
 
+### Changed
+
+- **All schools in the campus panel only.** The link back to the page of every school's map is no longer at the
+  foot of the screen beside "Take a walk"; it stays at the end of the campus panel's row of campuses, and the
+  campus's button and the walk's stand at the foot of the screen as they did before it (#165).
+
 ## 2026-11-10
 
 ### Added
