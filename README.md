@@ -877,12 +877,12 @@ The thirty-third is Fine Arts Studio Block 433, on the City campus, until now a 
 storeys under a shallow vault whose ends bow out, its face to the lane it shares with 431 a wall of glazing, most of
 its panes frosted and some red, yellow or blue, over a dark red ground storey; its west-south-west end clad in yellow
 weatherboards, with a grey bay, two balconies with bowed fronts and an outside stair beside them; at its
-east-north-east end a lower block rounded in plan. Its heights and plans come from the LiDAR; the glazing's mullions
-and panels, the doors and windows, the balconies' fronts and the stair are estimated with the photograph as a
-reference. One photograph from the road at the block's west-south-west end, looking along the face to the lane and at
+east-north-east end a lower block rounded in plan. Its heights and plans come from the LiDAR but for the end wall's
+place and the red ground storey's height; those, the glazing's mullions, floor bands and panels, the doors and
+windows, the balconies' fronts and the stair are estimated with the photograph as a reference. One photograph from the road at the block's west-south-west end, looking along the face to the lane and at
 the end; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.93 in it, and the
-brightness over it is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93,
-and on 98% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
+brightness over it is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93,
+and on 99% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
 drawn plainly.
 
 | | |
@@ -1232,8 +1232,8 @@ If you represent the University and would like something changed or removed, ple
   of the Kate Edger Information Commons, the Humanities Building, buildings 302, 303 and 303S of the Science Centre,
   Architecture - West, Architecture - East, Building 907, Auckland Bioengineering House, the Sir Owen G Glenn Building,
   49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the M&HS Building, Te Pūtahi Tangata, the George Mason
-  Biology Building, 2-6 Park Ave and Fine Arts Studio Block 433 are estimated in a photograph, as is the place of one
-  of Auckland Bioengineering House's stone fins). The
+  Biology Building, 2-6 Park Ave and Fine Arts Studio Block 433 are estimated in a photograph, as are the place of one
+  of Auckland Bioengineering House's stone fins and of Fine Arts Studio Block 433's west-south-west end wall). The
   measured massings (About lists them) are measured too: their
   heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Six of them,
   Alfred Nathan House and 17 Eden Crescent among them, are buildings planned as landmarks: until their landmarks come
@@ -1593,7 +1593,7 @@ If you represent the University and would like something changed or removed, ple
   the eave against the sky, the face's foot on the lane, the eave's far end and the vault's corner at the end, and it
   stands 2 to 3 m inside the edge of the LiDAR's roof of the building across the road: the photographer stood at that
   edge, or the fit is that far off. The glazing's mullions and coloured panels, the doors and windows, the balconies'
-  fronts and the stair are estimated in the photograph; the stair below the middle balcony, hidden in it, is not drawn.
+  fronts and the stair are estimated in the photograph; the stair below 37.6 m, hidden in it, is not drawn.
   The south-east face and the lower block at the east-north-east end, which no photograph shows, are drawn plainly.
   Its entrance is not known from a record: its door is set at a blue door in the face to the lane. The map's ground
   there is 3.83 m over the LiDAR's, so the model stands that much higher than the real building, on the drawn ground at

@@ -15,7 +15,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - What the LiDAR shows (`parts/common.js` holds the numbers): a long block, its long walls at w 8.25 and -8.25 (where
   the returns under the eave peak), its east-north-east end wall at u 20.1; a shallow vault, 51.9 m at the crown and
   falling 2.05 m to w 10.15, its eaves at w 10.3 and its ends bowed out in plan (u -25.2 at the eaves to -26.8 at the
-  crown, and 21.2 to 23.1); at the east-north-east end a lower block at 50.5 m, rounded in plan to u 30.3, and a plant
+  crown, and 21.0 to 22.5); at the east-north-east end a lower block at 50.5 m, rounded in plan to u 30.3, and a plant
   room on the vault at 54.5 m; at the west-south-west end the balconies (46.9 to 47.8 m at u -27.5 to -26.5) and the
   outside stair (w -6 to -9.5). The ground: the lane before the north-west face at 33.1 m, the south-east side at
   30.2, the end's ground falling from 33.3 to 30.5.
@@ -43,6 +43,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   faces check found its top and foot in one plane with theirs. The light for the overcast photograph: a weak sun (2.5)
   to the west-north-west (290 deg, 50 up) and a strong sky (3.6), exposure 0.88, the yellow and red a little darker:
   the luma over the model's box 165 against 170.
+- The review's round 1 (2026-11-11): the vault's east-north-east end to the returns on the vault (21.0 to 22.5; the
+  22.9 had been the lower block's roof's), the plant room to its returns (u 19.5 to 24.0, w -5.5 to -0.55), standing
+  past the vault's end on a foot at 50.15 m; the upper balcony's floor at 46.9 m and the railings 0.9 m high, as the
+  LiDAR's returns on them give. Silhouette IoU 0.925 (0.929 in the model's box), luma 166 against 170; top view:
+  footprint IoU 0.933, 99% of 4,040 cells within 0.5 m, block 433 97.2% under the model; 1,316 triangles, 6 draw calls.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

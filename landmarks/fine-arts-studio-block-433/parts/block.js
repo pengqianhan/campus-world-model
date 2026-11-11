@@ -45,5 +45,5 @@ export function roof(b) {
 /** The east-north-east end: the lower block rounded in plan, and the plant room on the vault. */
 export function east(b) {
   block(b, plan(EAST.low.plan), FOOT, Y(EAST.low.top), YELLOW, ROOF, 0.3);
-  block(b, plan(EAST.plant.plan), Y(vaultTop(EAST.plant.plan[0][1]) - 0.2), Y(EAST.plant.top), GREY, ROOF, 0.3);
+  block(b, plan(EAST.plant.plan), Y(EAST.plant.foot), Y(EAST.plant.top), GREY, ROOF, 0.3);
 }

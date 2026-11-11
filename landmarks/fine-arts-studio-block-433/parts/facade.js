@@ -61,7 +61,7 @@ export function end(b) {
   }
 }
 
-/** The two balconies: a floor 0.3 m thick from the wall out to a front bowed to u -27.6, and a railing 1.1 m high
+/** The two balconies: a floor 0.3 m thick from the wall out to a front bowed to u -27.6, and a railing 0.9 m high
  * round its front. */
 export function balconies(b) {
   const [w0, w1] = BALCONY.w, [edge, mid] = BALCONY.front, half = (w1 - w0) / 2, c = (w0 + w1) / 2;

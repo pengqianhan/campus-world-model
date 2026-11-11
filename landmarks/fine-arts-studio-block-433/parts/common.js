@@ -35,15 +35,16 @@ export const WALL = { w: 8.25, west: -24.5, east: 20.1 };
  * returns' p50 in 1 m strips from u -15 to 15 (51.40 against 51.41 at w 5, 50.57 against 50.64 at w 8); its edges
  * 0.15 to 0.2 m out from the returns' extremes (their spacing): the eaves at w 10.3 (the returns' greatest w 10.0 to
  * 10.2 in 2 m strips along the faces), its ends bowed out in plan, from u -25.2 at the eaves to -26.8 at the crown at
- * the west-south-west end and from 21.2 to 23.1 at the east-north-east end (the returns' least and greatest u in 0.5 m
- * strips of w: -25.0 and -26.6, 21.0 and 22.9); 0.35 m thick, with a gutter 0.2 m wide along each eave (estimated: the
- * photograph's fascia and gutter). */
+ * the west-south-west end and from 21.0 to 22.5 at the east-north-east end (the least and greatest u of the returns
+ * within 0.4 m of the vault's top in 0.5 m and 1 m strips of w: -25.0 and -26.6 at the west-south-west end, 20.8 and
+ * 22.36 at the east-north-east end, where the lower block's roof at 50.4 m and the plant room are left out of them);
+ * 0.35 m thick, with a gutter 0.2 m wide along each eave (estimated: the photograph's fascia and gutter). */
 export const VAULT = {
   crown: 51.9,
   drop: 2.05,
   half: 10.3,
   west: [-25.2, -26.8],
-  east: [21.2, 23.1],
+  east: [21.0, 22.5],
   t: 0.35,
   gutter: 0.2,
 };
@@ -52,14 +53,17 @@ export const vaultTop = (w) => VAULT.crown - VAULT.drop * s(w);
 export const vaultEnd = (w, [edge, mid]) => mid + (edge - mid) * (w / VAULT.half) ** 2;
 
 /** The east-north-east end: a lower block at 50.5 m (p50 of its returns), rounded in plan to u 30.3 (its returns'
- * greatest u in 1 m strips of w), from w -3.6 to 4.6; and on the vault a plant room at 54.5 m over u 18.6 to 23.2 and
- * w -6.6 to -0.6. */
+ * greatest u in 1 m strips of w), from w -3.6 to 4.6; and on the vault a plant room at 54.5 m (p50 of its 190
+ * returns over 53.5 m, 54.41) over u 19.5 to 24.0 and w -5.5 to -0.55 (its returns from 19.59 to 23.96 and -5.48 to
+ * -0.57), standing past the vault's end; its foot 5 cm under the lower block's roof's underside, at 50.15 m, out of
+ * one plane with it (the landmark tests' faces check): estimated, as what stands under its part past the vault and
+ * beside the lower block is not seen. */
 export const EAST = {
   low: { plan: [[20.1, -3.6], [27.6, -3.6], [29.5, -2.2], [30.3, 0], [30.0, 1.4], [29.2, 2.3], [26.3, 3.4], [24.3, 4.3], [20.1, 4.6]], top: 50.5 },
-  plant: { plan: [[18.6, -6.6], [23.2, -6.6], [23.2, -0.6], [18.6, -0.6]], top: 54.5 },
+  plant: { plan: [[19.5, -5.5], [24.0, -5.5], [24.0, -0.55], [19.5, -0.55]], top: 54.5, foot: 50.15 },
 };
 
-/** The faces the photograph sees, every place and height estimated through its fitted camera (rms 0.57 px): the red
+/** The faces the photograph sees, every place and height estimated through its fitted camera (rms 0.87 px): the red
  * ground storey to 38.0 m on the north-west face and the west-south-west end; on the north-west face the glazing from
  * u -19.5 to 18.7 between yellow-clad ends, from 38.0 m to under the eave, its floors at 42.0 and 47.0 (the balconies'
  * floors); on the end a grey bay from w -3.5 to 3.15 with a door to each balcony, and in the yellow north of it three
@@ -75,10 +79,11 @@ export const FACE = {
   doors: { w: [-1.2, 0.0], height: 2.2 },
 };
 
-/** The balconies on the west-south-west end (the LiDAR's returns at 46.9 to 47.8 m over u -27.5 to -26.5 and w -4 to
- * 1; the rest through the photograph's camera, estimated): floors at 42.0 and 47.0 m, 0.3 m thick, from w -4.3 to
- * 2.9, their fronts bowed out to u -27.6, railings 1.1 m high. */
-export const BALCONY = { floors: [42.0, 47.0], w: [-4.3, 2.9], front: [-27.0, -27.6], t: 0.3, rail: 1.1 };
+/** The balconies on the west-south-west end: the upper one's floor at 46.9 m and its railing's top at 47.7 to 47.8 (the
+ * LiDAR's returns over u -27.5 to -26.5 and w -4 to 1), so railings 0.9 m high; the rest through the photograph's
+ * camera, estimated: the lower one's floor at 42.0 m, both 0.3 m thick, from w -4.3 to 2.9, their fronts bowed out to
+ * u -27.6. */
+export const BALCONY = { floors: [42.0, 46.9], w: [-4.3, 2.9], front: [-27.0, -27.6], t: 0.3, rail: 0.9 };
 
 /** The coloured panels in the north-west face's glazing, 1.4 m wide (estimated: their middles through the photograph's
  * camera). */
@@ -95,13 +100,13 @@ export const PANELS = [
 /** The outside stair south-south-east of the balconies (the LiDAR's returns at w -6 to -9.5: 46.8 m at u -26, a
  * landing at 40.0 to 40.2 m over u -28 to -26 and one at 44.4 to 44.7): flights 1.2 m wide (estimated) running down
  * from each balcony's south end to a landing and back, the inner ones at u -25.6, the outer at -27.0, with railings 1.0 m high
- * on both sides (solid: the photograph's mesh panels); under the middle balcony the photograph sees no more of it (the
- * trees and the smaller picture); posts at the balconies' fronts and the landings' outer corner (through the
- * photograph's camera). */
+ * on both sides (solid: the photograph's mesh panels); below 37.6 m, under the lower balcony, the photograph sees no
+ * more of it (the trees and the smaller picture); posts at the balconies' fronts and the landings' outer corner
+ * (through the photograph's camera). */
 export const STAIR = {
   width: 1.2,
   flights: [
-    { u: -25.6, from: [-4.3, 47.0], to: [-8.6, 44.5] },
+    { u: -25.6, from: [-4.3, 46.9], to: [-8.6, 44.5] },
     { u: -27.0, from: [-8.6, 44.5], to: [-4.3, 42.0] },
     { u: -25.6, from: [-4.3, 42.0], to: [-8.6, 40.1] },
     { u: -27.0, from: [-8.6, 40.1], to: [-4.3, 37.6] },

@@ -33,7 +33,7 @@ photograph's camera is in it.
 - No other landmark's outline comes within 2 m of its (the nearest, Auckland Bioengineering House's, is about 60 m
   off), so it stands alone on the map's ground at its door (`../README.md`, "Placement").
 - Block 431 is across the lane to the north-west, block 432 beyond the east-north-east end and University Hall's
-  (436) beyond the road at the west-south-west end; the model stands over 97.4% of block 433 and over none of theirs.
+  (436) beyond the road at the west-south-west end; the model stands over 97.2% of block 433 and over none of theirs.
   `building.also` is empty.
 
 ## The reference
@@ -61,15 +61,16 @@ look and the comparison.
 
 - **The main block** (`claddingYellow`): its long walls where the LiDAR's returns under the eave peak (w 8.25 and
   -8.25), its east-north-east end wall at u 20.1 (its returns at 20.0 to 20.5), its west-south-west end wall at u -24.5
-  (through the photograph's camera: the LiDAR sees the balconies and the stair before it), down to the walls' foot; the
-  end walls rise to the vault.
+  (estimated, through the photograph's camera: the LiDAR sees the balconies and the stair before it), down to the
+  walls' foot; the end walls rise to the vault.
 - **The vault** (`roofPale`, light grey as the 2023 aerial shows it): its top a parabola across the faces, 51.9 m at the
   crown and 2.05 m lower at w 10.15 (the LiDAR's returns, p50 in 1 m strips); its eaves at w 10.3 and its ends bowed out
-  in plan, from u -25.2 at the eaves to -26.8 at the crown and from 21.2 to 23.1, 0.15 to 0.2 m out from the returns'
-  extremes (their spacing); 0.35 m thick, with a gutter along each eave (estimated).
+  in plan, from u -25.2 at the eaves to -26.8 at the crown and from 21.0 to 22.5, 0.15 to 0.2 m out from the extremes of
+  the returns on the vault (their spacing); 0.35 m thick, with a gutter along each eave (estimated).
 - **The east-north-east end**: the lower block at 50.5 m, rounded in plan to u 30.3 (the returns' greatest u in 1 m
-  strips), and the plant room on the vault at 54.5 m (`claddingPale`); no photograph shows them, and they are drawn
-  plainly.
+  strips), and the plant room on the vault at 54.5 m (`claddingPale`; its returns over u 19.6 to 24.0 and w -5.5 to
+  -0.6), standing past the vault's end, its foot at the lower block's roof (estimated: what stands under it there is
+  not seen); no photograph shows them, and they are drawn plainly.
 - **The ground storey** (`renderRed`), to 38.0 m on the north-west face and round the west corner on the end
   (estimated).
 - **The north-west face's glazing** (`glassPale`), from u -19.5 to 18.7 between the yellow-clad ends, from 38.0 m to
@@ -77,22 +78,24 @@ look and the comparison.
   panels, red, yellow and blue (estimated, their middles through the photograph's camera).
 - **The west-south-west end**: the grey bay (`claddingPale`) from w -3.5 to 3.15, a red door to each balcony; north of
   it three rows of top-hung windows (39.2 to 40.0, 43.8 to 44.8 and 48.6 to 49.6 m) and small square windows (estimated).
-- **The balconies** (`steelBlue`): floors at 42.0 and 47.0 m (the LiDAR's returns at 46.9 to 47.8 m on the upper one's
-  railing), from w -4.3 to 2.9, their fronts bowed out to u -27.6, railings 1.1 m high.
-- **The outside stair** (`steelBlue`), south-south-east of the balconies: four flights 1.2 m wide down from each
-  balcony to a landing and back (the LiDAR's returns at 44.4 to 45.3 m and 40.0 to 40.2 m on the landings), with
-  railings 1.0 m high, and three posts; under the middle balcony the photograph sees no more of it, and it is drawn to
-  37.6 m.
+- **The balconies** (`steelBlue`): the upper one's floor at 46.9 m and its railing's top at 47.7 to 47.8 (the LiDAR's
+  returns), so railings 0.9 m high; the lower one's floor at 42.0 m, both from w -4.3 to 2.9 with fronts bowed out to
+  u -27.6 (estimated, through the photograph's camera).
+- **The outside stair** (`steelBlue`), south-south-east of the balconies: four flights down from each balcony to a
+  landing and back, the landings at the LiDAR's 44.5 and 40.1 m (its returns at 44.4 to 45.3 m and 40.0 to 40.2 m);
+  the flights' width (1.2 m), their railings (1.0 m), the three posts and the last landing at 37.6 m estimated through
+  the photograph's camera. Below 37.6 m, under the lower balcony, the photograph sees no more of it, and it is not
+  drawn.
 - The light: the photograph is taken under an overcast sky. The viewer's sun is weak (2.5) and its sky's light strong
   (3.6), the sun to the west-north-west (290 degrees round, 50 up), between the two faces the photograph sees, at an
-  exposure of 0.88: over the model's screen box the luma 165 against the photograph's 170; the end's yellow 183 against
+  exposure of 0.88: over the model's screen box the luma 166 against the photograph's 170; the end's yellow 183 against
   168, its grey bay 214 against 188, its red ground storey 74 against 75, the north-west face's red ground storey 94
   against 79 and its glazing 215 against 181.
 
-Silhouette IoU 0.925 over the photograph (0.928 in the model's screen box). The top view: footprint IoU 0.930 (the
-LiDAR's 1,022 m² against the model's 1,080, both 1,013), 98% of the 4,035 cells both cover within 0.5 m (p10/p50/p90
+Silhouette IoU 0.925 over the photograph (0.929 in the model's screen box). The top view: footprint IoU 0.933 (the
+LiDAR's 1,022 m² against the model's 1,078, both 1,014), 99% of the 4,040 cells both cover within 0.5 m (p10/p50/p90
 -0.08/-0.02/0.06 m); the highest point 21.41 m over the door's ground against the LiDAR's 21.37 (p99.9); block 433
-97.4% under the model. 1,316 triangles, 6 draw calls.
+97.2% under the model. 1,316 triangles, 6 draw calls.
 
 ## On the map (step 7)
 
@@ -129,6 +132,6 @@ leaves it out, as it does every landmark on the site, and writes every other fil
 ## Not drawn yet
 
 The weatherboards' lines, the glazing's transoms and most of its coloured panels, the doors and windows of the ground
-storey, the downpipes, the stair's treads and its flights under the middle balcony, the balconies' mesh; the south-east
+storey, the downpipes, the stair's treads and its flights below 37.6 m, the balconies' mesh; the south-east
 face's and the east-north-east end's windows, which no photograph shows; the trees. The faces no photograph shows are
 drawn plainly.
