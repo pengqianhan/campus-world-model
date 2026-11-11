@@ -401,7 +401,7 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await expect(strip).toBeHidden();
 });
 
-test("the campus's and the walk's buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
+test("the campus's, the walk's and All schools' buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
   await open(page, "?light=day");
   // The campus with the longest name the panel offers, from its tabs or its list of campuses further off.
   await openStrip(page);
@@ -423,7 +423,29 @@ test("the campus's and the walk's buttons stay clear of the attribution at every
     for (const id of ["#status-toggle", "#walk-start", "#all-schools-dock"]) {
       const box = (await page.locator(id).boundingBox())!;
       expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
+      expect(box.x + box.width, `${id} inside the screen at ${width} px`).toBeLessThanOrEqual(width);
     }
+  }
+});
+
+test("on a narrow screen the campus's name keeps its room, All schools going above the campus's and the walk's buttons when the row has none", async ({ page }) => {
+  await open(page, "?light=day");
+  for (const width of [360, 390, 600, 1024]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const name = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => ({ text: e.textContent, clipped: e.scrollWidth > e.clientWidth }));
+    expect(name, `the campus's name at ${width} px`).toEqual({ text: "City Campus", clipped: false });
+    const toggle = (await page.locator("#status-toggle").boundingBox())!;
+    const walk = (await page.locator("#walk-start").boundingBox())!;
+    const home = (await page.locator("#all-schools-dock").boundingBox())!;
+    // the campus's and the walk's buttons side by side, as on a wide screen
+    expect(walk.x, `the walk's after the campus's at ${width} px`).toBeGreaterThanOrEqual(toggle.x + toggle.width);
+    expect(Math.abs(walk.y - toggle.y), `one row at ${width} px`).toBeLessThan(2);
+    // All schools after them where the row has its room, or else on the line above at the left; inside the screen
+    const after = home.x >= walk.x + walk.width && Math.abs(home.y - walk.y) < 2;
+    const above = home.y + home.height <= toggle.y && Math.abs(home.x - toggle.x) < 2;
+    expect(after || above, `All schools after the walk's or above the row at ${width} px`).toBe(true);
+    expect(home.x + home.width).toBeLessThanOrEqual(width);
   }
 });
 

@@ -871,16 +871,28 @@ select optgroup {
 }
 
 /* Shut, the panel is a button with the campus's name, in the corner it opens from, and the walk a
-   button beside it. */
+   button beside it, then All schools; where the row has no room for All schools, it goes onto a line of
+   its own above them (the lines wrap upward, from the foot of the screen), so the campus's name keeps its
+   room. */
 .campus-dock {
   position: absolute;
   z-index: 20;
   bottom: var(--edge-b);
   left: var(--edge-l);
   display: flex;
+  flex-wrap: wrap-reverse;
   align-items: center;
   gap: 8px;
   max-width: calc(100vw - var(--edge-l) - var(--edge-r));
+}
+
+/* The campus's and the walk's buttons keep to one line: All schools is what goes above them. */
+.campus-dock-row {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 /* In the row, the campus's name gives way first, to its ellipsis. */
@@ -1421,10 +1433,10 @@ select optgroup {
   color: #d5dee4;
   font-size: 11px;
   text-decoration: none;
-  /* It shares the foot of the screen with the campus's, the walk's and All schools' buttons (at most 480 px wide,
-     below): it gives way, to its ellipsis, before it would run under them. The phone's layout, which puts it below
-     them, sets its own. */
-  max-width: calc(100vw - var(--gap) - var(--edge-l) - 488px);
+  /* It shares the foot of the screen with the campus's and the walk's buttons (at most 380 px wide where it could
+     reach them, below; All schools goes above them there): it gives way, to its ellipsis, before it would run under
+     them. The phone's layout, which puts it below them, sets its own. */
+  max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2403,11 +2415,14 @@ select optgroup {
   right: calc(var(--hud-r) + 100px);
 }
 
-/* The attribution shares the foot of the screen with the campus's, the walk's and All schools' buttons: in a wide
-   font with a long campus name and a count, the row is at most 480 px wide at every width (the attribution keeps
-   488 px clear), the campus's name giving way first, to its ellipsis. */
-.campus-dock {
-  max-width: min(480px, calc(100vw - var(--edge-l) - var(--edge-r)));
+/* Where the attribution could reach the campus's and the walk's buttons, in a wide font with a long campus name and
+   a count, the row is at most 380 px wide (the attribution keeps 388 px clear), All schools going onto the line above
+   it; on a wider screen the three have their room in one row (from 1280 px: at 1100 px, in a wide font with the
+   longest campus name, they ran under the attribution). */
+@media (max-width: 1279.98px) {
+  .campus-dock {
+    max-width: min(380px, calc(100vw - var(--edge-l) - var(--edge-r)));
+  }
 }
 
 /* A picture of the view for an agent (scripts/walker): the panels step aside, the labels stay. */
