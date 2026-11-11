@@ -880,8 +880,8 @@ weatherboards, with a grey bay, two balconies with bowed fronts and an outside s
 east-north-east end a lower block rounded in plan. Its heights and plans come from the LiDAR but for the end wall's
 place and the red ground storey's height; those, the glazing's mullions, floor bands and panels, the doors and
 windows, the balconies' fronts and the stair are estimated with the photograph as a reference. One photograph from the road at the block's west-south-west end, looking along the face to the lane and at
-the end; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.93 in it, and the
-brightness over it is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93,
+the end; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in it, and the
+brightness over it is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93,
 and on 99% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
 drawn plainly.
 
