@@ -18,6 +18,51 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Fine Arts Studio Block 433 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 433, on the City
+  campus, from code in place of the measured massing that stood for it: a long block of four storeys under a shallow
+  vault whose ends bow out, a lower block rounded in plan at its east-north-east end; on its face to the lane a wall of
+  glazing with red, yellow and blue panels over a dark red ground storey, and at its west-south-west end yellow
+  weatherboards, a grey bay, two balconies with bowed fronts and an outside stair. Its sizes come from the LINZ 2024
+  LiDAR; it was compared with a photograph from the road at that end, and its card says what is estimated: the faces
+  the photograph sees, with it as a reference, the vault's slab and gutters, the end wall's place, and the faces no
+  photograph shows. Its measured massing's data file has gone. On the map it has the map's colours; from a walker's
+  height on a computer with a graphics card, its own walls, glass, steel and roofs (#163).
+- **Fine Arts Studio Block 431 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 431, on the City
+  campus, from code in place of the measured massing that stood for it: a long block of three storeys under a roof of
+  two pitches with a step between them, a lower annex on its north side, a glass stair tower by the entrance at its east
+  end; on its south face over the lane rows of windows between columns, a ground storey of roller doors and a low box
+  before it. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph from the lane's car park, and
+  its card says what is estimated: the south face's columns, windows and roller doors, with the photograph as a
+  reference, the end walls' place under the eave, the roof's slab and the fascia, and the faces no photograph shows; a
+  second photograph, of its east entrance, shows its stair tower and canopy to be glass. On the site the map's ground
+  along its south face stands over the real lane, so its ground storey stands partly under it. Its measured massing's
+  data file has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card,
+  its own walls, glass, doors and roofs (#162).
+- **67 Symonds Street drawn in detail.** Near the camera the map draws 67 Symonds Street (619), on the City campus,
+  from code in place of the measured massing that stood in for it: a white office tower of about eight storeys with a
+  block turned 45 degrees and plant over its roof, on a podium that runs down the slope to the gully on its north and
+  west; on its south face three columns of windows and a curved bay of dark glass bands, on its east face louvred
+  panels and windows; a glass porch over its entrance. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the street, and its card says what is estimated: the windows, the bay's bands and the louvres, with
+  the photograph as a reference, the parapet's thickness, the porch's roof drawn as a slab, the porch's plan and the
+  podium's walls drawn to the campus map's outline, and the faces no photograph shows. Its measured massing's data file
+  has gone. On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own
+  walls, glass and roofs (#161).
+- **A way back to every school's map, on every school's map.** "All schools", at the foot of the screen on the left
+  beside the campus's button and "Take a walk" (on a line above them on a screen narrower than 1280 px), and at the
+  end of the campus panel's row of campuses, is a link to the page at https://campusworldmodel.com/ that lists every
+  school's map (on the site and its previews, the root the map is served from) (#164).
+- **Building 114 drawn in detail.** Near the camera the map draws Building 114, on the City campus, from code in
+  place of the measured massing that stood for it: a long block of two storeys under a flat roof with a deep eave all
+  round and a raised strip down the middle of its roof; on its south-west face a band of windows under the eave over
+  white cladding, a floor band, a ground storey of windows between dark posts, and a glass stair tower with red doors
+  up four brick steps, and a second along the face. Its sizes come from the LINZ 2024 LiDAR; it was compared with a
+  photograph from the car park,
+  and its card says what is estimated: the south-west face's windows, floor band and posts, the stair tower's frames,
+  doors and steps and the eave's underside, with the photograph as a reference, the second stair tower's glass and
+  the canopy beside it, and the faces no photograph shows.
+  Its measured massing's data file has gone. On the map it has the map's colours; from a walker's height on a
+  computer with a graphics card, its own walls, glass, doors, steps and roofs (#160).
 - **The walk as a game, on every school's map.** "Take a walk" gives the whole screen to the view from behind the
   walker, with small panels in its corners: the site's name and Stop at the top left; a walk to a place and a button
   that hides the panels at the top right; where the walker is, on a sign, at the bottom left; its speed (and, flying,
@@ -36,6 +81,12 @@ A change to what the site does or shows adds its line here, and the README's
   roof over the outline, which the generator measures since this change on every layer of a building that
   fails its check without them. Its walls and windows are drawn by rule, as every measured massing's are; its
   card says so. No other building changes (#157).
+
+### Changed
+
+- **All schools in the campus panel only.** The link back to the page of every school's map is no longer at the
+  foot of the screen beside "Take a walk"; it stays at the end of the campus panel's row of campuses, and the
+  campus's button and the walk's stand at the foot of the screen as they did before it (#165).
 
 ## 2026-11-10
 

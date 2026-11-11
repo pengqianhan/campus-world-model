@@ -63,6 +63,19 @@ test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ pag
   for (const b of [...onMap].sort((a, z) => z.height - a.height).slice(0, 3)) expect(labelled.map(shown), `${shown(b)}`).toContain(shown(b));
 });
 
+test(`${SCHOOL}: the campus panel links back to the page of every school's map`, async ({ page }) => {
+  await open(page, DAY);
+  // the root this page is served from (the Cloudflare site and its previews serve a school at /<id>/), or the site's
+  const home = new URL(page.url()).pathname.startsWith(`/${SCHOOL}/`) ? "/" : "https://campusworldmodel.com/";
+  // shut, the row at the foot of the screen has no link (the maintainer, 2026-11-11: in the panel only)
+  await expect(page.locator(".campus-dock a")).toHaveCount(0);
+  // open: after the campuses
+  await openStrip(page);
+  const link = page.locator(".campus-tabs #all-schools");
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute("href", home);
+});
+
 test(`${SCHOOL}: each campus in an area of its own opens from the campus picker, with its buildings labelled`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");

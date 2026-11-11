@@ -2,7 +2,7 @@
 import { effect, signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import { intlLocale, pick, t, tn } from "../app/i18n.ts";
-import { ABOUT_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
+import { ABOUT_HREF, HOME_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
 import { BuildingView } from "./BuildingView.tsx";
 import { SceneHost } from "./SceneHost.tsx";
@@ -161,6 +161,9 @@ function StatusStrip() {
               </select>
             </label>
           )}
+          <a class="campus-home" id="all-schools" href={HOME_HREF} title={t("campus.allSchoolsTitle")}>
+            {t("campus.allSchools")}
+          </a>
         </div>
       </section>
     </>

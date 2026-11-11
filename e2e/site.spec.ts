@@ -357,12 +357,17 @@ test("the campus panel starts shut, as a small button with the campus's name and
   expect(wbox.x - (box.x + box.width)).toBeLessThan(20);
   expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
   expect(wbox.height).toBeLessThanOrEqual(44);
+  // the way back to the page of every school's map is in the panel only (the maintainer, 2026-11-11)
+  await expect(page.locator(".campus-dock a")).toHaveCount(0);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
   await expect(strip.locator(".campus-tabs")).toBeVisible();
+  // the way back to the page of every school's map, after the campuses, on the Cloudflare site its root, or the site's
+  await expect(strip.locator(".campus-tabs #all-schools")).toBeVisible();
+  await expect(strip.locator(".campus-tabs #all-schools")).toHaveAttribute("href", new URL(page.url()).pathname.startsWith("/uoa/") ? "/" : "https://campusworldmodel.com/");
   await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();
@@ -413,6 +418,12 @@ test("the campus's and the walk's buttons stay clear of the attribution at every
     for (const id of ["#status-toggle", "#walk-start"]) {
       const box = (await page.locator(id).boundingBox())!;
       expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
+      expect(box.x + box.width, `${id} inside the screen at ${width} px`).toBeLessThanOrEqual(width);
+    }
+    // where the row is not capped, the longest name has its room
+    if (width >= 1100) {
+      const clipped = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => e.scrollWidth > e.clientWidth);
+      expect(clipped, `${longest.name} whole at ${width} px`).toBe(false);
     }
   }
 });

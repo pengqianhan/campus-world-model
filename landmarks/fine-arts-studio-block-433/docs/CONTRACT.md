@@ -1,0 +1,66 @@
+# Contract: Fine Arts Studio Block 433
+
+The rules every part of this landmark keeps. The kit, the pipeline and the viewer are shared
+(`../../README.md`); this file is the building's own.
+
+## Frame and sizes
+- View frame, metres: **x** west-south-west (the frame's `-axis`), **y** up from the door's ground (33.1 m NZVD2016,
+  on the lane before the north-west face), **z** north-north-west (`toStreet`); the frame's centre at x = z = 0.
+  `config/fine-arts-studio-block-433.json`, `frame`: the building's returns within 1.5 m of the campus map's ring, the
+  axis along its long walls (bearing 58.3 deg). The centre is the mean of those points, the lower block at the
+  east-north-east end among them, so the main block's walls run from u -24.5 to 20.1, not about the centre.
+- The building's own frame: **u** east-north-east (`-x`), along the frame's axis, and **w** north-north-west (`z`).
+  `parts/common.js` gives `at` and `plan` for (u, w) and `Y`, which turns an elevation into a height over the door's
+  ground.
+- What the LiDAR shows (`parts/common.js` holds the numbers): a long block, its long walls at w 8.25 and -8.25 (where
+  the returns under the eave peak), its east-north-east end wall at u 20.1; a shallow vault, 51.9 m at the crown and
+  falling 2.05 m to w 10.15, its eaves at w 10.3 and its ends bowed out in plan (u -25.2 at the eaves to -26.8 at the
+  crown, and 20.85 to 22.5); at the east-north-east end a lower block at 50.5 m, rounded in plan to u 30.3, and a plant
+  room on the vault at 54.5 m; at the west-south-west end the balconies (46.9 to 47.8 m at u -27.5 to -26.5) and the
+  outside stair (w -6 to -9.5). The ground: the lane before the north-west face at 33.1 m, the south-east side at
+  30.2, the end's ground falling from 33.3 to 30.5.
+- The west-south-west end wall at u -24.5 is where the photograph's camera puts the west corner: the LiDAR sees the
+  balconies and the stair before it, not the wall.
+- Walls go down to `FOOT`, 28.5 m, 4.6 m under the door's ground.
+
+## Who owns what
+- `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/facade.js`, `parts/shapes.js` (106's,
+  as every landmark's): the lead.
+
+## Budget
+- Tier 3 (a plain building of the measured massings, upgraded): 20k triangles, 6 draw calls, one per material.
+
+## Rounds
+- Round 0 and steps 3 to 7 (2026-11-11): the photograph's camera fitted to the north-west eave against the sky, the
+  face's foot on the lane, the eave's far end, the vault's south corner at the end and four verticals (rms 0.87 px, its
+  principal point at the photograph's centre); the model from the LiDAR, the faces the photograph sees through the
+  camera (estimated): the red ground storey to 38.0 m, the glazing with mullions every 1.53 m, floor bands at 42.0 and
+  47.0 m and seven coloured panels, the end's grey bay with a door to each balcony and the windows north of it, the two
+  balconies with bowed fronts, the outside stair's four flights, its landings and three posts. The door at a blue door in
+  the north-west face (33.1 m; no record of the entrance), `Y` and the thresholds moved with it. 1,316 triangles, 6 draw calls; silhouette IoU 0.925 (0.928 in the
+  model's box); top view: footprint IoU 0.930, 98% of 4,035 cells within 0.5 m, block 433 97.4% under the model.
+- Step 8 (2026-11-11): on the site; the glazing's glass 1 cm short of the mullions' ends, where the landmark tests'
+  faces check found its top and foot in one plane with theirs. The light for the overcast photograph: a weak sun (2.5)
+  to the west-north-west (290 deg, 50 up) and a strong sky (3.6), exposure 0.88, the yellow and red a little darker:
+  the luma over the model's box 165 against 170.
+- The review's round 1 (2026-11-11): the vault's east-north-east end along the returns on the vault (20.85 to 22.5;
+  the 22.9 had been the lower block's roof's); the lower block to its roof's returns' edge (its south side at w -4.85
+  and -2.3, its north side at 5.15); the plant room's roof to its returns (u 19.5 to 24.0, w -5.5 to -0.55) and its
+  walls on the lower block; the upper balcony's floor at 46.9 m, the lower one's at 42.42, the railings 0.9 m high and
+  the landings at 44.66 and 40.16 m over the LiDAR's flat returns. Silhouette IoU 0.914 (0.918 in the model's box: the
+  flights now stop where the LiDAR's landings begin), luma 165 against 170; top view: footprint IoU 0.940, 99% of
+  4,041 cells within 0.5 m, block 433 97.1% under the model; 1,344 triangles, 6 draw calls.
+- The review's round 2 (2026-11-11): the lower block's walls where the LiDAR's returns on them lie (south at w -1.58,
+  the east end to u 29.6, the north one from w 5.29 at u 20.75 to 2.09 at 27.75), under its roof to its returns' edge
+  (the north side from w 5.59 at u 21.9 to 4.13 at 24.6); the landings west of the end wall only, out to their own
+  returns (classes 5 and 6: w -9.35 and -9.55; the returns east of the wall lie on its plane); the glazing's floor
+  bands at the balconies' floors (42.42 and 46.9 m). Silhouette IoU 0.913 (0.917 in the model's box), luma 166
+  against 170; top view: footprint IoU 0.939, 99% of 4,039 cells within 0.5 m, block 433 97.0% under the model; the
+  lowest corner of the walls 2.72 m under the door's ground, FOOT 1.88 m under that.
+- The review's round 3 (2026-11-11): words only: the README's floor bands at the balconies' floors, the lower balcony's
+  returns (4), and a stepped structure in the corner at the east end, which no photograph shows, named as not drawn.
+
+## Rules
+- Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.
+- No two faces of different materials face the same way in one plane (the landmark tests' faces check).
+- Nothing of the photographs goes into git.
