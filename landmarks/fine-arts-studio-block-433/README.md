@@ -83,10 +83,11 @@ look and the comparison.
   balcony to a landing and back (the LiDAR's returns at 44.4 to 45.3 m and 40.0 to 40.2 m on the landings), with
   railings 1.0 m high, and three posts; under the middle balcony the photograph sees no more of it, and it is drawn to
   37.6 m.
-- The light: the photograph is taken under an overcast sky. The viewer's sun stands to the west-north-west (290 degrees
-  round, 50 up), between the two faces the photograph sees, at an exposure of 0.75: over the model's screen box the
-  luma 144 against the photograph's 170; the end's yellow 193 against 168, its grey bay 209 against 188, its red ground
-  storey 83 against 75, the north-west face's red ground storey 99 against 79 and its glazing 164 against 181.
+- The light: the photograph is taken under an overcast sky. The viewer's sun is weak (2.5) and its sky's light strong
+  (3.6), the sun to the west-north-west (290 degrees round, 50 up), between the two faces the photograph sees, at an
+  exposure of 0.88: over the model's screen box the luma 165 against the photograph's 170; the end's yellow 183 against
+  168, its grey bay 214 against 188, its red ground storey 74 against 75, the north-west face's red ground storey 94
+  against 79 and its glazing 215 against 181.
 
 Silhouette IoU 0.925 over the photograph (0.928 in the model's screen box). The top view: footprint IoU 0.930 (the
 LiDAR's 1,022 m² against the model's 1,080, both 1,013), 98% of the 4,035 cells both cover within 0.5 m (p10/p50/p90

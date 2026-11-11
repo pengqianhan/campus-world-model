@@ -344,8 +344,8 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     renderOrange: painted(0xe0861c, 0.7, space),
     // Fine Arts Studio Block 433: the paint's shader in three more colours (its photograph): its yellow
     // weatherboards, its dark red ground storey, and the blue-grey steel of its outside stair and balconies
-    claddingYellow: painted(0xd8b850, 0.6, space),
-    renderRed: painted(0x8e3b32, 0.7, space),
+    claddingYellow: painted(0xc8a844, 0.6, space),
+    renderRed: painted(0x7e322b, 0.7, space),
     steelBlue: painted(0x7f90a2, 0.5, space),
   };
   return m;

@@ -37,11 +37,12 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   camera (estimated): the red ground storey to 38.0 m, the glazing with mullions every 1.53 m, floor bands at 42.0 and
   47.0 m and seven coloured panels, the end's grey bay with a door to each balcony and the windows north of it, the two
   balconies with bowed fronts, the outside stair's four flights, its landings and three posts. The door at a blue door in
-  the north-west face (33.1 m; no record of the entrance), `Y` and the thresholds moved with it. The light: the sun to
-  the west-north-west (290 deg, 50 up), exposure 0.75. 1,316 triangles, 6 draw calls; silhouette IoU 0.925 (0.928 in the
+  the north-west face (33.1 m; no record of the entrance), `Y` and the thresholds moved with it. 1,316 triangles, 6 draw calls; silhouette IoU 0.925 (0.928 in the
   model's box); top view: footprint IoU 0.930, 98% of 4,035 cells within 0.5 m, block 433 97.4% under the model.
 - Step 8 (2026-11-11): on the site; the glazing's glass 1 cm short of the mullions' ends, where the landmark tests'
-  faces check found its top and foot in one plane with theirs.
+  faces check found its top and foot in one plane with theirs. The light for the overcast photograph: a weak sun (2.5)
+  to the west-north-west (290 deg, 50 up) and a strong sky (3.6), exposure 0.88, the yellow and red a little darker:
+  the luma over the model's box 165 against 170.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

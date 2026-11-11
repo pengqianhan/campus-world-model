@@ -129,7 +129,9 @@
  "light": {
   "sunaz": 290.0,
   "sunel": 50.0,
-  "exposure": 0.75,
-  "note": "estimated: the photograph is taken under an overcast sky, the faces in soft light with no shadow. The viewer's sun stands to the west-north-west (290 deg round, 50 up), between the two faces the photograph sees, at an exposure of 0.75: over the model's screen box the luma (p50) 144 against the photograph's 170; the end's yellow 193 against 168, its grey bay 209 against 188, its red ground storey 83 against 75, the north-west face's red ground storey 99 against 79 and its glazing 164 against 181. A sun that lights the end as brightly as the photograph's leaves the north-west face too dark, and one before the end makes it too bright"
+  "sun": 2.5,
+  "env": 3.6,
+  "exposure": 0.88,
+  "note": "estimated: the photograph is taken under an overcast sky, the faces in soft light with no shadow. The viewer's sun is weak (2.5, against 8 by default) and its sky's light strong (3.6, against 2.25), the sun to the west-north-west (290 deg round, 50 up), between the two faces the photograph sees, at an exposure of 0.88: over the model's screen box the luma (p50) 165 against the photograph's 170; the end's yellow 183 against 168, its grey bay 214 against 188, its red ground storey 74 against 75, the north-west face's red ground storey 94 against 79 and its glazing 215 against 181. With the default sun before the end (230 deg) the end's yellow is 214 and the north-west face's ground storey 62"
  }
 }
