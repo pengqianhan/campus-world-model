@@ -3,7 +3,7 @@
  "site": false,
  "estimated": "(to be written)",
  "refs": "photos",
- "refs_note": "(to be written)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its photograph is taken from the ground north of the tower's north corner, looking south and up at the north-east face (left) and the north-west face (right), through a lens of about 50 degrees across, its optical axis at bearing 180 degrees and 15 degrees up; the photograph is cut off centre (its principal point solved, at (417, 666) of 1000 by 1143). Its camera is fitted to seven floor slabs' bands where they meet at the north corner (their tops 58.8 to 77.04 m, from the LiDAR's returns on the faces, 3.04 m apart) and to both faces' roof edges against the sky (80.15 m, the outer slab's top: a fit to the roof 2.2 m in, at 83.1 m, leaves 2.99 px against 0.99), held near 1.6 m over the LiDAR's ground. The fit stands it 1.6 m over the ground (54.9 m) about 20 m north of the north corner; rms 0.99 px over 38 residuals.",
  "building": {
   "id": "435",
   "also": [],
