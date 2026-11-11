@@ -3,7 +3,7 @@
 // (south-west); the frame's centre at x = z = 0, the middle of the tower's points.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-11 (round 0): every height below is the LiDAR's elevation, and Y turns it into one above the
-// config's ground, 50.65 m (the median ground in the outline's band; the door's ground replaces it at step 7).
+// config's ground, 53.03 m, the LiDAR's at the door (step 7; 50.65 m, the median ground in the outline's band, before).
 //
 // The sizes are given in the building's own frame, u along the tower's long faces toward the north-west (the frame's
 // axis, so x = -u) and w toward the south-west, the street (z = w); `at` and `plan` turn them into the view frame. A
@@ -13,7 +13,7 @@
 // 58 Symonds Street, building 435: a tower of offices over a slope that falls from the north-west to the south-east,
 // its floor slabs' bands 3.04 m apart up to the roof's edge at 80.15 m, an upper roof set in from the edge at 83.1 m,
 // and on its street side a core to 89.2 m.
-export const GROUND = 50.65;
+export const GROUND = 53.03;
 export const at = (u, w) => [-u, w];
 /** An elevation measured in the LiDAR, as a height above the config's ground. */
 export const Y = (z) => z - GROUND;
@@ -40,12 +40,26 @@ export const TOWER = {
 export const UPPER = { u: [-8.32, 11.07], w: [-6.25, 7.8], top: Y(83.1) };
 
 /** On the street side, standing out from the south-west face: a low block by the south corner (u -10.97 to -8.54,
- * w 8.04 to 12.22, its roof at 61.83 m), a strip (u -8.54 to -3.53, w 7.73 to 12.53) to 84.14 m, and the core (u
- * -3.53 to 5.86, w 6.68 to 12.11; 482 returns over 87.5 m) to 89.16 m (p90). */
+ * w 8.04 to 12.22, its roof at 61.83 m), a strip (u -8.54 to -3.53, w 7.73 to 12.53) to 83.22 m (p50 of its 139
+ * returns over 80 m; a few to 84.1), and beside the core
+ * on its north-west a strip (u 5.86 to 6.91, w 8.73 to 11.94; p50 83.22 of 29 returns) to 83.22 m. */
 export const STREET = [
   { u: [-10.97, -8.54], w: [8.7, 12.22], top: Y(61.83) },
-  { u: [-8.54, -3.53], w: [8.7, 12.53], top: Y(84.14) },
-  { u: [-3.53, 5.86], w: [6.68, 12.11], top: Y(89.16) },
+  { u: [-8.54, -3.53], w: [8.7, 12.53], top: Y(83.22) },
+  { u: [5.86, 6.91], w: [8.7, 11.94], top: Y(83.22) },
+];
+
+/** The core (u -3.53 to 5.86, w 6.68 to 12.11; 482 returns over 87.5 m), its roof one slope falling to the street:
+ * the returns' p50 in 0.5 m strips across it run from 89.23 m at w 7.0 to 87.75 m at w 12.0, 0.3 m a metre. */
+export const CORE = { u: [-3.53, 5.86], w: [6.68, 12.11], high: Y(89.25), at: 7.0, fall: 0.3 };
+
+/** Plant on the upper roof, from the LiDAR's returns over 84.3 m in 1 m cells: u -4 to 0, w 5.0 to 6.6 at 84.95 m
+ * (p50 of its 29 returns, 85.3 to 86.0 at its north-west end); u 7 to 9, w 0 to 2.5 at 85.2 m; u 9 to 10, w -4 to
+ * -2.5 at 84.5 m. */
+export const PLANT = [
+  { u: [-4.0, 0.0], w: [5.0, 6.6], top: Y(84.95) },
+  { u: [7.0, 9.0], w: [0.0, 2.5], top: Y(85.2) },
+  { u: [9.0, 10.0], w: [-4.0, -2.5], top: Y(84.5) },
 ];
 
 /** The faces (step 5), all but the bands' tops and the outer edge estimated through the photograph's camera: each slab's
