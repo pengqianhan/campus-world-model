@@ -69,6 +69,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-11:** four more buildings are drawn from the LiDAR as measured massings, their roofs at their
+  measured heights: Engineering Blocks 1 and 2 on the City campus, Carlton Pines on the Grafton campus and
+  Building 908 on the Newmarket campus.
 - **2026-11-11:** on the City campus the map draws Fine Arts Studio Block 433 in detail, where it stood as a measured
   massing: a long block of four storeys under a shallow vault, a wall of glazing with coloured panels over a red ground
   storey on its face to the lane, and at its end yellow weatherboards, two balconies and an outside stair. Its sizes
@@ -988,10 +991,10 @@ root (`python3 -m http.server 8765 --bind 127.0.0.1`) and open
 - The model and the rules the agents worked to: [`landmarks/clocktower/`](landmarks/clocktower/).
 - **Measured massings** ([`landmarks/MASSING.md`](landmarks/MASSING.md)): plain buildings that a
   program draws from the same LiDAR, with no agent and no photograph: blocks and roofs at the
-  measured heights, walls, storeys and windows by the street look's rules. Nineteen are on the site
-  (`landmarks/measured/`): on the City campus seven plain buildings, and five of the buildings planned
-  as landmarks, which they stand in for until their landmarks come; on the Grafton campus one, and on
-  the Newmarket campus six. Building 114, Fine Arts Studio Block 431 and Fine Arts Studio Block 433, three of the plain
+  measured heights, walls, storeys and windows by the street look's rules. Twenty-three are on the site
+  (`landmarks/measured/`): on the City campus seven plain buildings, and seven of the buildings planned
+  as landmarks, which they stand in for until their landmarks come; on the Grafton campus two, and on
+  the Newmarket campus seven. Building 114, Fine Arts Studio Block 431 and Fine Arts Studio Block 433, three of the plain
   buildings, and 67 Symonds Street, which a measured massing stood in for, are landmarks now. The other
   buildings it measures
   keep their blocks, each with its reason
@@ -1310,8 +1313,9 @@ If you represent the University and would like something changed or removed, ple
   Block 433 are estimated in a photograph, as are the place of one of Auckland Bioengineering House's stone fins
   and of Fine Arts Studio Block 433's west-south-west end wall). The
   measured massings (About lists them) are measured too: their
-  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Five of them,
-  Alfred Nathan House and 17 Eden Crescent among them, are buildings planned as landmarks: until their landmarks come
+  heights and roofs come from the LiDAR, their walls and windows are drawn by rule. Seven of them,
+  Alfred Nathan House, 17 Eden Crescent and Engineering Blocks 1 and 2 among them, are buildings planned as
+  landmarks: until their landmarks come
   they are drawn as plainly as the others, with no detail of their own.
 - **Only Old Choral Hall's range on Symonds Street is drawn in detail.** Every source shows the
   building during building works: the LiDAR of May 2024 has scaffold decks over its north-east
