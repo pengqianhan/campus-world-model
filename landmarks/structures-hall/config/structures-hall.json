@@ -1,0 +1,149 @@
+{
+ "name": "structures-hall",
+ "site": false,
+ "estimated": "(to be written)",
+ "refs": "photos",
+ "refs_note": "(to be written)",
+ "building": {
+  "id": "906",
+  "also": [],
+  "title": "Structures Hall (906), University of Auckland",
+  "note": "outline: building 906's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 906 by its id.",
+  "outline": [
+   [
+    432.5,
+    -1513.1
+   ],
+   [
+    435.7,
+    -1501.4
+   ],
+   [
+    444.1,
+    -1503.7
+   ],
+   [
+    445.8,
+    -1497.3
+   ],
+   [
+    444.2,
+    -1496.8
+   ],
+   [
+    446.9,
+    -1487.1
+   ],
+   [
+    443.7,
+    -1486.2
+   ],
+   [
+    442.2,
+    -1491.8
+   ],
+   [
+    439.4,
+    -1491.1
+   ],
+   [
+    440.6,
+    -1486.7
+   ],
+   [
+    443.3,
+    -1487.4
+   ],
+   [
+    443.7,
+    -1486.2
+   ],
+   [
+    448.5,
+    -1487.5
+   ],
+   [
+    448.7,
+    -1486.6
+   ],
+   [
+    500.9,
+    -1500.6
+   ],
+   [
+    496.2,
+    -1517.8
+   ],
+   [
+    487.8,
+    -1515.6
+   ],
+   [
+    484.4,
+    -1527.9
+   ],
+   [
+    432.3,
+    -1513.9
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 45,
+ "ground": 52.4,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3904",
+   "3905"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "2003"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 3.0,
+  "tower_above": 3.0,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "thresholds_note": "(to be written)",
+  "expected": {
+   "centre": [
+    438.65076657126593,
+    -1515.4571749872894
+   ],
+   "axis": [
+    -0.950479559235577,
+    0.31078707739438477
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ }
+}
