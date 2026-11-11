@@ -840,7 +840,8 @@ came out byte for byte as before when the City campus, Grafton and Newmarket wer
   height (98% of cells within 0.5 m) but not in footprint; the other six do not reach 90% of cells
   within 0.5 m. To the other failing buildings the round adds no eave. 401 and 402 miss the 90% at
   the edges of their layers: about 97% of their cells out by more than 0.5 m lie within 1 m of a
-  step in height, the model's or the LiDAR's. The sixth round takes them up.
+  step in height, the model's or the LiDAR's (by a measure of a step this round did not record; by the
+  sixth round's rule, 88.5% and 69.7%). The sixth round takes them up.
 
 ### The sixth round (2026-11-11): steps in height
 
