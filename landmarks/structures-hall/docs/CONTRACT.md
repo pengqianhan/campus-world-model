@@ -4,10 +4,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 (`../../README.md`); this file is the building's own.
 
 ## Frame and sizes
-- View frame, metres: **x** east-south-east (the frame's `-axis`), **y** up from the config's ground (52.4 m
-  NZVD2016, the provisional ground), **z** south-south-west (`toStreet`, the face the photograph sees); the frame's
-  centre at x = z = 0. `config/structures-hall.json`, `frame`: the building's returns more than 3.0 m over that ground
-  and within 1.5 m of the campus map's ring, the axis along its long faces (bearing -71.89 deg).
+- View frame, metres: **x** east-south-east (the frame's `-axis`), **y** up from the config's ground (52.58 m
+  NZVD2016, the LiDAR's ground at the door), **z** south-south-west (`toStreet`, the face the photograph sees); the
+  frame's centre at x = z = 0. `config/structures-hall.json`, `frame`: the building's returns more than 2.82 m over that
+  ground and within 1.5 m of the campus map's ring, the axis along its long faces (bearing -71.89 deg).
 - The building's own frame: **p** along its long faces toward the west-north-west and **q** toward the
   south-south-west. Its faces run 2.28 degrees off the frame's axis, so `parts/common.js` turns p and q by that before
   `at`, `plan` and `pt` give the view frame; `Y` turns an elevation measured in the LiDAR into a height over the
@@ -18,7 +18,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   northern one, p -23.95 to 23.05 and q -16.13 to 2.7, under a roof of one slope (7.5 degrees) from 71.61 m at the
   north eave up to 74.10 m at the line. A lower block against its east end, p -30.95 to -23.95 and q -15.8 to 2.55,
   flat at 68.31 m. Three stacks on the line, about 2.5 m square, their tops falling from 77.4 m to 76.6 m.
-- Walls go down to `FOOT`, 52.0 m: the ground along the walls lies from 52.06 m to 53.06 m (p50 52.49 m).
+- Walls go down to `FOOT`, 52.0 m: the ground along the walls lies from 52.06 m to 53.06 m (p50 52.49 m). The door
+  is before the glazed entrance under the canopy near the south face's east end, at 52.58 m (the campus map records
+  no entrance in 906).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the frame), `parts/block.js` (the blocks, the stacks, and `along`, a
@@ -45,3 +47,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   sun behind the building, as on the photograph's day and hour, and a strong sky, at an exposure of 0.85. 530
   triangles, 5 draw calls (`claddingPale`, `glassPale`, `roofPale`, `screenBlack`, `finBrown`). Silhouette IoU 0.878,
   0.960 in the model's box; luma p50 119 against 123.
+- Step 7 (2026-11-12): the door and its ground (52.58 m), the frame's thresholds with it (the frame unchanged), the
+  camera fitted again (unchanged, 0.72 px). Top view: footprint IoU 0.959, 98% of 6,880 cells within 0.5 m of the
+  LiDAR's height, the highest point 24.82 m over the door's ground against 24.74; block 906 98.0% under the model, no
+  other block under it (`also` empty).

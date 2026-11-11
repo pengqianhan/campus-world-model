@@ -94,7 +94,7 @@
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
  "crop_margin": 80,
- "ground": 52.4,
+ "ground": 52.58,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -113,14 +113,14 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 3.0,
-  "tower_above": 3.0,
+  "min_above": 2.82,
+  "tower_above": 2.82,
   "spine_below": 39.99,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "(to be written)",
+  "thresholds_note": "min_above 2.82 m over the door's ground (52.58 m), as 3.0 m over the provisional ground (52.4 m) was: the same returns; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring taken to local metres. The walls' axis runs along the long faces (bearing -71.89 deg), so z faces south-south-west (bearing 198.11 deg), toward the face the photograph sees. The faces themselves run 2.28 degrees off that axis (parts/common.js turns by it)",
   "expected": {
    "centre": [
     438.65076657126593,
@@ -154,5 +154,11 @@
   "env": 3.4,
   "exposure": 0.85,
   "note": "estimated: the photograph is taken in the early afternoon of a clear day in late May, when the sun stands behind the building, to the north-north-west (325 deg round, 27 up, worked from the day and the hour), and the south face is in its own shade. The viewer's sun is put there at its usual strength (8), and its sky's light made strong (3.4, against 2.25), at an exposure of 0.85: over the model's screen box the luma (p50) 119 against the photograph's 123, p10 83 against 88 (with the sky at 2.25 and an exposure of 1.0, p50 104)."
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-12); the provisional ground was 52.4 m, the LiDAR's ground at the outline's lowest point. parts/common.js gives every height as the LiDAR's elevation, and its Y turns it into one over this ground",
+ "door": {
+  "x": 15.92,
+  "z": 15.38,
+  "note": "before the glazed entrance under the thin canopy near the south face's east end, as the photograph shows it (the campus map records no entrance in 906): 1.7 m out from the entrance, just past the line of the glazed storeys' face over it (p -15.3, q 16.0 in the building's frame; (15.92, 15.38) in the view frame). The LiDAR's ground within 1 m: 10 returns, p10/p50/p90 52.543/52.576/52.666 m; the ground round the building is flat, 52.06 to 53.06 m"
  }
 }

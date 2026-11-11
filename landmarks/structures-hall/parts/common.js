@@ -3,7 +3,7 @@
 // toStreet (south-south-west); the frame's centre at x = z = 0, the middle of the building's points.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-12 (round 0): every height below is the LiDAR's elevation, and Y turns it into one above the
-// config's ground, 52.4 m (the provisional ground: the LiDAR's ground at the outline's lowest point).
+// config's ground, 52.58 m (the LiDAR's ground at the door, before the entrance near the south face's east end).
 //
 // The sizes are given in the building's own frame: p along its long faces toward the west-north-west and q toward
 // the south-south-west, the face the photograph sees. Its faces run 2.28 degrees off the frame's axis (along p and q
@@ -15,7 +15,7 @@
 // Structures Hall (906): two long blocks side by side, each under a roof of one slope that rises to the line between
 // them, the northern one's 2.2 m higher there; three square stacks stand on that line; a lower block of the same
 // depth as the northern one stands against its east end.
-export const GROUND = 52.4;
+export const GROUND = 52.58;
 const T = (2.28 * Math.PI) / 180;
 export const at = (p, q) => {
   const u = p * Math.cos(T) - q * Math.sin(T), w = p * Math.sin(T) + q * Math.cos(T);
