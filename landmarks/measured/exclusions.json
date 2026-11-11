@@ -3,7 +3,7 @@
  "buildings": {
   "118": {
    "name": "Lippincott Cottage",
-   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 35 m2): footprint IoU 0.828, 87% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.828, 98% of the other cells within 0.5 m, 25% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.818 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 35 m2): footprint IoU 0.828, 87% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.818, 84% of the other cells within 0.5 m, 33% of cells on a step; the forms model, footprint IoU 0.828, 98% of the other cells within 0.5 m, 25% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 87.6,
     "ground": {
@@ -52,23 +52,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.828,
-     "lidar_m2": 96.2,
-     "model_m2": 94.8,
-     "within_0.5m": 0.872,
-     "model_minus_lidar_m": {
-      "p10": -2.28,
-      "p50": -0.0,
-      "p90": 0.1
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.818,
+      "lidar_m2": 96.2,
+      "model_m2": 93.2,
+      "within_0.5m": 0.689,
+      "model_minus_lidar_m": {
+       "p10": -0.93,
+       "p50": -0.06,
+       "p90": 0.12
+      },
+      "highest_m": {
+       "model": 9.75,
+       "lidar": 10.55
+      },
+      "within_0.5m_off_steps": 0.835,
+      "step_share": 0.333
      },
-     "highest_m": {
-      "model": 8.41,
-      "lidar": 10.55
-     },
-     "within_0.5m_off_steps": 0.981,
-     "step_share": 0.246
-    }
+     {
+      "model": "forms",
+      "iou": 0.828,
+      "lidar_m2": 96.2,
+      "model_m2": 94.8,
+      "within_0.5m": 0.872,
+      "model_minus_lidar_m": {
+       "p10": -2.28,
+       "p50": -0.0,
+       "p90": 0.1
+      },
+      "highest_m": {
+       "model": 8.41,
+       "lidar": 10.55
+      },
+      "within_0.5m_off_steps": 0.981,
+      "step_share": 0.246
+     }
+    ]
    }
   },
   "120": {
@@ -225,7 +246,7 @@
   },
   "132": {
    "name": "George Fraser Gallery",
-   "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 11.73 m; mono at 12.55 m): footprint IoU 0.918, 86% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.918, 87% of the other cells within 0.5 m, 10% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.797 (limit 0.9), 89% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 11.73 m; mono at 12.55 m): footprint IoU 0.918, 86% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.797, 90% of the other cells within 0.5 m, 10% of cells on a step; the eaves model, footprint IoU 0.918, 87% of the other cells within 0.5 m, 10% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 118.3,
     "ground": {
@@ -275,23 +296,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.918,
-     "lidar_m2": 147.5,
-     "model_m2": 139.8,
-     "within_0.5m": 0.861,
-     "model_minus_lidar_m": {
-      "p10": -0.3,
-      "p50": 0.0,
-      "p90": 0.42
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.797,
+      "lidar_m2": 147.5,
+      "model_m2": 120.2,
+      "within_0.5m": 0.889,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.01,
+       "p90": 0.44
+      },
+      "highest_m": {
+       "model": 12.34,
+       "lidar": 9.82
+      },
+      "within_0.5m_off_steps": 0.904,
+      "step_share": 0.099
      },
-     "highest_m": {
-      "model": 12.34,
-      "lidar": 9.82
-     },
-     "within_0.5m_off_steps": 0.873,
-     "step_share": 0.096
-    }
+     {
+      "model": "eaves",
+      "iou": 0.918,
+      "lidar_m2": 147.5,
+      "model_m2": 139.8,
+      "within_0.5m": 0.861,
+      "model_minus_lidar_m": {
+       "p10": -0.3,
+       "p50": 0.0,
+       "p90": 0.42
+      },
+      "highest_m": {
+       "model": 12.34,
+       "lidar": 9.82
+      },
+      "within_0.5m_off_steps": 0.873,
+      "step_share": 0.096
+     }
+    ]
    }
   },
   "136": {
@@ -347,7 +389,7 @@
   },
   "212": {
    "name": "Belgrave",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 7 mono-pitches over 104 m2): footprint IoU 0.860, 92% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.860, 100% of the other cells within 0.5 m, 19% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 7 mono-pitches over 104 m2): footprint IoU 0.860, 92% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.858, 84% of the other cells within 0.5 m, 12% of cells on a step; the forms model, footprint IoU 0.860, 100% of the other cells within 0.5 m, 19% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 120.8,
     "ground": {
@@ -396,28 +438,49 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.86,
-     "lidar_m2": 147.5,
-     "model_m2": 127.2,
-     "within_0.5m": 0.921,
-     "model_minus_lidar_m": {
-      "p10": -0.13,
-      "p50": 0.0,
-      "p90": 0.11
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.858,
+      "lidar_m2": 147.5,
+      "model_m2": 127.0,
+      "within_0.5m": 0.865,
+      "model_minus_lidar_m": {
+       "p10": -0.1,
+       "p50": 0.03,
+       "p90": 0.74
+      },
+      "highest_m": {
+       "model": 13.62,
+       "lidar": 19.1
+      },
+      "within_0.5m_off_steps": 0.845,
+      "step_share": 0.124
      },
-     "highest_m": {
-      "model": 13.3,
-      "lidar": 19.1
-     },
-     "within_0.5m_off_steps": 0.995,
-     "step_share": 0.188
-    }
+     {
+      "model": "forms",
+      "iou": 0.86,
+      "lidar_m2": 147.5,
+      "model_m2": 127.2,
+      "within_0.5m": 0.921,
+      "model_minus_lidar_m": {
+       "p10": -0.13,
+       "p50": 0.0,
+       "p90": 0.11
+      },
+      "highest_m": {
+       "model": 13.3,
+       "lidar": 19.1
+      },
+      "within_0.5m_off_steps": 0.995,
+      "step_share": 0.188
+     }
+    ]
    }
   },
   "219": {
    "name": "8 Grafton Road",
-   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 66 m2; several faces: 2 mono-pitches over 16 m2): footprint IoU 0.899, 84% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.899, 97% of the other cells within 0.5 m, 22% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.897 (limit 0.9), 69% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 2 mono-pitches over 66 m2; several faces: 2 mono-pitches over 16 m2): footprint IoU 0.899, 84% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.897, 83% of the other cells within 0.5 m, 34% of cells on a step; the forms model, footprint IoU 0.899, 97% of the other cells within 0.5 m, 22% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 320.0,
     "ground": {
@@ -467,23 +530,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.899,
-     "lidar_m2": 319.5,
-     "model_m2": 330.5,
-     "within_0.5m": 0.844,
-     "model_minus_lidar_m": {
-      "p10": -1.31,
-      "p50": -0.01,
-      "p90": 0.15
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.897,
+      "lidar_m2": 319.5,
+      "model_m2": 326.5,
+      "within_0.5m": 0.689,
+      "model_minus_lidar_m": {
+       "p10": -2.3,
+       "p50": -0.04,
+       "p90": 0.19
+      },
+      "highest_m": {
+       "model": 13.53,
+       "lidar": 20.48
+      },
+      "within_0.5m_off_steps": 0.828,
+      "step_share": 0.342
      },
-     "highest_m": {
-      "model": 13.47,
-      "lidar": 20.48
-     },
-     "within_0.5m_off_steps": 0.967,
-     "step_share": 0.224
-    }
+     {
+      "model": "forms",
+      "iou": 0.899,
+      "lidar_m2": 319.5,
+      "model_m2": 330.5,
+      "within_0.5m": 0.844,
+      "model_minus_lidar_m": {
+       "p10": -1.31,
+       "p50": -0.01,
+       "p90": 0.15
+      },
+      "highest_m": {
+       "model": 13.47,
+       "lidar": 20.48
+      },
+      "within_0.5m_off_steps": 0.967,
+      "step_share": 0.224
+     }
+    ]
    }
   },
   "220": {
@@ -505,7 +589,7 @@
   },
   "225": {
    "name": "The James Henare Māori Research Unit",
-   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 154 m2): footprint IoU 0.887, 98% of cells within 0.5 m; with the eaves of the fifth round (flat at 4.3 m): footprint IoU 0.887, 98% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.887, 100% of the other cells within 0.5 m, 6% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.830 (limit 0.9), 41% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 154 m2): footprint IoU 0.887, 98% of cells within 0.5 m; with the eaves of the fifth round (flat at 4.3 m): footprint IoU 0.887, 98% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.830, 41% of the other cells within 0.5 m, 1% of cells on a step; the forms model, footprint IoU 0.887, 100% of the other cells within 0.5 m, 6% of cells on a step; the eaves model, footprint IoU 0.887, 100% of the other cells within 0.5 m, 6% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 168.4,
     "ground": {
@@ -574,28 +658,67 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.887,
-     "lidar_m2": 188.2,
-     "model_m2": 187.2,
-     "within_0.5m": 0.981,
-     "model_minus_lidar_m": {
-      "p10": -0.09,
-      "p50": -0.01,
-      "p90": 0.09
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.83,
+      "lidar_m2": 188.2,
+      "model_m2": 171.8,
+      "within_0.5m": 0.406,
+      "model_minus_lidar_m": {
+       "p10": -2.14,
+       "p50": -0.79,
+       "p90": -0.0
+      },
+      "highest_m": {
+       "model": 6.84,
+       "lidar": 7.8
+      },
+      "within_0.5m_off_steps": 0.412,
+      "step_share": 0.014
      },
-     "highest_m": {
-      "model": 7.27,
-      "lidar": 7.8
+     {
+      "model": "forms",
+      "iou": 0.887,
+      "lidar_m2": 188.2,
+      "model_m2": 187.2,
+      "within_0.5m": 0.981,
+      "model_minus_lidar_m": {
+       "p10": -0.09,
+       "p50": -0.01,
+       "p90": 0.09
+      },
+      "highest_m": {
+       "model": 7.27,
+       "lidar": 7.8
+      },
+      "within_0.5m_off_steps": 0.998,
+      "step_share": 0.058
      },
-     "within_0.5m_off_steps": 0.998,
-     "step_share": 0.058
-    }
+     {
+      "model": "eaves",
+      "iou": 0.887,
+      "lidar_m2": 188.2,
+      "model_m2": 187.2,
+      "within_0.5m": 0.981,
+      "model_minus_lidar_m": {
+       "p10": -0.09,
+       "p50": -0.01,
+       "p90": 0.09
+      },
+      "highest_m": {
+       "model": 7.27,
+       "lidar": 7.8
+      },
+      "within_0.5m_off_steps": 0.998,
+      "step_share": 0.058
+     }
+    ]
    }
   },
   "226": {
    "name": "Te Ruawaihanga - Material Culture Studio",
-   "reason": "top-view check: footprint IoU 0.370 (limit 0.9), 25% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 135 m2): footprint IoU 0.805, 93% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.805, 97% of the other cells within 0.5 m, 15% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.370 (limit 0.9), 25% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 4 mono-pitches over 135 m2): footprint IoU 0.805, 93% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.370, 23% of the other cells within 0.5 m, 3% of cells on a step; the forms model, footprint IoU 0.805, 97% of the other cells within 0.5 m, 15% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 166.1,
     "ground": {
@@ -644,23 +767,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.805,
-     "lidar_m2": 186.0,
-     "model_m2": 195.2,
-     "within_0.5m": 0.926,
-     "model_minus_lidar_m": {
-      "p10": -0.08,
-      "p50": 0.01,
-      "p90": 0.15
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.37,
+      "lidar_m2": 186.0,
+      "model_m2": 71.2,
+      "within_0.5m": 0.249,
+      "model_minus_lidar_m": {
+       "p10": -2.06,
+       "p50": -1.03,
+       "p90": -0.18
+      },
+      "highest_m": {
+       "model": 7.51,
+       "lidar": 17.6
+      },
+      "within_0.5m_off_steps": 0.234,
+      "step_share": 0.029
      },
-     "highest_m": {
-      "model": 7.85,
-      "lidar": 17.6
-     },
-     "within_0.5m_off_steps": 0.966,
-     "step_share": 0.154
-    }
+     {
+      "model": "forms",
+      "iou": 0.805,
+      "lidar_m2": 186.0,
+      "model_m2": 195.2,
+      "within_0.5m": 0.926,
+      "model_minus_lidar_m": {
+       "p10": -0.08,
+       "p50": 0.01,
+       "p90": 0.15
+      },
+      "highest_m": {
+       "model": 7.85,
+       "lidar": 17.6
+      },
+      "within_0.5m_off_steps": 0.966,
+      "step_share": 0.154
+     }
+    ]
    }
   },
   "251": {
@@ -848,7 +992,7 @@
   },
   "274": {
    "name": "Fale - Media Building",
-   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 4.3 degrees, over 104 m2): footprint IoU 0.858, 99% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.858, 100% of the other cells within 0.5 m, 7% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.858 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 4.3 degrees, over 104 m2): footprint IoU 0.858, 99% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.858, 94% of the other cells within 0.5 m, 7% of cells on a step; the forms model, footprint IoU 0.858, 100% of the other cells within 0.5 m, 7% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 118.3,
     "ground": {
@@ -897,23 +1041,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.858,
-     "lidar_m2": 116.5,
-     "model_m2": 118.5,
-     "within_0.5m": 0.99,
-     "model_minus_lidar_m": {
-      "p10": -0.04,
-      "p50": -0.01,
-      "p90": 0.04
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.858,
+      "lidar_m2": 116.5,
+      "model_m2": 118.5,
+      "within_0.5m": 0.942,
+      "model_minus_lidar_m": {
+       "p10": -0.38,
+       "p50": -0.01,
+       "p90": 0.38
+      },
+      "highest_m": {
+       "model": 4.41,
+       "lidar": 6.93
+      },
+      "within_0.5m_off_steps": 0.945,
+      "step_share": 0.07
      },
-     "highest_m": {
-      "model": 4.97,
-      "lidar": 6.93
-     },
-     "within_0.5m_off_steps": 0.997,
-     "step_share": 0.072
-    }
+     {
+      "model": "forms",
+      "iou": 0.858,
+      "lidar_m2": 116.5,
+      "model_m2": 118.5,
+      "within_0.5m": 0.99,
+      "model_minus_lidar_m": {
+       "p10": -0.04,
+       "p50": -0.01,
+       "p90": 0.04
+      },
+      "highest_m": {
+       "model": 4.97,
+       "lidar": 6.93
+      },
+      "within_0.5m_off_steps": 0.997,
+      "step_share": 0.072
+     }
+    ]
    }
   },
   "275": {
@@ -1103,7 +1268,7 @@
   },
   "432": {
    "name": "Fine Arts Studio Block 432",
-   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.3 degrees, over 5 m2): footprint IoU 0.921, 86% of cells within 0.5 m; with the eaves of the fifth round (flat at 10.12 m; mono at 10.31 m; flat at 10.4 m): footprint IoU 0.944, 86% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.944, 88% of the other cells within 0.5 m, 20% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.921 (limit 0.9), 86% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: mono, 3.3 degrees, over 5 m2): footprint IoU 0.921, 86% of cells within 0.5 m; with the eaves of the fifth round (flat at 10.12 m; mono at 10.31 m; flat at 10.4 m): footprint IoU 0.944, 86% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.921, 88% of the other cells within 0.5 m, 20% of cells on a step; the forms model, footprint IoU 0.921, 88% of the other cells within 0.5 m, 20% of cells on a step; the eaves model, footprint IoU 0.944, 88% of the other cells within 0.5 m, 20% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 785.0,
     "ground": {
@@ -1174,23 +1339,62 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.944,
-     "lidar_m2": 854.0,
-     "model_m2": 864.2,
-     "within_0.5m": 0.863,
-     "model_minus_lidar_m": {
-      "p10": -0.72,
-      "p50": -0.01,
-      "p90": 0.07
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.921,
+      "lidar_m2": 854.0,
+      "model_m2": 831.8,
+      "within_0.5m": 0.859,
+      "model_minus_lidar_m": {
+       "p10": -0.73,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 17.69,
+       "lidar": 17.7
+      },
+      "within_0.5m_off_steps": 0.878,
+      "step_share": 0.2
      },
-     "highest_m": {
-      "model": 17.69,
-      "lidar": 17.7
+     {
+      "model": "forms",
+      "iou": 0.921,
+      "lidar_m2": 854.0,
+      "model_m2": 831.8,
+      "within_0.5m": 0.859,
+      "model_minus_lidar_m": {
+       "p10": -0.73,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 17.69,
+       "lidar": 17.7
+      },
+      "within_0.5m_off_steps": 0.878,
+      "step_share": 0.2
      },
-     "within_0.5m_off_steps": 0.882,
-     "step_share": 0.195
-    }
+     {
+      "model": "eaves",
+      "iou": 0.944,
+      "lidar_m2": 854.0,
+      "model_m2": 864.2,
+      "within_0.5m": 0.863,
+      "model_minus_lidar_m": {
+       "p10": -0.72,
+       "p50": -0.01,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 17.69,
+       "lidar": 17.7
+      },
+      "within_0.5m_off_steps": 0.882,
+      "step_share": 0.195
+     }
+    ]
    }
   },
   "434": {
@@ -1362,7 +1566,7 @@
   },
   "503": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 5.3 degrees, over 339 m2; several faces: 4 mono-pitches over 339 m2; several faces: 4 mono-pitches over 1072 m2; a low pitch: mono, 3.4 degrees, over 5 m2; a low pitch: hip, 3.9 degrees, over 27 m2; several faces: 2 mono-pitches over 27 m2): footprint IoU 0.854, 96% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.854, 99% of the other cells within 0.5 m, 11% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.854 (limit 0.9), 94% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (a low pitch: hip, 5.3 degrees, over 339 m2; several faces: 4 mono-pitches over 339 m2; several faces: 4 mono-pitches over 1072 m2; a low pitch: mono, 3.4 degrees, over 5 m2; a low pitch: hip, 3.9 degrees, over 27 m2; several faces: 2 mono-pitches over 27 m2): footprint IoU 0.854, 96% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.854, 97% of the other cells within 0.5 m, 11% of cells on a step; the forms model, footprint IoU 0.854, 99% of the other cells within 0.5 m, 11% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 1945.1,
     "ground": {
@@ -1416,28 +1620,49 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.854,
-     "lidar_m2": 1724.2,
-     "model_m2": 1945.8,
-     "within_0.5m": 0.957,
-     "model_minus_lidar_m": {
-      "p10": -0.05,
-      "p50": 0.0,
-      "p90": 0.07
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.854,
+      "lidar_m2": 1724.2,
+      "model_m2": 1945.0,
+      "within_0.5m": 0.943,
+      "model_minus_lidar_m": {
+       "p10": -0.19,
+       "p50": 0.0,
+       "p90": 0.2
+      },
+      "highest_m": {
+       "model": 31.59,
+       "lidar": 35.25
+      },
+      "within_0.5m_off_steps": 0.974,
+      "step_share": 0.108
      },
-     "highest_m": {
-      "model": 31.77,
-      "lidar": 35.25
-     },
-     "within_0.5m_off_steps": 0.989,
-     "step_share": 0.111
-    }
+     {
+      "model": "forms",
+      "iou": 0.854,
+      "lidar_m2": 1724.2,
+      "model_m2": 1945.8,
+      "within_0.5m": 0.957,
+      "model_minus_lidar_m": {
+       "p10": -0.05,
+       "p50": 0.0,
+       "p90": 0.07
+      },
+      "highest_m": {
+       "model": 31.77,
+       "lidar": 35.25
+      },
+      "within_0.5m_off_steps": 0.989,
+      "step_share": 0.111
+     }
+    ]
    }
   },
   "504": {
    "name": "M&HS Building",
-   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 41 m2; a low pitch: mono, 3.8 degrees, over 10 m2): footprint IoU 0.871, 89% of cells within 0.5 m; with the eaves of the fifth round (flat at 28.82 m; flat at 30.25 m): footprint IoU 0.880, 89% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.880, 98% of the other cells within 0.5 m, 31% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.870 (limit 0.9), 91% of cells within 0.5 m (limit 90%); with the roof forms of the fourth round (several faces: 3 mono-pitches over 41 m2; a low pitch: mono, 3.8 degrees, over 10 m2): footprint IoU 0.871, 89% of cells within 0.5 m; with the eaves of the fifth round (flat at 28.82 m; flat at 30.25 m): footprint IoU 0.880, 89% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.870, 98% of the other cells within 0.5 m, 30% of cells on a step; the forms model, footprint IoU 0.871, 98% of the other cells within 0.5 m, 32% of cells on a step; the eaves model, footprint IoU 0.880, 98% of the other cells within 0.5 m, 31% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 1132.3,
     "ground": {
@@ -1508,28 +1733,67 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.88,
-     "lidar_m2": 1125.2,
-     "model_m2": 1161.8,
-     "within_0.5m": 0.891,
-     "model_minus_lidar_m": {
-      "p10": -0.16,
-      "p50": 0.0,
-      "p90": 0.21
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.87,
+      "lidar_m2": 1125.2,
+      "model_m2": 1149.0,
+      "within_0.5m": 0.907,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.0,
+       "p90": 0.18
+      },
+      "highest_m": {
+       "model": 33.64,
+       "lidar": 33.62
+      },
+      "within_0.5m_off_steps": 0.981,
+      "step_share": 0.305
      },
-     "highest_m": {
-      "model": 33.64,
-      "lidar": 33.62
+     {
+      "model": "forms",
+      "iou": 0.871,
+      "lidar_m2": 1125.2,
+      "model_m2": 1151.0,
+      "within_0.5m": 0.89,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.0,
+       "p90": 0.21
+      },
+      "highest_m": {
+       "model": 33.64,
+       "lidar": 33.62
+      },
+      "within_0.5m_off_steps": 0.979,
+      "step_share": 0.315
      },
-     "within_0.5m_off_steps": 0.979,
-     "step_share": 0.312
-    }
+     {
+      "model": "eaves",
+      "iou": 0.88,
+      "lidar_m2": 1125.2,
+      "model_m2": 1161.8,
+      "within_0.5m": 0.891,
+      "model_minus_lidar_m": {
+       "p10": -0.16,
+       "p50": 0.0,
+       "p90": 0.21
+      },
+      "highest_m": {
+       "model": 33.64,
+       "lidar": 33.62
+      },
+      "within_0.5m_off_steps": 0.979,
+      "step_share": 0.312
+     }
+    ]
    }
   },
   "509": {
    "name": "9 Glasgow Terrace",
-   "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 8.86 m; mono at 8.76 m; mono at 8.35 m; mono at 8.86 m): footprint IoU 0.863, 85% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): footprint IoU 0.863, 93% of the other cells within 0.5 m, 22% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.828 (limit 0.9), 85% of cells within 0.5 m (limit 90%); with the eaves of the fifth round (mono at 8.86 m; mono at 8.76 m; mono at 8.35 m; mono at 8.86 m): footprint IoU 0.863, 85% of cells within 0.5 m; leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.828, 92% of the other cells within 0.5 m, 20% of cells on a step; the eaves model, footprint IoU 0.863, 93% of the other cells within 0.5 m, 22% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 141.0,
     "ground": {
@@ -1581,23 +1845,44 @@
       }
      }
     },
-    "steps": {
-     "iou": 0.863,
-     "lidar_m2": 156.5,
-     "model_m2": 162.5,
-     "within_0.5m": 0.846,
-     "model_minus_lidar_m": {
-      "p10": -0.22,
-      "p50": 0.02,
-      "p90": 0.46
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.828,
+      "lidar_m2": 156.5,
+      "model_m2": 156.5,
+      "within_0.5m": 0.852,
+      "model_minus_lidar_m": {
+       "p10": -0.18,
+       "p50": 0.02,
+       "p90": 0.42
+      },
+      "highest_m": {
+       "model": 8.84,
+       "lidar": 10.2
+      },
+      "within_0.5m_off_steps": 0.922,
+      "step_share": 0.199
      },
-     "highest_m": {
-      "model": 8.93,
-      "lidar": 10.2
-     },
-     "within_0.5m_off_steps": 0.934,
-     "step_share": 0.218
-    }
+     {
+      "model": "eaves",
+      "iou": 0.863,
+      "lidar_m2": 156.5,
+      "model_m2": 162.5,
+      "within_0.5m": 0.846,
+      "model_minus_lidar_m": {
+       "p10": -0.22,
+       "p50": 0.02,
+       "p90": 0.46
+      },
+      "highest_m": {
+       "model": 8.93,
+       "lidar": 10.2
+      },
+      "within_0.5m_off_steps": 0.934,
+      "step_share": 0.218
+     }
+    ]
    }
   },
   "511": {
@@ -2160,7 +2445,7 @@
   },
   "910": {
    "name": "Building 910",
-   "reason": "top-view check: footprint IoU 0.881 (limit 0.9), 100% of cells within 0.5 m (limit 90%); leaving out the cells on a step in height (the sixth round): footprint IoU 0.881, 100% of the other cells within 0.5 m, 0% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.881 (limit 0.9), 100% of cells within 0.5 m (limit 90%); leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.881, 100% of the other cells within 0.5 m, 0% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 74.3,
     "ground": {
@@ -2189,28 +2474,31 @@
       "lidar": 4.42
      }
     },
-    "steps": {
-     "iou": 0.881,
-     "lidar_m2": 87.0,
-     "model_m2": 78.5,
-     "within_0.5m": 1.0,
-     "model_minus_lidar_m": {
-      "p10": -0.03,
-      "p50": 0.0,
-      "p90": 0.03
-     },
-     "highest_m": {
-      "model": 4.29,
-      "lidar": 4.42
-     },
-     "within_0.5m_off_steps": 1.0,
-     "step_share": 0.0
-    }
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.881,
+      "lidar_m2": 87.0,
+      "model_m2": 78.5,
+      "within_0.5m": 1.0,
+      "model_minus_lidar_m": {
+       "p10": -0.03,
+       "p50": 0.0,
+       "p90": 0.03
+      },
+      "highest_m": {
+       "model": 4.29,
+       "lidar": 4.42
+      },
+      "within_0.5m_off_steps": 1.0,
+      "step_share": 0.0
+     }
+    ]
    }
   },
   "911": {
    "name": "Building 911",
-   "reason": "top-view check: footprint IoU 0.869 (limit 0.9), 98% of cells within 0.5 m (limit 90%); leaving out the cells on a step in height (the sixth round): footprint IoU 0.869, 98% of the other cells within 0.5 m, 14% of cells on a step (limit 33%)",
+   "reason": "top-view check: footprint IoU 0.869 (limit 0.9), 98% of cells within 0.5 m (limit 90%); leaving out the cells on a step in height (the sixth round): the first model, footprint IoU 0.869, 98% of the other cells within 0.5 m, 14% of cells on a step (limit 33%)",
    "measured": {
     "outline_m2": 282.1,
     "ground": {
@@ -2239,23 +2527,26 @@
       "lidar": 13.18
      }
     },
-    "steps": {
-     "iou": 0.869,
-     "lidar_m2": 332.8,
-     "model_m2": 289.0,
-     "within_0.5m": 0.976,
-     "model_minus_lidar_m": {
-      "p10": -0.11,
-      "p50": -0.01,
-      "p90": 0.08
-     },
-     "highest_m": {
-      "model": 11.52,
-      "lidar": 13.18
-     },
-     "within_0.5m_off_steps": 0.98,
-     "step_share": 0.135
-    }
+    "steps": [
+     {
+      "model": "first",
+      "iou": 0.869,
+      "lidar_m2": 332.8,
+      "model_m2": 289.0,
+      "within_0.5m": 0.976,
+      "model_minus_lidar_m": {
+       "p10": -0.11,
+       "p50": -0.01,
+       "p90": 0.08
+      },
+      "highest_m": {
+       "model": 11.52,
+       "lidar": 13.18
+      },
+      "within_0.5m_off_steps": 0.98,
+      "step_share": 0.135
+     }
+    ]
    }
   },
   "913": {

@@ -1146,6 +1146,7 @@ def main():
             data["check"] = topview(b, data, P, others, skip1)
             c = data["check"]
             tried = [(rec, data, skip1, "")]  # the models measured, in the rounds' order (for the sixth round)
+            ROUND = {"": "first", "-forms": "forms", "-eaves": "eaves"}
             rec["check"] = c
             if c["iou"] < IOU_MIN or c["within_0.5m"] < WITHIN_MIN:
                 why = f"top-view check: footprint IoU {c['iou']:.3f} (limit {IOU_MIN}), {c['within_0.5m']:.0%} of cells within 0.5 m (limit {WITHIN_MIN:.0%})"
@@ -1186,17 +1187,20 @@ def main():
                 # passes so, with no more than STEPS_MAX of its cells on a step, is drawn; else its block stays, as
                 # before, and its reason says why.
                 if why and STEPS and not policy:
+                    steps = []
                     for rk, dk, sk, tk in tried:
                         ck = topview(b, dk, P, others, sk, tk + "-steps", steps=True)
+                        steps.append({"model": ROUND[tk], **ck})
                         if ck["iou"] >= IOU_MIN and ck["within_0.5m_off_steps"] >= WITHIN_MIN and ck["step_share"] <= STEPS_MAX:
                             dk["check"] = rk["check"] = ck
                             rec, data, why = rk, dk, None
                             break
                     else:
-                        rec["steps"] = ck
-                        why += (f"; leaving out the cells on a step in height (the sixth round): footprint IoU {ck['iou']:.3f}, "
-                                f"{ck['within_0.5m_off_steps']:.0%} of the other cells within 0.5 m, "
-                                f"{ck['step_share']:.0%} of cells on a step (limit {STEPS_MAX:.0%})")
+                        rec["steps"] = steps
+                        why += "; leaving out the cells on a step in height (the sixth round): " + "; ".join(
+                            f"the {s['model']} model, footprint IoU {s['iou']:.3f}, {s['within_0.5m_off_steps']:.0%} of the "
+                            f"other cells within 0.5 m, {s['step_share']:.0%} of cells on a step" for s in steps) + \
+                            f" (limit {STEPS_MAX:.0%})"
         why = policy or why
         if why:
             rec.pop("skip", None)
