@@ -3,7 +3,7 @@
 // (south-south-west); the frame's centre at x = z = 0, the middle of the building's points.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-12 (round 0): every height below is the LiDAR's elevation, and Y turns it into one above the
-// config's ground, 53.1 m (the median ground in the crop box; the door's ground replaces it at step 7).
+// config's ground, 52.64 m (the LiDAR's ground at the door, on the platform before the corner's entrance).
 //
 // The sizes are given in the building's own frame: p along its long faces toward the west-north-west and q toward
 // the south-south-west, the road. Its faces run 2.33 degrees off the frame's axis (the outermost roof returns of its
@@ -16,7 +16,7 @@
 // storeys set back under them, under a low roof of two slopes whose ridge runs along it; its east end a low gable
 // within a parapet. Its roof runs on to the west-north-west at the same height over the next building, and a lower
 // block stands against its north face.
-export const GROUND = 53.1;
+export const GROUND = 52.64;
 const T = (2.33 * Math.PI) / 180;
 export const at = (p, q) => {
   const u = p * Math.cos(T) - q * Math.sin(T), w = p * Math.sin(T) + q * Math.cos(T);
@@ -30,9 +30,9 @@ export const pt = (p, q, y) => { const [x, z] = at(p, q); return [x, y, z]; };
 /** The directions of p and q in the view frame, [x, y, z]. */
 export const DIR = { p: [-Math.cos(T), 0, Math.sin(T)], q: [Math.sin(T), 0, Math.cos(T)] };
 
-// The ground along the walls lies from 52.2 m (the road south-east of the east end) to 52.8 m before the south
-// face; the walls go down to FOOT.
-export const FOOT = Y(52.0);
+// The ground along the walls (p1 of the returns 0.5 to 3 m out) lies from 51.89 m (the road before the forward face)
+// to 52.7 m (the yard by the east end's north corner); the walls go down to FOOT.
+export const FOOT = Y(51.8);
 
 /** The block's plan at its roof's outer edges, from the LiDAR's outermost roof returns on each face: the east end at
  * p -38.27, the south face at q 15.84 from there to p -8.6, where it steps 2.68 m forward to q 18.52, the north face
@@ -81,3 +81,14 @@ export const CANOPY = { p0: -37.9, p1: -34.2, q: 17.6, top: Y(55.6), deep: 0.35 
  * the ridge and 69.85 m at the north corner (p90 of the returns on it, in 1 m strips of q). */
 export const PARAPET = { top: Y(70.05), thick: 0.3 };
 export const GABLE = { south: Y(70.08), ridge: Y(70.97), north: Y(69.85) };
+
+/** On the roof, from the LiDAR's returns standing more than 0.35 m over it (in 1 m cells): plant on a platform
+ * across the ridge (p -17 to -6, q -5 to 5.5; returns p50 71.17, p90 71.42 m) and a duct from it to the north
+ * (p -8 to -6, q -11.5 to -5; 71.15 m); a unit toward the west end (p 23 to 28.3, q -5 to -1; 70 returns, p90
+ * 71.97 m); and a fan (p -27.4 to -26.5, q 5.1 to 6.3; p90 71.91 m). */
+export const HIGH = [
+  { p: [-17.0, -6.0], q: [-5.0, 5.5], top: Y(71.35) },
+  { p: [-8.0, -6.0], q: [-11.5, -5.0], top: Y(71.15) },
+  { p: [23.0, 28.3], q: [-5.0, -1.0], top: Y(71.97) },
+  { p: [-27.4, -26.5], q: [5.1, 6.3], top: Y(71.91) },
+];
