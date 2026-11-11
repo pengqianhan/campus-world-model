@@ -871,9 +871,9 @@ select optgroup {
 }
 
 /* Shut, the panel is a button with the campus's name, in the corner it opens from, and the walk a
-   button beside it, then All schools; where the row has no room for All schools, it goes onto a line of
-   its own above them (the lines wrap upward, from the foot of the screen), so the campus's name keeps its
-   room. */
+   button beside it, then All schools: in one row from 1280 px, and below that on a line of its own above
+   them (the lines wrap upward, from the foot of the screen), so that the campus's and the walk's buttons
+   keep the room they have without it. Only the buttons take the pointer: the rest of the box is the map. */
 .campus-dock {
   position: absolute;
   z-index: 20;
@@ -884,6 +884,12 @@ select optgroup {
   align-items: center;
   gap: 8px;
   max-width: calc(100vw - var(--edge-l) - var(--edge-r));
+  pointer-events: none;
+}
+.campus-dock .status-toggle,
+.campus-dock .walk-start,
+.campus-dock .dock-home {
+  pointer-events: auto;
 }
 
 /* The campus's and the walk's buttons keep to one line: All schools is what goes above them. */
@@ -2416,12 +2422,18 @@ select optgroup {
 }
 
 /* Where the attribution could reach the campus's and the walk's buttons, in a wide font with a long campus name and
-   a count, the row is at most 380 px wide (the attribution keeps 388 px clear), All schools going onto the line above
-   it; on a wider screen the three have their room in one row (from 1280 px: at 1100 px, in a wide font with the
-   longest campus name, they ran under the attribution). */
-@media (max-width: 1279.98px) {
+   a count, the row is at most 380 px wide (the attribution keeps 388 px clear); on a wider screen it has its room. */
+@media (max-width: 1099.98px) {
   .campus-dock {
     max-width: min(380px, calc(100vw - var(--edge-l) - var(--edge-r)));
+  }
+}
+
+/* Below 1280 px All schools stands on the line above the campus's and the walk's buttons, which keep a line of their
+   own (at 1100 px, in a wide font with the longest campus name, the three in one row ran under the attribution). */
+@media (max-width: 1279.98px) {
+  .campus-dock-row {
+    flex-basis: 100%;
   }
 }
 

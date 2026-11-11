@@ -416,7 +416,7 @@ test("the campus's, the walk's and All schools' buttons stay clear of the attrib
   await expect(page.locator("#status-toggle")).toContainText(longest.name.slice(0, 4));
   const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
     a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
-  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1440]) {
+  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1279, 1280, 1440]) {
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const attribution = (await page.locator("#attribution").boundingBox())!;
@@ -425,12 +425,17 @@ test("the campus's, the walk's and All schools' buttons stay clear of the attrib
       expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
       expect(box.x + box.width, `${id} inside the screen at ${width} px`).toBeLessThanOrEqual(width);
     }
+    // where the row is not capped, the longest name has its room, as without All schools
+    if (width >= 1100) {
+      const clipped = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => e.scrollWidth > e.clientWidth);
+      expect(clipped, `${longest.name} whole at ${width} px`).toBe(false);
+    }
   }
 });
 
-test("on a narrow screen the campus's name keeps its room, All schools going above the campus's and the walk's buttons when the row has none", async ({ page }) => {
+test("below 1280 px All schools stands above the campus's and the walk's buttons, which keep their room, and the map takes the pointer beside it", async ({ page }) => {
   await open(page, "?light=day");
-  for (const width of [360, 390, 600, 1024]) {
+  for (const width of [360, 390, 600, 1024, 1279]) {
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const name = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => ({ text: e.textContent, clipped: e.scrollWidth > e.clientWidth }));
@@ -441,11 +446,15 @@ test("on a narrow screen the campus's name keeps its room, All schools going abo
     // the campus's and the walk's buttons side by side, as on a wide screen
     expect(walk.x, `the walk's after the campus's at ${width} px`).toBeGreaterThanOrEqual(toggle.x + toggle.width);
     expect(Math.abs(walk.y - toggle.y), `one row at ${width} px`).toBeLessThan(2);
-    // All schools after them where the row has its room, or else on the line above at the left; inside the screen
-    const after = home.x >= walk.x + walk.width && Math.abs(home.y - walk.y) < 2;
-    const above = home.y + home.height <= toggle.y && Math.abs(home.x - toggle.x) < 2;
-    expect(after || above, `All schools after the walk's or above the row at ${width} px`).toBe(true);
+    // All schools on the line above, at the left, inside the screen
+    expect(home.y + home.height, `All schools above the row at ${width} px`).toBeLessThanOrEqual(toggle.y);
+    expect(Math.abs(home.x - toggle.x), `All schools at the left at ${width} px`).toBeLessThan(2);
     expect(home.x + home.width).toBeLessThanOrEqual(width);
+    // beside All schools and beside the walk's button the point is the map's, not the row's empty box
+    for (const [x, y] of [[home.x + home.width + 12, home.y + home.height / 2], [walk.x + walk.width + 12, walk.y + walk.height / 2]]) {
+      const hit = await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.tagName, [x, y]);
+      expect(hit, `the map at (${Math.round(x)}, ${Math.round(y)}), ${width} px`).toBe("CANVAS");
+    }
   }
 });
 

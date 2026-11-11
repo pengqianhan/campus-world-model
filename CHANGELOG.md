@@ -19,8 +19,8 @@ A change to what the site does or shows adds its line here, and the README's
 ### Added
 
 - **A way back to every school's map, on every school's map.** "All schools", at the foot of the screen on the left
-  beside the campus's button and "Take a walk" (on a line above them where the screen is narrow), and at the end of
-  the campus panel's row of campuses, is a link to the page at https://campusworldmodel.com/ that lists every
+  beside the campus's button and "Take a walk" (on a line above them on a screen narrower than 1280 px), and at the
+  end of the campus panel's row of campuses, is a link to the page at https://campusworldmodel.com/ that lists every
   school's map (on the site and its previews, the root the map is served from) (#164).
 - **The walk as a game, on every school's map.** "Take a walk" gives the whole screen to the view from behind the
   walker, with small panels in its corners: the site's name and Stop at the top left; a walk to a place and a button
