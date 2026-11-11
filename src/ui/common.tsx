@@ -5,7 +5,7 @@ import { formatDate, has, pick, t } from "../app/i18n.ts";
 import type { AppData } from "../app/data.ts";
 import { formatMinutes, weekdayKey } from "../shared/time.ts";
 import { buildingCode, type Building, type Layer, type LayerVerdict, type Session } from "../shared/types.ts";
-import { aboutHref } from "../app/links.ts";
+import { aboutHref, homeHref } from "../app/links.ts";
 import { ICON_BOXES, ICON_LINES, ICON_PATHS } from "./icons.ts";
 
 /**
@@ -13,6 +13,9 @@ import { ICON_BOXES, ICON_LINES, ICON_PATHS } from "./icons.ts";
  * the address of this school's, which the attribution and the "why" links open.
  */
 export const ABOUT_HREF = aboutHref(import.meta.env.BASE_URL, school.id);
+
+/** The page at the site's root that lists every school's map (the maintainer, 2026-11-11: a way back to it from each). */
+export const HOME_HREF = homeHref(import.meta.env.BASE_URL, school.id);
 
 export function Icon({ name, size = 18 }: { name: string; size?: number }) {
   const line = ICON_LINES[name];

@@ -1024,6 +1024,24 @@ select optgroup {
   color: var(--accent);
 }
 
+/* The way back to the page of every school's map, after the campuses. */
+.campus-home {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.campus-home:hover {
+  color: var(--text);
+}
+
 /* ---- Building view ------------------------------------------------------------------------ */
 
 .floors {

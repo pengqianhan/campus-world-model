@@ -363,6 +363,8 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
   await expect(strip.locator(".campus-tabs")).toBeVisible();
+  // the way back to the page of every school's map, after the campuses
+  await expect(strip.locator(".campus-tabs #all-schools")).toHaveAttribute("href", /^(\/|https:\/\/campusworldmodel\.com\/)$/);
   await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();

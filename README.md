@@ -69,6 +69,8 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-11:** every school's map has "All schools" at the end of its campus panel, a link back to the page that
+  lists every school's map.
 - **2026-11-11:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
   in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
   the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
