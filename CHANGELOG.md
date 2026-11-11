@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   what is estimated: the faces the photograph sees, with it as a reference, the dark ground storey, and the faces no
   photograph shows, drawn on the same grid. Its measured massing's data file has gone. On the map it has the map's
   colours; from a walker's height on a computer with a graphics card, its own bands, glass, louvres and roofs
-  (#PRNUM).
+  (#167).
 
 ## 2026-11-11
 
