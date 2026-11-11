@@ -3,7 +3,7 @@
  "site": false,
  "estimated": "(to be written)",
  "refs": "photos",
- "refs_note": "(to be written)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph is taken from the road south-east of the building, about 27 m from its south-east corner, looking north-west and up at the south face and the east end; its camera is fitted to both faces' roof edges against the sky (the south face's at 70.1 m, the east end's low gable from 70.1 m up to its ridge at 70.97 m and down to 69.85 m), to four upright edges and to three corners (the ridge, the east end's north corner and the top of the south face's step forward), held 1.6 m over the LiDAR's ground (1.62 m fitted): a lens of 59.4 degrees across, looking up 15.0 degrees, rms 0.85 px over 46 residuals. Fitted to the edges and uprights alone it wanted a lens of 62.8 degrees and put those three corners 12 to 39 px off: the lines alone do not fix the scale along them",
  "building": {
   "id": "903",
   "also": [],
