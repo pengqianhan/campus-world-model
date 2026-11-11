@@ -18,6 +18,15 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Fine Arts Studio Block 433 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 433, on the City
+  campus, from code in place of the measured massing that stood for it: a long block of four storeys under a shallow
+  vault whose ends bow out, a lower block rounded in plan at its east-north-east end; on its face to the lane a wall of
+  glazing with red, yellow and blue panels over a dark red ground storey, and at its west-south-west end yellow
+  weatherboards, a grey bay, two balconies with bowed fronts and an outside stair. Its sizes come from the LINZ 2024
+  LiDAR; it was compared with a photograph from the road at that end, and its card says what is estimated: the faces
+  the photograph sees, with it as a reference, the vault's slab and gutters, the end wall's place, and the faces no
+  photograph shows. Its measured massing's data file has gone. On the map it has the map's colours; from a walker's
+  height on a computer with a graphics card, its own walls, glass, steel and roofs (#163).
 - **Fine Arts Studio Block 431 drawn in detail.** Near the camera the map draws Fine Arts Studio Block 431, on the City
   campus, from code in place of the measured massing that stood for it: a long block of three storeys under a roof of
   two pitches with a step between them, a lower annex on its north side, a glass stair tower by the entrance at its east

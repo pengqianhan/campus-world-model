@@ -5,7 +5,8 @@ LiDAR and checked against Street View photographs (the Kate Edger Information Co
 Building, buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907,
 Auckland Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and
 507 of the M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114,
-67 Symonds Street and Fine Arts Studio Block 431 each against another photograph of it: `"refs": "photos"`,
+67 Symonds Street, Fine Arts Studio Block 431 and Fine Arts Studio Block 433 each against another photograph
+of it: `"refs": "photos"`,
 under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
@@ -373,7 +374,7 @@ With `"refs": "photos"` in the config (the Kate Edger Information Commons, the H
 buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland
 Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the
 M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114, 67 Symonds Street,
-Fine Arts Studio Block 431),
+Fine Arts Studio Block 431, Fine Arts Studio Block 433),
 refine, compare, metrics,
 `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
