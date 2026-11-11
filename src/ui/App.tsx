@@ -85,6 +85,9 @@ function StatusStrip() {
             <Icon name="walk" />
             <span>{t("walker.start")}</span>
           </button>
+          <a class="dock-home" id="all-schools-dock" href={HOME_HREF} title={t("campus.allSchoolsTitle")}>
+            {t("campus.allSchools")}
+          </a>
         </div>
       )}
       <section class="status" id="status-strip" aria-live="polite" hidden={!open}>

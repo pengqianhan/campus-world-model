@@ -357,6 +357,13 @@ test("the campus panel starts shut, as a small button with the campus's name and
   expect(wbox.x - (box.x + box.width)).toBeLessThan(20);
   expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
   expect(wbox.height).toBeLessThanOrEqual(44);
+  // and the way back to the page of every school's map after it, on the Cloudflare site its root, or the site's
+  const home = page.locator(".campus-dock #all-schools-dock");
+  await expect(home).toBeVisible();
+  await expect(home).toHaveAttribute("href", new URL(page.url()).pathname.startsWith("/uoa/") ? "/" : "https://campusworldmodel.com/");
+  const hbox = (await home.boundingBox())!;
+  expect(hbox.x).toBeGreaterThanOrEqual(wbox.x + wbox.width);
+  expect(hbox.x + hbox.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();
@@ -364,7 +371,7 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await expect(strip.locator(".status-term")).not.toBeEmpty();
   await expect(strip.locator(".campus-tabs")).toBeVisible();
   // the way back to the page of every school's map, after the campuses
-  await expect(strip.locator(".campus-tabs #all-schools")).toHaveAttribute("href", /^(\/|https:\/\/campusworldmodel\.com\/)$/);
+  await expect(strip.locator(".campus-tabs #all-schools")).toHaveAttribute("href", new URL(page.url()).pathname.startsWith("/uoa/") ? "/" : "https://campusworldmodel.com/");
   await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();
@@ -412,7 +419,7 @@ test("the campus's and the walk's buttons stay clear of the attribution at every
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const attribution = (await page.locator("#attribution").boundingBox())!;
-    for (const id of ["#status-toggle", "#walk-start"]) {
+    for (const id of ["#status-toggle", "#walk-start", "#all-schools-dock"]) {
       const box = (await page.locator(id).boundingBox())!;
       expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
     }

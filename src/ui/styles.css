@@ -1544,7 +1544,8 @@ select optgroup {
   }
 
   .status-toggle,
-  .walk-start {
+  .walk-start,
+  .dock-home {
     font-size: 13px;
   }
 
@@ -1721,6 +1722,29 @@ select optgroup {
 
 .walk-start:hover {
   border-color: var(--accent);
+  background: rgba(24, 40, 53, 0.96);
+}
+
+/* After the walk, as tall and as quiet as the campus's button: the way back to the page of every school's map. */
+.dock-home {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dock-home:hover {
+  border-color: rgba(255, 255, 255, 0.28);
   background: rgba(24, 40, 53, 0.96);
 }
 
