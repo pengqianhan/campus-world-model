@@ -57,6 +57,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   bands at the balconies' floors (42.42 and 46.9 m). Silhouette IoU 0.913 (0.917 in the model's box), luma 166
   against 170; top view: footprint IoU 0.939, 99% of 4,039 cells within 0.5 m, block 433 97.0% under the model; the
   lowest corner of the walls 2.72 m under the door's ground, FOOT 1.88 m under that.
+- The review's round 3 (2026-11-11): words only: the README's floor bands at the balconies' floors, the lower balcony's
+  returns (4), and a stepped structure in the corner at the east end, which no photograph shows, named as not drawn.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

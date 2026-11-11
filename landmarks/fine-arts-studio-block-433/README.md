@@ -79,12 +79,12 @@ look and the comparison.
 - **The ground storey** (`renderRed`), to 38.0 m on the north-west face and round the west corner on the end
   (estimated).
 - **The north-west face's glazing** (`glassPale`), from u -19.5 to 18.7 between the yellow-clad ends, from 38.0 m to
-  under the eave; blue-grey mullions every 1.53 m and floor bands at 42.0 and 47.0 m (`steelBlue`); seven coloured
+  under the eave; blue-grey mullions every 1.53 m and floor bands at the balconies' floors, 42.42 and 46.9 m (`steelBlue`); seven coloured
   panels, red, yellow and blue (estimated, their middles through the photograph's camera).
 - **The west-south-west end**: the grey bay (`claddingPale`) from w -3.5 to 3.15, a red door to each balcony; north of
   it three rows of top-hung windows (39.2 to 40.0, 43.8 to 44.8 and 48.6 to 49.6 m) and small square windows (estimated).
 - **The balconies** (`steelBlue`): the upper one's floor at 46.9 m and its railing's top at 47.7 to 47.8 (the LiDAR's
-  returns), so railings 0.9 m high; the lower one's floor at 42.42 m (5 returns); both from w -4.3 to 2.9 with fronts
+  returns), so railings 0.9 m high; the lower one's floor at 42.42 m (p50 of its 4 returns, 42.41 to 42.44); both from w -4.3 to 2.9 with fronts
   bowed out to u -27.6 (estimated, through the photograph's camera).
 - **The outside stair** (`steelBlue`), south-south-east of the balconies: four flights down from each balcony to a
   landing and back, the landings where the LiDAR's flat returns lie, west of the end wall (the upper at 44.66 m over
@@ -137,6 +137,9 @@ leaves it out, as it does every landmark on the site, and writes every other fil
 ## Not drawn yet
 
 The weatherboards' lines, the glazing's transoms and most of its coloured panels, the doors and windows of the ground
-storey, the downpipes, the stair's treads and its flights below 37.6 m, the balconies' mesh; the south-east
-face's and the east-north-east end's windows, which no photograph shows; the trees. The faces no photograph shows are
+storey, the downpipes, the stair's treads and its flights below 37.6 m, the balconies' mesh; a stepped structure
+about 2.7 by 2.9 m in the corner between the main block's east end and the lower block's south side (the LiDAR's flat
+returns at 35.0, 36.7 and 38.0 m over u 20.0 to 22.6 and w -7.8 to -5.2: perhaps a second outside stair or a stepped
+canopy), which no photograph shows; the south-east face's and the east-north-east end's windows, which no photograph
+shows; the trees. The faces no photograph shows are
 drawn plainly.

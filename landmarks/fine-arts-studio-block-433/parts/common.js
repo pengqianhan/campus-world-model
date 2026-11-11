@@ -100,7 +100,7 @@ export const FACE = {
 
 /** The balconies on the west-south-west end: the upper one's floor at 46.9 m and its railing's top at 47.7 to 47.8 (the
  * LiDAR's returns over u -27.5 to -26.5 and w -4 to 1), so railings 0.9 m high; the lower one's floor at 42.42 m (p50
- * of the 5 returns at 41.8 to 43.2 m over it); the rest through the photograph's camera, estimated: both 0.3 m thick, from w
+ * of its 4 returns, 42.41 to 42.44); the rest through the photograph's camera, estimated: both 0.3 m thick, from w
  * -4.3 to 2.9, their fronts bowed out to u -27.6. */
 export const BALCONY = { floors: [42.42, 46.9], w: [-4.3, 2.9], front: [-27.0, -27.6], t: 0.3, rail: 0.9 };
 
