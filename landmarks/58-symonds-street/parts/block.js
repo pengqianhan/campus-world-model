@@ -14,7 +14,8 @@ export function upper(b) {
 }
 
 export function street(b) {
-  for (const s of STREET) block(b, box(s.u, s.w), FOOT, s.top, WALL, ROOFS);
+  // 0.1 m under the walls' foot, so that their floors do not lie in one plane with the dark ground storey's
+  for (const s of STREET) block(b, box(s.u, s.w), FOOT - 0.1, s.top, WALL, ROOFS);
 }
 
 export function plant(b) {
@@ -26,7 +27,7 @@ export function plant(b) {
 export function core(b) {
   const [u0, u1] = CORE.u, [w0, w1] = CORE.w;
   const h = (w) => CORE.high - CORE.fall * (w - CORE.at), lo = h(w1), hi = h(w0);
-  prism(b, box(CORE.u, CORE.w), FOOT, lo, WALL);
+  prism(b, box(CORE.u, CORE.w), FOOT - 0.1, lo, WALL);
   const P = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
   tris(b, [[P(u0, w0, hi), P(u1, w0, hi), P(u1, w1, lo)], [P(u0, w0, hi), P(u1, w1, lo), P(u0, w1, lo)]], ROOFS, "up");
   const out = (du, dw) => ([x, z]) => [x - du, z + dw];  // outward in the view frame (x = -u)
