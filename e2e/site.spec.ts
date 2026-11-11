@@ -357,12 +357,22 @@ test("the campus panel starts shut, as a small button with the campus's name and
   expect(wbox.x - (box.x + box.width)).toBeLessThan(20);
   expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
   expect(wbox.height).toBeLessThanOrEqual(44);
+  // and the way back to the page of every school's map after it, on the Cloudflare site its root, or the site's
+  const home = page.locator(".campus-dock #all-schools-dock");
+  await expect(home).toBeVisible();
+  await expect(home).toHaveAttribute("href", new URL(page.url()).pathname.startsWith("/uoa/") ? "/" : "https://campusworldmodel.com/");
+  const hbox = (await home.boundingBox())!;
+  expect(hbox.x).toBeGreaterThanOrEqual(wbox.x + wbox.width);
+  expect(hbox.x + hbox.width).toBeLessThanOrEqual(page.viewportSize()!.width);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();
   await expect(strip).toBeVisible();
   await expect(strip.locator(".status-term")).not.toBeEmpty();
   await expect(strip.locator(".campus-tabs")).toBeVisible();
+  // the way back to the page of every school's map, after the campuses
+  await expect(strip.locator(".campus-tabs #all-schools")).toBeVisible();
+  await expect(strip.locator(".campus-tabs #all-schools")).toHaveAttribute("href", new URL(page.url()).pathname.startsWith("/uoa/") ? "/" : "https://campusworldmodel.com/");
   await expect(walk).toHaveCount(0);
   // Focus goes into the panel and back to its button, for whoever is using the keyboard.
   await expect(page.locator("#status-hide")).toBeFocused();
@@ -391,7 +401,7 @@ test("the campus panel starts shut, as a small button with the campus's name and
   await expect(strip).toBeHidden();
 });
 
-test("the campus's and the walk's buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
+test("the campus's, the walk's and All schools' buttons stay clear of the attribution at every width, with the longest campus name", async ({ page }) => {
   await open(page, "?light=day");
   // The campus with the longest name the panel offers, from its tabs or its list of campuses further off.
   await openStrip(page);
@@ -406,14 +416,49 @@ test("the campus's and the walk's buttons stay clear of the attribution at every
   await expect(page.locator("#status-toggle")).toContainText(longest.name.slice(0, 4));
   const apart = (a: { x: number; y: number; width: number; height: number }, b: typeof a) =>
     a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;
-  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1440]) {
+  for (const width of [360, 390, 600, 720, 721, 768, 820, 900, 1000, 1024, 1099, 1100, 1279, 1280, 1440]) {
     await page.setViewportSize({ width, height: 800 });
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const attribution = (await page.locator("#attribution").boundingBox())!;
-    for (const id of ["#status-toggle", "#walk-start"]) {
+    for (const id of ["#status-toggle", "#walk-start", "#all-schools-dock"]) {
       const box = (await page.locator(id).boundingBox())!;
       expect(apart(box, attribution), `${id} clear of the attribution at ${width} px, ${longest.name}`).toBe(true);
+      expect(box.x + box.width, `${id} inside the screen at ${width} px`).toBeLessThanOrEqual(width);
     }
+    // where the row is not capped, the longest name has its room, as without All schools
+    if (width >= 1100) {
+      const clipped = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => e.scrollWidth > e.clientWidth);
+      expect(clipped, `${longest.name} whole at ${width} px`).toBe(false);
+    }
+  }
+});
+
+test("below 1280 px All schools stands above the campus's and the walk's buttons, which keep their room, and the map takes the pointer beside it", async ({ page }) => {
+  await open(page, "?light=day");
+  for (const width of [360, 390, 600, 1024, 1279]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const name = await page.locator("#status-toggle .status-toggle-name").evaluate((e) => ({ text: e.textContent, clipped: e.scrollWidth > e.clientWidth }));
+    expect(name, `the campus's name at ${width} px`).toEqual({ text: "City Campus", clipped: false });
+    const toggle = (await page.locator("#status-toggle").boundingBox())!;
+    const walk = (await page.locator("#walk-start").boundingBox())!;
+    const home = (await page.locator("#all-schools-dock").boundingBox())!;
+    // the campus's and the walk's buttons side by side, as on a wide screen
+    expect(walk.x, `the walk's after the campus's at ${width} px`).toBeGreaterThanOrEqual(toggle.x + toggle.width);
+    expect(Math.abs(walk.y - toggle.y), `one row at ${width} px`).toBeLessThan(2);
+    // All schools on the line above, at the left, inside the screen
+    expect(home.y + home.height, `All schools above the row at ${width} px`).toBeLessThanOrEqual(toggle.y);
+    expect(Math.abs(home.x - toggle.x), `All schools at the left at ${width} px`).toBeLessThan(2);
+    expect(home.x + home.width).toBeLessThanOrEqual(width);
+    // beside All schools and beside the walk's button the point is the map's, not the row's empty box
+    const beside: [number, number][] = [[home.x + home.width + 12, home.y + home.height / 2], [walk.x + walk.width + 12, walk.y + walk.height / 2]];
+    for (const [x, y] of beside) {
+      const hit = await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.tagName, [x, y] as [number, number]);
+      expect(hit, `the map at (${Math.round(x)}, ${Math.round(y)}), ${width} px`).toBe("CANVAS");
+    }
+    // and All schools itself takes it
+    const onLink = await page.evaluate(([px, py]) => !!document.elementFromPoint(px, py)?.closest("#all-schools-dock"), [home.x + home.width / 2, home.y + home.height / 2] as [number, number]);
+    expect(onLink, `All schools under the pointer at ${width} px`).toBe(true);
   }
 });
 

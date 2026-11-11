@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import { locales } from "../src/app/i18n.ts";
 import type { Words } from "../src/shared/school.ts";
 import type { Meta } from "../src/shared/types.ts";
-import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref } from "../src/app/links.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
 import { type PickerSchool, escapeHtml, pickerPages, schoolForm, schoolLine, schoolWords } from "../scripts/lib/picker.ts";
@@ -278,5 +278,13 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(aboutHref("/campus-world-model/", "uoa")).toBe(`${SITE}#about-uoa`);
     expect(SITE).toBe("https://campusworldmodel.com/");
     for (const id of ids) expect(pages.index).toContain(`id="about-${id}"`);
+  });
+
+  it("a school's page links back to the page of every school's map at the root it is served from, or at campusworldmodel.com", () => {
+    expect(homeHref("/uoa/", "uoa")).toBe("/");
+    expect(homeHref("/vuw/", "vuw")).toBe("/");
+    expect(homeHref("/campus-world-model/", "uoa")).toBe(SITE);
+    // the page at that root is the one that lists the schools
+    for (const id of ids) expect(pages.index).toContain(`href="/${id}/"`);
   });
 });
