@@ -44,6 +44,32 @@ export const OUTLINE = [
  * returns within 0.8 m of the faces, p50 51.42 to 51.49, p90 51.56 to 51.58), 0.3 m thick. */
 export const ROOF = Y(51.13), PARAPET = { top: Y(51.5), thick: 0.3 };
 
+/** The faces, estimated through the photograph's fitted camera (config's refs_note): the upper storey is a band of
+ * concrete from its underside at 49.1 m (where the camera puts the band's lower edge on the chamfer and the south-east
+ * face: 49.06 to 49.11 m) to the parapet's top; under it a flat soffit, and the ground storey set back behind it, its
+ * glazing 1.85 m behind the south-east face (where the camera puts its head at the soffit: q -11.0) and, under the
+ * south corner, 3.65 m behind the south-west end (p -15.2), a porch; elsewhere 1.85 m in, as no photograph shows.
+ * Its floor and the deck before it at 45.3 m, at the camera's eye (the deck's edge on its horizon), as the LiDAR's
+ * ground by the south-west end reaches 45.3 m at q -2 to 2. Columns 0.45 m
+ * square under the band's edge, 0.55 m in: the two the photograph shows (p -15.15 on the south-east face, q -7.7 on
+ * the south-west end), the rest on a grid of 6.5 m from them. A deck under the south corner and along the south-east
+ * face, out to q -16.0, where the camera puts its railing's top 1 m over it (q -15.6 to -16.9 from p -18.2 to 2.0),
+ * and a flight of 11 steps from the court (43.4 m) up to its west corner, its foot 1.7 m wide where the camera puts
+ * it (p -21.35, q -17.93 to p -19.84, q -18.66), rising along the chamfer's normal. */
+export const SOFFIT = Y(49.1), FLOOR = Y(45.3), COURT = Y(43.4);
+export const STOREY = [[-15.2, -11.0], [15.85, -11.0], [15.85, 11.3], [-14.5, 11.3], [-14.5, 5.5], [-15.2, 5.5]];
+export const COLUMNS = [
+  [-15.15, -12.3], [-8.65, -12.3], [-2.15, -12.3], [4.35, -12.3], [10.85, -12.3],
+  [17.15, -6.0], [17.15, 0.5], [16.3, 7.0],
+  [15.5, 12.6], [9.0, 12.6], [2.5, 12.6], [-4.0, 12.6], [-10.5, 12.6], [-15.8, 9.0],
+  [-18.3, 2.8], [-18.3, -2.5], [-18.3, -7.7],
+];
+export const DECK = {
+  plan: [[-15.2, -11.0], [-15.2, -3.0], [-18.85, -3.0], [-18.85, -16.0], [3.0, -16.0], [3.0, -11.0]],
+  rail: [[-18.0, -16.0], [3.0, -16.0], [3.0, -12.85]],
+  stair: { foot: [-20.6, -18.3], dir: [0.67, 0.74], width: 1.7, run: 3.0, steps: 11 },
+};
+
 /** On the roof: a box at the west corner (p -13.9 to -9.8, q 9.6 to 13.0; 132 returns, p90 53.88 m) and a block
  * toward the east end (1,431 returns, p50 53.57, p90 53.77 m) along the south-east side from p 3 (q -11 to -7.5) and
  * from p -2 (q -7.5 to -4.5) to 16.6, and up to q 3 from p 8 (its returns on a 1 m grid). */

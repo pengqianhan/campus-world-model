@@ -1,12 +1,15 @@
 // Security, building 409 (University of Auckland), drawn by rule from code alone. Each part lives in parts/ and is
 // built here; a part that throws is logged and left out, so that one broken part never stops the others.
-// `only` (the viewer's ?only=main) builds just those parts. Every landmark's model.js exports build(materials, only),
+// `only` (the viewer's ?only=band) builds just those parts. Every landmark's model.js exports build(materials, only),
 // which returns a Group. The parts are drawn in the view frame.
 import { Builder } from "../kit/gothic.js";
-import { high, main } from "./parts/block.js";
+import { band, columns, deck, high, storey } from "./parts/block.js";
 
 const PARTS = {
-  main: (b) => main(b),
+  storey: (b) => storey(b),
+  band: (b) => band(b),
+  columns: (b) => columns(b),
+  deck: (b) => deck(b),
   high: (b) => high(b),
 };
 

@@ -1,7 +1,7 @@
 {
  "name": "security-409",
  "site": false,
- "estimated": "(to be written)",
+ "estimated": "the faces the photograph sees, with it as a reference: the band's underside, the ground storey's glazing and its place behind the band, its frames, the columns, the deck, its railing and the steps; the joints at the chamfer's ends; and the faces no photograph shows, drawn as the ones it does",
  "refs": "photos",
  "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its photograph is taken from the paved court south of the building, under a tree, looking north-north-west at the chamfered south corner of its upper storey: the south-west end (left), the chamfer (facing the camera) and the south-east face (right), over a glazed ground storey set back on a raised deck; level, its optical axis at bearing 348.9 degrees and 0.9 degrees down. Its camera is fitted to both faces' roof edges against the sky and the leaves (51.5 m, the parapet's top in the LiDAR's returns along the faces, which run 1.8 degrees off the frame's axis) and to seven upright edges (the chamfer's joints, a column, a post and a panel), held near 1.6 m over the LiDAR's ground: rms 0.76 px over 26 residuals, 1.6 m over the ground about 10.5 m south of the corner. Its lens of 71.4 degrees across agrees with the camera's own record (a 24 mm equivalent, 71.6 degrees across this frame). Through it the chamfer's top corners, which the fit does not use, fall on the two faces' lines within 0.01 m, and make the chamfer 3.4 m wide at 42 degrees; the LiDAR's returns at the parapet's height there lie on that line, and the corner's returns beyond it are the tree's.",
  "building": {
@@ -132,5 +132,13 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true
+ },
+ "light": {
+  "sunaz": 300.0,
+  "sunel": 45.0,
+  "sun": 1.5,
+  "env": 3.4,
+  "exposure": 0.95,
+  "note": "estimated: the photograph is taken under a bright, pale overcast, looking north-north-west at faces that face south-west, south and south-east, evenly lit and with no shadow cast. The viewer's sun stands to the west-north-west (300 deg round, 45 up), weak (1.5, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.95: over the model's screen box the luma (p50) 165 against the photograph's 158. At 0.8 it is 122, at 1.0 167."
  }
 }

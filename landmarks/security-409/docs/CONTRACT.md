@@ -26,7 +26,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by material.
-  Round 0: 232 triangles, 2 draw calls.
+  Round 0: 232 triangles, 2 draw calls; steps 5 and 6: 3,448 triangles, 5 draw calls.
 
 ## Rounds
 - Round 0 (2026-11-12, the lead alone): the block with its chamfers and the step at its west corner, the roof and
@@ -35,3 +35,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   over the LiDAR's ground about 10.5 m south of the south corner, level, a lens of 71.4 degrees). Silhouette IoU
   0.748 over the photograph, 0.787 in the model's box, where the trees leave 2.6% of it sky; luma p50 222 against
   160 (the light is not set yet).
+- Steps 5 and 6 (2026-11-12): the faces (`parts/block.js`): the band of the upper storey from its underside at
+  49.1 m, where the photograph's camera puts the band's lower edge, with a dark joint at each end of the chamfer; the
+  ground storey's glazing and its frames set back under it, 1.85 m behind the south-east face and, under the south
+  corner, 3.65 m behind the south-west end; columns 0.45 m square under the band's edge; a deck at 45.3 m under the
+  corner and along the south-east face to q -16.0, its railing, and a flight of 11 steps from the court up to its west
+  corner, all placed through the photograph's camera and estimated; the faces no photograph shows drawn as the ones
+  it does. The light: the sun weak to the west-north-west and a strong sky, as the photograph's overcast, exposure
+  0.95: luma 165 against 158. Silhouette IoU 0.745, 0.778 in the model's box.
