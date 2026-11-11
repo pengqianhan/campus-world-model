@@ -42,9 +42,10 @@ export function roof(b) {
   }
 }
 
-/** The east-north-east end: the lower block rounded in plan, and the plant room on the vault. */
+/** The east-north-east end: the lower block rounded in plan, its roof over its walls, and the plant room on it. */
 export function east(b) {
-  block(b, plan(EAST.low.plan), FOOT, Y(EAST.low.top), YELLOW, ROOF, 0.3);
+  prism(b, plan(EAST.low.walls), FOOT, Y(EAST.low.top - 0.3), YELLOW);
+  prism(b, plan(EAST.low.roof), Y(EAST.low.top - 0.3), Y(EAST.low.top + 0.01), ROOF);
   block(b, plan(EAST.plant.walls), Y(EAST.plant.foot), Y(EAST.plant.top), GREY, ROOF, 0.3);
   prism(b, plan(EAST.plant.roof), Y(EAST.plant.top - 0.3), Y(EAST.plant.top + 0.01), ROOF);
 }

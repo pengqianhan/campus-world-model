@@ -62,18 +62,21 @@ export const vaultEast = (w) => {
   return EAST_EDGE[EAST_EDGE.length - 1][1];
 };
 
-/** The east-north-east end: a lower block at 50.5 m (p50 of its returns, 50.44), its plan its roof's returns' edge:
- * from the main block's end at u 20.1 its south side at w -4.85 to u 23.45 (the returns' least w -4.92 to -4.94 in
- * u 22 to 24, and vertical faces at -4.85 from 45.1 to 53.0 m), then at w -2.3 (-2.09 to -2.30 in u 24 to 29),
- * rounded to u 30.3 (its returns' greatest u in 1 m strips of w), its north side at w 5.15 to u 24; and a plant room
- * at 54.5 m (p50 of its 190
+/** The east-north-east end: a lower block at 50.5 m (p50 of its returns, 50.44). Its roof, 0.3 m thick, to its
+ * returns' edge: from the main block's end at u 20.1 its south side at w -4.85 to u 23.45 (the returns' least w -4.92
+ * to -4.94 in u 22 to 24), then at w -2.3 (-2.09 to -2.30 in u 24 to 29), rounded to u 30.3 (its returns' greatest u
+ * in 1 m strips of w), its north side along its returns from w 5.59 at u 21.9 to 4.13 at 24.6. Its walls where the
+ * returns from 34 to 48.7 m lie, under the roof: the south one at w -4.85 to u 23.45 (vertical faces there from 45.1
+ * to 53.0 m) and then at -1.58 (107 returns over u 23.6 to 27.9), the east end to u 29.6 (its returns to 29.64), the
+ * north one along a line from w 5.29 at u 20.75 to 2.09 at 27.75. And a plant room at 54.5 m (p50 of its 190
  * returns over 53.5 m, 54.41) over u 19.5 to 24.0 and w -5.5 to -0.55 (its returns from 19.59 to 23.96 and -5.48 to
  * -0.57): its walls on the lower block, 3 cm in from its south side and the step, from 5 cm under its roof's
  * underside (50.15 m), out of one plane with them (the landmark tests' faces check); its roof 0.3 m thick over the
- * whole of its returns, overhanging the walls by up to 0.6 m (estimated: the returns give the roof, not the walls). */
+ * whole of its returns, overhanging the walls by up to 0.7 m (estimated: the returns give the roof, not the walls). */
 export const EAST = {
   low: {
-    plan: [[20.1, -4.85], [23.45, -4.85], [23.45, -2.3], [28.6, -2.3], [29.6, -1.4], [30.3, 0], [30.0, 1.4], [29.2, 2.3], [26.3, 3.4], [24.0, 5.15], [20.1, 5.15]],
+    roof: [[20.1, -4.85], [23.45, -4.85], [23.45, -2.3], [28.6, -2.3], [29.6, -1.4], [30.3, 0], [30.0, 1.4], [29.2, 2.3], [26.3, 3.4], [24.6, 4.13], [21.9, 5.59], [20.1, 5.59]],
+    walls: [[20.1, -4.85], [23.45, -4.85], [23.45, -1.58], [28.6, -1.58], [29.3, -0.9], [29.6, 0.2], [29.3, 1.2], [28.5, 1.75], [27.75, 2.09], [20.1, 5.59]],
     top: 50.5,
   },
   plant: { walls: [[19.5, -4.82], [23.42, -4.82], [23.42, -0.55], [19.5, -0.55]], roof: [[19.5, -5.5], [24.0, -5.5], [24.0, -0.55], [19.5, -0.55]], top: 54.5, foot: 50.15 },
@@ -81,14 +84,14 @@ export const EAST = {
 
 /** The faces the photograph sees, every place and height estimated through its fitted camera (rms 0.87 px): the red
  * ground storey to 38.0 m on the north-west face and the west-south-west end; on the north-west face the glazing from
- * u -19.5 to 18.7 between yellow-clad ends, from 38.0 m to under the eave, its floors at 42.0 and 47.0 (the balconies'
- * floors); on the end a grey bay from w -3.5 to 3.15 with a door to each balcony, and in the yellow north of it three
+ * u -19.5 to 18.7 between yellow-clad ends, from 38.0 m to under the eave, its floor bands at 42.42 and 46.9 (the
+ * balconies' floors, the LiDAR's); on the end a grey bay from w -3.5 to 3.15 with a door to each balcony, and in the yellow north of it three
  * rows of windows (39.2 to 40.0, 43.8 to 44.8, 48.6 to 49.6 m) at w 3.9 to 4.8 and small square windows at w 5.6 and
  * 7.1 at their tops. */
 export const FACE = {
   base: 38.0,
   glazing: [-19.5, 18.7],
-  floors: [42.0, 47.0],
+  floors: [42.42, 46.9],
   bay: [-3.5, 3.15],
   windows: { w: [3.9, 4.8], rows: [[39.2, 40.0], [43.8, 44.8], [48.6, 49.6]] },
   squares: { w: [5.6, 7.1], size: 0.4 },
@@ -97,7 +100,7 @@ export const FACE = {
 
 /** The balconies on the west-south-west end: the upper one's floor at 46.9 m and its railing's top at 47.7 to 47.8 (the
  * LiDAR's returns over u -27.5 to -26.5 and w -4 to 1), so railings 0.9 m high; the lower one's floor at 42.42 m (p50
- * of its 5 returns, 42.41 to 42.58); the rest through the photograph's camera, estimated: both 0.3 m thick, from w
+ * of the 5 returns at 41.8 to 43.2 m over it); the rest through the photograph's camera, estimated: both 0.3 m thick, from w
  * -4.3 to 2.9, their fronts bowed out to u -27.6. */
 export const BALCONY = { floors: [42.42, 46.9], w: [-4.3, 2.9], front: [-27.0, -27.6], t: 0.3, rail: 0.9 };
 
@@ -113,9 +116,10 @@ export const PANELS = [
   { colour: "blue", u: -2.65, z: [38.7, 40.0] },
 ];
 
-/** The outside stair south-south-east of the balconies (the LiDAR's flat returns: the upper landing at 44.66 m, p50
- * of 12, over u -26.81 to -23.28 and w -8.97 to -7.29, on along the south-east face; the lower at 40.16 m, p50 of 29,
- * over u -27.33 to -24.29 and w -9.50 to -7.01): flights 1.2 m wide (estimated) running down
+/** The outside stair south-south-east of the balconies (the LiDAR's flat returns, classes 5 and 6, west of the end
+ * wall: the upper landing at 44.66 m over u -27.44 to -24.60 and w -9.24 to -7.30, 27 returns; the lower at 40.16 m
+ * over u -27.33 to -24.54 and w -9.50 to -7.39, 25; east of the wall the returns at those heights lie on the
+ * south-east wall's plane, not on a landing): flights 1.2 m wide (estimated) running down
  * from each balcony's south end to a landing and back, the inner ones at u -25.6, the outer at -27.0, with railings 1.0 m high
  * on both sides (solid: the photograph's mesh panels); below 37.6 m, under the lower balcony, the photograph sees no
  * more of it (the trees and the smaller picture); posts at the balconies' fronts and the landings' outer corner
@@ -129,8 +133,8 @@ export const STAIR = {
     { u: -27.0, from: [-7.0, 40.16], to: [-4.3, 37.6] },
   ],
   landings: [
-    { u: [-27.7, -23.3], w: [-9.0, -7.3], z: 44.66 },
-    { u: [-27.7, -24.3], w: [-9.5, -7.0], z: 40.16 },
+    { u: [-27.7, -24.5], w: [-9.35, -7.3], z: 44.66 },
+    { u: [-27.7, -24.5], w: [-9.55, -7.0], z: 40.16 },
     { u: [-27.7, -26.3], w: [-4.3, -3.1], z: 37.6 },
   ],
   posts: [[-27.5, -0.3], [-27.3, -4.2], [-27.6, -9.2]],

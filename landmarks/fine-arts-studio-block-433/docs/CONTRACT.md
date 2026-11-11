@@ -50,6 +50,13 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   the landings at 44.66 and 40.16 m over the LiDAR's flat returns. Silhouette IoU 0.914 (0.918 in the model's box: the
   flights now stop where the LiDAR's landings begin), luma 165 against 170; top view: footprint IoU 0.940, 99% of
   4,041 cells within 0.5 m, block 433 97.1% under the model; 1,344 triangles, 6 draw calls.
+- The review's round 2 (2026-11-11): the lower block's walls where the LiDAR's returns on them lie (south at w -1.58,
+  the east end to u 29.6, the north one from w 5.29 at u 20.75 to 2.09 at 27.75), under its roof to its returns' edge
+  (the north side from w 5.59 at u 21.9 to 4.13 at 24.6); the landings west of the end wall only, out to their own
+  returns (classes 5 and 6: w -9.35 and -9.55; the returns east of the wall lie on its plane); the glazing's floor
+  bands at the balconies' floors (42.42 and 46.9 m). Silhouette IoU 0.913 (0.917 in the model's box), luma 166
+  against 170; top view: footprint IoU 0.939, 99% of 4,039 cells within 0.5 m, block 433 97.0% under the model; the
+  lowest corner of the walls 2.72 m under the door's ground, FOOT 1.88 m under that.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

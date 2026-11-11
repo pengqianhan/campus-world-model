@@ -33,7 +33,7 @@ photograph's camera is in it.
 - No other landmark's outline comes within 2 m of its (the nearest, Auckland Bioengineering House's, is about 60 m
   off), so it stands alone on the map's ground at its door (`../README.md`, "Placement").
 - Block 431 is across the lane to the north-west, block 432 beyond the east-north-east end and University Hall's
-  (436) beyond the road at the west-south-west end; the model stands over 97.1% of block 433 and over none of theirs.
+  (436) beyond the road at the west-south-west end; the model stands over 97.0% of block 433 and over none of theirs.
   `building.also` is empty.
 
 ## The reference
@@ -69,8 +69,10 @@ look and the comparison.
   returns' least u (their spacing); at the east-north-east end along the greatest u of the returns on the vault (the
   lower block's roof and the plant room left out), 0.15 m out, from 20.85 at the eaves to 22.5 at the crown; 0.35 m
   thick, with a gutter along each eave (estimated).
-- **The east-north-east end**: the lower block at 50.5 m, its plan its roof's returns' edge (its south side at w -4.85
-  to u 23.45, then at -2.3, rounded to u 30.3, its north side at 5.15 to u 24), and the plant room on it at 54.5 m
+- **The east-north-east end**: the lower block at 50.5 m, its roof to its returns' edge (its south side at w -4.85 to
+  u 23.45, then at -2.3, rounded to u 30.3, its north side along its returns from w 5.59 to 4.13) and its walls under
+  it where the LiDAR's returns on them lie (the south one at -4.85 and then -1.58, the east end to u 29.6, the north
+  one from w 5.29 at u 20.75 to 2.09 at 27.75), and the plant room on it at 54.5 m
   (`claddingPale`), its roof over its returns (u 19.6 to 24.0, w -5.5 to -0.6) and its walls on the lower block,
   under the roof's overhang (estimated: the returns give the roof, not the walls); no photograph shows them, and they
   are drawn plainly.
@@ -85,27 +87,27 @@ look and the comparison.
   returns), so railings 0.9 m high; the lower one's floor at 42.42 m (5 returns); both from w -4.3 to 2.9 with fronts
   bowed out to u -27.6 (estimated, through the photograph's camera).
 - **The outside stair** (`steelBlue`), south-south-east of the balconies: four flights down from each balcony to a
-  landing and back, the landings where the LiDAR's flat returns lie (the upper at 44.66 m over w -9.0 to -7.3, running
-  on along the south-east face to u -23.3; the lower at 40.16 m over w -9.5 to -7.0); the flights' width (1.2 m),
+  landing and back, the landings where the LiDAR's flat returns lie, west of the end wall (the upper at 44.66 m over
+  w -9.35 to -7.3; the lower at 40.16 m over w -9.55 to -7.0); the flights' width (1.2 m),
   their railings (1.0 m), the three posts and the last landing at 37.6 m estimated through the photograph's camera. Below 37.6 m, under the lower balcony, the photograph sees no more of it, and it is not
   drawn.
 - The light: the photograph is taken under an overcast sky. The viewer's sun is weak (2.5) and its sky's light strong
   (3.6), the sun to the west-north-west (290 degrees round, 50 up), between the two faces the photograph sees, at an
-  exposure of 0.88: over the model's screen box the luma 165 against the photograph's 170; the end's yellow 183 against
+  exposure of 0.88: over the model's screen box the luma 166 against the photograph's 170; the end's yellow 183 against
   168, its grey bay 214 against 188, its red ground storey 74 against 75, the north-west face's red ground storey 94
   against 79 and its glazing 215 against 181.
 
-Silhouette IoU 0.914 over the photograph (0.918 in the model's screen box). The top view: footprint IoU 0.940 (the
-LiDAR's 1,022 m² against the model's 1,072, both 1,014), 99% of the 4,041 cells both cover within 0.5 m (p10/p50/p90
+Silhouette IoU 0.913 over the photograph (0.917 in the model's screen box). The top view: footprint IoU 0.939 (the
+LiDAR's 1,022 m² against the model's 1,071, both 1,014), 99% of the 4,039 cells both cover within 0.5 m (p10/p50/p90
 -0.08/-0.02/0.06 m); the highest point 21.41 m over the door's ground against the LiDAR's 21.37 (p99.9); block 433
-97.1% under the model. 1,344 triangles, 6 draw calls.
+97.0% under the model. 1,344 triangles, 6 draw calls.
 
 ## On the map (step 7)
 
 - **The door**: the campus map records no lobby or entrance in 433. The config's door is at a blue door in the
   north-west face's red ground storey, u -11.8 and w 8.6 (in the view frame (11.8, 8.6)); the LiDAR's ground within
   1 m, 12 returns, p50 33.138 m; the lane along the face lies at 33.01 to 33.12.
-- **The map's ground** (its 8 m elevation model) is 36.93 m at the door, 3.83 m over the LiDAR's, and from 2.74 m under
+- **The map's ground** (its 8 m elevation model) is 36.93 m at the door, 3.83 m over the LiDAR's, and from 2.72 m under
   it to 0.46 m over it under the walls' corners; the model stands its y = 0 on it at the door.
 
 ## On the site
@@ -115,8 +117,8 @@ massing's data file, `landmarks/measured/buildings/433.json`, has gone: a run of
 leaves it out, as it does every landmark on the site, and writes every other file as before. `MASSING.md` notes it.
 
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 4.6 m under the
-  door's ground, under the map's ground at every corner of the walls (the lowest, 2.74 m under the door's, at the
-  lower block's south-east corner).
+  door's ground, under the map's ground at every corner of the walls (the lowest, 2.72 m under the door's, at the
+  main block's east corner, u 20.1 and w -8.25; 1.88 m to spare).
 - **Over the drawn ground.** The LiDAR's lane is level along the north-west face, at the door's ground; the map's 8 m
   ground falls along it from 0.48 m over that at the west end to 1.36 m under it at the east end, so on the site the
   red ground storey shows up to 1.4 m more of its wall toward the east, down to the drawn ground.
