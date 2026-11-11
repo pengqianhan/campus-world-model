@@ -258,7 +258,7 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 106, 107, 109, 110,
-110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 433, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 433, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820, 906 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
@@ -432,7 +432,7 @@ building over it.
 The maintainer's goal of 2026-10-28 is every building of the City, Grafton and Newmarket campuses
 drawn at least as a measured massing. `massing.py --campus grafton` and `--campus newmarket` measure
 every building of those campuses by the same steps, limits and decisions as on the City campus (no
-tiers there: no landmark was planned for them then; 501, 502, 505, 507, 529 and 907 have since become landmarks, and the
+tiers there: no landmark was planned for them then; 501, 502, 505, 507, 529, 906 and 907 have since become landmarks, and the
 generator leaves them out as it does every landmark on the site). They need four more tiles of the same LiDAR, the
 1:1000 tiles of sheet BA32 that cover each outline with the 12 m the generator crops round it:
 3803 and 3804 for Grafton, with 3704 that the City campus already uses (93 Grafton Road reaches
@@ -466,7 +466,8 @@ reason, only 405's model area in its top view (3863.5 to 3863.2 m²); the City's
 for byte, so it is off there until the maintainer says (`--drop-bare` turns it on for a run). 906's numbers do not change (footprint IoU 0.914, 99.6%
 within 0.5 m), as its lowest layer still stands on the whole outline: the lobe now stands at that
 layer's height, 15.65 m, where the LiDAR sees nothing over 2.4 m and the campus map has the lobe
-on floor 1 only (the block drew one storey there).
+on floor 1 only (the block drew one storey there). 906, Structures Hall, has since become a landmark (2026-11-12),
+its data file gone; the landmark draws the building to the LiDAR's roof edges and leaves the lobe out.
 
 **Roofless cells under an upper layer (pre-existing since the second round, #108; the second review
 of #120).** The rule above leaves out only a piece with no roof cell at all. A cell of the outline

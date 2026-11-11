@@ -14,6 +14,20 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-12
+
+### Added
+
+- **Structures Hall drawn in detail.** Near the camera the map draws Structures Hall (906), on the Newmarket campus,
+  from code in place of the measured massing that stood for it: two long blocks side by side under roofs of one
+  slope, three square stacks on the line between them, and a south face of three glazed storeys with light bands
+  between them, under a light fascia and between dark frames, over a ground storey set back behind piers and two Vs
+  of braces. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph of its south face, and its
+  card says what is estimated: the south face's glazing and ground storey and the stacks' bands, with the photograph
+  as a reference, a band of glazing over the southern block's roof where the LiDAR sees nothing, and the faces no
+  photograph shows, drawn plain. Its measured massing's data file has gone. On the map it has the map's colours;
+  from a walker's height on a computer with a graphics card, its own panels, glass and roofs (#PRNUM).
+
 ## 2026-11-11
 
 ### Added
