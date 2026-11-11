@@ -256,11 +256,11 @@ round the generator also measures the buildings of tiers 1 and 2 that have no la
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 106, 107, 109, 110,
-110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 439, 501, 502, 505, 507, 529, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
-leaving out the landmarks and `SOON`, it measures 28 (40 before 250, the Music School, 315, the Kate Edger
+leaving out the landmarks and `SOON`, it measures 26 (40 before 250, the Music School, 315, the Kate Edger
 Information Commons, 206, the Humanities Building, 302, the Science Centre's tower, 303, building 303 of
 the Science Centre, 303S, building 303S of the Science Centre, 421E, Architecture - East, 421W,
 Architecture - West, 439, Auckland Bioengineering House, 260, the Sir Owen G Glenn Building, 620, 49
@@ -269,7 +269,8 @@ landmarks; their entries in `exclusions.json`, where 250's roof cells covered 77
 footprint had an IoU of 0.865, 206's roof cells covered 77% of its outline, 42% of 302's cells, 84% of 303's and
 89% of 303S's were within 0.5 m, 421E's roof cells covered 60% of its outline, 421W's 72%, 260's 51% and 620's
 53%, and 88% of 439's cells were within 0.5 m, 215's footprint had an IoU of 0.857, 201's 0.872 and 106's 0.865,
-have gone). Places where people live
+have gone; and 619, 67 Symonds Street, which stood in as a measured massing, has become one too, and its data file
+has gone). Places where people live
 keep their blocks here
 too (decision 6): 440, 441, 442, 614, 616, 818, 831 and 833 by their residential floors, and by hand
 Carlaw Park's 832 and 834 to 837, which OpenStreetMap tags as dormitories run by the University

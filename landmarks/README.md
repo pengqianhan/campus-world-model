@@ -4,8 +4,8 @@ A **landmark** is one real campus building drawn in three.js from code alone, si
 LiDAR and checked against Street View photographs (the Kate Edger Information Commons, the Humanities
 Building, buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907,
 Auckland Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and
-507 of the M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114 and Fine Arts Studio Block 431
-each against another photograph of it: `"refs": "photos"`,
+507 of the M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114,
+67 Symonds Street and Fine Arts Studio Block 431 each against another photograph of it: `"refs": "photos"`,
 under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
@@ -372,7 +372,8 @@ Script paths are in `pipeline/`; inputs and outputs are in the landmark's folder
 With `"refs": "photos"` in the config (the Kate Edger Information Commons, the Humanities Building,
 buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland
 Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the
-M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114, Fine Arts Studio Block 431),
+M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114, 67 Symonds Street,
+Fine Arts Studio Block 431),
 refine, compare, metrics,
 `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage

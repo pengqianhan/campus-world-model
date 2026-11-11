@@ -22,5 +22,10 @@ export const SITE = "https://campusworldmodel.com/";
  * /campus-world-model/) has no such root, so it links to SITE's.
  */
 export function aboutHref(base: string, id: string): string {
-  return `${base === `/${id}/` ? "/" : SITE}#about-${id}`;
+  return `${homeHref(base, id)}#about-${id}`;
+}
+
+/** The page that lists every school's map, at the site's root: as `aboutHref`, the root this page is served from, or SITE. */
+export function homeHref(base: string, id: string): string {
+  return base === `/${id}/` ? "/" : SITE;
 }
