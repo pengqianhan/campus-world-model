@@ -1,9 +1,9 @@
 {
  "name": "fine-arts-studio-block-433",
  "site": false,
- "estimated": "(to be written)",
+ "estimated": "the faces the photograph sees, with it as a reference: the red ground storey's height, the north-west face's glazing, its mullions, floor bands and coloured panels, the west-south-west end's grey bay, doors and windows, the balconies' fronts and railings, the outside stair's flights, landings and posts; the vault's slab and gutters; the west-south-west end wall's place (through the photograph's camera); and the faces no photograph shows, drawn plainly",
  "refs": "photos",
- "refs_note": "(to be written)",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its photograph is taken from the road at the block's west-south-west end, looking east-north-east at the north-west face and the end, through a lens of about 47 degrees across, its optical axis at bearing 86 degrees; its camera is fitted to the north-west eave against the sky, the face's foot on the lane, the eave's far end, the vault's south corner at the end and four verticals, held near 1.6 m over the LiDAR's ground. The fit stands it 1.8 m over the ground about 25 m west-south-west of the end and 9 m out from the line of the north-west face, 2 to 3 m inside the edge of the LiDAR's returns on the roof of the building beyond the road (48 m): the photographer stood at that edge, or the fit is that far off. A smaller picture laid over the photograph's bottom right is left out (exclude)",
  "building": {
   "id": "433",
   "also": [],
@@ -69,8 +69,8 @@
   "lon": 174.7691,
   "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
  },
- "crop_margin": 25,
- "ground": 32.6,
+ "crop_margin": 35,
+ "ground": 33.1,
  "lidar": {
   "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
   "tiles": [
@@ -88,14 +88,14 @@
  },
  "frame": {
   "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
-  "min_above": 2.99,
-  "tower_above": 2.99,
-  "spine_below": 39.99,
+  "min_above": 2.49,
+  "tower_above": 2.49,
+  "spine_below": 39.49,
   "spine_radius": 45,
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "min_above 2.99 m over the provisional ground (32.6 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 58.3 deg), so z faces north-north-west (bearing 328.3 deg), to the lane between this block and 431, which the photograph looks along. The ring lies some 6 m east-north-east of the LiDAR's walls, so the frame's centre is not the block's: the walls run from u -27 to 23 and w -12.5 to 10.5",
+  "thresholds_note": "min_above 2.49 m over the door's ground (33.1 m), 2.99 m over the provisional ground the frame was measured from (32.6 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the block's long faces (bearing 58.3 deg), so z faces north-north-west (bearing 328.3 deg), to the lane between this block and 431, which the photograph looks along. The centre is the mean of those points, the lower block at the east-north-east end among them: the main block's walls run from u -24.5 to 20.1 and w -8.25 to 8.25",
   "expected": {
    "centre": [
     -122.52352659909074,
@@ -120,5 +120,16 @@
   "min_sky": 0.2,
   "max_solid": 0.5,
   "keep_fixes": true
+ },
+ "door": {
+  "x": 11.8,
+  "z": 8.6,
+  "note": "at a blue door in the north-west face's red ground storey, on the lane between this block and 431 (the campus map records no lobby or entrance in 433): u -11.8, w 8.6 in the building's frame ((11.8, 8.6) in the view frame), its place through the photograph's camera. The LiDAR's ground within 1 m: 12 returns, p10/p50/p90 33.102/33.138/33.287 m; the lane along the face lies at 33.01 to 33.12"
+ },
+ "light": {
+  "sunaz": 290.0,
+  "sunel": 50.0,
+  "exposure": 0.75,
+  "note": "estimated: the photograph is taken under an overcast sky, the faces in soft light with no shadow. The viewer's sun stands to the west-north-west (290 deg round, 50 up), between the two faces the photograph sees, at an exposure of 0.75: over the model's screen box the luma (p50) 144 against the photograph's 170; the end's yellow 193 against 168, its grey bay 209 against 188, its red ground storey 83 against 75, the north-west face's red ground storey 99 against 79 and its glazing 164 against 181. A sun that lights the end as brightly as the photograph's leaves the north-west face too dark, and one before the end makes it too bright"
  }
 }

@@ -1,0 +1,109 @@
+# Landmark: Fine Arts Studio Block 433, drawn from code
+
+Fine Arts Studio Block 433 of the University of Auckland, on the City campus: a long block of four storeys under a
+shallow vault whose ends bow out, its north-west face a wall of glazing over a red ground storey on the lane it shares
+with 431, its west-south-west end clad in yellow weatherboards, with two balconies and an outside stair, and at its
+east-north-east end a lower block rounded in plan. It is drawn in three.js from code alone, sized by the LINZ 2024
+LiDAR, and compared with a photograph of its north-west face and its west-south-west end (November 2026). Until now it
+was a measured massing (`../MASSING.md`). The kit it is built with, the pipeline, the viewer and how to run them are
+shared by every landmark: [`../README.md`](../README.md).
+
+- Look at it: `http://localhost:8765/landmarks/pipeline/viewer/index.html?landmark=fine-arts-studio-block-433&view=orbit`
+  with the repository root served on port 8765.
+- Run its pipeline: `landmarks/pipeline/run.sh fine-arts-studio-block-433 [stage ...]`. Its reference is read from
+  `refs/photos/` (the config's `"refs": "photos"`), which a fresh clone does not have: `photo`, `refs` (its masks, and
+  so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
+- The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
+
+## The frame
+
+`config/fine-arts-studio-block-433.json`, `frame`: x west-south-west (minus the axis, the bearing of the long walls),
+y up from 33.1 m NZVD2016, the LiDAR's ground at `door`, on the lane before the north-west face, z north-north-west,
+toward the lane; the centre, the mean of the building's returns near the campus map's ring (the lower block at the
+east-north-east end among them), at x = z = 0. `parts/common.js` gives the building a frame of its own: `u`
+east-north-east (minus x) and `w` north-north-west (z).
+
+The frame was measured above 32.6 m, the median ground in the outline's band, as the measured massing took it; its
+thresholds in the config were lowered by the 0.5 m to the door's ground, and `frame.expected` checks the centre and
+the axis (0.000 m, 0.000 degrees). The crop box reaches 35 m past the ring, so that the LiDAR's ground under the
+photograph's camera is in it.
+
+## Neighbours on the map
+
+- No other landmark's outline comes within 2 m of its (the nearest, Auckland Bioengineering House's, is about 60 m
+  off), so it stands alone on the map's ground at its door (`../README.md`, "Placement").
+- Block 431 is across the lane to the north-west, block 432 beyond the east-north-east end and University Hall's
+  (436) beyond the road at the west-south-west end; the model stands over 97.4% of block 433 and over none of theirs.
+  `building.also` is empty.
+
+## The reference
+
+One photograph, kept on the maintainer's computer in `refs/photos/` (gitignored), with its picks, its fitted camera,
+its level cut and its mask. Nothing of it goes into git, and how it is recorded and credited is for the maintainer to
+decide. It has no record of its date. No Street View photograph is used.
+
+- **The north-west face and the west-south-west end**, from the road at the block's west-south-west end, under an
+  overcast sky: the face receding to the east-north-east with the lane before it, the end with its balconies and
+  stair, the vault's curved edge against the sky; a smaller picture laid over its bottom right, left out of the fit and
+  the masks. Its camera is fitted by `tools/photo_camera.py` to lines and points whose places the LiDAR gives: the
+  north-west eave against the sky, the face's foot on the lane (33.05 m), the eave's far end, the vault's south corner
+  at the end, and four uprights (the west corner, a downpipe at the north corner, two of the stair's posts). It stands
+  1.8 m over the LiDAR's ground about 25 m west-south-west of the end and 9 m out from the line of the north-west face,
+  through a lens of 47 degrees across, its optical axis at bearing 86 degrees: an rms of 0.87 px. That place is 2 to 3
+  m inside the edge of the LiDAR's returns on the roof of the building beyond the road (48 m): the photographer stood
+  at that edge, under its eave, or the fit is that far off. From other starts it comes back to the same place; without
+  the face's foot it stands 1.1 m further back, and with its principal point solved as well 3.9 m further back.
+
+No size is measured from the photograph but the ones the next section names as estimated; it is a reference for the
+look and the comparison.
+
+## The model (`parts/common.js`)
+
+- **The main block** (`claddingYellow`): its long walls where the LiDAR's returns under the eave peak (w 8.25 and
+  -8.25), its east-north-east end wall at u 20.1 (its returns at 20.0 to 20.5), its west-south-west end wall at u -24.5
+  (through the photograph's camera: the LiDAR sees the balconies and the stair before it), down to the walls' foot; the
+  end walls rise to the vault.
+- **The vault** (`roofPale`, light grey as the 2023 aerial shows it): its top a parabola across the faces, 51.9 m at the
+  crown and 2.05 m lower at w 10.15 (the LiDAR's returns, p50 in 1 m strips); its eaves at w 10.3 and its ends bowed out
+  in plan, from u -25.2 at the eaves to -26.8 at the crown and from 21.2 to 23.1, 0.15 to 0.2 m out from the returns'
+  extremes (their spacing); 0.35 m thick, with a gutter along each eave (estimated).
+- **The east-north-east end**: the lower block at 50.5 m, rounded in plan to u 30.3 (the returns' greatest u in 1 m
+  strips), and the plant room on the vault at 54.5 m (`claddingPale`); no photograph shows them, and they are drawn
+  plainly.
+- **The ground storey** (`renderRed`), to 38.0 m on the north-west face and round the west corner on the end
+  (estimated).
+- **The north-west face's glazing** (`glassPale`), from u -19.5 to 18.7 between the yellow-clad ends, from 38.0 m to
+  under the eave; blue-grey mullions every 1.53 m and floor bands at 42.0 and 47.0 m (`steelBlue`); seven coloured
+  panels, red, yellow and blue (estimated, their middles through the photograph's camera).
+- **The west-south-west end**: the grey bay (`claddingPale`) from w -3.5 to 3.15, a red door to each balcony; north of
+  it three rows of top-hung windows (39.2 to 40.0, 43.8 to 44.8 and 48.6 to 49.6 m) and small square windows (estimated).
+- **The balconies** (`steelBlue`): floors at 42.0 and 47.0 m (the LiDAR's returns at 46.9 to 47.8 m on the upper one's
+  railing), from w -4.3 to 2.9, their fronts bowed out to u -27.6, railings 1.1 m high.
+- **The outside stair** (`steelBlue`), south-south-east of the balconies: four flights 1.2 m wide down from each
+  balcony to a landing and back (the LiDAR's returns at 44.4 to 45.3 m and 40.0 to 40.2 m on the landings), with
+  railings 1.0 m high, and three posts; under the middle balcony the photograph sees no more of it, and it is drawn to
+  37.6 m.
+- The light: the photograph is taken under an overcast sky. The viewer's sun stands to the west-north-west (290 degrees
+  round, 50 up), between the two faces the photograph sees, at an exposure of 0.75: over the model's screen box the
+  luma 144 against the photograph's 170; the end's yellow 193 against 168, its grey bay 209 against 188, its red ground
+  storey 83 against 75, the north-west face's red ground storey 99 against 79 and its glazing 164 against 181.
+
+Silhouette IoU 0.925 over the photograph (0.928 in the model's screen box). The top view: footprint IoU 0.930 (the
+LiDAR's 1,022 m² against the model's 1,080, both 1,013), 98% of the 4,035 cells both cover within 0.5 m (p10/p50/p90
+-0.08/-0.02/0.06 m); the highest point 21.41 m over the door's ground against the LiDAR's 21.37 (p99.9); block 433
+97.4% under the model. 1,316 triangles, 6 draw calls.
+
+## On the map (step 7)
+
+- **The door**: the campus map records no lobby or entrance in 433. The config's door is at a blue door in the
+  north-west face's red ground storey, u -11.8 and w 8.6 (in the view frame (11.8, 8.6)); the LiDAR's ground within
+  1 m, 12 returns, p50 33.138 m; the lane along the face lies at 33.01 to 33.12.
+- **The map's ground** (its 8 m elevation model) is 36.93 m at the door, 3.83 m over the LiDAR's, and from 2.74 m under
+  it to 0.46 m over it under the walls' corners; the model stands its y = 0 on it at the door.
+
+## Not drawn yet
+
+The weatherboards' lines, the glazing's transoms and most of its coloured panels, the doors and windows of the ground
+storey, the downpipes, the stair's treads and its flights under the middle balcony, the balconies' mesh; the south-east
+face's and the east-north-east end's windows, which no photograph shows; the trees. The faces no photograph shows are
+drawn plainly.
