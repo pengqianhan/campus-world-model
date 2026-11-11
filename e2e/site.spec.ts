@@ -358,7 +358,7 @@ test("the campus panel starts shut, as a small button with the campus's name and
   expect(Math.abs(wbox.y + wbox.height / 2 - (box.y + box.height / 2))).toBeLessThan(2);
   expect(wbox.height).toBeLessThanOrEqual(44);
   // the way back to the page of every school's map is in the panel only (the maintainer, 2026-11-11)
-  await expect(page.locator("#all-schools-dock")).toHaveCount(0);
+  await expect(page.locator(".campus-dock a")).toHaveCount(0);
   await shot(page, "01-campus-panel-shut");
 
   await toggle.click();

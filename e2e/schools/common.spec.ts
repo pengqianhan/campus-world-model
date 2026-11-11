@@ -68,7 +68,7 @@ test(`${SCHOOL}: the campus panel links back to the page of every school's map`,
   // the root this page is served from (the Cloudflare site and its previews serve a school at /<id>/), or the site's
   const home = new URL(page.url()).pathname.startsWith(`/${SCHOOL}/`) ? "/" : "https://campusworldmodel.com/";
   // shut, the row at the foot of the screen has no link (the maintainer, 2026-11-11: in the panel only)
-  await expect(page.locator("#all-schools-dock")).toHaveCount(0);
+  await expect(page.locator(".campus-dock a")).toHaveCount(0);
   // open: after the campuses
   await openStrip(page);
   const link = page.locator(".campus-tabs #all-schools");
