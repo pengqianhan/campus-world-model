@@ -304,6 +304,15 @@ agent and no photograph. All of them share one model and have a data file each:
   makes the map drawn in software slower than the 15% the loop allows (MASSING.md, "The fourth
   round"). Since the walls inside it are no longer drawn it is at that limit (MASSING.md, "The speed
   of a many-layered massing").
+- Eaves over the outline on every layer (`EAVES`; MASSING.md, "The fifth round"): a building that
+  still fails is measured once more with eaves on every layer where it meets the outline, measured at
+  its own roof. It is drawn only if it then passes the check with a larger footprint IoU than before.
+  `--no-eaves` leaves them out.
+- Steps in height (`STEPS`; MASSING.md, "The sixth round"; the maintainer, 2026-11-11): a building
+  that still fails is checked once more with the cells on a step in height (a cell next to one more
+  than 1 m higher or lower, in the model's heightmap or the LiDAR's) left out of its share within
+  0.5 m, no more than a third of its cells; the first of its models, in the rounds' order, that passes
+  so is drawn. `--no-steps` leaves the round out.
 - `measured/model.js` builds any of them from its data file with the site's `MeshBuilder`
   (`src/scene/geometry.ts`), so that its walls carry what the blocks' walls carry: storeys from the
   published levels spaced to the measured walls (2.4 to 4.5 m), the map's 3.2 m bays, the roof
@@ -319,7 +328,8 @@ agent and no photograph. All of them share one model and have a data file each:
   shadow at the shaded foot of a wall let light through in patches. `pipeline/tools/massing_triangles.mjs`
   gives its triangles to the top-view check: footprint IoU 0.90 or more against the LiDAR, and 90%
   of the cells both cover within 0.5 m (cells of roof that no layer draws are left out of the
-  heights).
+  heights; since the sixth round, for a building that fails otherwise, the cells on a step in height
+  too, no more than a third of them).
 - On the site (`src/app/landmarks.ts`, `MEASURED`) each data file is a landmark named
   `measured/<id>`. The page's code holds only each file's `place`; the worker loads the shared model
   and all the data files, one chunk each, the first time one is wanted. A measured massing has one
