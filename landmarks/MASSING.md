@@ -248,17 +248,17 @@ queue puts the others in two tiers, whose buildings it measures only as stand-in
   302, 303, 303S, 305, 310, 311, 315, 401, 402, 405, 421E, 421W, 439, 440, 441, 442, 614, 616,
   619, 620, 810, 818, 820 and 831 to 837.
 
-Every other City campus building is the generator's (tier 3): 44 of them lie in the eight tiles.
-A building moves out of tier 3 when the maintainer plans a landmark for it: 114, Building 114, and 433, Fine Arts
-Studio Block 433, drawn as measured massings since the first round (#79), and 431, Fine Arts Studio Block 431, since
-the fourth round (#127), are landmarks now, and their data files have gone.
+Every other City campus building is the generator's (tier 3): 43 of them lie in the eight tiles.
+A building moves out of tier 3 when the maintainer plans a landmark for it: 114, Building 114, 433, Fine Arts Studio
+Block 433, and 409, Security, drawn as measured massings since the first round (#79), and 431, Fine Arts Studio Block
+431, since the fourth round (#127), are landmarks now, and their data files have gone.
 
 **Stand-ins for tiers 1 and 2 (2026-10-27, for the maintainer to confirm).** Since the second
 round the generator also measures the buildings of tiers 1 and 2 that have no landmark yet, through
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 106, 107, 109, 110,
-110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 433, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 409, 421E, 421W, 431, 433, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;

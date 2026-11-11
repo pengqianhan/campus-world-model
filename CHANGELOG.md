@@ -14,6 +14,19 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-12
+
+### Added
+
+- **Security drawn in detail.** Near the camera the map draws Security (409), on the City campus, from code in place
+  of the measured massing that stood for it: a low block whose upper storey is a band of pale concrete, its south
+  corner cut by a chamfer, over a glazed ground storey set back under it on columns, with a deck and a flight of steps
+  before the corner, and on its flat roof a box and a lower block. Its sizes come from the LINZ 2024 LiDAR; it was
+  compared with a photograph from the court to its south, and its card says what is estimated: the faces the
+  photograph sees, with it as a reference, the deck, its railing and the steps, and the faces no photograph shows,
+  drawn as the ones it does. Its measured massing's data file has gone. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own concrete, glass, railing and roofs (#PRNUM).
+
 ## 2026-11-11
 
 ### Added

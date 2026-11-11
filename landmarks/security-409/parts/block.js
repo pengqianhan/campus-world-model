@@ -7,8 +7,8 @@ import { COLUMNS, COURT, DECK, FLOOR, FOOT, HIGH, OUTLINE, PARAPET, ROOF, SOFFIT
 import { block, inset, prism } from "./shapes.js";
 
 // The concrete pale grey, as the photograph shows it; the glazing dark, its frames and the railing near black; the
-// deck and the screen under it dark grey; the roofs mid-grey.
-const CONCRETE = "claddingPale", ROOFS = "roofGrey", GLASS = "glass", FRAME = "screenBlack", DARK = "screenGrey";
+// deck and the screen under it dark grey; the roofs light grey, as the aerial shows them.
+const CONCRETE = "claddingPale", ROOFS = "roofPale", GLASS = "glass", FRAME = "screenBlack", DARK = "screenGrey";
 
 /** A closed plan's line moved `d` inward. */
 function inward(ring, d) {
@@ -67,9 +67,9 @@ export function band(b) {
   }
 }
 
-/** The columns under the band's edge, from the walls' foot into the band. */
+/** The columns under the band's edge, from just under the walls' foot (under the deck's) into the band. */
 export function columns(b) {
-  for (const [p, q] of COLUMNS) bar(b, [p - 0.225, q], [p + 0.225, q], 0.45, FOOT, SOFFIT + 0.3, CONCRETE);
+  for (const [p, q] of COLUMNS) bar(b, [p - 0.225, q], [p + 0.225, q], 0.45, FOOT - 0.05, SOFFIT + 0.3, CONCRETE);
 }
 
 /** The deck at the floor's height, solid and dark down to the walls' foot; its railing of thin bars 1 m tall along
@@ -91,11 +91,11 @@ export function deck(b) {
   const pt = (s, e) => [fp + s * dp + e * ep, fq + s * dq + e * eq];
   for (let i = 1; i < steps; i++) {
     const tread = [pt((i - 1) * g, -1), pt((i - 1) * g, 1), pt(i * g, 1), pt(i * g, -1)];
-    prism(b, plan(tread), FOOT, COURT + i * rise, CONCRETE);
+    prism(b, plan(tread), FOOT - 0.05, COURT + i * rise, CONCRETE);
   }
 }
 
-/** The box at the west corner and the block toward the east end, standing on the roof. */
+/** The box at the west corner and the block toward the east end, standing on the roof (their feet within its slab). */
 export function high(b) {
-  for (const h of HIGH) block(b, plan(h.plan), ROOF - 0.1, h.top, CONCRETE, ROOFS);
+  for (const h of HIGH) block(b, plan(h.plan), ROOF - 0.05, h.top, CONCRETE, ROOFS);
 }
