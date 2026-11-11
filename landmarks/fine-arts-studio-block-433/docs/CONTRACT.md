@@ -40,6 +40,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   the north-west face (33.1 m; no record of the entrance), `Y` and the thresholds moved with it. The light: the sun to
   the west-north-west (290 deg, 50 up), exposure 0.75. 1,316 triangles, 6 draw calls; silhouette IoU 0.925 (0.928 in the
   model's box); top view: footprint IoU 0.930, 98% of 4,035 cells within 0.5 m, block 433 97.4% under the model.
+- Step 8 (2026-11-11): on the site; the glazing's glass 1 cm short of the mullions' ends, where the landmark tests'
+  faces check found its top and foot in one plane with theirs.
 
 ## Rules
 - Measure, don't guess: every size from the LiDAR, or named estimated in the config's `estimated` and here.

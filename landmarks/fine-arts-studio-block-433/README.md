@@ -101,6 +101,30 @@ LiDAR's 1,022 m² against the model's 1,080, both 1,013), 98% of the 4,035 cells
 - **The map's ground** (its 8 m elevation model) is 36.93 m at the door, 3.83 m over the LiDAR's, and from 2.74 m under
   it to 0.46 m over it under the walls' corners; the model stands its y = 0 on it at the door.
 
+## On the site
+
+`site` is true: `place` writes `placement.json`, and the site draws the model in place of block 433. Its measured
+massing's data file, `landmarks/measured/buildings/433.json`, has gone: a run of `massing.py` over the City campus
+leaves it out, as it does every landmark on the site, and writes every other file as before. `MASSING.md` notes it.
+
+- **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 4.6 m under the
+  door's ground, under the map's ground at every corner of the walls (the lowest, 2.74 m under the door's, at the
+  lower block's south-east corner).
+- **Over the drawn ground.** The LiDAR's lane is level along the north-west face, at the door's ground; the map's 8 m
+  ground falls along it from 0.48 m over that at the west end to 1.36 m under it at the east end, so on the site the
+  red ground storey shows up to 1.4 m more of its wall toward the east, down to the drawn ground.
+- **While a building is open** its neighbours sink to footprints, and the model gives way to block 433, which sinks on
+  its footing (`updateLandmarks` in `src/scene/CampusScene.ts`).
+- **The light form** (the map, and the walker views of the basic tier) draws `glassPale` as glass and `roofPale` as a
+  roof, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingYellow`, `renderRed`, `claddingPale` and
+  `steelBlue` are walls.
+- **Its card** says "estimated:" and the config's `estimated`.
+- **The pictures** in `docs/landmarks/`: `fine-arts-studio-block-433-front.jpg` and `-above.jpg` are the viewer's
+  renders of the model alone, from the road at its west-south-west end and from above, with no photograph; `-map.jpg`
+  and `-eyes.jpg` are shots of the site built from this branch: the map near it, turned to look at it over the lane
+  from the north-west (from the map's usual side University Hall's tower stands before it), and a walker's eyes on the
+  road at its west-south-west end.
+
 ## Not drawn yet
 
 The weatherboards' lines, the glazing's transoms and most of its coloured panels, the doors and windows of the ground

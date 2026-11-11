@@ -27,10 +27,11 @@ export function base(b) {
 }
 
 /** The north-west face's glazing over the ground storey: the glass 2 to 4 cm out, mullions every 1.53 m 0 to 10 cm
- * out, a band at each floor and the coloured panels 4 to 6 cm out. */
+ * out, a band at each floor and the coloured panels 4 to 6 cm out; the glass 1 cm short of the mullions' ends, so that
+ * no face of it lies in one plane with theirs (the landmark tests' faces check). */
 export function glazing(b) {
   const [u0, u1] = FACE.glazing, z0 = FACE.base, z1 = vaultTop(W) - VAULT.t - 0.02;
-  onFace(b, 0.02, 0.04, [u0, u1], [z0, z1], GLASS);
+  onFace(b, 0.02, 0.04, [u0, u1], [z0 + 0.01, z1 - 0.01], GLASS);
   const n = Math.round((u1 - u0) / 1.53);
   for (let i = 0; i <= n; i++) {
     const u = u0 + ((u1 - u0) * i) / n;
