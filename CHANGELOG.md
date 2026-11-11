@@ -14,7 +14,7 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-11-11
+## 2026-11-12
 
 ### Added
 
@@ -27,6 +27,11 @@ A change to what the site does or shows adds its line here, and the README's
   photograph shows, drawn on the same grid. Its measured massing's data file has gone. On the map it has the map's
   colours; from a walker's height on a computer with a graphics card, its own bands, glass, louvres and roofs
   (#PRNUM).
+
+## 2026-11-11
+
+### Added
+
 - **Four more measured massings.** Engineering Block 1 and Engineering Block 2 (401, 402) on the City campus,
   Carlton Pines (632) on the Grafton campus and Building 908 (908) on the Newmarket campus are drawn from the
   LINZ 2024 LiDAR in place of their blocks: their roofs and their heights; their walls and windows by rule, as

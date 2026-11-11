@@ -69,7 +69,7 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
-- **2026-11-11:** on the City campus the map draws 58 Symonds Street in detail, where it stood as a measured massing:
+- **2026-11-12:** on the City campus the map draws 58 Symonds Street in detail, where it stood as a measured massing:
   a tower of seven storeys of windows over a dark ground storey, a pale band at every floor with louvres hung under it,
   and piers between the windows. Its sizes come from the LiDAR; it was compared with a photograph, which is not
   published, and its card says what is estimated.
@@ -117,40 +117,6 @@ It is built to answer two questions a student actually has:
   three storeys in cream render under a grey attic and a low hipped roof, with two wings and raised parts, and
   red-framed windows between pilasters at its south-east end on the street. Its sizes come from the LiDAR; it was
   compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-09:** on the City campus the map draws Te Pūtahi Tangata (201) in detail: a hall on the street, glass
-  from the pavement to a folded roof whose plates rise and fall across its front, a taller block in pale metal at its
-  north-east end, and behind them, down the slope, a long block with raised strips. Its sizes come from the LiDAR; it
-  was compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-09:** on the Grafton campus the map draws building 507 of the M&HS Building in detail: along the street a
-  block whose finned upper storeys stand over a glazed base, three glazed bays north of it each set back further, and
-  a block behind them under flat roofs. Its sizes come from the LiDAR; it was compared with a photograph, which is not
-  published, and its card says what is estimated.
-- **2026-11-09:** on the Grafton campus the map draws building 502 of the M&HS Building in detail: a block of seven
-  storeys in pale concrete, its north face a row of fins over grey bays, under a dark metal skirt and a low hipped
-  roof, and a lower part at its west end. Its sizes come from the LiDAR; it was compared with a photograph, which is
-  not published, and its card says what is estimated.
-- **2026-11-09:** "Take a walk" is a button of its own beside the campus's name in the bottom-left corner, on
-  every school's map, no longer a line inside the campus panel.
-- **2026-11-09:** on the Newmarket campus the map draws Building 907 in detail: a hall under a shallow barrel
-  vault in white metal cladding, a band of glazing at the foot of its end toward the street, and beside it an annex
-  of two storeys in orange render. Its sizes come from the LiDAR; it was compared with a photograph, which is not
-  published, and its card says what is estimated.
-- **2026-11-09:** the map draws the Sir Owen G Glenn Building (260) in detail: a curved wing of glass, white
-  spandrels and louvres, a Y of three arms round a raised plaza with a sloping canopy in its curve, a lower west
-  wing and a lower building on the plaza's north-east side. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-09:** on Symonds Street the map draws 49 Symonds Street (620) in detail: an office tower whose
-  corners step back, in pale panels and blue glass, with a gable and a tall arched window in the middle of its
-  faces, a mansard on its roof, and a podium in dark stone at its foot. Its sizes come from the LiDAR; it was
-  compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-09:** beside Symonds Street the map draws Okareta (215) in detail: a villa of two storeys in warm
-  yellow ochre under hipped roofs of grey iron, a verandah across the left of its front and a canted bay on the
-  right, its windows arched at their heads. Its sizes come from the LiDAR; it was compared with a photograph,
-  which is not published, and its card says what is estimated.
-- **2026-11-09:** on the Grafton campus the map draws building 501 of the M&HS Building in detail: a tower of
-  board-marked concrete under a dark crown at the east end of a long block, a strip of windows up its face, a
-  glazed box at its foot and a glazed link beside it. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
 
 Everything, with its pull request, is in the [changelog](CHANGELOG.md).
 
