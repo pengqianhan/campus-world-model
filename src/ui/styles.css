@@ -1421,10 +1421,10 @@ select optgroup {
   color: #d5dee4;
   font-size: 11px;
   text-decoration: none;
-  /* It shares the foot of the screen with the campus's and the walk's buttons (at most 380 px wide where it could
-     reach them, below): it gives way, to its ellipsis, before it would run under them. The phone's layout, which
-     puts it below them, sets its own. */
-  max-width: calc(100vw - var(--gap) - var(--edge-l) - 388px);
+  /* It shares the foot of the screen with the campus's, the walk's and All schools' buttons (at most 480 px wide,
+     below): it gives way, to its ellipsis, before it would run under them. The phone's layout, which puts it below
+     them, sets its own. */
+  max-width: calc(100vw - var(--gap) - var(--edge-l) - 488px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2403,12 +2403,11 @@ select optgroup {
   right: calc(var(--hud-r) + 100px);
 }
 
-/* Where the attribution could reach the campus's and the walk's buttons, in a wide font with a long campus name and
-   a count, the row is at most 380 px wide (the attribution keeps 388 px clear); on a wider screen it has its room. */
-@media (max-width: 1099.98px) {
-  .campus-dock {
-    max-width: min(380px, calc(100vw - var(--edge-l) - var(--edge-r)));
-  }
+/* The attribution shares the foot of the screen with the campus's, the walk's and All schools' buttons: in a wide
+   font with a long campus name and a count, the row is at most 480 px wide at every width (the attribution keeps
+   488 px clear), the campus's name giving way first, to its ellipsis. */
+.campus-dock {
+  max-width: min(480px, calc(100vw - var(--edge-l) - var(--edge-r)));
 }
 
 /* A picture of the view for an agent (scripts/walker): the panels step aside, the labels stay. */
