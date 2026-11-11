@@ -56,3 +56,6 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   camera fitted again; the plant, the duct, the unit and the fan on the roof. Top view: footprint IoU 0.910, 95% of
   10,042 cells within 0.5 m of the LiDAR's height, the highest point 19.33 m over the door's ground against 19.28;
   block 903 96.3% under the model (904 7.3%, 902 2.0%: `also` empty).
+- Step 8 (2026-11-12): on the site (`site: true`), in place of block 903; its measured massing's data file gone (a
+  run of `massing.py` over the Newmarket campus writes every other file as before). The map's ground at the door is
+  5.01 m over the LiDAR's; under the walls' corners from 0.05 m under to 1.35 m over the door's, all over FOOT.
