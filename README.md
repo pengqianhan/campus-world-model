@@ -69,6 +69,9 @@ It is built to answer two questions a student actually has:
 
 ## What's new
 
+- **2026-11-11:** every school's map has "All schools" at the bottom left, beside "Take a walk" (above the campus's
+  button on a screen narrower than 1280 px), and in its campus panel: a link back to the page that lists every
+  school's map.
 - **2026-11-11:** on the City campus the map draws Building 114 in detail, where it stood as a measured massing: a
   long block of two storeys under a deep eave, a band of windows under it over white cladding, and a glass stair
   tower with red doors up brick steps. Its sizes come from the LiDAR; it was compared with a photograph, which is not

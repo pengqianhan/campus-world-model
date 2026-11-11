@@ -2,7 +2,7 @@
 import { effect, signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
 import { intlLocale, pick, t, tn } from "../app/i18n.ts";
-import { ABOUT_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
+import { ABOUT_HREF, HOME_HREF, Icon, absentLayers, campusName, noCodes, noIndoor } from "./common.tsx";
 import { busyBuildings, data, goHome, loadError, marker, night, panel, selBuilding, selCampus, selRoom, sessionsNow, webglFailed } from "../app/state.ts";
 import { BuildingView } from "./BuildingView.tsx";
 import { SceneHost } from "./SceneHost.tsx";
@@ -53,38 +53,43 @@ function StatusStrip() {
     <>
       {!open && (
         <div class="campus-dock">
-          <button
-            type="button"
-            class="status-toggle"
-            id="status-toggle"
-            ref={show}
-            aria-expanded="false"
-            aria-controls="status-strip"
-            aria-label={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
-            title={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
-            onClick={() => (stripOpen.value = true)}
-          >
-            <Icon name="pin" size={16} />
-            <span class="status-toggle-name">{campusName(d, selCampus.value)}</span>
-            {count > 0 && <i class="status-toggle-count">{count}</i>}
-            <Icon name="chevronUp" size={16} />
-          </button>
-          <button
-            type="button"
-            class="walk-start"
-            id="walk-start"
-            onClick={() => {
-              // The walk is a game: it starts behind the walker, with the whole screen; at the campus's start the view
-              // takes in what the start faces (on the City Campus, the Clock Tower).
-              panel.value = "none";
-              const reply = startWalking();
-              setView({ view: "follow", name: MY_WALKER, ...startLook(reply) });
-            }}
-            title={t("walker.startHint")}
-          >
-            <Icon name="walk" />
-            <span>{t("walker.start")}</span>
-          </button>
+          <div class="campus-dock-row">
+            <button
+              type="button"
+              class="status-toggle"
+              id="status-toggle"
+              ref={show}
+              aria-expanded="false"
+              aria-controls="status-strip"
+              aria-label={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
+              title={t(noIndoor(d) ? "status.showBuildings" : "status.show", { campus: campusName(d, selCampus.value) })}
+              onClick={() => (stripOpen.value = true)}
+            >
+              <Icon name="pin" size={16} />
+              <span class="status-toggle-name">{campusName(d, selCampus.value)}</span>
+              {count > 0 && <i class="status-toggle-count">{count}</i>}
+              <Icon name="chevronUp" size={16} />
+            </button>
+            <button
+              type="button"
+              class="walk-start"
+              id="walk-start"
+              onClick={() => {
+                // The walk is a game: it starts behind the walker, with the whole screen; at the campus's start the view
+                // takes in what the start faces (on the City Campus, the Clock Tower).
+                panel.value = "none";
+                const reply = startWalking();
+                setView({ view: "follow", name: MY_WALKER, ...startLook(reply) });
+              }}
+              title={t("walker.startHint")}
+            >
+              <Icon name="walk" />
+              <span>{t("walker.start")}</span>
+            </button>
+          </div>
+          <a class="dock-home" id="all-schools-dock" href={HOME_HREF} title={t("campus.allSchoolsTitle")}>
+            {t("campus.allSchools")}
+          </a>
         </div>
       )}
       <section class="status" id="status-strip" aria-live="polite" hidden={!open}>
@@ -161,6 +166,9 @@ function StatusStrip() {
               </select>
             </label>
           )}
+          <a class="campus-home" id="all-schools" href={HOME_HREF} title={t("campus.allSchoolsTitle")}>
+            {t("campus.allSchools")}
+          </a>
         </div>
       </section>
     </>
