@@ -49,12 +49,12 @@ decide. No Street View photograph is used.
   building, looking north-north-east and a little up at the whole face: three glazed storeys with light bands between
   them under the fascia, a dark frame at each end, the ground storey set back behind piers and two Vs of braces, and
   the three stacks over the roof edge. Its camera is fitted by `tools/photo_camera.py` to the face's roof edge against
-  the sky (the fascia's top at 70.6 m, p90 of the LiDAR's returns along the edge), to both its ends against the sky
-  (p 32.05 and -22.4, the outermost roof returns), to an upright edge of each stack and to the south-west corners of
-  the three stacks' tops and the north-west corners of two, which fall from 77.4 m at their south edge to 76.6 m at their north (a plane
-  through each one's returns), held near 1.6 m over the LiDAR's ground. It stands 0.98 m over the LiDAR's ground there,
-  its optical axis at bearing 31.0 degrees, looking up 7.5 degrees, through a lens of 49.2 degrees across (the file's
-  24 mm on its camera's sensor gives 49.6): an rms of 0.72 px over 104 residuals.
+  the sky (the fascia's top at 70.6 m, p90 of the LiDAR's returns along the edge), to both its ends against the sky (p
+  32.05 and -22.4, the outermost roof returns), to an upright edge of each stack and to the south-west corners of the
+  three stacks' tops and the north-west corners of two, which fall from 77.4 m at their south edge to 76.6 m at their
+  north (a plane through each one's returns), held near 1.6 m over the LiDAR's ground. It stands 0.98 m over the
+  LiDAR's ground there, its optical axis at bearing 31.0 degrees, looking up 7.5 degrees, through a lens of 49.2
+  degrees across (the file's 24 mm on its camera's sensor gives 49.6): an rms of 0.72 px over 104 residuals.
 - The stacks' south-east top corners are left out of the fit: the LiDAR's returns from their tops reach about 0.3 m
   further east than the photograph shows them (5.7 to 7.7 px), and with them the fit is 1.34 px.
 

@@ -11,5 +11,5 @@ from it but the ones its contract names, which are estimated.
   along the roof edge, standing a little proud of the glass; a dark brown frame at each end of the face.
 - Under the glazing, the ground storey set back: grey walls with dark windows and doors, behind plain light piers and
   pairs of diagonal braces that fall from the glazing's underside at two piers to the ground between them, a V.
-- The light: a clear afternoon, the sun low and to the north-north-west, behind the building; the glass reflecting the sky and the buildings across
-  the lot, the fascia and the panels pale.
+- The light: a clear afternoon, the sun low and to the north-north-west, behind the building; the glass reflecting the
+  sky and the buildings across the lot, the fascia and the panels pale.
