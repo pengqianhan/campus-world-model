@@ -1229,7 +1229,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of Fine Arts Studio Block 431 from the car park at the west end of the lane to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's columns, the heights of its rows of windows and the places of its roller doors, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 431's east entrance | That its stair tower and the canopy over its entrance are glass; no size is taken from it | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Building 903 from the road to its south-east | The look its model was compared with while it was drawn, and, as a reference, its clad storeys' windows, its glazed storeys' plinth and piers and the canopy over its entrance, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of Structures Hall from an open lot to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's bands and mullions, its ground storey's windows, entrance, piers and braces and its stacks' bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Structures Hall from an open lot to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's bands, mullions, fascia and frames, its ground storey's windows, door, entrance, piers and braces and its stacks' bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 433 from the road at its west-south-west end | The look its model was compared with while it was drawn, and, as a reference, the height of its red ground storey, its glazing's mullions, floor bands and coloured panels, the place of its end wall, its end's grey bay, doors and windows, its balconies' fronts and its outside stair, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of 58 Symonds Street from the ground to its north | The look its model was compared with while it was drawn, and, as a reference, the depth of its slab bands, its window wall's place behind them, its sill panels, mullions and louvres, its corner columns and piers, and its dark ground storey, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Security from the court to its south | The look its model was compared with while it was drawn, and, as a reference, the width of its chamfered corner, its band's underside, its ground storey's glazing and its place behind the band, its columns, its deck, the deck's railing and its steps, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1799,16 +1799,15 @@ If you represent the University and would like something changed or removed, ple
   north edge.
 - **Structures Hall is seen from its south only, as it was in 2017.** One photograph, older than the LiDAR and the
   aerial, looks at its south face from an open lot about 64 m to its south; its camera is fitted to the face's roof
-  edge and both its ends against the sky and to the three stacks on the roof. The south face's bands and mullions and
-  its ground storey's windows, door, entrance, piers and braces are estimated in it; the north face, the ends and the
-  lower block against the east end, which no photograph shows, are drawn plain, and the face the northern block turns
-  south over the southern block's roof, which no photograph shows, is drawn plain. Its
-  entrance is not known from a record: its door is set before the glazed entrance near the south face's east end.
-  The map's ground there is 3.80 m over the LiDAR's, so the model stands that much higher than the real building, on
-  the drawn ground at its door; toward its west end the map's ground rises up to 1.20 m over the door's, and its
-  ground storey stands partly in it. Building 903, 8.3 m to its west and a landmark too, stands on the map's ground
-  at its own door, 5.01 m over the LiDAR's, so on the map its roof, about 0.4 m under this one's south edge in the
-  LiDAR, stands about 0.8 m over it.
+  edge and both its ends against the sky and to the three stacks on the roof. The south face's bands, mullions, fascia
+  and frames, its ground storey's windows, door, entrance, piers and braces, and the stacks' bands are estimated in
+  it; the north face, the ends, the lower block against the east end and the face the northern block turns south over
+  the southern block's roof, which no photograph shows, are drawn plain. Its entrance is not known from a record: its
+  door is set before the glazed entrance near the south face's east end. The map's ground there is 3.80 m over the
+  LiDAR's, so the model stands that much higher than the real building, on the drawn ground at its door; toward its
+  west end the map's ground rises up to 1.20 m over the door's, and its ground storey stands partly in it. Building
+  903, 8.3 m to its west and a landmark too, stands on the map's ground at its own door, 5.01 m over the LiDAR's, so
+  on the map its roof, about 0.4 m under this one's south edge in the LiDAR, stands about 0.8 m over it.
 - **The Fisher Building is seen from Waterloo Quadrant only.** Two Street View panoramas see its west
   and south faces; its faces turned north, east and south-east, which no photograph shows, are tan
   brick with their floor bands, and its roofs are flat. Block 804's outline under the trees by its
