@@ -49,8 +49,9 @@ export function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
 }
 
 /** The southern block: the ground storey from FOOT to the box's underside, its wall set back to WALL_Q, and over it
- * the glazed box to its roof, its glass at FACE. Their sides along the line between the blocks are drawn only west
- * of the northern block (p 23.05 on): east of that they lie within it. */
+ * the glazed box to its roof, its glass at FACE. East of the northern block's west end (p 23.05) their north sides
+ * stand on the line between the blocks (q0) and lie within the northern block, not drawn; west of it they stand at
+ * the block's own north wall (qWest), drawn. */
 export function south(b) {
   const { p0, p1, q0, qWest } = SOUTH;
   // east of the northern block's west end against it (q0), west of it to its own north wall (qWest)

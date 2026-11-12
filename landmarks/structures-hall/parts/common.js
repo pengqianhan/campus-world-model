@@ -33,10 +33,11 @@ export const DIR = { p: [-Math.cos(T), 0, Math.sin(T)], q: [Math.sin(T), 0, Math
 // 52.49 m; the walls go down to FOOT.
 export const FOOT = Y(52.0);
 
-/** The southern block, to its roof's outer edges (the outermost roof returns on each face): p -22.4 to 32.05, from
- * the line between the blocks (q 2.7) to the south face's fascia (q 16.0). Its roof, one slope of 0.1036 a metre
- * (5.9 degrees; a plane through 4,967 returns, rms 0.023 m), rises from 70.52 m at the south edge to 71.90 m at the
- * line; the fascia's top, 70.6 m (p90 of the returns along the edge), is the photograph's roof edge (FASCIA). */
+/** The southern block, to its roof's outer edges (the outermost roof returns on each face): p -22.4 to 32.05, from the
+ * line between the blocks (q 2.7) to the south face's fascia (q 16.0); west of the northern block (p 23.05 on) from its
+ * own north wall at q 2.1 (qWest: its returns from 53 to 70 m, p50 2.09). Its roof, one slope of 0.1036 a metre (5.9
+ * degrees; a plane through 4,967 returns, rms 0.023 m), rises from 70.52 m at the south edge to 71.90 m at the line;
+ * the fascia's top, 70.6 m (p90 of the returns along the edge), is the photograph's roof edge (FASCIA). */
 export const SOUTH = { p0: -22.4, p1: 32.05, q0: 2.7, q1: 16.0, qWest: 2.1 };
 export const southRoof = (q) => Y(72.182 - 0.1036 * q);
 
@@ -78,12 +79,12 @@ export const BAYS = { west: SOUTH.p1 - FRAME.w, east: SOUTH.p0 + FRAME.w, n: 36 
 /** The p of the line k bays from the west frame. */
 export const bay = (k) => BAYS.west - (k * (BAYS.west - BAYS.east)) / BAYS.n;
 
-/** The ground storey under the box, through the camera: its wall set back to q 14.3 (the LiDAR's returns at 52.5 to
- * 55.5 m, q 14.25 to 14.75), from the east frame's inner edge to the west end; a band of dark windows, 53.9 to
+/** The ground storey under the box, through the camera: its wall set back to q 14.3 (the LiDAR's returns at 52.5 to 55.5
+ * m, q 14.25 to 14.75), from the east end (flush with the box over it) to the west end; a band of dark windows, 53.9 to
  * 55.3 m, from p 27.0 to the entrance; a dark door at the west end (p 29.64 to 31.05, to 56.3 m) and a dark glazed
- * entrance (p -17.35 to -13.3, to 56.4 m) under a thin canopy (55.65 to 55.8 m); piers 0.4 m wide under the box's
- * face on every fourth bay's line from the second (the photograph's nine piers fall within 0.3 m of them), and a V of
- * two braces from the piers' tops to the ground at the middle of the bays from line 10 to 14 and from 22 to 26. */
+ * entrance (p -17.35 to -13.3, to 56.4 m) under a thin canopy (55.65 to 55.8 m); piers 0.4 m wide under the box's face
+ * on every fourth bay's line from the second (the photograph's nine piers fall within 0.3 m of them), and a V of two
+ * braces from the piers' tops to the ground at the middle of the bays from line 10 to 14 and from 22 to 26. */
 export const WALL_Q = 14.3, GS_EAST = SOUTH.p0;
 export const WINDOWS_GS = { p0: -12.9, p1: 27.0, y0: Y(53.9), y1: Y(55.3) };
 export const DOOR = { p0: 29.64, p1: 31.05, top: Y(56.3) };

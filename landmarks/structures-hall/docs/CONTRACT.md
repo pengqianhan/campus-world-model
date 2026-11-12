@@ -57,9 +57,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   3.80 m over the LiDAR's; under the walls' corners from 0.28 m under to 1.20 m over the door's, all over FOOT.
 - The review of #170 (2026-11-12): west of the northern block the southern block's north wall at q 2.1, where its
   returns are (p50 2.09); the ground storey's east end flush with the glazed box over it (p -22.4); the face the
-  northern block turns south over the southern block's roof drawn plain, not as glazing (its north face under the
-  eave has as few returns, and no photograph shows it); the lower block's roof at 68.05 m, the p50 of its returns;
-  the art bible's braces (a V from the glazing's underside) and sun (low, to the north-north-west). Silhouette IoU
-  0.878, 0.960 in the model's box; luma 119 against 123. Top view: footprint IoU 0.962, 98% of 6,902 cells within
+  northern block turns south over the southern block's roof drawn plain, not as glazing (its north face under the eave
+  has as few returns, and no photograph shows it); the lower block's roof at 68.05 m (its returns' p50 68.03, p90
+  68.15); the art bible's braces (a V from the glazing's underside) and sun (low, to the north-north-west). Silhouette
+  IoU 0.878, 0.960 in the model's box; luma 119 against 123. Top view: footprint IoU 0.962, 98% of 6,902 cells within
   0.5 m, the highest point 24.82 m over the door's ground against 24.74, block 906 98.1% under the model. 528
   triangles, 5 draw calls.
