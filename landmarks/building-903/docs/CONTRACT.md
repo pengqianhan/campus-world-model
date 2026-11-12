@@ -31,8 +31,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the frame), `parts/block.js` (the clad box, its parapets and its ridge's
-  cap, and `along`, a profile carried along p), `parts/facade.js` (the glazed storeys, their piers, band and
-  mullions, the canopy, the windows), `model.js`: the lead.
+  cap, the roof under the step (`lean`), what stands on the roof (`high`), and `along`, a profile carried along p),
+  `parts/facade.js` (the glazed storeys, their piers, band and mullions, the canopies, the windows), `model.js`: the
+  lead.
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by material.

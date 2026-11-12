@@ -48,7 +48,7 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   top view: footprint IoU 0.905, 93% of 1,873 cells within 0.5 m, the highest point 36.30 m over the door's ground
   against the LiDAR's 36.27, block 435 97.7% under the model.
 - The review of #167 (2026-11-12): the lowest slab's band at 55.7 m (the LiDAR's 228 returns at 55.0 to 56.2 m in
-  the bands' outer metre, 266 in their outer 1.2 m) and its storey of windows, which the photograph shows over the
+  the bands' outer metre, 265 in their outer 1.2 m) and its storey of windows, which the photograph shows over the
   dark ground storey: eight storeys of windows, not seven; the core's roof a dull plum (`roofPlum`, new in the kit),
   as the 2023 aerial shows it; the two strips on the street side run in to the upper roof's edge, as the LiDAR's roof
   does; the ground's figures from the LiDAR within 5 m of each face (the real ground falls about 6 m from the door to
