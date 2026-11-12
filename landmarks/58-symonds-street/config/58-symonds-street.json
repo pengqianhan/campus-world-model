@@ -118,8 +118,8 @@
   "sunel": 45.0,
   "sun": 3.0,
   "env": 3.2,
-  "exposure": 0.82,
-  "note": "estimated: the photograph is taken on a bright day under a thin high haze, looking south at the two faces that face north-east and north-west, which it shows about equally bright. The viewer's sun stands to the north-north-east (20 deg round, 45 up), between those two faces, weaker than by default (3, against 8) and its sky's light stronger (3.2, against 2.25), at an exposure of 0.82: over the model's screen box the luma (p50) 175 against the photograph's 176. With the sun at 0 deg, 4 and 3.0 at 0.9 it is 181; with 433's overcast light (2.5, 3.6, 0.88) 193."
+  "exposure": 0.69,
+  "note": "estimated: the photograph is taken on a bright day under a thin high haze, looking south at the two faces that face north-east and north-west, which it shows about equally bright. The viewer's sun stands to the north-north-east (20 deg round, 45 up), between those two faces, weaker than by default (3, against 8) and its sky's light stronger (3.2, against 2.25), at an exposure of 0.69: over the model's screen box the luma (p50) 177 against the photograph's 177 (at 0.82 it was 192 once the lowest storey of windows was drawn, 175 before). Before that storey was drawn, with the sun at 0 deg, 4 and 3.0 at 0.9 it was 181; with 433's overcast light (2.5, 3.6, 0.88) 193."
  },
  "door": {
   "x": -11.0,
