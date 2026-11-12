@@ -71,9 +71,10 @@ From the LiDAR:
   1.7 m; the north corner drawn square, its returns a tree's crown (54 to 58 m, uneven).
 - **The roof** at 51.13 m (p50 of the returns 4 m and more inside the faces) and the parapet's top at 51.5 m (the
   highest returns within 0.8 m of the faces, p50 51.42 to 51.49), 0.3 m thick.
-- **On the roof**: a box at the west corner (p -13.9 to -9.8, q 9.6 to 13.0) to 53.88 m (p90 of 132 returns) and a
-  block toward the east end (along the south-east side from p 3 and from p -2 to 16.6, and up to q 3 from p 8) to
-  53.77 m (p90 of 1,431 returns).
+- **On the roof**: a box at the west corner (p -15.6 to -9.75, q 9.6 to 13.0), its roof rising toward the north-east
+  from 51.7 m to 53.84 m at p -11.8 and flat beyond (the p50s of its returns in 0.5 m strips); and a block toward the
+  east end (along the south-east side from p 3.75 and from p -2 to 16.6, and up to q 3 from p 8) to 53.77 m (p90 of
+  1,431 returns), but for its south-east end (p 11.5 to 16.6, q -11 to -8.8), at 53.0 m.
 - **The walls' foot**, FOOT, 43.0 m: the ground along the walls lies from 43.3 m on the court to the south-east to
   46.5 m by the road to the north-west.
 
@@ -82,10 +83,12 @@ Estimated, with the photograph as a reference: the chamfer at the south corner, 
 joint at each end of the chamfer; the ground storey's glazing 1.85 m behind the south-east face (where the camera puts
 its head at the soffit) and, under the south corner, 3.65 m behind the south-west end, a porch; its frames 1.6 m apart;
 columns 0.45 m square under the band's edge, 0.55 m in, the two the photograph shows and the rest on a grid of 6.5 m
-from them; the floor and the deck at 45.3 m, at the camera's eye; the deck out to 3.15 m before the south-east face,
+from them, 5.2 to 5.3 m apart along the south-west end; the floor and the deck at 45.3 m, at the camera's eye; the deck out to 3.15 m before the south-east face,
 where the camera puts its railing's top 1 m over it, its railing of thin bars; and a flight of 11 steps from the court
 up to it along the chamfer's normal, its foot where the camera puts it but drawn 1.1 m further along the south-east
-face, clear of Architecture - West's outline. The faces no photograph shows (north-west and north-east) are drawn as
+face, clear of Architecture - West's outline. Neither the 2024 LiDAR nor the 2023 aerial shows the deck, its railing or
+the steps: both see the paved court open there, at 43.4 m, up to the south-east face (the photograph, taken later in
+2024, shows them; they are drawn from it). The faces no photograph shows (north-west and north-east) are drawn as
 the ones it does, the glazing 1.85 m in.
 
 ## The light
@@ -95,7 +98,7 @@ viewer's sun stands to the west-north-west (300 degrees round, 45 up), weak (1.5
 against 2.25), at an exposure of 0.95 (the config's `light`): over the model's screen box the luma (p50) 155 against
 the photograph's 159.
 
-## On the map (step 7)
+## On the map (steps 7 and 8)
 
 - **The door**: the campus map records no entrance in 409. The config's door is on the court at the foot of the steps
   up to the deck, p -19.5 and q -18.3 (in the view frame (18.92, -18.9)); the LiDAR's ground within 1 m, 17 returns,

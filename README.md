@@ -957,9 +957,9 @@ toward its east end. Its heights and plans come from the LiDAR but for the chamf
 underside, the glazing's place behind it, the columns, the deck, its railing and the steps are estimated with the
 photograph as a reference. One photograph from the court to its south, looking at the chamfered corner and its two
 faces; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.78 in it, where the
-trees round it leave little sky, and the brightness over it is within 4 of the photograph's. From above its outline
-covers the LiDAR's with an IoU of 0.94, and on 86% of the cells both cover it is within 0.5 m of the LiDAR's height,
-the rest mostly under a tree's crown over its north corner. What the photograph does not show is drawn as what it
+trees round it leave little sky, and the brightness over it is within 3 of the photograph's. From above its outline
+covers the LiDAR's with an IoU of 0.94, and on 89% of the cells both cover it is within 0.5 m of the LiDAR's height,
+the rest under a tree's crown along its north side and a row of small units on its roof, neither drawn. What the photograph does not show is drawn as what it
 does.
 
 | | |
@@ -1734,7 +1734,8 @@ If you represent the University and would like something changed or removed, ple
   campus map: the photographer stood under a crown or an overhang there, or the fit is that far off. The chamfer's
   width, the band's underside, the glazing behind it, the columns, the deck, its railing and the steps are estimated
   in the photograph, and the steps are drawn 1.1 m along the south-east face from where it puts their foot, clear of
-  that outline; the faces to the north-west and north-east, which no photograph shows, are drawn as the ones it does,
+  that outline; neither the LiDAR nor the 2023 aerial shows the deck, its railing or the steps (both see the paved
+  court open there), which are drawn from the photograph, taken later in 2024; the faces to the north-west and north-east, which no photograph shows, are drawn as the ones it does,
   and a tree's crown over its north corner and a row of small units on its roof are not drawn. Its entrance is not
   known from a record: its door is set at the foot of the steps. The map's ground there is 3.83 m under the LiDAR's,
   so the model stands that much lower than the real building, on the drawn ground at its door; under its walls the

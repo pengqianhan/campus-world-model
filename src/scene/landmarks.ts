@@ -136,8 +136,9 @@ export interface LandmarkHost {
  * West and Architecture - East (421W, 421E), and buildings 501 and 502 of the M&HS Building; Te Pūtahi
  * Tangata (201) stands 0.44 m from the Music School (250) and 0.57 m from the Humanities Building (206).
  * The nearest two landmarks further apart than this, Fine Arts Studio Blocks 431 and 433, stand 4.0 m
- * apart across the lane between them (the next, buildings 302 and 303S of the Science Centre, 5.6 m, and
- * the Humanities Building and Okareta (206, 215), 7.4 m): each of those can stand on the map's own ground
+ * apart across the lane between them (the next, Security and Architecture - West (409, 421W), 4.7 m,
+ * buildings 302 and 303S of the Science Centre, 5.6 m, and the Humanities Building and Okareta (206, 215),
+ * 7.4 m): each of those can stand on the map's own ground
  * without a step or an overlap between them that a camera could see.
  */
 export const SHARED_GROUND = 2;

@@ -109,8 +109,8 @@ test("a measured massing is drawn only nearer than a landmark, in its block's co
 });
 
 test("while a building is open, a measured massing near it gives way to its block", async ({ page }) => {
-  // Building 401 stands beside 405, the measured massing nearest it since 409 became a landmark; 405 open is one of the
-  // views that must not change.
+  // Building 401 stands beside 405, the measured massing nearest it (their centres 40.7 m apart); 405 open is one of
+  // the views that must not change.
   test.skip(!MEASURED.some((m) => m.name === "measured/401"), "401 is not a measured massing");
   await open(page, `?building=405&${T}`);
   expect(await landmark(page, "measured/401")).toMatchObject({ form: "none", made: [] });
