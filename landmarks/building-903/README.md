@@ -25,9 +25,9 @@ z = 0. `parts/common.js` gives the building a frame of its own, `p` along its lo
 drift 2.27 to 2.43 degrees against the axis, and none against `p` and `q`.
 
 The frame was measured above 53.1 m, the median ground in the crop box; when the config's ground moved down 0.46 m to
-the door's, its thresholds were raised by as much, so that they take the same returns, and `frame.expected` checks the centre and the
-axis (0.000 m, 0.000 degrees). The campus map's ring stands about 29 m east-north-east of the building in the LiDAR's
-local metres (it is in the map's frame); `place` converts.
+the door's, its thresholds were raised by as much, so that they take the same returns, and `frame.expected` checks the
+centre and the axis (0.000 m, 0.000 degrees). The campus map's ring stands about 29 m east-north-east of the building
+in the LiDAR's local metres (it is in the map's frame); `place` converts.
 
 ## Neighbours on the map
 
@@ -80,9 +80,10 @@ From the LiDAR:
   -6, q -5 to 5.5) to 71.35 m, a duct from it to the north to 71.15 m, a unit toward the west end (p 23 to 28.3, q -5
   to -1) to 71.97 m, a fan to 71.91 m and a low block south of it to 70.65 m.
 - **A roof under the step**, before the south face (p -10.0 to -6.25, out to q 26.2, the edge of block 903's ring),
-  one plane falling from 57.6 m to 55.5 m, with the ground's returns under it all along; and **the canopies**: over the corner's entrance (p -37.9 to -33.1, out to q 17.05) at
-  55.5 m, along the forward face (p 4.05 to 25.1, out to q 19.7) at 58.15 m and at its west end (p 33.4 to 36.4, out to
-  q 20.7) at 55.65 m (the returns before the faces, with the ground's under them).
+  one plane falling from 57.6 m to 55.5 m, with the ground's returns under it all along; and **the canopies**: over
+  the corner's entrance (p -37.9 to -33.1, out to q 17.05) at 55.5 m, along the forward face (p 4.05 to 25.1, out to q
+  19.7) at 58.15 m and at its west end (p 33.4 to 36.4, out to q 20.7) at 55.65 m (the returns before the faces, with
+  the ground's under them).
 - **The clad box's underside** at 61.25 m (the returns under the faces stop there; through the camera the box's lower
   edge lies at 61.2 to 61.5 m), and **the glazed storeys** under it 0.45 m behind the south face and the east end
   (their returns between 54 and 61 m), with a band at the floor between them, 57.7 to 58.4 m (returns at
@@ -93,12 +94,12 @@ From the LiDAR:
 Estimated, with the photograph as a reference: the plinth under the glazing to 53.0 m; the clad storeys' windows (on
 the south face a pair of wide ones by the corner and a band of five, sills 63.25 and 66.35 m; on the east end two
 single windows over a pair and a band of twelve to the north corner, sills 63.85 and 66.3 m) in frames 0.07 m proud,
-the cladding 0.3 m wide between their units; the glazed storeys' piers (one 0.7 m square at the corner, one 1.5 m
-wide on the south face and its like every 7.6 m along the south and forward faces, two on the east end) and a mullion
-every 1.5 m; the canopies' depth; the glazed storeys' place behind the forward face, where the canopy along it hides
-them from the LiDAR, drawn as on the south face; and the depth of the roof under the step, drawn with nothing under it. The forward
-face, which the photograph sees only at its far end, has the south face's bands;
-the north face, which no photograph shows, is drawn as the south face.
+the cladding 0.3 m wide between their units; the glazed storeys' piers (one 0.7 m square at the corner, one 1.5 m wide
+on the south face and its like every 7.6 m along the south and forward faces, two on the east end) and a mullion every
+1.5 m; the canopies' depth; the glazed storeys' place behind the forward face, where the canopy along it hides them
+from the LiDAR, drawn as on the south face; and the depth of the roof under the step, drawn with nothing under it. The
+forward face, which the photograph sees only at its far end, has the south face's bands; the north face, which no
+photograph shows, is drawn as the south face.
 
 ## The light
 

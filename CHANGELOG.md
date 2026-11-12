@@ -23,10 +23,10 @@ A change to what the site does or shows adds its line here, and the README's
   corrugated metal, with windows singly and in bands, over two glazed storeys set back under it on piers, a canopy
   over the entrance at its south-east corner, and a low roof of two slopes with plant on it. Its sizes come from the
   LINZ 2024 LiDAR; it was compared with a photograph from the road to its south-east, and its card says what is
-  estimated: the faces the photograph sees, with it as a reference, the windows, the plinth, the piers and the canopies, and the
-  faces no photograph shows, drawn as the ones it does. Its measured massing's data file has gone. On the map it has
-  the map's colours; from a walker's height on a computer with a graphics card, its own cladding, glass and roofs
-  (#PRNUM).
+  estimated: the faces the photograph sees, with it as a reference, the windows, the plinth, the piers and the
+  canopies, and the faces no photograph shows, drawn as the ones it does. Its measured massing's data file has gone.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
+  glass and roofs (#169).
 
 ## 2026-11-11
 
