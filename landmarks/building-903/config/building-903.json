@@ -128,7 +128,7 @@
   "sun": 1.0,
   "env": 3.4,
   "exposure": 0.78,
-  "note": "estimated: the photograph is taken under a bright overcast, looking north-west at faces that face south-south-west and east-south-east, evenly lit and with no shadow cast. The viewer's sun stands behind the building, to the north (0 deg round, 50 up), weak (1.0, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.78: over the model's screen box the luma (p50) 163 against the photograph's 158, p90 174 against 179 (with the camera fitted again after the review of #169; 162 against 157 and 174 against 178 before) (with the sun at 20 deg and 1.5, at 0.95, 178 and 200; at 0.85, 170 and 182)."
+  "note": "estimated: the photograph is taken under a bright overcast, looking north-west at faces that face south-south-west and east-south-east, evenly lit and with no shadow cast. The viewer's sun stands behind the building, to the north (0 deg round, 50 up), weak (1.0, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.78: over the model's screen box the luma (p50) 163 against the photograph's 158, p90 174 against 179 (with the camera fitted again after the review of #169; 162 against 157 and 174 against 178 before; before the refit too, with the sun at 20 deg and 1.5, at 0.95, 178 and 200, and at 0.85, 170 and 182)."
  },
  "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-12); the provisional ground was 53.1 m, the median LiDAR ground in the crop box. parts/common.js gives every height as the LiDAR's elevation, and its Y turns it into one over this ground",
  "door": {
