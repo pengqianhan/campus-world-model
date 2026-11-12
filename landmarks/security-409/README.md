@@ -81,15 +81,15 @@ From the LiDAR:
 Estimated, with the photograph as a reference: the chamfer at the south corner, 3.4 m wide; the band's underside at
 49.1 m (the camera puts the band's lower edge on the chamfer and the south-east face at 49.06 to 49.11 m), with a dark
 joint at each end of the chamfer; the ground storey's glazing 1.85 m behind the south-east face (where the camera puts
-its head at the soffit) and, under the south corner, 3.65 m behind the south-west end, a porch; its frames 1.6 m apart;
-columns 0.45 m square under the band's edge, 0.55 m in, the two the photograph shows and the rest on a grid of 6.5 m
-from them, 5.2 to 5.3 m apart along the south-west end; the floor and the deck at 45.3 m, at the camera's eye; the deck out to 3.15 m before the south-east face,
-where the camera puts its railing's top 1 m over it, its railing of thin bars; and a flight of 11 steps from the court
-up to it along the chamfer's normal, its foot where the camera puts it but drawn 1.1 m further along the south-east
-face, clear of Architecture - West's outline. Neither the 2024 LiDAR nor the 2023 aerial shows the deck, its railing or
-the steps: both see the paved court open there, at 43.4 m, up to the south-east face (the photograph, taken later in
-2024, shows them; they are drawn from it). The faces no photograph shows (north-west and north-east) are drawn as
-the ones it does, the glazing 1.85 m in.
+its head at the soffit) and, under the south corner, 3.65 m behind the south-west end, a porch; its frames 1.6 m
+apart; columns 0.45 m square under the band's edge, 0.55 m in, the two the photograph shows and the rest on a grid of
+6.5 m from them, 5.2 to 5.3 m apart along the south-west end; the floor and the deck at 45.3 m, at the camera's eye;
+the deck out to 3.15 m before the south-east face, where the camera puts its railing's top 1 m over it, its railing of
+thin bars; and a flight of 11 steps from the court up to it along the chamfer's normal, its foot where the camera puts
+it but drawn 1.1 m further along the south-east face, clear of Architecture - West's outline. Neither the 2024 LiDAR
+nor the 2023 aerial shows the deck, its railing or the steps: both see the paved court open there, at 43.4 m, up to
+the south-east face (the photograph, taken later in 2024, shows them; they are drawn from it). The faces no photograph
+shows (north-west and north-east) are drawn as the ones it does, the glazing 1.85 m in.
 
 ## The light
 
