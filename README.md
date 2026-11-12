@@ -1696,7 +1696,7 @@ If you represent the University and would like something changed or removed, ple
   edge and both its ends against the sky and to the three stacks on the roof. The south face's bands and mullions and
   its ground storey's windows, door, entrance, piers and braces are estimated in it; the north face, the ends and the
   lower block against the east end, which no photograph shows, are drawn plain, and the face the northern block turns
-  south over the southern block's roof is drawn as a band of glazing because the LiDAR has no return on it. Its
+  south over the southern block's roof, which no photograph shows, is drawn plain. Its
   entrance is not known from a record: its door is set before the glazed entrance near the south face's east end.
   The map's ground there is 3.80 m over the LiDAR's, so the model stands that much higher than the real building, on
   the drawn ground at its door; toward its west end the map's ground rises up to 1.20 m over the door's, and its

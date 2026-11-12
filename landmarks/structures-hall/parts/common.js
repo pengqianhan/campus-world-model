@@ -37,7 +37,7 @@ export const FOOT = Y(52.0);
  * the line between the blocks (q 2.7) to the south face's fascia (q 16.0). Its roof, one slope of 0.1036 a metre
  * (5.9 degrees; a plane through 4,967 returns, rms 0.023 m), rises from 70.52 m at the south edge to 71.90 m at the
  * line; the fascia's top, 70.6 m (p90 of the returns along the edge), is the photograph's roof edge (FASCIA). */
-export const SOUTH = { p0: -22.4, p1: 32.05, q0: 2.7, q1: 16.0 };
+export const SOUTH = { p0: -22.4, p1: 32.05, q0: 2.7, q1: 16.0, qWest: 2.1 };
 export const southRoof = (q) => Y(72.182 - 0.1036 * q);
 
 /** The northern block: p -23.95 to 23.05, from its north face's eave (q -16.13) to the line between the blocks. Its
@@ -47,8 +47,8 @@ export const NORTH = { p0: -23.95, p1: 23.05, q0: -16.13, q1: 2.7 };
 export const northRoof = (q) => Y(73.739 + 0.1321 * q);
 
 /** The lower block against the northern one's east end: p -30.95 to -23.95, q -15.8 to 2.55, its flat roof at
- * 68.31 m (1,073 returns, rms 0.31 m). */
-export const LOW = { p0: -30.95, p1: -23.95, q0: -15.8, q1: 2.55, top: Y(68.31) };
+ * 68.05 m (the p50 of its 1,036 returns at 67 to 69 m, 68.03; p90 68.15). */
+export const LOW = { p0: -30.95, p1: -23.95, q0: -15.8, q1: 2.55, top: Y(68.05) };
 
 /** The three stacks on the line between the blocks, 15 m apart (the LiDAR's returns over 76.8 m): each about 2.5 m
  * square, from q 1.95 to 4.6, its top falling from 77.4 m at its south edge to 76.6 m at its north (a plane through
@@ -57,10 +57,10 @@ export const LOW = { p0: -30.95, p1: -23.95, q0: -15.8, q1: 2.55, top: Y(68.31) 
 export const STACKS = [[17.73, 20.26], [2.73, 5.23], [-12.28, -9.75]];
 export const STACK = { q0: 1.95, q1: 4.6, south: Y(77.4), north: Y(76.6), band: Y(76.43), louvre: Y(74.34) };
 
-/** The face the northern block turns south over the southern block's roof, from 71.9 to 74.1 m: the LiDAR has no
- * return on it between 72.1 and 73.6 m along its whole length (36 on its edges), where its north face gives returns at
- * every height: drawn as a band of glazing, 72.0 to 73.7 m (estimated). */
-export const CLERESTORY = { y0: Y(72.0), y1: Y(73.7) };
+/** The face the northern block turns south over the southern block's roof, from 71.9 to 74.1 m, is drawn plain, as
+ * the block's walls: the LiDAR has no return on it between 72.1 and 73.6 m along its whole length (36 on its edges),
+ * but the north face under its eave has as few (3 between 69 and 71 m), so that says nothing of what it is, and no
+ * photograph shows it. */
 
 /** The south face, which the photograph sees (estimated through its fitted camera, on the planes the LiDAR gives).
  * Three glazed storeys stand from the box's underside at 56.62 m to the fascia, their glass at q 15.4 (the LiDAR's
@@ -84,7 +84,7 @@ export const bay = (k) => BAYS.west - (k * (BAYS.west - BAYS.east)) / BAYS.n;
  * entrance (p -17.35 to -13.3, to 56.4 m) under a thin canopy (55.65 to 55.8 m); piers 0.4 m wide under the box's
  * face on every fourth bay's line from the second (the photograph's nine piers fall within 0.3 m of them), and a V of
  * two braces from the piers' tops to the ground at the middle of the bays from line 10 to 14 and from 22 to 26. */
-export const WALL_Q = 14.3, GS_EAST = BAYS.east;
+export const WALL_Q = 14.3, GS_EAST = SOUTH.p0;
 export const WINDOWS_GS = { p0: -12.9, p1: 27.0, y0: Y(53.9), y1: Y(55.3) };
 export const DOOR = { p0: 29.64, p1: 31.05, top: Y(56.3) };
 export const ENTRANCE = { p0: -17.35, p1: -13.3, top: Y(56.4), canopy: [Y(55.65), Y(55.8)], out: 15.3 };

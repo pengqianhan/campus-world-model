@@ -34,7 +34,7 @@ of the building in the LiDAR's local metres (it is in the map's frame); `place` 
 
 - No other landmark's outline comes within 2 m of its (the nearest, Building 907's, is about 105 m off), so it stands
   alone on the map's ground at its door (`../README.md`, "Placement").
-- The model stands over 98.0% of block 906 and over no other block. `building.also` is empty.
+- The model stands over 98.1% of block 906 and over no other block. `building.also` is empty.
 - The nearest buildings are Building 903, 8.3 m to the west, and Building 904, 8.5 m to the north-west, both measured
   massings on the site.
 
@@ -50,8 +50,8 @@ decide. No Street View photograph is used.
   them under the fascia, a dark frame at each end, the ground storey set back behind piers and two Vs of braces, and
   the three stacks over the roof edge. Its camera is fitted by `tools/photo_camera.py` to the face's roof edge against
   the sky (the fascia's top at 70.6 m, p90 of the LiDAR's returns along the edge), to both its ends against the sky
-  (p 32.05 and -22.4, the outermost roof returns), to an upright edge of each stack and to the south-west and
-  north-west corners of their tops, which fall from 77.4 m at their south edge to 76.6 m at their north (a plane
+  (p 32.05 and -22.4, the outermost roof returns), to an upright edge of each stack and to the south-west corners of
+  the three stacks' tops and the north-west corners of two, which fall from 77.4 m at their south edge to 76.6 m at their north (a plane
   through each one's returns), held near 1.6 m over the LiDAR's ground. It stands 0.98 m over the LiDAR's ground there,
   its optical axis at bearing 31.0 degrees, looking up 7.5 degrees, through a lens of 49.2 degrees across (the file's
   24 mm on its camera's sensor gives 49.6): an rms of 0.72 px over 104 residuals.
@@ -71,14 +71,15 @@ From the LiDAR:
 - **The northern block**: p -23.95 to 23.05 and q -16.13 to 2.7, under a roof of one slope of 0.1321 a metre (7.5
   degrees; 6,294 returns, rms 0.059 m) from 71.61 m at the north eave up to 74.10 m at the line, 2.2 m over the
   southern block's roof there.
-- **The lower block** against the northern one's east end: p -30.95 to -23.95 and q -15.8 to 2.55, flat at 68.31 m.
+- **The lower block** against the northern one's east end: p -30.95 to -23.95 and q -15.8 to 2.55, flat at 68.05 m.
 - **The stacks**: three, about 2.5 m square, 15 m apart on the line between the blocks (q 1.95 to 4.6), their tops
   falling from 77.4 m to 76.6 m.
 - **The glass of the south face** at q 15.4 (the returns on the face, 60.5 to 66.5 m), the fascia out to q 16.0 (the
   roof's returns end there), and **the ground storey's wall** set back to q 14.3 (the returns at 52.5 to 55.5 m).
 - **The face the northern block turns south** over the southern block's roof has no return between 72.1 and 73.6 m
-  along its whole length, where the north face gives returns at every height: drawn as a band of glazing, 72.0 to
-  73.7 m.
+  along its whole length, as the north face has almost none under its eave: drawn plain, as the block's walls (no
+  photograph shows it). West of the northern block the southern block's north wall stands at q 2.1 (the returns on it
+  from 53 to 70 m, p50 2.09), and the ground storey's east end is flush with the glazed box over it (p -22.4).
 - **The walls' foot**, FOOT, 52.0 m: the ground along the walls (the returns 0.5 to 3 m out) lies from 52.06 m to
   53.06 m.
 

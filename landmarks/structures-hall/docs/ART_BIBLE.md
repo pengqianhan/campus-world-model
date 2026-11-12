@@ -10,6 +10,6 @@ from it but the ones its contract names, which are estimated.
   mullions, with a light grey spandrel panel at each floor and light grey panels among the glass; a light grey fascia
   along the roof edge, standing a little proud of the glass; a dark brown frame at each end of the face.
 - Under the glazing, the ground storey set back: grey walls with dark windows and doors, behind plain light piers and
-  pairs of diagonal braces that rise from the foot of the piers to the glazing's underside.
-- The light: a clear afternoon, the sun high and to the west; the glass reflecting the sky and the buildings across
+  pairs of diagonal braces that fall from the glazing's underside at two piers to the ground between them, a V.
+- The light: a clear afternoon, the sun low and to the north-north-west, behind the building; the glass reflecting the sky and the buildings across
   the lot, the fascia and the panels pale.

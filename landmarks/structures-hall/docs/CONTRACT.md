@@ -17,19 +17,20 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   degrees) from 70.52 m at the south edge up to 71.90 m at the line, with a fascia along the south edge to 70.6 m. The
   northern one, p -23.95 to 23.05 and q -16.13 to 2.7, under a roof of one slope (7.5 degrees) from 71.61 m at the
   north eave up to 74.10 m at the line. A lower block against its east end, p -30.95 to -23.95 and q -15.8 to 2.55,
-  flat at 68.31 m. Three stacks on the line, about 2.5 m square, their tops falling from 77.4 m to 76.6 m.
+  flat at 68.05 m. Three stacks on the line, about 2.5 m square, their tops falling from 77.4 m to 76.6 m.
 - Walls go down to `FOOT`, 52.0 m: the ground along the walls lies from 52.06 m to 53.06 m (p50 52.49 m). The door
   is before the glazed entrance under the canopy near the south face's east end, at 52.58 m (the campus map records
   no entrance in 906).
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the frame), `parts/block.js` (the blocks, the stacks, and `along`, a
-  profile carried along p), `parts/facade.js` (the south face's glazing, fascia and frames, the ground storey, the
-  band of glazing over the southern block's roof), `model.js`: the lead.
+  profile carried along p), `parts/facade.js` (the south face's glazing, fascia and frames, the ground storey),
+  `model.js`: the lead.
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by material.
-  Round 0: 70 triangles, 2 draw calls. Round 1: 530 triangles, 5 draw calls.
+  Round 0: 70 triangles, 2 draw calls. Round 1: 530 triangles, 5 draw calls. After the review of #170: 528 triangles,
+  5 draw calls.
 
 ## Rounds
 - Round 0 (2026-11-12, the lead alone): the two blocks under their roofs of one slope, the lower block and the three
@@ -54,3 +55,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - Step 8 (2026-11-12): on the site (`site: true`), in place of block 906; its measured massing's data file gone (a
   run of `massing.py` over the Newmarket campus writes every other file as before). The map's ground at the door is
   3.80 m over the LiDAR's; under the walls' corners from 0.28 m under to 1.20 m over the door's, all over FOOT.
+- The review of #170 (2026-11-12): west of the northern block the southern block's north wall at q 2.1, where its
+  returns are (p50 2.09); the ground storey's east end flush with the glazed box over it (p -22.4); the face the
+  northern block turns south over the southern block's roof drawn plain, not as glazing (its north face under the
+  eave has as few returns, and no photograph shows it); the lower block's roof at 68.05 m, the p50 of its returns;
+  the art bible's braces (a V from the glazing's underside) and sun (low, to the north-north-west). Silhouette IoU
+  0.878, 0.960 in the model's box; luma 119 against 123. Top view: footprint IoU 0.962, 98% of 6,902 cells within
+  0.5 m, the highest point 24.82 m over the door's ground against 24.74, block 906 98.1% under the model. 528
+  triangles, 5 draw calls.

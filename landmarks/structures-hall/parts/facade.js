@@ -4,7 +4,7 @@
 import * as THREE from "three";
 import { DARK, FRAMES, GLASS, WALL, along } from "./block.js";
 import {
-  BANDS, BAYS, BOX, BRACES, CLERESTORY, DOOR, ENTRANCE, FACE, FASCIA, FOOT, FRAME, NORTH, PIERS, SOUTH, WALL_Q,
+  BANDS, BAYS, BOX, BRACES, DOOR, ENTRANCE, FACE, FASCIA, FOOT, FRAME, NORTH, PIERS, SOUTH, WALL_Q,
   WINDOWS_GS, bay, pt,
 } from "./common.js";
 
@@ -77,7 +77,3 @@ export function ground(b) {
   }
 }
 
-/** The band of glazing in the face the northern block turns south over the southern block's roof. */
-export function clerestory(b) {
-  pane(b, NORTH.p0 + 0.3, NORTH.p1 - 0.3, CLERESTORY.y0, CLERESTORY.y1, NORTH.q1 + 0.02, GLASS);
-}

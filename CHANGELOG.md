@@ -24,7 +24,7 @@ A change to what the site does or shows adds its line here, and the README's
   between them, under a light fascia and between dark frames, over a ground storey set back behind piers and two Vs
   of braces. Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph of its south face, and its
   card says what is estimated: the south face's glazing and ground storey and the stacks' bands, with the photograph
-  as a reference, a band of glazing over the southern block's roof where the LiDAR sees nothing, and the faces no
+  as a reference, and the faces no
   photograph shows, drawn plain. Its measured massing's data file has gone. On the map it has the map's colours;
   from a walker's height on a computer with a graphics card, its own panels, glass and roofs (#PRNUM).
 

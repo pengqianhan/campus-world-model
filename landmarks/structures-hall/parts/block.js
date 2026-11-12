@@ -52,15 +52,14 @@ export function along(b, p0, p1, profile, mats, cap, caps = [true, true]) {
  * the glazed box to its roof, its glass at FACE. Their sides along the line between the blocks are drawn only west
  * of the northern block (p 23.05 on): east of that they lie within it. */
 export function south(b) {
-  const { p0, p1, q0 } = SOUTH;
-  const parts = [
-    [GS_EAST, [[q0, FOOT], [WALL_Q, FOOT], [WALL_Q, BOX], [q0, BOX]], [null, WALL, null]],
-    [p0, [[q0, BOX], [FACE, BOX], [FACE, southRoof(FACE)], [q0, southRoof(q0)]], [WALL, GLASS, ROOFS]],
+  const { p0, p1, q0, qWest } = SOUTH;
+  // east of the northern block's west end against it (q0), west of it to its own north wall (qWest)
+  const parts = (q) => [
+    [GS_EAST, [[q, FOOT], [WALL_Q, FOOT], [WALL_Q, BOX], [q, BOX]], [null, WALL, null]],
+    [p0, [[q, BOX], [FACE, BOX], [FACE, southRoof(FACE)], [q, southRoof(q)]], [WALL, GLASS, ROOFS]],
   ];
-  for (const [from, section, [m0, m1, m2]] of parts) {
-    along(b, from, NORTH.p1, section, [m0, m1, m2, null], WALL, [true, false]);
-    along(b, NORTH.p1, p1, section, [m0, m1, m2, WALL], WALL, [false, true]);
-  }
+  for (const [from, section, [m0, m1, m2]] of parts(q0)) along(b, from, NORTH.p1, section, [m0, m1, m2, null], WALL, [true, false]);
+  for (const [, section, [m0, m1, m2]] of parts(qWest)) along(b, NORTH.p1, p1, section, [m0, m1, m2, WALL], WALL, [false, true]);
 }
 
 /** The northern block, from FOOT to its roof; its south side, over the southern block's roof, is the face that looks
