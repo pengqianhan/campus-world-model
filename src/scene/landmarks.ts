@@ -89,6 +89,7 @@ const LIGHT_ROLE: Record<string, keyof LightMaterials> = {
   roofGrey: "roof",
   roofGreen: "roof",
   roofTile: "roof",
+  roofPlum: "roof",
   glass: "glass",
   glassPale: "glass",
   glassGreen: "glass",

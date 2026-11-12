@@ -4,8 +4,9 @@
 import { CORE, FOOT, PLANT, STREET, TOWER, UPPER, at, plan } from "./common.js";
 import { block, prism, tris } from "./shapes.js";
 
-// The walls the pale grey of the tower's bands, as the photograph shows them; the roofs mid-grey.
-const WALL = "claddingPale", ROOFS = "roofGrey";
+// The walls the pale grey of the tower's bands, as the photograph shows them; the roofs mid-grey, and the core's a dull
+// plum, as the 2023 aerial shows them (about RGB 121, 103, 127 on the core, 167, 166, 169 on the upper roof).
+const WALL = "claddingPale", ROOFS = "roofGrey", CORE_ROOF = "roofPlum";
 
 const box = ([u0, u1], [w0, w1]) => plan([[u0, w0], [u1, w0], [u1, w1], [u0, w1]]);
 
@@ -29,7 +30,7 @@ export function core(b) {
   const h = (w) => CORE.high - CORE.fall * (w - CORE.at), lo = h(w1), hi = h(w0);
   prism(b, box(CORE.u, CORE.w), FOOT - 0.1, lo, WALL);
   const P = (u, w, y) => { const [x, z] = at(u, w); return [x, y, z]; };
-  tris(b, [[P(u0, w0, hi), P(u1, w0, hi), P(u1, w1, lo)], [P(u0, w0, hi), P(u1, w1, lo), P(u0, w1, lo)]], ROOFS, "up");
+  tris(b, [[P(u0, w0, hi), P(u1, w0, hi), P(u1, w1, lo)], [P(u0, w0, hi), P(u1, w1, lo), P(u0, w1, lo)]], CORE_ROOF, "up");
   const out = (du, dw) => ([x, z]) => [x - du, z + dw];  // outward in the view frame (x = -u)
   tris(b, [[P(u0, w0, lo), P(u1, w0, lo), P(u1, w0, hi)], [P(u0, w0, lo), P(u1, w0, hi), P(u0, w0, hi)]], WALL, out(0, -1));
   tris(b, [[P(u0, w0, lo), P(u0, w0, hi), P(u0, w1, lo)]], WALL, out(-1, 0));

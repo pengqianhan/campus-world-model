@@ -1,6 +1,6 @@
 # Landmark: 58 Symonds Street, drawn from code
 
-58 Symonds Street of the University of Auckland, on the City campus: a tower of seven storeys of windows over a dark
+58 Symonds Street of the University of Auckland, on the City campus: a tower of eight storeys of windows over a dark
 ground storey, on a slope that falls from the north-west to the south-east, a deep pale grey band at every floor with
 a row of louvres hung under it, a column at each corner and piers between, an upper roof set in from its edge, and on
 its street side a core whose roof falls to the street. It is drawn in three.js from code alone, sized by the LINZ 2024
@@ -65,8 +65,9 @@ From the LiDAR:
   the core's north-west (83.22 m), and the core (u -3.53 to 5.86, w 6.68 to 12.11), its roof one slope falling to the
   street, 0.3 m a metre, from 89.25 m at w 7.0 (the returns' p50 in 0.5 m strips run from 89.23 at w 7.0 to 87.75 m at
   w 12.0).
-- **The walls' foot**, FOOT, 42.0 m: the ground round the tower lies from about 42.4 m on the south-east to 55.6 m on
-  the north-west.
+- **The walls' foot**, FOOT, 42.0 m: the ground within 5 m of the walls lies from about 45.8 m along the south-east
+  face (p50 47.2) to 53.4 m on the platform before the north-east face, and rises to 55.5 m off the north-west face;
+  it falls to about 42.4 m 10 to 12 m south-east of the tower.
 
 Estimated, with the photograph as a reference (`FACE`): each slab's band 0.5 m deep from its top (19 to 20 px at the
 photograph's near corner, where the fitted camera puts 0.5 m at 19 to 20 px and 0.7 m at 27 to 28); the window wall
@@ -83,7 +84,7 @@ stands out past the bands above 62 m.
 
 The photograph's two faces face north-east and north-west and show about equally bright, so the viewer's sun stands to
 the north-north-east (20 degrees round, 45 up), weaker than by default (3, against 8), with a stronger sky (3.2, against
-2.25), at an exposure of 0.82 (the config's `light`): over the model's screen box the luma (p50) 177 against the
+2.25), at an exposure of 0.69 (the config's `light`): over the model's screen box the luma (p50) 177 against the
 photograph's 177.
 
 ## On the map (step 7)
@@ -103,12 +104,14 @@ leaves it out, as it does every landmark on the site, and writes every other fil
 - **The foot.** It stands alone, its y = 0 on the map's ground at its door. Its walls go down to FOOT, 11.03 m under
   the door's ground, under the map's ground at every corner of the walls (the lowest, 2.08 m under the door's, at the
   tower's east corner; 8.95 m to spare).
-- **Under the drawn ground.** The real ground falls about 11 m from the door to the tower's south-east side; the map's
-  8 m ground falls only about 2 m there, so on the site the lowest storeys on that side stand under the drawn ground.
+- **Under the drawn ground.** The real ground falls about 6 m from the door to the tower's south-east side (the
+  LiDAR's within 5 m of that face, p50 47.2 m); the map's 8 m ground falls only about 2 m there, so on the site the
+  lowest 4 m or so on that side, the lower half of the dark ground storey there, stand under the drawn ground.
 - **While a building is open** its neighbours sink to footprints, and the model gives way to block 435, which sinks on
   its footing (`updateLandmarks` in `src/scene/CampusScene.ts`).
-- **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` as a roof,
-  as `LIGHT_ROLE` (`src/scene/landmarks.ts`) already says; `claddingPale`, `screenGrey` and `screenBlack` are walls.
+- **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofGrey` and
+  `roofPlum` as roofs, as `LIGHT_ROLE` (`src/scene/landmarks.ts`) says (`roofPlum`, the core's roof, is new in the kit
+  for it); `claddingPale`, `screenGrey` and `screenBlack` are walls.
 - **Its card** says "estimated:" and the config's `estimated`.
 - **The pictures** in `docs/landmarks/`: `58-symonds-street-front.jpg` and `-above.jpg` are the viewer's renders of the
   model alone, from the ground to its north and from above, with no photograph; `-map.jpg` and `-eyes.jpg` are shots of
