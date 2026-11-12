@@ -28,7 +28,7 @@ export const FOOT = Y(42.0);
  * -8.62, north-west u 13.34, south-east u -10.70; south-west w 8.7 where the core does not stand out), the slabs' tops
  * from the returns on the faces, about 3.05 m apart (55.7, 58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04: the lowest,
  * at the foot of the storeys of windows over the dark ground storey, from the 228 returns at 55.0 to 56.2 m in the
- * bands' outer metre on the north-east, north-west and south-east faces (266 in their outer 1.2 m), p50 55.70), and
+ * bands' outer metre on the north-east, north-west and south-east faces (265 in their outer 1.2 m), p50 55.70), and
  * the roof's edge at 80.15 (p90 of the returns round the edge). */
 export const TOWER = {
   u: [-10.7, 13.4],
