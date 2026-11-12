@@ -3,7 +3,7 @@
 // (north-west); the frame's centre at x = z = 0, the middle of the building's points.
 // Owned by the lead: read, do not edit.
 // Measured 2026-11-12 (round 0): every height below is the LiDAR's elevation, and Y turns it into one above the
-// config's ground, 43.4 m, the door's (step 7: on the court at the foot of the steps up to the deck).
+// config's ground, 43.4 m, the door's (step 8: on the court at the foot of the steps up to the deck).
 //
 // The sizes are given in the building's own frame: p along its long faces toward the north-east and q toward the
 // north-west, the road. Its faces run 1.8 degrees off the frame's axis (the LiDAR's long faces and ends alike: their

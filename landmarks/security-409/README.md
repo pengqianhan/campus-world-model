@@ -74,7 +74,7 @@ From the LiDAR:
 - **On the roof**: a box at the west corner (p -15.6 to -9.75, q 9.6 to 13.0), its roof rising toward the north-east
   from 51.7 m to 53.84 m at p -11.8 and flat beyond (the p50s of its returns in 0.5 m strips); and a block toward the
   east end (along the south-east side from p 3.75 and from p -2 to 16.6, and up to q 3 from p 8) to 53.77 m (p90 of
-  1,431 returns), but for its south-east end (p 11.5 to 16.6, q -11 to -8.8), at 53.0 m.
+  its returns), but for its south-east end (p 11.5 to 16.6, q -11 to -8.8), at 53.0 m.
 - **The walls' foot**, FOOT, 43.0 m: the ground along the walls lies from 43.3 m on the court to the south-east to
   46.5 m by the road to the north-west.
 
@@ -95,8 +95,8 @@ shows (north-west and north-east) are drawn as the ones it does, the glazing 1.8
 
 The photograph is taken under a bright, pale overcast and shows the faces evenly lit, with no shadow cast, so the
 viewer's sun stands to the west-north-west (300 degrees round, 45 up), weak (1.5, against 8), with a strong sky (3.4,
-against 2.25), at an exposure of 0.95 (the config's `light`): over the model's screen box the luma (p50) 155 against
-the photograph's 159.
+against 2.25), at an exposure of 0.95 (the config's `light`): over the model's screen box the luma (p50) 156 against
+the photograph's 159 (155 before the review of #168).
 
 ## On the map (steps 7 and 8)
 

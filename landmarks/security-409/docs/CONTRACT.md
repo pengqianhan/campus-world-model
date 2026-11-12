@@ -51,16 +51,16 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   ground against 10.37 (p99.9 of the building's returns but the crown's), block 409 94.8% under the model.
 - Step 8 (2026-11-12): the flight of steps and the door 1.1 m along the south-east face from where the camera puts the
   flight's foot, clear of Architecture - West's outline in the campus map, the door then on the court at 43.4 m (17
-  returns within 1 m), the frame's thresholds raised 0.05 m with it; the highest point 10.49 m over the door's ground
-  against 10.57. On the site (`site: true`), its measured massing's data file gone; the roofs `roofPale`, light
-  grey as the aerial shows them; the roof blocks' feet within the roof's slab, and the columns' and steps' feet under
-  the deck's, where the landmark tests' faces check found them in one plane. Silhouette IoU 0.746, 0.779 in the
-  model's box; luma 155 against 159. 3,448 triangles, 5 draw calls.
+  returns within 1 m), the frame's thresholds raised 0.20 m with it (`min_above` 2.84 to 3.04 m); the highest point
+  10.49 m over the door's ground against 10.57. On the site (`site: true`), its measured massing's data file gone; the
+  roofs `roofPale`, light grey as the aerial shows them; the roof blocks' feet within the roof's slab, and the
+  columns' and steps' feet under the deck's, where the landmark tests' faces check found them in one plane. Silhouette
+  IoU 0.746, 0.779 in the model's box; luma 155 against 159. 3,448 triangles, 5 draw calls.
 - The review of #168 (2026-11-12): the roof blocks to the LiDAR (the west box's roof rising from 51.7 m to 53.84 m,
   the east block's south part from p 3.75 and its south-east end at 53.0 m); the deck out to the flight's last riser
-  and its railing from the flight's east side; the card names the chamfer's width and the floor, and says that
-  neither the LiDAR nor the 2023 aerial shows the deck, its railing or the steps. Silhouette IoU 0.744, 0.777 in the
-  model's box; luma 156 against 159. Top view: footprint IoU 0.937, 89% of 3,603 cells within 0.5 m (p10/p50/p90
-  -0.61/-0.03/0.20: the model lower under the tree's crown along the north side and a row of small units on the
-  roof), the highest point 10.44 m over the door's ground against 10.57, block 409 94.8% under the model. 3,354
-  triangles, 5 draw calls.
+  and its railing from the flight's east side; the card names the chamfer's width and the floor, and says that neither
+  the LiDAR nor the 2023 aerial shows the deck, its railing or the steps. Silhouette IoU 0.744, 0.777 in the model's
+  box; luma 156 against 159. Top view: footprint IoU 0.937, 89% of 3,603 cells within 0.5 m (p10/p50/p90
+  -0.61/-0.03/0.20: the model lower under the tree's crown along the north side and a row of small units on the roof,
+  and off by more along the roof blocks' edges), the highest point 10.44 m over the door's ground against 10.57, block
+  409 94.8% under the model. 3,354 triangles, 5 draw calls.
