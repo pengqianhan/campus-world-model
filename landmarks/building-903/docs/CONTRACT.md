@@ -21,10 +21,10 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 - The clad box stands from its underside at 61.25 m; the two glazed storeys under it are set back 0.45 m on the
   south face and the east end (the LiDAR's returns on them) and, estimated, on the forward face, on a plinth to 53.0
   m, with a band at the floor between them (57.7 to 58.4 m). The windows of the clad storeys, the glazed storeys'
-  piers and the canopy over the corner's entrance are estimated in the photograph through its fitted camera
-  (`parts/common.js` says where).
+  piers and the canopies' depth are estimated in the photograph through its fitted camera (`parts/common.js` says
+  where).
 - On the roof: plant on a platform across the ridge to 71.35 m, a duct from it to the north, a unit toward the west
-  end to 71.97 m and a fan (the LiDAR's returns standing over the roof).
+  end to 71.97 m, a fan and a low block south of it to 70.65 m (the LiDAR's returns standing over the roof).
 - Walls go down to `FOOT`, 51.8 m: the ground along the walls lies from 51.89 m on the road before the forward face
   to 52.7 m by the east end's north corner. The door is before the glazed entrance under the canopy at the south-east
   corner, on the platform at 52.64 m (the campus map records no entrance in 903).

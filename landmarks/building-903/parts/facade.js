@@ -1,5 +1,6 @@
 // Building 903's faces: the two glazed storeys set back under the clad box, with their plinth, piers, band and
-// mullions, and the canopy over the corner's entrance; and the windows of the clad storeys. Sizes from common.js.
+// mullions, and the canopies over the corner's entrance, along the forward face and at its west end; and the
+// windows of the clad storeys. Sizes from common.js.
 import { GLASS, WALL, along } from "./block.js";
 import {
   BAND, CANOPIES, EAST, EAST_SILLS, FOOT, FORWARD, NORTH, PIERS, PLINTH, SET, SILLS, SOFFIT, SOUTH, STEP, WEST, WINDOWS,
@@ -84,7 +85,7 @@ export function piers(b) {
   }
 }
 
-/** The canopy over the corner's entrance, from the glazing out to its front. */
+/** The canopies (CANOPIES), each from the glazing out to its front. */
 export function canopy(b) {
   for (const c of CANOPIES) {
     const at = c.face === "S" ? QG : QF;

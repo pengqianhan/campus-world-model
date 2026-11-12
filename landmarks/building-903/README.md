@@ -105,8 +105,8 @@ photograph shows, is drawn as the south face.
 
 The photograph is taken under a bright overcast and shows the faces evenly lit, with no shadow cast, so the viewer's
 sun stands behind the building, to the north (0 degrees round, 50 up), weak (1.0, against 8), with a strong sky (3.4,
-against 2.25), at an exposure of 0.78 (the config's `light`): over the model's screen box the luma (p50) 162 against
-the photograph's 157.
+against 2.25), at an exposure of 0.78 (the config's `light`): over the model's screen box the luma (p50) 163 against
+the photograph's 158 (with the camera fitted again after the review of #169; 162 against 157 before).
 
 ## On the map (step 7)
 

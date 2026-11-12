@@ -57,8 +57,8 @@ look and the comparison.
 From the LiDAR:
 
 - **The tower**: its slabs' bands' outer edge (the returns on the faces to p0.5/p99.5) at u -10.7 (south-east) to 13.4
-  (north-west) and w -8.6 (north-east) to 8.7 (south-west); the bands' tops 3.04 m apart, 58.8 to 77.04 m (the peaks of
-  the returns on the faces), and the roof's edge at 80.15 m (p90 of the returns round the edge).
+  (north-west) and w -8.6 (north-east) to 8.7 (south-west); the bands' tops about 3.05 m apart, 55.7 to 77.04 m (the
+  peaks of the returns on the faces), and the roof's edge at 80.15 m (p90 of the returns round the edge).
 - **The upper roof**, 2.2 to 2.4 m in from the edge (u -8.32 to 11.07, w -6.25 to 7.8), at 83.1 m (p50 of 2,662
   returns), a ledge at 80.16 m round it; plant on it at 84.5 to 85.2 m in three boxes (1 m cells of its returns).
 - **The street side**: a low block by the south corner (61.83 m), a strip (83.22 m, p50 of 139 returns), a strip on
