@@ -18,6 +18,15 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Building 903 drawn in detail.** Near the camera the map draws Building 903, on the Newmarket campus, from code
+  in place of the measured massing that stood for it: a long block whose two upper storeys are a box clad in pale
+  corrugated metal, with windows singly and in bands, over two glazed storeys set back under it on piers, a canopy
+  over the entrance at its south-east corner, and a low roof of two slopes with plant on it. Its sizes come from the
+  LINZ 2024 LiDAR; it was compared with a photograph from the road to its south-east, and its card says what is
+  estimated: the faces the photograph sees, with it as a reference, the windows, the plinth, the piers and the
+  canopies, and the faces no photograph shows, drawn as the ones it does. Its measured massing's data file has gone.
+  On the map it has the map's colours; from a walker's height on a computer with a graphics card, its own cladding,
+  glass and roofs (#169).
 - **Security drawn in detail.** Near the camera the map draws Security (409), on the City campus, from code in place
   of the measured massing that stood for it: a low block whose upper storey is a band of pale concrete, its south
   corner cut by a chamfer, over a glazed ground storey set back under it on columns, with a deck and a flight of steps
