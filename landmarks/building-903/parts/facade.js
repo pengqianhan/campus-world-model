@@ -2,7 +2,7 @@
 // mullions, and the canopy over the corner's entrance; and the windows of the clad storeys. Sizes from common.js.
 import { GLASS, WALL, along } from "./block.js";
 import {
-  BAND, CANOPY, EAST, EAST_SILLS, FOOT, FORWARD, NORTH, PIERS, PLINTH, SET, SILLS, SOFFIT, SOUTH, STEP, WEST, WINDOWS,
+  BAND, CANOPIES, EAST, EAST_SILLS, FOOT, FORWARD, NORTH, PIERS, PLINTH, SET, SILLS, SOFFIT, SOUTH, STEP, WEST, WINDOWS,
 } from "./common.js";
 
 // The glazed storeys' faces: the south face, the forward face, the east end and the step's return.
@@ -86,7 +86,10 @@ export function piers(b) {
 
 /** The canopy over the corner's entrance, from the glazing out to its front. */
 export function canopy(b) {
-  box(b, "S", QG, CANOPY.p0, CANOPY.p1, CANOPY.top - CANOPY.deep, CANOPY.top, -0.02, CANOPY.q - QG, WALL);
+  for (const c of CANOPIES) {
+    const at = c.face === "S" ? QG : QF;
+    box(b, "S", at, c.p0, c.p1, c.top - c.deep, c.top, -0.02, c.q - at, WALL);
+  }
 }
 
 /** The clad storeys' windows: on the south face as the photograph shows them, on the forward face its bands, on the

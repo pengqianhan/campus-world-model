@@ -2,7 +2,7 @@
 // end's gable, and the cap along the ridge; and `along`, the shape every part is made of. Sizes from common.js.
 import * as THREE from "three";
 import {
-  CAP, DIR, EAST, FORWARD, GABLE, HIGH, NORTH, PARAPET, RIDGE, SOFFIT, SOUTH, STEP, WEST, pt, roofAt,
+  CAP, DIR, EAST, FOOT, FORWARD, GABLE, HIGH, LEAN, NORTH, PARAPET, RIDGE, SET, SOFFIT, SOUTH, STEP, WEST, pt, roofAt,
 } from "./common.js";
 
 // The walls the pale grey of the photograph's corrugated cladding; the roofs light grey, as the aerial shows them.
@@ -79,6 +79,12 @@ export function cap(b) {
 }
 
 /** The plant, the duct, the unit and the fan on the roof, each standing from within the roof under it. */
+export function lean(b) {
+  const q0 = SOUTH - SET, roof = (q) => LEAN.y - LEAN.fall * (q - LEAN.at), d = LEAN.deep;
+  along(b, LEAN.p[0], LEAN.p[1], [[q0, roof(q0) - d], [LEAN.q, roof(LEAN.q) - d], [LEAN.q, roof(LEAN.q)], [q0, roof(q0)]],
+    [WALL, WALL, ROOFS, null], WALL);
+}
+
 export function high(b) {
   for (const { p: [p0, p1], q: [q0, q1], top } of HIGH) {
     const base = Math.min(roofAt(q0), roofAt(q1)) - 0.1;

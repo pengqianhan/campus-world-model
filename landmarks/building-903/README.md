@@ -33,7 +33,7 @@ local metres (it is in the map's frame); `place` converts.
 
 - No other landmark's outline comes within 2 m of its (the nearest, Building 907's, is about 178 m off), so it stands
   alone on the map's ground at its door (`../README.md`, "Placement").
-- The model stands over 96.3% of block 903, 7.3% of block 904 and 2.0% of block 902. `building.also` is empty.
+- The model stands over 97.3% of block 903, 7.3% of block 904 and 2.0% of block 902. `building.also` is empty.
 - Its roof runs on to the west-north-west, at the same height and with no seam in the LiDAR's returns, over Building
   902: the model ends where the campus map's ring does, and 902's measured massing draws the rest. Building 904, a
   lower block with a gable roof, stands against its north face; 904's measured massing has a flat strip at 16.8 m
@@ -56,8 +56,9 @@ decide. No Street View photograph is used.
   upright edges (the cladding's corner, a standpipe, the east end's north edge and a pier) and to three corners (the
   ridge on the east end, the east end's north corner and the top of the south face's step forward), held near 1.6 m
   over the LiDAR's ground. It stands 1.62 m over the LiDAR's ground about 27 m south-east of the corner, its optical
-  axis at bearing 337.4 degrees, looking up 15.0 degrees, through a lens of 59.4 degrees across: an rms of 0.85 px over
-  46 residuals.
+  axis at bearing 336.7 degrees, looking up 14.9 degrees, through a lens of 60.3 degrees across: an rms of 0.85 px over
+  46 residuals (the step's corner taken at p -7.4, where the LiDAR puts the step; at p -8.6, as first measured, the
+  same rms with a lens of 59.4 degrees).
 - Fitted to the edges and the upright edges alone, the camera wanted a lens of 62.8 degrees and put those three
   corners 12 to 39 px off: the lines alone do not fix the scale along them.
 
@@ -69,18 +70,22 @@ look and the comparison.
 From the LiDAR:
 
 - **The block**: its roof's outer edges (the outermost roof returns on each face) at p -38.27 (the east end) to the
-  campus map's ring's west-north-west end at p 36.5, the south face at q 15.84 from the east end to p -8.6, where it
+  campus map's ring's west-north-west end at p 36.5, the south face at q 15.84 from the east end to p -7.4, where it
   steps 2.68 m forward to q 18.52, and the north face at q -16.42 along the whole length.
 - **The roof**: two slopes, 0.066 a metre (3.8 degrees), down from a ridge along q 1.0 at 70.3 m to the north eave at
   69.15 m and to the south parapet; a cap 2 m wide along the ridge to 70.75 m. The parapet along the south face to
-  70.05 m (p90 of the returns within 0.6 m of it), 0.3 m thick; at the east end a gable within its parapet, 70.08 m at
+  70.05 m (p90 of the returns within 0.6 m of it), 0.7 m thick; at the east end a gable within its parapet, 70.08 m at
   the south corner, 70.97 m over the ridge and 69.85 m at the north corner (p90 in 1 m strips).
 - **On the roof**, from the returns standing more than 0.35 m over it: plant on a platform across the ridge (p -17 to
   -6, q -5 to 5.5) to 71.35 m, a duct from it to the north to 71.15 m, a unit toward the west end (p 23 to 28.3, q -5
-  to -1) to 71.97 m and a fan to 71.91 m.
+  to -1) to 71.97 m, a fan to 71.91 m and a low block south of it to 70.65 m.
+- **A roof under the step**, before the south face (p -10.0 to -6.25, out to q 26.2, the edge of block 903's ring),
+  one plane falling from 57.6 m to 55.5 m, with the ground's returns under it all along; and **the canopies**: over the corner's entrance (p -37.9 to -33.1, out to q 17.05) at
+  55.5 m, along the forward face (p 4.05 to 25.1, out to q 19.7) at 58.15 m and at its west end (p 33.4 to 36.4, out to
+  q 20.7) at 55.65 m (the returns before the faces, with the ground's under them).
 - **The clad box's underside** at 61.25 m (the returns under the faces stop there; through the camera the box's lower
-  edge lies at 61.2 to 61.5 m), and **the glazed storeys** under it 0.45 m behind the south and forward faces and the
-  east end (their returns between 54 and 61 m), with a band at the floor between them, 57.7 to 58.4 m (returns at
+  edge lies at 61.2 to 61.5 m), and **the glazed storeys** under it 0.45 m behind the south face and the east end
+  (their returns between 54 and 61 m), with a band at the floor between them, 57.7 to 58.4 m (returns at
   58.0 m on both faces).
 - **The walls' foot**, FOOT, 51.8 m: the ground along the walls (p1 of the returns 0.5 to 3 m out) lies from 51.89 m
   on the road before the forward face to 52.7 m by the east end's north corner.
@@ -90,8 +95,9 @@ the south face a pair of wide ones by the corner and a band of five, sills 63.25
 single windows over a pair and a band of twelve to the north corner, sills 63.85 and 66.3 m) in frames 0.07 m proud,
 the cladding 0.3 m wide between their units; the glazed storeys' piers (one 0.7 m square at the corner, one 1.5 m
 wide on the south face and its like every 7.6 m along the south and forward faces, two on the east end) and a mullion
-every 1.5 m; and the canopy over the corner's entrance, out to q 17.6, its top at 55.6 m (where 12 returns lie in
-front of the face). The forward face, which the photograph sees only at its far end, has the south face's bands;
+every 1.5 m; the canopies' depth; the glazed storeys' place behind the forward face, where the canopy along it hides
+them from the LiDAR, drawn as on the south face; and the depth of the roof under the step, drawn with nothing under it. The forward
+face, which the photograph sees only at its far end, has the south face's bands;
 the north face, which no photograph shows, is drawn as the south face.
 
 ## The light
@@ -123,7 +129,7 @@ notes it.
 - **Its neighbours' massings.** The measured massings stand on the map's ground at their own doors too: 902's 7.33 m
   over the LiDAR's ground and 904's 5.71 m, where the model stands 5.01 m over it (903's measured massing, at the
   lowest point of its outline, stood 7.08 m over). So on the map 902's roof stands about 2.3 m over the model's at its
-  west end, where they are one roof, and 904's strip about 0.7 m over the model's roof along its north edge.
+  west end, where they are one roof, and 904's strip 0.6 to 0.9 m over the model's roof along its north edge.
 - **While a building is open** its neighbours sink to footprints, and the model gives way to block 903, which sinks on
   its footing (`updateLandmarks` in `src/scene/CampusScene.ts`).
 - **The light form** (the map, and the walker views of the basic tier) draws `glass` as glass and `roofPale` as a roof,
