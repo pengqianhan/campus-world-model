@@ -24,12 +24,12 @@ export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 // north-west face; it falls to about 42.4 m 10 to 12 m south-east of the tower. The walls go down to FOOT.
 export const FOOT = Y(42.0);
 
-/** The tower: the outer edge of its floor slabs' bands (the LiDAR's returns on the faces to p0.5/p99.5: north-east
- * w -8.62, north-west u 13.34, south-east u -10.70; south-west w 8.7 where the core does not stand out), the slabs'
- * tops from the returns on the faces, about 3.05 m apart (55.7, 58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04: the
- * lowest, at the foot of the storeys of windows over the dark ground storey, from the 266 returns at 55.0 to 56.2 m in
- * the bands' outer metre on the north-east, north-west and south-east faces, p50 55.70), and the roof's edge at 80.15
- * (p90 of the returns round the edge). */
+/** The tower: the outer edge of its floor slabs' bands (the LiDAR's returns on the faces to p0.5/p99.5: north-east w
+ * -8.62, north-west u 13.34, south-east u -10.70; south-west w 8.7 where the core does not stand out), the slabs' tops
+ * from the returns on the faces, about 3.05 m apart (55.7, 58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04: the lowest,
+ * at the foot of the storeys of windows over the dark ground storey, from the 228 returns at 55.0 to 56.2 m in the
+ * bands' outer metre on the north-east, north-west and south-east faces (266 in their outer 1.2 m), p50 55.70), and
+ * the roof's edge at 80.15 (p90 of the returns round the edge). */
 export const TOWER = {
   u: [-10.7, 13.4],
   w: [-8.6, 8.7],

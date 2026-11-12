@@ -107,7 +107,7 @@
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "min_above 2.99 m over the provisional ground (43.45 m, the median LiDAR ground within the outline's band, as the measured massing took it), all three raised by 0.05 m with the ground set at the door (step 7), so that they pick the same points; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the long faces (bearing 42.0 deg), so z faces north-west (bearing 312.0 deg), toward the road along that side. The ground falls from about 46.2 to 46.5 m on the north-west, by the road, to about 40 m 27 m south-east of the building",
+  "thresholds_note": "min_above 2.99 m over the provisional ground (43.45 m, the median LiDAR ground within the outline's band, as the measured massing took it), all three raised by 0.05 m with the ground set at the door (step 8; at step 7, with the door at 43.6 m, they were 0.15 m lower than over the provisional ground), so that they pick the same points; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the long faces (bearing 42.0 deg), so z faces north-west (bearing 312.0 deg), toward the road along that side. The ground falls from about 46.2 to 46.5 m on the north-west, by the road, to about 40 m 27 m south-east of the building",
   "expected": {
    "centre": [
     -17.817539463268478,
@@ -139,7 +139,7 @@
   "sun": 1.5,
   "env": 3.4,
   "exposure": 0.95,
-  "note": "estimated: the photograph is taken under a bright, pale overcast, looking north-north-west at faces that face south-west, south and south-east, evenly lit and with no shadow cast. The viewer's sun stands to the west-north-west (300 deg round, 45 up), weak (1.5, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.95: over the model's screen box the luma (p50) 155 against the photograph's 159 (at step 6, before the roofs were drawn light grey and the steps moved, 165 against 158; at 0.8 it was 122)."
+  "note": "estimated: the photograph is taken under a bright, pale overcast, looking north-north-west at faces that face south-west, south and south-east, evenly lit and with no shadow cast. The viewer's sun stands to the west-north-west (300 deg round, 45 up), weak (1.5, against 8), and its sky's light strong (3.4, against 2.25), at an exposure of 0.95: over the model's screen box the luma (p50) 156 against the photograph's 159 (after the review of #168; 155 before it; at step 6, before the roofs were drawn light grey and the steps moved, 165 against 158; at 0.8 it was 122)."
  },
  "door": {
   "x": 18.92,
