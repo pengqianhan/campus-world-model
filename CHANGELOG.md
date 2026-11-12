@@ -26,6 +26,32 @@ A change to what the site does or shows adds its line here, and the README's
   is estimated: the south face's glazing and ground storey and the stacks' bands, with the photograph as a reference,
   and the faces no photograph shows, drawn plain. Its measured massing's data file has gone. On the map it has the
   map's colours; from a walker's height on a computer with a graphics card, its own panels, glass and roofs (#170).
+- **Building 903 drawn in detail.** Near the camera the map draws Building 903, on the Newmarket campus, from code
+  in place of the measured massing that stood for it: a long block whose two upper storeys are a box clad in pale
+  corrugated metal, with windows singly and in bands, over two glazed storeys set back under it on piers, a canopy
+  over the entrance at its south-east corner, and a low roof of two slopes with plant on it. Its sizes come from the
+  LINZ 2024 LiDAR; it was compared with a photograph from the road to its south-east, and its card says what is
+  estimated: the faces the photograph sees, with it as a reference, the windows, the piers and the canopy, and the
+  faces no photograph shows, drawn as the ones it does. Its measured massing's data file has gone. On the map it has
+  the map's colours; from a walker's height on a computer with a graphics card, its own cladding, glass and roofs
+  (#169).
+- **Security drawn in detail.** Near the camera the map draws Security (409), on the City campus, from code in place
+  of the measured massing that stood for it: a low block whose upper storey is a band of pale concrete, its south
+  corner cut by a chamfer, over a glazed ground storey set back under it on columns, with a deck and a flight of steps
+  before the corner, and on its flat roof a box and a lower block. Its sizes come from the LINZ 2024 LiDAR; it was
+  compared with a photograph from the court to its south, and its card says what is estimated: the faces the
+  photograph sees, with it as a reference, the deck, its railing and the steps, and the faces no photograph shows,
+  drawn as the ones it does. Its measured massing's data file has gone. On the map it has the map's colours; from a
+  walker's height on a computer with a graphics card, its own concrete, glass, railing and roofs (#168).
+- **58 Symonds Street drawn in detail.** Near the camera the map draws 58 Symonds Street (435), on the City campus,
+  from code in place of the measured massing that stood for it: a tower of seven storeys of windows over a dark ground
+  storey, a deep pale grey band at every floor with a row of louvres hung under it, a column at each corner and piers
+  between, an upper roof set in from its edge, and on its street side a core whose roof falls to the street. Its sizes
+  come from the LINZ 2024 LiDAR; it was compared with a photograph from the ground to its north, and its card says
+  what is estimated: the faces the photograph sees, with it as a reference, the dark ground storey, and the faces no
+  photograph shows, drawn on the same grid. Its measured massing's data file has gone. On the map it has the map's
+  colours; from a walker's height on a computer with a graphics card, its own bands, glass, louvres and roofs
+  (#167).
 
 ## 2026-11-11
 

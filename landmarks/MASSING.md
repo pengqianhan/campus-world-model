@@ -248,17 +248,17 @@ queue puts the others in two tiers, whose buildings it measures only as stand-in
   302, 303, 303S, 305, 310, 311, 315, 401, 402, 405, 421E, 421W, 439, 440, 441, 442, 614, 616,
   619, 620, 810, 818, 820 and 831 to 837.
 
-Every other City campus building is the generator's (tier 3): 44 of them lie in the eight tiles.
-A building moves out of tier 3 when the maintainer plans a landmark for it: 114, Building 114, and 433, Fine Arts
-Studio Block 433, drawn as measured massings since the first round (#79), and 431, Fine Arts Studio Block 431, since
-the fourth round (#127), are landmarks now, and their data files have gone.
+Every other City campus building is the generator's (tier 3): 42 of them lie in the eight tiles.
+A building moves out of tier 3 when the maintainer plans a landmark for it: 114, Building 114, 433, Fine Arts Studio
+Block 433, 435, 58 Symonds Street, and 409, Security, drawn as measured massings since the first round (#79), and
+431, Fine Arts Studio Block 431, since the fourth round (#127), are landmarks now, and their data files have gone.
 
 **Stand-ins for tiers 1 and 2 (2026-10-27, for the maintainer to confirm).** Since the second
 round the generator also measures the buildings of tiers 1 and 2 that have no landmark yet, through
 the same limits, so that they are drawn to their measured heights until their landmarks come. It
 leaves out every building that the site draws as a landmark (it reads each
 `landmarks/<name>/placement.json` with `site: true`: today 102, 104, 105 and 105S, 106, 107, 109, 110,
-110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 421E, 421W, 431, 433, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820, 906 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
+110N, 114, 119, 201, 206, 215, 250, 260, 302, 303, 303S, 315, 409, 421E, 421W, 431, 433, 435, 439, 501, 502, 505, 507, 529, 619, 620, 801, 802, 804, 820, 903, 906 and 907) and the landmarks in progress on their own branches (`SOON` in the generator: 801,
 now on the site too). Making one
 a landmark deletes its data file in the same pull request; a run over every building also drops the
 data file of a building that has become a landmark. 53 buildings of tiers 1 and 2 lie in the tiles;
@@ -432,8 +432,9 @@ building over it.
 The maintainer's goal of 2026-10-28 is every building of the City, Grafton and Newmarket campuses
 drawn at least as a measured massing. `massing.py --campus grafton` and `--campus newmarket` measure
 every building of those campuses by the same steps, limits and decisions as on the City campus (no
-tiers there: no landmark was planned for them then; 501, 502, 505, 507, 529, 906 and 907 have since become landmarks, and the
-generator leaves them out as it does every landmark on the site). They need four more tiles of the same LiDAR, the
+tiers there: no landmark was planned for them then; 501, 502, 505, 507, 529, 903, 906 and 907 have since become
+landmarks, and the generator leaves them out as it does every landmark on the site). They need four more tiles of the
+same LiDAR, the
 1:1000 tiles of sheet BA32 that cover each outline with the 12 m the generator crops round it:
 3803 and 3804 for Grafton, with 3704 that the City campus already uses (93 Grafton Road reaches
 into it), and 3904 and 3905 for Newmarket. `--fetch` fetched them once through `snapshot.ts` on
@@ -509,7 +510,10 @@ layer above the lowest of the fourteen lies in another building's outline; 901's
 902's by 16.3 m², where only its lowest layer stands. Whether a layer may stand in a
 neighbour's outline is for the maintainer: keep these strips; or keep 904's block; or have the
 generator leave the neighbours' outlines out of the layers above the lowest, which would change
-305 on the City campus too.
+305 on the City campus too. 903, Building 903, has since become a landmark (2026-11-12), its data file gone: the
+strip lies on the landmark's roof, which draws that edge itself. On the site each stands on the map's ground at its
+own door, 904's massing 5.71 m over the LiDAR's ground there and the landmark 5.01 m, so the strip shows about 0.7 m
+over the landmark's roof along its north edge.
 
 The other 34 kept their blocks then, each in `exclusions.json` with its reason (28 now: 501, 502, 505 and 507,
 the M&HS Building, 529, 2-6 Park Ave, and 907, Building 907, have since become landmarks, and their entries have
