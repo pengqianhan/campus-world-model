@@ -963,9 +963,8 @@ reference. One photograph from the court to its south, looking at the chamfered 
 inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.78 in it, where the trees round it
 leave little sky, and the brightness over it is within 3 of the photograph's. From above its outline covers the
 LiDAR's with an IoU of 0.94, and on 89% of the cells both cover it is within 0.5 m of the LiDAR's height, the rest
-mostly under a tree's crown along its north side and a row of small units on its roof, neither drawn, and along
-the roof blocks' edges. What the photograph
-does not show is drawn as what it does.
+mostly under a tree's crown along its north side and a row of small units on its roof, neither drawn, and along the
+roof blocks' edges. What the photograph does not show is drawn as what it does.
 
 | | |
 | --- | --- |
