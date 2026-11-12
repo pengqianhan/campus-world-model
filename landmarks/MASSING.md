@@ -512,7 +512,7 @@ neighbour's outline is for the maintainer: keep these strips; or keep 904's bloc
 generator leave the neighbours' outlines out of the layers above the lowest, which would change
 305 on the City campus too. 903, Building 903, has since become a landmark (2026-11-12), its data file gone: the
 strip lies on the landmark's roof, which draws that edge itself. On the site each stands on the map's ground at its
-own door, 904's massing 5.71 m over the LiDAR's ground there and the landmark 5.01 m, so the strip shows about 0.7 m
+own door, 904's massing 5.71 m over the LiDAR's ground there and the landmark 5.01 m, so the strip shows 0.6 to 0.9 m
 over the landmark's roof along its north edge.
 
 The other 34 kept their blocks then, each in `exclusions.json` with its reason (28 now: 501, 502, 505 and 507,

@@ -3,8 +3,8 @@
 // the roof. Sizes from common.js. No two faces of different materials lie in one plane (the landmark tests' faces
 // check): what meets another part ends inside it.
 import * as THREE from "three";
-import { COLUMNS, COURT, DECK, FLOOR, FOOT, HIGH, OUTLINE, PARAPET, ROOF, SOFFIT, STOREY, at, plan } from "./common.js";
-import { block, inset, prism } from "./shapes.js";
+import { BOX, COLUMNS, COURT, DECK, FLOOR, FOOT, HIGH, OUTLINE, PARAPET, ROOF, SOFFIT, STOREY, at, plan } from "./common.js";
+import { block, inset, prism, tris } from "./shapes.js";
 
 // The concrete pale grey, as the photograph shows it; the glazing dark, its frames and the railing near black; the
 // deck and the screen under it dark grey; the roofs light grey, as the aerial shows them.
@@ -72,8 +72,9 @@ export function columns(b) {
   for (const [p, q] of COLUMNS) bar(b, [p - 0.225, q], [p + 0.225, q], 0.45, FOOT - 0.05, SOFFIT + 0.3, CONCRETE);
 }
 
-/** The deck at the floor's height, solid and dark down to the walls' foot; its railing of thin bars 1 m tall along
- * its edge; and the flight of steps from the court up to its west corner, the last one under the deck's edge. */
+/** The deck at the floor's height, solid and dark down to the walls' foot, out to the flight's last riser; its railing
+ * of thin bars 1 m tall along its edge from the flight's east side; and the flight of steps from the court up to it
+ * near its west corner. */
 export function deck(b) {
   prism(b, plan(DECK.plan), FOOT, FLOOR, DARK);
   for (let i = 0; i + 1 < DECK.rail.length; i++) {
@@ -95,7 +96,18 @@ export function deck(b) {
   }
 }
 
-/** The box at the west corner and the block toward the east end, standing on the roof (their feet within its slab). */
+/** The box at the west corner, its roof rising toward the north-east and then flat, and the block toward the east end
+ * with its lower south-east end, standing on the roof (their feet within its slab). */
 export function high(b) {
+  const { p: [p0, p1], q: [q0, q1], low, rise, top } = BOX;
+  prism(b, plan([[p0, q0], [p1, q0], [p1, q1], [p0, q1]]), ROOF - 0.05, low, CONCRETE);
+  const P = (p, q, y) => { const [x, z] = at(p, q); return [x, y, z]; };
+  const out = (dp, dq) => ([x, z]) => { const [ox, oz] = at(dp, dq); return [x + ox, z + oz]; };  // outward from a face
+  tris(b, [[P(p0, q0, low), P(rise, q0, top), P(rise, q1, top)], [P(p0, q0, low), P(rise, q1, top), P(p0, q1, low)],
+    [P(rise, q0, top), P(p1, q0, top), P(p1, q1, top)], [P(rise, q0, top), P(p1, q1, top), P(rise, q1, top)]], ROOFS, "up");
+  for (const [q, dq] of [[q0, -1], [q1, 1]]) {
+    tris(b, [[P(p0, q, low), P(rise, q, top), P(p1, q, top)], [P(p0, q, low), P(p1, q, top), P(p1, q, low)]], CONCRETE, out(0, dq));
+  }
+  tris(b, [[P(p1, q0, low), P(p1, q0, top), P(p1, q1, top)], [P(p1, q0, low), P(p1, q1, top), P(p1, q1, low)]], CONCRETE, out(1, 0));
   for (const h of HIGH) block(b, plan(h.plan), ROOF - 0.05, h.top, CONCRETE, ROOFS);
 }

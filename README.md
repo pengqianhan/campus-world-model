@@ -82,7 +82,7 @@ It is built to answer two questions a student actually has:
   steps before it. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and
   its card says what is estimated.
 - **2026-11-12:** on the City campus the map draws 58 Symonds Street in detail, where it stood as a measured massing:
-  a tower of seven storeys of windows over a dark ground storey, a pale band at every floor with louvres hung under it,
+  a tower of eight storeys of windows over a dark ground storey, a pale band at every floor with louvres hung under it,
   and piers between the windows. Its sizes come from the LiDAR; it was compared with a photograph, which is not
   published, and its card says what is estimated.
 - **2026-11-11:** four more buildings are drawn from the LiDAR as measured massings, their roofs at their
@@ -941,7 +941,7 @@ drawn plainly.
 | ![Fine Arts Studio Block 433 from the road at its end, drawn from code](docs/landmarks/fine-arts-studio-block-433-front.jpg) | ![Fine Arts Studio Block 433 from above, drawn from code](docs/landmarks/fine-arts-studio-block-433-above.jpg) |
 | ![Fine Arts Studio Block 433 on the map, drawn from code in the map's colours](docs/landmarks/fine-arts-studio-block-433-map.jpg) | ![Fine Arts Studio Block 433 from the road at its end, through the walker's eyes](docs/landmarks/fine-arts-studio-block-433-eyes.jpg) |
 
-The thirty-seventh is 58 Symonds Street, on the City campus, until now a measured massing: a tower of seven storeys of
+The thirty-seventh is 58 Symonds Street, on the City campus, until now a measured massing: a tower of eight storeys of
 windows over a dark ground storey, on a slope that falls to the south-east; at every floor a deep pale grey band runs
 round it with a row of louvres hung under it, over a band of windows set back behind it, a column at each corner and
 piers between them; an upper roof stands in from its edge, and on its street side a core rises over it with a roof
@@ -958,33 +958,33 @@ within 0.5 m of the LiDAR's height. What the photograph does not show is drawn p
 | ![58 Symonds Street on the map, drawn from code in the map's colours](docs/landmarks/58-symonds-street-map.jpg) | ![58 Symonds Street from the ground to its north, through the walker's eyes](docs/landmarks/58-symonds-street-eyes.jpg) |
 
 The thirty-eighth is Security (409), on the City campus, until now a measured massing: a low block of two storeys
-whose upper storey is a deep band of pale concrete, its south corner cut by a chamfer that faces a paved court, over
-a ground storey of glazing set back under it on columns; before the corner a deck with a railing and a flight of
-steps down to the court, and on its flat roof, behind a low parapet, a box at its west corner and a lower block
-toward its east end. Its heights and plans come from the LiDAR but for the chamfer's width; that, the band's
-underside, the glazing's place behind it, the columns, the deck, its railing and the steps are estimated with the
-photograph as a reference. One photograph from the court to its south, looking at the chamfered corner and its two
-faces; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.78 in it, where the
-trees round it leave little sky, and the brightness over it is within 4 of the photograph's. From above its outline
-covers the LiDAR's with an IoU of 0.94, and on 86% of the cells both cover it is within 0.5 m of the LiDAR's height,
-the rest mostly under a tree's crown over its north corner. What the photograph does not show is drawn as what it
-does.
+whose upper storey is a deep band of pale concrete, its south corner cut by a chamfer that faces a paved court, over a
+ground storey of glazing set back under it on columns; before the corner a deck with a railing and a flight of steps
+down to the court, and on its flat roof, behind a low parapet, a box at its west corner and a lower block toward its
+east end. Its heights and plans come from the LiDAR but for the chamfer's width; that, the band's underside, the
+glazing's place behind it, the columns, the deck, its railing and the steps are estimated with the photograph as a
+reference. One photograph from the court to its south, looking at the chamfered corner and its two faces; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.78 in it, where the trees round it
+leave little sky, and the brightness over it is within 3 of the photograph's. From above its outline covers the
+LiDAR's with an IoU of 0.94, and on 89% of the cells both cover it is within 0.5 m of the LiDAR's height, the rest
+under a tree's crown along its north side and a row of small units on its roof, neither drawn. What the photograph
+does not show is drawn as what it does.
 
 | | |
 | --- | --- |
 | ![Security from the court to its south, drawn from code](docs/landmarks/security-409-front.jpg) | ![Security from above, drawn from code](docs/landmarks/security-409-above.jpg) |
 | ![Security on the map, drawn from code in the map's colours](docs/landmarks/security-409-map.jpg) | ![Security from the court to its south, through the walker's eyes](docs/landmarks/security-409-eyes.jpg) |
 
-The thirty-ninth is Building 903 (903), on the Newmarket campus, until now a measured massing: a long block of
-four storeys whose two upper storeys are a box clad in pale corrugated metal, with windows singly and in bands, over
-two glazed storeys set back under it on piers; a canopy over the entrance at its south-east corner, its south face
-stepped forward part of the way along, and a low roof of two slopes with plant on it, the east end a low gable. Its
-heights and plans come from the LiDAR; its windows, the glazed storeys' piers and the canopy are estimated with the
-photograph as a reference. One photograph from the road to its south-east, looking at its south face and east end;
-counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in it, and the
-brightness over it is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.91,
-and on 95% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
-drawn as what it does.
+The thirty-ninth is Building 903 (903), on the Newmarket campus, until now a measured massing: a long block of four
+storeys whose two upper storeys are a box clad in pale corrugated metal, with windows singly and in bands, over two
+glazed storeys set back under it on piers; a canopy over the entrance at its south-east corner, its south face stepped
+forward part of the way along, and a low roof of two slopes with plant on it, the east end a low gable. Its heights
+and plans come from the LiDAR; its windows, the glazed storeys' plinth and piers and the canopies' depth are estimated
+with the photograph as a reference. One photograph from the road to its south-east, looking at its south face and east
+end; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in it, and the
+brightness over it is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.92, and
+on 97% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn as
+what it does.
 
 | | |
 | --- | --- |
@@ -1228,7 +1228,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of 67 Symonds Street from the street to its south-east | The look its model was compared with while it was drawn, and, as a reference, its windows, its curved bay's dark bands and its louvred panels on its south and east faces, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 431 from the car park at the west end of the lane to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's columns, the heights of its rows of windows and the places of its roller doors, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 431's east entrance | That its stair tower and the canopy over its entrance are glass; no size is taken from it | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| A photograph of Building 903 from the road to its south-east | The look its model was compared with while it was drawn, and, as a reference, its clad storeys' windows, its glazed storeys' piers and the canopy over its entrance, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
+| A photograph of Building 903 from the road to its south-east | The look its model was compared with while it was drawn, and, as a reference, its clad storeys' windows, its glazed storeys' plinth and piers and the canopy over its entrance, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Structures Hall from an open lot to its south | The look its model was compared with while it was drawn, and, as a reference, its south face's bands and mullions, its ground storey's windows, entrance, piers and braces and its stacks' bands, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Fine Arts Studio Block 433 from the road at its west-south-west end | The look its model was compared with while it was drawn, and, as a reference, the height of its red ground storey, its glazing's mullions, floor bands and coloured panels, the place of its end wall, its end's grey bay, doors and windows, its balconies' fronts and its outside stair, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of 58 Symonds Street from the ground to its north | The look its model was compared with while it was drawn, and, as a reference, the depth of its slab bands, its window wall's place behind them, its sill panels, mullions and louvres, its corner columns and piers, and its dark ground storey, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
@@ -1238,7 +1238,7 @@ an estimate of 3.6 m a floor, and its windows and roof rims are drawn by rule.
 | A photograph of Auckland Bioengineering House from Symonds Street to its north-west | The look its model was compared with while it was drawn, and the place of the second stone fin on its north face, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Architecture - East from a paved deck above its raised terrace | The look its model was compared with while it was drawn, and, as a reference, the storeys' height and the parapets, windows and dormers on its faces to the terrace | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | A photograph of Building 907 from the street to its west-south-west | The look its model was compared with while it was drawn, and, as a reference, the places and heights of the band of glazing on the hall's end and of the annex's windows and doors, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
-| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey; for Building 907 (907), that its roofs are near white; for 49 Symonds Street (620), that the flat top of the mansard on its roof is pale; for Okareta (215), that its roofs are grey; for buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), that their roofs are grey; for Te Pūtahi Tangata (201), that its roofs are grey, with strips of glazing and a planted part on the hall's; for the George Mason Biology Building (106), that its roofs and its attic are grey; for Building 114 (114), that its roofs are light grey; for 67 Symonds Street (619), that its roofs are mid-grey; for Fine Arts Studio Block 431 (431), that its roofs are light grey; for Fine Arts Studio Block 433 (433), that its vault is light grey; for 58 Symonds Street (435), that its roofs are grey; for Security (409), that its roofs are light grey; for Building 903 (903), that its roofs are light grey; for Structures Hall (906), that its roofs are light grey; for 2-6 Park Ave (529), that its raised part's roof is red | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
+| Auckland Central 0.06 m Urban Aerial Photos (2023), tiles `BA32_2000_*` of LINZ's imagery on AWS | The plan of the Kenneth Myers Centre's west part (820), where the 2024 LiDAR holds temporary works, measured for its model in `landmarks/kenneth-myers-centre/`; for the Kate Edger Information Commons (315), where its end over the sunken court ends and that its roof light is glass; for the Humanities Building (206), that its roofs are red clay tiles but for the two flat roofs in the angle of its L, which are grey; for building 302 of the Science Centre (302), that its roofs are grey; for building 303 of the Science Centre (303), that the roofs of its range along the street and of its slab are near white; for building 303S of the Science Centre (303S), that its roofs are grey; for Building 907 (907), that its roofs are near white; for 49 Symonds Street (620), that the flat top of the mansard on its roof is pale; for Okareta (215), that its roofs are grey; for buildings 501, 502, 505 and 507 of the M&HS Building (501, 502, 505, 507), that their roofs are grey; for Te Pūtahi Tangata (201), that its roofs are grey, with strips of glazing and a planted part on the hall's; for the George Mason Biology Building (106), that its roofs and its attic are grey; for Building 114 (114), that its roofs are light grey; for 67 Symonds Street (619), that its roofs are mid-grey; for Fine Arts Studio Block 431 (431), that its roofs are light grey; for Fine Arts Studio Block 433 (433), that its vault is light grey; for 58 Symonds Street (435), that its roofs are grey but for its core's, which is plum; for Security (409), that its roofs are light grey; for Building 903 (903), that its roofs are light grey; for Structures Hall (906), that its roofs are light grey; for 2-6 Park Ave (529), that its raised part's roof is red | Sourced from LINZ and licensed by Auckland Council for re-use under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ([LINZ's attribution page](https://www.linz.govt.nz/products-services/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data)). Only the measured sizes are published, in the landmark's `parts/common.js`; the tiles stay on the computer that fetched them. |
 | A photograph of the Sir Owen G Glenn Building from the north edge of its plaza | The look its model was compared with while it was drawn, and, as a reference, the heights of the bands of glass, spandrels and louvres on its curved wing, estimated in it through a camera fitted to the LiDAR | Used as a reference only: never published, traced or sampled, and kept on the maintainer's computer. |
 | [Open-Meteo](https://open-meteo.com/) | Current weather in Auckland (temperature, cloud, rain, wind), fetched by the visitor's browser | [CC BY 4.0](https://open-meteo.com/en/licence) |
 | ["Animated Human" by Quaternius](https://opengameart.org/content/animated-human-low-poly) | The walker's body and its idle, walk and run, in `public/models/walker.glb` | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), public domain. Downloaded once, on 2026-10-16. |
@@ -1769,31 +1769,33 @@ If you represent the University and would like something changed or removed, ple
   is not known from a record: its door is set on the platform before its north-east face, near the north corner. The
   map's ground there is 9.52 m under the LiDAR's, so the model stands that much lower than the real building, on the
   drawn ground at its door; under its walls the map's ground runs from 2.08 m under the door's to 1.25 m over it,
-  where the real ground falls about 11 m to the south-east, so on the site its lowest storeys on that side stand
-  under the drawn ground.
+  where the real ground falls about 6 m to the south-east, so on the site the lowest 4 m or so on that side, the lower
+  half of its dark ground storey there, stand under the drawn ground.
 - **Security is seen from its south only.** One photograph, under a bright overcast sky, looks at its chamfered south
   corner from the paved court to its south, under a tree; its camera is fitted to both faces' roof edges against the
   sky and the leaves and to seven upright edges, and it stands about 2.5 m inside Architecture - West's outline in the
   campus map: the photographer stood under a crown or an overhang there, or the fit is that far off. The chamfer's
   width, the band's underside, the glazing behind it, the columns, the deck, its railing and the steps are estimated
   in the photograph, and the steps are drawn 1.1 m along the south-east face from where it puts their foot, clear of
-  that outline; the faces to the north-west and north-east, which no photograph shows, are drawn as the ones it does,
-  and a tree's crown over its north corner and a row of small units on its roof are not drawn. Its entrance is not
-  known from a record: its door is set at the foot of the steps. The map's ground there is 3.83 m under the LiDAR's,
-  so the model stands that much lower than the real building, on the drawn ground at its door; under its walls the
-  map's ground runs from 0.27 m to 1.08 m over the door's, where the real ground rises 2.9 m to the road on its
-  north-west side, so on the site its glazed ground storey shows whole along that side.
+  that outline; neither the LiDAR nor the 2023 aerial shows the deck, its railing or the steps (both see the paved
+  court open there), which are drawn from the photograph, taken later in 2024; the faces to the north-west and
+  north-east, which no photograph shows, are drawn as the ones it does, and a tree's crown over its north corner and a
+  row of small units on its roof are not drawn. Its entrance is not known from a record: its door is set at the foot
+  of the steps. The map's ground there is 3.83 m under the LiDAR's, so the model stands that much lower than the real
+  building, on the drawn ground at its door; under its walls the map's ground runs from 0.27 m to 1.08 m over the
+  door's, where the real ground rises 2.9 m to the road on its north-west side, so on the site its glazed ground
+  storey shows whole along that side.
 - **Building 903 is seen from its south-east only.** One photograph, under a bright overcast sky, looks at its south
-  face and east end from the road to their south-east; its camera is fitted to both faces' roof edges against the
-  sky, four upright edges and three corners. The clad storeys' windows, the glazed storeys' piers and the canopy over
-  the corner's entrance are estimated in it; the south face's forward part, which it sees only at its far end, has
-  the south face's bands of windows, and the north face, which no photograph shows, is drawn as the south face. Its
-  entrance is not known from a record: its door is set before the glazed entrance under the canopy. The map's ground
-  there is 5.01 m over the LiDAR's, so the model stands that much higher than the real building, on the drawn ground
-  at its door; toward its west end the map's ground rises 1.35 m over the door's, and its glazed storeys stand partly
-  in it. Its neighbours' measured massings stand on the map's ground at their own doors, 902's 7.33 m and 904's
+  face and east end from the road to their south-east; its camera is fitted to both faces' roof edges against the sky,
+  four upright edges and three corners. The clad storeys' windows, the glazed storeys' plinth and piers and the canopy
+  over the corner's entrance are estimated in it; the south face's forward part, which it sees only at its far end,
+  has the south face's bands of windows, and the north face, which no photograph shows, is drawn as the south face.
+  Its entrance is not known from a record: its door is set before the glazed entrance under the canopy. The map's
+  ground there is 5.01 m over the LiDAR's, so the model stands that much higher than the real building, on the drawn
+  ground at its door; toward its west end the map's ground rises 1.35 m over the door's, and its glazed storeys stand
+  partly in it. Its neighbours' measured massings stand on the map's ground at their own doors, 902's 7.33 m and 904's
   5.71 m over the LiDAR's, so on the map 902's roof, one roof with 903's, stands about 2.3 m over the model's at its
-  west end, and the strip of 904's massing that is the edge of 903's roof about 0.7 m over the model's along its
+  west end, and the strip of 904's massing that is the edge of 903's roof 0.6 to 0.9 m over the model's along its
   north edge.
 - **Structures Hall is seen from its south only, as it was in 2017.** One photograph, older than the LiDAR and the
   aerial, looks at its south face from an open lot about 64 m to its south; its camera is fitted to the face's roof

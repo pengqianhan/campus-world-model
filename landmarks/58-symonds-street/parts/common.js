@@ -11,27 +11,30 @@
 // south-west.
 //
 // 58 Symonds Street, building 435: a tower of offices over a slope that falls from the north-west to the south-east,
-// its floor slabs' bands 3.04 m apart up to the roof's edge at 80.15 m, an upper roof set in from the edge at 83.1 m,
-// and on its street side a core to 89.2 m.
+// its eight floor slabs' bands about 3.05 m apart from 55.7 m up to the roof's edge at 80.15 m, an upper roof set in
+// from the edge at 83.1 m, and on its street side a core to 89.2 m.
 export const GROUND = 53.03;
 export const at = (u, w) => [-u, w];
 /** An elevation measured in the LiDAR, as a height above the config's ground. */
 export const Y = (z) => z - GROUND;
 export const plan = (corners) => corners.map(([u, w]) => at(u, w));
 
-// The ground round the tower lies from about 42.4 m (the south-east side, p1 of its returns) to 54.5 m (the north-west
-// side); the walls go down to FOOT.
+// The ground within 5 m of the tower's walls (the LiDAR's class 2) lies from about 45.8 m (p1; p50 47.2) along the
+// south-east face to 53.4 m on the platform before the north-east face, and rises to 54.4 to 55.5 m 6 to 10 m off the
+// north-west face; it falls to about 42.4 m 10 to 12 m south-east of the tower. The walls go down to FOOT.
 export const FOOT = Y(42.0);
 
 /** The tower: the outer edge of its floor slabs' bands (the LiDAR's returns on the faces to p0.5/p99.5: north-east
  * w -8.62, north-west u 13.34, south-east u -10.70; south-west w 8.7 where the core does not stand out), the slabs'
- * tops from the returns on the faces, 3.04 m apart (58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04), and the roof's
- * edge at 80.15 (p90 of the returns round the edge). */
+ * tops from the returns on the faces, about 3.05 m apart (55.7, 58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04: the
+ * lowest, at the foot of the storeys of windows over the dark ground storey, from the 266 returns at 55.0 to 56.2 m in
+ * the bands' outer metre on the north-east, north-west and south-east faces, p50 55.70), and the roof's edge at 80.15
+ * (p90 of the returns round the edge). */
 export const TOWER = {
   u: [-10.7, 13.4],
   w: [-8.6, 8.7],
   edge: Y(80.15),
-  slabs: [58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04].map(Y),
+  slabs: [55.7, 58.8, 61.83, 64.87, 67.93, 70.97, 74.01, 77.04].map(Y),
 };
 
 /** The upper roof, 2.2 to 2.4 m in from the edge (its returns' p0.5/p99.5: north-east w -6.25, north-west u 11.07,
@@ -41,12 +44,14 @@ export const UPPER = { u: [-8.32, 11.07], w: [-6.25, 7.8], top: Y(83.1) };
 
 /** On the street side, standing out from the south-west face: a low block by the south corner (u -10.97 to -8.54,
  * w 8.04 to 12.22, its roof at 61.83 m), a strip (u -8.54 to -3.53, w 7.73 to 12.53) to 83.22 m (p50 of its 139
- * returns over 80 m; a few to 84.1), and beside the core
- * on its north-west a strip (u 5.86 to 6.91, w 8.73 to 11.94; p50 83.22 of 29 returns) to 83.22 m. */
+ * returns over 80 m; a few to 84.1), and beside the core on its north-west a strip (u 5.86 to 6.91, w 8.73 to 11.94;
+ * p50 83.22 of 29 returns) to 83.22 m. Both strips run in to the upper roof's edge at w 7.8: the LiDAR's roof runs on
+ * from the upper roof to them at 83.2 to 83.7 m with no step down (u -8.3 to -3.6, w 7.8 to 8.7: 42 returns, p50
+ * 83.58). */
 export const STREET = [
   { u: [-10.97, -8.54], w: [8.7, 12.22], top: Y(61.83) },
-  { u: [-8.54, -3.53], w: [8.7, 12.53], top: Y(83.22) },
-  { u: [5.86, 6.91], w: [8.7, 11.94], top: Y(83.22) },
+  { u: [-8.54, -3.53], w: [7.8, 12.53], top: Y(83.22) },
+  { u: [5.86, 6.91], w: [7.8, 11.94], top: Y(83.22) },
 ];
 
 /** The core (u -3.53 to 5.86, w 6.68 to 12.11; 482 returns over 87.5 m), its roof one slope falling to the street:

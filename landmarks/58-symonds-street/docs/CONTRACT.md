@@ -18,8 +18,9 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   face, a low block by the south corner to 61.83 m, two strips to 83.22 m and a core whose roof falls to the street
   from 89.25 to 87.72 m; plant on the upper roof at 84.5 to 85.2 m. A low roof at about 56 m runs along the
   south-east side (u -15.5 to -10.9), outside the campus map's outline: it is not drawn.
-- Walls go down to `FOOT`, 42.0 m: the ground round the tower lies from about 42.4 m on the south-east to 55.6 m on
-  the north-west, the car park's ramp falling along the north-east side.
+- Walls go down to `FOOT`, 42.0 m: the ground within 5 m of the walls lies from about 45.8 m along the south-east face
+  (p50 47.2) to 53.4 m on the platform before the north-east face, and rises to 55.5 m off the north-west face; it
+  falls to about 42.4 m 10 to 12 m south-east of the tower, the car park's ramp falling along the north-east side.
 
 ## Who owns what
 - `parts/common.js` (the measured sizes and the frame), `parts/block.js`, `parts/facade.js`, `parts/shapes.js`
@@ -27,7 +28,8 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
 
 ## Budget
 - Whole building ≤ 20k triangles and ≤ 6 draw calls (tier 3, a measured massing drawn in detail), merged by material.
-  Round 0: 204 triangles in the mask model; steps 5 to 8: 7,098 triangles, 5 draw calls.
+  Round 0: 204 triangles in the mask model; steps 5 to 8: 7,098 triangles, 5 draw calls; after the review of #167:
+  8,082 triangles, 6 draw calls.
 
 ## Rounds
 - Round 0 (2026-11-11, the lead alone): the tower, its slabs' bands, the upper roof and the street side's three
@@ -45,3 +47,11 @@ The rules every part of this landmark keeps. The kit, the pipeline and the viewe
   measured massing's data file gone. 7,098 triangles, 5 draw calls; silhouette IoU 0.938, 0.970 in the model's box;
   top view: footprint IoU 0.905, 93% of 1,873 cells within 0.5 m, the highest point 36.30 m over the door's ground
   against the LiDAR's 36.27, block 435 97.7% under the model.
+- The review of #167 (2026-11-12): the lowest slab's band at 55.7 m (the LiDAR's 266 returns at 55.0 to 56.2 m in
+  the bands' outer metre) and its storey of windows, which the photograph shows over the dark ground storey: eight
+  storeys of windows, not seven; the core's roof a dull plum (`roofPlum`, new in the kit), as the 2023 aerial shows
+  it; the two strips on the street side run in to the upper roof's edge, as the LiDAR's roof does; the ground's
+  figures from the LiDAR within 5 m of each face (the real ground falls about 6 m from the door to the south-east
+  face, not 11); the exposure 0.69 (0.82 gave 192 with the eighth storey drawn). Silhouette IoU 0.938, 0.966 in the
+  model's box; luma 177 against 177. Top view as before: footprint IoU 0.905, 93% of 1,873 cells within 0.5 m, the
+  highest point 36.30 m over the door's ground against 36.27. 8,082 triangles, 6 draw calls.

@@ -56,7 +56,10 @@ export const ROOF = Y(51.13), PARAPET = { top: Y(51.5), thick: 0.3 };
  * its railing's top 1 m over it (q -15.6 to -16.9 from p -18.2 to 2.0), and a flight of 11 steps from the court
  * (43.4 m, the door's ground) up to the deck, its foot 1.7 m wide, rising along the chamfer's normal: the camera puts
  * the foot's ends at p -21.35, q -17.93 and p -19.84, q -18.66, partly within Architecture - West's outline in the
- * campus map (its north-east edge at p -20.3), so the flight is drawn 1.1 m further along the south-east face. */
+ * campus map (its north-east edge at p -20.3), so the flight is drawn 1.1 m further along the south-east face. There
+ * the flight's last riser (2.73 m up it) crosses the deck's edge at p -17.98 and ends 0.85 m short of it at its east
+ * end, p -17.04, q -16.85: the deck runs out to it, and the railing starts where the flight's east side meets the
+ * deck's edge, p -16.27. */
 export const SOFFIT = Y(49.1), FLOOR = Y(45.3), COURT = Y(43.4);
 export const STOREY = [[-15.2, -11.0], [15.85, -11.0], [15.85, 11.3], [-14.5, 11.3], [-14.5, 5.5], [-15.2, 5.5]];
 export const COLUMNS = [
@@ -66,16 +69,22 @@ export const COLUMNS = [
   [-18.3, 2.8], [-18.3, -2.5], [-18.3, -7.7],
 ];
 export const DECK = {
-  plan: [[-15.2, -11.0], [-15.2, -3.0], [-18.85, -3.0], [-18.85, -16.0], [3.0, -16.0], [3.0, -11.0]],
-  rail: [[-18.0, -16.0], [3.0, -16.0], [3.0, -12.85]],
+  plan: [[-15.2, -11.0], [-15.2, -3.0], [-18.85, -3.0], [-18.85, -16.0], [-17.98, -16.0], [-17.04, -16.85], [-16.27, -16.0],
+    [3.0, -16.0], [3.0, -11.0]],
+  rail: [[-16.27, -16.0], [3.0, -16.0], [3.0, -12.85]],
   stair: { foot: [-19.5, -18.3], dir: [0.67, 0.74], width: 1.7, run: 3.0, steps: 11 },
 };
 
-/** On the roof: a box at the west corner (p -13.9 to -9.8, q 9.6 to 13.0; 132 returns, p90 53.88 m) and a block
- * toward the east end (1,431 returns, p50 53.57, p90 53.77 m) along the south-east side from p 3 (q -11 to -7.5) and
- * from p -2 (q -7.5 to -4.5) to 16.6, and up to q 3 from p 8 (its returns on a 1 m grid). */
+/** On the roof (the returns over 51.65 m): a box at the west corner (p -15.6 to -9.75, q 9.6 to 13.0, the p0.5 and
+ * p99.5 of its 188 returns), its roof rising toward the north-east from 51.7 m at its south-west end to 53.84 m at
+ * p -11.8 (the returns' p50 in 0.5 m strips across it: 51.71, 51.87, 52.08, 52.44, 52.69, 52.98, 53.23, 53.53, 53.78)
+ * and flat beyond (53.82 to 53.86); and a block toward the east end (p50 53.57, p90 53.77 m) along the south-east
+ * side from p 3.75 (q -11 to -7.5; its returns' p0.5) and from p -2 (q -7.5 to -4.5) to 16.6, and up to q 3 from p 8,
+ * but for its south-east end (p 11.5 to 16.6, q -11 to -8.8), lower at 53.0 m (the p50s in 0.5 m strips 52.96 to
+ * 53.14 across it, 53.67 north-west of q -8.8, and 52.98 to 53.09 along it from p 11.5, 53.69 west of that). */
+export const BOX = { p: [-15.6, -9.75], q: [9.6, 13.0], low: Y(51.7), rise: -11.8, top: Y(53.84) };
 export const HIGH = [
-  { plan: [[-13.9, 9.6], [-9.8, 9.6], [-9.8, 13.0], [-13.9, 13.0]], top: Y(53.88) },
-  { plan: [[3.0, -11.0], [16.6, -11.0], [16.6, 3.0], [8.0, 3.0], [8.0, -4.5], [-2.0, -4.5], [-2.0, -7.5], [3.0, -7.5]],
-    top: Y(53.77) },
+  { plan: [[3.75, -11.0], [11.5, -11.0], [11.5, -8.8], [16.6, -8.8], [16.6, 3.0], [8.0, 3.0], [8.0, -4.5], [-2.0, -4.5],
+    [-2.0, -7.5], [3.75, -7.5]], top: Y(53.77) },
+  { plan: [[11.5, -11.0], [16.6, -11.0], [16.6, -8.8], [11.5, -8.8]], top: Y(53.0) },
 ];
