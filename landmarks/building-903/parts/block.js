@@ -59,7 +59,7 @@ export function body(b) {
 }
 
 /** The parapets: the east end's gable within its parapet, along the south face, round the step's return and along
- * the forward face, each 0.3 m thick and standing from within the roof to its top. */
+ * the forward face, each PARAPET.thick (0.7 m) thick and standing from within the roof to its top. */
 export function parapet(b) {
   const t = PARAPET.thick, top = PARAPET.top;
   along(b, EAST, EAST + t, [[NORTH, roofAt(NORTH) - 0.3], [SOUTH, roofAt(SOUTH) - 0.3], [SOUTH, GABLE.south],
@@ -78,13 +78,16 @@ export function cap(b) {
     [CAP.q1, CAP.top], [CAP.q0, CAP.top]], [null, ROOFS, ROOFS, ROOFS], ROOFS);
 }
 
-/** The plant, the duct, the unit and the fan on the roof, each standing from within the roof under it. */
+/** The roof under the step, before the south face out to the ring's edge (LEAN): one plane falling to the
+ * south, LEAN.deep thick, open on its face against the glazing, which is never seen. */
 export function lean(b) {
   const q0 = SOUTH - SET, roof = (q) => LEAN.y - LEAN.fall * (q - LEAN.at), d = LEAN.deep;
   along(b, LEAN.p[0], LEAN.p[1], [[q0, roof(q0) - d], [LEAN.q, roof(LEAN.q) - d], [LEAN.q, roof(LEAN.q)], [q0, roof(q0)]],
     [WALL, WALL, ROOFS, null], WALL);
 }
 
+/** The plant, the duct, the unit, the fan and the low block on the roof, each standing from within the roof
+ * under it. */
 export function high(b) {
   for (const { p: [p0, p1], q: [q0, q1], top } of HIGH) {
     const base = Math.min(roofAt(q0), roofAt(q1)) - 0.1;
