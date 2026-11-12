@@ -18,6 +18,14 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **Structures Hall drawn in detail.** Near the camera the map draws Structures Hall (906), on the Newmarket campus,
+  from code in place of the measured massing that stood for it: two long blocks side by side under roofs of one slope,
+  three square stacks on the line between them, and a south face of three glazed storeys with light bands between
+  them, under a light fascia and between dark frames, over a ground storey set back behind piers and two Vs of braces.
+  Its sizes come from the LINZ 2024 LiDAR; it was compared with a photograph of its south face, and its card says what
+  is estimated: the south face's glazing and ground storey and the stacks' bands, with the photograph as a reference,
+  and the faces no photograph shows, drawn plain. Its measured massing's data file has gone. On the map it has the
+  map's colours; from a walker's height on a computer with a graphics card, its own panels, glass and roofs (#170).
 - **Building 903 drawn in detail.** Near the camera the map draws Building 903, on the Newmarket campus, from code
   in place of the measured massing that stood for it: a long block whose two upper storeys are a box clad in pale
   corrugated metal, with windows singly and in bands, over two glazed storeys set back under it on piers, a canopy

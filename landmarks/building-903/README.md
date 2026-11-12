@@ -31,7 +31,7 @@ in the LiDAR's local metres (it is in the map's frame); `place` converts.
 
 ## Neighbours on the map
 
-- No other landmark's outline comes within 2 m of its (the nearest, Building 907's, is about 178 m off), so it stands
+- No other landmark's outline comes within 2 m of its (the nearest, Structures Hall's, is 8.3 m off), so it stands
   alone on the map's ground at its door (`../README.md`, "Placement").
 - The model stands over 97.3% of block 903, 7.3% of block 904 and 2.0% of block 902. `building.also` is empty.
 - Its roof runs on to the west-north-west, at the same height and with no seam in the LiDAR's returns, over Building

@@ -1,0 +1,164 @@
+{
+ "name": "structures-hall",
+ "site": true,
+ "estimated": "the south face's glazing, bands, mullions, fascia and frames, its ground storey's windows, door, entrance, piers and braces, and the stacks' bands, with the photograph as a reference; and the faces no photograph shows, among them the face the northern block turns south over the southern one's roof, drawn plain",
+ "refs": "photos",
+ "refs_note": "the folder of refs/ that holds the reference views (views.json, masks/), which refine, compare, metrics, sky_mask and the viewer's ?sv= read: refs/photos (gitignored), whose views tools/photo_camera.py writes. Its one photograph, from 2017 (before the LiDAR and the aerial), is taken from an open lot south of the building, about 64 m from its south face, looking north-north-east and up 7.5 degrees at the whole of that face; its camera is fitted to the face's roof edge against the sky (the fascia's top, at 70.6 m), to both its ends against the sky, to an upright edge of each of the three stacks on the roof and to the south-west corners of the three stacks' tops and the north-west corners of two, which fall from 77.4 m at their south edge to 76.6 m at their north (measured in the building's own frame, turned 2.28 degrees from the frame's axis: its faces run along it to 0.1 m). A lens of 49.2 degrees across (the file's 24 mm on its camera's sensor gives 49.6), 0.98 m over the LiDAR's ground there, rms 0.72 px over 104 residuals. The stacks' south-east top corners are left out: the LiDAR's returns from their tops reach about 0.3 m further east than the photograph shows them (5.7 to 7.7 px), and with them the fit is 1.34 px",
+ "building": {
+  "id": "906",
+  "also": [],
+  "title": "Structures Hall (906), University of Auckland",
+  "note": "outline: building 906's outer ring from the main project's campus.json, in the map's frame; it chooses the crop box and the building's own points (frame.near_outline, measure and topview). The site replaces block 906 by its id.",
+  "outline": [
+   [
+    432.5,
+    -1513.1
+   ],
+   [
+    435.7,
+    -1501.4
+   ],
+   [
+    444.1,
+    -1503.7
+   ],
+   [
+    445.8,
+    -1497.3
+   ],
+   [
+    444.2,
+    -1496.8
+   ],
+   [
+    446.9,
+    -1487.1
+   ],
+   [
+    443.7,
+    -1486.2
+   ],
+   [
+    442.2,
+    -1491.8
+   ],
+   [
+    439.4,
+    -1491.1
+   ],
+   [
+    440.6,
+    -1486.7
+   ],
+   [
+    443.3,
+    -1487.4
+   ],
+   [
+    443.7,
+    -1486.2
+   ],
+   [
+    448.5,
+    -1487.5
+   ],
+   [
+    448.7,
+    -1486.6
+   ],
+   [
+    500.9,
+    -1500.6
+   ],
+   [
+    496.2,
+    -1517.8
+   ],
+   [
+    487.8,
+    -1515.6
+   ],
+   [
+    484.4,
+    -1527.9
+   ],
+   [
+    432.3,
+    -1513.9
+   ]
+  ]
+ },
+ "origin": {
+  "lat": -36.8523,
+  "lon": 174.7691,
+  "note": "the campus origin, as in campus.json; the landmark's local metres = NZTM (EPSG:2193) minus the NZTM of this point, with grid north"
+ },
+ "crop_margin": 80,
+ "ground": 52.58,
+ "lidar": {
+  "url": "https://opentopography.s3.sdsc.edu/pc-bulk/NZ24_Auckland/CL2_BA32_2024_1000_{tile}.laz",
+  "tiles": [
+   "3904",
+   "3905"
+  ],
+  "mirrors": [],
+  "licence": "Auckland Part 1 LiDAR (2024), OpenTopography NZ24_Auckland, doi:10.5069/G9HH6H8T: sourced from LINZ and licensed by Regional Software Holdings Limited for re-use under CC BY 4.0"
+ },
+ "aerial": {
+  "url": "https://nz-imagery.s3-ap-southeast-2.amazonaws.com/auckland/auckland-central_2023_0.06m/rgb/2193/BA32_2000_{tile}.tiff",
+  "tiles": [
+   "2003"
+  ],
+  "licence": "Auckland Central 0.06 m Urban Aerial Photos (2023): sourced from LINZ and licensed by Auckland Council for re-use under CC BY 4.0"
+ },
+ "frame": {
+  "method": "LiDAR building points (class 6) more than min_above m above the ground and within near_outline m of building.outline",
+  "min_above": 2.82,
+  "tower_above": 2.82,
+  "spine_below": 39.99,
+  "spine_radius": 45,
+  "near_outline": 1.5,
+  "street_side": "west",
+  "axis_from": "walls",
+  "thresholds_note": "min_above 2.82 m over the door's ground (52.58 m), as 3.0 m over the provisional ground (52.4 m) was: the same returns; the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring taken to local metres. The walls' axis runs along the long faces (bearing -71.89 deg), so z faces south-south-west (bearing 198.11 deg), toward the face the photograph sees. The faces themselves run 2.28 degrees off that axis (parts/common.js turns by it)",
+  "expected": {
+   "centre": [
+    438.65076657126593,
+    -1515.4571749872894
+   ],
+   "axis": [
+    -0.950479559235577,
+    0.31078707739438477
+   ],
+   "tolerance_m": 0.05
+  }
+ },
+ "refine": {
+  "position_m": 3,
+  "height_m": 1,
+  "yaw_deg": 2,
+  "pitch_deg": 2,
+  "min_height_m": 4,
+  "scale": 0.25,
+  "prior": 0.01,
+  "min_gain": 0.01,
+  "min_sky": 0.2,
+  "max_solid": 0.5,
+  "keep_fixes": true
+ },
+ "crop_note": "80 m round the outline, so that the crop box takes in the ground where the photograph was taken, about 64 m south of the south face (at 45 m the camera stood outside it, on no LiDAR ground); the ring is in the map's frame, about 29 m east-north-east of where it stands in local metres here",
+ "light": {
+  "sunaz": 325.0,
+  "sunel": 27.0,
+  "sun": 8.0,
+  "env": 3.4,
+  "exposure": 0.85,
+  "note": "estimated: the photograph is taken in the early afternoon of a clear day in late May, when the sun stands behind the building, to the north-north-west (325 deg round, 27 up, worked from the day and the hour), and the south face is in its own shade. The viewer's sun is put there at its usual strength (8), and its sky's light made strong (3.4, against 2.25), at an exposure of 0.85: over the model's screen box the luma (p50) 119 against the photograph's 123, p10 83 against 88 (with the sky at 2.25 and an exposure of 1.0, p50 104)."
+ },
+ "ground_note": "the LiDAR's ground at the door (step 7, 2026-11-12); the provisional ground was 52.4 m, the LiDAR's ground at the outline's lowest point. parts/common.js gives every height as the LiDAR's elevation, and its Y turns it into one over this ground",
+ "door": {
+  "x": 15.92,
+  "z": 15.38,
+  "note": "before the glazed entrance under the thin canopy near the south face's east end, as the photograph shows it (the campus map records no entrance in 906): 1.7 m out from the entrance, just past the line of the glazed storeys' face over it (p -15.3, q 16.0 in the building's frame; (15.92, 15.38) in the view frame). The LiDAR's ground within 1 m: 10 returns, p10/p50/p90 52.543/52.576/52.666 m; the ground round the building is flat, 52.06 to 53.06 m"
+ }
+}

@@ -5,8 +5,8 @@ LiDAR and checked against Street View photographs (the Kate Edger Information Co
 Building, buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907,
 Auckland Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and
 507 of the M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114,
-67 Symonds Street, Fine Arts Studio Block 431, Fine Arts Studio Block 433, 58 Symonds Street, Security and
-Building 903 each against another photograph of it: `"refs": "photos"`,
+67 Symonds Street, Fine Arts Studio Block 431, Fine Arts Studio Block 433, 58 Symonds Street, Security,
+Building 903 and Structures Hall each against another photograph of it: `"refs": "photos"`,
 under "Stages"). The site draws the landmarks whose
 `placement.json` says `site: true` in place of their buildings' blocks (see "On the site"). The pipeline
 and the viewer stay beside the site: it does not build, test or deploy them. How to make a landmark:
@@ -282,7 +282,8 @@ agent and no photograph. All of them share one model and have a data file each:
   as building) is left out. An outline on the campus map that crosses itself keeps its block. On
   Grafton and Newmarket (`DROP_BARE_ON`; `--drop-bare` or `--keep-bare` for a run) a traced piece of a
   layer in which the LiDAR sees no roof cell of that layer is not drawn as a layer, and its data file
-  lists it under `dropped` (906's lobe over open ground; MASSING.md, "The third round"); on the City
+  lists it under `dropped` (906's lobe over open ground, until 906 became a landmark on 2026-11-12;
+  MASSING.md, "The third round"); on the City
   campus the rule waits for the maintainer, as it would change one number of 405's in
   `exclusions.json`. A layer above the lowest may still stand in a neighbour's outline where the two
   outlines overlap (904's strip over 902 and 903, 305's layers over 303): a question for the
@@ -384,7 +385,7 @@ With `"refs": "photos"` in the config (the Kate Edger Information Commons, the H
 buildings 302, 303 and 303S of the Science Centre, Architecture - West, Architecture - East, Building 907, Auckland
 Bioengineering House, the Sir Owen G Glenn Building, 49 Symonds Street, Okareta, buildings 501, 502, 505 and 507 of the
 M&HS Building, Te Pūtahi Tangata, the George Mason Biology Building, 2-6 Park Ave, Building 114, 67 Symonds Street,
-Fine Arts Studio Block 431, Fine Arts Studio Block 433, 58 Symonds Street, Security, Building 903),
+Fine Arts Studio Block 431, Fine Arts Studio Block 433, 58 Symonds Street, Security, Building 903, Structures Hall),
 refine, compare, metrics,
 `sky_mask.py` and the viewer's `?sv=` read `refs/photos/` in place of
 `refs/streetview/`, refine keeps each `photo_fit` camera as it keeps `camera_fixes`, and the refs stage
