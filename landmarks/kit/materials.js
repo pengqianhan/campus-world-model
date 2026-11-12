@@ -347,6 +347,9 @@ export function makeMaterials(quality = "high", textures = makeTextures(quality)
     claddingYellow: painted(0xc8a844, 0.6, space),
     renderRed: painted(0x7e322b, 0.7, space),
     steelBlue: painted(0x7f90a2, 0.5, space),
+    // 58 Symonds Street: the pale roof's shader in a dull plum, the roof of its core on the 2023 aerial (about RGB
+    // 121, 103, 127 there, where its other roofs are a neutral light grey)
+    roofPlum: roofPale(0x79677f, space),
   };
   return m;
 }

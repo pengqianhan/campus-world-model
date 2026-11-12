@@ -87,7 +87,7 @@
   "near_outline": 1.5,
   "street_side": "west",
   "axis_from": "walls",
-  "thresholds_note": "min_above 2.99 m over the provisional ground (50.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's long faces (bearing 313.6 deg), so z faces south-west (bearing 223.6 deg). The ground falls from about 56 m on the north-west side to 38 to 47 m on the south-east; all three lowered by 2.38 m with the ground set at the door (step 7), so that they pick the same points",
+  "thresholds_note": "min_above 2.99 m over the provisional ground (50.65 m, the median LiDAR ground within the outline's band, as the measured massing took it); the centre from the same points (tower_above), which lie within 1.5 m of the campus map ring. The walls' axis runs along the tower's long faces (bearing 313.6 deg), so z faces south-west (bearing 223.6 deg). The ground falls from about 55.5 m off the tower's north-west face to about 47 m along its south-east face (p50 of the LiDAR's within 5 m), to 42.4 m 10 to 12 m out and to about 33 m at the crop box's edge; all three lowered by 2.38 m with the ground set at the door (step 7), so that they pick the same points",
   "expected": {
    "centre": [
     -182.89173991865997,
@@ -118,12 +118,12 @@
   "sunel": 45.0,
   "sun": 3.0,
   "env": 3.2,
-  "exposure": 0.82,
-  "note": "estimated: the photograph is taken on a bright day under a thin high haze, looking south at the two faces that face north-east and north-west, which it shows about equally bright. The viewer's sun stands to the north-north-east (20 deg round, 45 up), between those two faces, weaker than by default (3, against 8) and its sky's light stronger (3.2, against 2.25), at an exposure of 0.82: over the model's screen box the luma (p50) 175 against the photograph's 176. With the sun at 0 deg, 4 and 3.0 at 0.9 it is 181; with 433's overcast light (2.5, 3.6, 0.88) 193."
+  "exposure": 0.69,
+  "note": "estimated: the photograph is taken on a bright day under a thin high haze, looking south at the two faces that face north-east and north-west, which it shows about equally bright. The viewer's sun stands to the north-north-east (20 deg round, 45 up), between those two faces, weaker than by default (3, against 8) and its sky's light stronger (3.2, against 2.25), at an exposure of 0.69: over the model's screen box the luma (p50) 177 against the photograph's 177 (at 0.82 it was 192 once the lowest storey of windows was drawn, 177 before). Before that storey was drawn, with the sun at 0 deg, 4 and 3.0 at 0.9 it was 181; with 433's overcast light (2.5, 3.6, 0.88) 193."
  },
  "door": {
   "x": -11.0,
   "z": -10.6,
-  "note": "on the platform before the tower's north-east face, 2 m out from its bands' edge and 2.4 m from the north corner, where the photograph shows the ground storey (the campus map records no entrance in 435): u 11.0, w -10.6 in the building's frame ((-11.0, -10.6) in the view frame); the platform runs at 53.0 to 53.4 m along that face, the ground rising to 55.6 m north-west of the tower and falling to 42.4 m on its south-east. The LiDAR's ground within 1 m: 14 returns, p10/p50/p90 52.992/53.032/53.064 m"
+  "note": "on the platform before the tower's north-east face, 2 m out from its bands' edge and 2.4 m from the north corner, where the photograph shows the ground storey (the campus map records no entrance in 435): u 11.0, w -10.6 in the building's frame ((-11.0, -10.6) in the view frame); the platform runs at 53.0 to 53.4 m along that face, the ground rising to about 55.5 m off the tower's north-west face and falling to about 47 m along its south-east face (p50 of the LiDAR's within 5 m) and to 42.4 m 10 to 12 m out. The LiDAR's ground within 1 m: 14 returns, p10/p50/p90 52.992/53.032/53.064 m"
  }
 }
