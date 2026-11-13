@@ -351,6 +351,8 @@ test("Study Quest is off until asked for; its title says it is made up; books le
   // The game is seen from behind the walker, and the buildings' names wait until it ends.
   await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+  // The walker's own name is left off too: it would sit on the villain it faces.
+  await expect(page.locator('[data-label="walker:Walker"]')).toHaveCount(0);
   await shot(page, "32-study-quest");
   await page.locator("#game-title").click();
   await expect(page.locator("#game-title")).toHaveCount(0);
@@ -386,9 +388,18 @@ test("Study Quest is off until asked for; its title says it is made up; books le
   await until("g.foes.some((f) => f.kind === 'ddl' && f.hp < 280)");
   await expect(page.locator(".gx-plate.elite").first()).toContainText("DDL");
 
-  // P pauses: the menu opens and the game's clock stops; Resume goes on.
+  // P pauses: the menu opens and the game's clock stops; Resume goes on. A key still held when the
+  // menu opens does not walk the walker on under it.
+  const walkerAt = () => page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { at: [number, number] } } }).walkers.state("Walker").at.slice());
+  await page.keyboard.down("w");
+  await page.waitForTimeout(300);
   await page.keyboard.press("p");
   await expect(page.locator("#game-menu")).toBeVisible();
+  const held0 = await walkerAt();
+  await page.waitForTimeout(600);
+  const held1 = await walkerAt();
+  await page.keyboard.up("w");
+  expect(Math.hypot(held1[0]! - held0[0]!, held1[1]! - held0[1]!)).toBeLessThan(0.05);
   const t0 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
   await page.waitForTimeout(600);
   expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t0);
@@ -420,6 +431,7 @@ test("Study Quest is off until asked for; its title says it is made up; books le
   await expect(page.locator(".gx")).toBeHidden();
   expect(await game()).toBeUndefined();
   await expect(page.locator("#walker-panel")).toBeVisible();
+  await expect(page.locator('[data-label="walker:Walker"]')).toHaveCount(1);
 });
 
 test("in a narrower window with a mouse the walk's panels keep apart, out of doors and inside", async ({ page }) => {

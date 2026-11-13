@@ -2012,7 +2012,10 @@ export class CampusScene {
         });
       }
     }
-    specs.push(...this.walkers.labels(), ...this.game.labels());
+    // In a game its walker's own name is left off: it would sit on the villain it faces.
+    const player = this.game.on ? `walker:${this.game.player}` : undefined;
+    for (const l of this.walkers.labels()) if (l.id !== player) specs.push(l);
+    specs.push(...this.game.labels());
     this.labels.set(specs);
     this.needsLabels = true;
     this.needsRender = true;

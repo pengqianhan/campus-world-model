@@ -1,5 +1,5 @@
 // Study Quest's panels over the walk: the title card, the quest tracker, the walker's Focus and
-// Stamina and its study rank, the skills, the boss's bar, the big words across the middle, the pause
+// Stamina and its study rank, the skills, the boss's bar, the big words high in the middle, the pause
 // menu, the study record and the debrief with its grade. It reads the game ten times a second; the
 // marks that move with the picture are drawn by the scene (gameOverlay.ts). On a phone it keeps the
 // view clear: no tutorial text, small panels in the corners, and big buttons under the right thumb.
@@ -185,18 +185,26 @@ function BossBar({ v }: { v: GameView }) {
   const b = v.boss;
   if (!b) return null;
   return (
+    // Low in the middle, clear of the boss itself: its name over a wide bar, notches where its
+    // phases begin, and the phase it is in under the bar.
     <section class={`sq-boss phase-${b.phase}`} id="game-boss" aria-label={t("game.foe.exam.name")}>
       <div class="sq-boss-head">
         <b>{t("game.foe.exam.name")}</b>
-        <span>{t("game.foe.exam.title")}</span>
+        <span class="sq-boss-title">{t("game.foe.exam.title")}</span>
+      </div>
+      <div class="sq-boss-track">
+        <Bar value={b.hp} max={b.max} cls="boss" />
+        <i class="sq-boss-notch" style={{ left: "33%" }} />
+        <i class="sq-boss-notch" style={{ left: "66%" }} />
+      </div>
+      <div class="sq-boss-foot">
         <span class="sq-boss-phase">
           {ROMAN.map((r, k) => (
             <i class={k < b.phase ? "on" : ""}>{r}</i>
           ))}
         </span>
+        <span class="sq-boss-sub">{t(`game.phase.${b.phase}.name`)}</span>
       </div>
-      <Bar value={b.hp} max={b.max} cls="boss" />
-      <span class="sq-boss-sub">{t(`game.phase.${b.phase}.name`)}</span>
     </section>
   );
 }
@@ -428,7 +436,7 @@ export function GameHud({ touch, again }: { touch: boolean; again: () => void })
   const over = v.phase === "over";
   const cinematic = gameTitle.value || over || gameBanner.value?.kind === "phase" || gameCard.value?.kind === "boss";
   return (
-    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""}`} id="game-panel" aria-label={t("game.title")}>
+    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : ""}`} id="game-panel" aria-label={t("game.title")}>
       <div class="sq-bars" aria-hidden="true">
         <i />
         <i />

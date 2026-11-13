@@ -42,6 +42,11 @@ export function setSound(on: boolean): void {
   if (master && ctx) master.gain.setTargetAtTime(on ? 0.32 : 0, ctx.currentTime, 0.02);
 }
 
+/** Lets the sound's context rest when the game ends; the next sound wakes it. */
+export function hush(): void {
+  if (ctx?.state === "running") void ctx.suspend().catch(() => undefined);
+}
+
 function audio(): AudioContext | undefined {
   if (!enabled) return undefined;
   if (!ctx) {

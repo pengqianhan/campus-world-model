@@ -8,7 +8,7 @@ import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
 import type { GameAction, GameView } from "../scene/game.ts";
 import { FOE_KINDS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
-import { sfx, setSound, type Sfx } from "./gameAudio.ts";
+import { hush, sfx, setSound, type Sfx } from "./gameAudio.ts";
 import { pick, t } from "./i18n.ts";
 
 export const gameOn = signal(false);
@@ -29,21 +29,35 @@ export interface Banner {
   foe?: FoeKind;
   ms: number;
 }
-/** The big words across the middle: a wave coming, a rank risen, a quest done, a villain's name card. */
+/** The big words high in the middle, one at a time: a wave coming, a rank risen, a quest done, a phase. */
 export const gameBanner = signal<Banner | undefined>(undefined);
-/** A villain's name card, low on the left, in its own channel beside the banners. */
+/** A villain's name card, low on the left; the big words wait while it is up. */
 export const gameCard = signal<Banner | undefined>(undefined);
 let cards: Banner[] = [];
 let cardTimer = 0;
 function card(b: Omit<Banner, "id">): void {
-  cards.push({ ...b, id: seq++ });
-  if (!gameCard.peek()) nextCard();
+  // The main quest's villains (the DDL, the Final Exam) go before the small ones that wait, and the
+  // small ones that wait too long are let go.
+  if (b.kind === "boss" || b.foe === "ddl") cards.unshift({ ...b, id: seq++ });
+  else cards.push({ ...b, id: seq++ });
+  if (cards.length > 3) cards = cards.slice(0, 3);
+  if (gameCard.peek()) return;
+  // Big words still up give way to the card, and come back whole after it: the two never share the screen.
+  const up = gameBanner.peek();
+  if (up) {
+    window.clearTimeout(bannerTimer);
+    banners.unshift({ ...up, id: seq++ });
+    gameBanner.value = undefined;
+  }
+  nextCard();
 }
 function nextCard(): void {
   window.clearTimeout(cardTimer);
   const b = cards.shift();
   gameCard.value = b;
   if (b) cardTimer = window.setTimeout(nextCard, b.ms);
+  // The words that waited for the card come after it.
+  else if (!gameBanner.peek() && banners.length) nextBanner();
 }
 /** The feed down the right: villains beaten, things found. */
 export const gameFeed = signal<{ id: number; text: string; value?: string; kind: string }[]>([]);
@@ -146,9 +160,10 @@ function banner(b: Omit<Banner, "id">): void {
   if (!gameBanner.peek()) nextBanner();
 }
 
+/** The next of the big words, one at a time; none starts while a villain's name card is up. */
 function nextBanner(): void {
   window.clearTimeout(bannerTimer);
-  const b = banners.shift();
+  const b = gameCard.peek() ? undefined : banners.shift();
   gameBanner.value = b;
   if (b) bannerTimer = window.setTimeout(nextBanner, b.ms);
 }
@@ -259,7 +274,8 @@ function startKeys(): () => void {
       togglePause();
       return;
     }
-    if ((k === "c" || k === "i") && !e.repeat && gameView.peek()?.phase === "play") {
+    // C is also the drone's way down: in the air (where the game waits) it is left to the drone.
+    if (((k === "c" && gameView.peek()?.paused !== "fly") || k === "i") && !e.repeat && gameView.peek()?.phase === "play") {
       gameMenu.value = gameMenu.peek() === "sheet" ? "none" : "sheet";
       return;
     }
@@ -330,6 +346,9 @@ export function togglePause(): void {
 export function setMenu(m: "none" | "pause" | "sheet"): void {
   gameMenu.value = m;
   if (scene) scene.game.menuPaused = m !== "none";
+  // A menu holds the walker still at once, even with a key or the stick still held; the walk's keys
+  // take it on again when the menu shuts.
+  if (m !== "none") steer?.(0, 0);
   sfx("click");
 }
 
@@ -401,6 +420,7 @@ export function stopGame(): void {
   if (padStick) steer?.(0, 0);
   padStick = false;
   scene?.game.stop();
+  hush();
   batch(() => {
     gameOn.value = false;
     gameView.value = undefined;

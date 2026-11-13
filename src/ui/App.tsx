@@ -224,7 +224,7 @@ export function App() {
   const loaded = !!data.value;
   return (
     <div
-      class={`app ${selBuilding.value ? "in-building" : "in-campus"} ${night.value > 0.5 ? "is-night" : "is-day"} panel-${panel.value} ${walkerOn.value ? `walking walker-${walkerView.value}` : ""}`}
+      class={`app ${selBuilding.value ? "in-building" : "in-campus"} ${night.value > 0.5 ? "is-night" : "is-day"} panel-${panel.value} ${walkerOn.value ? `walking walker-${walkerView.value}` : ""} ${gameOn.value ? "gaming" : ""}`}
     >
       <SceneHost />
       {/* A walk has the whole screen, with its own panels (WalkerPanel). */}

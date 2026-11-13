@@ -16,7 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
-import { gameHolds, setPadSteer, stopGame } from "./game.ts";
+import { gameHolds, gameMenu, setPadSteer, stopGame } from "./game.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -941,12 +941,16 @@ export function startWalkerKeys(): () => void {
   window.addEventListener("keydown", down);
   window.addEventListener("keyup", up);
   window.addEventListener("blur", blur);
-  // Keys still held when it gets about another way go on steering it, at that way's pace.
+  // Keys still held when it gets about another way go on steering it, at that way's pace; and when a
+  // menu over the game shuts, they steer it again.
   let wasRide = walkerRide.peek();
+  let wasMenu = gameMenu.peek();
   const stopRide = effect(() => {
     const now = walkerRide.value;
-    if (now === wasRide) return;
+    const menu = gameMenu.value;
+    if (now === wasRide && menu === wasMenu) return;
     wasRide = now;
+    wasMenu = menu;
     if (held.size) apply();
   });
   return () => {

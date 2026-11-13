@@ -74,6 +74,9 @@ export class GameOverlay {
   private flashT = 0;
   private flashEl: HTMLDivElement;
   private compassWidth = 0;
+  private used = new Set<number>();
+  /** Whether the boss's bar is out: on a phone it takes a band under the vitals, so plates stay below it. */
+  bossOut = false;
 
   constructor(parent: HTMLElement) {
     this.root = el("div", "gx", parent);
@@ -255,7 +258,9 @@ export class GameOverlay {
     for (; wk < this.marks.length; wk++) this.marks[wk]!.e.style.opacity = "0";
 
     // The foes' plates.
-    const used = new Set<number>();
+    const plateTop = this.root.classList.contains("compact") ? h * (this.bossOut ? 0.36 : 0.25) : 92;
+    const used = this.used;
+    used.clear();
     for (const p of plates) {
       const s = this.project(p.x, p.y, p.z, cam, w, h);
       if (!s) continue;
@@ -265,7 +270,8 @@ export class GameOverlay {
       slot.id = p.id;
       used.add(p.id);
       slot.e.style.opacity = "1";
-      slot.e.style.transform = `translate3d(${s[0]}px, ${s[1]}px, 0)`;
+      // A plate never climbs into the panels along the top of the screen.
+      slot.e.style.transform = `translate3d(${s[0]}px, ${Math.max(plateTop, s[1])}px, 0)`;
       const cls = `gx-plate ${p.elite ? "elite" : ""} ${p.warn ? "warn" : ""}`;
       if (slot.e.className !== cls) slot.e.className = cls;
       if (slot.text !== p.name) {

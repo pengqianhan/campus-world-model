@@ -399,6 +399,11 @@ export class GameWorld {
     return !!this.quest;
   }
 
+  /** The name of the walker the game is played by. */
+  get player(): string {
+    return this.name;
+  }
+
   /**
    * Starts a game for the walker called `name`. `words` are what it shows in the visitor's language.
    * `quiet` leaves the buildings' names off the walker's view meanwhile; `compact` keeps the marks over
@@ -966,6 +971,7 @@ export class GameWorld {
         if (d < 45) marks.push({ bearing: bearingTo(walker.at, f.at), metres: d, kind: "foe" });
       }
       const lockAt: [number, number, number] | undefined = locked ? [locked.at[0], this.footOf(locked.id) + KIND_MID[locked.kind], -locked.at[1]] : undefined;
+      this.overlay.bossOut = !!g.boss;
       this.overlay.frame(dt, cam, width, height, this.camYaw, plates, marks, lockAt, g.focus < g.stats.maxFocus * 0.3 && g.phase === "play", g.slowT > 0);
     }
   }

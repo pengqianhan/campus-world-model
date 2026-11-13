@@ -2657,6 +2657,11 @@ select optgroup {
   top: 124px;
 }
 
+/* In a game the credits stay over its panels and its letterbox bars, so that they are always read. */
+.gaming .attribution {
+  z-index: 30;
+}
+
 @media (max-width: 720px) {
   /* The floor strip, under the walk's top row rather than the top bar. */
   .walking .floors {
@@ -2669,6 +2674,15 @@ select optgroup {
     left: 10px;
     max-width: calc(100vw - 230px);
     transform: none;
+  }
+
+  /* The game keeps the row under the walk's buttons clear for them: the credits run across it whole,
+     on two lines where they need them, and the game's panels start below. */
+  .walking.gaming .attribution {
+    max-width: calc(100vw - 20px);
+    overflow: visible;
+    line-height: 1.3;
+    white-space: normal;
   }
 
   .hud-sub {
@@ -3085,15 +3099,19 @@ select optgroup {
   background: rgba(8, 12, 16, 0.6);
 }
 
-/* -- The Final Exam's bar, at the top in the middle, its name over it. -- */
+/* -- The Final Exam's bar: low in the middle, between the walker's panels, clear of the boss itself.
+   Its name over a wide bar, notches where its phases begin, the phase it is in under the bar. -- */
 .sq-boss {
   position: absolute;
-  top: calc(var(--hud-t) + 58px);
+  bottom: calc(var(--hud-b) + 84px);
   left: 50%;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: min(580px, 46vw);
+  width: max(320px, min(680px, calc(100vw - 2 * (var(--hud-l) + 292px))));
+  padding: 10px 14px 9px;
+  border-radius: 4px;
+  background: linear-gradient(rgba(8, 12, 16, 0), rgba(8, 12, 16, 0.5) 30%, rgba(8, 12, 16, 0.5) 70%, rgba(8, 12, 16, 0));
   transform: translateX(-50%);
   animation: sq-in 0.6s ease both;
 }
@@ -3101,31 +3119,61 @@ select optgroup {
 .sq-boss-head {
   display: flex;
   align-items: baseline;
+  justify-content: center;
   gap: 12px;
+  min-width: 0;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
 }
 
 .sq-boss-head b {
+  flex: none;
+  margin-right: -0.12em;
   font: 700 22px/1 var(--sq-display);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #ffe9dc;
 }
 
-.sq-boss-head > span:not(.sq-boss-phase) {
-  font: 500 12px/1 var(--sq-label);
-  letter-spacing: 0.16em;
+.sq-boss-title {
+  overflow: hidden;
+  font: 500 11px/1 var(--sq-label);
+  letter-spacing: 0.18em;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--sq-dim);
+}
+
+.sq-boss-track {
+  position: relative;
+}
+
+.sq-boss-notch {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  margin-left: -1px;
+  background: rgba(238, 240, 234, 0.75);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+.sq-boss-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .sq-boss-phase {
   display: flex;
   gap: 4px;
-  margin-left: auto;
 }
 
 .sq-boss-phase i {
   padding: 2px 5px 1px;
   border: 1px solid var(--sq-faint);
+  background: rgba(8, 12, 16, 0.55);
   font: 700 11px/1 var(--sq-display);
   font-style: normal;
   color: var(--sq-faint);
@@ -3136,8 +3184,17 @@ select optgroup {
   color: var(--sq-alarm);
 }
 
+/* While the boss's name card is up, the card names it: the bar comes after. */
+.sq.boss-card .sq-boss {
+  display: none;
+}
+
+/* The bar is a fixed height in the column: a flex basis of nothing would fold it away. */
 .sq-bar.boss {
-  height: 12px;
+  flex: none;
+  height: 14px;
+  border: 1px solid rgba(255, 233, 220, 0.55);
+  background: rgba(8, 12, 16, 0.75);
 }
 
 .sq-bar.boss .fill {
@@ -3149,16 +3206,17 @@ select optgroup {
 }
 
 .sq-boss-sub {
-  font: 500 11px/1 var(--sq-mono);
+  font: 600 11px/1 var(--sq-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--sq-alarm);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes sq-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-8px);
+    transform: translateX(-50%) translateY(8px);
   }
 }
 
@@ -3254,20 +3312,24 @@ select optgroup {
   transform: translateX(-50%);
 }
 
-/* -- Big words across the middle: a wave coming, a rank risen, a quest done, a phase. -- */
+/* -- Big words in a band high in the middle, under the compass and over the action: a wave coming,
+   a rank risen, a quest done, a phase. The middle of the view stays on the fight. -- */
 .sq-banner {
   position: absolute;
-  top: 22%;
+  top: calc(var(--hud-t) + 74px);
   left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  max-width: calc(100vw - 32px);
-  padding: 10px 0 9px;
-  border-top: 1px solid currentColor;
-  border-bottom: 1px solid currentColor;
+  gap: 6px;
+  max-width: max(300px, calc(100vw - 2 * (var(--hud-l) + 350px)));
+  padding: 8px 56px 7px;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, transparent, currentColor 22%, currentColor 78%, transparent) 1;
+  background: linear-gradient(90deg, rgba(8, 12, 16, 0), rgba(8, 12, 16, 0.42) 22%, rgba(8, 12, 16, 0.42) 78%, rgba(8, 12, 16, 0));
   color: var(--sq-signal);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
   text-align: center;
   transform: translateX(-50%);
   animation: sq-warn 2.6s linear both;
@@ -3275,14 +3337,14 @@ select optgroup {
 
 .sq-banner strong {
   margin-right: -0.24em;
-  font: 700 clamp(24px, 4vw, 44px)/1 var(--sq-display);
+  font: 700 clamp(22px, 3vw, 34px)/1 var(--sq-display);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 .sq-banner span {
-  font: 600 13px/1.2 var(--sq-label);
+  font: 600 12px/1.2 var(--sq-label);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--sq-bone);
@@ -3298,7 +3360,7 @@ select optgroup {
 }
 
 .sq-banner.rank strong {
-  font-size: clamp(30px, 5.5vw, 64px);
+  font-size: clamp(26px, 3.8vw, 46px);
 }
 
 .sq-banner.rank {
@@ -3411,6 +3473,18 @@ select optgroup {
 
 .sq.cine .sq-bars i {
   transform: none;
+}
+
+/* Under the bars the walk's own top corner and its ways of getting about step back, rather than show
+   their edges past the bars. */
+.hud:has(.sq.cine) .hud-tr,
+.hud:has(.sq.cine) .hud-bc,
+.sq.cine .sq-pausebtn {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
 }
 
 /* -- The title card. -- */
@@ -3795,11 +3869,12 @@ select optgroup {
 
 /* -- On a phone: small panels in the corners, the right thumb's buttons, no tutorial text. -- */
 .sq.touch .sq-obj {
-  top: calc(var(--hud-t) + 80px);
+  top: calc(var(--hud-t) + 92px);
   right: var(--hud-r);
   left: auto;
   align-items: flex-end;
-  max-width: 50vw;
+  /* Beside the vitals, never under them. */
+  max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 150px - 14px);
   padding: 0 10px 0 0;
   border-right: 2px solid var(--sq-signal);
   border-left: 0;
@@ -3824,9 +3899,9 @@ select optgroup {
 }
 
 .sq.touch .sq-vitals {
-  top: calc(var(--hud-t) + 80px);
+  top: calc(var(--hud-t) + 92px);
   bottom: auto;
-  width: min(170px, 44vw);
+  width: min(150px, 40vw);
   gap: 5px;
 }
 
@@ -3856,16 +3931,33 @@ select optgroup {
   font-size: 15px;
 }
 
+/* On a phone the foot of the screen is the thumbs': the boss's bar goes high, under the vitals, and
+   the quest tracker (which only says to face it) gives it the room. */
+.sq.touch.has-boss .sq-obj {
+  display: none;
+}
+
 .sq.touch .sq-boss {
-  top: calc(var(--hud-t) + 176px);
+  top: calc(var(--hud-t) + 158px);
+  bottom: auto;
   width: calc(100vw - var(--hud-l) - var(--hud-r));
+  padding: 6px 0;
+  background: none;
+  animation-name: sq-in-top;
+}
+
+@keyframes sq-in-top {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
 }
 
 .sq.touch .sq-boss-head b {
   font-size: 17px;
 }
 
-.sq.touch .sq-boss-head > span:not(.sq-boss-phase) {
+.sq.touch .sq-boss-title {
   display: none;
 }
 
@@ -3879,11 +3971,36 @@ select optgroup {
 
 .sq.touch .sq-card {
   bottom: auto;
-  top: 30%;
+  top: 44%;
 }
 
+.sq.touch .sq-card strong {
+  font-size: clamp(30px, 11vw, 56px);
+}
+
+.sq.touch .sq-card q {
+  font-size: 14px;
+}
+
+/* Under the vitals; under the boss's bar while it is out. */
 .sq.touch .sq-banner {
-  top: 30%;
+  top: calc(var(--hud-t) + 172px);
+  max-width: calc(100vw - 16px);
+  padding: 6px 28px 5px;
+}
+
+.sq.touch .sq-banner strong {
+  font-size: 24px;
+  letter-spacing: 0.16em;
+}
+
+.sq.touch .sq-banner span {
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+}
+
+.sq.touch.has-boss .sq-banner {
+  top: calc(var(--hud-t) + 226px);
 }
 
 .sq.touch .sq-word {
