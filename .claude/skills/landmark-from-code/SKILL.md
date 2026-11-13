@@ -24,8 +24,9 @@ the agents were given are in [briefs/](briefs/).
   README "What's new" entry, checks About's words for the landmarks' materials (in
   `src/i18n/locales/`), and gives each new roof, pane or opening material its part in `LIGHT_ROLE`
   (`src/scene/landmarks.ts`), or the map draws it in the wall colour. It also names the building in
-  the README's "Known limitations" and in the sources table's "Used for" for the LiDAR and Street
-  View, and gives a look at it on the map and from a walker's height and the speed numbers
+  `docs/limitations.md`, in the sources table of `docs/data-sources.md` ("Used for", for the LiDAR and Street
+  View) and in `docs/landmarks.md`,
+  and gives a look at it on the map and from a walker's height and the speed numbers
   (`docs/standards.md`, check 9). Taking one off the site changes the same lines. Every merge is a release, so
   set it when the person wants it shown, in a pull request of its own.
 - **Fetches through `snapshot.ts`.** The `data` and `refs` stages fetch through

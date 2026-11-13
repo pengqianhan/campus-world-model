@@ -1,7 +1,7 @@
 // Snapshot the class timetable from the University's Classes API v2.
 //
 // This needs credentials that only a University of Auckland account holder can obtain from
-// https://developer.auckland.ac.nz/prd (see README, "Adding the class timetable"). They are read
+// https://developer.auckland.ac.nz/prd (see docs/development.md, "Adding the class timetable"). They are read
 // from the environment and never written to disk:
 //
 //   UOA_CLIENT_ID + UOA_CLIENT_SECRET [+ UOA_SCOPE]   OAuth2 client-credentials flow, or
@@ -36,7 +36,7 @@ async function authHeaders(): Promise<Record<string, string>> {
   if (UOA_API_KEY) return { apikey: UOA_API_KEY };
   throw new Error(
     "No credentials. Set UOA_CLIENT_ID and UOA_CLIENT_SECRET (or UOA_API_KEY) in the environment.\n" +
-      "See README: 'Adding the class timetable'.",
+      "See docs/development.md: 'Adding the class timetable'.",
   );
 }
 

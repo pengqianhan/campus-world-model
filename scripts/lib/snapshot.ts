@@ -1,6 +1,6 @@
 // Polite, cache-first fetcher for raw data snapshots.
 //
-// Rules this module enforces (see README "Updating the data snapshot"):
+// Rules this module enforces (see docs/development.md, "Updating the data snapshot"):
 //  - every URL is fetched at most once; later runs read the file on disk unless --refresh is passed
 //  - at most one request per second, per process
 //  - an honest User-Agent that links back to this repository
