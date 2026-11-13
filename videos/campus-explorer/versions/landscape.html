@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=1920,height=1080"><title>Campus World Model — 非官方校园探索宣传片</title><script src="../assets/gsap.min.js"></script><style>
+    @font-face{font-family:"Microsoft YaHei";src:local("Microsoft YaHei");font-style:normal;font-weight:100 900}
+    @font-face{font-family:"Consolas";src:local("Consolas");font-style:normal;font-weight:100 900}
+    :root{--ink:#0f1b25;--panel:#14222e;--text:#eef3f6;--muted:#a3b3bf;--accent:#ffb454}
+    *{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--ink);color:var(--text);font-family:"Microsoft YaHei",sans-serif}
+    h1,h2,p{margin:0}#root{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--ink)}
+    .scene{position:absolute;inset:0;width:100%;height:100%;background:var(--ink);opacity:0;overflow:hidden}.scene:first-of-type{opacity:1}
+    .scene-content{width:100%;height:100%;padding:152px 72px 224px;display:flex;flex-direction:column;gap:28px;position:relative;box-sizing:border-box}
+    .media-frame{overflow:hidden;position:relative;min-height:0}.film-frame{position:absolute;inset:0;width:100%;height:100%}
+    .footage{width:100%;height:100%;object-fit:cover;display:block}.brand{position:absolute;top:48px;left:72px;right:72px;z-index:99;display:flex;justify-content:space-between;align-items:center;gap:24px}
+    .brand-name{font:700 25px/1.2 Consolas,monospace;letter-spacing:1.1px;padding:14px 18px;background:var(--ink);color:var(--text)}
+    .brand-name b{color:var(--accent)}.unofficial{background:var(--ink);padding:12px 16px;font-size:23px;color:var(--text);white-space:nowrap}
+    .film-content{justify-content:space-between;pointer-events:none}.shot-source{align-self:flex-start;max-width:900px;font-size:24px;line-height:1.5;padding:10px 16px;background:var(--ink)}
+    .caption{margin-top:auto;align-self:flex-start;max-width:936px;background:var(--ink);padding:28px 32px 30px;display:flex;flex-direction:column;gap:16px}
+    .eyebrow{font:400 27px/1.3 Consolas,monospace;letter-spacing:2px;color:var(--accent)}h1{font-size:84px;font-weight:900;line-height:1.23;letter-spacing:-2px}h1 .accent{display:block;color:var(--accent)}
+    .hook h1{font-size:91px;letter-spacing:-3px}.note{font-size:31px;line-height:1.5;color:var(--text)}.detail h1{font-size:68px;max-width:820px}.room .caption{max-width:936px;margin-top:0}.room .film-content{justify-content:flex-start;gap:24px}.room h1{font-size:74px}
+    .mode-row{display:flex;gap:12px;padding-top:4px}.mode{font:400 24px/1 Consolas,monospace;padding:13px 18px;background:var(--panel);color:var(--muted)}.mode.selected{background:var(--accent);color:var(--ink);font-weight:700}
+    .schools-content{justify-content:center;padding-top:170px;padding-bottom:190px}.schools-shell{display:flex;flex-direction:column;gap:40px}.schools-left{display:flex;flex-direction:column;gap:30px}.stat-row{display:flex;align-items:center;gap:44px}
+    .eight{font:700 300px/.95 Consolas,monospace;letter-spacing:-22px;color:var(--accent);font-variant-numeric:tabular-nums;min-width:190px}.stat-copy{display:flex;flex-direction:column;gap:20px}.stat-copy h2{font-size:72px;font-weight:900;line-height:1.2}.lead{font-size:43px;line-height:1.4}
+    .mini-map{height:390px;border:1px solid var(--muted)}.mini-map video{object-position:50% 45%}.schools-right{display:flex;flex-direction:column;gap:32px}.school-list{display:grid;grid-template-columns:1fr 1fr;gap:28px 36px}
+    .school{display:flex;flex-direction:column;gap:5px;border-top:1px solid var(--muted);padding-top:14px}.school-code{font:400 28px/1.2 Consolas,monospace;color:var(--accent)}.school-name{font-size:34px;line-height:1.45;white-space:nowrap}.scope{font-size:26px;line-height:1.65;color:var(--text);max-width:920px}
+    .more-content{padding-top:170px;gap:35px;padding-bottom:200px}.more-heading{display:flex;flex-direction:column;gap:22px}.more h2{font-size:66px;font-weight:900;line-height:1.2}.photo-pair{display:flex;flex-direction:column;gap:24px;flex:1;min-height:0}.photo{flex:1;border:1px solid var(--muted);min-height:0}.photo-name,.picture-label{position:absolute;bottom:18px;left:18px;padding:12px 16px;background:var(--ink);font:400 25px/1.3 Consolas,monospace}.photo-name{color:var(--text)}.more-note{font-size:35px;line-height:1.5}
+    .cta-content{padding-top:185px;padding-bottom:160px;justify-content:center;gap:35px}.cta-shell{display:flex;flex-direction:column;gap:58px}.cta-copy{display:flex;flex-direction:column;gap:32px}.cta h2{font-size:86px;font-weight:900;line-height:1.3;letter-spacing:-3px;white-space:nowrap}.cta-sub{font-size:41px;line-height:1.4}
+    .address{display:flex;align-items:center;gap:25px;font:700 56px/1.25 Consolas,monospace;color:var(--ink);background:var(--accent);padding:22px 24px;align-self:flex-start}.arrow{font-size:64px;line-height:1}.cta-open{font-size:29px;line-height:1.5;color:var(--text)}.cta-picture{height:540px;border:1px solid var(--muted)}.cta-picture img{object-position:50% 44%}.picture-label{font-size:23px;color:var(--accent)}.credits{font-size:23px;line-height:1.8;color:var(--text)}
+    .credit-line{display:block}.footer{position:absolute;left:72px;right:72px;bottom:68px;z-index:100;display:flex;justify-content:space-between;gap:24px;font:400 28px/1.4 Consolas,monospace}.footer span{background:var(--ink);padding:8px 13px;color:var(--text)}
+    body.landscape .scene-content{padding:145px 110px 115px;gap:24px}body.landscape .brand{top:40px;left:110px;right:110px}body.landscape .brand-name{font-size:25px}body.landscape .footer{left:110px;right:110px;bottom:35px}
+    body.landscape .caption{max-width:1350px;padding:22px 30px;gap:10px}body.landscape h1{font-size:79px}body.landscape .detail h1{font-size:74px;max-width:1100px}body.landscape .hook h1{font-size:87px}body.landscape .hook h1 .accent{display:inline;margin-left:8px}body.landscape .note{font-size:30px}body.landscape .shot-source{align-self:flex-end}
+    body.landscape .schools-shell{flex-direction:row;align-items:center;gap:95px}body.landscape .schools-left{width:625px;flex-shrink:0;gap:34px}body.landscape .stat-row{gap:38px}body.landscape .eight{font-size:255px;min-width:165px}body.landscape .stat-copy h2{font-size:58px;white-space:nowrap}body.landscape .stat-copy .eyebrow{font-size:24px}body.landscape .lead{font-size:34px;white-space:nowrap}body.landscape .mini-map{height:285px}body.landscape .schools-right{flex:1;gap:35px}body.landscape .school-list{gap:30px 30px}body.landscape .school-name{font-size:31px}body.landscape .school-code{font-size:27px}body.landscape .scope{font-size:26px}
+    body.landscape .more-content{gap:30px}body.landscape .more-heading{flex-direction:row;align-items:center;justify-content:space-between}body.landscape .more h2{font-size:64px}body.landscape .photo-pair{flex-direction:row;gap:28px}body.landscape .more-note{font-size:28px}
+    body.landscape .cta-content{padding-top:170px;gap:34px}body.landscape .cta-shell{flex-direction:row;gap:70px;align-items:center}body.landscape .cta-copy{width:1030px;flex-shrink:0;gap:32px}body.landscape .cta h2{font-size:87px}body.landscape .cta-sub{font-size:36px}body.landscape .address{font-size:58px}body.landscape .cta-picture{width:600px;height:530px}body.landscape .credits{font-size:22px}body.landscape .picture-label{font-size:18px;left:10px;bottom:10px;padding:12px}
+    .eyebrow,.shot-source,.mode,.school-code,.scope,.photo-name,.picture-label,.credits,.unofficial,.brand-name,body.landscape .eyebrow,body.landscape .shot-source,body.landscape .school-code,body.landscape .scope,body.landscape .credits,body.landscape .picture-label,body.landscape .brand-name,body.landscape .stat-copy .eyebrow{font-size:28px}
+  </style></head>
+<body class="landscape"><div id="root" data-composition-id="campus-explorer" data-start="0" data-duration="46" data-width="1920" data-height="1080" data-fps="30">
+<section id="hook" class="scene hook film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="hook-footage" class="clip footage" src="../assets/landscape/hook.mp4" data-start="0" data-duration="4.65" data-track-index="1" muted playsinline preload="auto" ></video></div>
+      <div id="hook-overlay" class="clip scene-content film-content" data-start="0" data-duration="4.65" data-track-index="2" data-layout-allow-overlap>
+        <p class="shot-source enter">项目 Landmark 模型展示</p>
+        <div class="caption"><p class="eyebrow enter">CLOCK TOWER · AUCKLAND</p><h1 class="enter">这座钟楼，<span class="accent">竟然是代码写的。</span></h1><p class="note enter">往近处看，还有更多细节。</p></div>
+      </div>
+    </section>
+<section id="schools" class="scene schools" data-layout-allow-overflow>
+      <div id="schools-overlay" class="clip scene-content schools-content" data-start="4" data-duration="5.65" data-track-index="3" data-layout-allow-overlap>
+        <div class="schools-shell">
+          <div class="schools-left">
+            <div class="stat-row"><b class="eight enter" id="eight">8</b><div class="stat-copy"><p class="eyebrow enter">NEW ZEALAND</p><h2 class="enter">所公立大学</h2><p class="lead enter">一个入口，出发。</p></div></div>
+            <div class="mini-map media-frame"><img class="footage" src="../assets/landscape/campus.jpg" alt="The local Auckland campus map"></div>
+          </div>
+          <div class="schools-right">
+            <div class="school-list"><div class="school enter"><span class="school-code">UoA</span><span class="school-name">奥克兰大学</span></div><div class="school enter"><span class="school-code">AUT</span><span class="school-name">奥克兰理工大学</span></div><div class="school enter"><span class="school-code">VUW</span><span class="school-name">惠灵顿维多利亚大学</span></div><div class="school enter"><span class="school-code">Otago</span><span class="school-name">奥塔哥大学</span></div><div class="school enter"><span class="school-code">UC</span><span class="school-name">坎特伯雷大学</span></div><div class="school enter"><span class="school-code">Massey</span><span class="school-name">梅西大学</span></div><div class="school enter"><span class="school-code">Waikato</span><span class="school-name">怀卡托大学</span></div><div class="school enter"><span class="school-code">Lincoln</span><span class="school-name">林肯大学</span></div></div>
+            <p class="scope enter">奥大支持楼层与教室查询；其余学校当前展示建筑。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+<section id="walk" class="scene walk film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="walk-footage" class="clip footage" src="../assets/landscape/walk.mp4" data-start="9" data-duration="3.6500000000000004" data-track-index="4" muted playsinline preload="auto" ></video></div>
+      <div id="walk-overlay" class="clip scene-content film-content" data-start="9" data-duration="3.6500000000000004" data-track-index="5" data-layout-allow-overlap>
+        <p class="shot-source enter">奥克兰大学 · 项目实机画面</p>
+        <div class="caption"><p class="eyebrow enter">01 / WALK</p><h1 class="enter">走进校园。</h1><p class="note enter">从第三人称，到你的视角。</p><div class="mode-row enter"><span class="mode selected">WALK</span><span class="mode ">SCOOTER</span><span class="mode ">FLY</span></div></div>
+      </div>
+    </section>
+<section id="scooter" class="scene scooter film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="scooter-footage" class="clip footage" src="../assets/landscape/scooter.mp4" data-start="12" data-duration="3.6500000000000004" data-track-index="6" muted playsinline preload="auto" ></video></div>
+      <div id="scooter-overlay" class="clip scene-content film-content" data-start="12" data-duration="3.6500000000000004" data-track-index="7" data-layout-allow-overlap>
+        <p class="shot-source enter">奥克兰大学 · 项目实机画面</p>
+        <div class="caption"><p class="eyebrow enter">02 / SCOOTER</p><h1 class="enter">换个速度。</h1><p class="note enter">切换滑板车，继续探索。</p><div class="mode-row enter"><span class="mode ">WALK</span><span class="mode selected">SCOOTER</span><span class="mode ">FLY</span></div></div>
+      </div>
+    </section>
+<section id="fly" class="scene fly film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="fly-footage" class="clip footage" src="../assets/landscape/fly.mp4" data-start="15" data-duration="4.649999999999999" data-track-index="8" muted playsinline preload="auto" ></video></div>
+      <div id="fly-overlay" class="clip scene-content film-content" data-start="15" data-duration="4.649999999999999" data-track-index="9" data-layout-allow-overlap>
+        <p class="shot-source enter">奥克兰大学 · 项目实机画面</p>
+        <div class="caption"><p class="eyebrow enter">03 / FLY</p><h1 class="enter">这次，飞过屋顶。</h1><p class="note enter">切换无人机，让视野升高。</p><div class="mode-row enter"><span class="mode ">WALK</span><span class="mode ">SCOOTER</span><span class="mode selected">FLY</span></div></div>
+      </div>
+    </section>
+<section id="clock" class="scene clock film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="clock-footage" class="clip footage" src="../assets/landscape/clock.mp4" data-start="19" data-duration="5.649999999999999" data-track-index="10" muted playsinline preload="auto" ></video></div>
+      <div id="clock-overlay" class="clip scene-content film-content" data-start="19" data-duration="5.649999999999999" data-track-index="11" data-layout-allow-overlap>
+        <p class="shot-source enter">项目 Landmark 模型展示</p>
+        <div class="caption"><p class="eyebrow enter">THE CLOCK TOWER</p><h1 class="enter">值得专程，<span class="accent">走近一点。</span></h1><p class="note enter">奥克兰大学 Clock Tower</p></div>
+      </div>
+    </section>
+<section id="detail" class="scene detail film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="detail-footage" class="clip footage" src="../assets/landscape/detail.mp4" data-start="24" data-duration="4.649999999999999" data-track-index="12" muted playsinline preload="auto" ></video></div>
+      <div id="detail-overlay" class="clip scene-content film-content" data-start="24" data-duration="4.649999999999999" data-track-index="13" data-layout-allow-overlap>
+        <p class="shot-source enter">LiDAR 参考尺寸 · 局部细节为估计</p>
+        <div class="caption"><p class="eyebrow enter">BUILT FROM CODE</p><h1 class="enter">尖塔。拱窗。石材纹理。</h1><p class="note enter">建筑与材质，由代码生成。</p></div>
+      </div>
+    </section>
+<section id="landmarks" class="scene more" data-layout-allow-overflow>
+      <div id="landmarks-overlay" class="clip scene-content more-content" data-start="28" data-duration="4.649999999999999" data-track-index="14" data-layout-allow-overlap>
+        <div class="more-heading"><p class="eyebrow enter">MORE LANDMARKS / UoA</p><h2 class="enter">沿路，还有更多地标。</h2></div>
+        <div class="photo-pair">
+          <div class="photo media-frame"><img id="more-house" class="clip footage" src="../assets/old-government-house.jpg" data-start="28" data-duration="4.649999999999999" data-track-index="15" alt="more-house" ><span class="photo-name enter">Old Government House</span></div>
+          <div class="photo media-frame"><img id="more-library" class="clip footage" src="../assets/library.jpg" data-start="28" data-duration="4.649999999999999" data-track-index="16" alt="more-library" ><span class="photo-name enter">General Library</span></div>
+        </div>
+        <p class="more-note enter">一栋栋建筑，等你走近。</p>
+      </div>
+    </section>
+<section id="room" class="scene room film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="room-footage" class="clip footage" src="../assets/landscape/room.mp4" data-start="32" data-duration="4.649999999999999" data-track-index="17" muted playsinline preload="auto" ></video></div>
+      <div id="room-overlay" class="clip scene-content film-content" data-start="32" data-duration="4.649999999999999" data-track-index="18" data-layout-allow-overlap>
+        <p class="shot-source enter">奥克兰大学 · 当前没有公开课表</p>
+        <div class="caption"><p class="eyebrow enter">FIND YOUR ROOM / UoA</p><h1 class="enter">找教室，也能直达。</h1><p class="note enter">搜索房间代码，查看楼层与空间。</p></div>
+      </div>
+    </section>
+<section id="night" class="scene night film" data-layout-allow-overflow>
+      <div class="media-frame film-frame"><video id="night-footage" class="clip footage" src="../assets/landscape/night.mp4" data-start="36" data-duration="4.649999999999999" data-track-index="19" muted playsinline preload="auto" ></video></div>
+      <div id="night-overlay" class="clip scene-content film-content" data-start="36" data-duration="4.649999999999999" data-track-index="20" data-layout-allow-overlap>
+        <p class="shot-source enter">奥克兰大学 · 项目实机画面</p>
+        <div class="caption"><p class="eyebrow enter">ONE CAMPUS · ANOTHER MOOD</p><h1 class="enter">天黑以后，<span class="accent">再逛一次。</span></h1><p class="note enter">同一座校园，换一种氛围。</p></div>
+      </div>
+    </section>
+<section id="cta" class="scene cta" data-layout-allow-overflow>
+      <div id="cta-overlay" class="clip scene-content cta-content" data-start="40" data-duration="6" data-track-index="21" data-layout-allow-overlap>
+        <div class="cta-shell">
+          <div class="cta-copy"><p class="eyebrow enter">CAMPUS WORLD MODEL</p><h2 class="enter">你会先逛哪一所？</h2><p class="cta-sub enter">打开浏览器，从你的校园开始。</p><div class="address enter"><span>campusworldmodel.com</span><span class="arrow">↗</span></div><p class="cta-open enter">非官方开源项目 · 无需下载</p></div>
+          <div class="cta-picture media-frame"><img id="cta-campus" class="clip footage" src="../assets/landscape/campus.jpg" data-start="40" data-duration="6" data-track-index="22" alt="cta-campus" ><span class="picture-label enter">YOUR NEXT CAMPUS ADVENTURE</span></div>
+        </div>
+        <p class="credits enter">地图：© OpenStreetMap contributors · 地形及测量：LINZ<span class="credit-line">建筑细节含估计；数据范围以各校 About 为准。</span></p>
+      </div>
+    </section>
+<div class="brand"><span class="brand-name"><b>CWM</b> / EXPLORE YOUR CAMPUS</span><span class="unofficial">非官方 · 开源</span></div>
+<div class="footer"><span>CAMPUS WORLD MODEL</span><span>8 SCHOOLS / 1 WORLD</span></div>
+<audio id="score" src="../assets/soundtrack.wav" data-start="0" data-duration="46" data-track-index="99" data-volume="0.88"></audio>
+</div><script>
+window.__timelines=window.__timelines||{};
+const tl=gsap.timeline({paused:true});
+
+      tl.from('#hook', {opacity:0.92,duration:0.22,ease:'power1.out'},0.1);
+      tl.from('#hook .media-frame', {scale:1.04,opacity:0.88,duration:0.48,ease:'power2.out'},0.12);
+      document.querySelectorAll('#hook .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,0.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#schools', {opacity:0,x:80}, {opacity:1,x:0,duration:0.35,ease:'sine.inOut'}, 4);
+      tl.from('#schools .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},4.12);
+      document.querySelectorAll('#schools .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,4.22+Math.min(j*0.045,0.45));
+      });
+
+
+      tl.fromTo('#walk', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 9);
+      tl.from('#walk .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},9.12);
+      document.querySelectorAll('#walk .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,9.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#scooter', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 12);
+      tl.from('#scooter .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},12.12);
+      document.querySelectorAll('#scooter .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,12.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#fly', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 15);
+      tl.from('#fly .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},15.12);
+      document.querySelectorAll('#fly .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,15.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#clock', {opacity:0}, {opacity:1,duration:0.65,ease:'sine.inOut'}, 19);
+      tl.from('#clock .media-frame', {scale:1.018,opacity:0,duration:1,ease:'power2.out'},19.12);
+      document.querySelectorAll('#clock .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,19.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#detail', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 24);
+      tl.from('#detail .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},24.12);
+      document.querySelectorAll('#detail .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,24.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#landmarks', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 28);
+      tl.from('#landmarks .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},28.12);
+      document.querySelectorAll('#landmarks .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,28.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#room', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 32);
+      tl.from('#room .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},32.12);
+      document.querySelectorAll('#room .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,32.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#night', {opacity:0}, {opacity:1,duration:0.35,ease:'sine.inOut'}, 36);
+      tl.from('#night .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},36.12);
+      document.querySelectorAll('#night .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,36.22+Math.min(j*0.085,0.45));
+      });
+
+
+      tl.fromTo('#cta', {opacity:0}, {opacity:1,duration:0.6,ease:'sine.inOut'}, 40);
+      tl.from('#cta .media-frame', {scale:1.018,opacity:0,duration:0.48,ease:'power2.out'},40.12);
+      document.querySelectorAll('#cta .enter').forEach(function(el,j){
+        var style=j%3;
+        var vars=style===0?{y:26,opacity:0,ease:'power3.out'}:style===1?{x:-28,opacity:0,ease:'expo.out'}:{scale:0.975,opacity:0,ease:'sine.out'};
+        vars.duration=style===1?0.5:0.6;
+        tl.from(el,vars,40.22+Math.min(j*0.085,0.45));
+      });
+
+tl.from('.brand-name',{x:-20,opacity:0,duration:0.45,ease:'power3.out'},0.15);
+tl.from('.unofficial',{opacity:0,duration:0.5,ease:'sine.out'},0.3);
+tl.from('.footer span',{y:12,opacity:0,duration:0.5,stagger:0.1,ease:'expo.out'},0.4);
+window.__timelines['campus-explorer']=tl;
+</script></body></html>

@@ -1,0 +1,16 @@
+{
+  "name": "campus-explorer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare-assets": "node prepare.mjs",
+    "compose": "node compose.mjs && node stage-landscape.mjs",
+    "capture": "node capture.mjs",
+    "deliver": "node deliver.mjs",
+    "dev": "npx --yes hyperframes@0.9.41 preview --background --no-open",
+    "check": "npx --yes hyperframes@0.9.41 check",
+    "check:landscape": "npx --yes hyperframes@0.9.41 check .hyperframes/landscape",
+    "render": "npx --yes hyperframes@0.9.41 render --fps 30 --quality high --workers 2 --output renders/Campus-World-Model-portrait.mp4",
+    "render:landscape": "npx --yes hyperframes@0.9.41 render .hyperframes/landscape --fps 30 --quality high --workers 2 --output renders/Campus-World-Model-landscape.mp4"
+  }
+}

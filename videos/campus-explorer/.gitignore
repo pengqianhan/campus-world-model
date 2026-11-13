@@ -1,0 +1,10 @@
+assets/
+renders/
+snapshots/
+.hyperframes/
+checks/
+checks-*.json
+node_modules/
+# The CLI creates local agent help files. The repository's own AGENTS.md is authoritative.
+AGENTS.md
+CLAUDE.md

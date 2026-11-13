@@ -1,0 +1,116 @@
+{
+  "duration": 46,
+  "language": "zh-CN",
+  "formats": [
+    "1080x1920",
+    "1920x1080"
+  ],
+  "scenes": [
+    {
+      "id": "hook",
+      "at": 0,
+      "end": 4,
+      "kind": "video",
+      "file": "hook",
+      "label": "CLOCK TOWER · AUCKLAND",
+      "title": "这座钟楼，",
+      "emphasis": "竟然是代码写的。",
+      "note": "往近处看，还有更多细节。",
+      "source": "项目 Landmark 模型展示"
+    },
+    {
+      "id": "schools",
+      "at": 4,
+      "end": 9
+    },
+    {
+      "id": "walk",
+      "at": 9,
+      "end": 12,
+      "kind": "video",
+      "file": "walk",
+      "label": "01 / WALK",
+      "title": "走进校园。",
+      "note": "从第三人称，到你的视角。",
+      "source": "奥克兰大学 · 项目实机画面"
+    },
+    {
+      "id": "scooter",
+      "at": 12,
+      "end": 15,
+      "kind": "video",
+      "file": "scooter",
+      "label": "02 / SCOOTER",
+      "title": "换个速度。",
+      "note": "切换滑板车，继续探索。",
+      "source": "奥克兰大学 · 项目实机画面"
+    },
+    {
+      "id": "fly",
+      "at": 15,
+      "end": 19,
+      "kind": "video",
+      "file": "fly",
+      "label": "03 / FLY",
+      "title": "这次，飞过屋顶。",
+      "note": "切换无人机，让视野升高。",
+      "source": "奥克兰大学 · 项目实机画面"
+    },
+    {
+      "id": "clock",
+      "at": 19,
+      "end": 24,
+      "kind": "video",
+      "file": "clock",
+      "label": "THE CLOCK TOWER",
+      "title": "值得专程，",
+      "emphasis": "走近一点。",
+      "note": "奥克兰大学 Clock Tower",
+      "source": "项目 Landmark 模型展示"
+    },
+    {
+      "id": "detail",
+      "at": 24,
+      "end": 28,
+      "kind": "video",
+      "file": "detail",
+      "label": "BUILT FROM CODE",
+      "title": "尖塔。拱窗。石材纹理。",
+      "note": "建筑与材质，由代码生成。",
+      "source": "LiDAR 参考尺寸 · 局部细节为估计"
+    },
+    {
+      "id": "landmarks",
+      "at": 28,
+      "end": 32
+    },
+    {
+      "id": "room",
+      "at": 32,
+      "end": 36,
+      "kind": "video",
+      "file": "room",
+      "label": "FIND YOUR ROOM / UoA",
+      "title": "找教室，也能直达。",
+      "note": "搜索房间代码，查看楼层与空间。",
+      "source": "奥克兰大学 · 当前没有公开课表"
+    },
+    {
+      "id": "night",
+      "at": 36,
+      "end": 40,
+      "kind": "video",
+      "file": "night",
+      "label": "ONE CAMPUS · ANOTHER MOOD",
+      "title": "天黑以后，",
+      "emphasis": "再逛一次。",
+      "note": "同一座校园，换一种氛围。",
+      "source": "奥克兰大学 · 项目实机画面"
+    },
+    {
+      "id": "cta",
+      "at": 40,
+      "end": 46
+    }
+  ]
+}
