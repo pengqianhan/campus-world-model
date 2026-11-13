@@ -15,6 +15,26 @@ viewer and how to run them are shared by every landmark: [`../README.md`](../REA
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Security (409), on the City campus, until now a measured massing: a low block of two storeys
+whose upper storey is a deep band of pale concrete, its south corner cut by a chamfer that faces a paved court, over a
+ground storey of glazing set back under it on columns; before the corner a deck with a railing and a flight of steps
+down to the court, and on its flat roof, behind a low parapet, a box at its west corner and a lower block toward its
+east end. Its heights and plans come from the LiDAR but for the chamfer's width; that, the band's underside, the
+glazing's place behind it, the columns, the deck, its railing and the steps are estimated with the photograph as a
+reference. One photograph from the court to its south, looking at the chamfered corner and its two faces; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.78 in it, where the trees round it
+leave little sky, and the brightness over it is within 3 of the photograph's. From above its outline covers the
+LiDAR's with an IoU of 0.94, and on 89% of the cells both cover it is within 0.5 m of the LiDAR's height, the rest
+mostly under a tree's crown along its north side and a row of small units on its roof, neither drawn, and along the
+roof blocks' edges. What the photograph does not show is drawn as what it does.
+
+| | |
+| --- | --- |
+| ![Security from the court to its south, drawn from code](../../docs/landmarks/security-409-front.jpg) | ![Security from above, drawn from code](../../docs/landmarks/security-409-above.jpg) |
+| ![Security on the map, drawn from code in the map's colours](../../docs/landmarks/security-409-map.jpg) | ![Security from the court to its south, through the walker's eyes](../../docs/landmarks/security-409-eyes.jpg) |
+
 ## The frame
 
 `config/security-409.json`, `frame`: x south-west (minus the axis, the bearing of the long faces), y up from 43.4 m

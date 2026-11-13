@@ -15,6 +15,25 @@ and how to run them are shared by every landmark: [`../README.md`](../README.md)
   `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Building 114, on the City campus, until now a measured massing: a long block of two storeys under a
+flat roof with a deep eave all round and a raised strip down the middle of its roof; on its south-west face, on a lawn
+and a car park, a band of windows under the eave over white cladding, a floor band, a ground storey of windows between
+dark posts, and a glass stair tower with red doors up four brick steps, and a second along it. Its heights and plans
+come from the LiDAR,
+which also sees the ground under its eaves, where the walls are drawn set back; the windows, the floor band, the
+posts, the stair tower's frames, doors and steps and the eave's underside are estimated with the photograph as a
+reference. One photograph from the car park, looking at the south-east half of the south-west face; counted inside
+the rectangle the model fills on the screen, its silhouette has an IoU of 0.95 in it, and the brightness of its
+cladding is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.94, and on 99% of
+the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 114 from the car park, drawn from code](../../docs/landmarks/building-114-front.jpg) | ![Building 114 from above, drawn from code](../../docs/landmarks/building-114-above.jpg) |
+| ![Building 114 on the map, drawn from code in the map's colours](../../docs/landmarks/building-114-map.jpg) | ![Building 114 from the car park, through the walker's eyes](../../docs/landmarks/building-114-eyes.jpg) |
+
 ## The frame
 
 `config/building-114.json`, `frame`: x south-east (minus the axis, the bearing of the block's long faces), y up from

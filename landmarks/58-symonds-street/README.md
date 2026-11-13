@@ -15,6 +15,24 @@ by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 58 Symonds Street, on the City campus, until now a measured massing: a tower of eight storeys of
+windows over a dark ground storey, on a slope that falls to the south-east; at every floor a deep pale grey band runs
+round it with a row of louvres hung under it, over a band of windows set back behind it, a column at each corner and
+piers between them; an upper roof stands in from its edge, and on its street side a core rises over it with a roof
+that falls to the street. Its heights and plans come from the LiDAR; the bands' depth, the window wall, the louvres,
+the columns and piers and the ground storey are estimated with the photograph as a reference. One photograph from the
+ground north of the tower, looking up at its north-east and north-west faces; counted inside the rectangle the model
+fills on the screen, its silhouette has an IoU of 0.97 in it, and the brightness over it is within 1 of the
+photograph's. From above its outline covers the LiDAR's with an IoU of 0.91, and on 93% of the cells both cover it is
+within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly, on the same grid.
+
+| | |
+| --- | --- |
+| ![58 Symonds Street from the ground to its north, drawn from code](../../docs/landmarks/58-symonds-street-front.jpg) | ![58 Symonds Street from above, drawn from code](../../docs/landmarks/58-symonds-street-above.jpg) |
+| ![58 Symonds Street on the map, drawn from code in the map's colours](../../docs/landmarks/58-symonds-street-map.jpg) | ![58 Symonds Street from the ground to its north, through the walker's eyes](../../docs/landmarks/58-symonds-street-eyes.jpg) |
+
 ## The frame
 
 `config/58-symonds-street.json`, `frame`: x south-east (minus the axis, the bearing of the long faces), y up from

@@ -12,6 +12,32 @@ every landmark: [`../README.md`](../README.md).
 - Run its pipeline: `landmarks/pipeline/run.sh thomas-building [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Thomas Building (110) on Symonds Street, beside the Thomas Building Extension and
+joined to it by its glazed link: four ranges of board-marked concrete round a courtyard. Along its face
+to the road four storeys of red-framed window bands stand back behind deep concrete bands, between
+square piers; toward its north-east end, where the ground falls, its ground storey steps down, with a
+white door and a white-framed louvre beside a pier, and the bands run round the east corner onto its
+end. Its heights come from the LiDAR, where its returns gather on the parapets' tops, the ledges, the
+gutters and the roofs; the window rows, the frames, the piers, the corner and the ground storey are
+measured in two Street View photographs through their cameras, which are set from the photographs' own
+edges against the LiDAR's. What nothing measures is estimated, and its card names it: among other things
+how far its frames stand out, and how far its ground storey's windows, doors and posts stand behind its
+piers there. Where 110N's glazed link meets it, its north-east parapet is left out, so that the link's
+roof covers that stretch. Counted inside the rectangle the model fills on
+the screen, its silhouette has an IoU of 0.848 to 1.000 over the six views of the two panoramas, though
+in five of them the face fills that rectangle (photographed sky is 0 to 10% of it), so the IoU there
+says little; the brightness of its concrete and windows is within 4 of the photographs' in each view. From above its outline covers the LiDAR's with an IoU of 0.87, the LiDAR's
+counting scattered returns in the courtyard, and on 76% of the cells both cover it is within 0.5 m of
+the LiDAR's height. What no photograph shows is drawn plainly: its back, its south-west end, the
+courtyard and the roofs.
+
+| | |
+| --- | --- |
+| ![The Thomas Building from the road, drawn from code](../../docs/landmarks/thomas-building-front.jpg) | ![The Thomas Building from above, drawn from code](../../docs/landmarks/thomas-building-above.jpg) |
+| ![The Thomas Building on the map, drawn from code in the map's colours](../../docs/landmarks/thomas-building-map.jpg) | ![The Thomas Building from the road, through the walker's eyes](../../docs/landmarks/thomas-building-eyes.jpg) |
+
 ## The frame
 
 `config/thomas-building.json`, `frame`: x north-east, along the road (the axis, the bearing of most of

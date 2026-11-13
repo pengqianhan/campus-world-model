@@ -12,6 +12,29 @@ kit it is built with, the pipeline, the viewer and how to run them are shared by
 - Run its pipeline: `landmarks/pipeline/run.sh fisher-building [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Fisher Building (804), a tan brick tower on Waterloo Quadrant, its higher half a
+shaft over its south-west side. A cream band runs round it at each floor, every 2.875 m, as the
+LiDAR's wall returns peak; a slot of windows framed in white runs up the shaft's corner;
+down its west side stand balconies with dark louvres; a red tile canopy covers its entrance, and a
+ramp runs to it from the street over a car park. Its roofs, its parapet, the canopy and the ramp's
+deck are within 0.15 m of the LiDAR's heights, and the floor bands within 0.18 m of where its wall
+returns peak, the two lowest, behind trees, carrying the spacing on (estimated); the ramp's side
+along the street is measured in the photographs, and the balconies' depth is estimated. Two
+Street View panoramas on Waterloo Quadrant see its west and south faces, their cameras set by the
+photographs' own edges against the LiDAR; counted inside the rectangle the model fills on the screen,
+the model's silhouette has an IoU of 0.54 to 0.99 over their eight views, though only one of those
+rectangles holds much sky, and there the model scores a little more than a plain block filling it;
+from above its outline covers the LiDAR's with an IoU of 0.91. Its faces turned north, east and
+south-east, which no photograph shows, are drawn plainly, and the parts of its outline under the trees
+by its entrance, where the LiDAR sees no roof, are not drawn.
+
+| | |
+| --- | --- |
+| ![The Fisher Building from Waterloo Quadrant, drawn from code](../../docs/landmarks/fisher-building-front.jpg) | ![The Fisher Building from above, drawn from code](../../docs/landmarks/fisher-building-above.jpg) |
+| ![The Fisher Building on the map, drawn from code in the map's colours](../../docs/landmarks/fisher-building-map.jpg) | ![The Fisher Building from Waterloo Quadrant, through the walker's eyes](../../docs/landmarks/fisher-building-eyes.jpg) |
+
 ## The frame
 
 `config/fisher-building.json`, `frame`: x west (minus the axis, which the tower's walls give: x points

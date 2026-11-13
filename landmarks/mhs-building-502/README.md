@@ -16,6 +16,25 @@ by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 502 of the M&HS Building, on the Grafton campus beside 501: a main block of seven storeys
+in pale concrete, its north face to the street a row of tall fins with window bays between them, their spandrels in a
+textured grey, its east end pale panels beside a near-black glazed strip, under a dark metal skirt and a low hipped
+roof with a plant room at each end; and a lower part of five storeys at its west end. Its heights and plans come from
+the LiDAR; the foot of the roof's skirt, which the photograph shows, from the LiDAR's outermost roof cells, and the
+edge of the east end's glazed strip in the photograph are estimated. One photograph from the street to its
+north-east, about 38 m from the main block's corner; counted inside the rectangle the model fills on the
+screen, its silhouette has an IoU of 0.93 in it, and the brightness of the
+building is within 1 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.91, and on 91% of
+the cells both cover it is within 0.5 m of the LiDAR's height (the strip of its roof inside block 501's ring is drawn
+by 501's model). What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 502 of the M&HS Building from the street to its north-east, drawn from code](../../docs/landmarks/mhs-building-502-front.jpg) | ![Building 502 of the M&HS Building from above, drawn from code](../../docs/landmarks/mhs-building-502-above.jpg) |
+| ![Building 502 of the M&HS Building on the map, drawn from code in the map's colours](../../docs/landmarks/mhs-building-502-map.jpg) | ![Building 502 of the M&HS Building from the street to its north-east, through the walker's eyes](../../docs/landmarks/mhs-building-502-eyes.jpg) |
+
 ## The frame
 
 `config/mhs-building-502.json`, `frame`: x west-north-west (minus the axis, the bearing of the main block's walls,

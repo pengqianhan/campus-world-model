@@ -12,6 +12,30 @@ it is built with, the pipeline, the viewer and how to run them are shared by eve
 - Run its pipeline: `landmarks/pipeline/run.sh music-school [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Music School (250) on Symonds Street, beside a car park: a fan-shaped auditorium
+under a grey roof of facets round one high point, and ranges of rendered walls round an open courtyard.
+Along its face to the car park a long wall of pale render, with no window, carries a curved canopy of white
+corrugated metal and steps up toward its north corner in rises of about 0.4 m; beyond it the auditorium's
+ochre wall has a window of four tall lights in two rows and white downpipes at its corners. Its heights and
+roofs come from the LiDAR, each roof fitted to its returns (70% to 94% of each roof's cells within 0.5 m
+of the fit, but 42% for the low link at the courtyard's east corner); the parapet's upper steps, the canopy's lower edge and the window are measured in a Street View
+photograph through its camera, which is set from the photograph's own edges against the LiDAR's. What
+nothing measures is estimated, and its card names it: among other things how thick its canopy and roofs
+are and where the parapet's lower steps begin. Counted inside the rectangle the model fills on the screen,
+its silhouette has an IoU of 0.84 to 0.97 over the three views of the panorama, though in the door view the
+face fills that rectangle (photographed sky is 6% of it), so the IoU there says little; the brightness of
+its render is within 4 of the photograph's in each view. From above its outline covers the LiDAR's with
+an IoU of 0.94, and on 88% of the cells both cover it is within 0.5 m of the LiDAR's height. What no
+photograph shows is drawn plainly: its faces to the road and to the south and west, the courtyard and the
+roofs.
+
+| | |
+| --- | --- |
+| ![The Music School from the car park beside it, drawn from code](../../docs/landmarks/music-school-front.jpg) | ![The Music School from above, drawn from code](../../docs/landmarks/music-school-above.jpg) |
+| ![The Music School on the map, drawn from code in the map's colours](../../docs/landmarks/music-school-map.jpg) | ![The Music School from the car park beside it, through the walker's eyes](../../docs/landmarks/music-school-eyes.jpg) |
+
 ## The frame
 
 `config/music-school.json`, `frame`: x north-west, along the face to the car park (the axis, the bearing of

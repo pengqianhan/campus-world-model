@@ -15,6 +15,25 @@ the pipeline, the viewer and how to run them are shared by every landmark: [`../
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 67 Symonds Street (619), on the City campus, until now a measured massing standing in for it: a
+white office tower of about eight storeys over Symonds Street, with a block turned 45 degrees and plant over its roof,
+on a podium that runs down the slope to the gully on its north and west; on its south face three columns of windows
+and a curved bay of dark glass bands, on its east face louvred panels and windows; a glass porch over its entrance.
+Its heights and plans come from the LiDAR, which also sees the ground under the porch's roof; the windows, the bay's
+bands and the louvres are estimated with the photograph as a reference, and the porch's plan and the podium's walls
+follow the campus map's outline. One photograph from the street south-east of the tower, under an overcast sky; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.95 in it, and the brightness of its
+faces is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 80% of the
+cells both cover it is within 0.5 m of the LiDAR's height (the parapets and plant on its roofs make most of the rest).
+What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![67 Symonds Street from the street, drawn from code](../../docs/landmarks/67-symonds-street-front.jpg) | ![67 Symonds Street from above, drawn from code](../../docs/landmarks/67-symonds-street-above.jpg) |
+| ![67 Symonds Street on the map, drawn from code in the map's colours](../../docs/landmarks/67-symonds-street-map.jpg) | ![67 Symonds Street from the street before its walkway, through the walker's eyes](../../docs/landmarks/67-symonds-street-eyes.jpg) |
+
 ## The frame
 
 `config/67-symonds-street.json`, `frame`: x east (minus the axis, the bearing of the tower's south face), y up from

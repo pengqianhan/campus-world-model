@@ -23,6 +23,19 @@ the pipeline, the viewer and how to run them are shared by every landmark:
 | `config/old-government-house.json` | the building (102), the LiDAR and aerial tiles, the frame, the ground and the door, the two Street View panoramas, the viewer's light |
 | `placement.json` | where it stands on the campus map (written by the `place` stage) |
 
+## In brief
+
+This is Old Government House (102), a building of painted timber in its garden. Trees hide it
+from every Street View panorama near it but two, which see the upper storey of its south-east end,
+so its model is
+checked against the LiDAR from above: on a 0.5 m grid its outline covers the building's with an IoU
+of 0.95, and in 95% of the cells its height is within 0.5 m of the LiDAR's.
+
+| | |
+| --- | --- |
+| ![Old Government House from its lawn, the garden front, drawn from code](../../docs/landmarks/old-government-house-front.jpg) | ![The south-east end and the garden front, drawn from code](../../docs/landmarks/old-government-house-end.jpg) |
+| ![Old Government House on the map, drawn from code in the map's colours](../../docs/landmarks/old-government-house-map.jpg) | ![Old Government House from its lawn, through the walker's eyes](../../docs/landmarks/old-government-house-eyes.jpg) |
+
 ## The frame
 
 - View frame: x to the right as seen from the lawn on the north-east, y up from the ground at the

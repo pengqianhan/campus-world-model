@@ -237,7 +237,7 @@ needs:
   `blind`, which it draws with the panes, not `paint` (wall);
 - the building in `docs/limitations.md` (the buildings whose sizes are measured, not estimated), in
   the sources table of `docs/data-sources.md` (the LiDAR's and Street View's "Used for") and in
-  `docs/landmarks.md`, with its pictures;
+  the list of `docs/landmarks.md`; and "In brief" in its own README, with its pictures;
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
   check 9).
 

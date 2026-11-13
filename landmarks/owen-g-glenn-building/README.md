@@ -17,6 +17,24 @@ alone, sized by the LINZ 2024 LiDAR, and compared with one photograph of it from
   comparison leaves the north-east building out: `QUERY="only=building"` (below).
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Sir Owen G Glenn Building (260): a curved wing of several storeys over an open ground storey, its
+glass behind bands of louvres between white spandrels and a crown of louvres along its top, a Y of three arms round a
+raised plaza, with a sloping canopy in the curve's inner corner and a top storey along its west side; a lower west
+wing along the road, a lower building on the plaza's north-east side, and under the plaza a deck of floors over the
+gully to the east. Its heights and plans come from the LiDAR; the heights of the curved wing's bands are estimated
+with the photograph as a reference. One photograph from the plaza's north edge, taken in December 2018, before the
+building on the plaza's north-east side, which the comparison leaves out; counted inside the rectangle the model
+fills on the screen, its silhouette has an IoU of 0.76 in it, and the brightness of the building is within 4 of the
+photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 90% of the cells both cover it is
+within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly or after what it shows.
+
+| | |
+| --- | --- |
+| ![The Sir Owen G Glenn Building from the north-west, drawn from code](../../docs/landmarks/owen-g-glenn-building-front.jpg) | ![The Sir Owen G Glenn Building from above, drawn from code](../../docs/landmarks/owen-g-glenn-building-above.jpg) |
+| ![The Sir Owen G Glenn Building on the map, drawn from code in the map's colours](../../docs/landmarks/owen-g-glenn-building-map.jpg) | ![The Sir Owen G Glenn Building from the driveway to its north, through the walker's eyes](../../docs/landmarks/owen-g-glenn-building-eyes.jpg) |
+
 ## The frame
 
 `config/owen-g-glenn-building.json`, `frame`: x south-west (the axis, the bearing of most of the building's walls, and

@@ -15,6 +15,25 @@ The kit it is built with, the pipeline, the viewer and how to run them are share
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 303S of the Science Centre, on Symonds Street: a block of eight storeys whose face to
+the street is a curtain wall of mirror-like blue glass; toward its south-east end pale fins stand out of it, and
+between the last of them and the pier at the corner a zigzag of pale braces climbs the face; its south-east end has
+a pale spandrel band at each storey. On its roof, set back from the face, a top storey in pale grey panels behind a
+parapet. Its heights and plans come from the LiDAR (the glass has almost no returns: the face's line comes from those
+at its top); the fins' places and the storey's height are estimated with the photograph as a reference. One
+photograph from the street about 95 m to the south-east, through a long lens; counted inside the rectangle the model
+fills on the screen, its silhouette has an IoU of 0.97 in it, and the brightness of the building is within 1 of the
+photograph's. From above its outline covers the LiDAR's with an IoU of 0.86, and on 86% of the cells both cover it
+is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly: its back and its
+north-west end.
+
+| | |
+| --- | --- |
+| ![Building 303S of the Science Centre from Symonds Street to its south-east, drawn from code](../../docs/landmarks/science-centre-303s-front.jpg) | ![Building 303S of the Science Centre from above, drawn from code](../../docs/landmarks/science-centre-303s-above.jpg) |
+| ![Building 303S of the Science Centre on the map, drawn from code in the map's colours](../../docs/landmarks/science-centre-303s-map.jpg) | ![Building 303S of the Science Centre from Symonds Street to its south-east, through the walker's eyes](../../docs/landmarks/science-centre-303s-eyes.jpg) |
+
 ## The frame
 
 `config/science-centre-303s.json`, `frame`: x south-east (the axis, the bearing of most of the walls, and x is

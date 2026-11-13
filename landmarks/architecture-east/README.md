@@ -17,6 +17,27 @@ kit it is built with, the pipeline, the viewer and how to run them are shared by
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Architecture - East (421E), beside the Grafton Gully: a building in pale grey concrete whose main
+block has, on each floor of its face to a raised terrace, a pale louvred parapet before a band of windows, and along its
+top floor, under a grey hipped roof, a face in dark cladding with a row of dormers standing out of it; beside it a lower
+wing with a band of windows on each floor. Two towers in the same dark cladding rise out of them, their tops sloping up:
+a tall one out of the main block's roof and a lower one on the wing. Its walls run in two directions 45 degrees apart,
+the wing's and the main block's, as the campus map's outline does. Its heights and plans come from the LiDAR; the
+storeys' height, the parapets, the windows and the dormers are estimated with the photograph as a reference. One
+photograph from a paved deck above the raised terrace, about 50 m from the tall tower; counted inside the rectangle the
+model fills on the screen, its silhouette has an IoU of 0.94 in it, and the brightness of the building is within 1 of
+the photograph's. From above its outline covers the LiDAR's with an IoU of 0.82, and on 63% of the cells both cover it
+is within 0.5 m of the LiDAR's height (the storeys' edges stepping out on the main block's face to the terrace are not
+drawn). What the photograph does not show is drawn plainly, the main block's faces turned away from the terrace and the
+wing's walls below it, or after what it shows, the wing's other faces.
+
+| | |
+| --- | --- |
+| ![Architecture - East from its raised terrace, drawn from code](../../docs/landmarks/architecture-east-front.jpg) | ![Architecture - East from above, drawn from code](../../docs/landmarks/architecture-east-above.jpg) |
+| ![Architecture - East on the map, drawn from code in the map's colours](../../docs/landmarks/architecture-east-map.jpg) | ![Architecture - East from its raised terrace, through the walker's eyes](../../docs/landmarks/architecture-east-eyes.jpg) |
+
 ## The frame
 
 `config/architecture-east.json`, `frame`: x south-west (the axis, the bearing of most of the walls, and x is minus

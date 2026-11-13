@@ -131,8 +131,9 @@ never published, and each building's card says what is estimated.
 | --- | --- |
 | ![The Clock Tower from Princes St, drawn from code](docs/landmarks/clocktower-front.jpg) | ![Old Government House from its lawn, the garden front, drawn from code](docs/landmarks/old-government-house-front.jpg) |
 
-Every landmark, with its pictures and its scores against the LiDAR and the photographs, is in
-[docs/landmarks.md](docs/landmarks.md); the method is in [landmarks/](landmarks/README.md).
+The landmarks are listed in [docs/landmarks.md](docs/landmarks.md). Each has a folder of its own
+under [landmarks/](landmarks/README.md), whose README describes it, with its pictures and its scores
+against the LiDAR and the photographs.
 
 ## What's new
 
@@ -211,7 +212,7 @@ The three latest days are below; everything, with its pull request, is in the
 | --- | --- |
 | [docs/development.md](docs/development.md) | Running, testing and deploying; the layout of the code; updating the data snapshot; adding the class timetable; adding a language |
 | [docs/walker.md](docs/walker.md) | The walker in the browser, from the command line and over MCP |
-| [docs/landmarks.md](docs/landmarks.md) | Every landmark drawn from code, with pictures and scores |
+| [docs/landmarks.md](docs/landmarks.md) | What a landmark is, and the list of them; each one is described in its own folder under `landmarks/` |
 | [docs/data-sources.md](docs/data-sources.md) | Every source, what it is used for and its terms, school by school |
 | [docs/limitations.md](docs/limitations.md) | What the maps cannot say, and where a drawing is estimated |
 | [docs/schools/](docs/schools/) | How schools share one site, and what each school publishes |

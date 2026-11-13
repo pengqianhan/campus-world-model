@@ -23,6 +23,24 @@ shared by every landmark: [`../README.md`](../README.md).
 | `config/clocktower.json` | the buildings it draws (105, and 105S in `also`), the LiDAR and aerial tiles, the frame, the door, the 12 Street View panoramas, the refinement bounds |
 | `placement.json` | where it stands on the campus map, and the blocks it stands in place of (written by the `place` stage) |
 
+## In brief
+
+This is the first landmark. A lead agent and five agents in parallel made it, each agent owning one
+part (the tower, the entrance bay, the pavilions, the light and materials, the pipeline). Seen from
+the three Street View panoramas in front of the building, the outline of the model covers the
+outline of the building with an IoU of 0.68 to 0.72 for the whole front, 0.89 to 0.95 for the tower
+and 0.88 to 0.98 for the entrance. The site draws it in place of buildings 105 and 105S, its south
+range.
+
+| | |
+| --- | --- |
+| ![The Clock Tower from Princes St, drawn from code](../../docs/landmarks/clocktower-front.jpg) | ![The Clock Tower from along Princes St, with trees from the LiDAR](../../docs/landmarks/clocktower-street.jpg) |
+| ![The tower above the entrance bay, from the steps](../../docs/landmarks/clocktower-tower.jpg) | ![The upper tower: clock stage, tracery and pinnacles](../../docs/landmarks/clocktower-tower-close.jpg) |
+
+| On the map, near it | Through a walker's eyes on Princes Street |
+| --- | --- |
+| ![The Clock Tower on the map, drawn from code in the map's colours](../../docs/landmarks/clocktower-map.jpg) | ![The Clock Tower from Princes Street, through the walker's eyes](../../docs/landmarks/clocktower-eyes.jpg) |
+
 ## The frame
 
 - View frame: x to the right as seen from Princes St, y up from the ground at the door (45.8 m

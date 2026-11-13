@@ -25,7 +25,7 @@ the agents were given are in [briefs/](briefs/).
   `src/i18n/locales/`), and gives each new roof, pane or opening material its part in `LIGHT_ROLE`
   (`src/scene/landmarks.ts`), or the map draws it in the wall colour. It also names the building in
   `docs/limitations.md`, in the sources table of `docs/data-sources.md` ("Used for", for the LiDAR and Street
-  View) and in `docs/landmarks.md`,
+  View) and in the list of `docs/landmarks.md`, writes "In brief" in its own README, with its pictures,
   and gives a look at it on the map and from a walker's height and the speed numbers
   (`docs/standards.md`, check 9). Taking one off the site changes the same lines. Every merge is a release, so
   set it when the person wants it shown, in a pull request of its own.

@@ -12,6 +12,27 @@ landmark: [`../README.md`](../README.md).
 - Run its pipeline: `landmarks/pipeline/run.sh fifteen-eden-crescent [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 15 Eden Crescent (802), the neighbour of 9 Eden Crescent: a long white building of two storeys along the
+street. Its windows sit deep in square openings, in two rows with red frames, over a base of
+brownish-grey tiles; a band of windows runs under the canopy at its top, and near its north-west end
+two doors with steps and a louvre stand among them. Its roof slopes up from the street face and from the back
+to a top storey down the middle, under a curved roof. Its heights come from the LiDAR, within 0.1 m,
+except on two parts of its roofs drawn on from the rest, estimated: over a well at its south-east end,
+3.5 to 4.1 m above the LiDAR's, and by the street at its north-west end, about 1 m above it; the
+openings and the doors are measured in a Street View photograph through its camera. Counted inside the rectangle the model fills on the screen, the model's silhouette has an IoU
+of 0.58 to 1.00 over the nine views of three panoramas, 9 Eden Crescent's model left out where it
+stands in front, though there those rectangles hold so little sky that a plain block filling them
+would score higher; from above its outline covers the LiDAR's with an IoU of 0.87, and on
+90% of the cells both cover it is within 0.5 m of the LiDAR's height. Its back and ends, which no photograph shows, are drawn
+plainly; a glazed case on its street face is measured and not drawn.
+
+| | |
+| --- | --- |
+| ![15 Eden Crescent from Eden Crescent, drawn from code](../../docs/landmarks/fifteen-eden-crescent-front.jpg) | ![15 Eden Crescent from above the street, drawn from code](../../docs/landmarks/fifteen-eden-crescent-above.jpg) |
+| ![15 Eden Crescent on the map, drawn from code in the map's colours](../../docs/landmarks/fifteen-eden-crescent-map.jpg) | ![15 Eden Crescent from Eden Crescent, through the walker's eyes](../../docs/landmarks/fifteen-eden-crescent-eyes.jpg) |
+
 ## The frame
 
 `config/fifteen-eden-crescent.json`, `frame`: x along Eden Crescent, toward the north-west (the axis
