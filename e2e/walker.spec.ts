@@ -308,11 +308,31 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect(page.locator(".topbar")).toBeVisible();
 });
 
-test("the book game is off until asked for; the walker eats books, the chase turns and the Deadline is caught; caught three times, the game ends, and ending it clears the map", async ({ page }) => {
-  type Game = { phase: string; books: [number, number][]; deadline: [number, number]; score: number; level: number; lives: number; eaten: number; power: number };
-  type GameScene = { game: { state(): Game | undefined }; walkers: { teleport(name: string, at: [number, number]): void } };
+test("Study Quest is off until asked for; its title says it is made up; books lead to the DDL, a strike lands, the pause stops its clock; burnt out, the debrief grades the run; ending it clears the map", async ({ page }) => {
+  type Game = {
+    phase: string;
+    books: [number, number][];
+    foes: { id: number; kind: string; at: [number, number]; hp: number; state: string }[];
+    quests: { key: string; need: number; got: number }[];
+    focus: number;
+    xp: number;
+    rank: number;
+    main: number;
+  };
+  type GameScene = {
+    game: { state(): Game | undefined; quest?: { seconds: number; focus: number; grace: number; iframes: number } };
+    walkers: { teleport(name: string, at: [number, number]): void; turn(name: string, by: number, absolute?: boolean): void };
+  };
   const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
-  const put = (at: [number, number]) => page.evaluate((p) => (window.__scene as unknown as GameScene).walkers.teleport("Walker", p), at);
+  const put = (at: [number, number], heading?: number) =>
+    page.evaluate(
+      ([p, h]) => {
+        const s = window.__scene as unknown as GameScene;
+        s.walkers.teleport("Walker", p as [number, number]);
+        if (h !== undefined && h !== null) s.walkers.turn("Walker", h as number, true);
+      },
+      [at, heading ?? null] as const,
+    );
   const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game.state()), test, { timeout: 60_000 });
 
   await open(page, "?walk=1");
@@ -320,57 +340,84 @@ test("the book game is off until asked for; the walker eats books, the chase tur
   // Nothing of the game is on the map until the visitor starts it.
   expect(await game()).toBeUndefined();
   await expect(page.locator("#game-panel")).toHaveCount(0);
-  await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+  await expect(page.locator(".gx")).toBeHidden();
 
-  // Its button says that the books and the Deadline are made up.
+  // Its button says that it is made up.
   await expect(page.locator("#walker-game")).toHaveAttribute("title", /made up/);
   await page.locator("#walker-game").click();
-  await expect(page.locator("#game-panel")).toBeVisible();
-  // The game is seen from behind the walker.
+  // The title card, between letterbox bars, says so again; a tap lets the game begin.
+  await expect(page.locator("#game-title")).toBeVisible();
+  await expect(page.locator("#game-title")).toContainText(/made up/);
+  // The game is seen from behind the walker, and the buildings' names wait until it ends.
   await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator('[data-label="game:deadline"]')).toHaveCount(1);
+  await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+  await shot(page, "32-study-quest");
+  await page.locator("#game-title").click();
+  await expect(page.locator("#game-title")).toHaveCount(0);
   let g = (await game())!;
   expect(g.books).toHaveLength(40);
-  expect(g.lives).toBe(3);
-  await shot(page, "32-book-game");
+  expect(g.quests.map((q) => q.key)).toEqual(["orientation"]);
+  await expect(page.locator("#game-quests")).toContainText("Orientation");
+  await expect(page.locator("#game-rank")).toHaveText("Fresher");
+  await expect(page.locator(".gx-compass")).toBeVisible();
 
-  // Six books turn the chase round. The walker eats the book furthest from the Deadline each time,
-  // so that the Deadline does not catch it meanwhile, however slowly the frames come.
-  for (let k = 1; k <= 6; k++) {
+  // Five books finish the first quest: a rank up, and the DDL comes with its name card.
+  for (let k = 1; k <= 5; k++) {
     g = (await game())!;
-    const from = g.deadline;
-    const far = (b: [number, number]) => Math.hypot(b[0] - from[0], b[1] - from[1]);
-    await put(g.books.reduce((a, b) => (far(b) > far(a) ? b : a)));
-    await until(`g.score >= ${k * 10}`);
+    await put(g.books[0]!);
+    await until(`g.xp >= ${k * 10}`);
   }
-  await until("g.power > 0");
-  await expect(page.locator('[data-label="game:deadline"]')).toHaveClass(/fleeing/);
+  await until("g.main === 1 && g.foes.some((f) => f.kind === 'ddl')");
+  await expect(page.locator("#game-namecard")).toContainText("DDL");
+  await expect(page.locator("#game-quests")).toContainText("The DDL");
+  await expect(page.locator("#game-rank")).toHaveText("Sophomore");
 
-  // Caught while it flees, the Deadline gives its points and comes back faster, a level on.
+  // Beside the DDL and facing it, J strikes, and the blow lands.
   g = (await game())!;
-  await put(g.deadline);
-  await until("g.level === 2");
-  g = (await game())!;
-  expect(g.score).toBe(160);
-  expect(g.power).toBe(0);
-  expect(g.lives).toBe(3);
-
-  // The Deadline catches the walker three times, and the game is over.
-  for (let lives = 2; lives >= 0; lives--) {
-    // After a catch nothing catches anything for three seconds.
-    await page.waitForTimeout(3200);
-    g = (await game())!;
-    await put(g.deadline);
-    await until(`g.lives === ${lives}`);
+  const ddl = g.foes.find((f) => f.kind === "ddl")!;
+  await page.waitForFunction((id) => (window.__scene as unknown as GameScene).game.state()!.foes.find((f) => f.id === id)?.state !== "rise", ddl.id);
+  for (let k = 0; k < 6; k++) {
+    const d = (await game())!.foes.find((f) => f.kind === "ddl")!;
+    await put([d.at[0], d.at[1] - 2.2], 0);
+    await page.keyboard.press("j");
+    await page.waitForTimeout(350);
+    if ((await game())!.foes.find((f) => f.kind === "ddl")!.hp < 280) break;
   }
+  await until("g.foes.some((f) => f.kind === 'ddl' && f.hp < 280)");
+  await expect(page.locator(".gx-plate.elite").first()).toContainText("DDL");
+
+  // P pauses: the menu opens and the game's clock stops; Resume goes on.
+  await page.keyboard.press("p");
+  await expect(page.locator("#game-menu")).toBeVisible();
+  const t0 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t0);
+  await page.locator("#game-resume").click();
+  await expect(page.locator("#game-menu")).toHaveCount(0);
+
+  // With its Focus at one, the next blow burns the walker out: the debrief, with a grade.
+  await page.evaluate(() => {
+    const q = (window.__scene as unknown as GameScene).game.quest!;
+    q.focus = 1;
+    q.grace = 0;
+    q.iframes = 0;
+  });
+  await until("g.phase === 'over'");
   await expect(page.locator("#game-over")).toBeVisible();
-  await expect(page.locator("#game-over")).toContainText("Score 160");
-  expect((await game())!.phase).toBe("over");
+  await expect(page.locator("#game-over")).toContainText("Burnt out");
+  await expect(page.locator("#game-grade")).toHaveText(/^[A-DF][+-]?$/);
+  await expect(page.locator("#game-over")).toContainText(/made up/);
+
+  // Play again: a fresh game.
+  await page.locator("#game-again").click();
+  await until("g.phase === 'play' && g.xp === 0 && g.main === 0");
 
   // Ending the game takes everything of it off the map; the walk goes on.
-  await page.locator("#game-end").click();
+  await page.locator("#game-title").click();
+  await page.keyboard.press("p");
+  await page.locator("#game-quit").click();
   await expect(page.locator("#game-panel")).toHaveCount(0);
-  await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+  await expect(page.locator(".gx")).toBeHidden();
   expect(await game()).toBeUndefined();
   await expect(page.locator("#walker-panel")).toBeVisible();
 });
