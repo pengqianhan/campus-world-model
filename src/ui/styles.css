@@ -2356,148 +2356,6 @@ select optgroup {
   color: var(--accent-ink);
 }
 
-/* The book game: its score at the top in the middle, under the top row. */
-.hud-tc {
-  top: calc(var(--hud-t) + 54px);
-  left: 50%;
-  width: max-content;
-  max-width: calc(100vw - 2 * var(--hud-edge));
-  transform: translateX(-50%);
-}
-
-.hud-game {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  max-width: 400px;
-  padding: 8px 14px 9px;
-  color: var(--text);
-  text-align: center;
-}
-
-.hud-game.chasing {
-  border-color: rgba(255, 209, 102, 0.7);
-  box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.25), 0 18px 40px -18px rgba(0, 0, 0, 0.7);
-}
-
-.hud-game-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-}
-
-.hud-game-score {
-  min-width: 2ch;
-  font: 750 22px/1 var(--font-display);
-  font-variant-numeric: tabular-nums;
-}
-
-.hud-game-books {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--accent);
-}
-
-.hud-game-books i {
-  width: 9px;
-  height: 12px;
-  border: 1.5px solid var(--hud-text-3);
-  border-radius: 2px;
-}
-
-.hud-game-books i.on {
-  border-color: var(--accent);
-  background: var(--accent);
-}
-
-.hud-game-lives {
-  display: inline-flex;
-  gap: 2px;
-  font-size: 14px;
-  line-height: 1;
-}
-
-.hud-game-lives i {
-  color: var(--hud-text-3);
-  font-style: normal;
-}
-
-.hud-game-lives i.on {
-  color: #ff5d73;
-}
-
-.hud-game-level {
-  color: var(--hud-text-2);
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.hud-game-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 0;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  font-weight: 650;
-}
-
-.hud-game.chasing .hud-game-status strong {
-  color: #ffd166;
-}
-
-.hud-game-arrow {
-  display: inline-grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #e5383b;
-  color: #fff;
-  transition: transform 0.1s linear;
-}
-
-.hud-game.chasing .hud-game-arrow {
-  background: #6aa9ff;
-}
-
-.hud-game-over {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-}
-
-.hud-game-over strong {
-  font: 750 17px/1.2 var(--font-display);
-}
-
-.hud-game-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 3px;
-}
-
-.hud .hud-game-buttons .btn {
-  padding: 6px 12px;
-  border: 1px solid var(--hud-line);
-  border-radius: 9px;
-  font-size: 13px;
-  font-weight: 650;
-  cursor: pointer;
-}
-
-.hud .hud-game-buttons .btn.primary {
-  border-color: transparent;
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-
 .hud-game-tool.on {
   background: var(--hud-hover);
 }
@@ -2507,51 +2365,6 @@ select optgroup {
   .hud-game-tool .hud-label {
     display: none;
   }
-}
-
-.hud-game.flash-caught {
-  animation: game-caught 0.5s ease 2;
-}
-
-.hud-game.flash-power,
-.hud-game.flash-beat {
-  animation: game-won 0.5s ease 2;
-}
-
-@keyframes game-caught {
-  50% {
-    background: rgba(229, 56, 59, 0.75);
-  }
-}
-
-@keyframes game-won {
-  50% {
-    background: rgba(255, 209, 102, 0.55);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hud-game.flash-caught,
-  .hud-game.flash-power,
-  .hud-game.flash-beat {
-    animation: none;
-  }
-}
-
-/* The Deadline's name over it: red while it chases, pale while it flees. Made up, like the walker's. */
-.lbl-deadline {
-  border-color: transparent;
-  background: rgba(229, 56, 59, 0.95);
-  color: #fff;
-  font-weight: 750;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.lbl-deadline.fleeing {
-  background: rgba(106, 169, 255, 0.95);
-  color: #06121f;
 }
 
 .lbl-say {
@@ -2795,44 +2608,6 @@ select optgroup {
   background: var(--hud-strong);
 }
 
-/* The book game on a phone: small at the top left, beside the speed, under the map's credits. */
-.hud.touch .hud-tc {
-  top: calc(var(--hud-t) + 80px);
-  left: var(--hud-l);
-  max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 178px);
-  transform: none;
-}
-
-.hud.touch .hud-game {
-  gap: 3px;
-  padding: 6px 9px 7px;
-  text-align: left;
-}
-
-.hud.touch .hud-game-row {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 4px 9px;
-}
-
-.hud.touch .hud-game-level {
-  display: none;
-}
-
-.hud.touch .hud-game-status {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  font-size: 12px;
-}
-
-.hud.touch .hud-game-over {
-  align-items: flex-start;
-}
-
-.hud.touch .hud-game-buttons {
-  flex-wrap: wrap;
-}
-
 /* Small under the top right: the speed and the height on one line, and the views. */
 .hud.touch .hud-cluster {
   width: auto;
@@ -2926,4 +2701,1769 @@ select optgroup {
   * {
     transition: none !important;
   }
+}
+
+/* ---- Study Quest ---------------------------------------------------------------------------- */
+/* A made-up action game over the walk. One look for all of it: condensed capitals with a soft shadow
+   straight on the picture, no glass cards, the site's amber as the one accent and a red for danger.
+   Fonts are the system's own (Bahnschrift on Windows, a narrow sans elsewhere): nothing is loaded. */
+
+.sq,
+.gx {
+  --sq-display: "Bahnschrift Condensed", "Bahnschrift", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Impact, sans-serif;
+  --sq-label: "Bahnschrift SemiCondensed", "Bahnschrift", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --sq-mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+  --sq-bone: #eef0ea;
+  --sq-dim: rgba(238, 240, 234, 0.66);
+  --sq-faint: rgba(238, 240, 234, 0.26);
+  --sq-signal: var(--accent);
+  --sq-alarm: #ff5a40;
+  --sq-plate: rgba(8, 12, 16, 0.58);
+  --sq-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 1px 6px rgba(0, 0, 0, 0.55);
+  color: var(--sq-bone);
+  text-shadow: var(--sq-shadow);
+}
+
+/* While the game is on, the walk's own panels make way: its place, its hints, its speed. */
+.hud.playing .hud-sign,
+.hud.playing .hud-hint,
+.hud.playing .hud-br,
+.hud.playing .hud-brand,
+.hud.playing.touch .hud-thumb-r,
+.hud.playing.touch .hud-rides .hud-label {
+  display: none;
+}
+
+.hud.playing::before {
+  height: 150px;
+}
+
+.sq {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--sq-label);
+}
+
+.sq button {
+  pointer-events: auto;
+}
+
+.sq-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 11px/1.1 var(--sq-label);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+/* -- The quest tracker: an accent bar at its edge, the quest's name, what it asks, how far. -- */
+.sq-obj {
+  position: absolute;
+  top: calc(var(--hud-t) + 62px);
+  left: var(--hud-l);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(320px, 40vw);
+  padding-left: 12px;
+  border-left: 2px solid var(--sq-signal);
+  transition: border-color 0.3s;
+}
+
+.sq-obj.flash {
+  animation: sq-objflash 0.9s ease-out;
+}
+
+@keyframes sq-objflash {
+  0% {
+    border-left-color: #fff;
+    transform: translateX(6px);
+  }
+  100% {
+    border-left-color: var(--sq-signal);
+    transform: none;
+  }
+}
+
+.sq-q {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sq-q-title {
+  font: 600 20px/1.05 var(--sq-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sq-q.side .sq-q-title {
+  font-size: 14px;
+  color: var(--sq-dim);
+}
+
+.sq-q-goal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font: 500 13px/1.25 var(--sq-label);
+  letter-spacing: 0.03em;
+}
+
+.sq-q.side .sq-q-goal {
+  font-size: 12px;
+  color: var(--sq-dim);
+}
+
+.sq-pips {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.sq-pips i {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--sq-bone);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+  transform: rotate(45deg);
+}
+
+.sq-pips i.on {
+  border-color: var(--sq-signal);
+  background: var(--sq-signal);
+}
+
+.sq-q-far {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 500 11px/1 var(--sq-mono);
+  color: var(--sq-signal);
+}
+
+.sq-arrow {
+  display: inline-block;
+  font-size: 9px;
+  transition: transform 0.12s linear;
+}
+
+/* -- The walker: rank, knowledge, Focus and Stamina. -- */
+.sq-vitals {
+  position: absolute;
+  bottom: var(--hud-b);
+  left: var(--hud-l);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 260px;
+}
+
+.sq-rank {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sq-badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--sq-signal);
+  background: rgba(8, 12, 16, 0.55);
+  color: var(--sq-signal);
+  font: 700 21px/1 var(--sq-display);
+  transform: rotate(45deg);
+}
+
+.sq-badge > span {
+  transform: rotate(-45deg);
+}
+
+.sq-rank-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sq-rank-text b {
+  font: 600 18px/1 var(--sq-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sq-xp-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sq-xp-line em {
+  font: 400 10px/1 var(--sq-mono);
+  font-style: normal;
+  color: var(--sq-dim);
+  white-space: nowrap;
+}
+
+.sq-stat {
+  display: grid;
+  grid-template-columns: 62px 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.sq-k {
+  font: 600 10px/1 var(--sq-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+.sq-n {
+  min-width: 2.2em;
+  font: 700 18px/1 var(--sq-display);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sq-tag {
+  padding: 2px 6px 1px;
+  font: 700 10px/1.2 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: none;
+  background: var(--sq-signal);
+  color: var(--accent-ink);
+}
+
+.sq-tag.slow {
+  background: #b9a6ff;
+}
+
+/* A bar: a dark track, a pale chip that follows the fill down late, and the fill. */
+.sq-bar {
+  position: relative;
+  display: block;
+  flex: 1;
+  height: 8px;
+  overflow: hidden;
+  background: rgba(8, 12, 16, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(238, 240, 234, 0.18), 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.sq-bar i {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+}
+
+.sq-bar .chip {
+  background: rgba(255, 255, 255, 0.85);
+  transition: transform 0.6s ease 0.35s;
+}
+
+.sq-bar .fill {
+  transition: transform 0.12s linear;
+}
+
+.sq-bar.focus .fill {
+  background: linear-gradient(90deg, #ff8a5b, #ffd28a);
+}
+
+.sq-bar.stamina {
+  height: 5px;
+}
+
+.sq-bar.stamina .fill {
+  background: #8fe3d0;
+}
+
+.sq-bar.xp {
+  height: 3px;
+}
+
+.sq-bar.xp .fill {
+  background: var(--sq-signal);
+}
+
+.sq-vitals.crit .sq-bar.focus .fill {
+  background: var(--sq-alarm);
+  animation: sq-blink 0.7s steps(2, jump-none) infinite;
+}
+
+.sq-vitals.crit .sq-n {
+  color: var(--sq-alarm);
+}
+
+@keyframes sq-blink {
+  to {
+    opacity: 0.45;
+  }
+}
+
+/* -- The skills, bottom right: an icon each, its key, and a sweep that fills as it comes ready. -- */
+.sq-skills {
+  position: absolute;
+  right: var(--hud-r);
+  bottom: var(--hud-b);
+  display: flex;
+  gap: 10px;
+}
+
+.sq-skill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 64px;
+}
+
+.sq-skill-ic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1.5px solid rgba(238, 240, 234, 0.55);
+  border-radius: 50%;
+  background: conic-gradient(rgba(255, 180, 84, 0.32) calc(var(--cd, 1) * 360deg), rgba(8, 12, 16, 0.6) 0);
+  color: var(--sq-bone);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.sq-skill.full .sq-skill-ic,
+.sq-btn.full {
+  border-color: var(--sq-signal);
+  color: var(--sq-signal);
+  box-shadow: 0 0 18px rgba(255, 180, 84, 0.55);
+  animation: sq-ready 1.2s ease-in-out infinite;
+}
+
+@keyframes sq-ready {
+  50% {
+    box-shadow: 0 0 4px rgba(255, 180, 84, 0.2);
+  }
+}
+
+.sq-skill kbd {
+  position: absolute;
+  top: 36px;
+  right: 2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border: 1px solid rgba(238, 240, 234, 0.4);
+  background: rgba(8, 12, 16, 0.85);
+  color: var(--sq-bone);
+  font: 600 11px/18px var(--sq-mono);
+  text-align: center;
+  text-shadow: none;
+}
+
+.sq-skill-name {
+  font: 600 10px/1 var(--sq-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+  white-space: nowrap;
+}
+
+.sq-skill.locked {
+  opacity: 0.4;
+}
+
+.sq-skill.locked .sq-skill-ic {
+  background: rgba(8, 12, 16, 0.6);
+}
+
+/* -- The Final Exam's bar, at the top in the middle, its name over it. -- */
+.sq-boss {
+  position: absolute;
+  top: calc(var(--hud-t) + 58px);
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(580px, 46vw);
+  transform: translateX(-50%);
+  animation: sq-in 0.6s ease both;
+}
+
+.sq-boss-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.sq-boss-head b {
+  font: 700 22px/1 var(--sq-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sq-boss-head > span:not(.sq-boss-phase) {
+  font: 500 12px/1 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+.sq-boss-phase {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.sq-boss-phase i {
+  padding: 2px 5px 1px;
+  border: 1px solid var(--sq-faint);
+  font: 700 11px/1 var(--sq-display);
+  font-style: normal;
+  color: var(--sq-faint);
+}
+
+.sq-boss-phase i.on {
+  border-color: var(--sq-alarm);
+  color: var(--sq-alarm);
+}
+
+.sq-bar.boss {
+  height: 12px;
+}
+
+.sq-bar.boss .fill {
+  background: linear-gradient(90deg, #c1121f, #ff5a40 70%, #ffb454);
+}
+
+.sq-boss.phase-3 .sq-bar.boss .fill {
+  animation: sq-blink 0.5s steps(2, jump-none) infinite alternate;
+}
+
+.sq-boss-sub {
+  font: 500 11px/1 var(--sq-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sq-alarm);
+}
+
+@keyframes sq-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+}
+
+/* -- The combo, the feed and the paused note. -- */
+.sq-combo {
+  position: absolute;
+  top: 27%;
+  right: calc(var(--hud-r) + 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  animation: sq-pop 0.18s ease-out;
+}
+
+.sq-combo b {
+  font: 700 54px/0.85 var(--sq-display);
+  color: var(--sq-signal);
+  font-variant-numeric: tabular-nums;
+}
+
+.sq-combo span {
+  font: 600 11px/1.4 var(--sq-label);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+@keyframes sq-pop {
+  from {
+    transform: scale(1.35);
+  }
+}
+
+.sq-feed {
+  position: absolute;
+  top: 40%;
+  right: var(--hud-r);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.sq-fl {
+  font: 500 13px/1.45 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+  animation: sq-feed 4.2s linear both;
+}
+
+.sq-fl b {
+  font-weight: 600;
+  color: var(--sq-bone);
+}
+
+.sq-fl-k {
+  margin-right: 8px;
+  color: var(--sq-alarm);
+}
+
+.sq-fl em {
+  margin-left: 10px;
+  font-style: normal;
+  color: var(--sq-signal);
+}
+
+@keyframes sq-feed {
+  0% {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  6%,
+  85% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.sq-paused {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  margin: 0;
+  padding: 7px 12px 6px;
+  border-left: 2px solid var(--sq-signal);
+  background: var(--sq-plate);
+  font: 600 14px/1.2 var(--sq-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+/* -- Big words across the middle: a wave coming, a rank risen, a quest done, a phase. -- */
+.sq-banner {
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 0 9px;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  color: var(--sq-signal);
+  text-align: center;
+  transform: translateX(-50%);
+  animation: sq-warn 2.6s linear both;
+}
+
+.sq-banner strong {
+  margin-right: -0.24em;
+  font: 700 clamp(24px, 4vw, 44px)/1 var(--sq-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sq-banner span {
+  font: 600 13px/1.2 var(--sq-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sq-bone);
+}
+
+.sq-banner .sq-banner-eyebrow {
+  color: var(--sq-dim);
+}
+
+.sq-banner.wave,
+.sq-banner.phase {
+  color: var(--sq-alarm);
+}
+
+.sq-banner.rank strong {
+  font-size: clamp(30px, 5.5vw, 64px);
+}
+
+.sq-banner.rank {
+  animation-duration: 3s;
+}
+
+@keyframes sq-warn {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.5em;
+  }
+  8% {
+    opacity: 1;
+  }
+  14% {
+    opacity: 0.4;
+  }
+  20%,
+  84% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A villain's name card: low on the left, as a film names a face. */
+.sq-card {
+  position: absolute;
+  bottom: 24%;
+  left: max(var(--hud-l), 6vw);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: min(520px, calc(100vw - 32px));
+  padding-left: 14px;
+  border-left: 3px solid var(--sq-alarm);
+  animation: sq-card 3.4s ease both;
+}
+
+.sq-card-eyebrow {
+  font: 600 11px/1 var(--sq-label);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sq-alarm);
+}
+
+.sq-card strong {
+  font: 700 clamp(34px, 6vw, 72px)/0.9 var(--sq-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sq-card-sub {
+  font: 600 15px/1.2 var(--sq-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+.sq-card q {
+  margin-top: 6px;
+  font: italic 500 17px/1.3 var(--sq-label);
+  letter-spacing: 0.02em;
+}
+
+.sq-card.boss {
+  bottom: 22%;
+}
+
+.sq-card.boss strong {
+  font-size: clamp(40px, 8vw, 96px);
+  color: #ffdfcf;
+}
+
+@keyframes sq-card {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  10%,
+  86% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* -- Letterbox bars: for the title, a villain's entrance, a phase, the debrief. -- */
+.sq-bars i {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: calc(clamp(18px, 6.5vh, 58px) + env(safe-area-inset-top, 0px));
+  background: #000;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.sq-bars i:first-child {
+  top: 0;
+  transform: translateY(-101%);
+}
+
+.sq-bars i:last-child {
+  bottom: 0;
+  transform: translateY(101%);
+}
+
+.sq.cine .sq-bars i {
+  transform: none;
+}
+
+/* -- The title card. -- */
+.sq-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: calc(clamp(18px, 6.5vh, 58px) + 20px) max(var(--hud-r), 4.5vw) calc(clamp(18px, 6.5vh, 58px) + clamp(18px, 5vh, 52px)) max(var(--hud-l), 5.5vw);
+  background: linear-gradient(90deg, rgba(5, 8, 11, 0.78) 0%, rgba(5, 8, 11, 0.42) 40%, rgba(5, 8, 11, 0) 72%), linear-gradient(0deg, rgba(5, 8, 11, 0.6) 0%, rgba(5, 8, 11, 0) 50%);
+  pointer-events: auto;
+  animation: sq-fade 0.5s ease both;
+}
+
+.sq-title-main {
+  min-width: 0;
+}
+
+.sq-title .sq-eyebrow {
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.sq-word {
+  margin: clamp(8px, 2vh, 20px) -0.12em clamp(10px, 2vh, 22px) -0.03em;
+  font: 700 clamp(52px, 12vw, 168px)/0.82 var(--sq-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+}
+
+.sq-premise {
+  position: relative;
+  max-width: 34em;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--sq-faint);
+  font: 500 clamp(16px, 1.6vw, 22px)/1.3 var(--sq-label);
+  letter-spacing: 0.04em;
+}
+
+.sq-premise::before {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 72px;
+  height: 3px;
+  background: var(--sq-signal);
+  content: "";
+}
+
+.sq-note {
+  max-width: 60ch;
+  margin: 14px 0 0;
+  font: 400 11px/1.5 var(--sq-mono);
+  letter-spacing: 0.03em;
+  color: var(--sq-dim);
+}
+
+.sq-legend {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+  font: 500 12px/1 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(238, 240, 234, 0.82);
+  white-space: pre;
+}
+
+/* -- Menus: pause, the study record, and the debrief. -- */
+.sq-menu,
+.sq-debrief {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(clamp(18px, 6.5vh, 58px) + 12px) 16px;
+  overflow: auto;
+  background: rgba(4, 7, 10, 0.62);
+  pointer-events: auto;
+  animation: sq-fade 0.25s ease both;
+}
+
+.sq-debrief {
+  background: linear-gradient(90deg, rgba(4, 7, 10, 0.86), rgba(4, 7, 10, 0.5) 70%, rgba(4, 7, 10, 0.25));
+  justify-content: flex-start;
+  padding-left: max(var(--hud-l), 6vw);
+}
+
+@keyframes sq-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.sq-menu-body,
+.sq-debrief-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(420px, 100%);
+}
+
+.sq-menu-body.wide {
+  width: min(860px, 100%);
+}
+
+.sq-debrief-body {
+  width: min(640px, 100%);
+}
+
+.sq-menu h2,
+.sq-debrief h2 {
+  margin: 0 0 12px;
+  font: 700 clamp(36px, 6vw, 64px)/0.9 var(--sq-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sq-debrief.lost h2 {
+  color: #ffb2a3;
+}
+
+.sq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sq-actions.col {
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 4px;
+}
+
+.sq .sq-b {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  padding: 2px 20px 0;
+  border: 1px solid rgba(238, 240, 234, 0.42);
+  border-radius: 0;
+  background: rgba(8, 12, 16, 0.55);
+  color: var(--sq-bone);
+  font: 600 15px/1 var(--sq-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-shadow: none;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.sq .sq-b:hover,
+.sq .sq-b:focus-visible {
+  border-color: var(--sq-bone);
+  background: rgba(238, 240, 234, 0.12);
+  outline: none;
+}
+
+.sq .sq-b em {
+  font-style: normal;
+  color: var(--sq-signal);
+}
+
+.sq .sq-b.primary {
+  justify-content: center;
+  border-color: var(--sq-signal);
+  background: var(--sq-signal);
+  color: var(--accent-ink);
+  font-size: 17px;
+  letter-spacing: 0.28em;
+}
+
+.sq .sq-b.primary:focus-visible {
+  outline: 2px solid var(--sq-bone);
+  outline-offset: 3px;
+}
+
+.sq-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 18px;
+  font: 500 12px/1.2 var(--sq-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(238, 240, 234, 0.8);
+  white-space: pre;
+}
+
+.sq-sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 28px;
+}
+
+.sq-stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 18px;
+  margin: 0 0 18px;
+}
+
+.sq-stats dt {
+  font: 600 11px/1.6 var(--sq-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+.sq-stats dd {
+  margin: 0;
+  font: 700 22px/1 var(--sq-display);
+}
+
+.sq-stats small {
+  font-size: 13px;
+  color: var(--sq-dim);
+}
+
+.sq-ranks {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sq-ranks li {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0 3px 10px;
+  border-left: 2px solid var(--sq-faint);
+  font: 500 13px/1.2 var(--sq-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sq-faint);
+}
+
+.sq-ranks li.done {
+  color: var(--sq-dim);
+}
+
+.sq-ranks li.now {
+  border-left-color: var(--sq-signal);
+  color: var(--sq-bone);
+}
+
+.sq-ranks em {
+  font: 400 11px/1.2 var(--sq-mono);
+  font-style: normal;
+}
+
+.sq-skill-list,
+.sq-codex {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 8px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.sq-skill-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.sq-skill-list svg {
+  flex: none;
+  color: var(--sq-signal);
+}
+
+.sq-skill-list li.locked {
+  opacity: 0.45;
+}
+
+.sq-skill-list li.locked svg {
+  color: var(--sq-bone);
+}
+
+.sq-skill-list b,
+.sq-codex b {
+  display: block;
+  font: 600 15px/1.2 var(--sq-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sq-codex b {
+  display: inline;
+}
+
+.sq-skill-list small,
+.sq-codex small {
+  font: 400 12px/1.35 var(--sq-label);
+  letter-spacing: 0.02em;
+  color: var(--sq-dim);
+}
+
+.sq-codex .none {
+  color: var(--sq-dim);
+}
+
+/* -- The debrief: the grade, and how the run went. -- */
+.sq-grade-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 4vw, 44px);
+}
+
+.sq-grade {
+  min-width: 1.3em;
+  font: 700 clamp(96px, 16vw, 180px)/0.8 var(--sq-display);
+  letter-spacing: -0.02em;
+  color: var(--sq-signal);
+  text-shadow: 0 0 40px rgba(255, 180, 84, 0.35), var(--sq-shadow);
+  animation: sq-stamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) 0.4s both;
+}
+
+.sq-debrief.lost .sq-grade {
+  color: #ff8a73;
+  text-shadow: 0 0 40px rgba(255, 90, 64, 0.35), var(--sq-shadow);
+}
+
+@keyframes sq-stamp {
+  from {
+    opacity: 0;
+    transform: scale(2.2) rotate(-8deg);
+  }
+}
+
+.sq-tally {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 6px 22px;
+  margin: 0;
+}
+
+.sq-tally dt {
+  font: 600 11px/1.5 var(--sq-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sq-dim);
+}
+
+.sq-tally dd {
+  margin: 0;
+  font: 700 18px/1 var(--sq-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sq-best {
+  min-height: 1.2em;
+  margin: 10px 0 0;
+  font: 600 12px/1.2 var(--sq-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sq-signal);
+}
+
+/* -- On a phone: small panels in the corners, the right thumb's buttons, no tutorial text. -- */
+.sq.touch .sq-obj {
+  top: calc(var(--hud-t) + 80px);
+  right: var(--hud-r);
+  left: auto;
+  align-items: flex-end;
+  max-width: 50vw;
+  padding: 0 10px 0 0;
+  border-right: 2px solid var(--sq-signal);
+  border-left: 0;
+  text-align: right;
+}
+
+.sq.touch .sq-q {
+  align-items: flex-end;
+}
+
+.sq.touch .sq-eyebrow {
+  font-size: 9.5px;
+}
+
+.sq.touch .sq-q-title {
+  font-size: 15px;
+}
+
+.sq.touch .sq-q-goal {
+  justify-content: flex-end;
+  font-size: 11.5px;
+}
+
+.sq.touch .sq-vitals {
+  top: calc(var(--hud-t) + 80px);
+  bottom: auto;
+  width: min(170px, 44vw);
+  gap: 5px;
+}
+
+.sq.touch .sq-badge {
+  width: 28px;
+  height: 28px;
+}
+
+.sq.touch .sq-rank-text b {
+  font-size: 14px;
+}
+
+.sq.touch .sq-xp-line em {
+  display: none;
+}
+
+.sq.touch .sq-stat {
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+}
+
+.sq.touch .sq-k {
+  display: none;
+}
+
+.sq.touch .sq-n {
+  font-size: 15px;
+}
+
+.sq.touch .sq-boss {
+  top: calc(var(--hud-t) + 176px);
+  width: calc(100vw - var(--hud-l) - var(--hud-r));
+}
+
+.sq.touch .sq-boss-head b {
+  font-size: 17px;
+}
+
+.sq.touch .sq-boss-head > span:not(.sq-boss-phase) {
+  display: none;
+}
+
+.sq.touch .sq-combo {
+  top: 40%;
+}
+
+.sq.touch .sq-combo b {
+  font-size: 40px;
+}
+
+.sq.touch .sq-card {
+  bottom: auto;
+  top: 30%;
+}
+
+.sq.touch .sq-banner {
+  top: 30%;
+}
+
+.sq.touch .sq-word {
+  margin-right: 0;
+  font-size: clamp(40px, 12.5vw, 90px);
+  letter-spacing: 0.06em;
+}
+
+.sq.touch .sq-title {
+  align-items: center;
+}
+
+/* The right thumb's buttons: a big strike, the rest round it. */
+.sq-pad {
+  position: absolute;
+  right: var(--hud-r);
+  bottom: calc(var(--hud-b) + 74px);
+  width: 172px;
+  height: 172px;
+}
+
+.sq .sq-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 1.5px solid rgba(238, 240, 234, 0.6);
+  border-radius: 50%;
+  background: conic-gradient(rgba(255, 180, 84, 0.35) calc(var(--cd, 1) * 360deg), rgba(8, 12, 16, 0.5) 0);
+  color: var(--sq-bone);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sq .sq-btn:active {
+  background: rgba(255, 180, 84, 0.4);
+}
+
+.sq .sq-btn.sk-strike {
+  right: 0;
+  bottom: 0;
+  width: 84px;
+  height: 84px;
+  border-color: var(--sq-signal);
+  color: var(--sq-signal);
+}
+
+.sq .sq-btn.sk-dodge,
+.sq .sq-btn.sk-sprint {
+  right: 98px;
+  bottom: 0;
+}
+
+.sq .sq-btn.sk-flashcard {
+  right: 90px;
+  bottom: 70px;
+}
+
+.sq .sq-btn.sk-eureka {
+  right: 14px;
+  bottom: 100px;
+}
+
+.sq .sq-btn.locked {
+  opacity: 0.32;
+}
+
+.sq .sq-pausebtn {
+  position: absolute;
+  top: var(--hud-t);
+  left: calc(var(--hud-l) + 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--hud-line);
+  border-radius: 12px;
+  background: var(--hud-strong);
+}
+
+.sq-pausebtn i {
+  width: 4px;
+  height: 14px;
+  background: var(--sq-bone);
+}
+
+.sq.touch .sq-sheet-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.sq.touch .sq-tally {
+  gap: 4px 14px;
+}
+
+.sq.touch .sq-debrief {
+  padding-left: var(--hud-l);
+}
+
+@media (max-width: 700px) {
+  .sq-grade-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* -- The marks moved with the picture (gameOverlay.ts): compass, plates, numbers, diamonds. -- */
+.gx {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  --hud-t: max(18px, env(safe-area-inset-top, 0px));
+}
+
+.gx[hidden] {
+  display: none;
+}
+
+.gx-vignette,
+.gx-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.gx-vignette {
+  box-shadow: inset 0 0 120px 30px rgba(200, 20, 20, 0.55);
+}
+
+.gx.low .gx-vignette {
+  opacity: 0.6;
+  animation: sq-blink 0.9s ease-in-out infinite alternate;
+}
+
+.gx.hurt .gx-vignette {
+  opacity: 1;
+  transition: none;
+}
+
+.gx.slowed .gx-vignette {
+  opacity: 0.8;
+  box-shadow: inset 0 0 120px 30px rgba(140, 110, 230, 0.45);
+}
+
+.gx-flash.on {
+  opacity: 1;
+  transition: none;
+  animation: gx-flash 0.5s ease-out both;
+}
+
+.gx-flash.eureka {
+  background: radial-gradient(circle at 50% 60%, rgba(255, 220, 160, 0.55), rgba(255, 180, 84, 0) 60%);
+}
+
+.gx-flash.rank {
+  background: radial-gradient(circle at 50% 60%, rgba(255, 200, 120, 0.4), rgba(255, 180, 84, 0) 70%);
+}
+
+.gx-flash.phase {
+  background: rgba(255, 60, 40, 0.28);
+}
+
+@keyframes gx-flash {
+  to {
+    opacity: 0;
+  }
+}
+
+/* The compass tape: ticks every 15 degrees, letters at the cardinals, quests as diamonds. */
+.gx-compass {
+  position: absolute;
+  top: calc(var(--hud-t) + 2px);
+  left: 50%;
+  width: clamp(160px, calc(100vw - 720px), 440px);
+  height: 56px;
+  transform: translateX(-50%);
+}
+
+.gx.compact .gx-compass {
+  display: none;
+}
+
+.gx-tape-wrap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+}
+
+.gx-tape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  will-change: transform;
+}
+
+.gx-tape i {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--sq-bone);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.gx-tape i.mn {
+  height: 5px;
+  opacity: 0.5;
+}
+
+.gx-tape i.mj {
+  height: 9px;
+  width: 2px;
+}
+
+.gx-tape b {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.gx-tape b.card {
+  font: 700 16px/1 var(--sq-display);
+  letter-spacing: 0.04em;
+}
+
+.gx-tape b.ic {
+  font: 600 11px/1.4 var(--sq-label);
+  letter-spacing: 0.08em;
+  color: var(--sq-dim);
+}
+
+.gx-needle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 2px;
+  height: 14px;
+  margin-left: -1px;
+  background: var(--sq-signal);
+}
+
+.gx-heading {
+  position: absolute;
+  top: 9px;
+  left: 100%;
+  margin-left: 8px;
+  font: 500 11px/1 var(--sq-mono);
+  color: var(--sq-dim);
+}
+
+.gx-cmarks {
+  position: absolute;
+  top: 33px;
+  left: 50%;
+}
+
+.gx-cm {
+  position: absolute;
+  top: 0;
+  left: -24px;
+  width: 48px;
+  text-align: center;
+  color: var(--sq-signal);
+  will-change: transform;
+}
+
+.gx-cm i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 0 auto 3px;
+  border: 1.5px solid currentColor;
+  background: rgba(8, 12, 16, 0.5);
+  transform: rotate(45deg);
+}
+
+.gx-cm span {
+  font: 400 10px/1 var(--sq-mono);
+  color: var(--sq-bone);
+}
+
+.gx-cm.main i {
+  background: var(--sq-signal);
+}
+
+.gx-cm.side {
+  color: var(--sq-bone);
+}
+
+.gx-cm.boss,
+.gx-cm.foe {
+  color: var(--sq-alarm);
+}
+
+.gx-cm.boss i {
+  background: var(--sq-alarm);
+}
+
+.gx-cm.foe i {
+  width: 5px;
+  height: 5px;
+  margin-top: 2px;
+}
+
+/* Diamonds in the world over a quest's place. */
+.gx-wm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--sq-signal);
+  will-change: transform;
+}
+
+.gx-wm i {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  background: rgba(8, 12, 16, 0.45);
+  transform: rotate(45deg);
+}
+
+.gx-wm.main i {
+  background: rgba(255, 180, 84, 0.5);
+}
+
+.gx-wm.side {
+  color: var(--sq-bone);
+}
+
+.gx-wm span {
+  position: absolute;
+  top: 12px;
+  left: -30px;
+  width: 60px;
+  font: 500 11px/1 var(--sq-mono);
+  text-align: center;
+  color: var(--sq-bone);
+}
+
+/* A foe's plate: its name and its health. */
+.gx-plate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 0;
+  will-change: transform;
+}
+
+.gx-plate b {
+  font: 600 11px/1 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.gx-plate i {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 64px;
+  height: 4px;
+  overflow: hidden;
+  background: rgba(8, 12, 16, 0.6);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.gx-plate span {
+  position: absolute;
+  inset: 0;
+  background: var(--sq-alarm);
+  transform-origin: left center;
+  transition: transform 0.1s linear;
+}
+
+.gx-plate.elite b {
+  font: 700 15px/1 var(--sq-display);
+  letter-spacing: 0.12em;
+  color: #ffd9cf;
+}
+
+.gx-plate.elite i {
+  width: 110px;
+  height: 6px;
+}
+
+.gx-plate.warn b {
+  color: var(--sq-alarm);
+}
+
+/* On a phone the small foes show their health alone; their names would crowd the view. */
+.gx.compact .gx-plate:not(.elite) b {
+  display: none;
+}
+
+/* Numbers that jump from a blow. */
+.gx-num {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font: 700 20px/1 var(--sq-display);
+  letter-spacing: 0.02em;
+  will-change: transform, opacity;
+}
+
+.gx-num.heavy {
+  font-size: 26px;
+  color: #ffe2b3;
+}
+
+.gx-num.crit {
+  font-size: 32px;
+  color: #ffd23f;
+}
+
+.gx-num.crit::after {
+  content: "!";
+}
+
+.gx-num.xp {
+  font: 600 14px/1 var(--sq-label);
+  letter-spacing: 0.1em;
+  color: var(--sq-signal);
+}
+
+.gx-num.evade {
+  font-size: 22px;
+  color: #9fd8ff;
+}
+
+/* The X where a blow landed; the bracket round the foe locked on to. */
+.gx-hit {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+}
+
+.gx-hit i {
+  position: absolute;
+  width: 2px;
+  height: 10px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.gx-hit i:nth-child(1) {
+  top: 0;
+  left: 4px;
+  transform: rotate(-45deg);
+}
+
+.gx-hit i:nth-child(2) {
+  top: 0;
+  right: 4px;
+  transform: rotate(45deg);
+}
+
+.gx-hit i:nth-child(3) {
+  bottom: 0;
+  left: 4px;
+  transform: rotate(45deg);
+}
+
+.gx-hit i:nth-child(4) {
+  right: 4px;
+  bottom: 0;
+  transform: rotate(-45deg);
+}
+
+.gx-hit.kill i {
+  width: 3px;
+  background: var(--sq-alarm);
+}
+
+.gx-lock {
+  position: absolute;
+  top: -22px;
+  left: -22px;
+  width: 44px;
+  height: 44px;
+  opacity: 0;
+  will-change: transform;
+}
+
+.gx-lock i {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 0 solid var(--sq-alarm);
+}
+
+.gx-lock i:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-width: 2px 0 0 2px;
+}
+
+.gx-lock i:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-width: 2px 2px 0 0;
+}
+
+.gx-lock i:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 2px 2px;
+}
+
+.gx-lock i:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-width: 0 2px 2px 0;
+}
+
+/* Arcs round the middle on the side a blow came from. */
+.gx-arc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(70vh, 92vw);
+  aspect-ratio: 1;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.gx-arc svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.gx-arc path {
+  fill: none;
+  stroke: var(--sq-alarm);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/* Reduced motion: the words and bars appear and go without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .sq *,
+  .gx * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .sq-title,
+  .sq-banner,
+  .sq-card,
+  .sq-fl {
+    animation: none !important;
+  }
+}
+
+/* The game's own setting does the same, whatever the system says. */
+.sq.rm *,
+.gx.rm * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+.sq.rm .sq-title,
+.sq.rm .sq-banner,
+.sq.rm .sq-card,
+.sq.rm .sq-fl {
+  animation: none !important;
 }

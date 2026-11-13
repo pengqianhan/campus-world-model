@@ -16,7 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
-import { stopGame } from "./game.ts";
+import { gameHolds, setPadSteer, stopGame } from "./game.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -863,8 +863,16 @@ export function startWalkerFromUrl(): void {
 export function steerByHand(forward: number, turnRate: number, climb = 0): void {
   const s = scene;
   if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
-  s.walkers.steer(MY_WALKER, forward, turnRate, climb);
+  // A menu over the game holds the walker still.
+  if (gameHolds()) s.walkers.steer(MY_WALKER, 0, 0, 0);
+  else s.walkers.steer(MY_WALKER, forward, turnRate, climb);
 }
+
+// A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn.
+setPadSteer((forward, turn) => {
+  const pace = PACE[walkerRide.peek()];
+  steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
+});
 
 /** The visitor's walker gets about another way: from the buttons, the number keys and the address. */
 export function rideAs(want: Ride): void {

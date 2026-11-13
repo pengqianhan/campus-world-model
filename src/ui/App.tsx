@@ -11,6 +11,7 @@ import { TimePanel, notTeachingReason, previewTeachingDay } from "./TimePanel.ts
 import { TopBar, statusLine } from "./TopBar.tsx";
 import { WalkerPanel } from "./WalkerPanel.tsx";
 import { MY_WALKER, setView, startLook, startWalkerKeys, startWalking, stopWalking, walkerOn, walkerView } from "../app/walker.ts";
+import { gameMenu, gameOn, gameView, setMenu, togglePause } from "../app/game.ts";
 
 /** Whether the campus panel is open. It starts shut, as a small button, so the map has the screen. */
 const stripOpen = signal(false);
@@ -188,6 +189,12 @@ export function App() {
         // left to the field.
         if (walkerOn.value) {
           if (typing) return;
+          // In a game Esc pauses it, and shuts a menu over it.
+          if (gameOn.value && gameView.value?.phase === "play") {
+            if (gameMenu.value !== "none") setMenu("none");
+            else togglePause();
+            return;
+          }
           if (walkerView.value !== "map") setView({ view: "map", name: MY_WALKER });
           else stopWalking();
         } else if (panel.value !== "none") panel.value = "none";

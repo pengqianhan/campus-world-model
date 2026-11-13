@@ -480,6 +480,8 @@ export class CampusScene {
   private gameLabelsVersion = 0;
   /** A click in a walker view: on a University building, or on the ground at a point. */
   onWalkPick?: (pick: { building?: string; at?: [number, number] }) => void;
+  /** A click with the mouse in a walker view while the game is on. */
+  onGameClick?: (action: "strike" | "card") => void;
 
   constructor(container: HTMLElement, labelRoot: HTMLElement, opts: SceneOptions) {
     this.container = container;
@@ -586,7 +588,12 @@ export class CampusScene {
       roofs: () => this.roofMap(),
       buildings: () => this.campus?.buildings ?? [],
       walker: (name) => this.walkers.state(name),
-    });
+      shove: (name, dx, dy) => this.walkers.shove(name, dx, dy),
+      face: (name, bearing) => this.walkers.turn(name, bearing, true),
+      paceScale: (name, k) => this.walkers.setPaceScale(name, k),
+      camera: () => this.activeCamera,
+      viewSize: () => ({ width: this.width, height: this.height }),
+    }, labelRoot.parentElement ?? undefined);
     this.scene.add(this.game.group);
 
     // The buildings drawn in detail from code, and the measured massings, each made the first time
@@ -1983,7 +1990,7 @@ export class CampusScene {
     } else {
       // From a walker's height only the buildings near it are labelled; the rest would crowd the horizon.
       const near = this.viewWalker ? this.walkers.pose(this.viewWalker)?.at : undefined;
-      // A game on a small screen keeps the walker's view clear: the buildings' names wait until it ends.
+      // A game keeps the walker's view clear: the buildings' names wait until it ends.
       const quiet = this.game.on && this.game.quiet && this.view !== "map";
       for (const b of this.campus.buildings) {
         if (b.offMap || quiet) continue;
@@ -2317,8 +2324,10 @@ export class CampusScene {
       this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), pose.eye + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
     } else {
       const yaw = ((pose.heading + this.follow.yaw) * Math.PI) / 180;
-      const up = (this.follow.elevation * Math.PI) / 180;
-      let d = this.follow.distance;
+      // In the game the view stands back while a boss is out, so that the whole of it is seen.
+      const pull = this.game.on ? this.game.viewPull() : { distance: 0, elevation: 0 };
+      const up = ((this.follow.elevation + pull.elevation) * Math.PI) / 180;
+      let d = this.follow.distance + pull.distance;
       // A wall between the walker and the camera would hide it: the camera comes in front of the wall.
       let blocked = false;
       const reach = Math.cos(up) * d;
@@ -2357,6 +2366,8 @@ export class CampusScene {
       else this.persp.position.lerp(want, k);
       this.persp.lookAt(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
     }
+    // A blow in the game shakes the view a little; it settles back on the walker by itself.
+    if (this.game.on) this.persp.position.add(this.game.shake(this.shakeBy));
     this.persp.updateMatrixWorld();
     // The shadows follow the walker round the map.
     if (Math.hypot(this.shadowCentre.x - x, this.shadowCentre.z + y) > 70) this.fitShadow();
@@ -2374,6 +2385,7 @@ export class CampusScene {
   }
   /** The walker view's camera matrix when last drawn. */
   private lastView?: number[];
+  private shakeBy = new Vector3();
 
   /** Turns the walker view by a drag of the pointer, in pixels. */
   private turnWalkerView(dx: number, dy: number): void {
@@ -2486,6 +2498,11 @@ export class CampusScene {
       const drag = this.drag;
       this.drag = undefined;
       this.renderer.domElement.style.cursor = "grab";
+      // In the game a click with the mouse strikes (the right button throws a flashcard), rather than sending the walker.
+      if (drag && !drag.moved && this.game.on && e.pointerType === "mouse" && (e.button === 0 || e.button === 2)) {
+        this.onGameClick?.(e.button === 0 ? "strike" : "card");
+        return;
+      }
       if (drag && !drag.moved && e.button === 0) {
         const pick = this.walkPickAt(e.clientX, e.clientY);
         if (pick) this.onWalkPick?.(pick);
