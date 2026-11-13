@@ -14,6 +14,15 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-13
+
+### Changed
+
+- **The home page's heading carries its links.** On https://campusworldmodel.com/ and on the page an unknown
+  address gets, About and the link to the source code on GitHub stand at the right of the heading's line as plain
+  links in the page's ink, About first; the two dark buttons that stood alone above the heading are gone. On a
+  narrow screen the links sit above the heading (#173).
+
 ## 2026-11-12
 
 ### Added

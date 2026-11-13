@@ -121,11 +121,14 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .schools h2 a:focus{outline:none}
 .reo{margin:-2px 0 6px;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
 .facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:var(--muted);font-size:.9375rem}
-.top{display:flex;justify-content:flex-end;gap:8px;max-width:44rem;margin:0 auto;padding:12px 16px 0}
-.top a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:10px;background:var(--panel);color:var(--text);font:600 .9375rem/1 var(--font);text-decoration:none}
-.top a:hover,.top a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.top svg{width:20px;height:20px}
-main{padding-top:24px}
+.masthead{display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:space-between;gap:8px 20px;margin:0 0 8px}
+.masthead h1{margin:0}
+.top{display:flex;align-items:center;gap:4px;margin-left:auto}
+.top a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;padding:0 10px;border-radius:10px;color:#33424d;font:600 .9375rem/1 var(--font);text-decoration:none}
+.top a:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+.top a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.top svg{width:22px;height:22px}
+@media (max-width:560px){main{padding-top:20px}}
 #about{margin-top:48px}
 #about:not(:target):not(:has(:target)){display:none}
 #about>h2{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
@@ -193,7 +196,7 @@ function about(shared: Words, schools: PickerSchool[]): string {
 }
 
 /**
- * One page: the bar with the source code and About, the heading and its lead, the notice, the list of
+ * One page: the heading with, on its line, the links to About and the source code, its lead, the notice, the list of
  * schools, and on the picker the Tsinghua World Model's card and About below it, hidden until asked for (the
  * page for an unknown path links to the picker's).
  */
@@ -225,12 +228,14 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
 <style>${STYLE}</style>
 </head>
 <body>
-<nav class="top" aria-label="${e(word(shared, "picker.navLabel"))}">
-<a id="repo-link" href="${e(REPO)}" rel="noopener noreferrer" aria-label="${e(word(shared, "about.repo"))}" title="${e(word(shared, "about.repo"))}">${github()}</a>
-<a id="about-link" href="${withAbout ? "#about" : "/#about"}">${e(word(shared, "nav.about"))}</a>
-</nav>
 <main>
+<header class="masthead">
 <h1>${e(words.heading)}</h1>
+<nav class="top" aria-label="${e(word(shared, "picker.navLabel"))}">
+<a id="about-link" href="${withAbout ? "#about" : "/#about"}">${e(word(shared, "nav.about"))}</a>
+<a id="repo-link" href="${e(REPO)}" rel="noopener noreferrer" aria-label="${e(word(shared, "about.repo"))}" title="${e(word(shared, "about.repo"))}">${github()}</a>
+</nav>
+</header>
 <p class="lead">${e(words.lead)}</p>
 <p class="notice">${e(word(shared, "picker.notice"))}</p>
 <ul class="schools" aria-label="${e(word(shared, "picker.listLabel"))}">

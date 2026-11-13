@@ -407,8 +407,8 @@ the same Vite plugin. Two of those texts are not in `en.json` today (the `og:des
   alone (`:target`, `:has()`): its source code, and one section a school, made by
   `scripts/lib/about.ts` from the files its site publishes and, for its landmarks, `landmarks/`: its
   unofficial notice, what it shows, its sources with their snapshot dates and licences, its
-  coverage, its limits and its privacy. A bar at the top links to the source code on GitHub, with
-  its mark, and to About. A school's page has no About of its own: its attribution and its "Why?"
+  coverage, its limits and its privacy. On the heading's line, at its right, two plain links: About,
+  and the source code on GitHub, with its mark (above the heading on a narrow screen). A school's page has no About of its own: its attribution and its "Why?"
   links open its section, `/#about-<id>`, which shows About.
 - **`_redirects`.** The line `/ /uoa/ 302` comes out in the same commit that ships the picker, and
   not before. That is deployment, so it is a gate.
