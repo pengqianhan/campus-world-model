@@ -24,7 +24,7 @@ A change to what the site does or shows adds its line here, and the README's
   flees, and catching it scores and starts the next level. Caught three times, the game is over. It is played on
   foot or on the scooter, where the Deadline goes twice as fast, out of doors, on every school's map. The game is off until it is started; its books and its Deadline are
   made up, stand for no real class or due date, and cannot be opened like a place; the Game button's hint and About say so. The
-  score is kept until the page closes and is stored nowhere (#NNN).
+  score is kept until the page closes and is stored nowhere (#174).
 
 ### Changed
 
