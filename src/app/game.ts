@@ -132,7 +132,7 @@ export function questTitle(q: { key: string }): string {
 }
 export function questGoal(q: { key: string; place?: string | { name: string }; need: number }): string {
   const place = typeof q.place === "string" ? q.place : q.place?.name;
-  return t(`game.quest.${q.key}.goal`, { need: q.need, place: place ?? t("game.openGround") });
+  return t(`game.quest.${q.key}.goal`, { need: q.need, place: place || t("game.openGround") });
 }
 export function rankName(rank: number): string {
   return t(`game.rank.${RANKS[rank]?.id ?? "fresher"}`);

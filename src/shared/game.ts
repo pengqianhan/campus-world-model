@@ -818,7 +818,10 @@ export class StudyQuest {
     return this.quests.flatMap((q) => (q.place ? [q.place.at] : []));
   }
 
-  /** The next step of the main story. */
+  /**
+   * The next step of the main story. A quest that leads somewhere always has a place: where the map
+   * has no building to name, open ground near the walker.
+   */
   private beginMain(near: Pt): void {
     const step = this.mainStep;
     if (step === 0) this.quest("orientation", true, "collect", 5, 20);
@@ -826,8 +829,8 @@ export class StudyQuest {
       const q = this.quest("ddl1", true, "defeat", 1, 40);
       this.spawn("ddl", this.ring(near, 40), q.id, 1);
       q.started = true;
-    } else if (step === 2) this.quest("studyGroup", true, "defeat", 6, 60, this.host.place(near, this.placesTaken()));
-    else if (step === 3) this.quest("revision", true, "collect", 3, 60, this.host.place(near, this.placesTaken()));
+    } else if (step === 2) this.quest("studyGroup", true, "defeat", 6, 60, this.host.place(near, this.placesTaken()) ?? { name: "", at: this.ring(near, 50) });
+    else if (step === 3) this.quest("revision", true, "collect", 3, 60, this.host.place(near, this.placesTaken()) ?? { name: "", at: this.ring(near, 50) });
     else if (step === 4) {
       const q = this.quest("ddl2", true, "defeat", 3, 80);
       this.spawn("ddl", this.ring(near, 42), q.id, 1.6);

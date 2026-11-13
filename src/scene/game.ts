@@ -382,6 +382,7 @@ export class GameWorld {
   private trailT = 0;
   /** Metres the view stands back, more while the boss is out, so that the whole of it is seen. */
   private pull = 0;
+  private motionApplied?: boolean;
 
   constructor(
     private host: GameSceneHost,
@@ -417,11 +418,10 @@ export class GameWorld {
     this.heights.clear();
     this.quest = new StudyQuest({ spot: (near, taken, place) => this.spot(near, taken, place), place: (near, avoid, big) => this.place(near, avoid, big), random: Math.random }, walker.at);
     this.events.push(...this.drainStart());
-    this.sparks.density = this.reducedMotion ? 0.4 : 1;
+    this.motionApplied = undefined;
     this.group.visible = true;
     this.overlay?.show(true);
     this.overlay?.root.classList.toggle("compact", compact);
-    this.overlay?.root.classList.toggle("rm", this.reducedMotion);
     this.sync(walker, 0);
     this.labelsVersion++;
     return true;
@@ -789,6 +789,12 @@ export class GameWorld {
 
   private sync(walker: WalkerState, dt: number): void {
     const g = this.quest!;
+    // The reduced-motion setting, changed in the pause menu, takes effect at once.
+    if (this.motionApplied !== this.reducedMotion) {
+      this.motionApplied = this.reducedMotion;
+      this.sparks.density = this.reducedMotion ? 0.4 : 1;
+      this.overlay?.root.classList.toggle("rm", this.reducedMotion);
+    }
     const t = performance.now() / 1000;
     const wx = walker.at[0];
     const wz = -walker.at[1];
