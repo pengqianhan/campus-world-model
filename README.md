@@ -143,6 +143,8 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
+  links, where two dark buttons stood above it.
 - **2026-11-12:** on the Newmarket campus the map draws Structures Hall in detail, where it stood as a measured
   massing: two long blocks under roofs of one slope with three stacks between them, and a glazed south face over a
   ground storey set back behind piers and braces. Its sizes come from the LiDAR; it was compared with a
@@ -185,24 +187,6 @@ The three latest days are below; everything, with its pull request, is in the
   the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
 - **2026-11-11:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
   measured heights, with the eaves of its main roof.
-- **2026-11-10:** the home page shows the schools and, under them, a card for the Tsinghua World Model that
-  inspired the project; About opens from its link at the top.
-- **2026-11-10:** About is on the page at https://campusworldmodel.com/, under the list of schools, with a section
-  for each school's map, a link to the Tsinghua World Model that inspired the project and a GitHub link at the top.
-  A school's map no longer has an About button or the flight to the Tsinghua World Model; its credit line at the
-  bottom opens its section.
-- **2026-11-10:** on the Grafton campus the map draws 2-6 Park Ave (529) in detail: a long block of four storeys with a
-  balcony along each upper storey of every face, a ground storey of pale brick, a dark eave and a raised part with a red
-  roof. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and its card says what
-  is estimated.
-- **2026-11-10:** on the Grafton campus the map draws building 505 of the M&HS Building in detail: a long block of four
-  storeys in white panels over a recessed ground floor, its north face shaded by twelve bays of silver fins and louvres,
-  glass at its north-east corner and a glass-roofed atrium at its west end. Its sizes come from the LiDAR; it was
-  compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-10:** on the City campus the map draws the George Mason Biology Building (106) in detail: a long block of
-  three storeys in cream render under a grey attic and a low hipped roof, with two wings and raised parts, and
-  red-framed windows between pilasters at its south-east end on the street. Its sizes come from the LiDAR; it was
-  compared with a photograph, which is not published, and its card says what is estimated.
 
 </details>
 
