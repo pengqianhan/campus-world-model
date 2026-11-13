@@ -17,6 +17,7 @@ import {
   gameSettings,
   gameTitle,
   gameView,
+  dismissTitle,
   questGoal,
   questTitle,
   rankName,
@@ -244,7 +245,7 @@ function Feed() {
 
 function Title({ touch }: { touch: boolean }) {
   return (
-    <div class="sq-title" id="game-title" onPointerDown={() => (gameTitle.value = false)}>
+    <div class="sq-title" id="game-title" onPointerDown={dismissTitle}>
       <div class="sq-title-main">
         <span class="sq-eyebrow">
           <span class="sq-tag">{t("game.tag")}</span>
@@ -253,6 +254,7 @@ function Title({ touch }: { touch: boolean }) {
         <h2 class="sq-word">{t("game.title")}</h2>
         <p class="sq-premise">{t("game.premise")}</p>
         <p class="sq-note">{t("game.madeUp")}</p>
+        <p class="sq-press">{t(touch ? "game.tapToBegin" : "game.pressToBegin")}</p>
       </div>
       {!touch && (
         <div class="sq-legend" aria-label={t("game.menu.controls")}>

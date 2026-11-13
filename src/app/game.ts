@@ -16,7 +16,7 @@ export const gameOn = signal(false);
 export const gameView = signal<GameView | undefined>(undefined);
 /** The menu over the game: none, the pause menu, or the walker's study record (stats and skills). */
 export const gameMenu = signal<"none" | "pause" | "sheet">("none");
-/** The title card, for the first seconds of a game. */
+/** The title card, until the visitor's first key, tap or click. */
 export const gameTitle = signal(false);
 
 export interface Banner {
@@ -124,7 +124,6 @@ let timer = 0;
 let seq = 1;
 let banners: Banner[] = [];
 let bannerTimer = 0;
-let titleTimer = 0;
 let pad = 0;
 let stopKeys: (() => void) | undefined;
 
@@ -339,9 +338,11 @@ export function gameHolds(): boolean {
   return gameOn.peek() && gameMenu.peek() !== "none";
 }
 
-function dismissTitle(): void {
-  window.clearTimeout(titleTimer);
+/** The title card goes at the visitor's first key, tap or click, and the game's clock starts. */
+export function dismissTitle(): void {
+  if (!gameTitle.peek()) return;
   gameTitle.value = false;
+  if (scene && gameMenu.peek() === "none") scene.game.menuPaused = false;
 }
 
 /**
@@ -371,8 +372,8 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   cards = [];
   window.clearTimeout(bannerTimer);
   window.clearTimeout(cardTimer);
-  window.clearTimeout(titleTimer);
-  titleTimer = window.setTimeout(dismissTitle, 5000);
+  // The game waits on its title card until the visitor is ready.
+  scene.game.menuPaused = true;
   batch(() => {
     gameOn.value = true;
     gameMenu.value = "none";
@@ -392,7 +393,6 @@ export function stopGame(): void {
   window.clearInterval(timer);
   window.clearTimeout(bannerTimer);
   window.clearTimeout(cardTimer);
-  window.clearTimeout(titleTimer);
   cancelAnimationFrame(pad);
   stopKeys?.();
   stopKeys = undefined;

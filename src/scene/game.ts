@@ -855,7 +855,8 @@ export class GameWorld {
         lean = -0.35;
       }
       if (f.state !== "dead" && f.hurtAgo < 0.14) {
-        const k = 1 - f.hurtAgo / 0.14;
+        // A blow flashes it white; the boss, so big, only a little.
+        const k = (1 - f.hurtAgo / 0.14) * (f.kind === "exam" ? 0.4 : 1);
         tint.setRGB(Math.max(tint.r, k), Math.max(tint.g, k), Math.max(tint.b, k));
         scale *= 1 + k * 0.08;
       }

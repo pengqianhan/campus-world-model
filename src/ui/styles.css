@@ -3473,6 +3473,15 @@ select optgroup {
   color: var(--sq-dim);
 }
 
+.sq-press {
+  margin: 18px 0 0;
+  font: 600 12px/1 var(--sq-label);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sq-signal);
+  animation: sq-blink 1.1s ease-in-out infinite alternate;
+}
+
 .sq-legend {
   display: flex;
   flex: none;
