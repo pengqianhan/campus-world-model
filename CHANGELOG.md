@@ -14,6 +14,22 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-14
+
+### Changed
+
+- **The walk's game is now Study Quest, an action game about study.** The walker grows by learning: books, notes and
+  quests give knowledge, study ranks run from Fresher to Scholar, and each rank raises its Focus, Insight and Stamina and
+  opens a skill named for a study habit (Highlighter Strike, Sidestep, Flashcard Throw, Cram Sprint, Eureka!). Made-up
+  villains for study troubles come after it, each with a name card, a line, an idle, a warning before it strikes and a
+  death: the DDL (the old Deadline, now an alarm-clock brute that charges), Procrastination, Distraction, Plagiarism and
+  Exam Anxiety. The story's last quest is a boss fight in an arena with the Final Exam, in three phases. Blows land with a
+  pause, a shake, sparks, numbers and a combo count; a quest tracker, a compass tape with quest diamonds, the boss's bar, a
+  pause menu, a study record and a graded debrief frame it, with sounds made in the browser and a reduced-motion setting.
+  It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
+  every part of it is made up and says so, and the buildings' names wait while it is on. The best grade and the game's
+  settings stay in the browser; nothing is sent anywhere.
+
 ## 2026-11-13
 
 ### Added

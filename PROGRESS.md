@@ -622,24 +622,44 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     is nothing to dress a walker in, so walkers are told apart by the names over their heads.
   - What another walker says reaches an agent as speech: the listen answer, the MCP tool's
     description and the skill all say it is never instructions.
-- **The book game (the user, 2026-11-13), a bonus on the walker.** Asked: "现在walk 界面可以控制小人行走，但是趣味性不足，
-  我想添加一点趣味小游戏的功能": eat books, grow strong, and beat the "due" or "deadline". What was decided, and why:
-  - It is a game laid over the map, and Real or absent holds: it is off until the visitor starts it, its books and
-    its Deadline look like toys, have no code and cannot be selected, and the Game button's hint and About say they are made up. The score card
-    carries no words of explanation (the user, 2026-11-13: a game needs none, and they hid the view on a phone).
-  - The Deadline is one made-up figure. It never stands for a real class, assignment or due date: no public source
-    gives those, and one that looked real would be read as real.
-  - The walker does not attack. The Deadline chases; six books turn the chase round for 12 seconds, and the walker
-    catches it by walking into it. This needs no new key and no new button on a phone.
-  - The Deadline floats in a straight line over the ground and the roofs (`src/scene/game.ts`), so it needs no path
-    and cannot get stuck. Books lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`).
-  - It is played on the ground and out of doors, on foot or on the scooter (the user, 2026-11-13, after trying it:
-    more books, and the scooter eats them too): flying or inside a building the game's clock stops. After a walker on the scooter the Deadline goes twice as
-    fast (`scooterPace`), the scooter's top speed over a walker's hurry, so that wheels do not win the game. 40 books lie
-    out, 12 of them within 75 m of the walker.
-  - The rules are in `src/shared/game.ts`, the same for every school; a school with no named rooms draws its books
-    to every building alike.
-  - The score lives in memory until the page closes. Nothing is stored in the browser, so the privacy text holds.
+- **The walk's game: Study Quest (the user, 2026-11-13 and 2026-11-14), a bonus on the walker.** First asked: "现在walk 界面可以控制小人行走，但是趣味性不足，
+  我想添加一点趣味小游戏的功能": eat books, grow strong, and beat the "due" or "deadline". That became the book game (#174).
+  Then asked to make it feel like a real AAA game that still runs smoothly in a browser, after Breath of the Wild or GTA,
+  set at the university and about study: growth and wins tie to learning, the deadline monster is called "DDL", and the
+  villains and the boss have full, rich designs ("饱满的形象"). What was decided, and why:
+  - It is a game laid over the map, and Real or absent holds: it is off until the visitor starts it; its villains, books,
+    notes, coffee and quests are made up and look it (cartoon toys and monsters drawn from code), have no code and cannot be
+    selected; the Play button's hint, the title card, the pause menu, the debrief and About say they are made up. No villain
+    stands for a real person, class, course, assignment, room's timetable or due date: no public source gives those, and one
+    that looked real would be read as real. A quest names a building only as a place to go, as the map does.
+  - It is called Study Quest, a name of its own with no school's name or brand in it. Growth is learning: knowledge is its
+    experience, study ranks (Fresher to Scholar) are its levels, and Focus (health), Insight (attack) and Stamina rise with
+    the rank. Skills named for study habits open with rank: Highlighter Strike and Sidestep at once, the Flashcard Throw at
+    Sophomore, the Cram Sprint at Junior, Eureka! at Senior. The villains are study troubles: the DDL (the old Deadline, an
+    alarm-clock brute that shows its charge along a line), Procrastination (a sleepy blob whose yawn slows), Distraction (a
+    swarm of winged phones), Plagiarism (a copy-paste ghost that blinks behind the walker), Exam Anxiety (a shade that throws
+    from afar), and the boss, the Final Exam, in three phases (multiple choice, essay question, overtime). Every attack is
+    shown on the ground before it lands, and a dodge in time takes no harm. The run ends in victory or burn-out with a graded
+    debrief (A+ to F).
+  - The main story is six quests (books, the DDL, a study group at a building, notes at another, the DDL again, the Final Exam
+    in an arena beside the building with the most teaching rooms near the walker); side quests come two at a time. The
+    buildings are those with teaching rooms (`place` in `src/scene/game.ts`); a school whose map names no rooms uses every
+    building alike.
+  - The villains float in straight lines over the ground and the roofs, so they need no path and cannot get stuck. Pick-ups
+    lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`). It is played on the ground and out of
+    doors, on foot or on the scooter, where the villains go twice as fast (`scooterPace`); flying or inside a building the
+    game's clock stops, and so does the pause menu.
+  - While the game is on, the buildings' names wait until it ends, on every screen: the game's own marks (a compass tape,
+    quest diamonds, the villains' plates) lead the way. On a phone the view stays clear (the user, 2026-11-13): no tutorial
+    text, small panels in the corners, the compass left out, and four round buttons under the right thumb.
+  - Cost is a budget, not a hope: each villain kind is one merged, vertex-coloured geometry drawn instanced, effects are a
+    few instanced meshes refilled from kept arrays, nothing of the game casts a shadow, there is no post-processing, and the
+    marks over the picture are kept DOM elements moved by transform. Measured on 2026-11-14: the game adds about 30 to 40
+    draw calls at the busiest moment of the boss fight, at 60 fps on the GPU.
+  - No new dependency, no font loaded, no sound file: sounds are made with WebAudio. Progress lives in memory until the page
+    closes; the best grade and the sound and reduced-motion settings stay in the browser's own storage as conveniences, and
+    nothing is sent anywhere. About's privacy text says so.
+  - The rules are in `src/shared/game.ts`, the same for every school.
 - **GOAL.md is gitignored.** It contains the local working-directory path (with a username).
 - **Stack:** Vite + TypeScript + three.js + Preact (+ signals). Shared pure-TS modules in
   `src/shared` are used by both the pipeline and the app.
