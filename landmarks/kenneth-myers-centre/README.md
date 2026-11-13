@@ -14,6 +14,31 @@ run them are shared by every landmark: [`../README.md`](../README.md).
 - Run its pipeline: `landmarks/pipeline/run.sh kenneth-myers-centre [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Kenneth Myers Centre (820) on Shortland Street, a brick building whose pilasters rise
+past its parapet into pinnacles. Along its street face a cream coping with small merlons stands over a
+corbel table of small arches and tall blind arches with cream springers; between its west and east parts
+a porch stands forward, with an arched cream doorway up steps from the street, three arched windows over
+it and four tall spires; a radio mast stands on its roof. Its roofs, its east part and its porch are
+sized by the LiDAR, every height within 0.15 m of the medians of their returns, and what its street face
+carries is measured in one Street View photograph through its camera, which is set from the photograph's
+own edges. Over the part west of the porch the LiDAR of 2024 holds temporary works, scaffolding and a
+temporary roof: that part's plan comes from the LINZ aerial photograph of 2023 and its heights from the
+Street View photograph, at the aerial's plan. The campus map's outline for 820 does not follow the
+building that the LiDAR and the aerial show: it lies 0.3 to 0.9 m north of its street face, its back is
+turned across the building's, and it adds a tail over the lane to its west and a nub over the roofs to its
+east. The model, drawn where they show the building, stands in place of the block. Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.45
+to 1.00 over the three views of the panorama, though glass towers fill the sky round it, so the IoU
+there says little; the brightness of its brick is within 6 of the photograph's in each view. From above
+its outline covers the LiDAR's with an IoU of 0.88, 0.95 leaving out the west part, where the LiDAR
+holds the works. What no photograph shows is drawn plainly: its sides, its back and its roofs.
+
+| | |
+| --- | --- |
+| ![The Kenneth Myers Centre from Shortland Street, drawn from code](../../docs/landmarks/kenneth-myers-centre-front.jpg) | ![The Kenneth Myers Centre from above, drawn from code](../../docs/landmarks/kenneth-myers-centre-above.jpg) |
+| ![The Kenneth Myers Centre on the map, drawn from code in the map's colours](../../docs/landmarks/kenneth-myers-centre-map.jpg) | ![The Kenneth Myers Centre from Shortland Street, through the walker's eyes](../../docs/landmarks/kenneth-myers-centre-eyes.jpg) |
+
 ## The frame
 
 `config/kenneth-myers-centre.json`, `frame`: x east-north-east along the street face (the axis, the

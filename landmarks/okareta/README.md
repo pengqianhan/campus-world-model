@@ -13,6 +13,22 @@ pipeline, the viewer and how to run them are shared by every landmark: [`../READ
   `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Okareta (215), beside Symonds Street: a villa of two storeys of the 1880s, rendered and painted a warm
+yellow ochre under hipped roofs of grey iron, with a verandah across the left of its front and a canted bay of two
+storeys on the right, its windows arched at their heads in moulded surrounds. Its heights and plans come from the
+LiDAR; the places and heights of its windows, its door, its bay's face and its verandah are estimated with the
+photograph as a reference. One photograph from the footpath before it, about 18 m from its front; counted inside the
+rectangle the model fills on the screen, its silhouette has an IoU of 0.77 in it, and the brightness of the building
+is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.90, and on 81% of the
+cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Okareta from the north, drawn from code](../../docs/landmarks/okareta-front.jpg) | ![Okareta from above, drawn from code](../../docs/landmarks/okareta-above.jpg) |
+| ![Okareta on the map, drawn from code in the map's colours](../../docs/landmarks/okareta-map.jpg) | ![Okareta from the footpath before it, through the walker's eyes](../../docs/landmarks/okareta-eyes.jpg) |
+
 ## The frame
 
 `config/okareta.json`, `frame`: x south-west (minus the axis, the bearing of the house's walls), y up from 36.43 m

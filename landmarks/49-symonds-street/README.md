@@ -15,6 +15,24 @@ landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 49 Symonds Street (620), on Symonds Street: an office tower of about thirteen storeys whose corners
+step back, its bays under a gable in the middle of its faces clad in pale panels, each with a tall window arched at
+its top, its steps in blue glass, with a white band along its top and a mansard on its roof; at its foot to the east a
+podium in dark stone with a pointed gable over its entrance, and lower buildings behind it. Its heights and plans come
+from the LiDAR; the heights of its white band, its dark base and its windows, and its windows' widths and places, are
+estimated with the photograph as a reference. One photograph from Symonds Street to its east, about 48 m from the
+tower; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.89 in it, and the
+brightness of the building is within 3 of the photograph's. From above its outline covers the LiDAR's with an IoU of
+0.89, and on 83% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show
+is drawn after what it shows.
+
+| | |
+| --- | --- |
+| ![49 Symonds Street from the east, drawn from code](../../docs/landmarks/49-symonds-street-front.jpg) | ![49 Symonds Street from above, drawn from code](../../docs/landmarks/49-symonds-street-above.jpg) |
+| ![49 Symonds Street on the map, drawn from code in the map's colours](../../docs/landmarks/49-symonds-street-map.jpg) | ![49 Symonds Street from Symonds Street, through the walker's eyes](../../docs/landmarks/49-symonds-street-eyes.jpg) |
+
 ## The frame
 
 `config/49-symonds-street.json`, `frame`: x east-north-east (minus the axis, the bearing of the tower's walls), y up

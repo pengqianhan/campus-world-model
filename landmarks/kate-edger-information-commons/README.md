@@ -15,6 +15,31 @@ them are shared by every landmark: [`../README.md`](../README.md).
   and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Kate Edger Information Commons (315) on Alfred Street, over a sunken court: two long
+ranges of pale grey cladding with a glass-roofed atrium between them, open to the court at its north-east
+end. On the south-east range's end to the street pale silver metal screens hang from 3.7 m to the roof over
+green-tinted glazing, its corner is glazed in green, and grey mesh panels hang over the atrium's open end;
+the north-west range's end reaches out over the court, glazed, open beneath it, with a roof light along it and
+a glass canopy under its tip. Its heights come from the LiDAR, with the parapets round its north-west range
+and the screened plant on its south-east range's roof; the heights of its screens, glazing, mesh panels and
+shopfront, and of the lower edge of its end over the court, are estimated in a photograph from Alfred Street,
+through a camera fitted to points picked on it whose places the LiDAR measures. Its roofs are drawn flat at the
+LiDAR's heights, without their falls. What nothing measures is estimated, and its card names it: among
+other things the rest of the underside of its end over the court. Counted inside the rectangle the model fills on the
+screen, its silhouette has an IoU of 0.64 in that photograph, where bare trees stand before much of the sky;
+the brightness of the building is within 1 of the photograph's, though the green glass at its corner is
+drawn brighter. From above its outline covers the LiDAR's with an IoU of 0.88, the LiDAR's counting the roof
+of AUSA House (322) next to it beyond the campus map's outline of that building, and on 76% of the cells both
+cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly: its faces
+to the north-west and south-east, its south-west end and its roofs.
+
+| | |
+| --- | --- |
+| ![The Kate Edger Information Commons from the north-east, drawn from code](../../docs/landmarks/kate-edger-information-commons-front.jpg) | ![The Kate Edger Information Commons from above, drawn from code](../../docs/landmarks/kate-edger-information-commons-above.jpg) |
+| ![The Kate Edger Information Commons on the map, drawn from code in the map's colours](../../docs/landmarks/kate-edger-information-commons-map.jpg) | ![The Kate Edger Information Commons from the north-east, by the Old Choral Hall, through the walker's eyes](../../docs/landmarks/kate-edger-information-commons-eyes.jpg) |
+
 ## The frame
 
 `config/kate-edger-information-commons.json`, `frame`: x south-west, along the two long ranges (the axis,

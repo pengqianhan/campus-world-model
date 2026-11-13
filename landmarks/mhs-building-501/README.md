@@ -15,6 +15,23 @@ landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 501 of the M&HS Building, on the Grafton campus: a long block in board-marked concrete with,
+at its east end toward a plaza, a tower under a dark crown of standing-seam metal, its foot flared out over the shaft
+and its corners hipped up to a flat top; a strip of windows up the middle of the tower's face, a glazed box at its foot,
+and a glazed link beside it to the north. Its heights and plans come from the LiDAR; the crown's eave and band, the
+glazed link's top and floors and the strip of windows are estimated with the photograph as a reference. One
+photograph from the plaza, about 67 m from the tower; counted inside the rectangle the model fills on the screen, its
+silhouette has an IoU of 0.91 in it, and the brightness of the building is within 7 of the photograph's. From above
+its outline covers the LiDAR's with an IoU of 0.83, and on 78% of the cells both cover it is within 0.5 m of the
+LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 501 of the M&HS Building from its plaza, drawn from code](../../docs/landmarks/mhs-building-501-front.jpg) | ![Building 501 of the M&HS Building from above, drawn from code](../../docs/landmarks/mhs-building-501-above.jpg) |
+| ![Building 501 of the M&HS Building on the map, drawn from code in the map's colours](../../docs/landmarks/mhs-building-501-map.jpg) | ![Building 501 of the M&HS Building from its plaza, through the walker's eyes](../../docs/landmarks/mhs-building-501-eyes.jpg) |
+
 ## The frame
 
 `config/mhs-building-501.json`, `frame`: x west-north-west (minus the axis, the bearing of the long block's walls), y up

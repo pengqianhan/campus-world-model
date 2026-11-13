@@ -16,6 +16,25 @@ landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Fine Arts Studio Block 431, on the City campus, until now a measured massing: a long block of three
+storeys under a roof of two pitches, the north one rising to a step over the middle and the south one falling to the
+eave over the lane, with a lower annex on its north side; at its east end a glass stair tower beside the entrance; on
+its south face, over the lane and its car park, columns every 4 to 5 m, three rows of windows of three lights a bay and
+a ground storey of roller doors, and a low box with roller doors before it. Its heights and plans come from the LiDAR;
+the columns, the windows and the roller doors are estimated with the photograph as a reference, and a second photograph,
+of its east entrance, shows the stair tower and the canopy there to be glass. One photograph from the car park at the
+lane's west end, looking along the south face; counted inside the rectangle the model fills on the screen, its
+silhouette has an IoU of 0.95 in it, and the brightness over it is within 7 of the photograph's. From above its outline
+covers the LiDAR's with an IoU of 0.93, and on 97% of the cells both cover it is within 0.5 m of the LiDAR's height.
+What the photographs do not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Fine Arts Studio Block 431 from the lane, drawn from code](../../docs/landmarks/fine-arts-studio-block-431-front.jpg) | ![Fine Arts Studio Block 431 from above, drawn from code](../../docs/landmarks/fine-arts-studio-block-431-above.jpg) |
+| ![Fine Arts Studio Block 431 on the map, drawn from code in the map's colours](../../docs/landmarks/fine-arts-studio-block-431-map.jpg) | ![Fine Arts Studio Block 431 from the lane, through the walker's eyes](../../docs/landmarks/fine-arts-studio-block-431-eyes.jpg) |
+
 ## The frame
 
 `config/fine-arts-studio-block-431.json`, `frame`: x east-north-east (minus the axis, the bearing of the long walls),

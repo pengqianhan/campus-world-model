@@ -15,6 +15,28 @@ landmark: [`../README.md`](../README.md).
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 303 of the Science Centre: a range of four storeys along its street, faced in three
+bands of mauve-grey precast panels with a shadowed gap under each, a canopy along the entrance over the glazed
+ground storey; behind it, set back, a slab of ten storeys, its roof at 33.6 m with a raised part, a screened deck,
+a round tank and a box of plant on it; behind the slab a block of ridged roofs with six round stacks rising to
+42 m along the slab's back, and a wing with two troughs across its roof, a light well between it and the slab.
+Every wall runs square with the face to the street, turned 3 degrees from the bearing its config measured from
+the LiDAR's walls. Its heights
+and plans come from the LiDAR, the gaps between the bands and the canopy at the LiDAR's returns on the face; the
+roofs' colours come from the 2023 aerial. A large relief on the face is an artwork: it is not drawn after, and
+the band there is plain. One photograph sees the lower part of the face close up through a wide lens; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in it, and the brightness
+of the building is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.85,
+and on 86% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
+drawn plainly: every face but the one to the street.
+
+| | |
+| --- | --- |
+| ![Building 303 of the Science Centre from its street, drawn from code](../../docs/landmarks/science-centre-303-front.jpg) | ![Building 303 of the Science Centre from above, drawn from code](../../docs/landmarks/science-centre-303-above.jpg) |
+| ![Building 303 of the Science Centre on the map, drawn from code in the map's colours](../../docs/landmarks/science-centre-303-map.jpg) | ![Building 303 of the Science Centre from its street, through the walker's eyes](../../docs/landmarks/science-centre-303-eyes.jpg) |
+
 ## The frame
 
 `config/science-centre-303.json`, `frame`: x south-west (the axis, the bearing of most of the walls, and x is

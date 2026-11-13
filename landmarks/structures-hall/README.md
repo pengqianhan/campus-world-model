@@ -15,6 +15,24 @@ by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Structures Hall (906), on the Newmarket campus, until now a measured massing: two long blocks side by
+side, each under a roof of one slope that rises to the line between them, with three square stacks on that line and a
+lower block against the east end; the south face three glazed storeys with light bands between them, under a light
+fascia and between dark frames, over a ground storey set back behind piers and two Vs of braces. Its heights and plans
+come from the LiDAR; the south face's glazing, bands, mullions, fascia and frames, its ground storey and the stacks'
+bands are estimated with the photograph as a reference. One photograph of its south face, from an open lot to its
+south; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in it, and the
+brightness over it is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.96, and
+on 98% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn
+plain.
+
+| | |
+| --- | --- |
+| ![Structures Hall from the lot to its south, drawn from code](../../docs/landmarks/structures-hall-front.jpg) | ![Structures Hall from above, drawn from code](../../docs/landmarks/structures-hall-above.jpg) |
+| ![Structures Hall on the map, drawn from code in the map's colours](../../docs/landmarks/structures-hall-map.jpg) | ![Structures Hall from the lot to its south, through the walker's eyes](../../docs/landmarks/structures-hall-eyes.jpg) |
+
 ## The frame
 
 `config/structures-hall.json`, `frame`: x east-south-east (minus the axis, the bearing of the long faces), y up from

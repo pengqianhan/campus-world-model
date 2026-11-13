@@ -15,6 +15,25 @@ them are shared by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Building 903 (903), on the Newmarket campus, until now a measured massing: a long block of four
+storeys whose two upper storeys are a box clad in pale corrugated metal, with windows singly and in bands, over two
+glazed storeys set back under it on piers; a canopy over the entrance at its south-east corner, its south face stepped
+forward part of the way along, and a low roof of two slopes with plant on it, the east end a low gable. Its heights
+and plans come from the LiDAR; its windows and their frames, the glazed storeys' plinth, piers and mullions and their
+place behind the forward face, the canopies' depth and the depth of the roof under the step are estimated with the
+photograph as a reference. One photograph from the road to its south-east, looking at its south face and east end;
+counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.96 in it, and the
+brightness over it is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.92, and
+on 97% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn as
+what it does.
+
+| | |
+| --- | --- |
+| ![Building 903 from the road to its south-east, drawn from code](../../docs/landmarks/building-903-front.jpg) | ![Building 903 from above, drawn from code](../../docs/landmarks/building-903-above.jpg) |
+| ![Building 903 on the map, drawn from code in the map's colours](../../docs/landmarks/building-903-map.jpg) | ![Building 903 from the road to its south-east, through the walker's eyes](../../docs/landmarks/building-903-eyes.jpg) |
+
 ## The frame
 
 `config/building-903.json`, `frame`: x east-south-east (minus the axis, the bearing of the long faces), y up from

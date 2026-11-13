@@ -17,6 +17,24 @@ it is built with, the pipeline, the viewer and how to run them are shared by eve
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Architecture - West (421W), north-west of Architecture - East: a slab in pale grey concrete with, on
+each floor of its north-east faces above its storey of doors, a pale louvred parapet under a band of windows, and that
+storey glazed on a paved upper level; a grey hipped roof, with a tower in dark cladding on its ridge whose top falls to
+the north-west; and two lower blocks at its north-west end. Its heights and plans come from the LiDAR; the storeys'
+height, the parapets and the windows are estimated with the photograph as a reference. One photograph from the paved
+upper level to its north, about 33 m from the tower; counted inside the rectangle the model fills on the screen, its
+silhouette has an IoU of 0.97 in it, and the brightness of the building is within 1 of the photograph's. From above its
+outline covers the LiDAR's with an IoU of 0.78, and on 82% of the cells both cover it is within 0.5 m of the LiDAR's
+height (its south-east end, which joins Architecture - East and is left to that building's model, and lower parts before
+its set-back face are not drawn). What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Architecture - West from the north, drawn from code](../../docs/landmarks/architecture-west-front.jpg) | ![Architecture - West from above, drawn from code](../../docs/landmarks/architecture-west-above.jpg) |
+| ![Architecture - West on the map, drawn from code in the map's colours](../../docs/landmarks/architecture-west-map.jpg) | ![Architecture - West from the paved level to its north, through the walker's eyes](../../docs/landmarks/architecture-west-eyes.jpg) |
+
 ## The frame
 
 `config/architecture-west.json`, `frame`: x south-east (the axis, the bearing of the slab's walls, and x is minus it);

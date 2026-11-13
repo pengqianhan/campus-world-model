@@ -16,6 +16,25 @@ alone, sized by the LINZ 2024 LiDAR, and compared with one photograph of its sou
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the George Mason Biology Building (106), on the City campus beside the Thomas Building: a long
+block of three storeys in cream render, its walls up to a parapet and a grey attic set back behind it under a low hipped
+roof; its middle wider, with two wings to the south-west and raised parts over the roof; at its south-east end, on the
+street, three bays of red-framed windows between pilasters. Its heights and plans come from the LiDAR, and so does its
+outline, which the campus map gives about 3.5 m short at each end; the windows of its south-east end and its pilasters'
+width are estimated with the photograph as a reference. One photograph from the street to its south-east, square to that
+end, through plane trees and under a hazy sky: the copy the project has is squeezed across, and was stretched back to
+16:9 before its camera was fitted (to 1.4 pixels); its sky is too faint to count a silhouette against, so the model was
+checked by laying it over the photograph through that camera, and the brightness of a plain stretch of the end wall is
+the photograph's. From above its outline covers the LiDAR's with an IoU of 0.93, and on 85% of the cells both cover it
+is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![The George Mason Biology Building from the south, drawn from code](../../docs/landmarks/george-mason-biology-front.jpg) | ![The George Mason Biology Building from above, drawn from code](../../docs/landmarks/george-mason-biology-above.jpg) |
+| ![The George Mason Biology Building on the map, drawn from code in the map's colours](../../docs/landmarks/george-mason-biology-map.jpg) | ![The George Mason Biology Building from the street to its south-east, through the walker's eyes](../../docs/landmarks/george-mason-biology-eyes.jpg) |
+
 ## The frame and the outline
 
 `config/george-mason-biology.json`, `frame`: x south-east (minus the axis, the bearing of the building's long walls,

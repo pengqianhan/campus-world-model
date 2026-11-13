@@ -16,6 +16,28 @@ the pipeline, the viewer and how to run them are shared by every landmark: [`../
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 505 of the M&HS Building, on the Grafton campus: a long block of four storeys in white
+concrete panels over a ground floor set back under its upper storeys, behind round columns on the north; on its north
+face, toward a plaza, twelve bays of silver fins and louvres over set-back glazing between a white wall at each end,
+glass at its north-east corner and a dark band round its cut south-east corner; over the parapet a higher middle of the
+roof, and at its west end an atrium under a glass roof. Its heights and plans come from the LiDAR, and so does its
+outline: the campus map's lies about 7 m north-north-east of it, over the plaza. The north face's storeys, how far its
+glazing stands behind its fins and louvres, the fins' top and the louvres' spacing, where its end bay and the white wall
+at its north-east corner stop, the ground floor's set-back and its columns there, the end bay's windows and their
+frames, the east face's glass and its foot, and the glazed front and the link under their grey bands are estimated with
+the photograph as a reference. One photograph from the main road north-east of it, about 42 m from its north-east
+corner; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.94 in it, and the
+brightness of its white walls is within 3 of the photograph's. From above its outline covers the LiDAR's with an IoU of
+0.93, and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
+drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 505 of the M&HS Building from the main road to its north-east, drawn from code](../../docs/landmarks/mhs-building-505-front.jpg) | ![Building 505 of the M&HS Building from above, drawn from code](../../docs/landmarks/mhs-building-505-above.jpg) |
+| ![Building 505 of the M&HS Building on the map, drawn from code in the map's colours](../../docs/landmarks/mhs-building-505-map.jpg) | ![Building 505 of the M&HS Building from the main road to its north-east, through the walker's eyes](../../docs/landmarks/mhs-building-505-eyes.jpg) |
+
 ## The frame
 
 `config/mhs-building-505.json`, `frame`: x west-north-west (minus the axis, the bearing of the long block's walls), y up

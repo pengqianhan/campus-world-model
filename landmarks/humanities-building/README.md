@@ -15,6 +15,29 @@ The kit it is built with, the pipeline, the viewer and how to run them are share
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Humanities Building (206), beside the CLL Building: an L of two wings of buff brick under
+red clay-tiled roofs, a higher middle along each wing with a lower roof round its outer sides, a raised roof
+on eight sides over the corner where the wings meet, rising to a flat top, and a low block at the street
+wing's south-east end, where the ground is 8 m lower. On the street wing's face to the courtyard four bands of
+brick run between ribbons of windows set back behind them, most of their panes behind film in vertical stripes
+of red, orange and yellow, with a glazed slot for the stair in dark red frames and the entrance at its foot.
+Its heights come from the LiDAR, the slopes of its corner's roof fitted to the returns on it; the upper edge
+of its top band, which the eave hides from the LiDAR, the sill of its lowest windows and the sides of its
+entrance are estimated in a photograph from the courtyard, through a camera fitted to points picked on it
+whose places the LiDAR measures. What nothing measures is estimated, and its card names it: among other things
+how far its windows stand back and which panes have the film, drawn two in every three. Counted inside the
+rectangle the model fills on the screen, its silhouette has an IoU of 0.93 in that photograph; the brightness
+of the building is within 8 of the photograph's. From above its outline covers the LiDAR's with an IoU of
+0.90, and on 98% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does
+not show is drawn in plain brick: its other faces.
+
+| | |
+| --- | --- |
+| ![The Humanities Building from its courtyard, drawn from code](../../docs/landmarks/humanities-building-front.jpg) | ![The Humanities Building from above, drawn from code](../../docs/landmarks/humanities-building-above.jpg) |
+| ![The Humanities Building on the map, drawn from code in the map's colours](../../docs/landmarks/humanities-building-map.jpg) | ![The Humanities Building from its courtyard, through the walker's eyes](../../docs/landmarks/humanities-building-eyes.jpg) |
+
 ## The frame
 
 `config/humanities-building.json`, `frame`: x south-east, along the street wing (the axis, the bearing of

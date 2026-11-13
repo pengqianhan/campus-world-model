@@ -235,8 +235,9 @@ needs:
   A material the light form would read wrongly gets a key of its own with the same shader and colour:
   the Thomas Building's red window frames are `frameRed`, not `roofTile` (a roof), and its blinds
   `blind`, which it draws with the panes, not `paint` (wall);
-- in the README, the building in "Known limitations" (the buildings whose sizes are measured, not
-  estimated) and, in the sources table, the LiDAR's and Street View's "Used for";
+- the building in `docs/limitations.md` (the buildings whose sizes are measured, not estimated), in
+  the sources table of `docs/data-sources.md` (the LiDAR's and Street View's "Used for") and in
+  the list of `docs/landmarks.md`; and "In brief" in its own README, with its pictures;
 - a look at it on the map and from a walker's height, and the speed numbers (`docs/standards.md`,
   check 9).
 
@@ -339,8 +340,8 @@ agent and no photograph. All of them share one model and have a data file each:
   (`MEASURED_PIXELS`), nearer than a landmark, and gives way to the blocks while a building is open, as every
   landmark does (since 2026-11-07: until then a landmark drawn from code was squashed about its own y = 0 beside
   an open building, which on a slope could sink its footprint under the drawn ground; the blocks' footprints
-  stand on their footings, at the ground under each one's middle with a footing of up to 4 m on a slope, as the
-  README's Known limitations say).
+  stand on their footings, at the ground under each one's middle with a footing of up to 4 m on a slope, as
+  `docs/limitations.md` says).
 - `tests/measured.test.ts` checks every data file (closed rings, heights, the limits) and that no
   building is drawn by two models; `e2e/landmark.spec.ts` finds them all and tests three. Vitest
   keeps transformed modules in `node_modules/.vitest-cache`, which does not see a data file added

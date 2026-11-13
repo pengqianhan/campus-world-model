@@ -14,6 +14,22 @@ with, the pipeline, the viewer and how to run them are shared by every landmark:
   `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Building 907 (907), on the Newmarket campus: a hall under a shallow barrel vault, clad in white
+metal, with a band of glazing at the foot of its end toward the street, and beside it an annex of two storeys in orange
+render, its windows in dark frames and its roof falling away from the hall. Its heights and plans come from the LiDAR;
+the places and heights of the glazing and of the annex's windows and doors are estimated with the photograph as a
+reference. One photograph from the street to its west-south-west, about 27 m from the annex's nearest corner; counted
+inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.86 in it, and the brightness of the
+building is within 2 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.96, and on 100% of
+the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Building 907 from the street to its west-south-west, drawn from code](../../docs/landmarks/building-907-front.jpg) | ![Building 907 from above, drawn from code](../../docs/landmarks/building-907-above.jpg) |
+| ![Building 907 on the map, drawn from code in the map's colours](../../docs/landmarks/building-907-map.jpg) | ![Building 907 from the street to its west-south-west, through the walker's eyes](../../docs/landmarks/building-907-eyes.jpg) |
+
 ## The frame
 
 `config/building-907.json`, `frame`: x east-south-east (minus the axis), y up from 53.56 m NZVD2016, the LiDAR's ground

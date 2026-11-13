@@ -11,6 +11,23 @@ shared by every landmark: [`../README.md`](../README.md).
 - Run its pipeline: `landmarks/pipeline/run.sh clock-tower-east-wing [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Clock Tower East Wing (119), below the Clock Tower to the south-east: two storeys of
+the same rock-faced cream stone, two gabled pavilions toward the lawn and the car park, a plain stair
+tower rising between them, segmental-headed windows upstairs and narrow ones below, and a red tile
+roof. Every height comes from the LiDAR, within 0.12 m, but the underside of the link toward the
+Clock Tower, which stands at the campus map's storey height over a passage. One Street View panorama
+sees its whole lawn side; against it the model's silhouette has an IoU of 0.63 to 0.96 over its
+three views, and from above its outline covers the LiDAR's with an IoU of 0.83. Three more see it
+over the old basalt wall of the Albert Barracks, which fills half their frames. Its back, its ends
+and the low link toward the Clock Tower, which no photograph shows, are drawn plainly.
+
+| | |
+| --- | --- |
+| ![The Clock Tower East Wing from the car park, drawn from code](../../docs/landmarks/clock-tower-east-wing-front.jpg) | ![The Clock Tower East Wing from above the lawn, drawn from code](../../docs/landmarks/clock-tower-east-wing-above.jpg) |
+| ![The Clock Tower East Wing on the map, drawn from code in the map's colours](../../docs/landmarks/clock-tower-east-wing-map.jpg) | ![The Clock Tower East Wing from the lawn, through the walker's eyes](../../docs/landmarks/clock-tower-east-wing-eyes.jpg) |
+
 ## The frame
 
 `config/clock-tower-east-wing.json`, `frame`: x to the right as seen from the lawn and the car park on

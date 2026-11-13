@@ -28,6 +28,19 @@ Renders of the model (no photograph): [`docs/landmarks/old-choral-hall-symonds.j
 [`-above.jpg`](../../docs/landmarks/old-choral-hall-above.jpg) (the range, and the rest as the map's
 block behind it).
 
+## In brief
+
+This is Old Choral Hall (104), at the corner of Symonds Street and Grafton Road. Every source
+shows it during building works, so only its range on Symonds Street is drawn in detail: ten bays of
+red brick with cream dressings between two pavilions with giant columns, as panoramas show it before
+the works and after. Seen from the three panoramas of 2022-09, its outline covers the building's
+with an IoU of 0.58 to 1.0. The rest of the building keeps the map's estimated block until the
+works end.
+
+| | |
+| --- | --- |
+| ![Old Choral Hall's range on Symonds Street, drawn from code](../../docs/landmarks/old-choral-hall-corner.jpg) | ![Old Choral Hall from above: the range in detail, the rest as the map's estimated block](../../docs/landmarks/old-choral-hall-above.jpg) |
+
 ## The frame
 
 - View frame: x to the right as seen from Grafton Road on the south-east, y up from 37.7 m NZVD2016,

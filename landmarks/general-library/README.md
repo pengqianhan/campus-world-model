@@ -25,6 +25,20 @@ end) and [`-above.jpg`](../../docs/landmarks/general-library-above.jpg); from th
 ([`-map.jpg`](../../docs/landmarks/general-library-map.jpg)) and through a walker's eyes on Alfred Street
 ([`-eyes.jpg`](../../docs/landmarks/general-library-eyes.jpg)).
 
+## In brief
+
+This is the General Library (109) on Alfred Street: a tower slab of ribbon windows over a podium
+whose white fins stand on a brick plinth. Twelve Street View panoramas see its front on Alfred Street,
+its two ends and its back wing's north-east side; the faces they do not show are drawn plain or
+after the faces they do show (see [Known limitations](../../docs/limitations.md)). Seen from them, the outline of the model covers the outline of the building with an IoU
+of 0.80 on average over 35 views; from above, its footprint covers the LiDAR's with an IoU of 0.946, and its
+highest point is 38.8 m, as the LiDAR's.
+
+| | |
+| --- | --- |
+| ![The General Library from Alfred Street, drawn from code](../../docs/landmarks/general-library-alfred.jpg) | ![The General Library's south-east end, its entrance between grey piers, drawn from code](../../docs/landmarks/general-library-southeast.jpg) |
+| ![The General Library on the map, drawn from code in the map's colours](../../docs/landmarks/general-library-map.jpg) | ![The General Library from Alfred Street, through the walker's eyes](../../docs/landmarks/general-library-eyes.jpg) |
+
 ## The frame
 
 - View frame: x to the right as seen from Alfred Street on the south-west, y up from the ground at the

@@ -19,6 +19,26 @@ alone, sized by the LINZ 2024 LiDAR, and compared with one photograph of the hal
   cp1252), run it with `-X utf8`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Te Pūtahi Tangata (201), on the City campus between the Humanities Building and the Music School:
+on the street a hall whose front is glass from the pavement to its roof, under a folded roof whose plates rise and fall
+across the front, their ridges running back from the street; a canopy over its entrance; at its north-east end a taller
+block clad in pale metal; and behind them, down the slope, a long block whose roofs stand about 25 m over the street,
+with raised strips and parts. Its heights and plans come from the LiDAR; the depth of the folded roof's plates at the
+front and of the canopy are estimated with the photograph as a reference, and that of two plates, along the hall's
+south-west side and over a passage by the long block, without one. One photograph from the street to its north-west,
+about 14 m from the glass, through three plane trees whose leaves hide all the sky over the roof: no silhouette can be
+counted against the sky, so the model was checked by laying it over the photograph through the camera fitted to it (to
+1.8 pixels), and the brightness of the building is within 11 of the photograph's. From above its outline covers the
+LiDAR's with an IoU of 0.91, and on 80% of the cells both cover it is within 0.5 m of the LiDAR's height. What the
+photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![Te Pūtahi Tangata from the street to its north-west, drawn from code](../../docs/landmarks/te-putahi-tangata-front.jpg) | ![Te Pūtahi Tangata from above, drawn from code](../../docs/landmarks/te-putahi-tangata-above.jpg) |
+| ![Te Pūtahi Tangata on the map, drawn from code in the map's colours](../../docs/landmarks/te-putahi-tangata-map.jpg) | ![Te Pūtahi Tangata from the street to its north-west, through the walker's eyes](../../docs/landmarks/te-putahi-tangata-eyes.jpg) |
+
 ## The frame
 
 `config/te-putahi-tangata.json`, `frame`: x south-west (minus the axis, the bearing of the building's walls, 45.5

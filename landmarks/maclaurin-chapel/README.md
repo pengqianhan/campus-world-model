@@ -18,6 +18,21 @@ shared by every landmark: [`../README.md`](../README.md).
 | `config/maclaurin-chapel.json` | the building (107), the LiDAR and aerial tiles, the frame, the ground and the door, the five Street View panoramas, the sky masks' option, the viewer's light |
 | `placement.json` | where it stands on the campus map (written by the `place` stage) |
 
+## In brief
+
+This is Maclaurin Chapel (107) on Princes Street: a white hexagonal chapel with a great window
+round its street corner, a low green roof and a slender spire, and a low hall behind it. Every height
+comes from the LiDAR, within 0.1 m. Five Street View panoramas see its street side, through bare
+winter trees; against them the model's silhouette has a mean IoU of 0.45 over 15 views (0.55 over
+the 9 views whose cameras could be corrected), and from above its outline covers the LiDAR's with an
+IoU of 0.88. The small room beyond its bay, under a tree in the LiDAR and in every photograph, is
+drawn plainly.
+
+| | |
+| --- | --- |
+| ![Maclaurin Chapel from Princes Street, drawn from code](../../docs/landmarks/maclaurin-chapel-front.jpg) | ![Maclaurin Chapel and its hall from above the street, drawn from code](../../docs/landmarks/maclaurin-chapel-above.jpg) |
+| ![Maclaurin Chapel on the map, drawn from code in the map's colours](../../docs/landmarks/maclaurin-chapel-map.jpg) | ![Maclaurin Chapel from the lawn by Princes Street, through the walker's eyes](../../docs/landmarks/maclaurin-chapel-eyes.jpg) |
+
 ## The frame
 
 - View frame: x to the right as seen from Princes Street on the west-north-west, y up from the

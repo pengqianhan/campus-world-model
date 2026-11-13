@@ -15,6 +15,23 @@ are shared by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Auckland Bioengineering House (439), on Symonds Street: a tower clad all round in glass, its plan a
+rectangle with its four corners cut, two stone fins on its north face rising a little above its top, and a plant room on
+its roof; round its north and east sides a lower building, where the site falls steeply to the east. Its heights and
+plans come from the LiDAR; the second fin's place is estimated with the photograph as a reference. One photograph from
+Symonds Street to its north-west, about 32 m from the tower; counted inside the rectangle the model fills on the screen,
+its silhouette has an IoU of 0.92 in it, and the brightness of the building is within 6 of the photograph's. From above
+its outline covers the LiDAR's with an IoU of 0.92, and on 81% of the cells both cover it is within 0.5 m of the LiDAR's
+height (the things on the tower's roof beside its plant room are not drawn). What the photograph does not show is drawn
+plainly or after what it shows.
+
+| | |
+| --- | --- |
+| ![Auckland Bioengineering House from the north-west, drawn from code](../../docs/landmarks/auckland-bioengineering-house-front.jpg) | ![Auckland Bioengineering House from above, drawn from code](../../docs/landmarks/auckland-bioengineering-house-above.jpg) |
+| ![Auckland Bioengineering House on the map, drawn from code in the map's colours](../../docs/landmarks/auckland-bioengineering-house-map.jpg) | ![Auckland Bioengineering House from Symonds Street to its north-west, through the walker's eyes](../../docs/landmarks/auckland-bioengineering-house-eyes.jpg) |
+
 ## The frame
 
 `config/auckland-bioengineering-house.json`, `frame`: x west (the axis, the bearing of most of its walls, within 1 to 3

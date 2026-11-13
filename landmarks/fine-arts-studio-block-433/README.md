@@ -15,6 +15,25 @@ shared by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is Fine Arts Studio Block 433, on the City campus, until now a measured massing: a long block of four
+storeys under a shallow vault whose ends bow out, its face to the lane it shares with 431 a wall of glazing, most of
+its panes frosted and some red, yellow or blue, over a dark red ground storey; its west-south-west end clad in yellow
+weatherboards, with a grey bay, two balconies with bowed fronts and an outside stair beside them; at its
+east-north-east end a lower block rounded in plan. Its heights and plans come from the LiDAR but for the end wall's
+place and the red ground storey's height; those, the glazing's mullions, floor bands and panels, the doors and
+windows, the balconies' fronts and the stair are estimated with the photograph as a reference. One photograph from the road at the block's west-south-west end, looking along the face to the lane and at
+the end; counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in it, and the
+brightness over it is within 4 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.94,
+and on 99% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is
+drawn plainly.
+
+| | |
+| --- | --- |
+| ![Fine Arts Studio Block 433 from the road at its end, drawn from code](../../docs/landmarks/fine-arts-studio-block-433-front.jpg) | ![Fine Arts Studio Block 433 from above, drawn from code](../../docs/landmarks/fine-arts-studio-block-433-above.jpg) |
+| ![Fine Arts Studio Block 433 on the map, drawn from code in the map's colours](../../docs/landmarks/fine-arts-studio-block-433-map.jpg) | ![Fine Arts Studio Block 433 from the road at its end, through the walker's eyes](../../docs/landmarks/fine-arts-studio-block-433-eyes.jpg) |
+
 ## The frame
 
 `config/fine-arts-studio-block-433.json`, `frame`: x west-south-west (minus the axis, the bearing of the long walls),

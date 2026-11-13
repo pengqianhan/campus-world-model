@@ -15,6 +15,25 @@ kit it is built with, the pipeline, the viewer and how to run them are shared by
   `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 2-6 Park Ave (529), on the Grafton campus: a long block of four storeys under a thin flat roof
+with a dark eave; at each upper storey a balcony along every face on a pale slab with a light rail; on its east face, on
+Park Avenue, the glazing behind them and a ground storey of pale grey brick; on its roof grey plant and a raised part
+with a red roof. Its heights and plans come from the LiDAR, which also sees the balconies' slabs and rails all round,
+and the ground under its eaves, where the walls are drawn set back, but for the part of a low wing south-west of it that
+trees hide, drawn to the campus map's outline; the balconies' slabs' depth and their rails' bars and posts, the glazing
+behind them on the east face and its ground storey's brick and windows are estimated with the photograph as a reference.
+One photograph from the footpath of Park Avenue, looking along the east face; counted inside the rectangle the model
+fills on the screen, its silhouette has an IoU of 0.96 in it, and the brightness of that face is within 8 of the
+photograph's. From above its outline covers the LiDAR's with an IoU of 0.87, and on 89% of the cells both cover it is
+within 0.5 m of the LiDAR's height. What the photograph does not show is drawn plainly.
+
+| | |
+| --- | --- |
+| ![2-6 Park Ave from Park Avenue, drawn from code](../../docs/landmarks/2-6-park-ave-front.jpg) | ![2-6 Park Ave from above, drawn from code](../../docs/landmarks/2-6-park-ave-above.jpg) |
+| ![2-6 Park Ave on the map, drawn from code in the map's colours](../../docs/landmarks/2-6-park-ave-map.jpg) | ![2-6 Park Ave from Park Avenue, through the walker's eyes](../../docs/landmarks/2-6-park-ave-eyes.jpg) |
+
 ## The frame
 
 `config/2-6-park-ave.json`, `frame`: x north-north-east (minus the axis, the bearing of the block's long east face), y

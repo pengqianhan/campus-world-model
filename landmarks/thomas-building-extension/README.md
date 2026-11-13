@@ -12,6 +12,28 @@ viewer and how to run them are shared by every landmark: [`../README.md`](../REA
 - Run its pipeline: `landmarks/pipeline/run.sh thomas-building-extension [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is the Thomas Building Extension (110N) on Symonds Street, a curved building joined to the
+Thomas Building (110) by a glazed link. Round its curve three storeys of glass curtain wall stand over a
+white rendered base, a dark beam between them, with service doors and small windows in the base; beside
+the curve is a flat face of board-marked concrete, where a University banner hangs (not drawn). Its pale
+metal roof rises from its edge to a raised middle with plant on it. Its roofs' heights come from the
+LiDAR, within 0.12 m of the medians of their returns but in the outer 0.2 m of the main roof, where
+the returns are of two heights (a fascia and a gutter behind it); the curtain wall's storeys, the doors and the
+windows are measured in two Street View photographs through their cameras, which are set from the
+photographs' own edges; how far the beam and the glass's fins stand out is estimated. Counted inside the
+rectangle the model fills on the screen, the model's silhouette has an IoU of 0.62 to 0.96 over the six
+views of the two panoramas, though in the upper and door views that rectangle spans the frame's width
+and the glass's reflected sky counts as sky there; from above its outline covers the LiDAR's with an IoU of 0.96,
+and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What no photograph shows is
+drawn plainly: the curve round its north, its north-west faces, the link's sides and its roofs.
+
+| | |
+| --- | --- |
+| ![The Thomas Building Extension from Symonds Street, drawn from code](../../docs/landmarks/thomas-building-extension-front.jpg) | ![The Thomas Building Extension from above, drawn from code](../../docs/landmarks/thomas-building-extension-above.jpg) |
+| ![The Thomas Building Extension on the map, drawn from code in the map's colours](../../docs/landmarks/thomas-building-extension-map.jpg) | ![The Thomas Building Extension from Symonds Street, through the walker's eyes](../../docs/landmarks/thomas-building-extension-eyes.jpg) |
+
 ## The frame
 
 `config/thomas-building-extension.json`, `frame`: x toward the road on the south-east (the axis, the

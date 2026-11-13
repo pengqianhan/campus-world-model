@@ -15,6 +15,30 @@ it is built with, the pipeline, the viewer and how to run them are shared by eve
   do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 302 of the Science Centre, on Symonds Street: a tower over a lower block before its
+south-west face. The tower's south-west face is in bands of pale
+metal between ribbons of glass, one a storey, under a band of tall slats; its south-east face is clad in
+brown, with a row of deep brown fins. Its roofs, square with its faces, fall gently to a band across their middle
+where three sawtooth ramps rise toward the south-west, with plant in four boxes and lower roofs at its two ends,
+each rising in a ramp to the parapet, and a lower wing along its north-east face. The lower block is wrapped in near-black screens of folded blades, which run
+on round its ends along the tower's end faces, round a tall glazed corner at its south end. Its
+heights come from the LiDAR, the ribbons' sills and heads from the LiDAR's returns on the face and the ramps fitted
+to the returns on them; the edges of its glazed corner are estimated in a photograph from the street corner to
+its south, through a camera fitted to points picked on it whose places the LiDAR measures. What nothing measures
+is estimated, and its card names it: among other things the sizes and spacing of its slats, fins and blades.
+Counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.92 in that photograph;
+the brightness of the building is within 9 of the photograph's. From above its outline covers the LiDAR's with an
+IoU of 0.89, and on 90% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph
+does not show is drawn plainly: its faces to the north-east and north-west, the screen along its north-west
+face and the lower wing along its north-east face.
+
+| | |
+| --- | --- |
+| ![Building 302 of the Science Centre from the street corner to its south, drawn from code](../../docs/landmarks/science-centre-302-front.jpg) | ![Building 302 of the Science Centre from above, drawn from code](../../docs/landmarks/science-centre-302-above.jpg) |
+| ![Building 302 of the Science Centre on the map, drawn from code in the map's colours](../../docs/landmarks/science-centre-302-map.jpg) | ![Building 302 of the Science Centre from Symonds Street to its south, through the walker's eyes](../../docs/landmarks/science-centre-302-eyes.jpg) |
+
 ## The frame
 
 `config/science-centre-302.json`, `frame`: x south-west, toward Symonds Street (the axis, the bearing of most

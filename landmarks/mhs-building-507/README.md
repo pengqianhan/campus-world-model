@@ -16,6 +16,23 @@ to run them are shared by every landmark: [`../README.md`](../README.md).
   so the default `all`), `refine`, `compare` and `metrics` need it, `data`, `place` and `topview` do not.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is building 507 of the M&HS Building, on the Grafton campus: along the street a block of five
+storeys, its upper storeys clad in tall near-black fins over a glazed base two storeys high; north of it three glazed
+bays stepping back one behind another, with a canopy over the entrance at their foot; behind them a block under flat
+roofs at the same height, with raised parts and a lower part on its south side. Its heights and plans come from the
+LiDAR; the underside of the finned storeys and the foot of the canopy's fascia are estimated with the photograph as a
+reference. One photograph from across the street to its east-south-east at dusk, about 16 m from the street face;
+counted inside the rectangle the model fills on the screen, its silhouette has an IoU of 0.97 in it, and the brightness
+of the building is within 5 of the photograph's. From above its outline covers the LiDAR's with an IoU of 0.89, and on 92% of the cells both cover it is within 0.5 m of the LiDAR's height. What the photograph does not show is drawn
+plainly.
+
+| | |
+| --- | --- |
+| ![Building 507 of the M&HS Building from across the street to its east-south-east, drawn from code](../../docs/landmarks/mhs-building-507-front.jpg) | ![Building 507 of the M&HS Building from above, drawn from code](../../docs/landmarks/mhs-building-507-above.jpg) |
+| ![Building 507 of the M&HS Building on the map, drawn from code in the map's colours](../../docs/landmarks/mhs-building-507-map.jpg) | ![Building 507 of the M&HS Building from across the street to its east-south-east, through the walker's eyes](../../docs/landmarks/mhs-building-507-eyes.jpg) |
+
 ## The frame
 
 `config/mhs-building-507.json`, `frame`: x north-north-east (minus the axis, the bearing of the building's walls, 198.3

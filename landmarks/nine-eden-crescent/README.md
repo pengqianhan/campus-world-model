@@ -11,6 +11,25 @@ pipeline, the viewer and how to run them are shared by every landmark: [`../READ
 - Run its pipeline: `landmarks/pipeline/run.sh nine-eden-crescent [stage ...]`.
 - The rules: [`docs/CONTRACT.md`](docs/CONTRACT.md) and [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md).
 
+## In brief
+
+This is 9 Eden Crescent (801), a white four-storey building in the city centre. Its street
+end on Eden Crescent has a white top storey, raked at its south-east corner, over three bays set back
+between two white piers: bands of windows, a vehicle way, a glazed entrance and a glazed corner under a
+canopy. Along its south-east side the top storey stands back behind a terrace, and plant stands on its
+flat roof. Every height comes from the LiDAR, within 0.25 m. Three Street View panoramas see the
+street end square on, with the neighbours either side and a 70 m tower behind it in their wide views;
+counted inside the rectangle the model fills on the screen, so that the neighbours do not count,
+the model's silhouette has an IoU of 0.81 to 1.00 over their nine views, though there those rectangles
+hold so little sky that a plain block filling them would score as high; from above its outline covers
+the LiDAR's with an IoU of 0.91. Its long sides, which stand against their neighbours, and its
+far end, which no photograph shows, are drawn plainly.
+
+| | |
+| --- | --- |
+| ![9 Eden Crescent from Eden Crescent, drawn from code](../../docs/landmarks/nine-eden-crescent-front.jpg) | ![9 Eden Crescent from above the street, drawn from code](../../docs/landmarks/nine-eden-crescent-above.jpg) |
+| ![9 Eden Crescent on the map, drawn from code in the map's colours](../../docs/landmarks/nine-eden-crescent-map.jpg) | ![9 Eden Crescent from Eden Crescent, through the walker's eyes](../../docs/landmarks/nine-eden-crescent-eyes.jpg) |
+
 ## The frame
 
 `config/nine-eden-crescent.json`, `frame`: x along the building, its street end toward -x, where it

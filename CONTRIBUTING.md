@@ -48,4 +48,4 @@ university" in the [README](README.md).
 ## Licence
 
 Code you contribute is under the repository's MIT licence. That licence does not cover the data;
-see "Data sources and licences" in the README.
+see [docs/data-sources.md](docs/data-sources.md).
