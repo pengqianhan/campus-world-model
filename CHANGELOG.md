@@ -16,6 +16,16 @@ A change to what the site does or shows adds its line here, and the README's
 
 ## 2026-11-13
 
+### Added
+
+- **A game in the walk.** The walk's top bar has a Game button; on a phone it stands under the speed. It lays 40 books beside the buildings round the walker,
+  most of them beside buildings with teaching rooms, and a red alarm clock called the Deadline comes after the walker
+  over the ground and the roofs, faster as time goes. Six books turn the chase round for 12 seconds: the Deadline
+  flees, and catching it scores and starts the next level. Caught three times, the game is over. It is played on
+  foot or on the scooter, where the Deadline goes twice as fast, out of doors, on every school's map. The game is off until it is started; its books and its Deadline are
+  made up, stand for no real class or due date, and cannot be opened like a place; the Game button's hint and About say so. The
+  score is kept until the page closes and is stored nowhere (#NNN).
+
 ### Changed
 
 - **The home page's heading carries its links.** On https://campusworldmodel.com/ and on the page an unknown

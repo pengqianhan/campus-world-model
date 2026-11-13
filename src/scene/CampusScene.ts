@@ -50,6 +50,7 @@ import { MeshBuilder, drape, levelSlope, ringsBounds, type FacadeSpec } from "./
 import { SEA_PLANE, Terrain } from "./terrain.ts";
 import { WALL_HEIGHT, buildInterior, disposeGroup, inset } from "./interior.ts";
 import { LabelLayer, type LabelSpec } from "./labels.ts";
+import { GameWorld } from "./game.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
 import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
@@ -448,6 +449,8 @@ export class CampusScene {
 
   /** The walkers on the map (walkers.ts). */
   readonly walkers: WalkerWorld;
+  /** The book game played with a walker (game.ts): made up, and off until the visitor starts it. */
+  readonly game: GameWorld;
   /** Floor outlines in metres, by building and floor, for walkers steered by hand indoors. */
   private floorRingCache = new Map<string, [number, number][][][]>();
   private walkMapCache?: WalkMap;
@@ -474,6 +477,7 @@ export class CampusScene {
   private lastFrame = 0;
   /** The walkers' labelsVersion the labels were last built for; a new world starts at 0, with none. */
   private walkerLabelsVersion = 0;
+  private gameLabelsVersion = 0;
   /** A click in a walker view: on a University building, or on the ground at a point. */
   onWalkPick?: (pick: { building?: string; at?: [number, number] }) => void;
 
@@ -576,6 +580,14 @@ export class CampusScene {
       ringColour: () => this.palette.accent,
     });
     this.scene.add(this.walkers.group);
+    this.game = new GameWorld({
+      groundAt: (x, y) => this.groundAt(x, y),
+      walkMap: () => this.walkMap(),
+      roofs: () => this.roofMap(),
+      buildings: () => this.campus?.buildings ?? [],
+      walker: (name) => this.walkers.state(name),
+    });
+    this.scene.add(this.game.group);
 
     // The buildings drawn in detail from code, and the measured massings, each made the first time
     // the camera comes near it.
@@ -855,6 +867,7 @@ export class CampusScene {
     this.contextRoofs = undefined;
     // A walker steered by hand keeps a grid of the ground round it: rebuild it with the surroundings.
     this.walkers.refresh();
+    this.game.refresh();
     this.contextGroup.clear();
     this.contextMaterials = [];
     this.groundLayers = [];
@@ -1621,6 +1634,7 @@ export class CampusScene {
     if (this.campus) this.setCampus(this.campus);
     if (this.lastContext) this.setContext(this.lastContext);
     this.walkers.refresh();
+    this.game.refresh();
     if (this.selection.building) {
       this.rebuildDetail();
       this.rebuildPin();
@@ -1969,8 +1983,10 @@ export class CampusScene {
     } else {
       // From a walker's height only the buildings near it are labelled; the rest would crowd the horizon.
       const near = this.viewWalker ? this.walkers.pose(this.viewWalker)?.at : undefined;
+      // A game on a small screen keeps the walker's view clear: the buildings' names wait until it ends.
+      const quiet = this.game.on && this.game.quiet && this.view !== "map";
       for (const b of this.campus.buildings) {
-        if (b.offMap) continue;
+        if (b.offMap || quiet) continue;
         if (near && Math.hypot(b.center[0] - near[0], b.center[1] - near[1]) > 260) continue;
         const l = this.opts.buildingLabel(b);
         const badge = this.badges.get(b.id);
@@ -1989,7 +2005,7 @@ export class CampusScene {
         });
       }
     }
-    specs.push(...this.walkers.labels());
+    specs.push(...this.walkers.labels(), ...this.game.labels());
     this.labels.set(specs);
     this.needsLabels = true;
     this.needsRender = true;
@@ -2599,8 +2615,14 @@ export class CampusScene {
       this.needsLabels = true;
     }
     // Also when the last walker has just gone: its name and words come off the map with it.
-    if (this.walkers.labelsVersion !== this.walkerLabelsVersion) {
+    // The game after the walkers: it reads where its walker now stands.
+    if (this.game.on && this.game.step(dt, now)) {
+      this.needsRender = true;
+      this.needsLabels = true;
+    }
+    if (this.walkers.labelsVersion !== this.walkerLabelsVersion || this.game.labelsVersion !== this.gameLabelsVersion) {
       this.walkerLabelsVersion = this.walkers.labelsVersion;
+      this.gameLabelsVersion = this.game.labelsVersion;
       this.rebuildLabels();
     }
     if (this.view === "map") this.controls.update();
@@ -3084,6 +3106,7 @@ export class CampusScene {
 
   dispose(): void {
     this.disposed = true;
+    this.game.dispose();
     this.walkers.clear();
     cancelAnimationFrame(this.raf);
     this.controls.dispose();

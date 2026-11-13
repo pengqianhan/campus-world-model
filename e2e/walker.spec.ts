@@ -308,6 +308,73 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect(page.locator(".topbar")).toBeVisible();
 });
 
+test("the book game is off until asked for; the walker eats books, the chase turns and the Deadline is caught; caught three times, the game ends, and ending it clears the map", async ({ page }) => {
+  type Game = { phase: string; books: [number, number][]; deadline: [number, number]; score: number; level: number; lives: number; eaten: number; power: number };
+  type GameScene = { game: { state(): Game | undefined }; walkers: { teleport(name: string, at: [number, number]): void } };
+  const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
+  const put = (at: [number, number]) => page.evaluate((p) => (window.__scene as unknown as GameScene).walkers.teleport("Walker", p), at);
+  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game.state()), test, { timeout: 60_000 });
+
+  await open(page, "?walk=1");
+  await ready(page);
+  // Nothing of the game is on the map until the visitor starts it.
+  expect(await game()).toBeUndefined();
+  await expect(page.locator("#game-panel")).toHaveCount(0);
+  await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+
+  // Its button says that the books and the Deadline are made up.
+  await expect(page.locator("#walker-game")).toHaveAttribute("title", /made up/);
+  await page.locator("#walker-game").click();
+  await expect(page.locator("#game-panel")).toBeVisible();
+  // The game is seen from behind the walker.
+  await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-label="game:deadline"]')).toHaveCount(1);
+  let g = (await game())!;
+  expect(g.books).toHaveLength(40);
+  expect(g.lives).toBe(3);
+  await shot(page, "32-book-game");
+
+  // Six books turn the chase round. The walker eats the book furthest from the Deadline each time,
+  // so that the Deadline does not catch it meanwhile, however slowly the frames come.
+  for (let k = 1; k <= 6; k++) {
+    g = (await game())!;
+    const from = g.deadline;
+    const far = (b: [number, number]) => Math.hypot(b[0] - from[0], b[1] - from[1]);
+    await put(g.books.reduce((a, b) => (far(b) > far(a) ? b : a)));
+    await until(`g.score >= ${k * 10}`);
+  }
+  await until("g.power > 0");
+  await expect(page.locator('[data-label="game:deadline"]')).toHaveClass(/fleeing/);
+
+  // Caught while it flees, the Deadline gives its points and comes back faster, a level on.
+  g = (await game())!;
+  await put(g.deadline);
+  await until("g.level === 2");
+  g = (await game())!;
+  expect(g.score).toBe(160);
+  expect(g.power).toBe(0);
+  expect(g.lives).toBe(3);
+
+  // The Deadline catches the walker three times, and the game is over.
+  for (let lives = 2; lives >= 0; lives--) {
+    // After a catch nothing catches anything for three seconds.
+    await page.waitForTimeout(3200);
+    g = (await game())!;
+    await put(g.deadline);
+    await until(`g.lives === ${lives}`);
+  }
+  await expect(page.locator("#game-over")).toBeVisible();
+  await expect(page.locator("#game-over")).toContainText("Score 160");
+  expect((await game())!.phase).toBe("over");
+
+  // Ending the game takes everything of it off the map; the walk goes on.
+  await page.locator("#game-end").click();
+  await expect(page.locator("#game-panel")).toHaveCount(0);
+  await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
+  expect(await game()).toBeUndefined();
+  await expect(page.locator("#walker-panel")).toBeVisible();
+});
+
 test("in a narrower window with a mouse the walk's panels keep apart, out of doors and inside", async ({ page }) => {
   for (const [width, height, to] of [
     [760, 600, "105"],

@@ -16,6 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
+import { stopGame } from "./game.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -347,6 +348,8 @@ export function startWalking(opts: { name?: string; near?: unknown } = {}): Repl
 /** Turns walking off: every walker leaves and the view goes back to the map. */
 export function stopWalking(): void {
   const s = scene;
+  // A game played with the walker ends with the walk.
+  stopGame();
   if (s) {
     s.setWalkerView("map");
     s.walkers.clear();

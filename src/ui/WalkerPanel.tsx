@@ -6,6 +6,7 @@
 // with the stick while the other drags the view round. The walker, its scooter and its drone are
 // made up; the walk's menu says so, and that doors are not mapped.
 import { useEffect, useRef, useState } from "preact/hooks";
+import { gameBest, gameFlash, gameOn, gameView, startGame, stopGame } from "../app/game.ts";
 import { formatDate, t } from "../app/i18n.ts";
 import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -27,7 +28,7 @@ import {
   wanderingNow,
 } from "../app/walker.ts";
 import { RIDES, type Ride } from "../scene/rides.ts";
-import { DRONE_CEILING, WALK_SPEED } from "../scene/walkers.ts";
+import { DRONE_CEILING } from "../scene/walkers.ts";
 import { Icon, campusName } from "./common.tsx";
 import { isLite } from "./SceneHost.tsx";
 
@@ -40,8 +41,8 @@ const GAUGE_TOP: Record<Ride, number> = { walk: 15, scooter: 25, fly: 60 };
 
 /** How far the stick must be pushed, as a share of its reach, before it does anything. */
 const DEAD_ZONE = 0.18;
-/** Metres a second with the stick pushed all the way up: on foot a jog; on the scooter and flying, flat out. */
-const STICK_TOP: Record<Ride, number> = { walk: WALK_SPEED * 2.2, scooter: PACE.scooter.fast, fly: PACE.fly.fast };
+/** Metres a second with the stick pushed all the way up: on foot a run, as Shift gives; on the scooter and flying, flat out. */
+const STICK_TOP: Record<Ride, number> = { walk: PACE.walk.fast, scooter: PACE.scooter.fast, fly: PACE.fly.fast };
 /** Degrees a second with the stick pushed all the way to one side. */
 const STICK_TURN = 120;
 /** Share of the stick's reach that its knob travels. */
@@ -235,6 +236,20 @@ export function WalkerPanel() {
   const indoor = !!status?.indoor;
   const clock = shown.value;
   const preview = timeMode.value === "preview";
+  const playing = gameOn.value;
+  const game = playing ? gameView.value : undefined;
+  const flash = gameFlash.value;
+  const flashing = flash && performance.now() - flash.at < 1200 ? flash.kind : undefined;
+
+  // The game is played on the ground and seen from the walker: starting it lands the drone, and
+  // leaves the map view for the view behind the walker.
+  const play = () => {
+    setMore(false);
+    setMessage(undefined);
+    if (ride === "fly") rideAs("walk");
+    if (view === "map") setView({ view: "follow", name: MY_WALKER });
+    if (!startGame(MY_WALKER, touch)) setMessage(t("game.notReady"));
+  };
 
   const act = async (command: string, args: Record<string, unknown>) => {
     const r = await run(command, { name: MY_WALKER, ...args });
@@ -296,7 +311,7 @@ export function WalkerPanel() {
 
   return (
     <section
-      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""}`}
+      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""} ${playing ? "playing" : ""}`}
       id="walker-panel"
       aria-label={t("walker.heading")}
       style={lift}
@@ -345,6 +360,24 @@ export function WalkerPanel() {
             <span class="hud-label">{t("walker.goTo")}</span>
             <Icon name="chevronDown" size={14} />
           </button>
+          {/* On a phone the top row has no room for it: there the game's button stands under the speed. */}
+          {!touch && (
+            <>
+              <span class="hud-divider" aria-hidden="true" />
+              <button
+                type="button"
+                class={`hud-tool hud-game-tool ${playing ? "on" : ""}`}
+                id="walker-game"
+                aria-pressed={playing}
+                aria-label={t(playing ? "game.stopHint" : "game.startHint")}
+                title={t(playing ? "game.stopHint" : "game.startHint")}
+                onClick={() => (playing ? stopGame() : play())}
+              >
+                <Icon name="book" size={16} />
+                <span class="hud-label">{t(playing ? "game.stop" : "game.start")}</span>
+              </button>
+            </>
+          )}
           <span class="hud-divider" aria-hidden="true" />
           <button
             type="button"
@@ -385,6 +418,67 @@ export function WalkerPanel() {
           <p class="walker-note">{t("walker.note", { ceiling: DRONE_CEILING })}</p>
         </div>
       </div>
+
+      {game && (
+        <div class="hud-corner hud-tc">
+          <section class={`hud-card hud-game ${game.power > 0 ? "chasing" : ""} ${flashing ? `flash-${flashing}` : ""}`} id="game-panel" aria-label={t("game.title")}>
+            <div class="hud-game-row">
+              <span class="hud-game-score" id="game-score" aria-label={t("game.score", { score: game.score })}>
+                {game.score}
+              </span>
+              <span class="hud-game-books" id="game-books" role="img" aria-label={t("game.books", { eaten: game.eaten, need: game.need })} title={t("game.books", { eaten: game.eaten, need: game.need })}>
+                <Icon name="book" size={15} />
+                {Array.from({ length: game.need }, (_, k) => (
+                  <i key={k} class={game.power > 0 || k < game.eaten ? "on" : ""} />
+                ))}
+              </span>
+              <span class="hud-game-lives" id="game-lives" role="img" aria-label={t("game.lives", { lives: game.lives })} title={t("game.lives", { lives: game.lives })}>
+                {Array.from({ length: 3 }, (_, k) => (
+                  <i key={k} class={k < game.lives ? "on" : ""}>
+                    ♥
+                  </i>
+                ))}
+              </span>
+              <span class="hud-game-level">{t("game.level", { level: game.level })}</span>
+            </div>
+            {game.phase === "over" ? (
+              <div class="hud-game-over" id="game-over" role="status">
+                <strong>{t("game.over")}</strong>
+                <span>{t("game.final", { score: game.score, best: gameBest.value })}</span>
+                <span class="hud-game-buttons">
+                  <button type="button" class="btn primary" id="game-again" onClick={play}>
+                    {t("game.again")}
+                  </button>
+                  <button type="button" class="btn" id="game-end" onClick={stopGame}>
+                    {t("game.stop")}
+                  </button>
+                </span>
+              </div>
+            ) : (
+              <p class="hud-game-status" id="game-status" role="status">
+                {game.paused ? (
+                  t(`game.paused.${game.paused}`)
+                ) : game.power > 0 ? (
+                  <>
+                    <strong>{t("game.chase", { seconds: Math.ceil(game.power) })}</strong>
+                    <span class="hud-game-arrow" style={{ transform: `rotate(${Math.round(game.bearing)}deg)` }} aria-hidden="true">
+                      <Icon name="chevronUp" size={16} />
+                    </span>
+                    {t("game.metres", { metres: Math.round(game.distance) })}
+                  </>
+                ) : (
+                  <>
+                    <span class="hud-game-arrow" style={{ transform: `rotate(${Math.round(game.bearing)}deg)` }} aria-hidden="true">
+                      <Icon name="chevronUp" size={16} />
+                    </span>
+                    {t(touch ? "game.metres" : "game.deadlineAt", { metres: Math.round(game.distance) })}
+                  </>
+                )}
+              </p>
+            )}
+          </section>
+        </div>
+      )}
 
       <div class="hud-corner hud-bl">
         <p class="hud-sign" id="walker-where" aria-live="polite">
@@ -472,6 +566,19 @@ export function WalkerPanel() {
             {!touch && <kbd>{KEY.view}</kbd>}
           </div>
         </section>
+        {touch && (
+          <button
+            type="button"
+            class={`hud-card hud-btn hud-game-pill ${playing ? "on" : ""}`}
+            id="walker-game"
+            aria-pressed={playing}
+            title={t(playing ? "game.stopHint" : "game.startHint")}
+            onClick={() => (playing ? stopGame() : play())}
+          >
+            <Icon name="book" size={16} />
+            <span>{t(playing ? "game.stop" : "game.start")}</span>
+          </button>
+        )}
       </div>
     </section>
   );

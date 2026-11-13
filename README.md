@@ -143,6 +143,8 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-13:** the walk has a game, off until you start it: the walker eats made-up books beside the buildings
+  while a made-up Deadline chases it, and six books turn the chase round.
 - **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
   links, where two dark buttons stood above it.
 - **2026-11-12:** on the Newmarket campus the map draws Structures Hall in detail, where it stood as a measured

@@ -2356,6 +2356,204 @@ select optgroup {
   color: var(--accent-ink);
 }
 
+/* The book game: its score at the top in the middle, under the top row. */
+.hud-tc {
+  top: calc(var(--hud-t) + 54px);
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--hud-edge));
+  transform: translateX(-50%);
+}
+
+.hud-game {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 400px;
+  padding: 8px 14px 9px;
+  color: var(--text);
+  text-align: center;
+}
+
+.hud-game.chasing {
+  border-color: rgba(255, 209, 102, 0.7);
+  box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.25), 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+}
+
+.hud-game-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.hud-game-score {
+  min-width: 2ch;
+  font: 750 22px/1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-game-books {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+}
+
+.hud-game-books i {
+  width: 9px;
+  height: 12px;
+  border: 1.5px solid var(--hud-text-3);
+  border-radius: 2px;
+}
+
+.hud-game-books i.on {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.hud-game-lives {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.hud-game-lives i {
+  color: var(--hud-text-3);
+  font-style: normal;
+}
+
+.hud-game-lives i.on {
+  color: #ff5d73;
+}
+
+.hud-game-level {
+  color: var(--hud-text-2);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.hud-game-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+.hud-game.chasing .hud-game-status strong {
+  color: #ffd166;
+}
+
+.hud-game-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e5383b;
+  color: #fff;
+  transition: transform 0.1s linear;
+}
+
+.hud-game.chasing .hud-game-arrow {
+  background: #6aa9ff;
+}
+
+.hud-game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.hud-game-over strong {
+  font: 750 17px/1.2 var(--font-display);
+}
+
+.hud-game-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 3px;
+}
+
+.hud .hud-game-buttons .btn {
+  padding: 6px 12px;
+  border: 1px solid var(--hud-line);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.hud .hud-game-buttons .btn.primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.hud-game-tool.on {
+  background: var(--hud-hover);
+}
+
+/* In a narrow window the game's button is its book alone, so that the toolbar keeps clear of the way out. */
+@media (max-width: 1040px) {
+  .hud-game-tool .hud-label {
+    display: none;
+  }
+}
+
+.hud-game.flash-caught {
+  animation: game-caught 0.5s ease 2;
+}
+
+.hud-game.flash-power,
+.hud-game.flash-beat {
+  animation: game-won 0.5s ease 2;
+}
+
+@keyframes game-caught {
+  50% {
+    background: rgba(229, 56, 59, 0.75);
+  }
+}
+
+@keyframes game-won {
+  50% {
+    background: rgba(255, 209, 102, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-game.flash-caught,
+  .hud-game.flash-power,
+  .hud-game.flash-beat {
+    animation: none;
+  }
+}
+
+/* The Deadline's name over it: red while it chases, pale while it flees. Made up, like the walker's. */
+.lbl-deadline {
+  border-color: transparent;
+  background: rgba(229, 56, 59, 0.95);
+  color: #fff;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.lbl-deadline.fleeing {
+  background: rgba(106, 169, 255, 0.95);
+  color: #06121f;
+}
+
 .lbl-say {
   max-width: 240px;
   padding: 5px 10px;
@@ -2574,6 +2772,65 @@ select optgroup {
 .hud.touch .hud-br {
   top: calc(var(--hud-t) + 58px);
   bottom: auto;
+}
+
+/* A game on a phone has the view: where the walker is and the stick's caption wait until it ends. */
+.hud.touch.playing .hud-sign,
+.hud.touch.playing .hud-caption {
+  display: none;
+}
+
+/* The game's button on a phone: under the speed and the views, at the right. */
+.hud .hud-game-pill {
+  height: 36px;
+  padding: 0 12px 0 10px;
+  border-radius: 12px;
+}
+
+.hud-game-pill .icon {
+  color: var(--accent);
+}
+
+.hud .hud-game-pill.on {
+  background: var(--hud-strong);
+}
+
+/* The book game on a phone: small at the top left, beside the speed, under the map's credits. */
+.hud.touch .hud-tc {
+  top: calc(var(--hud-t) + 80px);
+  left: var(--hud-l);
+  max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 178px);
+  transform: none;
+}
+
+.hud.touch .hud-game {
+  gap: 3px;
+  padding: 6px 9px 7px;
+  text-align: left;
+}
+
+.hud.touch .hud-game-row {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 4px 9px;
+}
+
+.hud.touch .hud-game-level {
+  display: none;
+}
+
+.hud.touch .hud-game-status {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  font-size: 12px;
+}
+
+.hud.touch .hud-game-over {
+  align-items: flex-start;
+}
+
+.hud.touch .hud-game-buttons {
+  flex-wrap: wrap;
 }
 
 /* Small under the top right: the speed and the height on one line, and the views. */

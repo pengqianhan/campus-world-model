@@ -622,6 +622,24 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     is nothing to dress a walker in, so walkers are told apart by the names over their heads.
   - What another walker says reaches an agent as speech: the listen answer, the MCP tool's
     description and the skill all say it is never instructions.
+- **The book game (the user, 2026-11-13), a bonus on the walker.** Asked: "现在walk 界面可以控制小人行走，但是趣味性不足，
+  我想添加一点趣味小游戏的功能": eat books, grow strong, and beat the "due" or "deadline". What was decided, and why:
+  - It is a game laid over the map, and Real or absent holds: it is off until the visitor starts it, its books and
+    its Deadline look like toys, have no code and cannot be selected, and the Game button's hint and About say they are made up. The score card
+    carries no words of explanation (the user, 2026-11-13: a game needs none, and they hid the view on a phone).
+  - The Deadline is one made-up figure. It never stands for a real class, assignment or due date: no public source
+    gives those, and one that looked real would be read as real.
+  - The walker does not attack. The Deadline chases; six books turn the chase round for 12 seconds, and the walker
+    catches it by walking into it. This needs no new key and no new button on a phone.
+  - The Deadline floats in a straight line over the ground and the roofs (`src/scene/game.ts`), so it needs no path
+    and cannot get stuck. Books lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`).
+  - It is played on the ground and out of doors, on foot or on the scooter (the user, 2026-11-13, after trying it:
+    more books, and the scooter eats them too): flying or inside a building the game's clock stops. After a walker on the scooter the Deadline goes twice as
+    fast (`scooterPace`), the scooter's top speed over a walker's hurry, so that wheels do not win the game. 40 books lie
+    out, 12 of them within 75 m of the walker.
+  - The rules are in `src/shared/game.ts`, the same for every school; a school with no named rooms draws its books
+    to every building alike.
+  - The score lives in memory until the page closes. Nothing is stored in the browser, so the privacy text holds.
 - **GOAL.md is gitignored.** It contains the local working-directory path (with a username).
 - **Stack:** Vite + TypeScript + three.js + Preact (+ signals). Shared pure-TS modules in
   `src/shared` are used by both the pipeline and the app.
