@@ -57,7 +57,7 @@ import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
 import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
-import { frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
+import { bandPitch, frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -167,6 +167,14 @@ const FIGHT_HANDS_OFF = 2500;
 /** Degrees the fight's camera sees wider, upright on a phone and otherwise. */
 const FIGHT_WIDEN_UPRIGHT = 10;
 const FIGHT_WIDEN = 3;
+/**
+ * The clear band the fight's camera frames in, shares of the picture's height from its top: the
+ * top of it, the lowest the walker's feet go, the lowest the foe's go. Upright on a phone, the
+ * boss's bar and the vitals take the top quarter, the stick and the buttons the foot, with the
+ * walker between them.
+ */
+const FIGHT_BAND = [0.09, 0.76, 0.76] as const;
+const FIGHT_BAND_UPRIGHT = [0.25, 0.86, 0.64] as const;
 /** Degrees the view through the eyes looks down at first: the drone's camera, more. */
 const EYES_PITCH: Record<Ride, number> = { walk: -4, scooter: -4, fly: -14 };
 /** Milliseconds at least between taking one landmark's roofs and the next's (roofMap). */
@@ -2396,13 +2404,19 @@ export class CampusScene {
         shot.foeHalf = focus.half;
         shot.halfFov = half;
         shot.tanHalfWide = Math.tan(half) * this.persp.aspect;
+        // The clear band of the picture (shares of its height from the top): under the panels at
+        // its top, and over the boss's bar; on a phone held upright, under the boss's bar and the
+        // vitals, the walker between the stick and the buttons and the foe over them.
+        const upright = this.persp.aspect < 1;
+        shot.top = upright ? FIGHT_BAND_UPRIGHT[0] : FIGHT_BAND[0];
+        shot.bottom = upright ? FIGHT_BAND_UPRIGHT[1] : FIGHT_BAND[1];
+        shot.foeBottom = upright ? FIGHT_BAND_UPRIGHT[2] : FIGHT_BAND[2];
+        shot.wide = upright ? 0.8 : 0.7;
         shot.minReach = Math.cos(up) * d;
         shot.maxReach = FIGHT_REACH;
-        // On a phone held upright the bars cover the top of the picture too: the two stand in its middle.
-        fight.lift = this.persp.aspect < 1 ? 0.04 : 0.16;
-        const f = frameFight(shot, this.fightFrame, 0.7, fight.lift);
-        // Out quickly, for a foe that rushes in; back in slowly.
-        const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * (f.reach > fight.reach ? 6 : 2));
+        const f = frameFight(shot, this.fightFrame);
+        // Out at once nearly, for a foe that rushes in; back in slowly.
+        const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * (f.reach > fight.reach ? 12 : 1.2));
         fight.reach += (f.reach - fight.reach) * k;
       }
       if (fight.k > 0) d += (Math.max(d, fight.reach / Math.cos(up)) - d) * fight.k;
@@ -2458,7 +2472,9 @@ export class CampusScene {
         const a1 = Math.atan2(pose.height + 1.9 - p.y, toWalker);
         const b0 = Math.atan2(fight.foot - p.y, toFoe);
         const b1 = Math.atan2(fight.top - p.y, toFoe);
-        const pitch = (Math.min(a0, a1, b0, b1) + Math.max(a0, a1, b0, b1)) / 2 - fight.lift * ((this.persp.fov * Math.PI) / 360);
+        const shot = this.fightShot;
+        shot.halfFov = (this.persp.fov * Math.PI) / 360;
+        const pitch = bandPitch(Math.max(a1, b1), Math.min(a0, a1), Math.min(b0, b1), shot).pitch;
         const c = Math.cos(pitch) * 10;
         look.lerp(this._camPoint.set(p.x + sy * c, p.y + Math.sin(pitch) * 10, p.z - ny * c), fight.k);
       }
@@ -2490,14 +2506,31 @@ export class CampusScene {
   /** The walker view's camera matrix when last drawn. */
   private lastView?: number[];
   /**
-   * The fight's camera (placeWalkerCamera): how far it has come in, 0-1; metres back it frames from
-   * and the share of half the picture it looks lower; the bearing it looks along and whether it held
+   * The fight's camera (placeWalkerCamera): how far it has come in, 0-1; metres back it frames
+   * from; the bearing it looks along and whether it held
    * it last frame; the foe framed, metres east and north, and its feet and top; when the visitor
    * last turned the view (performance.now); whether trees are left out of the picture now.
    */
-  private fight = { k: 0, reach: 0, lift: 0, yaw: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false };
+  private fight = { k: 0, reach: 0, yaw: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false };
   private fightFrame: FightFrame = { reach: 0, pitch: 0 };
-  private fightShot: FightShot = { walkerFoot: 0, walkerTop: 0, base: 0, tanUp: 0, ahead: 0, foeFoot: 0, foeTop: 0, foeHalf: 0, halfFov: 0, tanHalfWide: 0, minReach: 0, maxReach: 0 };
+  private fightShot: FightShot = {
+    walkerFoot: 0,
+    walkerTop: 0,
+    base: 0,
+    tanUp: 0,
+    ahead: 0,
+    foeFoot: 0,
+    foeTop: 0,
+    foeHalf: 0,
+    halfFov: 0,
+    tanHalfWide: 0,
+    minReach: 0,
+    maxReach: 0,
+    top: FIGHT_BAND[0],
+    bottom: FIGHT_BAND[1],
+    foeBottom: FIGHT_BAND[2],
+    wide: 0.7,
+  };
   private fightLook = new Vector3();
   private _camPoint = new Vector3();
   private shakeBy = new Vector3();

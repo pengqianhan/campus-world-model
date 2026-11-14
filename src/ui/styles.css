@@ -3931,17 +3931,22 @@ select optgroup {
   font-size: 15px;
 }
 
-/* On a phone the foot of the screen is the thumbs': the boss's bar goes high, under the vitals, and
-   the quest tracker (which only says to face it) gives it the room. */
+/* On a phone the foot of the screen is the thumbs' and its middle the fight's: the boss's bar is a
+   thin line across the top under the credits, its name small on one line with the phase pips
+   beside it, and the quest tracker (which only says to face it) gives it the room. */
 .sq.touch.has-boss .sq-obj {
   display: none;
 }
 
 .sq.touch .sq-boss {
-  top: calc(var(--hud-t) + 158px);
+  top: calc(var(--hud-t) + 84px);
   bottom: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 3px 8px;
   width: calc(100vw - var(--hud-l) - var(--hud-r));
-  padding: 6px 0;
+  padding: 0;
   background: none;
   animation-name: sq-in-top;
 }
@@ -3953,12 +3958,82 @@ select optgroup {
   }
 }
 
-.sq.touch .sq-boss-head b {
-  font-size: 17px;
+.sq.touch .sq-boss-head {
+  justify-content: flex-start;
 }
 
-.sq.touch .sq-boss-title {
+.sq.touch .sq-boss-head b {
+  overflow: hidden;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sq.touch .sq-boss-title,
+.sq.touch .sq-boss-sub {
   display: none;
+}
+
+.sq.touch .sq-boss-track {
+  grid-row: 2;
+  grid-column: 1 / -1;
+}
+
+.sq.touch .sq-boss-foot {
+  grid-row: 1;
+  grid-column: 2;
+}
+
+.sq.touch .sq-boss-phase i {
+  padding: 1px 4px 0;
+  font-size: 9px;
+}
+
+.sq.touch .sq-bar.boss {
+  height: 6px;
+}
+
+.sq.touch .sq-boss-notch {
+  top: -2px;
+  bottom: -2px;
+}
+
+/* While the boss is out the vitals are one short row under its bar: the rank's diamond, and thin
+   bars of Focus and Stamina without their numbers. */
+.sq.touch.has-boss .sq-vitals {
+  top: calc(var(--hud-t) + 116px);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 3px 10px;
+  width: min(170px, 46vw);
+}
+
+.sq.touch.has-boss .sq-rank {
+  grid-row: 1 / span 2;
+}
+
+.sq.touch.has-boss .sq-rank-text,
+.sq.touch.has-boss .sq-n,
+.sq.touch.has-boss .sq-tag {
+  display: none;
+}
+
+.sq.touch.has-boss .sq-badge {
+  width: 18px;
+  height: 18px;
+  margin: 3px;
+  border-width: 1.5px;
+  font-size: 12px;
+}
+
+.sq.touch.has-boss .sq-stat {
+  grid-template-columns: 1fr;
+}
+
+.sq.touch.has-boss .sq-stat .sq-bar {
+  height: 4px;
 }
 
 .sq.touch .sq-combo {
@@ -3967,6 +4042,20 @@ select optgroup {
 
 .sq.touch .sq-combo b {
   font-size: 40px;
+}
+
+/* The hit count goes up beside the vitals while the boss is out, out of the fight. */
+.sq.touch.has-boss .sq-combo {
+  top: calc(var(--hud-t) + 112px);
+}
+
+.sq.touch.has-boss .sq-combo b {
+  font-size: 26px;
+}
+
+.sq.touch.has-boss .sq-combo span {
+  font-size: 9px;
+  letter-spacing: 0.2em;
 }
 
 .sq.touch .sq-card {
@@ -3982,25 +4071,54 @@ select optgroup {
   font-size: 14px;
 }
 
-/* Under the vitals; under the boss's bar while it is out. */
+/* The big words are a short line at the top on a phone, under the vitals (the boss's bar and the
+   vitals while it is out), gone in under two seconds, never over the middle of the picture. */
 .sq.touch .sq-banner {
-  top: calc(var(--hud-t) + 172px);
+  top: calc(var(--hud-t) + 160px);
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
   max-width: calc(100vw - 16px);
-  padding: 6px 28px 5px;
+  padding: 4px 16px 3px;
+  white-space: nowrap;
+  animation: sq-toast 1.8s ease both;
 }
 
 .sq.touch .sq-banner strong {
-  font-size: 24px;
-  letter-spacing: 0.16em;
+  margin-right: 0;
+  font-size: 15px;
+  letter-spacing: 0.14em;
 }
 
 .sq.touch .sq-banner span {
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
+  overflow: hidden;
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+}
+
+.sq.touch .sq-banner .sq-banner-eyebrow {
+  display: none;
 }
 
 .sq.touch.has-boss .sq-banner {
-  top: calc(var(--hud-t) + 226px);
+  top: calc(var(--hud-t) + 146px);
+}
+
+@keyframes sq-toast {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  10%,
+  85% {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%);
+  }
 }
 
 .sq.touch .sq-word {

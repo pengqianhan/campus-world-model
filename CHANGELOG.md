@@ -28,7 +28,9 @@ A change to what the site does or shows adds its line here, and the README's
   pause menu, a study record and a graded debrief frame it, with sounds made in the browser and a reduced-motion setting.
   In a fight the camera behind the walker swings onto the line from the foe through the walker and stands back until both
   are whole in the picture; the Final Exam's arena is on the most open ground near its building, and trees between the
-  camera and the fight are left out of the picture while it lasts.
+  camera and the fight are left out of the picture while it lasts. On a phone the boss's bar is a thin line under the
+  credits, the vitals one short row while the boss is out, and the big words a short line at the top, so the middle of
+  the screen is the fight's.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.

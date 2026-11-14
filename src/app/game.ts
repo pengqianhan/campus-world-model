@@ -152,6 +152,10 @@ export function rankName(rank: number): string {
   return t(`game.rank.${RANKS[rank]?.id ?? "fresher"}`);
 }
 
+/** Whether the game is played on a phone, where the big words are short (nextBanner). */
+let compactHud = false;
+const PHONE_BANNER_MS = 1800;
+
 function banner(b: Omit<Banner, "id">): void {
   // A phase goes before what waits.
   if (b.kind === "phase") banners.unshift({ ...b, id: seq++ });
@@ -165,7 +169,8 @@ function nextBanner(): void {
   window.clearTimeout(bannerTimer);
   const b = gameCard.peek() ? undefined : banners.shift();
   gameBanner.value = b;
-  if (b) bannerTimer = window.setTimeout(nextBanner, b.ms);
+  // On a phone they are a short line at the top, gone in under two seconds.
+  if (b) bannerTimer = window.setTimeout(nextBanner, compactHud ? Math.min(b.ms, PHONE_BANNER_MS) : b.ms);
 }
 
 function feed(text: string, kind: string, value?: string): void {
@@ -378,6 +383,7 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   scene.game.reducedMotion = gameSettings.peek().reducedMotion;
   scene.game.onEvent = told;
   if (!scene.game.start(name, words, quiet, compact)) return false;
+  compactHud = compact;
   setSound(gameSettings.peek().sound);
   window.clearInterval(timer);
   timer = window.setInterval(poll, 100);
