@@ -26,7 +26,7 @@ A change to what the site does or shows adds its line here, and the README's
   A floor the map leaves blank says why, in the map's own words. The pages run no script, so search engines and
   AI assistants can read them; the sitemap and `llms.txt` list them. They name only the learning spaces the map
   names. Today 69 buildings of the University of Auckland have a page; the other schools' maps show buildings
-  only, so their list links each building to the map.
+  only, so their list links each building to the map (#177).
 
 - **Search engines and AI assistants can read the site.** Each page names its one address on
   https://campusworldmodel.com/ (the copies on pages.dev and GitHub Pages name the same one) and a picture
