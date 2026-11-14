@@ -19,6 +19,8 @@ import {
   openSpot,
   rankFor,
   reachable,
+  bodyScale,
+  slideRound,
   statsFor,
   turnBetween,
   type Foe,
@@ -875,6 +877,61 @@ describe("grades", () => {
     expect(f.knowledge).toEqual({ points: GRADE.knowledge.max, max: GRADE.knowledge.max });
     // A run not finished gets nothing for its time.
     expect(gradeFactors({ ...clean, victory: false }).time.points).toBe(0);
+  });
+});
+
+describe("keeping out of the big foes", () => {
+  const len = (v: Pt) => Math.hypot(v[0], v[1]);
+  it("stops a move into a circle at its edge, and slides the rest of it round", () => {
+    // Straight at the middle: stops on the edge.
+    const d = slideRound([0, -5], [0, 4], [0, 0], 2);
+    expect(d[0]).toBeCloseTo(0, 6);
+    expect(-5 + d[1]).toBeCloseTo(-2, 6);
+    // At a slant: what is left of the move goes on along the edge, and ends on it, not in it.
+    const s = slideRound([-1, -5], [0, 6], [0, 0], 2);
+    const end: Pt = [-1 + s[0], -5 + s[1]];
+    expect(len(end)).toBeGreaterThanOrEqual(2 - 1e-9);
+    expect(end[1]).toBeGreaterThan(-2);
+    // A move that misses, or goes away, is left as it is.
+    expect(slideRound([3, -5], [0, 6], [0, 0], 2)).toEqual([0, 6]);
+    expect(slideRound([0, -3], [0, -1], [0, 0], 2)).toEqual([0, -1]);
+    // From inside, out to the edge.
+    const o = slideRound([0.5, 0], [0.1, 0], [0, 0], 2);
+    expect(0.5 + o[0]).toBeCloseTo(2, 6);
+  });
+
+  it("does not let a long dash pass through: it stops at the near side", () => {
+    // Nine metres straight through a body four across.
+    const d = slideRound([0, -4.5], [0, 9], [0, 0], 2);
+    expect(-4.5 + d[1]).toBeLessThanOrEqual(-2 + 1e-9);
+  });
+
+  it("keeps the walker out of the Final Exam and the DDL when it walks, dodges or sprints into them", () => {
+    for (const kind of ["exam", "ddl"] as const) {
+      for (const sprint of [false, true]) {
+        const g = quiet();
+        if (sprint) g.rank = 4;
+        const f = foe(g, kind, 6);
+        f.cool = 99;
+        f.tier = kind === "ddl" ? MAIN.ddl1.tier : 1;
+        const r = FOES[kind].body! * bodyScale(f) + PLAYER.body;
+        let p: Pt = [0, 0];
+        let least = Infinity;
+        for (let i = 0; i < 40; i++) {
+          if (i % 10 === 0) ((g.stamina = 1e4), g.act("dodge"));
+          // It walks north, into the foe, as well as dodging.
+          p = [p[0], p[1] + 0.1];
+          g.step(0.05, at(p, 0));
+          p = [p[0] + g.orders.shove[0], p[1] + g.orders.shove[1]];
+          least = Math.min(least, Math.hypot(p[0] - f.at[0], p[1] - f.at[1]));
+        }
+        expect(least, `${kind}${sprint ? ", sprinting" : ""}`).toBeGreaterThanOrEqual(r - 1e-6);
+      }
+    }
+  });
+
+  it("lets the walker brush through a small foe", () => {
+    expect(FOES.distraction.body).toBeUndefined();
   });
 });
 

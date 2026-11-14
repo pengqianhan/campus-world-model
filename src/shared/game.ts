@@ -25,6 +25,12 @@ export interface FoeSpec {
   reach: number;
   /** Metres: how big it is, for blows and for keeping apart. */
   radius: number;
+  /**
+   * Metres round its middle that the walker cannot come into, from its model's footprint at the
+   * ground (the DDL's clock, the Final Exam's skirt): it slides round them. Absent: the walker can
+   * brush through it, as through the small ones.
+   */
+  body?: number;
   /** Knowledge for beating it. */
   xp: number;
   /** Seconds it shows an attack coming before the attack lands. */
@@ -41,12 +47,12 @@ export interface FoeSpec {
 }
 
 export const FOES: Record<FoeKind, FoeSpec> = {
-  ddl: { hp: 700, speed: 3.1, damage: 18, reach: 9, radius: 1.5, xp: 60, tell: 0.95, cooldown: 1.7, weight: 0.35, guard: 0.6 },
+  ddl: { hp: 700, speed: 3.1, damage: 18, reach: 9, radius: 1.5, body: 1.3, xp: 60, tell: 0.95, cooldown: 1.7, weight: 0.35, guard: 0.6 },
   procrastination: { hp: 100, speed: 1.5, damage: 9, reach: 3.6, radius: 1.1, xp: 18, tell: 1.0, cooldown: 2.6, weight: 0.6 },
   distraction: { hp: 40, speed: 4.3, damage: 5, reach: 1.7, radius: 0.55, xp: 6, tell: 0.35, cooldown: 1.2, weight: 1.3 },
   plagiarism: { hp: 80, speed: 2.7, damage: 12, reach: 2.4, radius: 0.85, xp: 20, tell: 0.55, cooldown: 3.4, weight: 1 },
   anxiety: { hp: 65, speed: 2.3, damage: 9, reach: 13, radius: 0.85, xp: 16, tell: 0.6, cooldown: 2.3, weight: 1 },
-  exam: { hp: 6000, speed: 2.4, damage: 24, reach: 30, radius: 3.2, xp: 450, tell: 1.15, cooldown: 1.5, weight: 0.08, guard: 0.25 },
+  exam: { hp: 6000, speed: 2.4, damage: 24, reach: 30, radius: 3.2, body: 2.1, xp: 450, tell: 1.15, cooldown: 1.5, weight: 0.08, guard: 0.25 },
 };
 
 /** Study ranks: the walker's levels, and the knowledge each needs. */
@@ -401,6 +407,52 @@ export function turnBetween(from: number, to: number): number {
 function dist(a: Pt, b: Pt): number {
   return Math.hypot(a[0] - b[0], a[1] - b[1]);
 }
+/**
+ * A move of `d` from `p` kept out of the circle of radius `r` round `c`: what of it would go into the
+ * circle stops at its edge and goes on along it, so that a walker slides round. From inside the circle
+ * (it was walked or pushed into), the move ends on its edge, straight out from the middle.
+ */
+export function slideRound(p: Pt, d: Pt, c: Pt, r: number): Pt {
+  const qx = p[0] + d[0] - c[0];
+  const qy = p[1] + d[1] - c[1];
+  const px = p[0] - c[0];
+  const py = p[1] - c[1];
+  if (px * px + py * py < r * r) {
+    const q = Math.hypot(qx, qy);
+    if (q >= r) return d;
+    // Out the way it moved, or else the way it stood; due south when it stands on the middle.
+    const [ux, uy] = q > 1e-6 ? [qx / q, qy / q] : Math.hypot(px, py) > 1e-6 ? [px / Math.hypot(px, py), py / Math.hypot(px, py)] : [0, -1];
+    return [c[0] + ux * r - p[0], c[1] + uy * r - p[1]];
+  }
+  // Where along the move it first meets the edge: |p + t d - c| = r.
+  const a = d[0] * d[0] + d[1] * d[1];
+  if (a < 1e-12) return d;
+  const b = 2 * (px * d[0] + py * d[1]);
+  const k = px * px + py * py - r * r;
+  const disc = b * b - 4 * a * k;
+  if (disc <= 0 || b >= 0) return d;
+  const t = (-b - Math.sqrt(disc)) / (2 * a);
+  if (t > 1) return d;
+  const hx = px + d[0] * t;
+  const hy = py + d[1] * t;
+  const nx = hx / r;
+  const ny = hy / r;
+  // The rest of the move, less what goes in towards the middle; then put back on the edge.
+  const rx = d[0] * (1 - t);
+  const ry = d[1] * (1 - t);
+  const into = rx * nx + ry * ny;
+  let ex = hx + rx - into * nx;
+  let ey = hy + ry - into * ny;
+  const e = Math.hypot(ex, ey);
+  if (e < r) ((ex *= r / e), (ey *= r / e));
+  return [c[0] + ex - p[0], c[1] + ey - p[1]];
+}
+
+/** How much bigger than its kind's model a foe is drawn: a DDL by its tier (the scene draws it so). */
+export function bodyScale(f: { kind: FoeKind; tier: number }): number {
+  return f.kind === "ddl" ? 1 + (f.tier - 1) * 0.25 : 1;
+}
+
 /** Metres from a point to a segment that starts at `a` and goes `length` metres along `dir`. */
 function toSegment(p: Pt, a: Pt, dir: number, length: number): number {
   const [ux, uy] = dirOf(dir);
@@ -659,8 +711,26 @@ export class StudyQuest {
     this.tellsStep(world);
     this.foes = this.foes.filter((f) => !(f.state === "dead" && f.t <= 0));
     if (this.lock !== undefined && !this.foes.some((f) => f.id === this.lock && f.state !== "dead")) this.lock = undefined;
+    this.keepOut();
     if (this.phase === "play") this.lessons(dt);
     return this.events;
+  }
+
+  /**
+   * The walker does not go into the DDL or the Final Exam: where it walked into one, or where what
+   * the game pushes it by this step (a dodge, the sprint, a blow's lunge, a hit) would take it in, it
+   * stops at the foe's body (FoeSpec.body) and slides round it.
+   */
+  private keepOut(): void {
+    const s = this.orders.shove;
+    for (const f of this.foes) {
+      const body = FOES[f.kind].body;
+      if (!body || f.state === "dead" || f.state === "rise") continue;
+      const r = body * bodyScale(f) + PLAYER.body;
+      const out = slideRound(this.player, s, f.at, r);
+      s[0] = out[0];
+      s[1] = out[1];
+    }
   }
 
   // -------------------------------------------------------------------------------------------

@@ -36,6 +36,7 @@ import {
   SKILLS,
   StudyQuest,
   bearingTo,
+  bodyScale,
   bookSpot,
   nearestReached,
   openSpot,
@@ -728,7 +729,7 @@ export class GameWorld {
     o.foot = foot;
     // Its model's top, with a little over for its crown of pens or its bob in the air.
     const model = pick.kind === "exam" ? this.boss : this.kinds[pick.kind].model;
-    const scale = pick.kind === "ddl" ? 1 + (pick.tier - 1) * 0.25 : 1;
+    const scale = bodyScale(pick);
     o.top = foot + (model.float + model.height) * scale + 0.6 + (pick.state === "phase" ? PHASE_RISE : 0);
     // Its arms reach out past its body: the boss's red pens most.
     o.half = FOES[pick.kind].radius * 1.3 * scale;
@@ -1259,7 +1260,7 @@ export class GameWorld {
       this.heights.set(f.id, foot);
       this.motion.look(f, dt, t, look);
       let y = foot + model.float + look.oy;
-      let scale = f.kind === "ddl" ? 1 + (f.tier - 1) * 0.25 : 1;
+      let scale = bodyScale(f);
       if (f.state === "rise") {
         const total = f.kind === "exam" ? 3.2 : 0.8;
         const k = Math.max(0, Math.min(1, 1 - f.t / total));

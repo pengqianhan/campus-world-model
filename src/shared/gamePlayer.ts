@@ -19,6 +19,8 @@ export const PLAYER = {
   /** Seconds after a blow in which the next one carries the combo on. */
   comboWindow: 0.7,
   dodgeTime: 0.3,
+  /** Metres round its middle the walker's body takes, for keeping out of the big foes (FoeSpec.body). */
+  body: 0.4,
   dodgeMetres: 5,
   /** The Cram Sprint: a longer dash that strikes what it passes. */
   sprintMetres: 9,
