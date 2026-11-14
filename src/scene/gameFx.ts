@@ -29,7 +29,7 @@ import {
   type Material,
 } from "three";
 import { merge } from "./gameModels.ts";
-import { everyFrame, roomFor, sendInstances } from "./gameBuffers.ts";
+import { everyFrame, sendInstances } from "./gameBuffers.ts";
 
 const _m = new Matrix4();
 const _p = new Vector3();
@@ -50,13 +50,13 @@ function additive(opacity = 1): MeshBasicMaterial {
 }
 
 /**
- * An instanced mesh of up to `n`, written in every frame: with room for more (gameBuffers.ts), and
- * any of its geometry's own attributes named, which must have been made with roomFor's count.
+ * An instanced mesh of up to `n`, written in every frame: its instances, and the attribute of its
+ * geometry named `own` if any, go through a texture (gameBuffers.ts).
  */
-function instanced(geo: BufferGeometry, mat: Material, n: number, order = 0, ...own: string[]): InstancedMesh {
-  const m = new InstancedMesh(geo, mat, roomFor(geo, n));
+function instanced(geo: BufferGeometry, mat: Material, n: number, order = 0, own?: string): InstancedMesh {
+  const m = new InstancedMesh(geo, mat, n);
   m.setColorAt(0, _c.setRGB(1, 1, 1));
-  everyFrame(m, ...own);
+  everyFrame(m, own);
   m.count = 0;
   m.frustumCulled = false;
   m.visible = false;
@@ -734,7 +734,7 @@ export class Puffs {
 
   constructor() {
     const geo = new IcosahedronGeometry(1, 2);
-    this.alpha = new InstancedBufferAttribute(new Float32Array(roomFor(geo, MAX_PUFFS)), 1);
+    this.alpha = new InstancedBufferAttribute(new Float32Array(MAX_PUFFS), 1);
     geo.setAttribute("aAlpha", this.alpha);
     const mat = new ShaderMaterial({
       transparent: true,
@@ -885,7 +885,7 @@ export class Shocks {
     geo.setAttribute("position", new BufferAttribute(new Float32Array(pos), 3));
     geo.setAttribute("aBright", new BufferAttribute(new Float32Array(bright), 1));
     geo.setIndex(idx);
-    this.rw = new InstancedBufferAttribute(new Float32Array(roomFor(geo, MAX_SHOCKS) * 2), 2);
+    this.rw = new InstancedBufferAttribute(new Float32Array(MAX_SHOCKS * 2), 2);
     geo.setAttribute("aRW", this.rw);
     const mat = new ShaderMaterial({
       transparent: true,
@@ -1059,8 +1059,8 @@ export class Decals {
     const disc = flat(new PlaneGeometry(2, 2, 1, 1));
     // Its length along +z from 0 to 1, as the strips in Telegraphs.
     const strip = flat(new PlaneGeometry(1, 1).translate(0, -0.5, 0));
-    this.cData = new InstancedBufferAttribute(new Float32Array(roomFor(disc, MAX_DECALS) * 4), 4);
-    this.lData = new InstancedBufferAttribute(new Float32Array(roomFor(strip, MAX_DECALS) * 4), 4);
+    this.cData = new InstancedBufferAttribute(new Float32Array(MAX_DECALS * 4), 4);
+    this.lData = new InstancedBufferAttribute(new Float32Array(MAX_DECALS * 4), 4);
     disc.setAttribute("aDecal", this.cData);
     strip.setAttribute("aDecal", this.lData);
     this.mats = [decalMaterial("circle"), decalMaterial("line")];

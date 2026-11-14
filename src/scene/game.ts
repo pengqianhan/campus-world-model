@@ -14,12 +14,13 @@ import {
   CylinderGeometry,
   Euler,
   Group,
-  InstancedBufferAttribute,
+  Mesh,
   InstancedMesh,
   Matrix4,
   MeshBasicMaterial,
   MeshLambertMaterial,
   Quaternion,
+  Vector2,
   Vector3,
   type BufferGeometry,
   type Camera,
@@ -63,7 +64,7 @@ import { FoeMotion, newLook } from "./gameMotion.ts";
 import { BossView, bossPose } from "./gameBoss.ts";
 import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
 import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
-import { everyFrame, roomFor, sendInstances } from "./gameBuffers.ts";
+import { disposeInstances, everyFrame, sendInstances } from "./gameBuffers.ts";
 import type { LabelSpec } from "./labels.ts";
 import type { WalkerState } from "./walkers.ts";
 
@@ -195,21 +196,29 @@ const _v = new Vector3();
 const _r = new Matrix4();
 const _tint = new Color();
 
+/** What a foe's materials show of it, for one foe: set in each frame, sent as uniforms. */
+interface FoeLook {
+  /** A colour that glows at its edges: red for a warning, the boss's rage, the edges of what breaks up. */
+  tint: { value: Color };
+  /** x: how much of it has broken up (pieces gone, the edges of the gaps alight); y: a blow's flash. */
+  fx: { value: Vector2 };
+}
+
 /**
- * Makes a material take, for each instance, a colour that glows at its edges (`aTint`: red for a
- * warning, the boss's rage, the edges of what breaks up), a blow's flash (`aFx.y`: a white glint at
- * the edges, its form kept) and how much of it has broken up (`aFx.x`: pieces gone, the edges of the
- * gaps alight).
+ * Makes a material show a foe's look (FoeLook): a tint that glows at its edges, a blow's flash (a white
+ * glint at the edges, its form kept) and how much of it has broken up. Uniforms, not instance
+ * attributes: a vertex buffer written in every frame stalls ANGLE on Direct3D 11 (gameBuffers.ts),
+ * and the villains' models are big. Every foe's materials share one program.
  */
-function tinted<T extends Material>(m: T, lit: boolean): T {
+function tinted<T extends Material>(m: T, lit: boolean, look: FoeLook): T {
   m.onBeforeCompile = (s) => {
-    s.vertexShader =
-      "attribute vec3 aTint;\nattribute vec2 aFx;\nvarying vec3 vTint;\nvarying vec2 vFx;\nvarying vec3 vLocal;\n" +
-      s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvTint = aTint;\nvFx = aFx;\nvLocal = position;");
-    const pars = "varying vec3 vTint;\nvarying vec2 vFx;\nvarying vec3 vLocal;\nfloat sqHash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }\n";
+    s.uniforms.uTint = look.tint;
+    s.uniforms.uFx = look.fx;
+    s.vertexShader = "varying vec3 vLocal;\n" + s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvLocal = position;");
+    const pars = "uniform vec3 uTint;\nuniform vec2 uFx;\nvarying vec3 vLocal;\nfloat sqHash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }\n";
     // Pieces about a seventh of a metre, some smaller, go first where the noise is lowest.
     const dissolve =
-      "float sqGap = 0.0;\nif (vFx.x > 0.0) {\n  float n = 0.7 * sqHash(floor(vLocal * 7.0)) + 0.3 * sqHash(floor(vLocal * 19.0));\n  if (n < vFx.x) discard;\n  sqGap = 1.0 - smoothstep(vFx.x, vFx.x + 0.07, n);\n}\n";
+      "float sqGap = 0.0;\nif (uFx.x > 0.0) {\n  float n = 0.7 * sqHash(floor(vLocal * 7.0)) + 0.3 * sqHash(floor(vLocal * 19.0));\n  if (n < uFx.x) discard;\n  sqGap = 1.0 - smoothstep(uFx.x, uFx.x + 0.07, n);\n}\n";
     s.fragmentShader = pars + s.fragmentShader;
     if (lit)
       s.fragmentShader = s.fragmentShader.replace(
@@ -219,97 +228,101 @@ function tinted<T extends Material>(m: T, lit: boolean): T {
           "float sqRim = 1.0 - abs(dot(normal, normalize(vViewPosition)));\nfloat sqRim3 = sqRim * sqRim * sqRim;\n" +
           // The warning's red keeps to the edges, where it reads as a glow, and leaves the faces their
           // own colours: a small foe, nearly all edge, is not washed pink.
-          "totalEmissiveRadiance += vColor.rgb * 0.18 + vTint * (0.02 + 3.4 * smoothstep(0.7, 0.97, sqRim)) + vTint * sqGap * 3.0;\n" +
-          "totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * vFx.y * (0.06 + 1.5 * sqRim3);\n",
+          "totalEmissiveRadiance += vColor.rgb * 0.18 + uTint * (0.02 + 3.4 * smoothstep(0.7, 0.97, sqRim)) + uTint * sqGap * 3.0;\n" +
+          "totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * uFx.y * (0.06 + 1.5 * sqRim3);\n",
       );
     else
       s.fragmentShader = s.fragmentShader.replace(
         "#include <color_fragment>",
-        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += vTint * 0.12 + vTint * sqGap * 2.0 + vec3(vFx.y * 0.45);\n",
+        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += uTint * 0.12 + uTint * sqGap * 2.0 + vec3(uFx.y * 0.45);\n",
       );
   };
-  m.customProgramCacheKey = () => (lit ? "study-quest-lit-5" : "study-quest-glow-5");
+  m.customProgramCacheKey = () => (lit ? "study-quest-lit-6" : "study-quest-glow-6");
   return m;
-}
-
-/** One instanced mesh of a kind's model, with its tint. */
-interface Layer {
-  mesh: InstancedMesh;
-  tint: InstancedBufferAttribute;
-  fx: InstancedBufferAttribute;
-  part?: { name: string; pivot: [number, number, number] };
 }
 
 /** The villains drawn in crowds; the Final Exam is drawn by a figure of its own (gameBoss.ts). */
 type CrowdKind = Exclude<FoeKind, "exam">;
 const CROWD_KINDS = FOE_KINDS.filter((k): k is CrowdKind => k !== "exam");
 
+/** One foe's place in a kind's pool: its meshes (the body, the glow, the moving parts), its look. */
+interface Slot {
+  root: Group;
+  parts: { mesh: Mesh; name: string; pivot: [number, number, number] }[];
+  look: FoeLook;
+  mats: Material[];
+}
+
+/**
+ * A kind's villains: a pool of CAP of them, each its own meshes placed by their matrices (uniforms),
+ * left out of the picture when off it. Not instanced: an instanced mesh's matrices are a vertex
+ * buffer written in every frame, which stalls ANGLE on Direct3D 11 for models this big (gameBuffers.ts).
+ */
 class KindView {
   readonly model: Model;
-  readonly layers: Layer[] = [];
+  private slots: Slot[] = [];
   n = 0;
 
   constructor(
     readonly kind: CrowdKind,
-    lit: Material,
-    glow: Material,
     group: Group,
   ) {
     this.model = MODELS[kind]();
-    const cap = CAP[kind];
-    const add = (geo: BufferGeometry, mat: Material, part?: Layer["part"]) => {
-      // Room for more than CAP: written in every frame (gameBuffers.ts).
-      const room = roomFor(geo, cap);
-      const tint = new InstancedBufferAttribute(new Float32Array(room * 3), 3);
-      geo.setAttribute("aTint", tint);
-      const fx = new InstancedBufferAttribute(new Float32Array(room * 2), 2);
-      geo.setAttribute("aFx", fx);
-      const mesh = everyFrame(new InstancedMesh(geo, mat, room), "aTint", "aFx");
-      mesh.count = 0;
-      mesh.visible = false;
-      mesh.frustumCulled = false;
-      mesh.castShadow = mesh.receiveShadow = false;
-      group.add(mesh);
-      this.layers.push({ mesh, tint, fx, part });
-    };
-    add(this.model.body, lit);
-    add(this.model.glow, glow);
-    for (const p of this.model.parts) add(p.geo, p.glow ? glow : lit, { name: p.name, pivot: p.pivot });
+    for (let i = 0; i < CAP[kind]; i++) {
+      const look: FoeLook = { tint: { value: new Color(0, 0, 0) }, fx: { value: new Vector2() } };
+      const lit = tinted(new MeshLambertMaterial({ vertexColors: true, emissive: 0x1c1c22 }), true, look);
+      const glow = tinted(new MeshBasicMaterial({ vertexColors: true }), false, look);
+      const root = new Group();
+      root.matrixAutoUpdate = false;
+      root.visible = false;
+      const mesh = (geo: BufferGeometry, mat: Material) => {
+        const m = new Mesh(geo, mat);
+        m.matrixAutoUpdate = false;
+        m.castShadow = m.receiveShadow = false;
+        root.add(m);
+        return m;
+      };
+      mesh(this.model.body, lit);
+      mesh(this.model.glow, glow);
+      const parts = this.model.parts.map((p) => ({ mesh: mesh(p.geo, p.glow ? glow : lit), name: p.name, pivot: p.pivot }));
+      group.add(root);
+      this.slots.push({ root, parts, look, mats: [lit, glow] });
+    }
   }
 
   begin(): void {
     this.n = 0;
   }
 
+  /** Whether a mesh is one of this pool's (its geometry is the kind's model's, disposed of here). */
+  owns(m: Mesh): boolean {
+    return this.slots.some((s) => s.root === m.parent);
+  }
+
   /** One foe: its matrix, its tint, how much it has broken up and how bright its flash, and how its parts are turned. */
   put(base: Matrix4, tint: Color, dissolve: number, flash: number, local: (name: string, out: Matrix4) => void): void {
-    if (this.n >= CAP[this.kind]) return;
-    const i = this.n++;
-    for (const l of this.layers) {
-      if (l.part) {
-        local(l.part.name, _l);
-        _m.makeTranslation(l.part.pivot[0], l.part.pivot[1], l.part.pivot[2]).multiply(_l);
-        _m.premultiply(base);
-        l.mesh.setMatrixAt(i, _m);
-      } else l.mesh.setMatrixAt(i, base);
-      l.tint.setXYZ(i, tint.r, tint.g, tint.b);
-      l.fx.setXY(i, dissolve, flash);
+    const slot = this.slots[this.n];
+    if (!slot) return;
+    this.n++;
+    slot.root.matrix.copy(base);
+    slot.root.matrixWorldNeedsUpdate = true;
+    for (const p of slot.parts) {
+      local(p.name, _l);
+      p.mesh.matrix.makeTranslation(p.pivot[0], p.pivot[1], p.pivot[2]).multiply(_l);
     }
+    slot.look.tint.value.copy(tint);
+    slot.look.fx.value.set(dissolve, flash);
   }
 
   end(): void {
-    for (const l of this.layers) {
-      l.mesh.count = this.n;
-      l.mesh.visible = this.n > 0;
-      if (this.n) sendInstances(l.mesh, this.n);
-    }
+    this.slots.forEach((s, i) => (s.root.visible = i < this.n));
   }
 
   dispose(): void {
-    for (const l of this.layers) {
-      l.mesh.geometry.dispose();
-      l.mesh.dispose();
-    }
+    for (const s of this.slots) for (const m of s.mats) m.dispose();
+    this.model.body.dispose();
+    this.model.glow.dispose();
+    for (const p of this.model.parts) p.geo.dispose();
   }
 }
 
@@ -336,8 +349,8 @@ class ItemsView {
     this.lit.customProgramCacheKey = () => "study-quest-items";
     const { cover, pages } = bookParts();
     const im = (g: BufferGeometry, mat: Material, n: number) => {
-      // Room for more than are drawn: written in every frame (gameBuffers.ts).
-      const m = new InstancedMesh(g, mat, roomFor(g, n));
+      // Written in every frame: its instances through a texture (gameBuffers.ts).
+      const m = new InstancedMesh(g, mat, n);
       m.setColorAt(0, _c.setRGB(1, 1, 1));
       everyFrame(m);
       m.count = 0;
@@ -413,6 +426,8 @@ class ItemsView {
 
   dispose(): void {
     for (const m of [this.cover, this.pages, this.coffee, this.note, this.beam]) {
+      disposeInstances(m);
+      (m.material as Material).dispose();
       m.geometry.dispose();
       m.dispose();
     }
@@ -476,8 +491,6 @@ export class GameWorld {
   private nudge = { side: 0, push: 0, strikeT: 0 };
   /** Frames left in which a few of each effect are drawn out of sight, to make their shaders. */
   private warm = 0;
-  private lit = tinted(new MeshLambertMaterial({ vertexColors: true, emissive: 0x1c1c22 }), true);
-  private glow = tinted(new MeshBasicMaterial({ vertexColors: true }), false);
   private overlay?: GameOverlay;
   private camYaw = 0;
   private trailT = 0;
@@ -491,7 +504,7 @@ export class GameWorld {
   ) {
     this.group.userData.noPick = true;
     this.group.visible = false;
-    this.kinds = Object.fromEntries(CROWD_KINDS.map((k) => [k, new KindView(k, this.lit, this.glow, this.group)])) as Record<CrowdKind, KindView>;
+    this.kinds = Object.fromEntries(CROWD_KINDS.map((k) => [k, new KindView(k, this.group)])) as Record<CrowdKind, KindView>;
     this.group.add(this.boss.root, this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.arena.mesh, this.debris.group, this.puffs.mesh, this.shocks.mesh, this.decals.group);
     // What is see-through (light, dust, warnings on the ground) stays out of the ambient occlusion
     // of the walker view (street/effects.ts): drawn there for depth and normals, a ring of light
@@ -953,12 +966,10 @@ export class GameWorld {
     for (const k of Object.values(this.kinds)) k.dispose();
     this.boss.dispose();
     this.items.dispose();
-    this.lit.dispose();
-    this.glow.dispose();
     this.overlay?.dispose();
     this.group.traverse((o) => {
       const m = o as InstancedMesh;
-      if (m.isMesh && !(m as InstancedMesh).geometry.attributes.aTint) {
+      if (m.isMesh && !Object.values(this.kinds).some((k) => k.owns(m))) {
         m.geometry.dispose();
         (m.material as Material).dispose();
       }

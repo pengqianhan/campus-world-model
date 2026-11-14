@@ -12,7 +12,6 @@ import {
   BufferGeometry,
   CylinderGeometry,
   DoubleSide,
-  DynamicDrawUsage,
   GreaterDepth,
   Group,
   KeepStencilOp,
@@ -448,9 +447,7 @@ export class Figure {
         tr.col[o + 3] = TRAIL_ALPHA[e === 0 ? 1 : 0] * k;
       }
     }
-    const g = tr.mesh.geometry;
-    g.getAttribute("position").needsUpdate = true;
-    g.getAttribute("color").needsUpdate = true;
+    // The arrays are the trail material's uniforms (makePen): nothing more to send.
     this.changed = true;
   }
 
@@ -513,7 +510,26 @@ export class Figure {
       idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
     }
     tg.setIndex(idx);
-    const mesh = new Mesh(tg, new MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: DoubleSide, toneMapped: false }));
+    // Where each corner is and its colour come from uniforms the trail writes in each frame, by the
+    // corner's number: a vertex buffer written in every frame stalls ANGLE on Direct3D 11 (gameBuffers.ts).
+    const corner = new Float32Array(n * 2);
+    for (let i = 0; i < n * 2; i++) corner[i] = i;
+    tg.setAttribute("aCorner", new BufferAttribute(corner, 1));
+    const trailMaterial = new MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: DoubleSide, toneMapped: false });
+    trailMaterial.onBeforeCompile = (sh) => {
+      sh.uniforms.uTrailPos = { value: tp };
+      sh.uniforms.uTrailCol = { value: tc };
+      sh.vertexShader =
+        `attribute float aCorner;
+uniform vec3 uTrailPos[${n * 2}];
+uniform vec4 uTrailCol[${n * 2}];
+` +
+        sh.vertexShader
+          .replace("#include <begin_vertex>", "vec3 transformed = uTrailPos[int(aCorner + 0.5)];")
+          .replace("#include <color_vertex>", "vColor = uTrailCol[int(aCorner + 0.5)];");
+    };
+    trailMaterial.customProgramCacheKey = () => `walker-trail-${n}`;
+    const mesh = new Mesh(tg, trailMaterial);
     mesh.frustumCulled = false;
     mesh.renderOrder = 4;
     mesh.visible = false;
@@ -521,8 +537,6 @@ export class Figure {
     // Light, not a solid: left out of the walker view's ambient occlusion (street/effects.ts).
     mesh.userData.noAO = true;
     mesh.raycast = () => {};
-    // Written in every frame of a blow: dynamic, or ANGLE on Direct3D 11 stalls (gameBuffers.ts).
-    for (const a of Object.values(tg.attributes)) (a as BufferAttribute).setUsage(DynamicDrawUsage);
     this.root.add(mesh);
     this.trail = { mesh, pos: tp, col: tc, life: 0 };
   }
