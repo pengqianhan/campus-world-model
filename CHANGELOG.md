@@ -70,6 +70,12 @@ A change to what the site does or shows adds its line here, and the README's
   room for both. The roar is a shockwave, a glow on the boss and a pulse at the picture's edges, not a pink wash; the
   ways of getting about leave the lower band at once when the phase line takes it; the hit combo lapses after 2.5
   seconds without a blow that lands, and a blow the boss's guard turns counts a third; and the arena keeps off the roads.
+  The game no longer costs frames on an Intel graphics card (60 fps with the game on, as with it off: the buffers it
+  writes in every frame had made the browser wait for the card); the walker slides round the Final Exam and the DDL
+  rather than into them, and a charge knocks it aside; after a charge the camera has already come round to the boss;
+  fights stay on the ground the walker can reach, so the DDL no longer fights from a roof; the Final Exam's back has a
+  rolled seam, a ribbon and a wax seal, its cape hangs in folds, and its cracks are straight; the first DDL is a little
+  gentler; and the big words wait out a pause, the menus keep Tab inside them, and the compass speaks the page's language.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere. Its code, its look and its villains
