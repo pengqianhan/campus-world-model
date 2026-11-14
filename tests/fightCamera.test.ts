@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LANE_DODGE, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
+import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
 
 const HALF = (55 * Math.PI) / 360;
 const UP = Math.tan((16 * Math.PI) / 180);
@@ -101,6 +101,8 @@ describe("dodgeLane", () => {
     // A charge running due south (180) at the walker: the camera looks back up it, north (0).
     expect(dodgeLane(6, 180, 6)).toBeCloseTo(LANE_DODGE);
     expect(dodgeLane(6, 180, 350)).toBeCloseTo(360 - LANE_DODGE);
+    // Less in an upright picture.
+    expect(dodgeLane(6, 180, 6, LANE_DODGE_UPRIGHT)).toBeCloseTo(LANE_DODGE_UPRIGHT);
     // Whatever way the charge runs, the camera ends LANE_DODGE off its line.
     for (const lane of [0, 45, 200, 333]) {
       const look = dodgeLane(0, lane, lane + 180 + 5);

@@ -88,8 +88,12 @@ export function frameFight(shot: FightShot, out: FightFrame): FightFrame {
   }
 }
 
-/** Degrees the fight's camera stands off the line of a charge, on the side it is already on. */
+/**
+ * Degrees the fight's camera stands off the line of a charge, on the side it is already on; less in
+ * a picture narrower than it is tall, where the charging foe would leave the picture to the side.
+ */
 export const LANE_DODGE = 50;
+export const LANE_DODGE_UPRIGHT = 25;
 
 /** Degrees from `a` to `b` the short way round, -180 to 180. */
 function turn(a: number, b: number): number {
@@ -103,12 +107,12 @@ function turn(a: number, b: number): number {
  * that line by LANE_DODGE instead, on the side it is on now (`now`, the bearing it looks along), so
  * that it does not swing across the charge to get there. `want` when there is no charge.
  */
-export function dodgeLane(want: number, lane: number | undefined, now: number): number {
+export function dodgeLane(want: number, lane: number | undefined, now: number, dodge: number = LANE_DODGE): number {
   if (lane === undefined) return want;
   // Looking back up the charge, towards where it comes from.
   const up = lane + 180;
   const side = turn(up, now) < 0 ? -1 : 1;
-  return (((up + side * LANE_DODGE) % 360) + 360) % 360;
+  return (((up + side * dodge) % 360) + 360) % 360;
 }
 
 /**

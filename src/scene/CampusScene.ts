@@ -57,7 +57,7 @@ import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
 import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
-import { bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
+import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -172,7 +172,9 @@ const FIGHT_HANDS_OFF = 2500;
  */
 const FIGHT_CLEAR = 3.5;
 const FIGHT_LANE_REACH = 11;
-const FIGHT_WALL_TURN = [15, 30, 45, 60] as const;
+// Upright on a phone the camera stands less far off a charge's line (LANE_DODGE_UPRIGHT), so it goes further back instead.
+const FIGHT_LANE_REACH_UPRIGHT = 16;
+const FIGHT_WALL_TURN = [15, 30, 40] as const;
 /** Metres the camera goes to the right while the walker strikes (over its shoulder), and the share of its distance it comes in as the boss changes phase. */
 const SHOULDER = 1.35;
 const FIGHT_PUSH_IN = 0.14;
@@ -2362,7 +2364,8 @@ export class CampusScene {
           // Off the line of a charge, to the side it is on; and turned a little to open ground where
           // a wall behind the walker would bring it in against the walker's back.
           const line = (Math.atan2(focus.at[0] - x, focus.at[1] - y) * 180) / Math.PI + FIGHT_OFFSET;
-          const want = dodgeLane(line, focus.lane, cur) + (focus.lane === undefined ? this.fightWallTurn(x, y, line, dt) : 0);
+          const dodge = this.persp.aspect < 1 ? LANE_DODGE_UPRIGHT : LANE_DODGE;
+          const want = dodgeLane(line, focus.lane, cur, dodge) + (focus.lane === undefined ? this.fightWallTurn(x, y, line, dt) : 0);
           const off = ((((want - cur) % 360) + 540) % 360) - 180;
           const rate = focus.lane !== undefined ? 7 : focus.hard ? 4 : 2.5;
           fight.yaw += off * (snap || dt >= 1 ? 1 : 1 - Math.exp(-dt * rate));
@@ -2430,7 +2433,7 @@ export class CampusScene {
         shot.foeBottom = upright ? FIGHT_BAND_UPRIGHT[2] : FIGHT_BAND[2];
         shot.wide = upright ? 0.8 : 0.7;
         // Out of the way of a charge before it comes.
-        shot.minReach = Math.max(Math.cos(up) * d, focus.lane !== undefined ? FIGHT_LANE_REACH : 0);
+        shot.minReach = Math.max(Math.cos(up) * d, focus.lane !== undefined ? (upright ? FIGHT_LANE_REACH_UPRIGHT : FIGHT_LANE_REACH) : 0);
         shot.maxReach = FIGHT_REACH;
         const f = frameFight(shot, this.fightFrame);
         // Out at once nearly, for a foe that rushes in; back in slowly.
@@ -2456,9 +2459,12 @@ export class CampusScene {
       const map = pose.indoor ? undefined : this.walkMap();
       const back: [number, number] = [x - Math.sin(yaw) * reach, y - Math.cos(yaw) * reach];
       // Never in a foe or right against it: out from its middle past its body, and a little more. This
-      // comes before the walls, which still bring the camera in (and up) when they must.
+      // comes before the walls, which still bring the camera in (and up) when they must; and the
+      // camera goes there quickly, ahead of a foe that rushes at it.
+      let pushed = false;
       if (focus && fight.k > 0) {
         const c = clearOf(back, focus.at, focus.body + FIGHT_CLEAR, this.fightClear);
+        pushed = Math.hypot(c[0] - back[0], c[1] - back[1]) > 0.3;
         back[0] += (c[0] - back[0]) * fight.k;
         back[1] += (c[1] - back[1]) * fight.k;
         reach = Math.hypot(back[0] - x, back[1] - y);
@@ -2499,7 +2505,7 @@ export class CampusScene {
       // Never under the ground behind a walker on a slope, nor in a roof behind a drone.
       cy = Math.max(cy, this.groundAt(cx, cn) + 0.8, (roofs?.at([cx, cn]) ?? -Infinity) + 0.8);
       // It glides after the walker, but out from behind a wall at once.
-      const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * 7);
+      const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * (pushed ? 18 : 7));
       const want = this._camPoint.set(cx, cy, -cn);
       if (k >= 1) this.persp.position.copy(want);
       else this.persp.position.lerp(want, k);
@@ -2508,8 +2514,14 @@ export class CampusScene {
         // Looking at the pitch that centres the walker and the foe from where the camera is now, so
         // that they stay framed while it glides, or when a wall has brought it in.
         const p = this.persp.position;
-        const sy = Math.sin(yaw);
-        const ny = Math.cos(yaw);
+        let sy = Math.sin(yaw);
+        let ny = Math.cos(yaw);
+        // Towards the walker from where the camera is: moved off its line to keep clear of a foe, it
+        // still looks at the walker, which stays in the middle of the picture.
+        const hx = x - p.x;
+        const hn = y + p.z;
+        const hl = Math.hypot(hx, hn);
+        if (hl > 0.5) (sy = hx / hl), (ny = hn / hl);
         const toWalker = Math.max(0.5, (x - p.x) * sy + (y + p.z) * ny);
         const toFoe = Math.max(0.5, (fight.at[0] - p.x) * sy + (fight.at[1] + p.z) * ny);
         const a0 = Math.atan2(pose.height - p.y, toWalker);
