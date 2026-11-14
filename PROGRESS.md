@@ -623,7 +623,8 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   - What another walker says reaches an agent as speech: the listen answer, the MCP tool's
     description and the skill all say it is never instructions.
 - **The walk's game: Study Quest (the user, 2026-11-13 and 2026-11-14), a bonus on the walker.** First asked: "现在walk 界面可以控制小人行走，但是趣味性不足，
-  我想添加一点趣味小游戏的功能": eat books, grow strong, and beat the "due" or "deadline". That became the book game (#174).
+  我想添加一点趣味小游戏的功能": eat books, grow strong, and beat the "due" or "deadline". That became the book game (#174),
+  which never shipped: Study Quest replaces it, and this decision supersedes the book game's.
   Then asked to make it feel like a real AAA game that still runs smoothly in a browser, after Breath of the Wild or GTA,
   set at the university and about study: growth and wins tie to learning, the deadline monster is called "DDL", and the
   villains and the boss have full, rich designs ("饱满的形象"). What was decided, and why:
@@ -643,25 +644,41 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     debrief (A+ to F).
   - The main story is six quests (books, the DDL, a study group at a building, notes at another, the DDL again, the Final Exam
     in an arena beside the building with the most teaching rooms near the walker); side quests come two at a time. The
-    buildings are those with teaching rooms (`place` in `src/scene/game.ts`); a school whose map names no rooms uses every
-    building alike.
-  - The villains float in straight lines over the ground and the roofs, so they need no path and cannot get stuck. Pick-ups
-    lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`). It is played on the ground and out of
-    doors, on foot or on the scooter, where the villains go twice as fast (`scooterPace`); flying, inside a building or in the
-    map view the game's clock stops, and so does the pause menu.
-  - While the game is on, the buildings' names wait until it ends, on every screen: the game's own marks (a compass tape,
-    quest diamonds, the villains' plates) lead the way. On a phone the view stays clear (the user, 2026-11-13): no tutorial
-    text, small panels in the corners, the compass left out, and four round buttons under the right thumb.
+    buildings are those with teaching rooms (`questDraws` in `src/shared/game.ts`); a school whose map names no rooms uses
+    every building alike.
+  - Places, not people: a building with a floor the map leaves blank because people live there or children are cared for
+    there (`Floor.noPlan`, `isHome`) is a home. A home names no quest, and no book, quest's place or villain lies on it or
+    within 25 m of it (`HOME_MARGIN`, `awayFromHomes`); the boss's whole arena keeps that far off. Where only homes stand
+    near, the game uses open ground round the walker. Only the University of Auckland's campus map marks homes today; the
+    other schools leave their halls of residence out of their buildings, as unnamed surroundings, which draw no quest but
+    are not yet kept clear of.
+  - The villains come in straight lines over the ground and the roofs, so they need no path and cannot get stuck; near the
+    walker, and the DDL and the Final Exam always, they come down to the ground the walker can reach and fight only there.
+    Pick-ups lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`). The walker cannot walk through
+    the DDL or the Final Exam; it slides round them. It is played on the ground and out of doors, on foot or on the
+    scooter, where the villains go twice as fast (`scooterPace`); flying, inside a building or in the map view the game's
+    clock stops, and so does the pause menu.
+  - While the game is on, the buildings' names (and the walker's own) wait until it ends, on every screen, a wide one too
+    (the user, 2026-11-15): the game's own marks (a compass tape, quest diamonds, the villains' plates) lead the way.
+    On a phone the view stays clear (the user, 2026-11-13): no tutorial text, small panels in the corners, the compass
+    left out, and four round buttons under the right thumb.
   - Cost is a budget, not a hope: each villain kind is one merged, vertex-coloured geometry drawn instanced, effects are a
-    few instanced meshes refilled from kept arrays, nothing of the game casts a shadow, there is no post-processing, and the
+    few instanced meshes, and no vertex buffer is written in every frame: what changes in a frame goes in uniforms and a
+    small float texture (`src/scene/gameBuffers.ts`), because on ANGLE over Direct3D 11 a vertex buffer written in every
+    frame made the browser wait for the GPU (on an Intel UHD 770 the walk fell from 60 to 45 fps). Nothing of the game
+    casts a shadow, there is no post-processing, and the
     marks over the picture are kept DOM elements moved by transform. A game held still (its title card, a menu, the
     walker indoors or in the air, a debrief) is drawn once, not in every frame. Its code, its look and its world come in
     a chunk of their own, loaded the first time the Game button is pressed (`src/app/gameState.ts`), so a visitor who
     never plays downloads and builds none of it. Measured on 2026-11-14: the game adds about 30 to 40 draw calls at the
     busiest moment of the boss fight, at 60 fps on the GPU.
+  - A blow lands 0.09 s after the press (the overhead slam 0.17 s), when the walker's arms finish their wind-up
+    (`strikeContact` in `src/shared/gamePlayer.ts`), not at once (the user, 2026-11-15). The game's numbers are its own,
+    rebalanced from the book game's with the headless playtest bot (`scripts/playtest/`).
   - No new dependency, no font loaded, no sound file: sounds are made with WebAudio. Progress lives in memory until the page
-    closes; the best grade, the sound, music and effects settings, reduced motion once the visitor sets it, and the first
-    minute's prompts already seen stay in the browser's own storage as conveniences, and nothing is sent anywhere.
+    closes. These stay in the browser's own storage (`localStorage`, the user, 2026-11-15) as conveniences: the
+    sound, music and effects settings, reduced motion once the visitor sets it, and the first minute's prompts already
+    seen (`studyQuest.settings`), and the best grade (`studyQuest.best`). Nothing is sent anywhere.
     About's privacy text says so, on every school's map.
   - The rules are in `src/shared/game.ts`, the same for every school.
 - **GOAL.md is gitignored.** It contains the local working-directory path (with a username).

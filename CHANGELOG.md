@@ -39,16 +39,15 @@ A change to what the site does or shows adds its line here, and the README's
   answers, but not to train AI models) and `llms.txt`, the site in Markdown for AI assistants. The page for an
   unknown address asks not to be indexed (#176).
 
-### Changed
-
-- **The walk's game is now Study Quest, an action game about study.** The walker grows by learning: books, notes and
-  quests give knowledge, study ranks run from Fresher to Scholar, and each rank raises its Focus, Insight and Stamina and
-  opens a skill named for a study habit (Highlighter Strike, Sidestep, Flashcard Throw, Cram Sprint, Eureka!). Made-up
-  villains for study troubles come after it, each with a name card, a line, an idle, a warning before it strikes and a
-  death: the DDL (the old Deadline, now an alarm-clock brute that charges), Procrastination, Distraction, Plagiarism and
-  Exam Anxiety. The story's last quest is a boss fight in an arena with the Final Exam, in three phases. Blows land with a
-  pause, a shake, sparks, numbers and a combo count; a quest tracker, a compass tape with quest diamonds, the boss's bar, a
-  pause menu, a study record and a graded debrief frame it, with sounds made in the browser and a reduced-motion setting.
+- **A game in the walk: Study Quest, an action game about study.** The walk's top bar has a Game button; on a phone it
+  stands under the speed. The walker grows by learning: books, notes and quests give knowledge, study ranks run from
+  Fresher to Scholar, and each rank raises its Focus, Insight and Stamina and opens a skill named for a study habit
+  (Highlighter Strike, Sidestep, Flashcard Throw, Cram Sprint, Eureka!). Made-up villains for study troubles come after
+  it, each with a name card, a line, an idle, a warning before it strikes and a death: the DDL (an alarm-clock brute
+  that charges), Procrastination, Distraction, Plagiarism and Exam Anxiety. The story's last quest is a boss fight in an
+  arena with the Final Exam, in three phases. Blows land with a pause, a shake, sparks, numbers and a combo count; a
+  quest tracker, a compass tape with quest diamonds, the boss's bar, a pause menu, a study record and a graded debrief
+  frame it, with sounds made in the browser and a reduced-motion setting.
   In a fight the camera behind the walker swings onto the line from the foe through the walker and stands back until both
   are whole in the picture; the Final Exam's arena is on the most open ground near its building, and trees between the
   camera and the fight are left out of the picture while it lasts. On a phone the boss's bar is a thin line under the
@@ -81,41 +80,34 @@ A change to what the site does or shows adds its line here, and the README's
   knowledge, and Play again starts at once. The pace was tuned with a headless playtest bot: an average player meets
   the Final Exam after about eight minutes with a rank about every two, the first DDL comes before the first rank,
   study groups come in waves, and the Final Exam guards except just after it attacks. The boss's bass and drums
-  carry overtones a phone's speaker can play, the stick and the game's buttons no longer show through its menus, and
+  carry overtones a phone's speaker can play, the stick and the game's buttons do not show through its menus, and
   a game started in a corner (as at Victoria University of Wellington's starting spot) steps out to open ground so the
   camera behind the walker is not pressed against a wall.
-  The Final Exam is redrawn as a figure of its own: a brass-and-wood hourglass whose sand runs down with its health,
+  The Final Exam is a figure of its own: a brass-and-wood hourglass whose sand runs down with its health,
   shoulders of bound books, a ruff and a cape of printed exam sheets, a scroll head whose one red eye goes from bored to
   stern to furious, a crown of pencils, red-pen arms that bend at the elbow and drip ink, and grade tiles bobbing round
   it; each phase cracks its glass, runs its sand faster and tears its papers more. In a fight the camera keeps clear of
   its body, steps off the line of a charge before it comes, thins the boss's near parts for the moment it would hide the
   walker, and turns to open ground or keeps the walker in the clear band where a wall or a foe high on a roof leaves no
-  room for both. The roar is a shockwave, a glow on the boss and a pulse at the picture's edges, not a pink wash; the
+  room for both. The roar is a shockwave, a glow on the boss and a pulse at the picture's edges; the
   ways of getting about leave the lower band at once when the phase line takes it; the hit combo lapses after 2.5
   seconds without a blow that lands, and a blow the boss's guard turns counts a third; and the arena keeps off the roads.
-  Walking with the game on no longer costs frames on an Intel graphics card (60 fps, as with it off: the vertex buffers
-  it wrote in every frame made the browser wait for the card; its foes and effects now take what changes from uniforms
-  and a small texture, and its prompts pulse without repainting the page), and fights cost fewer; the walker slides round the Final Exam and the DDL
-  rather than into them, and a charge knocks it aside; after a charge the camera has already come round to the boss;
-  fights stay on the ground the walker can reach, so the DDL no longer fights from a roof; the Final Exam's back has a
-  rolled seam, a ribbon and a wax seal, its cape hangs in folds, and its cracks are straight; the first DDL is a little
-  gentler; and the big words wait out a pause, the menus keep Tab inside them, and the compass speaks the page's language.
-  It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
-  every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
-  grade and the game's settings stay in the browser; nothing is sent anywhere. Its code, its look and its villains
+  Walking with the game on costs no frames on an Intel graphics card (60 fps, as with it off): its foes and effects take
+  what changes from uniforms and a small texture, not from vertex buffers written in every frame, and its prompts pulse
+  without repainting the page. The walker slides round the Final Exam and the DDL rather than into them, and a charge
+  knocks it aside; after a charge the camera has already come round to the boss; fights stay on the ground the walker
+  can reach, never on a roof; the Final Exam's back has a rolled seam, a ribbon and a wax seal, its cape hangs in folds,
+  and its cracks are straight; the first DDL is gentler than the one that returns; and the big words wait out a pause,
+  the menus keep Tab inside them, and the compass speaks the page's language. No book, quest's place, arena or villain
+  lies on or within 25 m of a building where people live or children are cared for.
+  It plays with the keys and mouse, a game pad, or the phone's stick and four buttons, on foot or on the scooter (where
+  the villains go twice as fast), out of doors, on every school's map. It is off until it is started, every part of it
+  is made up and says so (the Game button's hint, the title card, the menus, the debrief and About), and the buildings'
+  names and the walker's own wait while it is on, on every screen. The best grade, the game's settings and the first
+  minute's prompts already seen stay in the browser; nothing is sent anywhere. Its code, its look and its villains
   load the first time it is started, so the map itself loads as before for a visitor who does not play.
 
 ## 2026-11-13
-
-### Added
-
-- **A game in the walk.** The walk's top bar has a Game button; on a phone it stands under the speed. It lays 40 books beside the buildings round the walker,
-  most of them beside buildings with teaching rooms, and a red alarm clock called the Deadline comes after the walker
-  over the ground and the roofs, faster as time goes. Six books turn the chase round for 12 seconds: the Deadline
-  flees, and catching it scores and starts the next level. Caught three times, the game is over. It is played on
-  foot or on the scooter, where the Deadline goes twice as fast, out of doors, on every school's map. The game is off until it is started; its books and its Deadline are
-  made up, stand for no real class or due date, and cannot be opened like a place; the Game button's hint and About say so. The
-  score is kept until the page closes and is stored nowhere (#174).
 
 ### Changed
 

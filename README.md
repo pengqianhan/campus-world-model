@@ -143,8 +143,8 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
-- **2026-11-14:** the walk's game is now Study Quest: grow by learning, beat made-up study troubles such as the DDL,
-  and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
+- **2026-11-14:** the walk has a game, Study Quest, off until you start it: grow by learning, beat made-up study
+  troubles such as the DDL, and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
   teaches by play with one small prompt at a time, and a defeat can be retried at once. The Final Exam is an hourglass
   titan whose sand runs down with its health and whose face hardens each phase, and the fight's camera keeps the
   walker in sight through its charges. Every part of it is made up.
@@ -153,8 +153,6 @@ The three latest days are below; everything, with its pull request, is in the
 - **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
   for link previews, each school's page says in its HTML what its map shows, the home page answers common
   questions, and the site has a sitemap, `robots.txt` and `llms.txt`.
-- **2026-11-13:** the walk has a game, off until you start it: the walker eats made-up books beside the buildings
-  while a made-up Deadline chases it, and six books turn the chase round.
 - **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
   links, where two dark buttons stood above it.
 - **2026-11-12:** on the Newmarket campus the map draws Structures Hall in detail, where it stood as a measured
