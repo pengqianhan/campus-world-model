@@ -20,6 +20,7 @@ import {
   rankFor,
   reachable,
   bodyScale,
+  knockAside,
   slideRound,
   statsFor,
   turnBetween,
@@ -928,6 +929,24 @@ describe("keeping out of the big foes", () => {
         expect(least, `${kind}${sprint ? ", sprinting" : ""}`).toBeGreaterThanOrEqual(r - 1e-6);
       }
     }
+  });
+
+  it("is knocked aside by a charge, which runs on past, rather than carried along", () => {
+    const g = quiet();
+    const f = foe(g, "exam", 10, 0.3);
+    f.state = "attack";
+    f.t = 5;
+    f.move = { type: "charge", dir: 180, left: 20, hit: false };
+    let p: Pt = [0, 0];
+    for (let i = 0; i < 30; i++) {
+      g.step(0.05, at(p, 0));
+      p = [p[0] + g.orders.shove[0], p[1] + g.orders.shove[1]];
+    }
+    // The boss went on south past the walker; the walker was put to the side, not far down the lane.
+    expect(f.at[1]).toBeLessThan(-5);
+    expect(Math.abs(p[1])).toBeLessThan(2);
+    expect(Math.abs(p[0])).toBeGreaterThan(1.5);
+    expect(knockAside([0, 0], [0, 0], [0, 1], 180, 2)[0]).not.toBe(0);
   });
 
   it("lets the walker brush through a small foe", () => {

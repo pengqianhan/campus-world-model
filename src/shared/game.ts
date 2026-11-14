@@ -448,6 +448,30 @@ export function slideRound(p: Pt, d: Pt, c: Pt, r: number): Pt {
   return [c[0] + ex - p[0], c[1] + ey - p[1]];
 }
 
+/**
+ * A move of `d` from `p` kept out of the circle of radius `r` round `c` that charges along `dir`
+ * (degrees): ending in it, the walker is put out to its side, the side it is on, square to the
+ * charge, so that the charge goes on past it.
+ */
+export function knockAside(p: Pt, d: Pt, c: Pt, dir: number, r: number): Pt {
+  const ux = Math.sin(dir * D2R);
+  const uy = Math.cos(dir * D2R);
+  const qx = p[0] + d[0] - c[0];
+  const qy = p[1] + d[1] - c[1];
+  const along = qx * ux + qy * uy;
+  // Square to the charge, to the walker's right of it (looking along the charge) when positive.
+  const lat = qx * uy - qy * ux;
+  if (along * along + lat * lat >= r * r) return d;
+  const side = lat > 0 || (lat === 0 && (p[0] - c[0]) * uy - (p[1] - c[1]) * ux >= 0) ? 1 : -1;
+  const need = Math.sqrt(r * r - along * along) - Math.abs(lat);
+  return [d[0] + uy * side * need, d[1] - ux * side * need];
+}
+
+/** Metres a second a foe charges at (the DDL, the Final Exam): faster after a walker on the scooter. */
+export function chargeSpeed(kind: FoeKind, pace = 1): number {
+  return (kind === "exam" ? 20 : 17) * Math.max(1, pace * 0.75);
+}
+
 /** How much bigger than its kind's model a foe is drawn: a DDL by its tier (the scene draws it so). */
 export function bodyScale(f: { kind: FoeKind; tier: number }): number {
   return f.kind === "ddl" ? 1 + (f.tier - 1) * 0.25 : 1;
@@ -719,7 +743,8 @@ export class StudyQuest {
   /**
    * The walker does not go into the DDL or the Final Exam: where it walked into one, or where what
    * the game pushes it by this step (a dodge, the sprint, a blow's lunge, a hit) would take it in, it
-   * stops at the foe's body (FoeSpec.body) and slides round it.
+   * stops at the foe's body (FoeSpec.body) and slides round it. One that charges into the walker
+   * knocks it aside, out of the charge's way, and runs on past it, rather than carrying it along.
    */
   private keepOut(): void {
     const s = this.orders.shove;
@@ -727,7 +752,7 @@ export class StudyQuest {
       const body = FOES[f.kind].body;
       if (!body || f.state === "dead" || f.state === "rise") continue;
       const r = body * bodyScale(f) + PLAYER.body;
-      const out = slideRound(this.player, s, f.at, r);
+      const out = f.state === "attack" && f.move?.type === "charge" ? knockAside(this.player, s, f.at, f.move.dir, r) : slideRound(this.player, s, f.at, r);
       s[0] = out[0];
       s[1] = out[1];
     }
@@ -1589,11 +1614,16 @@ export class StudyQuest {
       f.t = 0.4;
       return;
     }
-    const speed = (f.kind === "exam" ? 20 : 17) * Math.max(1, pace * 0.75);
+    const speed = chargeSpeed(f.kind, pace);
     const go = Math.min(m.left, speed * dt);
     const [ux, uy] = dirOf(m.dir);
     f.at = [f.at[0] + ux * go, f.at[1] + uy * go];
     m.left -= go;
+    // The Final Exam's charge stops at its arena's edge: put back there afterwards, it would jump.
+    if (this.arena?.active && f.kind === "exam") {
+      const kept = this.clampToArena(f.at);
+      if (kept[0] !== f.at[0] || kept[1] !== f.at[1]) ((f.at = kept), (m.left = 0));
+    }
     f.facing = m.dir;
     if (!m.hit && dist(f.at, this.player) <= FOES[f.kind].radius + 0.9) {
       m.hit = true;

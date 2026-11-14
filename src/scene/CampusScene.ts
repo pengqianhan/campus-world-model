@@ -162,6 +162,14 @@ const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }>
 };
 /** The fight's camera: degrees it stands off the line from the foe through the walker, metres back it goes at most, and ms after a turn of the view by hand before it frames a foe not locked on to again. */
 const FIGHT_OFFSET = 6;
+/**
+ * Seconds before a charging foe passes the walker that the fight's camera starts round to where the
+ * charge will end, and how quickly it comes (as FIGHT's easing rates): it is there as the foe stops.
+ */
+const FIGHT_CHARGE_LEAD = 0.3;
+// Upright on a phone the camera stands nearer the charge's line (LANE_DODGE_UPRIGHT): it waits until the foe is nearly by.
+const FIGHT_CHARGE_LEAD_UPRIGHT = 0.15;
+const FIGHT_CHARGE_RATE = 6;
 const FIGHT_REACH = 26;
 const FIGHT_HANDS_OFF = 2500;
 /**
@@ -2359,17 +2367,35 @@ export class CampusScene {
         // Kept as a bearing, so that the walker turning to its blow does not swing the view with it;
         // a foe on top of the walker gives no line to stand on, and the view keeps the way it looks.
         const cur = fight.held ? fight.yaw : pose.heading + this.follow.yaw;
+        if (!fight.held) fight.yawV = 0;
         fight.yaw = cur;
         if (sep > 1.5 || focus.lane !== undefined) {
           // Off the line of a charge, to the side it is on; and turned a little to open ground where
-          // a wall behind the walker would bring it in against the walker's back.
-          const line = (Math.atan2(focus.at[0] - x, focus.at[1] - y) * 180) / Math.PI + FIGHT_OFFSET;
+          // a wall behind the walker would bring it in against the walker's back. A charge about to
+          // pass the walker is followed to where it will end, ahead of time: the view comes round as
+          // the foe goes by, so that it is not left at the edge of the picture when it stops.
+          const ahead = focus.lane !== undefined && focus.passIn < (this.persp.aspect < 1 ? FIGHT_CHARGE_LEAD_UPRIGHT : FIGHT_CHARGE_LEAD);
+          const to = ahead ? focus.laneEnd : focus.at;
+          const line = (Math.atan2(to[0] - x, to[1] - y) * 180) / Math.PI + FIGHT_OFFSET;
           const dodge = this.persp.aspect < 1 ? LANE_DODGE_UPRIGHT : LANE_DODGE;
-          const want = dodgeLane(line, focus.lane, cur, dodge) + (focus.lane === undefined ? this.fightWallTurn(x, y, line, dt) : 0);
+          const want = ahead ? line : dodgeLane(line, focus.lane, cur, dodge) + (focus.lane === undefined ? this.fightWallTurn(x, y, line, dt) : 0);
           const off = ((((want - cur) % 360) + 540) % 360) - 180;
-          const rate = focus.lane !== undefined ? 7 : focus.hard ? 4 : 2.5;
-          fight.yaw += off * (snap || dt >= 1 ? 1 : 1 - Math.exp(-dt * rate));
-        }
+          // A spring held at its critical damping: it gathers speed and settles without a jerk at
+          // either end, and comes round as far as an easing at `rate` does in the same time.
+          const rate = ahead ? FIGHT_CHARGE_RATE : focus.lane !== undefined ? 7 : focus.hard ? 4 : 2.5;
+          if (snap || dt >= 1) {
+            fight.yaw += off;
+            fight.yawV = 0;
+          } else {
+            const w = rate * 1.8;
+            const e = Math.exp(-w * dt);
+            const y0 = -off;
+            const v0 = fight.yawV;
+            const y1 = (y0 + (v0 + w * y0) * dt) * e;
+            fight.yawV = (v0 - w * (v0 + w * y0) * dt) * e;
+            fight.yaw += y1 - y0;
+          }
+        } else fight.yawV = 0;
         this.follow.yaw = (((fight.yaw - pose.heading) % 360) + 360) % 360;
       }
       // The foe framed glides from one to the next.
@@ -2507,8 +2533,20 @@ export class CampusScene {
       // It glides after the walker, but out from behind a wall at once.
       const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * (pushed ? 18 : 7));
       const want = this._camPoint.set(cx, cy, -cn);
-      if (k >= 1) this.persp.position.copy(want);
-      else this.persp.position.lerp(want, k);
+      const p = this.persp.position;
+      if (k >= 1) p.copy(want);
+      else if (fight.k > 0) {
+        // In a fight its bearing round the walker is already eased (fight.yaw): it glides only in and
+        // out and up and down, so that it is never left behind as it comes round quickly after a
+        // charge, to catch up in one frame when a wall brings it in.
+        const cb = Math.atan2(p.x - x, -p.z - y);
+        const wb = Math.atan2(cx - x, cn - y);
+        const turnBy = ((((wb - cb) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+        const b = cb + turnBy * (k + (1 - k) * fight.k);
+        const cd = Math.hypot(p.x - x, -p.z - y);
+        const dd = cd + (Math.hypot(cx - x, cn - y) - cd) * k;
+        p.set(x + Math.sin(b) * dd, p.y + (cy - p.y) * k, -(y + Math.cos(b) * dd));
+      } else p.lerp(want, k);
       const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, pose.aim, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
       if (fight.k > 0) {
         // Looking at the pitch that centres the walker and the foe from where the camera is now, so
@@ -2604,7 +2642,7 @@ export class CampusScene {
    * it last frame; the foe framed, metres east and north, and its feet and top; when the visitor
    * last turned the view (performance.now); whether trees are left out of the picture now.
    */
-  private fight = { k: 0, reach: 0, yaw: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false, turn: 0, turnWant: 0, turnAt: 0, fit: 1 };
+  private fight = { k: 0, reach: 0, yaw: 0, yawV: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false, turn: 0, turnWant: 0, turnAt: 0, fit: 1 };
   private fightClear: [number, number] = [0, 0];
 
   /**

@@ -37,6 +37,7 @@ import {
   StudyQuest,
   bearingTo,
   bodyScale,
+  chargeSpeed,
   bookSpot,
   nearestReached,
   openSpot,
@@ -109,6 +110,9 @@ export interface FightFocus {
   body: number;
   /** The bearing a charge it shows or makes runs along, degrees; undefined when it is not charging. */
   lane?: number;
+  /** While it charges: where the charge will end, and seconds until it passes the walker (less than 0 once past). */
+  laneEnd: [number, number];
+  passIn: number;
   hard: boolean;
 }
 
@@ -734,13 +738,24 @@ export class GameWorld {
     // Its arms reach out past its body: the boss's red pens most.
     o.half = FOES[pick.kind].radius * 1.3 * scale;
     o.body = FOES[pick.kind].radius * scale;
-    o.lane = pick.move?.type === "charge" && (pick.state === "tell" || pick.state === "attack") ? pick.move.dir : undefined;
+    const m = pick.move;
+    o.lane = m?.type === "charge" && (pick.state === "tell" || pick.state === "attack") ? m.dir : undefined;
+    if (m?.type === "charge" && o.lane !== undefined) {
+      const r = (m.dir * Math.PI) / 180;
+      const ux = Math.sin(r);
+      const uy = Math.cos(r);
+      o.laneEnd[0] = pick.at[0] + ux * m.left;
+      o.laneEnd[1] = pick.at[1] + uy * m.left;
+      // Metres to go along the charge to come level with the walker, and the time it takes from now.
+      const along = (me[0] - pick.at[0]) * ux + (me[1] - pick.at[1]) * uy;
+      o.passIn = (pick.state === "tell" ? Math.max(0, pick.t) : 0) + along / chargeSpeed(pick.kind);
+    } else o.passIn = Infinity;
     o.hard = hard;
     return o;
   }
   /** Where the walker stood at the last step. */
   private meAt: [number, number] = [0, 0];
-  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, body: 0, hard: false };
+  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, body: 0, laneEnd: [0, 0], passIn: Infinity, hard: false };
 
   /** What the panel shows, with what happened since it last asked. */
   view(): GameView | undefined {
