@@ -44,6 +44,37 @@ test(`${SCHOOL}: the page loads at /${SCHOOL}/ and the canvas is a real picture`
   await shot(page, `schools-${SCHOOL}-day`);
 });
 
+test(`${SCHOOL}: the page names its one address and its picture, and says in its HTML what the map shows`, async ({ page, request }) => {
+  await open(page, DAY);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://campusworldmodel.com/${SCHOOL}/`);
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", `https://campusworldmodel.com/${SCHOOL}/og.jpg`);
+  const picture = await request.get("og.jpg");
+  expect(picture.ok()).toBe(true);
+  expect(picture.headers()["content-type"]).toMatch(/^image\/jpeg/);
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!) as Record<string, unknown>;
+  expect(data).toMatchObject({ "@type": "WebApplication", name: words.app.title, url: `https://campusworldmodel.com/${SCHOOL}/` });
+  const meta = await published<Meta>(page, "meta.json");
+  const html = await (await request.get("")).text();
+  expect(html).toContain('<section id="summary" class="sr-only" aria-labelledby="summary-title">');
+  expect(html).toContain(`Buildings on the map: ${meta.coverage.buildingsOnMap.toLocaleString("en-NZ")}.`);
+  const box = (await page.locator("#summary").boundingBox())!;
+  expect(box.width * box.height).toBeLessThanOrEqual(1);
+});
+
+test(`${SCHOOL}: the building list names every building, and each opens on the 3D map`, async ({ page }) => {
+  await open(page, DAY);
+  const campus = await published<CampusData>(page, "campus.json");
+  await page.goto("buildings/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://campusworldmodel.com/${SCHOOL}/buildings/`);
+  const links = await page.locator("main li a").evaluateAll((els) => els.map((a) => a.getAttribute("href")));
+  for (const b of campus.buildings) expect(links, b.id).toContain(`../?building=${encodeURIComponent(b.id)}`);
+  const first = [...campus.buildings].find((b) => !b.offMap)!;
+  await page.locator(`main li a[href="../?building=${encodeURIComponent(first.id)}"]`).first().click();
+  await settle(page);
+  expect(new URL(page.url()).searchParams.get("building")).toBe(first.id);
+  await expect(page.locator("#building-bar")).toContainText(first.name.en);
+});
+
 test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");

@@ -87,8 +87,12 @@ describe("the school's words", () => {
     // The picker at the site's root names each school under its own id, picker.schools.<id>, and no
     // school's app shows those words (tests/picker.test.ts).
     const shared = new Set(["time.nowHelp", "time.auckland", "about.landmarks"]);
+    // The question on rooms at the site's root, and the addresses llms.txt gives, name the University of
+    // Auckland's map as the one example of a room: words of the root (scripts/lib/picker.ts), which no
+    // school's app shows.
+    const root = (key: string) => key.startsWith("picker.schools.") || key.startsWith("picker.faq.room.") || key.startsWith("picker.llms.link");
     const names = /University of Auckland|\bUoA\b|Auckland|the University\b|City Campus|303-G23/;
-    const missing = wordKeys(en).filter((key) => names.test(lookupWords(en, key)!) && !shared.has(key) && !named.has(key) && !key.startsWith("picker.schools."));
+    const missing = wordKeys(en).filter((key) => names.test(lookupWords(en, key)!) && !shared.has(key) && !named.has(key) && !root(key));
     expect(missing).toEqual([]);
   });
 

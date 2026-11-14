@@ -312,6 +312,54 @@ test("8. ?lang= is honoured and unknown languages fall back to English", async (
   await expect(page.locator(".brand-name")).toHaveText("UoA World Model");
 });
 
+test("9. the page names its one address and its picture, describes the map in structured data, and says in its HTML what the map shows", async ({ page, request }) => {
+  await open(page, "?light=day");
+  // One address to index, whichever copy serves the page (scripts/lib/school-page.ts).
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://campusworldmodel.com/uoa/");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", "https://campusworldmodel.com/uoa/og.jpg");
+  // The picture is served beside the page.
+  const picture = await request.get("og.jpg");
+  expect(picture.ok()).toBe(true);
+  expect(picture.headers()["content-type"]).toMatch(/^image\/jpeg/);
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!) as Record<string, unknown>;
+  expect(data).toMatchObject({ "@type": "WebApplication", name: "UoA World Model", about: { "@type": "CollegeOrUniversity", name: "University of Auckland" } });
+  // The summary is in the HTML as the server sends it, before any script runs, and hidden on screen.
+  const html = await (await request.get("")).text();
+  expect(html).toContain('<section id="summary" class="sr-only" aria-labelledby="summary-title">');
+  expect(html).toMatch(/Buildings on the map: \d+\./);
+  expect(html).toContain("Not affiliated with the University of Auckland.");
+  const box = (await page.locator("#summary").boundingBox())!;
+  expect(box.width * box.height).toBeLessThanOrEqual(1);
+  await expectRealRender(page);
+});
+
+test("10. the building list and a building's page are plain HTML, and a room on the page opens on the 3D map", async ({ page, browser }) => {
+  // As a search engine or an AI assistant reads them: no script runs.
+  const base = test.info().project.use.baseURL!;
+  const plain = await browser.newContext({ javaScriptEnabled: false });
+  const reader = await plain.newPage();
+  await reader.goto(new URL("buildings/", base).href);
+  await expect(reader).toHaveTitle("Buildings · UoA World Model (unofficial student project)");
+  await expect(reader.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://campusworldmodel.com/uoa/buildings/");
+  await expect(reader.getByRole("heading", { level: 2, name: "City Campus" })).toBeVisible();
+  await reader.getByRole("link", { name: "303 Science Centre - Faculty of Science" }).click();
+  await expect(reader).toHaveURL(/\/buildings\/303\/$/);
+  await expect(reader.getByRole("heading", { level: 1 })).toHaveText("303 Science Centre - Faculty of Science");
+  await expect(reader.getByRole("heading", { level: 3, name: "Floor G" })).toBeVisible();
+  await expect(reader.locator('li[id="303-G23"]')).toContainText("Lecture Theatre");
+  await expect(reader.locator(".notice")).toContainText("not affiliated with");
+  await plain.close();
+
+  // People: the room's code opens the room on the 3D map, on its floor.
+  await page.goto("buildings/303/");
+  await page.getByRole("link", { name: "Open 303-G23 on the 3D map" }).click();
+  await settle(page);
+  expect(new URL(page.url()).searchParams.get("room")).toBe("303-G23");
+  await expect(page.locator("#room-card")).toContainText("303-G23");
+  await expect(page.locator("#building-bar")).toContainText("Science Centre");
+  await expectRealRender(page);
+});
+
 test("the top bar links straight to the source code on GitHub, beside Search", async ({ page }) => {
   await open(page, "?light=day");
   const link = page.locator(".topbar").getByRole("link", { name: "Source code on GitHub" });

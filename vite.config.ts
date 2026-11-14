@@ -3,7 +3,10 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 import preact from "@preact/preset-vite";
 import type { Plugin, ResolvedConfig } from "vite";
+import { buildingPageFiles } from "./scripts/lib/building-pages.ts";
+import { schoolPage } from "./scripts/lib/school-page.ts";
 import type { Words } from "./src/shared/school.ts";
+import type { CampusData, Meta } from "./src/shared/types.ts";
 import { lookupWords, overlayWords } from "./src/shared/words.ts";
 
 // The school whose data a build carries (docs/schools/DESIGN.md, section 3). Each school's published
@@ -51,6 +54,16 @@ function pickerWordsOut(): Plugin {
 function schoolData(): Plugin {
   let config: ResolvedConfig;
   const dataDir = () => path.join(config.publicDir, "data");
+  const readJson = <T>(file: string): T | undefined => (fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, "utf8")) as T) : undefined);
+  /** The school's words: src/i18n/locales/en.json with the school's overlay laid over it. */
+  const schoolWords = () =>
+    overlayWords(readJson<Words>(path.join(config.root, "src", "i18n", "locales", "en.json"))!, readJson<Words>(path.join(config.root, "src", "schools", SCHOOL, "locales", "en.json")));
+  /** A file of the school's published data, which must exist. */
+  const published = <T>(file: string): T => {
+    const json = readJson<T>(path.join(dataDir(), SCHOOL, file));
+    if (json === undefined) throw new Error(`no ${file} in the published data of SCHOOL=${SCHOOL}`);
+    return json;
+  };
   return {
     name: "school-data",
     configResolved(resolved) {
@@ -71,19 +84,33 @@ function schoolData(): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html) {
-        const read = (file: string) => (fs.existsSync(file) ? (JSON.parse(fs.readFileSync(file, "utf8")) as Words) : undefined);
-        const words = overlayWords(read(path.join(config.root, "src", "i18n", "locales", "en.json"))!, read(path.join(config.root, "src", "schools", SCHOOL, "locales", "en.json")));
-        return html.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key: string) => {
+        const words = schoolWords();
+        const filled = html.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key: string) => {
           const text = lookupWords(words, key);
           if (text === undefined) throw new Error(`index.html names "${key}", which is not in the school's words`);
           return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         });
+        // What search engines and AI assistants read of the page (scripts/lib/school-page.ts): its
+        // address, picture and structured data in the head, and a summary of the map after the app.
+        const page = schoolPage({ id: SCHOOL, words, meta: published<Meta>("meta.json"), campuses: published<CampusData>("campus.json").campuses, base: config.base });
+        const app = '<div id="app"></div>';
+        if (!filled.includes(app) || !filled.includes("</head>")) throw new Error(`index.html has no ${app} or no </head>`);
+        return filled.replace("</head>", `${page.head}\n  </head>`).replace(app, `${app}\n${page.body}`);
       },
     },
     writeBundle() {
       const out = path.resolve(config.root, config.build.outDir);
       fs.cpSync(config.publicDir, out, { recursive: true, filter: (src) => path.resolve(src) !== path.resolve(dataDir()) });
       fs.cpSync(path.join(dataDir(), SCHOOL), path.join(out, "data"), { recursive: true });
+      // The page's picture for link previews, which its head names (scripts/lib/school-page.ts).
+      const picture = path.join(config.root, "docs", "og", `${SCHOOL}.jpg`);
+      if (!fs.existsSync(picture)) throw new Error(`no picture for link previews of SCHOOL=${SCHOOL} at ${picture}`);
+      fs.copyFileSync(picture, path.join(out, "og.jpg"));
+      // The building list and each building's page, static (scripts/lib/building-pages.ts).
+      for (const page of buildingPageFiles({ id: SCHOOL, words: schoolWords(), meta: published<Meta>("meta.json"), campus: published<CampusData>("campus.json"), base: config.base })) {
+        fs.mkdirSync(path.dirname(path.join(out, page.path)), { recursive: true });
+        fs.writeFileSync(path.join(out, page.path), page.html);
+      }
     },
   };
 }

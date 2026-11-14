@@ -20,6 +20,7 @@ import type { Meta } from "../../src/shared/types.ts";
 import { lookupWords, overlayWords } from "../../src/shared/words.ts";
 import { ICON_BOXES, ICON_PATHS } from "../../src/ui/icons.ts";
 import { type SchoolAbout, schoolAboutHtml } from "./about.ts";
+import { SITE_NAME, type SitemapEntry, headTags, isoDate, jsonLd, siteUrl } from "./seo.ts";
 
 /** A school on the list, with what its line on the picker is made from. */
 export interface PickerSchool {
@@ -67,7 +68,7 @@ export function escapeHtml(text: string): string {
 }
 
 /** The text of a key, which must exist, with each {name} filled in. */
-function word(words: Words, key: string, params: Record<string, string> = {}): string {
+export function word(words: Words, key: string, params: Record<string, string> = {}): string {
   const text = lookupWords(words, key);
   if (text === undefined) throw new Error(`src/i18n/locales/en.json has no text for "${key}"`);
   return text.replace(/\{(\w+)\}/g, (all, name: string) => params[name] ?? all);
@@ -98,7 +99,7 @@ export function schoolLine(school: PickerSchool, shared: Words) {
 
 // The project's palette (src/ui/styles.css and src/scene/palette.ts): the map's sky and ground
 // behind, the panels' ink, and the accent #ffb454. No university's colours and no logo.
-const STYLE = `
+export const STYLE = `
 :root{--ink:#0f1b25;--panel:#14222e;--text:#eef3f6;--muted:#a3b3bf;--accent:#ffb454;--sky:#dfe8ec;--ground:#e9e5da;--edge:#8b7b62;
 --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue","Noto Sans",Arial,sans-serif;
 --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Noto Serif",serif}
@@ -153,6 +154,10 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .coverage .sub th{padding-left:14px;color:#4a5a66}
 .limits{margin:0;padding-left:18px}
 .built{color:#4a5a66}
+.faq{margin-top:40px}
+.faq h2{margin:0 0 4px;font:600 1.75rem/1.2 var(--font-display)}
+.faq h3{margin:20px 0 4px;font:600 1.0625rem/1.35 var(--font)}
+.faq p{margin:0;color:#33424d}
 `.trim();
 
 /** The GitHub mark, as the app draws it (src/ui/icons.ts). */
@@ -195,13 +200,67 @@ function about(shared: Words, schools: PickerSchool[]): string {
   ].join("\n");
 }
 
+/** The keys of the questions under the list, picker.faq.<key>, in the order shown. */
+export const FAQ_KEYS = ["what", "shows", "room", "sources", "official", "mistake"] as const;
+
+/** The questions under the list, each with its answer, as plain text. */
+export function faq(shared: Words): { q: string; a: string }[] {
+  return FAQ_KEYS.map((k) => ({ q: word(shared, `picker.faq.${k}.q`), a: word(shared, `picker.faq.${k}.a`) }));
+}
+
+/** The questions under the list of schools, each a heading with its answer under it. */
+function questions(shared: Words): string {
+  const e = escapeHtml;
+  return [
+    `<section class="faq" aria-labelledby="faq-title">`,
+    `<h2 id="faq-title">${e(word(shared, "picker.faqTitle"))}</h2>`,
+    ...faq(shared).map(({ q, a }) => `<h3>${e(q)}</h3>\n<p>${e(a)}</p>`),
+    `</section>`,
+  ].join("\n");
+}
+
+/**
+ * The picker's structured data (scripts/lib/seo.ts): the site, the list of its schools' maps, and the
+ * questions under the list with their answers, in the words the page shows.
+ */
+function pickerJsonLd(shared: Words, schools: PickerSchool[]): object {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: SITE_NAME,
+        url: siteUrl(),
+        description: word(shared, "picker.description"),
+        inLanguage: lookupWords(shared, "_meta.intl") ?? "en-NZ",
+      },
+      {
+        "@type": "ItemList",
+        name: word(shared, "picker.listLabel"),
+        itemListElement: schools.map((school, i) => {
+          const s = schoolLine(school, shared);
+          return { "@type": "ListItem", position: i + 1, name: `${s.site}: ${s.name}`, url: siteUrl(`${s.id}/`) };
+        }),
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faq(shared).map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+      },
+    ],
+  };
+}
+
 /**
  * One page: the heading with, on its line, the links to About and the source code, its lead, the notice, the list of
- * schools, and on the picker the Tsinghua World Model's card and About below it, hidden until asked for (the
- * page for an unknown path links to the picker's).
+ * schools, and on the picker the questions with their answers, the Tsinghua World Model's card and About below it,
+ * hidden until asked for (the page for an unknown path links to the picker's). The picker's head names its one
+ * address, its picture and its structured data; the page for an unknown path asks not to be indexed.
  */
 function page(shared: Words, schools: PickerSchool[], words: { documentTitle: string; heading: string; lead: string }, withAbout: boolean): string {
   const e = escapeHtml;
+  const seo = withAbout
+    ? `${headTags({ url: siteUrl(), image: siteUrl("og.jpg"), imageAlt: word(shared, "picker.imageAlt") })}\n${jsonLd(pickerJsonLd(shared, schools))}`
+    : `<meta name="robots" content="noindex">`;
   const items = schools.map((school) => {
     const s = schoolLine(school, shared);
     return [
@@ -223,6 +282,7 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
 <meta property="og:title" content="${e(words.documentTitle)}">
 <meta property="og:description" content="${e(word(shared, "picker.description"))}">
 <meta property="og:type" content="website">
+${seo}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <title>${e(words.documentTitle)}</title>
 <style>${STYLE}</style>
@@ -241,11 +301,65 @@ function page(shared: Words, schools: PickerSchool[], words: { documentTitle: st
 <ul class="schools" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${items.join("\n")}
 </ul>
-${withAbout ? `${inspiredBy(shared)}\n${about(shared, schools)}` : ""}
+${withAbout ? `${questions(shared)}\n${inspiredBy(shared)}\n${about(shared, schools)}` : ""}
 </main>
 </body>
 </html>
 `;
+}
+
+/**
+ * The pages of the sitemap: the picker, dated by the newest school's data, then each school's page and the pages
+ * under it, its building list and its buildings' pages (buildingPagePaths in scripts/lib/building-pages.ts), dated
+ * by its meta.json's generatedAt.
+ */
+export function sitemapEntries(schools: PickerSchool[], pagesUnder: Record<string, string[]>): SitemapEntry[] {
+  const pages = schools.flatMap((s) => {
+    const lastmod = isoDate(s.meta.generatedAt);
+    const under = pagesUnder[s.id];
+    if (!under) throw new Error(`no pages given under ${s.id}`);
+    return [`${s.id}/`, ...under.map((p) => `${s.id}/${p}`)].map((p) => ({ url: siteUrl(p), lastmod }));
+  });
+  const newest = pages.map((p) => p.lastmod).sort().at(-1);
+  return [{ url: siteUrl(), lastmod: newest }, ...pages];
+}
+
+/**
+ * llms.txt (llmstxt.org): the site in Markdown for AI assistants. What it is, each school's map with its line
+ * from the picker, the questions with their answers, the addresses that open a place on a map, and the links
+ * to About and the source code. Every text is the picker's.
+ */
+export function llmsTxt(schools: PickerSchool[], shared: Words): string {
+  const maps = schools.map((school) => {
+    const s = schoolLine(school, shared);
+    const name = s.reo ? `${s.name} (${s.reo})` : s.name;
+    return `- [${s.site}](${siteUrl(`${s.id}/`)}): ${name}, ${s.city}. ${s.form}. ${s.snapshot}. [${word(shared, "picker.llms.buildings")}](${siteUrl(`${s.id}/buildings/`)})`;
+  });
+  const [what, ...rest] = faq(shared);
+  return [
+    `# ${word(shared, "picker.heading")}`,
+    "",
+    `> ${word(shared, "picker.description")}`,
+    "",
+    what!.a,
+    "",
+    `## ${word(shared, "picker.llms.mapsTitle")}`,
+    "",
+    ...maps,
+    "",
+    `## ${word(shared, "picker.faqTitle")}`,
+    "",
+    ...rest.flatMap(({ q, a }) => [`### ${q}`, "", a, ""]),
+    `## ${word(shared, "picker.llms.linksTitle")}`,
+    "",
+    ...["linkBuilding", "linkFloor", "linkRoom"].map((k) => `- ${word(shared, `picker.llms.${k}`)}`),
+    "",
+    `## ${word(shared, "picker.llms.moreTitle")}`,
+    "",
+    `- [${word(shared, "picker.llms.about")}](${siteUrl("#about")})`,
+    `- [${word(shared, "picker.llms.repo")}](${REPO})`,
+    "",
+  ].join("\n");
 }
 
 /** The picker, index.html, and the page for an unknown path, 404.html, for the schools on the list in its order. */
