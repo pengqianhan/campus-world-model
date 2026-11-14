@@ -474,10 +474,11 @@ export class FoeMotion {
       o.sz *= swell;
       o.ox += (Math.random() - 0.5) * 0.18 * rise;
       o.on += (Math.random() - 0.5) * 0.18 * rise;
+      // A glow at its edges as it roars, held to the boss.
       const glow = 0.6 + 0.4 * Math.sin(t * 24);
-      o.tr = 1.0 * glow * rise;
-      o.tg = 0.45 * glow * rise;
-      o.tb = 0.06 * rise;
+      o.tr = 0.75 * glow * rise;
+      o.tg = 0.36 * glow * rise;
+      o.tb = 0.05 * rise;
     } else {
       const s = smooth((k - 0.75) / 0.25);
       o.oy += 1.3 * (1 - s);

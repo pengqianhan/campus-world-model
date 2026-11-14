@@ -59,6 +59,7 @@ import type { WalkGrid } from "../shared/walkpath.ts";
 import type { Move } from "./figureMoves.ts";
 import { Arena, Debris, Decals, Missiles, Puffs, Shadows, Shocks, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
 import { FoeMotion, newLook } from "./gameMotion.ts";
+import { BossView, bossPose } from "./gameBoss.ts";
 import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
 import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
 import type { LabelSpec } from "./labels.ts";
@@ -103,6 +104,10 @@ export interface FightFocus {
   top: number;
   /** Metres either side of its middle. */
   half: number;
+  /** Metres from its middle to the edge of its body: the camera keeps out of it. */
+  body: number;
+  /** The bearing a charge it shows or makes runs along, degrees; undefined when it is not charging. */
+  lane?: number;
   hard: boolean;
 }
 
@@ -226,13 +231,17 @@ interface Layer {
   part?: { name: string; pivot: [number, number, number] };
 }
 
+/** The villains drawn in crowds; the Final Exam is drawn by a figure of its own (gameBoss.ts). */
+type CrowdKind = Exclude<FoeKind, "exam">;
+const CROWD_KINDS = FOE_KINDS.filter((k): k is CrowdKind => k !== "exam");
+
 class KindView {
   readonly model: Model;
   readonly layers: Layer[] = [];
   n = 0;
 
   constructor(
-    readonly kind: FoeKind,
+    readonly kind: CrowdKind,
     lit: Material,
     glow: Material,
     group: Group,
@@ -440,7 +449,11 @@ export class GameWorld {
   private overFor = 0;
   private stillDrawn = false;
   private heights = new Map<number, number>();
-  private kinds: Record<FoeKind, KindView>;
+  private kinds: Record<CrowdKind, KindView>;
+  /** The Final Exam, and how it is posed; how far its near parts are thinned for the walker to show. */
+  private boss = new BossView();
+  private bossPose = bossPose();
+  private bossFade = 0;
   private items = new ItemsView();
   private sparks = new Sparks();
   private tells = new Telegraphs();
@@ -476,8 +489,8 @@ export class GameWorld {
   ) {
     this.group.userData.noPick = true;
     this.group.visible = false;
-    this.kinds = Object.fromEntries(FOE_KINDS.map((k) => [k, new KindView(k, this.lit, this.glow, this.group)])) as Record<FoeKind, KindView>;
-    this.group.add(this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.arena.mesh, this.debris.group, this.puffs.mesh, this.shocks.mesh, this.decals.group);
+    this.kinds = Object.fromEntries(CROWD_KINDS.map((k) => [k, new KindView(k, this.lit, this.glow, this.group)])) as Record<CrowdKind, KindView>;
+    this.group.add(this.boss.root, this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.arena.mesh, this.debris.group, this.puffs.mesh, this.shocks.mesh, this.decals.group);
     // What is see-through (light, dust, warnings on the ground) stays out of the ambient occlusion
     // of the walker view (street/effects.ts): drawn there for depth and normals, a ring of light
     // would shade the ground round it as if it were a wall.
@@ -721,17 +734,19 @@ export class GameWorld {
     o.at[1] = pick.at[1];
     o.foot = foot;
     // Its model's top, with a little over for its crown of pens or its bob in the air.
-    const model = this.kinds[pick.kind].model;
+    const model = pick.kind === "exam" ? this.boss : this.kinds[pick.kind].model;
     const scale = pick.kind === "ddl" ? 1 + (pick.tier - 1) * 0.25 : 1;
     o.top = foot + (model.float + model.height) * scale + 0.6 + (pick.state === "phase" ? PHASE_RISE : 0);
     // Its arms reach out past its body: the boss's red pens most.
     o.half = FOES[pick.kind].radius * 1.3 * scale;
+    o.body = FOES[pick.kind].radius * scale;
+    o.lane = pick.move?.type === "charge" && (pick.state === "tell" || pick.state === "attack") ? pick.move.dir : undefined;
     o.hard = hard;
     return o;
   }
   /** Where the walker stood at the last step. */
   private meAt: [number, number] = [0, 0];
-  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, hard: false };
+  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, body: 0, hard: false };
 
   /** What the panel shows, with what happened since it last asked. */
   view(): GameView | undefined {
@@ -789,7 +804,7 @@ export class GameWorld {
       }),
       boss: boss ? { hp: boss.hp, max: boss.maxHp, phase: boss.phase } : undefined,
       threat: { near, ddl },
-      chain: g.chain,
+      chain: g.hits,
       slowed: g.slowT > 0,
       locked: g.lock !== undefined,
       seconds: g.seconds,
@@ -914,6 +929,7 @@ export class GameWorld {
   dispose(): void {
     this.stop();
     for (const k of Object.values(this.kinds)) k.dispose();
+    this.boss.dispose();
     this.items.dispose();
     this.lit.dispose();
     this.glow.dispose();
@@ -1151,15 +1167,17 @@ export class GameWorld {
         o?.flash("rank");
         break;
       case "phase": {
-        // The boss's change of phase: knocked back, then a roar that sends rings out over the hall.
+        // The boss's change of phase: knocked back, then a roar. The effect stays on the boss and the
+        // ground: its own glow (gameBoss.ts), one crisp shockwave and a thin one after it over the
+        // arena, and a pulse at the edges of the picture (gameOverlay.ts), never a wash over all of it.
         o?.flash("phase");
         this.trauma = Math.min(1, this.trauma + 0.6);
         const b = this.quest?.boss;
         if (b) {
           const foot = this.footOf(b.id);
           const roar = FOE_TIME.phase * 0.2;
-          this.shocks.fire(b.at[0], foot + 0.12, -b.at[1], QUEST.arenaRadius * 0.9, 0.9, 0xffb347, 0.7, roar);
-          this.shocks.fire(b.at[0], foot + 0.14, -b.at[1], QUEST.arenaRadius * 0.7, 0.4, 0xff5a3d, 0.6, roar + 0.18);
+          this.shocks.fire(b.at[0], foot + 0.12, -b.at[1], QUEST.arenaRadius * 0.9, 0.55, 0xffc070, 0.7, roar);
+          this.shocks.fire(b.at[0], foot + 0.14, -b.at[1], QUEST.arenaRadius * 0.75, 0.22, 0xff6a3d, 0.6, roar + 0.16);
           this.sparks.burst(b.at[0], foot + 5, -b.at[1], 40, 12, 0xffd27a, 0.16, 0.9, 6);
           this.puffs.puff(b.at[0], foot, -b.at[1], 10, 4, DUST, 1.3, 0.9);
         }
@@ -1227,7 +1245,8 @@ export class GameWorld {
     this.items.end();
 
     // Foes.
-    for (const k of FOE_KINDS) this.kinds[k].begin();
+    for (const k of CROWD_KINDS) this.kinds[k].begin();
+    this.boss.begin();
     this.shadows.begin();
     this.motion.begin();
     const plates: PlateIn[] = [];
@@ -1237,8 +1256,8 @@ export class GameWorld {
     for (const f of g.foes) {
       const far = Math.hypot(f.at[0] - wx, f.at[1] - walker.at[1]);
       if (far > 180) continue;
-      const kv = this.kinds[f.kind];
-      const model = kv.model;
+      const kv = f.kind === "exam" ? undefined : this.kinds[f.kind];
+      const model = kv?.model ?? this.boss;
       // Over the ground and the roofs, rising and falling smoothly.
       const want = this.floatAt(f.at);
       const had = this.heights.get(f.id);
@@ -1258,7 +1277,8 @@ export class GameWorld {
       tint.setRGB(look.tr, look.tg, look.tb);
       // What breaks up glows at the edges of its gaps in its own colour.
       if (f.state === "dead" && f.kind !== "exam") tint.setHex(HUE[f.kind]).multiplyScalar(0.8);
-      if (f.kind === "exam" && f.phase === 3 && f.state !== "dead" && f.state !== "phase") tint.r = Math.max(tint.r, 0.22 + 0.12 * Math.sin(t * 6));
+      // The last phase's rage: a faint red at its edges; the figure itself shows the rest (gameBoss.ts).
+      if (f.kind === "exam" && f.phase === 3 && f.state !== "dead" && f.state !== "phase") tint.r = Math.max(tint.r, 0.08 + 0.05 * Math.sin(t * 6));
       if (f.kind === "exam" && f.state === "phase") bossPhase = this.motion.since(f.id) / FOE_TIME.phase;
       _p.set(f.at[0] + look.ox, y, -(f.at[1] + look.on));
       _q.setFromEuler(_e.set(look.pitch, yawOf(f.facing) + look.yaw, look.roll));
@@ -1266,7 +1286,8 @@ export class GameWorld {
       _b.compose(_p, _q, _s);
       this.posing = f;
       this.posingT = t;
-      kv.put(_b, tint, look.dissolve, look.flash, this.poseOf);
+      if (kv) kv.put(_b, tint, look.dissolve, look.flash, this.poseOf);
+      else this.placeBoss(f, _b, tint, look.dissolve, look.flash, t, dt, walker);
       if (f.state !== "dead") this.shadows.add(f.at[0] + look.ox, foot, -(f.at[1] + look.on), FOES[f.kind].radius * (f.kind === "exam" ? 1.2 : 0.9) * scale * Math.max(0.6, 1 - look.oy * 0.15));
       // Its plate: the big ones always; the small ones when near, or hurt.
       const elite = f.kind === "ddl" || f.kind === "exam";
@@ -1306,7 +1327,14 @@ export class GameWorld {
       if (n.side < 1e-3) n.side = 0;
       if (n.push < 1e-3) n.push = 0;
     }
-    for (const k of FOE_KINDS) this.kinds[k].end();
+    // In the first frames of a game, the Final Exam is drawn once far under the walker, so that its
+    // shaders are made behind the title card and not as it rises.
+    if (this.warm > 0 && !this.boss.root.visible) {
+      _b.makeTranslation(wx, wy - 400, wz);
+      this.placeBossAt(_b, 1, 1, _tint.setRGB(0, 0, 0), 0, 0, t, 0, -1);
+    }
+    for (const k of CROWD_KINDS) this.kinds[k].end();
+    this.boss.end();
     this.shadows.end();
 
     // Warnings on the ground that fill as the attack comes, the boss's rings, and rings at the walker's feet.
@@ -1407,6 +1435,84 @@ export class GameWorld {
     }
   }
 
+  /**
+   * Poses the Final Exam: its arms by what it is doing (raised for a slam or the essay's lines, one
+   * drawn back to throw, forward for a charge, low as it recovers, flung up as it roars), its phase,
+   * its health in the sand, and its near parts thinned while it stands between the camera and the
+   * walker, or the camera is in it, so that the walker is never hidden behind it for more than a moment.
+   */
+  private placeBoss(f: Foe, base: Matrix4, tint: Color, dissolve: number, flash: number, t: number, dt: number, walker: WalkerState): void {
+    const roar = f.state === "phase" ? this.motion.since(f.id) / FOE_TIME.phase : -1;
+    // Hidden behind it: the line from the camera to the walker passes through its body, with its
+    // middle nearer the camera than the walker, or hardly past it (the walker deep in its skirts).
+    const camera = this.host.camera();
+    const cam = camera.position;
+    const wx = walker.at[0];
+    const wz = -walker.at[1];
+    const bx = f.at[0];
+    const bz = -f.at[1];
+    const dx = wx - cam.x;
+    const dz = wz - cam.z;
+    const len = Math.hypot(dx, dz) || 1;
+    const along = ((bx - cam.x) * dx + (bz - cam.z) * dz) / len;
+    const off = Math.hypot(cam.x + (dx / len) * along - bx, cam.z + (dz / len) * along - bz);
+    const r = FOES.exam.radius;
+    const inside = Math.hypot(cam.x - bx, cam.z - bz) < r + 1.2;
+    const hides = (along > 0 && along < len + r * 0.25 && off < r * 1.1) || inside;
+    const want = hides && f.state !== "dead" ? BOSS_THIN : 0;
+    this.bossFade += (want - this.bossFade) * (dt > 0 ? 1 - Math.exp(-dt * (want > this.bossFade ? 14 : 4)) : 1);
+    if (this.bossFade < 0.01) this.bossFade = 0;
+    // Only what is clearly nearer the camera than the walker thins, over the ground along the way the
+    // camera looks: what stands behind the walker, or over it, never does.
+    camera.getWorldDirection(_v);
+    const fl = Math.hypot(_v.x, _v.z) || 1;
+    const from = this.bossPose.fadeFrom;
+    from[0] = cam.x;
+    from[1] = cam.z;
+    from[2] = _v.x / fl;
+    from[3] = _v.z / fl;
+    const near = (wx - cam.x) * from[2] + (wz - cam.z) * from[3] - 1.2;
+    this.placeBossAt(base, f.phase, f.hp / f.maxHp, tint, dissolve, flash, t, dt, roar, this.bossFade, near, f);
+    // Ink drips from the pens' nibs, more as it rages.
+    if (dt > 0 && f.state !== "dead" && Math.random() < dt * (0.8 + f.phase * 1.2)) {
+      this.boss.nib(Math.random() < 0.5 ? -1 : 1, _v);
+      this.sparks.one(_v.x, _v.y, _v.z, 0, -0.5, 0, 0.9, 0.11, 0xa50f1a, 9, 0.02);
+    }
+  }
+
+  private placeBossAt(base: Matrix4, phase: number, health: number, tint: Color, dissolve: number, flash: number, t: number, dt: number, roar: number, fade = 0, near = 0, f?: Foe): void {
+    const p = this.bossPose;
+    p.t = t;
+    p.dt = dt;
+    p.phase = phase;
+    p.health = health;
+    p.tint.r = tint.r;
+    p.tint.g = tint.g;
+    p.tint.b = tint.b;
+    p.dissolve = dissolve;
+    p.flash = flash;
+    p.roar = roar;
+    p.fade = fade;
+    p.fadeNear = near;
+    p.halo = t * (phase === 3 ? 2.2 : phase === 2 ? 1.3 : 0.8);
+    for (const side of [-1, 1] as const) {
+      // Idle: a slow sway, the forearms forward and readier with each phase.
+      let sh = Math.sin(t * 1.4 + (side > 0 ? 1.5 : 0)) * 0.15 - 0.1;
+      let el = -0.4 - 0.12 * (phase - 1);
+      const s = f?.state;
+      const m = f?.move?.type;
+      if (s === "tell" && (m === "slam" || m === "beams")) (sh = -2.3), (el = -0.9);
+      else if (s === "tell" && m === "charge") (sh = -0.9), (el = -0.2);
+      else if (s === "tell" && m === "orb") (sh = side < 0 ? -1.5 : 0.1), (el = side < 0 ? -1.0 : -0.4);
+      else if (s === "attack") (sh = 0.7), (el = -0.1);
+      else if (s === "recover") (sh = 0.45), (el = -0.15);
+      else if (s === "phase") (sh = -2.7 + Math.sin(t * 20) * 0.15), (el = -0.5);
+      if (side < 0) (p.armL = sh), (p.elbowL = el);
+      else (p.armR = sh), (p.elbowR = el);
+    }
+    this.boss.place(base, p);
+  }
+
   /** How a moving part of a foe is turned now, about its pivot. */
   /** The foe whose parts are being turned, and the clock: partPose by way of poseOf, made once. */
   private posing?: Foe;
@@ -1440,21 +1546,6 @@ export class GameWorld {
         out.makeScale(beat, beat, beat).premultiply(_r.makeRotationY(t * 2));
         return;
       }
-      case "armL":
-      case "armR": {
-        const side = name === "armL" ? 1 : -1;
-        let x = Math.sin(t * 1.4 + (side > 0 ? 0 : 1.5)) * 0.15;
-        if (f.state === "tell" && (f.move?.type === "slam" || f.move?.type === "beams")) x = -2.4;
-        else if (f.state === "tell" && f.move?.type === "orb") x = side > 0 ? -1.4 : 0.1;
-        else if (f.state === "recover") x = 0.5;
-        else if (f.state === "phase") x = -2.8 + Math.sin(t * 20) * 0.2;
-        _q.setFromEuler(_e.set(x, 0, side * 0.12));
-        out.makeRotationFromQuaternion(_q);
-        return;
-      }
-      case "halo":
-        out.makeRotationY(t * (f.phase === 3 ? 2.2 : 0.8));
-        return;
       default:
         out.identity();
     }
@@ -1475,6 +1566,8 @@ const ENGAGE_DDL = 24;
 
 /** Seconds before each blow lands that its arc of light begins, so that it is brightest as it lands. */
 const SLASH_LEAD = [0.04, 0.04, 0.02];
+/** How much of the boss's near parts is left out (a screen-door), while it would hide the walker. */
+const BOSS_THIN = 0.65;
 /** Metres the boss rises as it roars at its change of phase (gameMotion.ts), with a little over: the camera frames it. */
 const PHASE_RISE = 1.6;
 /** Seconds after a blow ends that the camera stays over the walker's shoulder. */

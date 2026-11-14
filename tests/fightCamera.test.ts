@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { frameFight, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
+import { LANE_DODGE, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
 
 const HALF = (55 * Math.PI) / 360;
 const UP = Math.tan((16 * Math.PI) / 180);
@@ -73,7 +73,48 @@ describe("frameFight", () => {
     expect(f.reach).toBeGreaterThan(frame(shot(3, 11.7, 4.2)).reach);
   });
 
-  it("goes no further than it may", () => {
-    expect(frame(shot(0.5, 40, 1, { maxReach: 12 })).reach).toBe(12);
+  it("goes no further than it may, and says when they do not fit", () => {
+    const f = frame(shot(0.5, 40, 1, { maxReach: 12 }));
+    expect(f.reach).toBe(12);
+    expect(f.fits).toBe(false);
+    expect(frame(shot(6, 2.8)).fits).toBe(true);
+  });
+});
+
+describe("bandPitch", () => {
+  it("keeps the walker's feet in the band when the walker and the foe do not both fit", () => {
+    const s = shot(4, 11.7, 4.2);
+    // Up 60 degrees to the foe's top and down 30 to the walker's feet: more than the picture holds.
+    const b = bandPitch(Math.PI / 3, -Math.PI / 6, -Math.PI / 8, s);
+    expect(b.room).toBeLessThan(0);
+    const feet = (1 - Math.tan(-Math.PI / 6 - b.pitch) / Math.tan(HALF)) / 2;
+    expect(feet).toBeLessThanOrEqual(0.761);
+  });
+});
+
+describe("dodgeLane", () => {
+  it("keeps the bearing when there is no charge", () => {
+    expect(dodgeLane(123, undefined, 0)).toBe(123);
+  });
+
+  it("stands off a charge's line, on the side the camera is on", () => {
+    // A charge running due south (180) at the walker: the camera looks back up it, north (0).
+    expect(dodgeLane(6, 180, 6)).toBeCloseTo(LANE_DODGE);
+    expect(dodgeLane(6, 180, 350)).toBeCloseTo(360 - LANE_DODGE);
+    // Whatever way the charge runs, the camera ends LANE_DODGE off its line.
+    for (const lane of [0, 45, 200, 333]) {
+      const look = dodgeLane(0, lane, lane + 180 + 5);
+      const off = Math.abs(((((look - (lane + 180)) % 360) + 540) % 360) - 180);
+      expect(off).toBeCloseTo(LANE_DODGE);
+    }
+  });
+});
+
+describe("clearOf", () => {
+  it("moves a camera inside a big foe straight out to the least distance, and leaves one far enough alone", () => {
+    const out: [number, number] = [0, 0];
+    expect(clearOf([3, 4], [0, 0], 8, out)).toEqual([4.8, 6.4]);
+    expect(clearOf([30, 4], [0, 0], 8, out)).toEqual([30, 4]);
+    expect(Math.hypot(...clearOf([0, 0], [0, 0], 8, out))).toBeCloseTo(8);
   });
 });

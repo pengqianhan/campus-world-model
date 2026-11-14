@@ -31,10 +31,14 @@ export interface FightShot {
   wide: number;
 }
 
-/** What frameFight finds: metres back from the walker over the ground, and radians the view looks down (negative) or up. */
+/**
+ * What frameFight finds: metres back from the walker over the ground, radians the view looks down
+ * (negative) or up, and whether the two fit at all (a foe high on a roof, or under the camera, may not).
+ */
 export interface FightFrame {
   reach: number;
   pitch: number;
+  fits?: boolean;
 }
 
 /** Metres between the distances frameFight tries. */
@@ -53,7 +57,9 @@ function above(y: number, halfFov: number): number {
 export function bandPitch(hi: number, walkerLo: number, foeLo: number, shot: FightShot): { pitch: number; room: number } {
   const least = hi - above(shot.top, shot.halfFov);
   const most = Math.min(walkerLo - above(shot.bottom, shot.halfFov), foeLo - above(shot.foeBottom, shot.halfFov));
-  return { pitch: (least + most) / 2, room: most - least };
+  // When they do not fit (a wall has brought the camera in), the feet stay in the band and the top
+  // of the foe goes: the walker is never lost under the buttons along the foot of the picture.
+  return { pitch: most >= least ? (least + most) / 2 : most, room: most - least };
 }
 
 /**
@@ -76,7 +82,53 @@ export function frameFight(shot: FightShot, out: FightFrame): FightFrame {
     if ((band.room >= 0 && wide) || last) {
       out.reach = R;
       out.pitch = band.pitch;
+      out.fits = band.room >= 0 && wide;
       return out;
     }
   }
+}
+
+/** Degrees the fight's camera stands off the line of a charge, on the side it is already on. */
+export const LANE_DODGE = 50;
+
+/** Degrees from `a` to `b` the short way round, -180 to 180. */
+function turn(a: number, b: number): number {
+  return ((((b - a) % 360) + 540) % 360) - 180;
+}
+
+/**
+ * The bearing the fight's camera looks along while its foe charges at the walker along `lane`
+ * (degrees, the way the charge runs): behind the walker on the line from the foe, the camera would
+ * stand at the end of the charge, and the foe would run into it and hide the walker. It stands off
+ * that line by LANE_DODGE instead, on the side it is on now (`now`, the bearing it looks along), so
+ * that it does not swing across the charge to get there. `want` when there is no charge.
+ */
+export function dodgeLane(want: number, lane: number | undefined, now: number): number {
+  if (lane === undefined) return want;
+  // Looking back up the charge, towards where it comes from.
+  const up = lane + 180;
+  const side = turn(up, now) < 0 ? -1 : 1;
+  return (((up + side * LANE_DODGE) % 360) + 360) % 360;
+}
+
+/**
+ * The camera's place over the ground (metres east and north) moved straight out from a foe's
+ * middle to `min` metres from it, when it is nearer: never inside or against a big foe. Writes
+ * into `out`, which it returns; the camera as it was when it is far enough.
+ */
+export function clearOf(cam: readonly [number, number], foe: readonly [number, number], min: number, out: [number, number]): [number, number] {
+  const dx = cam[0] - foe[0];
+  const dy = cam[1] - foe[1];
+  const d = Math.hypot(dx, dy);
+  if (d >= min) {
+    out[0] = cam[0];
+    out[1] = cam[1];
+  } else if (d < 1e-6) {
+    out[0] = foe[0];
+    out[1] = foe[1] - min;
+  } else {
+    out[0] = foe[0] + (dx / d) * min;
+    out[1] = foe[1] + (dy / d) * min;
+  }
+  return out;
 }

@@ -801,15 +801,21 @@
 }
 
 /* Under the bars the walk's own top corner and its ways of getting about step back, rather than show
-   their edges past the bars. */
+   their edges past the bars. The ways of getting about go at once, not fading: the lower bar's line
+   (the boss's phase) takes their place, and the two are never in it together. */
 .hud:has(.sq.cine) .hud-tr,
-.hud:has(.sq.cine) .hud-bc,
 .sq.cine .sq-pausebtn {
   visibility: hidden;
   opacity: 0;
   transition:
     opacity 0.3s ease,
     visibility 0s linear 0.3s;
+}
+
+.hud:has(.sq.cine) .hud-bc {
+  visibility: hidden;
+  opacity: 0;
+  transition: none;
 }
 
 /* -- The title card. -- */
@@ -1910,7 +1916,10 @@
 }
 
 .gx-flash.phase {
-  background: rgba(255, 60, 40, 0.28);
+  /* The roar: a short pulse of red at the edges of the picture only. The middle, where the boss
+     glows and its shockwave runs out over the ground, keeps its own colours. */
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, rgba(255, 60, 40, 0) 62%, rgba(255, 64, 36, 0.16) 84%, rgba(190, 24, 16, 0.42) 100%);
+  animation-duration: 0.75s;
 }
 
 @keyframes gx-flash {
