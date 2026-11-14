@@ -15,6 +15,7 @@ import {
   BufferGeometry,
   CanvasTexture,
   Color,
+  BoxGeometry,
   ConeGeometry,
   CylinderGeometry,
   DoubleSide,
@@ -87,6 +88,9 @@ const INK = 0x1b1724;
 const RED_INK = 0xa50f1a;
 const PAPER = 0xf6f0e0;
 const PAPER_LID = 0xe4d8bb;
+const RIBBON = 0x9e1622;
+const WAX = 0xb3141f;
+const WAX_DARK = 0x6e0a11;
 const PENCIL = 0xf2b630;
 const PENCIL_WOOD = 0xe8c49a;
 const GRAPHITE = 0x2b2b30;
@@ -361,6 +365,30 @@ function bodyGeometry(): BufferGeometry {
     add(new ConeGeometry(0.13, 0.32, 6), PENCIL_WOOD, S_WOOD, { at: along(len + 0.16), rot });
     add(new ConeGeometry(0.045, 0.11, 6), GRAPHITE, [0.4, 0.4, 0.3], { at: along(len + 0.28), rot });
   }
+  // The back of the scroll: the paper's outer edge rolled into a seam down it (where the sheet's
+  // wound end lies), a red ribbon tied round it with its tails hanging, and a wax seal on the seam.
+  const seamY = (HEAD_HI + HEAD_LO) / 2;
+  const seamH = HEAD_HI - HEAD_LO - 0.08;
+  add(new CylinderGeometry(0.075, 0.075, seamH, 10), PAPER_LID, S_PAPER, { at: [0.1, seamY, -HEAD_R - 0.02] });
+  add(new BoxGeometry(0.3, seamH, 0.025), PAPER, S_PAPER, { at: [0.24, seamY, -HEAD_R - 0.005], rot: [0, 0.32, 0] });
+  const RIBBON_Y = 8.0;
+  add(new CylinderGeometry(HEAD_R + 0.025, HEAD_R + 0.025, 0.2, 48, 1, true), RIBBON, S_LACQUER, { at: [0, RIBBON_Y, 0] });
+  for (const sx of [-1, 1]) {
+    // The bow's loops, then its tails down the back, cut in a V at their ends.
+    add(new TorusGeometry(0.16, 0.045, 6, 16), RIBBON, S_LACQUER, { at: [sx * 0.2, RIBBON_Y + 0.05, -HEAD_R - 0.1], rot: [0, sx * 0.5, sx * 0.4], scale: [1.2, 0.8, 0.5] });
+    add(new BoxGeometry(0.16, 1.05, 0.03), RIBBON, S_LACQUER, { at: [sx * 0.13, RIBBON_Y - 0.55, -HEAD_R - 0.09], rot: [-0.08, 0, sx * 0.12] });
+    add(new ConeGeometry(0.08, 0.14, 3), RIBBON, S_LACQUER, { at: [sx * 0.2, RIBBON_Y - 1.12, -HEAD_R - 0.13], rot: [Math.PI, 0, 0], scale: [1, 1, 0.3] });
+  }
+  // The seal: a disc of red wax, its rim pressed into lobes, a stamp at its middle.
+  add(lathe([
+    [0.001, 0],
+    [0.24, 0],
+    [0.27, 0.03],
+    [0.25, 0.07],
+    [0.15, 0.09],
+    [0.001, 0.1],
+  ], 10), WAX, S_LACQUER, { at: [0, RIBBON_Y, -HEAD_R - 0.12], rot: [-Math.PI / 2, 0, 0] });
+  add(new TorusGeometry(0.12, 0.022, 6, 18), WAX_DARK, S_LACQUER, { at: [0, RIBBON_Y, -HEAD_R - 0.22] });
   // The bar the cape hangs from, behind and clear of the frame, on struts from the shoulders.
   add(new CylinderGeometry(0.09, 0.09, 4.6, 10), WOOD_DARK, S_WOOD, { at: [0, CAPE_Y, CAPE_Z], rot: [0, 0, Math.PI / 2] });
   for (const sx of [-1, 1]) {
@@ -636,29 +664,44 @@ function glowGeometry(): BufferGeometry {
   const [ex, ey, ez] = onScroll(0, EYE_Y, 0.03);
   add(new CylinderGeometry(0.25, 0.25, 0.01, 28), 0xff1f2e, 1, { at: [ex, ey, ez], rot: [Math.PI / 2, 0, 0] });
   add(new CylinderGeometry(0.15, 0.15, 0.01, 20), 0xff8a5c, 1, { at: [ex, ey, ez + 0.004], rot: [Math.PI / 2, 0, 0] });
-  // Cracks in the glass: a few in the second phase, many in the last. Each a jagged line on the bulb.
+  // Cracks in the glass: a few in the second phase, more in the last. Each a star of straight
+  // fractures from a point of impact, some forking once, thinning to their ends: straight on the
+  // glass, they follow the bulb's curve in short pieces.
   const rand = rng(7);
-  const crack = (theta: number, y: number, steps: number, phase: number, width: number) => {
-    let a = theta;
-    let h = y;
-    const pts: Vector3[] = [];
-    for (let i = 0; i <= steps; i++) {
-      const r = bulbR(h) + 0.035;
-      pts.push(new Vector3(Math.sin(a) * r, h, Math.cos(a) * r));
-      a += (rand() - 0.5) * 0.35;
-      h += (rand() - 0.35) * 0.32 * (h > NECK ? 1 : -1);
-      h = Math.max(BOT + 0.15, Math.min(TOP - 0.15, h));
-    }
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p = pts[i]!;
-      const q = pts[i + 1]!;
-      const len = p.distanceTo(q);
+  const line = (a0: number, h0: number, dir: number, len: number, w0: number, w1: number, phase: number) => {
+    // `dir`: radians on the unrolled glass, 0 up; a and h step straight there.
+    const PIECES = 4;
+    let a = a0;
+    let h = h0;
+    let p = new Vector3(Math.sin(a) * (bulbR(h) + 0.03), h, Math.cos(a) * (bulbR(h) + 0.03));
+    for (let i = 0; i < PIECES; i++) {
+      const step = len / PIECES;
+      h = Math.max(BOT + 0.12, Math.min(TOP - 0.12, h + Math.cos(dir) * step));
+      a += (Math.sin(dir) * step) / Math.max(0.3, bulbR(h));
+      const q = new Vector3(Math.sin(a) * (bulbR(h) + 0.03), h, Math.cos(a) * (bulbR(h) + 0.03));
+      const l = p.distanceTo(q);
+      if (l < 1e-3) break;
       const mid = p.clone().add(q).multiplyScalar(0.5);
-      const g = new CylinderGeometry(width * (1 - i / pts.length) + 0.01, width * (1 - (i + 1) / pts.length) + 0.01, len, 4);
-      const dir = q.clone().sub(p).normalize();
-      const quat = new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), dir);
-      const eu = new Euler().setFromQuaternion(quat);
-      add(g, 0xffb24a, phase, { at: [mid.x, mid.y, mid.z], rot: [eu.x, eu.y, eu.z] });
+      const t0 = i / PIECES;
+      const t1 = (i + 1) / PIECES;
+      const g = new CylinderGeometry(w0 + (w1 - w0) * t1, w0 + (w1 - w0) * t0, l, 3);
+      const eu = new Euler().setFromQuaternion(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), q.clone().sub(p).normalize()));
+      add(g, 0xffc46a, phase, { at: [mid.x, mid.y, mid.z], rot: [eu.x, eu.y, eu.z] });
+      p = q;
+    }
+    return { a, h };
+  };
+  const star = (a0: number, h0: number, rays: number, reach: number, phase: number) => {
+    const turn0 = rand() * Math.PI * 2;
+    for (let k = 0; k < rays; k++) {
+      const dir = turn0 + (k / rays) * Math.PI * 2 + (rand() - 0.5) * 0.5;
+      const len = reach * (0.55 + rand() * 0.6);
+      const w = 0.016 + rand() * 0.008;
+      // A fork part way along, at an angle, shorter.
+      const split = 0.35 + rand() * 0.3;
+      const mid = line(a0, h0, dir, len * split, w, w * 0.8, phase);
+      line(mid.a, mid.h, dir, len * (1 - split), w * 0.8, 0.004, phase);
+      if (rand() < 0.6) line(mid.a, mid.h, dir + (rand() < 0.5 ? -1 : 1) * (0.45 + rand() * 0.3), len * (1 - split) * 0.7, w * 0.6, 0.003, phase);
     }
   };
   for (const [a, y] of [
@@ -666,8 +709,8 @@ function glowGeometry(): BufferGeometry {
     [-0.4, 5.0],
     [0.9, 4.6],
   ] as const)
-    crack(a, y, 7, 2, 0.03);
-  for (let k = 0; k < 7; k++) crack(-1.4 + (k / 6) * 2.8 + (rand() - 0.5) * 0.3, k % 2 ? 2.2 + rand() * 0.8 : 4.4 + rand() * 1.0, 6 + (k % 3), 3, 0.035);
+    star(a, y, 4, 0.75, 2);
+  for (let k = 0; k < 5; k++) star(-1.4 + (k / 4) * 2.8 + (rand() - 0.5) * 0.3, k % 2 ? 2.3 + rand() * 0.6 : 4.5 + rand() * 0.8, 5, 0.85, 3);
   // Cracks in the frame's wood, glowing from within, in the last phase.
   for (let k = 0; k < 10; k++) {
     const a = (k / 10) * Math.PI * 2 + 0.2;
@@ -807,8 +850,11 @@ function paperTexture(): CanvasTexture | undefined {
 const SHEET_UV: [number, number, number, number] = [0, 0, 0.5, 1];
 const SCROLL_UV: [number, number, number, number] = [0.5, 0, 1, 1];
 
-/** A sheet of paper, hanging from its top edge: curled at its sides and its foot. */
-function sheetGeo(w: number, h: number, curl: number, roll: number, sw = 6, sh = 14): BufferGeometry {
+/**
+ * A sheet of paper, hanging from its top edge: curled at its sides and its foot, and with `folds`
+ * soft folds down its length, deeper towards its foot (`fold` metres deep there).
+ */
+function sheetGeo(w: number, h: number, curl: number, roll: number, sw = 6, sh = 14, folds = 0, fold = 0): BufferGeometry {
   const g = new PlaneGeometry(w, h, sw, sh);
   const pos = g.getAttribute("position");
   for (let i = 0; i < pos.count; i++) {
@@ -817,7 +863,8 @@ function sheetGeo(w: number, h: number, curl: number, roll: number, sw = 6, sh =
     const u = x / w + 0.5;
     const v = y / h + 0.5;
     const side = Math.abs(u - 0.5) * 2;
-    pos.setZ(i, curl * Math.pow(side, 3) + roll * Math.pow(1 - v, 4) + 0.04 * Math.sin(v * 9 + u * 3));
+    const pleat = folds ? fold * (0.35 + 0.65 * (1 - v)) * Math.sin(u * Math.PI * 2 * folds) : 0;
+    pos.setZ(i, curl * Math.pow(side, 3) + roll * Math.pow(1 - v, 4) + 0.04 * Math.sin(v * 9 + u * 3) + pleat);
     pos.setY(i, y - roll * 0.25 * Math.pow(1 - v, 5));
   }
   g.computeVertexNormals();
@@ -832,19 +879,31 @@ function paperGeometry(): BufferGeometry {
   const add = (geo: BufferGeometry, p: Place, flut: (x: number, y: number, z: number, u: number, v: number) => number[], shade = 1) =>
     out.push(bake(geo, { color: tint(shade), aFlut: flut }, p, true));
 
-  // The cape: long exam sheets from the bar behind the shoulders, fanned, nearly to the ground.
+  // The cape: long exam sheets from the bar behind the shoulders, hung in an arc that wraps round
+  // the back (the outer sheets come forward and turn in), each with soft folds; and over them a
+  // shorter layer, sheets between sheets, so that it reads as a cape of papers, not a panel.
   const CAPE = 7;
-  for (let k = 0; k < CAPE; k++) {
-    const s = (k - (CAPE - 1) / 2) / ((CAPE - 1) / 2);
-    const h = 6.2 - Math.abs(s) * 1.1 + (rand() - 0.5) * 0.3;
-    const beat = rand() * 6.28;
-    const tears = 0.15 + rand() * 0.35;
-    add(
-      sheetGeo(1.2, h, -0.16, -0.35),
-      { at: [s * 2.05, CAPE_Y - h / 2 + 0.1, CAPE_Z - 0.06 - Math.abs(s) * 0.1], rot: [-0.1, Math.PI + s * 0.3, s * 0.06], uv: SHEET_UV, order: "YXZ" },
-      (_x, _y, _z, _u, v) => [Math.pow(1 - v, 1.3), beat, v > 0.6 ? 2 : tears + 0.9 * (v / 0.6)],
-      0.97 + (k % 2) * 0.03,
-    );
+  const arc = (s: number, out: number): { at: [number, number]; turn: number } => {
+    // Round the frame's middle, from behind it: s from -1 to 1 across the cape.
+    const a = s * 0.95;
+    const r = 2.25 + out;
+    return { at: [Math.sin(a) * r, CAPE_Z + 2.25 - Math.cos(a) * r], turn: a };
+  };
+  for (let layer = 0; layer < 2; layer++) {
+    const n = layer ? CAPE - 1 : CAPE;
+    for (let k = 0; k < n; k++) {
+      const s = layer ? (k + 0.5 - (CAPE - 1) / 2) / ((CAPE - 1) / 2) : (k - (CAPE - 1) / 2) / ((CAPE - 1) / 2);
+      const h = (layer ? 3.6 : 6.2) - Math.abs(s) * (layer ? 0.6 : 1.1) + (rand() - 0.5) * 0.3;
+      const beat = rand() * 6.28;
+      const tears = 0.15 + rand() * 0.35;
+      const { at, turn } = arc(s, layer ? 0.12 : 0);
+      add(
+        sheetGeo(layer ? 1.0 : 1.25, h, -0.16, layer ? -0.2 : -0.35, 8, 14, layer ? 1 : 2, layer ? 0.07 : 0.12),
+        { at: [at[0], CAPE_Y - h / 2 + 0.1 - layer * 0.05, at[1] - 0.06], rot: [-0.1 - layer * 0.05, Math.PI + turn, s * 0.06], uv: SHEET_UV, order: "YXZ" },
+        (_x, _y, _z, _u, v) => [Math.pow(1 - v, 1.3) * (layer ? 0.8 : 1), beat, v > 0.6 ? 2 : tears + 0.9 * (v / 0.6)],
+        layer ? 0.93 + (k % 2) * 0.04 : 0.97 + (k % 2) * 0.03,
+      );
+    }
   }
   // The ruff: a ring of small sheets round the neck, splayed out like a proctor's collar.
   const RUFF = 14;
