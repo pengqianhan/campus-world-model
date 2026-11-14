@@ -181,6 +181,8 @@ const ITEM_UP = 1.5;
 const THREAT_REACH = 24;
 /** Metres from its building within which the last fight looks for open ground. */
 const ARENA_REACH = 75;
+/** Buildings, most rooms first, tried for an arena clear of homes before one nearer them is taken. */
+const ARENA_TRIES = 8;
 /** The books' covers: the project's own bright colours, none a university's. */
 const COVERS = [0xff5d73, 0x39c6a5, 0xffb454, 0x6c8cff, 0xc77dff];
 const ACCENT = 0xffb454;
@@ -1063,12 +1065,19 @@ export class GameWorld {
       const at = bookSpot(f.grid, f.free, [], near, [], Math.random, 160);
       return at ? { name: this.words.open, at } : undefined;
     }
+    if (big) {
+      // The last fight is on the most open ground near its building, so that the camera sees the
+      // whole of the boss with no wall or tree between, and the whole arena, not only its middle,
+      // keeps clear of homes: the building with the most rooms where that fits, else the next.
+      const clear = awayFromHomes(f.grid, f.reached, f.homes, HOME_MARGIN + QUEST.arenaRadius);
+      const byRooms = [...pool].sort((a, b) => b.b.roomCount - a.b.roomCount).slice(0, ARENA_TRIES);
+      for (const c of byRooms) {
+        const at = openSpot(f.grid, clear, c.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random);
+        if (at) return { name: this.words.place(c.b) || this.words.open, at, building: c.b.id };
+      }
+    }
     const d = big ? pool.reduce((a, b) => (b.b.roomCount > a.b.roomCount ? b : a)) : pool[Math.floor(Math.random() * pool.length)]!;
-    // The last fight is on the most open ground near its building, so that the camera sees the
-    // whole of the boss with no wall or tree between.
     const at =
-      // The whole arena keeps clear of homes, not only its middle.
-      (big ? openSpot(f.grid, awayFromHomes(f.grid, f.reached, f.homes, HOME_MARGIN + QUEST.arenaRadius), d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
       (big ? openSpot(f.grid, f.free, d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
       bookSpot(f.grid, f.free, [{ center: d.center, weight: 1 }], near, [], Math.random) ??
       nearestReached(f.grid, f.free, d.center, NEAR_RINGS) ??
