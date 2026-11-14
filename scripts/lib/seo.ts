@@ -76,15 +76,16 @@ export function sitemapXml(entries: SitemapEntry[]): string {
 
 /**
  * robots.txt: every crawler may read every page, and the sitemap is named. The content signals
- * (contentsignals.org) say the pages may be used for search results and as input to AI answers; they
- * say nothing of AI training, which the maintainer has not decided (PROGRESS.md, "Needs the user").
- * Cloudflare may put its own lines above these on campusworldmodel.com.
+ * (contentsignals.org) say the pages may be used for search results and as input to AI answers, and
+ * not to train AI models: much of what the maps show is other people's data under their own terms
+ * (OpenStreetMap, LINZ, a university's campus map), which this site cannot grant for training (the
+ * maintainer, 2026-11-14). Cloudflare may put its own lines above these on campusworldmodel.com.
  */
 export function robotsTxt(): string {
   return [
     `# ${SITE_NAME}: unofficial, student-made 3D maps of university campuses in New Zealand.`,
     "User-agent: *",
-    "Content-Signal: search=yes, ai-input=yes",
+    "Content-Signal: search=yes, ai-input=yes, ai-train=no",
     "Allow: /",
     "",
     `Sitemap: ${siteUrl("sitemap.xml")}`,

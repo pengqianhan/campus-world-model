@@ -26,8 +26,8 @@ A change to what the site does or shows adds its line here, and the README's
   summary is for screen readers and for any reader that does not run script; it is hidden on screen, where
   the map shows the same things. The home page answers six common questions, also as structured data. The
   site's root has `sitemap.xml`, `robots.txt` (every page may be read, for search results and as input to AI
-  answers) and `llms.txt`, the site in Markdown for AI assistants. The page for an unknown address asks not to
-  be indexed (#176).
+  answers, but not to train AI models) and `llms.txt`, the site in Markdown for AI assistants. The page for an
+  unknown address asks not to be indexed (#176).
 
 ## 2026-11-13
 
