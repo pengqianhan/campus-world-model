@@ -2360,9 +2360,12 @@ select optgroup {
   background: var(--hud-hover);
 }
 
-/* In a narrow window the game's button is its book alone, so that the toolbar keeps clear of the way out. */
+/* In a narrow window the game's button is its book alone, and the time drops its NOW or PREVIEW as on a
+   phone (its label still says which, and a preview keeps the accent), so that the toolbar keeps clear
+   of the way out in the wider fonts of Linux too. */
 @media (max-width: 1040px) {
-  .hud-game-tool .hud-label {
+  .hud-game-tool .hud-label,
+  .hud-time-mode {
     display: none;
   }
 }

@@ -312,6 +312,11 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
 });
 
 test("Study Quest is off until asked for; its title says it is made up; the first minute is taught by prompts that come once; books lead to the DDL, a strike lands, the pause stops its clock; burnt out, a retry starts the quest again, the debrief grades the run by its factors, and a game played again starts at once; ending it clears the map", async ({ page }) => {
+  // The game's rules move on a tenth of a second at most in a frame (Quest.step), so the waits for
+  // its foes and its books are counted in frames, not seconds. In software a frame of a game takes a
+  // second on a laptop and four or more on CI, where this test ran past the usual three minutes
+  // (#178), so it gets three times that.
+  test.slow();
   type Game = {
     phase: string;
     books: [number, number][];
@@ -336,7 +341,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
       },
       [at, heading ?? null] as const,
     );
-  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game?.state()), test, { timeout: 60_000 });
+  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game?.state()), test, { timeout: 180_000 });
 
   await open(page, "?walk=1");
   await ready(page);
@@ -568,6 +573,10 @@ test("in a narrower window with a mouse the walk's panels keep apart, out of doo
 });
 
 test("a walk the address asks for starts when the data comes in before the scene, as in a tab opened in the background", async ({ page }) => {
+  // A second of the page's clock, a frame drawn and read back, and the shaders of all that loaded
+  // meanwhile made at once: some 100 seconds on CI by itself, and half as long again beside Study
+  // Quest's test, which draws a frame after frame in software on the same machine (#178).
+  test.slow();
   // A tab opened behind others draws no frames and runs its timers late, so the data comes in
   // before the scene, which is made after the first frame. Here the page's clock stands still, as
   // it does there, until the tab comes to the front; the data still loads.
