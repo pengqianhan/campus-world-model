@@ -189,13 +189,12 @@ describe("the files at the site's root", () => {
     expect(sitemapXml([{ url: `${SITE}?a=1&b=2` }])).toContain("<loc>https://campusworldmodel.com/?a=1&amp;b=2</loc>");
   });
 
-  it("robots.txt lets every crawler read every page, names the sitemap and says nothing of AI training", () => {
+  it("robots.txt lets every crawler read every page for search and AI answers, not for AI training, and names the sitemap", () => {
     const txt = robotsTxt();
     expect(txt).toContain("User-agent: *\n");
     expect(txt).toContain("Allow: /\n");
     expect(txt).not.toMatch(/Disallow/);
-    expect(txt).toContain("Content-Signal: search=yes, ai-input=yes\n");
-    expect(txt).not.toMatch(/ai-train/);
+    expect(txt).toContain("Content-Signal: search=yes, ai-input=yes, ai-train=no\n");
     expect(txt).toContain(`Sitemap: ${SITE}sitemap.xml\n`);
   });
 
