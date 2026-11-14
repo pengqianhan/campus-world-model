@@ -439,6 +439,16 @@
     "madeUp": "All of it is made up: no villain, book or quest stands for a real class, course, person, room or due date. Nothing leaves your browser.",
     "openGround": "open ground",
     "metres": "{metres} m",
+    "compass": {
+      "n": "N",
+      "ne": "NE",
+      "e": "E",
+      "se": "SE",
+      "s": "S",
+      "sw": "SW",
+      "w": "W",
+      "nw": "NW"
+    },
     "quests": "Quests",
     "mainQuest": "Main quest",
     "sideQuests": "Side quests",

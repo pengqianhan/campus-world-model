@@ -6,16 +6,8 @@ import { Vector3, type Camera } from "three";
 import { turnBetween } from "../shared/game.ts";
 
 const PX_PER_DEG = 3;
-const CARDINALS: [number, string][] = [
-  [0, "N"],
-  [45, "NE"],
-  [90, "E"],
-  [135, "SE"],
-  [180, "S"],
-  [225, "SW"],
-  [270, "W"],
-  [315, "NW"],
-];
+/** Degrees of the compass's eight points, north first and clockwise; their names come from the visitor's language (setWords). */
+const POINTS = [0, 45, 90, 135, 180, 225, 270, 315];
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, parent?: HTMLElement): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -77,6 +69,15 @@ export class GameOverlay {
   private used = new Set<number>();
   /** Whether the boss's bar is out: on a phone it takes a band under the vitals, so plates stay below it. */
   bossOut = false;
+  /** The compass's points on the tape, three turns of each, and how a distance is written. */
+  private points: HTMLElement[][] = POINTS.map(() => []);
+  private metres: (m: number) => string = (m) => String(m);
+
+  /** The compass's eight points' names, north first and clockwise, and how a distance in metres is written. */
+  setWords(points: readonly string[], metres: (m: number) => string): void {
+    this.points.forEach((els, i) => els.forEach((e) => setText(e, points[i] ?? "")));
+    this.metres = metres;
+  }
 
   constructor(parent: HTMLElement) {
     this.root = el("div", "gx", parent);
@@ -93,11 +94,11 @@ export class GameOverlay {
         const tickEl = el("i", d % 45 === 0 ? "mj" : "mn", this.tape);
         tickEl.style.left = `${(turn * 360 + d) * PX_PER_DEG}px`;
       }
-      for (const [d, name] of CARDINALS) {
-        const b = el("b", name.length === 1 ? "card" : "ic", this.tape);
-        b.textContent = name;
+      POINTS.forEach((d, i) => {
+        const b = el("b", i % 2 === 0 ? "card" : "ic", this.tape);
         b.style.left = `${(turn * 360 + d) * PX_PER_DEG}px`;
-      }
+        this.points[i]!.push(b);
+      });
     }
     el("div", "gx-needle", this.compass);
     this.heading = el("span", "gx-heading", this.compass);
@@ -240,7 +241,7 @@ export class GameOverlay {
       c.e.style.transform = `translate3d(${x}px, 0, 0)`;
       const cls = `gx-cm ${m.kind}`;
       if (c.e.className !== cls) c.e.className = cls;
-      if (text) setText(c.d, m.kind === "main" || m.kind === "side" ? `${Math.round(m.metres)} m` : "");
+      if (text) setText(c.d, m.kind === "main" || m.kind === "side" ? this.metres(Math.round(m.metres)) : "");
     }
 
     // Diamonds in the world over the quests' places.
@@ -257,7 +258,7 @@ export class GameOverlay {
       d.e.style.transform = `translate3d(${s[0]}px, ${s[1]}px, 0)`;
       const cls = `gx-wm ${m.kind}`;
       if (d.e.className !== cls) d.e.className = cls;
-      if (text) setText(d.d, `${Math.round(m.metres)} m`);
+      if (text) setText(d.d, this.metres(Math.round(m.metres)));
     }
     for (; wk < this.marks.length; wk++) this.marks[wk]!.e.style.opacity = "0";
 

@@ -137,6 +137,12 @@ export const QUEST = {
   noteReach: 45,
   /** Share of its Focus the walker gets back at each of the boss's changes of phase: a second wind. */
   secondWind: 0.3,
+  /**
+   * Metres from the walker within which a foe keeps to the ground the walker can reach: one over a roof
+   * comes on to the walker's ground, one on the ground goes round a building rather than over it, and
+   * each attacks only from the ground.
+   */
+  fightGround: 30,
 } as const;
 
 /** The main story's quests: what each asks for and the knowledge it gives. */
@@ -237,6 +243,8 @@ export interface Foe {
   wander: boolean;
   /** The first fight's lone foe: weak, slow to strike, and unable to burn the walker out. */
   tutor?: boolean;
+  /** The side (1 right, -1 left) it last went round a building by, on the ground near the walker. */
+  round?: 1 | -1;
 }
 
 export type FoeMove =
@@ -343,6 +351,10 @@ export interface QuestHost {
   spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined;
   /** The ground the walker can reach nearest `p`, for a book or a foe that must be just there; `p` itself when absent. */
   near?(p: Pt): Pt | undefined;
+  /** Whether the walker could stand at `p`: on ground it can reach, not in a building or on a roof. Everywhere when absent. */
+  ground?(p: Pt): boolean;
+  /** Open ground the walker can reach within about 20 m of `centre`, well away from `away`, for a big foe to come from. */
+  open?(centre: Pt, away: Pt): Pt | undefined;
   /** A place for a quest: beside a building with rooms to teach in, away from `avoid`. */
   place(near: Pt, avoid: readonly Pt[], big?: boolean): Place | undefined;
   /** 0 to 1, as Math.random gives. */
@@ -1190,7 +1202,9 @@ export class StudyQuest {
     if (step === 0) q = this.quest("orientation", true, "collect", MAIN.orientation.need, MAIN.orientation.reward);
     else if (step === 1) {
       q = this.quest("ddl1", true, "defeat", MAIN.ddl1.need, MAIN.ddl1.reward);
-      this.spawn("ddl", this.ring(near, 40), q.id, MAIN.ddl1.tier);
+      // From open ground, where the camera can frame the fight.
+      const from = this.ring(near, 40);
+      this.spawn("ddl", this.host.open?.(from, near) ?? from, q.id, MAIN.ddl1.tier);
       q.started = true;
     } else if (step === 2) q = this.quest("studyGroup", true, "defeat", MAIN.studyGroup.need, MAIN.studyGroup.reward, placed());
     else if (step === 3) q = this.quest("revision", true, "collect", MAIN.revision.need, MAIN.revision.reward, placed());
@@ -1335,6 +1349,8 @@ export class StudyQuest {
   }
 
   spawn(kind: FoeKind, at: Pt, quest?: string, tier = 1, wander = false): Foe {
+    // It rises from the ground the walker can reach, not from a roof or inside a building.
+    if (!this.onGround(at)) at = this.host.near?.(at) ?? at;
     const spec = FOES[kind];
     const hp = Math.round(spec.hp * tier);
     const f: Foe = { id: this.nextId++, kind, at, hp, maxHp: hp, facing: bearingTo(at, this.player), state: "rise", t: kind === "exam" ? 3.2 : 0.8, cool: spec.cooldown * 0.6, push: [0, 0], hurtAgo: 99, quest, tier, phase: 1, age: 0, wander };
@@ -1414,7 +1430,14 @@ export class StudyQuest {
       else if (f.kind === "exam") want = d > 9 ? 1 : 0;
       else want = d > spec.radius + 1.2 ? 1 : 0;
       if (this.grace > 0) want = Math.min(want, 0);
-      const [ux, uy] = dirOf(toward);
+      // Near the walker, a foe still over a roof (or a building) comes on over it to the walker's own
+      // ground, and attacks only once it is there; on the ground, it keeps to it (below).
+      // The big ones (the DDL, the Final Exam: those with a body) keep to the ground wherever they are.
+      const fight = d < QUEST.fightGround || !!spec.body;
+      const grounded = !fight || this.onGround(f.at);
+      if (!grounded) want = 1;
+      const way = toward;
+      const [ux, uy] = dirOf(way);
       let nx = f.at[0] + ux * speed * want * dt;
       let ny = f.at[1] + uy * speed * want * dt;
       // Keeping apart from the others.
@@ -1428,10 +1451,32 @@ export class StudyQuest {
           ny += (ny - o.at[1]) * k;
         }
       }
+      // On the ground, it stays on it: round a building by the side it went last, rather than into it.
+      if (fight && grounded && !this.onGround([nx, ny])) {
+        const step = Math.hypot(nx - f.at[0], ny - f.at[1]);
+        let found = false;
+        const first: 1 | -1 = f.round ?? 1;
+        for (const side of [first, first === 1 ? -1 : 1] as const) {
+          for (const turn of [45, 90, 135]) {
+            const [vx, vy] = dirOf(way + side * turn);
+            const q: Pt = [f.at[0] + vx * step, f.at[1] + vy * step];
+            if (!this.onGround(q)) continue;
+            ((nx = q[0]), (ny = q[1]), (f.round = side), (found = true));
+            break;
+          }
+          if (found) break;
+        }
+        if (!found) ((nx = f.at[0]), (ny = f.at[1]));
+      } else if (fight && grounded) f.round = undefined;
       f.at = [nx, ny];
       if (this.arena?.active && f.kind === "exam") f.at = this.clampToArena(f.at);
-      if (f.cool <= 0 && d <= spec.reach + spec.radius && this.grace <= 0) this.windUp(f, d);
+      if (f.cool <= 0 && d <= spec.reach + spec.radius && this.grace <= 0 && grounded) this.windUp(f, d);
     }
+  }
+
+  /** Whether the walker could stand at `p` (QuestHost.ground). */
+  private onGround(p: Pt): boolean {
+    return this.host.ground ? this.host.ground(p) : true;
   }
 
   private clampToArena(at: Pt): Pt {
@@ -1617,8 +1662,11 @@ export class StudyQuest {
     const speed = chargeSpeed(f.kind, pace);
     const go = Math.min(m.left, speed * dt);
     const [ux, uy] = dirOf(m.dir);
-    f.at = [f.at[0] + ux * go, f.at[1] + uy * go];
-    m.left -= go;
+    const next: Pt = [f.at[0] + ux * go, f.at[1] + uy * go];
+    // A charge on the ground ends at a wall, rather than running on through the building.
+    if (this.onGround(f.at) && !this.onGround(next)) m.left = 0;
+    else f.at = next;
+    m.left -= Math.min(m.left, go);
     // The Final Exam's charge stops at its arena's edge: put back there afterwards, it would jump.
     if (this.arena?.active && f.kind === "exam") {
       const kept = this.clampToArena(f.at);

@@ -86,11 +86,11 @@ function clock(seconds: number): string {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
-/** A bar that fills, with a pale chip that follows it down a moment later, as a game's bars do. */
-function Bar({ value, max, cls, id }: { value: number; max: number; cls: string; id?: string }) {
+/** A bar that fills, with a pale chip that follows it down a moment later, as a game's bars do. `label` names it to a screen reader. */
+function Bar({ value, max, cls, id, label }: { value: number; max: number; cls: string; id?: string; label: string }) {
   const k = Math.max(0, Math.min(1, value / Math.max(1, max)));
   return (
-    <span class={`sq-bar ${cls}`} id={id} role="meter" aria-valuemin={0} aria-valuemax={Math.round(max)} aria-valuenow={Math.round(value)}>
+    <span class={`sq-bar ${cls}`} id={id} role="meter" aria-label={label} aria-valuemin={0} aria-valuemax={Math.round(max)} aria-valuenow={Math.round(value)}>
       <i class="chip" style={{ transform: `scaleX(${k})` }} />
       <i class="fill" style={{ transform: `scaleX(${k})` }} />
     </span>
@@ -153,19 +153,19 @@ function Vitals({ v }: { v: GameView }) {
         <span class="sq-rank-text">
           <b id="game-rank">{rankName(v.rank)}</b>
           <span class="sq-xp-line">
-            <Bar value={span > 0 ? v.xp - v.rankXp : 1} max={span > 0 ? span : 1} cls="xp" />
+            <Bar value={span > 0 ? v.xp - v.rankXp : 1} max={span > 0 ? span : 1} cls="xp" label={t("game.stat.knowledge")} />
             <em>{v.nextXp !== undefined ? `${v.xp} / ${v.nextXp}` : `${v.xp}`}</em>
           </span>
         </span>
       </div>
       <div class="sq-stat">
         <span class="sq-k">{t("game.stat.focus")}</span>
-        <Bar value={v.focus} max={v.maxFocus} cls="focus" id="game-focus" />
+        <Bar value={v.focus} max={v.maxFocus} cls="focus" id="game-focus" label={t("game.stat.focus")} />
         <span class="sq-n">{Math.ceil(v.focus)}</span>
       </div>
       <div class="sq-stat">
         <span class="sq-k">{t("game.stat.stamina")}</span>
-        <Bar value={v.stamina} max={v.maxStamina} cls="stamina" />
+        <Bar value={v.stamina} max={v.maxStamina} cls="stamina" label={t("game.stat.stamina")} />
         {v.slowed && <span class="sq-tag slow">{t("game.slowed")}</span>}
       </div>
     </section>
@@ -225,7 +225,7 @@ function BossBar({ v }: { v: GameView }) {
         <span class="sq-boss-title">{t("game.foe.exam.title")}</span>
       </div>
       <div class="sq-boss-track">
-        <Bar value={b.hp} max={b.max} cls="boss" />
+        <Bar value={b.hp} max={b.max} cls="boss" label={t("game.foe.exam.name")} />
         <i class="sq-boss-notch" style={{ left: "33%" }} />
         <i class="sq-boss-notch" style={{ left: "66%" }} />
       </div>
@@ -323,6 +323,30 @@ function Volume({ id, label, value, on, set }: { id: string; label: string; valu
   );
 }
 
+/**
+ * Keeps Tab and Shift+Tab inside a dialog: from its last control to its first and back, and into it
+ * from anywhere outside. For a dialog's onKeyDown.
+ */
+function trapTab(e: KeyboardEvent): void {
+  if (e.key !== "Tab") return;
+  const root = e.currentTarget as HTMLElement;
+  const els = Array.from(root.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'));
+  if (!els.length) return;
+  const first = els[0]!;
+  const last = els[els.length - 1]!;
+  const at = document.activeElement;
+  if (!root.contains(at)) {
+    e.preventDefault();
+    first.focus();
+  } else if (e.shiftKey && at === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && at === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
 function PauseMenu({ touch }: { touch: boolean }) {
   const s = gameSettings.value;
   const first = useRef<HTMLButtonElement>(null);
@@ -333,7 +357,7 @@ function PauseMenu({ touch }: { touch: boolean }) {
     if (performance.now() - opened.current > 150) sfx("uiMove");
   };
   return (
-    <div class="sq-menu" id="game-menu" role="dialog" aria-modal="true" aria-label={t("game.menu.title")} onFocusIn={move}>
+    <div class="sq-menu" id="game-menu" role="dialog" aria-modal="true" aria-label={t("game.menu.title")} onFocusIn={move} onKeyDown={trapTab}>
       <div class="sq-menu-body">
         <span class="sq-eyebrow">{t("game.title")}</span>
         <h2>{t("game.menu.title")}</h2>
@@ -373,8 +397,10 @@ function PauseMenu({ touch }: { touch: boolean }) {
 }
 
 function Sheet({ v }: { v: GameView }) {
+  const first = useRef<HTMLButtonElement>(null);
+  useEffect(() => first.current?.focus(), []);
   return (
-    <div class="sq-menu sheet" id="game-sheet" role="dialog" aria-modal="true" aria-label={t("game.sheet.title")}>
+    <div class="sq-menu sheet" id="game-sheet" role="dialog" aria-modal="true" aria-label={t("game.sheet.title")} onKeyDown={trapTab}>
       <div class="sq-menu-body wide">
         <span class="sq-eyebrow">{t("game.sheet.title")}</span>
         <h2>{rankName(v.rank)}</h2>
@@ -431,7 +457,7 @@ function Sheet({ v }: { v: GameView }) {
           </section>
         </div>
         <div class="sq-actions">
-          <button type="button" class="sq-b primary" id="game-sheet-close" onClick={() => setMenu("none")}>
+          <button type="button" class="sq-b primary" ref={first} id="game-sheet-close" onClick={() => setMenu("none")}>
             {t("game.menu.resume")}
           </button>
         </div>
@@ -446,7 +472,7 @@ function BurntOut({ v, show }: { v: GameView; show: () => void }) {
   useEffect(() => first.current?.focus(), []);
   const r = v.retry;
   return (
-    <div class="sq-debrief lost burnt" id="game-over" role="dialog" aria-label={t("game.over.defeat")}>
+    <div class="sq-debrief lost burnt" id="game-over" role="dialog" aria-modal="true" aria-label={t("game.over.defeat")} onKeyDown={trapTab}>
       <div class="sq-debrief-body">
         <span class="sq-eyebrow">{t("game.title")}</span>
         <h2>{t("game.over.defeat")}</h2>
@@ -476,7 +502,7 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
   const f = gradeFactors(d);
   const value: Record<(typeof GRADE_FACTORS)[number], string> = { time: clock(d.seconds), deaths: String(d.deaths), combo: String(d.maxChain), knowledge: String(d.xp) };
   return (
-    <div class={`sq-debrief ${d.victory ? "won" : "lost"}`} id="game-over" role="dialog" aria-label={t(d.victory ? "game.over.victory" : "game.over.defeat")}>
+    <div class={`sq-debrief ${d.victory ? "won" : "lost"}`} id="game-over" role="dialog" aria-modal="true" aria-label={t(d.victory ? "game.over.victory" : "game.over.defeat")} onKeyDown={trapTab}>
       <div class="sq-debrief-body">
         <span class="sq-eyebrow">{t("game.over.eyebrow")}</span>
         <h2>{t(d.victory ? "game.over.victory" : "game.over.defeat")}</h2>

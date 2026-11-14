@@ -47,17 +47,17 @@ function card(b: Omit<Banner, "id">): void {
   // Big words still up give way to the card, and come back whole after it: the two never share the screen.
   const up = gameBanner.peek();
   if (up) {
-    window.clearTimeout(bannerTimer);
+    cancelLater(bannerTimer);
     banners.unshift({ ...up, id: seq++ });
     gameBanner.value = undefined;
   }
   nextCard();
 }
 function nextCard(): void {
-  window.clearTimeout(cardTimer);
+  cancelLater(cardTimer);
   const b = cards.shift();
   gameCard.value = b;
-  if (b) cardTimer = window.setTimeout(nextCard, b.ms);
+  if (b) cardTimer = later(nextCard, b.ms);
   // The words that waited for the card come after it.
   else if (!gameBanner.peek() && banners.length) nextBanner();
 }
@@ -160,6 +160,38 @@ export const gameNewBest = signal(false);
 
 let scene: CampusScene | undefined;
 let timer = 0;
+
+/**
+ * The game's own clock, in ms: it stands still while a menu is up, the title card waits, or the
+ * walker cannot play (indoors, in the air, on the map), so that the big words and the name cards
+ * timed by it are not over unseen behind a pause. Read and its timers run in each poll (a tenth of a
+ * second).
+ */
+let clockMs = 0;
+let clockAt = 0;
+let laterSeq = 1;
+const laters = new Map<number, { at: number; fn: () => void }>();
+/** Runs `fn` after `ms` of the game's clock. */
+function later(fn: () => void, ms: number): number {
+  const id = laterSeq++;
+  laters.set(id, { at: clockMs + ms, fn });
+  return id;
+}
+function cancelLater(id: number): void {
+  laters.delete(id);
+}
+function tickClock(): void {
+  const now = performance.now();
+  const dt = clockAt ? Math.min(now - clockAt, 250) : 0;
+  clockAt = now;
+  const held = !!scene?.game?.menuPaused || !!gameView.peek()?.paused;
+  if (!held) clockMs += dt;
+  for (const [id, l] of [...laters]) {
+    if (l.at > clockMs) continue;
+    laters.delete(id);
+    l.fn();
+  }
+}
 let seq = 1;
 let banners: Banner[] = [];
 let bannerTimer = 0;
@@ -195,17 +227,17 @@ function banner(b: Omit<Banner, "id">): void {
 
 /** The next of the big words, one at a time; none starts while a villain's name card is up. */
 function nextBanner(): void {
-  window.clearTimeout(bannerTimer);
+  cancelLater(bannerTimer);
   const b = gameCard.peek() ? undefined : banners.shift();
   gameBanner.value = b;
   // On a phone they are a short line at the top, gone in under two seconds.
-  if (b) bannerTimer = window.setTimeout(nextBanner, compactHud ? Math.min(b.ms, PHONE_BANNER_MS) : b.ms);
+  if (b) bannerTimer = later(nextBanner, compactHud ? Math.min(b.ms, PHONE_BANNER_MS) : b.ms);
 }
 
 function feed(text: string, kind: string, value?: string): void {
   const line = { id: seq++, text, value, kind };
   gameFeed.value = [...gameFeed.peek().slice(-4), line];
-  window.setTimeout(() => (gameFeed.value = gameFeed.peek().filter((l) => l.id !== line.id)), 4200);
+  later(() => (gameFeed.value = gameFeed.peek().filter((l) => l.id !== line.id)), 4200);
 }
 
 /** Sounds, banners and the feed for what happened. */
@@ -259,8 +291,8 @@ function told(e: GameEvent): void {
           }, 0);
         }
       } else if (performance.now() - doneAt < 300) {
-        window.clearTimeout(flashTimer);
-        flashTimer = window.setTimeout(() => (gameQuestFlash.value = performance.now()), compactHud ? PHONE_BANNER_MS : 1600);
+        cancelLater(flashTimer);
+        flashTimer = later(() => (gameQuestFlash.value = performance.now()), compactHud ? PHONE_BANNER_MS : 1600);
       } else gameQuestFlash.value = performance.now();
       break;
     case "wave":
@@ -296,6 +328,7 @@ function told(e: GameEvent): void {
 }
 
 function poll(): void {
+  tickClock();
   const v = scene?.game?.view();
   if (!v) {
     // Its walker left the map: the game went with it.
@@ -373,10 +406,14 @@ export function gameAct(a: GameAction | "lock"): void {
 let padWas: boolean[] = [];
 let padStick = false;
 function readPad(): void {
-  pad = requestAnimationFrame(readPad);
   const pads = navigator.getGamepads?.() ?? [];
   const p = Array.from(pads).find((x) => x && x.connected);
-  if (!p) return;
+  // No pad: the loop stops, until one is connected (gamepadconnected).
+  if (!p) {
+    pad = 0;
+    return;
+  }
+  pad = requestAnimationFrame(readPad);
   const press = (i: number) => !!p.buttons[i]?.pressed;
   const edge = (i: number) => press(i) && !padWas[i];
   if (edge(9)) togglePause();
@@ -401,6 +438,14 @@ function readPad(): void {
     padSteer()?.(0, 0);
   }
 }
+
+/** Reads the pad in each frame while the game is on and a pad is connected; not at all without one. */
+function startPad(): void {
+  cancelAnimationFrame(pad);
+  pad = 0;
+  if (gameOn.peek() && Array.from(navigator.getGamepads?.() ?? []).some((x) => x && x.connected)) pad = requestAnimationFrame(readPad);
+}
+window.addEventListener("gamepadconnected", startPad);
 
 export function togglePause(): void {
   if (!gameOn.peek() || gameView.peek()?.phase !== "play") return;
@@ -427,6 +472,9 @@ export function dismissTitle(): void {
  * Starts a game for the walker called `name`, or starts it again. `quiet` leaves the buildings' names
  * off the walker's view meanwhile; `compact` is for a phone. False when there is no such walker.
  */
+/** The compass's points, north first and clockwise: their names are game.compass.* in the locale. */
+const COMPASS_POINTS = ["n", "ne", "e", "se", "s", "sw", "w", "nw"] as const;
+
 export function startGame(name: string, quiet = false, compact = false, title = true): boolean {
   const world = scene?.game;
   if (!world) return false;
@@ -434,6 +482,8 @@ export function startGame(name: string, quiet = false, compact = false, title = 
     foes: Object.fromEntries(FOE_KINDS.map((k) => [k, t(`game.foe.${k}.name`)])) as Record<FoeKind, string>,
     place: (b: { name: Parameters<typeof pick>[0] }) => pick(b.name),
     open: t("game.openGround"),
+    compass: COMPASS_POINTS.map((p) => t(`game.compass.${p}`)),
+    metres: (metres: number) => t("game.metres", { metres }),
   };
   // Until the visitor sets it, reduced motion follows the system's setting of the day.
   if (!motionChosen) gameSettings.value = { ...gameSettings.peek(), reducedMotion: systemReducedMotion() };
@@ -450,15 +500,13 @@ export function startGame(name: string, quiet = false, compact = false, title = 
   timer = window.setInterval(poll, 100);
   stopKeys?.();
   stopKeys = startKeys();
-  cancelAnimationFrame(pad);
-  pad = requestAnimationFrame(readPad);
   // A button that keeps the focus would take Space from the dodge.
   (document.activeElement as HTMLElement | null)?.blur?.();
   banners = [];
   cards = [];
-  window.clearTimeout(bannerTimer);
-  window.clearTimeout(cardTimer);
-  window.clearTimeout(flashTimer);
+  cancelLater(bannerTimer);
+  cancelLater(cardTimer);
+  cancelLater(flashTimer);
   // The game waits on its title card until the visitor is ready; a game played again starts at once.
   world.menuPaused = title;
   batch(() => {
@@ -471,6 +519,7 @@ export function startGame(name: string, quiet = false, compact = false, title = 
     gameNewBest.value = false;
     gameView.value = undefined;
   });
+  startPad();
   sfx("start");
   poll();
   return true;
@@ -486,8 +535,8 @@ export function retryGame(): boolean {
   if (!world || !world.retry()) return false;
   banners = [];
   cards = [];
-  window.clearTimeout(bannerTimer);
-  window.clearTimeout(cardTimer);
+  cancelLater(bannerTimer);
+  cancelLater(cardTimer);
   resetMusic();
   batch(() => {
     gameMenu.value = "none";
@@ -505,9 +554,10 @@ export function retryGame(): boolean {
 
 export function stopGame(): void {
   window.clearInterval(timer);
-  window.clearTimeout(flashTimer);
-  window.clearTimeout(bannerTimer);
-  window.clearTimeout(cardTimer);
+  laters.clear();
+  cancelLater(flashTimer);
+  cancelLater(bannerTimer);
+  cancelLater(cardTimer);
   cancelAnimationFrame(pad);
   stopKeys?.();
   stopKeys = undefined;

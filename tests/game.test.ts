@@ -954,6 +954,69 @@ describe("keeping out of the big foes", () => {
   });
 });
 
+describe("fights on the ground", () => {
+  /** The rows host, with a building from x -2 to 8 and y 4 to 6 that the walker cannot stand in. */
+  function walled(): StudyQuest {
+    const inWall = (p: Pt) => p[0] > -2 && p[0] < 8 && p[1] > 4 && p[1] < 6;
+    const host: QuestHost = {
+      ...rowHost(),
+      ground: (p) => !inWall(p),
+      near: (p) => (inWall(p) ? [p[0], p[1] < 5 ? 3.9 : 6.1] : p),
+    };
+    const g = new StudyQuest(host, HERE, 0, LESSONS);
+    g.grace = 0;
+    g.foes = [];
+    return g;
+  }
+
+  it("brings a foe near the walker over a roof on to the walker's ground, where it may attack", () => {
+    const g = walled();
+    const f = foe(g, "ddl", 12);
+    f.at = [0, 5.5];
+    f.cool = 0;
+    // Over the building: it comes on, but does not wind up there.
+    g.step(0.05, at(HERE));
+    expect(f.state).toBe("chase");
+    for (let i = 0; i < 40 && f.at[1] > 3.9; i++) g.step(0.05, at(HERE));
+    expect(f.at[1]).toBeLessThan(4);
+  });
+
+  it("brings a foe out from a building, or down from its roof, to the ground as it rises", () => {
+    const g = walled();
+    const f = g.spawn("ddl", [3, 5.2]);
+    expect(f.at).toEqual([3, 6.1]);
+  });
+
+  it("keeps a foe near the walker on the ground: it goes round the building, never through it", () => {
+    for (const kind of ["ddl", "procrastination", "distraction"] as const) {
+      const g = walled();
+      const f = foe(g, kind, 12, 1);
+      f.cool = 99;
+      let inside = 0;
+      let nearest = Infinity;
+      for (let i = 0; i < 400; i++) {
+        g.step(0.05, at(HERE));
+        if (f.at[0] > -2 && f.at[0] < 8 && f.at[1] > 4 && f.at[1] < 6) inside++;
+        nearest = Math.min(nearest, Math.hypot(f.at[0], f.at[1]));
+      }
+      expect(inside, kind).toBe(0);
+      // It got round to the walker.
+      expect(nearest, kind).toBeLessThan(FOES[kind].radius + 2);
+    }
+  });
+
+  it("ends a charge at a wall", () => {
+    const g = walled();
+    const f = foe(g, "ddl", 12);
+    f.state = "attack";
+    f.t = 5;
+    f.move = { type: "charge", dir: 180, left: 20, hit: false };
+    for (let i = 0; i < 20; i++) g.step(0.05, at(HERE));
+    expect(f.at[1]).toBeGreaterThanOrEqual(6);
+    expect(f.state).not.toBe("attack");
+  });
+});
+
 describe("turnBetween", () => {
   it("gives the short way round", () => {
     expect(turnBetween(350, 10)).toBeCloseTo(20);

@@ -674,8 +674,8 @@ test("a walker view that stands still is drawn once, however long a frame takes"
 });
 
 test.describe("on a phone", () => {
-  // A phone held upright (390 by 844, as an iPhone 13), touch and all; drawn at one pixel to the
-  // point, as the other tests in this file share the graphics card with it.
+  // A phone held upright, touch and all: the Pixel 7 profile at a 390 by 844 screen, drawn at one
+  // pixel to the point, as the other tests in this file share the graphics card with it.
   const { defaultBrowserType: _browser, ...phone } = devices["Pixel 7"];
   test.use({ ...phone, viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
 

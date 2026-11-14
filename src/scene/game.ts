@@ -56,7 +56,7 @@ import {
 import type { RoofMap } from "../shared/roofmap.ts";
 import type { Building } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
-import type { WalkGrid } from "../shared/walkpath.ts";
+import { cellOf, type WalkGrid } from "../shared/walkpath.ts";
 import type { Move } from "./figureMoves.ts";
 import { Arena, Debris, Decals, Missiles, Puffs, Shadows, Shocks, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
 import { FoeMotion, newLook } from "./gameMotion.ts";
@@ -95,6 +95,10 @@ export interface GameWords {
   place(b: Building): string;
   /** The word for a quest's place on open ground. */
   open: string;
+  /** The compass's eight points, north first and clockwise, as the tape over the view shows them. */
+  compass: readonly string[];
+  /** A distance in whole metres, as the marks over the view show it. */
+  metres(m: number): string;
 }
 
 export type GameAction = "strike" | "dodge" | "card" | "eureka";
@@ -549,7 +553,15 @@ export class GameWorld {
         place: (near, avoid, big) => this.place(near, avoid, big),
         near: (p) => {
           const f = this.fieldAt(this.meAt);
-          return f ? nearestReached(f.grid, f.reached, p) : undefined;
+          return f ? nearestReached(f.grid, f.reached, p, NEAR_RINGS) : undefined;
+        },
+        ground: (p) => this.onGround(p),
+        open: (centre, away) => {
+          const f = this.fieldAt(this.meAt);
+          if (!f) return undefined;
+          // Round the point asked for; where that is all buildings, round the walker, as far off.
+          const far = Math.hypot(centre[0] - away[0], centre[1] - away[1]);
+          return openSpot(f.grid, f.reached, centre, BIG_FROM_REACH, BIG_FROM_ROOM, away, Math.random, 60, BIG_FROM_GAP) ?? openSpot(f.grid, f.reached, away, far, BIG_FROM_ROOM, away, Math.random, 120, BIG_FROM_GAP);
         },
         random: Math.random,
       },
@@ -560,6 +572,7 @@ export class GameWorld {
     this.events.push(...this.drainStart());
     this.motionApplied = undefined;
     this.group.visible = true;
+    this.overlay?.setWords(words.compass, words.metres);
     this.overlay?.show(true);
     this.overlay?.root.classList.toggle("compact", compact);
     this.host.pen(name, true);
@@ -960,6 +973,22 @@ export class GameWorld {
     return Math.max(this.host.groundAt(p[0], p[1]), this.host.roofs()?.at(p) ?? -Infinity);
   }
 
+  /** Whether the walker could stand at `p`: ground it can reach from where it is (not a building, nor a roof over it). */
+  private onGround(p: Pt): boolean {
+    const f = this.fieldAt(this.meAt);
+    if (!f) return true;
+    const [c, r] = cellOf(f.grid, p);
+    return c >= 0 && r >= 0 && c < f.grid.cols && r < f.grid.rows && !!f.reached[r * f.grid.cols + c];
+  }
+
+  /**
+   * Metres above sea level a foe's feet are at: on the ground where the walker could stand there (under
+   * a covered way too, not on its roof), and over the roofs and the ground elsewhere.
+   */
+  private footAt(p: Pt): number {
+    return this.onGround(p) ? this.host.groundAt(p[0], p[1]) : this.floatAt(p);
+  }
+
   /** The ground round the walker: what it can reach, and the buildings that draw the pick-ups. */
   private fieldAt(near: Pt): NonNullable<GameWorld["field"]> | undefined {
     const map = this.host.walkMap();
@@ -1203,7 +1232,7 @@ export class GameWorld {
         break;
       case "arrive": {
         const f = this.quest?.foes.find((x) => x.id === e.foe);
-        if (f) this.sparks.burst(f.at[0], this.floatAt(f.at) + 0.5, -f.at[1], e.kind === "exam" ? 60 : 14, e.kind === "exam" ? 10 : 4, HUE[e.kind], 0.2, 0.9, -1);
+        if (f) this.sparks.burst(f.at[0], this.footAt(f.at) + 0.5, -f.at[1], e.kind === "exam" ? 60 : 14, e.kind === "exam" ? 10 : 4, HUE[e.kind], 0.2, 0.9, -1);
         break;
       }
       case "tell":
@@ -1268,7 +1297,7 @@ export class GameWorld {
       const kv = f.kind === "exam" ? undefined : this.kinds[f.kind];
       const model = kv?.model ?? this.boss;
       // Over the ground and the roofs, rising and falling smoothly.
-      const want = this.floatAt(f.at);
+      const want = this.footAt(f.at);
       const had = this.heights.get(f.id);
       const rise = 12 * dt;
       const foot = had === undefined || dt <= 0 ? want : had + Math.max(-rise, Math.min(rise, want - had));
@@ -1568,6 +1597,13 @@ const OPEN_AHEAD = 20;
 const CRAMPED = 2.5;
 const START_REACH = 16;
 const START_ROOM = 6;
+
+/** Where a big foe comes from (QuestHost.open): metres round the point asked for, of open ground round it, and from the walker at least. */
+const BIG_FROM_REACH = 22;
+const BIG_FROM_ROOM = 8;
+const BIG_FROM_GAP = 25;
+/** Rings of cells (2 m each) searched round a point for the nearest ground the walker can reach: past the middle of a big building. */
+const NEAR_RINGS = 30;
 
 /** Metres within which a foe coming at the walker is framed by the camera: the DDL from further off. */
 const ENGAGE = 12;
