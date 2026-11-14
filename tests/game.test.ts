@@ -129,6 +129,10 @@ describe("study ranks and growth", () => {
     expect(g.quests.map((q) => q.key)).toEqual(["ddl1"]);
     const ddl = g.foes.find((f) => f.kind === "ddl")!;
     expect(ddl.maxHp).toBe(Math.round(FOES.ddl.hp * MAIN.ddl1.tier));
+    // And gentler than its tier alone: its attacks show longer and hurt less.
+    expect(ddl.gentle).toBe(true);
+    expect(MAIN.ddl1.tell).toBeGreaterThan(1);
+    expect(MAIN.ddl1.harm).toBeLessThan(1);
     expect(events).toContainEqual(expect.objectContaining({ type: "arrive", kind: "ddl", first: true }));
   });
 

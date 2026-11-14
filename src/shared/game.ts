@@ -148,8 +148,12 @@ export const QUEST = {
 /** The main story's quests: what each asks for and the knowledge it gives. */
 export const MAIN = {
   orientation: { need: 6, reward: 20 },
-  /** The first DDL comes before the first rank: it is weaker than the one that returns. */
-  ddl1: { need: 1, reward: 30, tier: 0.75 },
+  /**
+   * The first DDL comes before the first rank: it is weaker than the one that returns, and gentler
+   * than its tier alone makes it (a weak player who seldom dodges is not stopped here): its attacks
+   * show for `tell` times as long and do `harm` of their harm.
+   */
+  ddl1: { need: 1, reward: 30, tier: 0.75, tell: 1.15, harm: 0.9 },
   studyGroup: { need: 13, reward: 60 },
   revision: { need: 5, reward: 100 },
   ddl2: { need: 3, reward: 80 },
@@ -243,6 +247,8 @@ export interface Foe {
   wander: boolean;
   /** The first fight's lone foe: weak, slow to strike, and unable to burn the walker out. */
   tutor?: boolean;
+  /** The first DDL: its attacks show longer and hurt less (MAIN.ddl1). */
+  gentle?: boolean;
   /** The side (1 right, -1 left) it last went round a building by, on the ground near the walker. */
   round?: 1 | -1;
 }
@@ -1204,7 +1210,7 @@ export class StudyQuest {
       q = this.quest("ddl1", true, "defeat", MAIN.ddl1.need, MAIN.ddl1.reward);
       // From open ground, where the camera can frame the fight.
       const from = this.ring(near, 40);
-      this.spawn("ddl", this.host.open?.(from, near) ?? from, q.id, MAIN.ddl1.tier);
+      this.spawn("ddl", this.host.open?.(from, near) ?? from, q.id, MAIN.ddl1.tier).gentle = true;
       q.started = true;
     } else if (step === 2) q = this.quest("studyGroup", true, "defeat", MAIN.studyGroup.need, MAIN.studyGroup.reward, placed());
     else if (step === 3) q = this.quest("revision", true, "collect", MAIN.revision.need, MAIN.revision.reward, placed());
@@ -1500,7 +1506,7 @@ export class StudyQuest {
     const spec = FOES[f.kind];
     const p = this.player;
     const toward = bearingTo(f.at, p);
-    let tell = spec.tell;
+    let tell = spec.tell * (f.gentle ? MAIN.ddl1.tell : 1);
     switch (f.kind) {
       case "ddl": {
         if (d < 4.5) {
@@ -1598,7 +1604,7 @@ export class StudyQuest {
     const spec = FOES[f.kind];
     const m = f.move;
     const p = this.player;
-    const dmg = spec.damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1) * (f.kind === "exam" ? 1 + (f.phase - 1) * 0.15 : 1);
+    const dmg = spec.damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1) * (f.kind === "exam" ? 1 + (f.phase - 1) * 0.15 : 1) * (f.gentle ? MAIN.ddl1.harm : 1);
     this.dropTells(f.id);
     f.state = "recover";
     f.t = f.kind === "exam" ? 0.7 : 0.5;
@@ -1675,7 +1681,7 @@ export class StudyQuest {
     f.facing = m.dir;
     if (!m.hit && dist(f.at, this.player) <= FOES[f.kind].radius + 0.9) {
       m.hit = true;
-      this.hurt(FOES[f.kind].damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1.25), f.at);
+      this.hurt(FOES[f.kind].damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1.25) * (f.gentle ? MAIN.ddl1.harm : 1), f.at);
     }
     if (m.left <= 0 || f.t <= 0) {
       f.state = "recover";
