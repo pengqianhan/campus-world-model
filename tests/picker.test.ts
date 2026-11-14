@@ -12,8 +12,9 @@ import type { Meta } from "../src/shared/types.ts";
 import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
-import { type PickerSchool, escapeHtml, pickerPages, schoolForm, schoolLine, schoolWords } from "../scripts/lib/picker.ts";
+import { type PickerSchool, escapeHtml, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
+import { robotsTxt, sitemapXml } from "../scripts/lib/seo.ts";
 
 const root = process.cwd();
 const shared = JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words;
@@ -26,6 +27,9 @@ const pages = pickerPages(schools, shared);
 /** The links of the list, in order. */
 const links = (html: string) => [...html.matchAll(/<li data-school="([^"]*)">.*?<a href="([^"]*)">/g)].map((m) => [m[1], m[2]]);
 
+/** The page without its structured data, a script element of type application/ld+json that no browser runs or shows. */
+const withoutJsonLd = (html: string) => html.replace(/<script type="application\/ld\+json">[^<]*<\/script>/g, "");
+
 /** Undoes escapeHtml. */
 const unescape = (text: string) =>
   text.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&");
@@ -35,7 +39,7 @@ const unescape = (text: string) =>
  * description, title and list label. Text that sits next to other text with no tag between is one.
  */
 function shownTexts(html: string): string[] {
-  const body = html.replace(/<style>[\s\S]*?<\/style>/g, "").replace(/<section id="about"[\s\S]*?<\/section>\n<\/main>/, "</main>");
+  const body = withoutJsonLd(html).replace(/<style>[\s\S]*?<\/style>/g, "").replace(/<section id="about"[\s\S]*?<\/section>\n<\/main>/, "</main>");
   const between = [...body.matchAll(/>([^<]+)</g)].map((m) => unescape(m[1]!).trim()).filter(Boolean);
   const attrs = [...body.matchAll(/(?:name="description"|property="og:(?:title|description)") content="([^"]*)"|aria-label="([^"]*)"/g)].map((m) => unescape(m[1] ?? m[2]!));
   return [...between, ...attrs];
@@ -61,7 +65,8 @@ describe("the school picker at the site's root", () => {
     });
 
     it(`${page} has no script and starts no WebGL`, () => {
-      expect(html).not.toMatch(/<script|javascript:|\bon[a-z]+=|<canvas|<iframe|<object|<embed/i);
+      // Its structured data (scripts/lib/seo.ts) is the one script element, of a type no browser runs.
+      expect(withoutJsonLd(html)).not.toMatch(/<script|javascript:|\bon[a-z]+=|<canvas|<iframe|<object|<embed/i);
     });
 
     it(`${page} shows, above About, only texts from picker.*, each school's words or its meta.json`, () => {
@@ -119,8 +124,12 @@ describe("the school picker at the site's root", () => {
     words.picker.schools.uoa!.name = evil;
     (words.picker.schools.uoa as { reo?: string }).reo = evil;
     const html = pickerPages([{ id: "uoa", words: { ...shared, app: { title: evil } }, meta: meta("uoa"), about: aboutOf("uoa") }], words as unknown as Words).index;
-    expect(html).not.toContain("<script");
+    expect(withoutJsonLd(html)).not.toContain("<script");
     expect(html).toContain(escapeHtml(evil));
+    // in the structured data, as JSON with each "<" written <
+    const ld = /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(html)![1]!;
+    expect(ld).not.toContain("<");
+    expect((JSON.parse(ld) as { "@graph": { itemListElement?: { name: string }[] }[] })["@graph"][1]!.itemListElement![0]!.name).toContain(evil);
   });
 
   it("stops on a school with no words or no campus snapshot", () => {
@@ -146,6 +155,11 @@ describe("the school picker at the site's root", () => {
       expect(fs.readFileSync(path.join(dir, "index.html"), "utf8")).toBe(pages.index);
       expect(fs.readFileSync(path.join(dir, "404.html"), "utf8")).toBe(pages.notFound);
       expect(fs.readFileSync(path.join(dir, "favicon.svg"))).toEqual(fs.readFileSync(path.join("public", "favicon.svg")));
+      // and what search engines and AI assistants read (scripts/lib/seo.ts)
+      expect(fs.readFileSync(path.join(dir, "og.jpg"))).toEqual(fs.readFileSync(path.join("docs", "og", "home.jpg")));
+      expect(fs.readFileSync(path.join(dir, "sitemap.xml"), "utf8")).toBe(sitemapXml(sitemapEntries(schools)));
+      expect(fs.readFileSync(path.join(dir, "robots.txt"), "utf8")).toBe(robotsTxt());
+      expect(fs.readFileSync(path.join(dir, "llms.txt"), "utf8")).toBe(llmsTxt(schools, shared));
 
       // A school on the list that was not laid out stops it.
       fs.rmSync(path.join(dir, ids.at(-1)!), { recursive: true });

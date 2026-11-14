@@ -827,3 +827,17 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
    of measured massings (2026-11-02), 902 and 903 are measured massings too: 904's strip now lies on
    their measured roofs, within 0.2 m of them, and its rim shows in patches; the questions
    about overlapping outlines and the City's rule for pieces with no roof stay open.
+7. **Search engines and AI assistants (from 2026-11-14).** Each page now names its one address on
+   campusworldmodel.com, and the site's root has `sitemap.xml`, `robots.txt` and `llms.txt`
+   (`scripts/lib/seo.ts`). Two things are outside the repository, and one is to check after the merge:
+   - Verify `campusworldmodel.com` in Google Search Console and in Bing Webmaster Tools (a DNS TXT
+     record in Cloudflare), and submit `https://campusworldmodel.com/sitemap.xml` in each. Bing's
+     index also serves ChatGPT search and Copilot.
+   - In Cloudflare, keep AI crawlers allowed (AI Crawl Control, or Security, Bots). On 2026-11-14
+     the site answered 200 to the user agents of GPTBot, ClaudeBot, PerplexityBot, Googlebot and
+     bingbot; Cloudflare also checks a real crawler's addresses, so only the dashboard is proof.
+   - `robots.txt` says `search=yes, ai-input=yes, ai-train=no`. **Answered (2026-11-14): no AI
+     training.** Much of what the maps show is other people's data under their own terms
+     (OpenStreetMap, LINZ, the University's campus map), which the site cannot grant for training.
+     Cloudflare's managed robots.txt can put its own lines above the site's: read the live file
+     after the merge.

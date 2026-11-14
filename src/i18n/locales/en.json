@@ -444,6 +444,52 @@
       "heading": "No page at this address",
       "lead": "This address is not on the site. Choose a school."
     },
+    "imageAlt": "Campus World Model: the buildings of a university campus in New Zealand on a 3D map",
+    "faqTitle": "Questions",
+    "faq": {
+      "what": {
+        "q": "What is Campus World Model?",
+        "a": "Campus World Model is a free 3D map of the campuses of the eight universities in New Zealand. It runs in a web browser. A student made it, and its code is open source. It is not affiliated with any of these universities."
+      },
+      "shows": {
+        "q": "What does each map show?",
+        "a": "Each map shows the buildings of its school's campuses in 3D. Some maps also show the floors and the teaching rooms of the buildings. The line of each school in the list above says what its map shows."
+      },
+      "room": {
+        "q": "How do I find a room at the University of Auckland?",
+        "a": "Open the University of Auckland's map and type the room code, such as 303-G23, in the search. The map opens the building on the floor of the room. An address such as campusworldmodel.com/uoa/?room=303-G23 opens the room directly."
+      },
+      "sources": {
+        "q": "Where does the data come from?",
+        "a": "From public sources that anyone can open without signing in, such as OpenStreetMap and the elevation data of Toitū Te Whenua Land Information New Zealand (LINZ). About gives the sources of each map, with their dates and licences."
+      },
+      "official": {
+        "q": "Is this an official university map?",
+        "a": "No. No university made, endorsed or checks these maps. For official information, use the university's own website."
+      },
+      "mistake": {
+        "q": "What do I do when a map is wrong?",
+        "a": "Open an issue at github.com/pengqianhan/campus-world-model with the address of the map at the place that is wrong."
+      }
+    },
+    "schoolPage": {
+      "heading": "{school}: an unofficial 3D map",
+      "buildings": "Buildings on the map: {count}.",
+      "campuses": "Campuses: {campuses}.",
+      "allSchools": "Maps of every university in New Zealand, on Campus World Model",
+      "imageAlt": "{site}: {school} on a 3D map",
+      "requirements": "Needs JavaScript and WebGL."
+    },
+    "llms": {
+      "mapsTitle": "Maps",
+      "linksTitle": "Addresses that open a place on a map",
+      "linkBuilding": "https://campusworldmodel.com/uoa/?building=303 opens building 303 on the University of Auckland's map.",
+      "linkFloor": "https://campusworldmodel.com/uoa/?building=303&floor=G opens floor G of building 303.",
+      "linkRoom": "https://campusworldmodel.com/uoa/?room=303-G23 opens room 303-G23 on its floor.",
+      "moreTitle": "More",
+      "about": "About: the sources, licences, coverage and limits of each map",
+      "repo": "Source code on GitHub (MIT License)"
+    },
     "schools": {
       "uoa": {
         "name": "University of Auckland",
