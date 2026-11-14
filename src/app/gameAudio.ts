@@ -113,6 +113,14 @@ interface Graph {
   padLp: BiquadFilterNode;
   heart: GainNode;
   white: AudioBuffer;
+  /**
+   * The grit: a parallel copy of the bass and of the kick, driven into a soft saturator and
+   * high-passed, for the boss's cues (CueSpec.grit). Where each goes in, and its level.
+   */
+  bassGrit: GainNode;
+  kickGrit: GainNode;
+  bassGritOut: GainNode;
+  kickGritOut: GainNode;
 }
 
 let g: Graph | undefined;
@@ -212,12 +220,36 @@ function makeGraph(): Graph | undefined {
   const heart = gain(0.9);
   heart.connect(duck);
 
+  // The grit: each copy is driven into tanh, its low end cut (the bass layer keeps the sub), and
+  // brought in under the layer's own fade, so it comes and goes with the bass and the kick.
+  const grit = (into: GainNode, drive: number, lo: number, hi: number) => {
+    const inp = gain(drive);
+    const sat = keep(ctx.createWaveShaper());
+    sat.curve = satCurve();
+    sat.oversample = "2x";
+    const hp = filter("highpass", lo, 0.8);
+    const lp = filter("lowpass", hi, 0.6);
+    const out = gain(0);
+    inp.connect(sat).connect(hp).connect(lp).connect(out).connect(into);
+    return { inp, out };
+  };
+  const bg = grit(layers.bass, 4, 220, 2600);
+  const kg = grit(layers.kick, 5, 170, 1800);
+
   // One second of white noise, made once, read from a random place by every noisy sound.
   const white = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
   const d = white.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
 
-  return { ctx, nodes, master, clip, musicVol, sfxVol, sfx, duck, muffle, muffleGain, sting, layers, inputs, bassLp, leadLp, padLp, heart, white };
+  return { ctx, nodes, master, clip, musicVol, sfxVol, sfx, duck, muffle, muffleGain, sting, layers, inputs, bassLp, leadLp, padLp, heart, white, bassGrit: bg.inp, kickGrit: kg.inp, bassGritOut: bg.out, kickGritOut: kg.out };
+}
+
+/** tanh, normalised to reach ±1: a warm saturation that adds odd overtones to what is driven into it. */
+function satCurve() {
+  const n = 1024;
+  const curve = new Float32Array(n);
+  for (let i = 0; i < n; i++) curve[i] = Math.tanh(((i / (n - 1)) * 2 - 1) * 2.5) / Math.tanh(2.5);
+  return curve;
 }
 
 /** y = c·tanh(2x/c) over the shaper's -1..1, after the master's 0.5: unity for quiet sound, never past c. */
@@ -545,6 +577,10 @@ function applyCue(cue: Cue, at: number): void {
     p.setTargetAtTime(to, at, drum && to > 0 ? 0.01 : was === "none" ? 0.05 : beat * 0.3);
   }
   gr.bassLp.frequency.setTargetAtTime(spec.bright, at, 0.1);
+  for (const o of [gr.bassGritOut, gr.kickGritOut]) {
+    o.gain.cancelScheduledValues(at);
+    o.gain.setTargetAtTime(spec.grit ?? 0, at, beat * 0.3);
+  }
   gr.leadLp.frequency.setTargetAtTime(spec.leadWave === "brass" ? spec.bright * 2.2 : 3200, at, 0.1);
   gr.padLp.frequency.setTargetAtTime(spec.padWave === "sawtooth" ? 1100 : 1800, at, 0.1);
 }
@@ -582,12 +618,14 @@ function playStep(spec: CueSpec, step: number, t: number): void {
 
   // The bass.
   const b = hitAt(spec.bass, s);
-  if (b !== "." && mix.bass && room(2)) {
+  if (b !== "." && mix.bass && room(spec.grit ? 3 : 2)) {
     const n = b === "o" ? root + 12 : b === "5" ? root + 7 : root;
     const len = spec.bassWave === "sawtooth" ? dt * 1.6 : dt * 6;
     tone(inp.bass, t, spec.bassWave, midiHz(n), midiHz(n), len, spec.bassWave === "sawtooth" ? 0.32 : 0.5, 0.006, voices.music);
     // Under a driving bass, a sine an octave down keeps it round on small speakers' cut-off.
     if (spec.bassWave === "sawtooth" && b === "x") tone(inp.bass, t, "sine", midiHz(n), midiHz(n), len, 0.28, 0.006, voices.music);
+    // The grit: the note an octave up into the saturator, whose overtones a phone can play.
+    if (spec.grit) tone(gr.bassGrit, t, "triangle", midiHz(n + 12), midiHz(n + 12), len, 0.5, 0.004, voices.music);
   }
 
   // The lead.
@@ -620,7 +658,14 @@ function playStep(spec: CueSpec, step: number, t: number): void {
 
   // The drums.
   const k = hitAt(spec.kick, s);
-  if (k !== "." && mix.kick && room(1)) tone(inp.kick, t, "sine", 150, 42, 0.16, k === "o" ? 0.5 : 0.95, 0.002, voices.music);
+  if (k !== "." && mix.kick && room(spec.grit ? 3 : 1)) {
+    tone(inp.kick, t, "sine", 150, 42, 0.16, k === "o" ? 0.5 : 0.95, 0.002, voices.music);
+    if (spec.grit) {
+      // Its knock: the sweep saturated (its overtones), and a short click of the beater.
+      tone(gr.kickGrit, t, "sine", 180, 70, 0.11, k === "o" ? 0.35 : 0.6, 0.001, voices.music);
+      noise(inp.kick, t, 0.012, k === "o" ? 0.12 : 0.22, { type: "bandpass", f: 2600, q: 1.2 }, 0.001, voices.music);
+    }
+  }
   const sn = hitAt(spec.snare, s);
   if (sn !== "." && mix.snare && room(2)) {
     const v = sn === "o" ? 0.35 : 1;

@@ -144,8 +144,8 @@ The three latest days are below; everything, with its pull request, is in the
 <summary><strong>Latest changes</strong></summary>
 
 - **2026-11-14:** the walk's game is now Study Quest: grow by learning, beat made-up study troubles such as the DDL,
-  and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; every part of it is
-  made up.
+  and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
+  teaches by play with one small prompt at a time, and a defeat can be retried at once. Every part of it is made up.
 - **2026-11-13:** the walk has a game, off until you start it: the walker eats made-up books beside the buildings
   while a made-up Deadline chases it, and six books turn the chase round.
 - **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain

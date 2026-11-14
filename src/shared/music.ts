@@ -46,6 +46,12 @@ export interface CueSpec {
   crash?: boolean;
   /** Bass and lead filter's cut-off, Hz. */
   bright: number;
+  /**
+   * The level, 0 to 1, of a saturated copy of the bass and the kick, high-passed: the overtones
+   * that a phone's small speaker plays when it cannot play their fundamentals, so a heavy low end
+   * still reads. Absent: none.
+   */
+  grit?: number;
 }
 
 /** "69 . . 66" into notes and rests. */
@@ -195,6 +201,7 @@ export const MUSIC: Record<Exclude<Cue, "none">, CueSpec> = {
     arp: EMPTY,
     arpUp: 0,
     bright: 900,
+    grit: 0.55,
   },
   // Phase II: faster, an arpeggio and eighths on the hats.
   boss2: {
@@ -215,6 +222,7 @@ export const MUSIC: Record<Exclude<Cue, "none">, CueSpec> = {
     arp: "0121012101210121",
     arpUp: 1,
     bright: 1300,
+    grit: 0.5,
   },
   // Phase III: urgent. Sixteenths in the bass and the hats, the clock back in, a cymbal each bar.
   boss3: {
@@ -236,6 +244,7 @@ export const MUSIC: Record<Exclude<Cue, "none">, CueSpec> = {
     arpUp: 2,
     crash: true,
     bright: 1700,
+    grit: 0.3,
   },
 };
 

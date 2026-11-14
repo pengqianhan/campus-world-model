@@ -49,6 +49,18 @@ A change to what the site does or shows adds its line here, and the README's
   of its own for each blow, pick-up, villain's warning, attack and break-up, with Music and Effects volumes in the
   pause menu, which muffles the music. On a wide screen the boss's change of phase is a line in the lower black band
   clear of the boss, a villain's warning glows red at its outline only, and paper debris is white with lines of ink.
+  The first minute teaches by play, not by words: the first book glows a few steps ahead, then a lone, weak
+  Procrastination that cannot burn the walker out comes, and the first time each action is needed (moving, a strike,
+  a dodge in its slow yawn, a flashcard at a foe out of reach, each new skill as it opens) one small prompt shows its
+  key, or on a phone beside its button, which pulses; once done it never shows again in that browser. Burnt out, the
+  walker can retry at once from the start of the quest it was on, or from the arena's edge with the Final Exam whole,
+  keeping what it learned; the debrief's grade is explained in one line each for time, defeats, best combo and
+  knowledge, and Play again starts at once. The pace was tuned with a headless playtest bot: an average player meets
+  the Final Exam after about eight minutes with a rank about every two, the first DDL comes before the first rank,
+  study groups come in waves, and the Final Exam guards except just after it attacks. The boss's bass and drums
+  carry overtones a phone's speaker can play, the stick and the game's buttons no longer show through its menus, and
+  a game started in a corner (as at Victoria University of Wellington's starting spot) steps out to open ground so the
+  camera behind the walker is not pressed against a wall.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.
