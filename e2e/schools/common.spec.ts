@@ -61,6 +61,20 @@ test(`${SCHOOL}: the page names its one address and its picture, and says in its
   expect(box.width * box.height).toBeLessThanOrEqual(1);
 });
 
+test(`${SCHOOL}: the building list names every building, and each opens on the 3D map`, async ({ page }) => {
+  await open(page, DAY);
+  const campus = await published<CampusData>(page, "campus.json");
+  await page.goto("buildings/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://campusworldmodel.com/${SCHOOL}/buildings/`);
+  const links = await page.locator("main li a").evaluateAll((els) => els.map((a) => a.getAttribute("href")));
+  for (const b of campus.buildings) expect(links, b.id).toContain(`../?building=${encodeURIComponent(b.id)}`);
+  const first = [...campus.buildings].find((b) => !b.offMap)!;
+  await page.locator(`main li a[href="../?building=${encodeURIComponent(first.id)}"]`).first().click();
+  await settle(page);
+  expect(new URL(page.url()).searchParams.get("building")).toBe(first.id);
+  await expect(page.locator("#building-bar")).toContainText(first.name.en);
+});
+
 test(`${SCHOOL}: the main buildings carry labels with their codes`, async ({ page }) => {
   await open(page, DAY);
   const campus = await published<CampusData>(page, "campus.json");

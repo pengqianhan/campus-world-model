@@ -18,6 +18,16 @@ A change to what the site does or shows adds its line here, and the README's
 
 ### Added
 
+- **A list of buildings for every school, and a page for each building with learning spaces.** Each school's
+  map has a static page of its buildings at `/<school>/buildings/`, campus by campus, each building with its
+  floors and learning spaces counted and a link that opens it on the 3D map. Each building with learning
+  spaces has a page of its own, such as https://campusworldmodel.com/uoa/buildings/303/: its floors in order,
+  each with its learning spaces by code, name and type, and each code a link that opens the room on the 3D map.
+  A floor the map leaves blank says why, in the map's own words. The pages run no script, so search engines and
+  AI assistants can read them; the sitemap and `llms.txt` list them. They name only the learning spaces the map
+  names. Today 69 buildings of the University of Auckland have a page; the other schools' maps show buildings
+  only, so their list links each building to the map (#177).
+
 - **Search engines and AI assistants can read the site.** Each page names its one address on
   https://campusworldmodel.com/ (the copies on pages.dev and GitHub Pages name the same one) and a picture
   for link previews, taken from the live map (`docs/og/`). Each school's page carries structured data

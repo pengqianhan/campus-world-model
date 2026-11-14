@@ -7,6 +7,7 @@
 // - a short summary of the map, after the app's element, for screen readers and for any reader that
 //   does not run script. It is hidden on screen (.sr-only, src/ui/styles.css), where the map shows
 //   the same things. Every text in it comes from the school's words, its meta.json and campus.json.
+//   It links to the school's building list (scripts/lib/building-pages.ts).
 import { homeHref } from "../../src/app/links.ts";
 import type { Words } from "../../src/shared/school.ts";
 import type { Campus, Meta } from "../../src/shared/types.ts";
@@ -77,6 +78,7 @@ export function schoolPage(s: SchoolPageInput): { head: string; body: string } {
     `<h2 id="summary-title">${e(f.heading)}</h2>`,
     `<p>${e(f.description)}</p>`,
     `<p>${e(`${f.form}.`)} ${e(f.buildings)}${f.campuses ? ` ${e(f.campuses)}` : ""} ${e(`${f.snapshot}.`)}</p>`,
+    `<p><a href="${e(`${s.base}buildings/`)}">${e(word(s.words, "picker.schoolPage.buildingList"))}</a></p>`,
     `<p><a href="${e(homeHref(s.base, s.id))}">${e(word(s.words, "picker.schoolPage.allSchools"))}</a></p>`,
     `</section>`,
   ].join("\n");
