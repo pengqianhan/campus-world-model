@@ -11,7 +11,6 @@ import {
   Color,
   CylinderGeometry,
   DoubleSide,
-  DynamicDrawUsage,
   Euler,
   Group,
   InstancedBufferAttribute,
@@ -30,6 +29,7 @@ import {
   type Material,
 } from "three";
 import { merge } from "./gameModels.ts";
+import { everyFrame, roomFor, sendInstances } from "./gameBuffers.ts";
 
 const _m = new Matrix4();
 const _p = new Vector3();
@@ -49,11 +49,14 @@ function additive(opacity = 1): MeshBasicMaterial {
   return new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity, blending: AdditiveBlending, depthWrite: false });
 }
 
-function instanced(geo: BufferGeometry, mat: Material, n: number, order = 0): InstancedMesh {
-  const m = new InstancedMesh(geo, mat, n);
-  m.instanceMatrix.setUsage(DynamicDrawUsage);
+/**
+ * An instanced mesh of up to `n`, written in every frame: with room for more (gameBuffers.ts), and
+ * any of its geometry's own attributes named, which must have been made with roomFor's count.
+ */
+function instanced(geo: BufferGeometry, mat: Material, n: number, order = 0, ...own: string[]): InstancedMesh {
+  const m = new InstancedMesh(geo, mat, roomFor(geo, n));
   m.setColorAt(0, _c.setRGB(1, 1, 1));
-  m.instanceColor!.setUsage(DynamicDrawUsage);
+  everyFrame(m, ...own);
   m.count = 0;
   m.frustumCulled = false;
   m.visible = false;
@@ -67,10 +70,7 @@ function instanced(geo: BufferGeometry, mat: Material, n: number, order = 0): In
 function close(m: InstancedMesh, n: number): void {
   m.count = n;
   m.visible = n > 0;
-  if (n > 0) {
-    m.instanceMatrix.needsUpdate = true;
-    if (m.instanceColor) m.instanceColor.needsUpdate = true;
-  }
+  if (n > 0) sendInstances(m, n);
 }
 
 /** Colours a 0-to-1-high shape in its vertices, bright at the foot and fading to nothing (additive black) up it. */
@@ -734,8 +734,7 @@ export class Puffs {
 
   constructor() {
     const geo = new IcosahedronGeometry(1, 2);
-    this.alpha = new InstancedBufferAttribute(new Float32Array(MAX_PUFFS), 1);
-    this.alpha.setUsage(DynamicDrawUsage);
+    this.alpha = new InstancedBufferAttribute(new Float32Array(roomFor(geo, MAX_PUFFS)), 1);
     geo.setAttribute("aAlpha", this.alpha);
     const mat = new ShaderMaterial({
       transparent: true,
@@ -762,7 +761,7 @@ export class Puffs {
           gl_FragColor = vec4(vColor, vAlpha * vFacing * vFacing);
         }`,
     });
-    this.mesh = instanced(geo, mat, MAX_PUFFS, 1);
+    this.mesh = instanced(geo, mat, MAX_PUFFS, 1, "aAlpha");
   }
 
   /** `count` puffs round a scene point at ground level, `spread` metres out, drifting outward and up. */
@@ -822,7 +821,6 @@ export class Puffs {
       this.alpha.setX(i, 0.5 * k * Math.min(1, (1 - k) * 8));
     }
     close(this.mesh, w);
-    if (w) this.alpha.needsUpdate = true;
   }
 
   clear(): void {
@@ -887,8 +885,7 @@ export class Shocks {
     geo.setAttribute("position", new BufferAttribute(new Float32Array(pos), 3));
     geo.setAttribute("aBright", new BufferAttribute(new Float32Array(bright), 1));
     geo.setIndex(idx);
-    this.rw = new InstancedBufferAttribute(new Float32Array(MAX_SHOCKS * 2), 2);
-    this.rw.setUsage(DynamicDrawUsage);
+    this.rw = new InstancedBufferAttribute(new Float32Array(roomFor(geo, MAX_SHOCKS) * 2), 2);
     geo.setAttribute("aRW", this.rw);
     const mat = new ShaderMaterial({
       transparent: true,
@@ -911,7 +908,7 @@ export class Shocks {
           gl_FragColor = vec4(vColor, 1.0);
         }`,
     });
-    this.mesh = instanced(geo, mat, MAX_SHOCKS, 4);
+    this.mesh = instanced(geo, mat, MAX_SHOCKS, 4, "aRW");
   }
 
   /**
@@ -970,7 +967,6 @@ export class Shocks {
       drawn++;
     }
     close(this.mesh, drawn);
-    if (drawn) this.rw.needsUpdate = true;
   }
 
   clear(): void {
@@ -1063,15 +1059,13 @@ export class Decals {
     const disc = flat(new PlaneGeometry(2, 2, 1, 1));
     // Its length along +z from 0 to 1, as the strips in Telegraphs.
     const strip = flat(new PlaneGeometry(1, 1).translate(0, -0.5, 0));
-    this.cData = new InstancedBufferAttribute(new Float32Array(MAX_DECALS * 4), 4);
-    this.lData = new InstancedBufferAttribute(new Float32Array(MAX_DECALS * 4), 4);
-    this.cData.setUsage(DynamicDrawUsage);
-    this.lData.setUsage(DynamicDrawUsage);
+    this.cData = new InstancedBufferAttribute(new Float32Array(roomFor(disc, MAX_DECALS) * 4), 4);
+    this.lData = new InstancedBufferAttribute(new Float32Array(roomFor(strip, MAX_DECALS) * 4), 4);
     disc.setAttribute("aDecal", this.cData);
     strip.setAttribute("aDecal", this.lData);
     this.mats = [decalMaterial("circle"), decalMaterial("line")];
-    this.circles = instanced(disc, this.mats[0]!, MAX_DECALS, 1);
-    this.lines = instanced(strip, this.mats[1]!, MAX_DECALS, 1);
+    this.circles = instanced(disc, this.mats[0]!, MAX_DECALS, 1, "aDecal");
+    this.lines = instanced(strip, this.mats[1]!, MAX_DECALS, 1, "aDecal");
     this.group.add(this.circles, this.lines);
   }
 
@@ -1108,7 +1102,5 @@ export class Decals {
   end(): void {
     close(this.circles, this.nc);
     close(this.lines, this.nl);
-    if (this.nc) this.cData.needsUpdate = true;
-    if (this.nl) this.lData.needsUpdate = true;
   }
 }

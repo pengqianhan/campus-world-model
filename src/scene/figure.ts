@@ -12,9 +12,11 @@ import {
   BufferGeometry,
   CylinderGeometry,
   DoubleSide,
+  DynamicDrawUsage,
   GreaterDepth,
   Group,
   KeepStencilOp,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -179,6 +181,8 @@ export class Figure {
   private dressing = false;
   private pen?: Mesh;
   private penOn = false;
+  /** Where the highlighter sits in the right hand, as fitted at the last dressing: made only once the game asks for it. */
+  private penFit?: Matrix4;
   private trail?: { mesh: Mesh; pos: Float32Array; col: Float32Array; life: number };
 
   constructor(ringColour: number) {
@@ -261,6 +265,7 @@ export class Figure {
   /** Shows the highlighter in the right hand, for the game. */
   setPen(on: boolean): void {
     this.penOn = on;
+    if (on) this.makePen();
     if (this.pen) this.pen.visible = on;
     this.changed = true;
   }
@@ -449,9 +454,26 @@ export class Figure {
     this.changed = true;
   }
 
-  /** The highlighter in the right hand, fitted to the figure standing at ease, and its trail. */
-  private makePen(b: Body): void {
-    if (this.pen) return;
+  /** Where the highlighter goes in the right hand, fitted to the figure standing at ease: in the hand's frame. */
+  private fitPen(b: Body): Matrix4 {
+    // In the fist, pointing ahead of it and a little down the line of the forearm, as a sword is held.
+    const local = (name: string) => this.root.worldToLocal(b.bone(name).getWorldPosition(new Vector3()));
+    const wrist = local("RightHand");
+    const fore = wrist.clone().sub(local("RightForeArm")).normalize();
+    const dir = fore.clone().multiplyScalar(0.5).add(new Vector3(0, 0.1, -1)).normalize();
+    const inRoot = new Matrix4().compose(wrist.addScaledVector(fore, 0.07), new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), dir), new Vector3(1, 1, 1));
+    const hand = b.bone("RightHand");
+    return new Matrix4().copy(hand.matrixWorld).invert().multiply(this.root.matrixWorld).multiply(inRoot);
+  }
+
+  /**
+   * The highlighter in the right hand, and its trail: made the first time the game shows it, so that
+   * a walker that never plays carries neither.
+   */
+  private makePen(): void {
+    const b = this.body;
+    const fit = this.penFit;
+    if (this.pen || !b || !fit) return;
     // One mesh: a bright barrel and a dark cap at the writing end, coloured by height.
     const g = new CylinderGeometry(PEN_RADIUS, PEN_RADIUS * 0.9, PEN_LENGTH, 10, 12);
     const pos = g.getAttribute("position");
@@ -464,21 +486,18 @@ export class Figure {
     g.setAttribute("color", new BufferAttribute(colours, 3));
     // Its origin where the fist grips it.
     g.translate(0, PEN_LENGTH / 2 - PEN_GRIP * PEN_LENGTH, 0);
-    const pen = new Mesh(g, new MeshStandardMaterial({ vertexColors: true, roughness: 0.5 }));
+    const penMaterial = new MeshStandardMaterial({ vertexColors: true, roughness: 0.5 });
+    // It marks where the figure is seen, as the figure's other parts do (dress), so that the x-ray stays off it.
+    penMaterial.stencilWrite = true;
+    penMaterial.stencilRef = 1;
+    penMaterial.stencilZPass = ReplaceStencilOp;
+    const pen = new Mesh(g, penMaterial);
     // Nothing of the game casts a shadow (PROGRESS.md, Decisions: Study Quest).
     pen.castShadow = false;
     pen.userData.noPick = true;
     pen.raycast = () => {};
-    // In the fist, pointing ahead of it and a little down the line of the forearm, as a sword is held.
-    const local = (name: string) => this.root.worldToLocal(b.bone(name).getWorldPosition(new Vector3()));
-    const wrist = local("RightHand");
-    const fore = wrist.clone().sub(local("RightForeArm")).normalize();
-    const dir = fore.clone().multiplyScalar(0.5).add(new Vector3(0, 0.1, -1)).normalize();
-    pen.position.copy(wrist).addScaledVector(fore, 0.07);
-    pen.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir);
-    this.root.add(pen);
-    pen.updateMatrixWorld(true);
-    b.bone("RightHand").attach(pen);
+    fit.decompose(pen.position, pen.quaternion, pen.scale);
+    b.bone("RightHand").add(pen);
     pen.visible = this.penOn;
     this.pen = pen;
     // The trail: quads between each sample and the next, in the figure's frame.
@@ -502,6 +521,8 @@ export class Figure {
     // Light, not a solid: left out of the walker view's ambient occlusion (street/effects.ts).
     mesh.userData.noAO = true;
     mesh.raycast = () => {};
+    // Written in every frame of a blow: dynamic, or ANGLE on Direct3D 11 stalls (gameBuffers.ts).
+    for (const a of Object.values(tg.attributes)) (a as BufferAttribute).setUsage(DynamicDrawUsage);
     this.root.add(mesh);
     this.trail = { mesh, pos: tp, col: tc, life: 0 };
   }
@@ -680,7 +701,8 @@ export class Figure {
     this.root.add(gear.blot);
     // The thigh's length, for a crouch in the game; and the highlighter it holds there.
     this.legLength = local3(this.root, b.bone("RightUpLeg")).distanceTo(local3(this.root, b.bone("RightLeg")));
-    this.makePen(b);
+    this.penFit = this.fitPen(b);
+    if (this.penOn) this.makePen();
     // On the scooter the body stands on its deck.
     b.root.position.y = this.ride === "scooter" ? DECK : 0;
     // The umbrella stays upright over the right hand; holdUmbrella moves it there.

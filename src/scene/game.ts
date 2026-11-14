@@ -12,7 +12,6 @@ import {
   BufferAttribute,
   Color,
   CylinderGeometry,
-  DynamicDrawUsage,
   Euler,
   Group,
   InstancedBufferAttribute,
@@ -62,6 +61,7 @@ import { FoeMotion, newLook } from "./gameMotion.ts";
 import { BossView, bossPose } from "./gameBoss.ts";
 import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
 import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
+import { everyFrame, roomFor, sendInstances } from "./gameBuffers.ts";
 import type { LabelSpec } from "./labels.ts";
 import type { WalkerState } from "./walkers.ts";
 
@@ -249,14 +249,13 @@ class KindView {
     this.model = MODELS[kind]();
     const cap = CAP[kind];
     const add = (geo: BufferGeometry, mat: Material, part?: Layer["part"]) => {
-      const tint = new InstancedBufferAttribute(new Float32Array(cap * 3), 3);
-      tint.setUsage(DynamicDrawUsage);
+      // Room for more than CAP: written in every frame (gameBuffers.ts).
+      const room = roomFor(geo, cap);
+      const tint = new InstancedBufferAttribute(new Float32Array(room * 3), 3);
       geo.setAttribute("aTint", tint);
-      const fx = new InstancedBufferAttribute(new Float32Array(cap * 2), 2);
-      fx.setUsage(DynamicDrawUsage);
+      const fx = new InstancedBufferAttribute(new Float32Array(room * 2), 2);
       geo.setAttribute("aFx", fx);
-      const mesh = new InstancedMesh(geo, mat, cap);
-      mesh.instanceMatrix.setUsage(DynamicDrawUsage);
+      const mesh = everyFrame(new InstancedMesh(geo, mat, room), "aTint", "aFx");
       mesh.count = 0;
       mesh.visible = false;
       mesh.frustumCulled = false;
@@ -293,11 +292,7 @@ class KindView {
     for (const l of this.layers) {
       l.mesh.count = this.n;
       l.mesh.visible = this.n > 0;
-      if (this.n) {
-        l.mesh.instanceMatrix.needsUpdate = true;
-        l.tint.needsUpdate = true;
-        l.fx.needsUpdate = true;
-      }
+      if (this.n) sendInstances(l.mesh, this.n);
     }
   }
 
@@ -332,9 +327,10 @@ class ItemsView {
     this.lit.customProgramCacheKey = () => "study-quest-items";
     const { cover, pages } = bookParts();
     const im = (g: BufferGeometry, mat: Material, n: number) => {
-      const m = new InstancedMesh(g, mat, n);
-      m.instanceMatrix.setUsage(DynamicDrawUsage);
+      // Room for more than are drawn: written in every frame (gameBuffers.ts).
+      const m = new InstancedMesh(g, mat, roomFor(g, n));
       m.setColorAt(0, _c.setRGB(1, 1, 1));
+      everyFrame(m);
       m.count = 0;
       m.frustumCulled = false;
       m.castShadow = false;
@@ -402,10 +398,7 @@ class ItemsView {
     ] as const) {
       m.count = n;
       m.visible = n > 0;
-      if (n) {
-        m.instanceMatrix.needsUpdate = true;
-        if (m.instanceColor) m.instanceColor.needsUpdate = true;
-      }
+      if (n) sendInstances(m, n);
     }
   }
 
