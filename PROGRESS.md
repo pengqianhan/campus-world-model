@@ -648,8 +648,9 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     every building alike.
   - Places, not people: a building with a floor the map leaves blank because people live there or children are cared for
     there (`Floor.noPlan`, `isHome`) is a home. A home names no quest, and no book, quest's place or villain lies on it or
-    within 25 m of it (`HOME_MARGIN`, `awayFromHomes`); the boss's whole arena keeps that far off. Where only homes stand
-    near, the game uses open ground round the walker. Only the University of Auckland's campus map marks homes today; the
+    within 25 m of it (`HOME_MARGIN`, `awayFromHomes`); the boss's whole arena keeps that far
+    off where one of the eight buildings with the most rooms near has room for it, and its middle always does. Where only
+    homes stand near, the game uses open ground round the walker. Only the University of Auckland's campus map marks homes today; the
     other schools leave their halls of residence out of their buildings, as unnamed surroundings, which draw no quest but
     are not yet kept clear of.
   - The villains come in straight lines over the ground and the roofs, so they need no path and cannot get stuck; near the
