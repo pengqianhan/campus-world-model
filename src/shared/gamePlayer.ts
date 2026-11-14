@@ -41,8 +41,13 @@ export const PLAYER = {
   softReach: 9,
   softArc: 65,
   lockReach: 28,
-  /** Seconds a hit chain lasts without another hit. */
-  chainTime: 2.6,
+  /** Seconds a hit chain lasts without a blow that lands (not one a guard turns). */
+  chainTime: 2.5,
+  /**
+   * What a blow a guard turns (one that does no more than half its harm, as on the Final Exam on
+   * guard) adds to the chain: a third of a hit, and it does not keep the chain going.
+   */
+  guardedChain: 1 / 3,
   /**
    * Seconds the foes freeze when a blow lands (hit-stop): a light blow, the combo's finisher (or a
    * Eureka, or a heavy blow), a critical blow, and a critical finisher. Each harder blow holds longer.

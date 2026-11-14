@@ -487,9 +487,16 @@ export class StudyQuest {
   arena?: { at: Pt; radius: number; active: boolean };
   /** The foe the walker has locked on to. */
   lock?: number;
-  /** Hits in a row, each within `chainTime` of the last. */
+  /**
+   * Hits in a row, each landed within `chainTime` of the last: a blow a guard turns counts a third
+   * (`guardedChain`) and does not keep it going. Whole hits are shown (`hits`).
+   */
   chain = 0;
   maxChain = 0;
+  /** The chain in whole hits, as shown. */
+  get hits(): number {
+    return Math.floor(this.chain + 1e-6);
+  }
   defeated = 0;
   focusLost = 0;
   questsDone = 0;
@@ -881,9 +888,14 @@ export class StudyQuest {
     const [ux, uy] = dirOf(dir);
     const k = push * spec.weight * 4;
     f.push = [f.push[0] + ux * k, f.push[1] + uy * k];
-    this.chain++;
-    this.chainT = PLAYER.chainTime;
-    this.maxChain = Math.max(this.maxChain, this.chain);
+    // A blow the guard turns barely counts, and only in a chain that landed blows keep going: the
+    // count against the boss on guard does not climb into the hundreds.
+    if (guard <= 0.5) this.chain += PLAYER.guardedChain;
+    else {
+      this.chain++;
+      this.chainT = PLAYER.chainTime;
+    }
+    this.maxChain = Math.max(this.maxChain, this.hits);
     if (charges && this.has("eureka")) this.eurekaMeter = Math.min(PLAYER.eurekaCharge, this.eurekaMeter + amount * 0.3);
     const hs = PLAYER.hitStop;
     this.hitStop = Math.max(this.hitStop, crit ? (heavy ? hs.critHeavy : hs.crit) : heavy ? hs.heavy : hs.light);
@@ -1683,10 +1695,18 @@ export function bookSpot(
 /**
  * Open ground for a fight: of `tries` reachable cells within `reach` metres of `centre`, the one
  * with the least in the way within `radius` metres (walls, water, trunks: blocked cells; a cell
- * nearer the middle counts more), so that nothing stands between the camera and a tall foe. A
- * little nearer `centre` wins a tie. At least `gap` metres from `near`. Undefined when no try
- * lands on reachable ground.
+ * nearer the middle counts more), so that nothing stands between the camera and a tall foe; and
+ * off the roads, which are open but no place for a fight: a cell of a road (OpenStreetMap's service
+ * ways, streets and bigger, as the walking grid paints them) counts against it, most in the middle,
+ * so that grass, a plaza or a footpath wins. A little nearer `centre` wins a tie. At least `gap`
+ * metres from `near`. Undefined when no try lands on reachable ground.
  */
+/**
+ * What the walking grid paints a road with (walkmap.ts): service ways, streets, main roads,
+ * motorways; as its cells hold them, in single precision.
+ */
+const ROAD_COSTS: ReadonlySet<number> = new Set([WALK_COST.service, WALK_COST.street, WALK_COST.major, WALK_COST.motorway].map(Math.fround));
+
 export function openSpot(
   g: WalkGrid,
   reached: Uint8Array,
@@ -1716,7 +1736,9 @@ export function openSpot(
         const cc = c + dc;
         const rr = r + dr;
         const out = cc < 0 || rr < 0 || cc >= g.cols || rr >= g.rows;
-        if (out || g.cost[rr * g.cols + cc] === Infinity) score += 1 + 2 * (1 - d / radius);
+        const cost = out ? Infinity : g.cost[rr * g.cols + cc]!;
+        if (cost === Infinity) score += 1 + 2 * (1 - d / radius);
+        else if (ROAD_COSTS.has(cost)) score += 0.35 + 1.2 * (1 - d / radius);
       }
     }
     score += Math.hypot(at[0] - centre[0], at[1] - centre[1]) / Math.max(1, reach);

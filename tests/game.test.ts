@@ -26,7 +26,7 @@ import {
   type PlayerInput,
   type QuestHost,
 } from "../src/shared/game.ts";
-import { blockPolygon, cellOf, makeGrid } from "../src/shared/walkpath.ts";
+import { WALK_COST, blockPolygon, cellOf, makeGrid, paintLine, paintPolygon } from "../src/shared/walkpath.ts";
 
 /** A repeatable Math.random. */
 function seeded(seed = 1): () => number {
@@ -215,6 +215,31 @@ describe("blows", () => {
     }
     expect(dealt[2]!).toBeGreaterThan(dealt[0]! * 1.5);
     expect(g.maxChain).toBe(3);
+  });
+
+  it("counts a blow the boss's guard turns as a third of a hit, kept going only by blows that land", () => {
+    const g = quiet(() => 0.5);
+    const f = foe(g, "exam", 2.5);
+    f.cool = 99;
+    const strike = (open: boolean) => {
+      f.state = open ? "recover" : "chase";
+      f.t = 5;
+      g.act("strike");
+      run(g, PLAYER.strikeContact[0]! + 0.01);
+      f.at = [0, 2.5];
+      run(g, PLAYER.strikeTime[0]!);
+      f.at = [0, 2.5];
+    };
+    // Guarded blows alone make no chain at all.
+    for (let k = 0; k < 6; k++) strike(false);
+    expect(g.maxChain).toBe(0);
+    // A landed blow starts one; the guarded blows after it add a third each.
+    strike(true);
+    for (let k = 0; k < 3; k++) strike(false);
+    expect(g.hits).toBe(2);
+    // And it drops once no blow has landed for the chain's time.
+    run(g, PLAYER.chainTime + 0.1);
+    expect(g.hits).toBe(0);
   });
 
   it("beats a foe at no health: knowledge for it, and its death", () => {
@@ -939,6 +964,20 @@ describe("openSpot", () => {
     for (let dr = -k; dr <= k; dr++)
       for (let dc = -k; dc <= k; dc++) if (Math.hypot(dc, dr) * g.cell <= 18 && g.cost[(r + dr) * g.cols + c + dc] === Infinity) blocked++;
     expect(blocked).toBe(0);
+  });
+
+  it("keeps the last fight off a road, on the grass beside it", () => {
+    const g = makeGrid([-120, -120, 120, 120], 2);
+    // A main road runs north and south through open ground, with grass to its east.
+    paintLine(g, [[0, -120], [0, 120]], 24, WALK_COST.major);
+    paintPolygon(g, [[[30, -120], [120, -120], [120, 120], [30, 120]]], WALK_COST.green);
+    const near: Pt = [-100, -100];
+    const at = openSpot(g, reachable(g, near), [0, 0], 75, 18, near, seeded(7), 160)!;
+    expect(at).toBeDefined();
+    const [c, r] = cellOf(g, at);
+    expect(g.cost[r * g.cols + c]).not.toBe(Math.fround(WALK_COST.major));
+    // Clear of the street's edge by more than half the arena.
+    expect(Math.abs(at[0])).toBeGreaterThan(12 + 9);
   });
 
   it("finds nothing where nothing is reached", () => {
