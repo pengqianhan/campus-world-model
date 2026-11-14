@@ -2356,6 +2356,17 @@ select optgroup {
   color: var(--accent-ink);
 }
 
+.hud-game-tool.on {
+  background: var(--hud-hover);
+}
+
+/* In a narrow window the game's button is its book alone, so that the toolbar keeps clear of the way out. */
+@media (max-width: 1040px) {
+  .hud-game-tool .hud-label {
+    display: none;
+  }
+}
+
 .lbl-say {
   max-width: 240px;
   padding: 5px 10px;
@@ -2576,6 +2587,27 @@ select optgroup {
   bottom: auto;
 }
 
+/* A game on a phone has the view: where the walker is and the stick's caption wait until it ends. */
+.hud.touch.playing .hud-sign,
+.hud.touch.playing .hud-caption {
+  display: none;
+}
+
+/* The game's button on a phone: under the speed and the views, at the right. */
+.hud .hud-game-pill {
+  height: 36px;
+  padding: 0 12px 0 10px;
+  border-radius: 12px;
+}
+
+.hud-game-pill .icon {
+  color: var(--accent);
+}
+
+.hud .hud-game-pill.on {
+  background: var(--hud-strong);
+}
+
 /* Small under the top right: the speed and the height on one line, and the views. */
 .hud.touch .hud-cluster {
   width: auto;
@@ -2625,6 +2657,11 @@ select optgroup {
   top: 124px;
 }
 
+/* In a game the credits stay over its panels and its letterbox bars, so that they are always read. */
+.gaming .attribution {
+  z-index: 30;
+}
+
 @media (max-width: 720px) {
   /* The floor strip, under the walk's top row rather than the top bar. */
   .walking .floors {
@@ -2637,6 +2674,15 @@ select optgroup {
     left: 10px;
     max-width: calc(100vw - 230px);
     transform: none;
+  }
+
+  /* The game keeps the row under the walk's buttons clear for them: the credits run across it whole,
+     on two lines where they need them, and the game's panels start below. */
+  .walking.gaming .attribution {
+    max-width: calc(100vw - 20px);
+    overflow: visible;
+    line-height: 1.3;
+    white-space: normal;
   }
 
   .hud-sub {

@@ -24,6 +24,7 @@ import {
   sun,
   webglFailed,
 } from "../app/state.ts";
+import { bindGameScene } from "../app/gameState.ts";
 import { bindWalkerScene } from "../app/walker.ts";
 import { CampusScene } from "../scene/CampusScene.ts";
 import { Terrain } from "../scene/terrain.ts";
@@ -84,6 +85,7 @@ export function SceneHost() {
     }
     (window as unknown as { __scene?: CampusScene }).__scene = scene;
     bindWalkerScene(scene);
+    bindGameScene(scene);
 
     scene.onPick = (p) => {
       if (p?.type === "building") openBuilding(p.id);
@@ -202,6 +204,7 @@ export function SceneHost() {
     return () => {
       ro.disconnect();
       stops.forEach((stop) => stop());
+      bindGameScene(undefined);
       bindWalkerScene(undefined);
       scene.dispose();
     };

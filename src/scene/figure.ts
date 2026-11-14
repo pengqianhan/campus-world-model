@@ -8,11 +8,17 @@ import {
   AdditiveAnimationBlendMode,
   AnimationClip,
   AnimationMixer,
+  BufferAttribute,
+  BufferGeometry,
+  CylinderGeometry,
+  DoubleSide,
   GreaterDepth,
   Group,
   KeepStencilOp,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
+  MeshStandardMaterial,
   NotEqualStencilFunc,
   Quaternion,
   QuaternionKeyframeTrack,
@@ -23,12 +29,12 @@ import {
   VectorKeyframeTrack,
   type AnimationAction,
   type Bone,
-  type BufferGeometry,
   type Material,
   type Object3D,
 } from "three";
 import type { Gear } from "./figureBuild.ts";
 import { DECK, GRIP, Scooter, type Ride } from "./rides.ts";
+import { MOVES, comingIn, mixPose, moveLength, newPose, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
 
 /** Where the eyes are, for the view from the walker. */
 export const EYE_HEIGHT = 1.6;
@@ -81,6 +87,34 @@ const RIDE_LEGS: [bone: string, child: string, dir: [number, number, number]][] 
   ["RightUpLeg", "RightLeg", [-0.07, -1, 0.14]],
   ["RightLeg", "RightFoot", [-0.04, -1, 0.06]],
 ];
+/** The bones a move of the game turns (figureMoves.ts), each after its parent. */
+const ACT_BONES = ["Spine1", "Spine2", "RightArm", "RightForeArm", "LeftArm", "LeftForeArm", "LeftUpLeg", "LeftLeg", "RightUpLeg", "RightLeg"] as const;
+/** The two bones of the back that a move twists and bows. */
+const SPINE = ["Spine1", "Spine2"] as const;
+/** Seconds over which a move cut short by none lets go. */
+const LET_GO = 0.2;
+/**
+ * The highlighter held in the game, a toy one big enough to read from behind the walker: metres
+ * long and across, and the share of it from the back at which the fist grips it.
+ */
+const PEN_LENGTH = 0.36;
+const PEN_RADIUS = 0.034;
+const PEN_GRIP = 0.3;
+/** Its ink: a bright pink that reads against the sky, the grass and the paving alike. */
+const PEN_INK = [1, 0.27, 0.62] as const;
+/**
+ * The trail a blow leaves: samples kept, metres from the grip along the pen at which it starts and
+ * ends (past its tip), its colour at the newest sample and the oldest, its opacity at the newest
+ * sample's outer and inner edge, and seconds it fades over.
+ */
+const TRAIL_SAMPLES = 12;
+const TRAIL_FROM = 0.06;
+const TRAIL_TO = 0.42;
+const TRAIL_HEAD = [1, 0.3, 0.66] as const;
+const TRAIL_TAIL = [1, 0.62, 0.25] as const;
+const TRAIL_ALPHA = [0.92, 0.25] as const;
+const TRAIL_FADE = 0.15;
+
 /** Radians the rider leans at most into a turn, and the share of the lean that would hold it up that it takes. */
 const MAX_LEAN = 0.2;
 const LEAN = 0.6;
@@ -126,8 +160,29 @@ export class Figure {
   private last?: number;
   private walkCycles = 0;
   private runCycles = 0;
+  /** Feet put down so far, two a cycle of the walk or the run, whichever leads: for the game's footsteps. */
+  footfalls = 0;
   private runBlend = 0;
   private stance = { moving: 0, speed: 0, t: 0 };
+  /**
+   * A move of the game laid over the walk (figureMoves.ts): which, seconds since it began, how much
+   * of it is laid over now, and how much of the one before it was when this began (`fromPose`).
+   */
+  private act: { move?: Move; t: number; w: number; fromW: number } = { t: 0, w: 0, fromW: 0 };
+  private actPose = newPose();
+  private keyPose = newPose();
+  private fromPose = newPose();
+  /** The bones a move turned, as the mixer left them; put back before the next pose. */
+  private actSaved?: Quaternion[];
+  private acted = false;
+  /** Metres the thigh is long (and the shin about the same), for a crouch. */
+  private legLength = 0.42;
+  private dressing = false;
+  private pen?: Mesh;
+  private penOn = false;
+  /** Where the highlighter sits in the right hand, as fitted at the last dressing: made only once the game asks for it. */
+  private penFit?: Matrix4;
+  private trail?: { mesh: Mesh; pos: Float32Array; col: Float32Array; life: number };
 
   constructor(ringColour: number) {
     // A ring on the ground round the feet, so the walker can be found from above.
@@ -194,6 +249,27 @@ export class Figure {
   }
 
   /**
+   * Starts a move of the game (figureMoves.ts), from wherever the last one had got to; none lets go
+   * of what is laid over the walk.
+   */
+  play(move: Move | undefined): void {
+    const a = this.act;
+    mixPose(this.fromPose, this.actPose, this.actPose, 0);
+    a.fromW = a.w;
+    a.move = move;
+    a.t = 0;
+    this.changed = true;
+  }
+
+  /** Shows the highlighter in the right hand, for the game. */
+  setPen(on: boolean): void {
+    this.penOn = on;
+    if (on) this.makePen();
+    if (this.pen) this.pen.visible = on;
+    this.changed = true;
+  }
+
+  /**
    * On foot, on the scooter, its feet on the deck and its hands on the grips, or away while a
    * drone flies in its place (walkers.ts), when the figure is not drawn at all.
    */
@@ -233,14 +309,23 @@ export class Figure {
     // The bones the scooter turned go back to where the mixer left them, which it may not set again.
     for (const [bone, q] of this.riding ?? []) bone.quaternion.copy(q);
     this.riding = undefined;
+    // And those a move of the game turned.
+    if (this.acted) {
+      for (let i = 0; i < ACT_BONES.length; i++) b.bone(ACT_BONES[i]!).quaternion.copy(this.actSaved![i]!);
+      b.root.position.set(0, this.ride === "scooter" ? DECK : 0, 0);
+      this.acted = false;
+    }
     // On the scooter it stands at ease, however fast it goes.
     if (this.ride === "scooter") moving = 0;
     const dt = this.last === undefined ? 0 : Math.max(0, Math.min(1, t - this.last));
     this.last = t;
     const run = Math.max(0, Math.min(1, (speed - RUN_FROM) / (RUN_AT - RUN_FROM)));
     this.runBlend += (run - this.runBlend) * Math.min(1, dt * 5);
-    this.walkCycles = (this.walkCycles + (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE) % 1;
-    this.runCycles = (this.runCycles + (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE) % 1;
+    const walked = (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE;
+    const ran = (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE;
+    this.walkCycles = (this.walkCycles + walked) % 1;
+    this.runCycles = (this.runCycles + ran) % 1;
+    if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
     b.idle.time = t % b.idle.getClip().duration;
     b.walk.time = this.walkCycles * b.walk.getClip().duration;
     b.run.time = this.runCycles * b.run.getClip().duration;
@@ -252,6 +337,208 @@ export class Figure {
     b.mixer.update(0);
     if (this.ride === "scooter") this.holdBars(b);
     else if (this.umbrellaOpen && this.headVisible) this.holdUmbrella(b);
+    if (this.ride === "walk" && !this.dressing) this.acting(b, dt);
+    else this.act.w = 0;
+    this.trailStep(dt);
+  }
+
+  /** Lays the move of the game under way over the pose the mixer left: see figureMoves.ts. */
+  private acting(b: Body, dt: number): void {
+    const a = this.act;
+    if (!a.move && a.fromW <= 0) return;
+    a.t += dt;
+    let w: number;
+    if (a.move) {
+      const own = sampleMove(a.move, a.t, this.keyPose);
+      const k = comingIn(a.move, a.t);
+      if (k < 1 && a.fromW > 0) {
+        // Coming in from where the move before it had got to, not from the walk.
+        mixPose(this.actPose, this.fromPose, this.keyPose, k);
+        w = a.fromW * (1 - k) + own;
+      } else {
+        mixPose(this.actPose, this.keyPose, this.keyPose, 0);
+        w = own;
+      }
+      if (a.t >= moveLength(a.move)) ((a.move = undefined), (a.fromW = 0));
+    } else {
+      // Cut short by none: it lets go.
+      mixPose(this.actPose, this.fromPose, this.fromPose, 0);
+      w = a.fromW * Math.max(0, 1 - a.t / LET_GO);
+      if (w <= 0) a.fromW = 0;
+    }
+    a.w = Math.min(1, w);
+    if (a.w <= 1e-3) {
+      a.w = 0;
+      return;
+    }
+    this.lay(b, this.actPose, a.w);
+    this.changed = true;
+  }
+
+  /** Turns the bones to `p`, `w` of the way from where the mixer left them. */
+  private lay(b: Body, p: MovePose, w: number): void {
+    const saved = (this.actSaved ??= ACT_BONES.map(() => new Quaternion()));
+    for (let i = 0; i < ACT_BONES.length; i++) saved[i]!.copy(b.bone(ACT_BONES[i]!).quaternion);
+    this.acted = true;
+    // The hips down for a crouch and forward for a step; the knees bend to keep the feet down.
+    const crouch = Math.max(0, p.crouch) * w;
+    b.root.position.set(0, -crouch, -p.step * w);
+    this.root.updateMatrixWorld(true);
+    const up = _up.set(0, 1, 0).transformDirection(this.root.matrixWorld);
+    const right = _right.set(1, 0, 0).transformDirection(this.root.matrixWorld);
+    // The chest: half the twist and the lean in each of the two bones of the back.
+    for (const n of SPINE) {
+      turn(b.bone(n), _q.setFromAxisAngle(up, (p.twist * w) / 2));
+      turn(b.bone(n), _q.setFromAxisAngle(right, (-p.lean * w) / 2));
+    }
+    limb(b.bone("RightArm"), b.bone("RightForeArm"), this.root, p.rUp, w);
+    limb(b.bone("RightForeArm"), b.bone("RightHand"), this.root, p.rFo, w);
+    limb(b.bone("LeftArm"), b.bone("LeftForeArm"), this.root, p.lUp, w);
+    limb(b.bone("LeftForeArm"), b.bone("LeftHand"), this.root, p.lFo, w);
+    if (crouch > 0.005) {
+      // Thigh and shin about as long as each other: down by 2 L (1 - cos a) for a bend of a each way.
+      const bend = Math.acos(Math.max(0.2, 1 - crouch / w / (2 * this.legLength)));
+      const c = Math.cos(bend);
+      const sn = Math.sin(bend);
+      limb(b.bone("LeftUpLeg"), b.bone("LeftLeg"), this.root, _leg.set(-0.04, -c, -sn), w);
+      limb(b.bone("LeftLeg"), b.bone("LeftFoot"), this.root, _leg.set(0, -c, sn), w);
+      limb(b.bone("RightUpLeg"), b.bone("RightLeg"), this.root, _leg.set(0.04, -c, -sn), w);
+      limb(b.bone("RightLeg"), b.bone("RightFoot"), this.root, _leg.set(0, -c, sn), w);
+    }
+  }
+
+  /** The highlighter's trail: a ribbon from where its tip has been, fading, while a blow is under way. */
+  private trailStep(dt: number): void {
+    const tr = this.trail;
+    const pen = this.pen;
+    if (!tr || !pen) return;
+    const a = this.act;
+    const window = a.move ? MOVES[a.move].trail : undefined;
+    const drawing = !!window && this.penOn && a.w > 0.5 && a.t >= window[0] && a.t <= window[1];
+    const was = tr.life;
+    tr.life = drawing ? TRAIL_FADE : Math.max(0, tr.life - dt);
+    tr.mesh.visible = tr.life > 0 && this.penOn;
+    if (!tr.mesh.visible) return;
+    const pos = tr.pos;
+    if (drawing) {
+      pen.updateMatrixWorld(true);
+      // Older samples move down the ribbon; a ribbon starting afresh starts where the pen is.
+      if (was > 0) pos.copyWithin(6, 0, pos.length - 6);
+      for (let k = 0; k < 6; k += 3) {
+        _v.set(0, k ? TRAIL_TO : TRAIL_FROM, 0).applyMatrix4(pen.matrixWorld);
+        this.root.worldToLocal(_v);
+        pos[k] = _v.x;
+        pos[k + 1] = _v.y;
+        pos[k + 2] = _v.z;
+      }
+      if (was <= 0) for (let i = 6; i < pos.length; i += 6) pos.copyWithin(i, 0, 6);
+    } else pos.copyWithin(6, 0, pos.length - 6);
+    // Coloured, not white: pink at the newest sample turning orange down the ribbon, and fading out
+    // to nothing at its oldest, its outer edge (the tip's way) the strongest.
+    const fade = tr.life / TRAIL_FADE;
+    for (let i = 0; i < TRAIL_SAMPLES; i++) {
+      const age = i / (TRAIL_SAMPLES - 1);
+      const k = (1 - age) * (1 - age) * fade;
+      for (let e = 0; e < 2; e++) {
+        const o = (i * 2 + e) * 4;
+        tr.col[o] = TRAIL_HEAD[0] + (TRAIL_TAIL[0] - TRAIL_HEAD[0]) * age;
+        tr.col[o + 1] = TRAIL_HEAD[1] + (TRAIL_TAIL[1] - TRAIL_HEAD[1]) * age;
+        tr.col[o + 2] = TRAIL_HEAD[2] + (TRAIL_TAIL[2] - TRAIL_HEAD[2]) * age;
+        tr.col[o + 3] = TRAIL_ALPHA[e === 0 ? 1 : 0] * k;
+      }
+    }
+    // The arrays are the trail material's uniforms (makePen): nothing more to send.
+    this.changed = true;
+  }
+
+  /** Where the highlighter goes in the right hand, fitted to the figure standing at ease: in the hand's frame. */
+  private fitPen(b: Body): Matrix4 {
+    // In the fist, pointing ahead of it and a little down the line of the forearm, as a sword is held.
+    const local = (name: string) => this.root.worldToLocal(b.bone(name).getWorldPosition(new Vector3()));
+    const wrist = local("RightHand");
+    const fore = wrist.clone().sub(local("RightForeArm")).normalize();
+    const dir = fore.clone().multiplyScalar(0.5).add(new Vector3(0, 0.1, -1)).normalize();
+    const inRoot = new Matrix4().compose(wrist.addScaledVector(fore, 0.07), new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), dir), new Vector3(1, 1, 1));
+    const hand = b.bone("RightHand");
+    return new Matrix4().copy(hand.matrixWorld).invert().multiply(this.root.matrixWorld).multiply(inRoot);
+  }
+
+  /**
+   * The highlighter in the right hand, and its trail: made the first time the game shows it, so that
+   * a walker that never plays carries neither.
+   */
+  private makePen(): void {
+    const b = this.body;
+    const fit = this.penFit;
+    if (this.pen || !b || !fit) return;
+    // One mesh: a bright barrel and a dark cap at the writing end, coloured by height.
+    const g = new CylinderGeometry(PEN_RADIUS, PEN_RADIUS * 0.9, PEN_LENGTH, 10, 12);
+    const pos = g.getAttribute("position");
+    const colours = new Float32Array(pos.count * 3);
+    // A pink barrel, a dark cap at the writing end, and a white band where the fist holds it.
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      colours.set(y > PEN_LENGTH * 0.32 ? [0.13, 0.12, 0.15] : y < -PEN_LENGTH * 0.38 ? [0.95, 0.95, 0.95] : PEN_INK, i * 3);
+    }
+    g.setAttribute("color", new BufferAttribute(colours, 3));
+    // Its origin where the fist grips it.
+    g.translate(0, PEN_LENGTH / 2 - PEN_GRIP * PEN_LENGTH, 0);
+    const penMaterial = new MeshStandardMaterial({ vertexColors: true, roughness: 0.5 });
+    // It marks where the figure is seen, as the figure's other parts do (dress), so that the x-ray stays off it.
+    penMaterial.stencilWrite = true;
+    penMaterial.stencilRef = 1;
+    penMaterial.stencilZPass = ReplaceStencilOp;
+    const pen = new Mesh(g, penMaterial);
+    // Nothing of the game casts a shadow (PROGRESS.md, Decisions: Study Quest).
+    pen.castShadow = false;
+    pen.userData.noPick = true;
+    pen.raycast = () => {};
+    fit.decompose(pen.position, pen.quaternion, pen.scale);
+    b.bone("RightHand").add(pen);
+    pen.visible = this.penOn;
+    this.pen = pen;
+    // The trail: quads between each sample and the next, in the figure's frame.
+    const n = TRAIL_SAMPLES;
+    const tp = new Float32Array(n * 2 * 3);
+    const tc = new Float32Array(n * 2 * 4);
+    const tg = new BufferGeometry();
+    tg.setAttribute("position", new BufferAttribute(tp, 3));
+    tg.setAttribute("color", new BufferAttribute(tc, 4));
+    const idx: number[] = [];
+    for (let i = 0; i < n - 1; i++) {
+      const a = i * 2;
+      idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+    }
+    tg.setIndex(idx);
+    // Where each corner is and its colour come from uniforms the trail writes in each frame, by the
+    // corner's number: a vertex buffer written in every frame stalls ANGLE on Direct3D 11 (gameBuffers.ts).
+    const corner = new Float32Array(n * 2);
+    for (let i = 0; i < n * 2; i++) corner[i] = i;
+    tg.setAttribute("aCorner", new BufferAttribute(corner, 1));
+    const trailMaterial = new MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: DoubleSide, toneMapped: false });
+    trailMaterial.onBeforeCompile = (sh) => {
+      sh.uniforms.uTrailPos = { value: tp };
+      sh.uniforms.uTrailCol = { value: tc };
+      sh.vertexShader =
+        `attribute float aCorner;
+uniform vec3 uTrailPos[${n * 2}];
+uniform vec4 uTrailCol[${n * 2}];
+` +
+        sh.vertexShader
+          .replace("#include <begin_vertex>", "vec3 transformed = uTrailPos[int(aCorner + 0.5)];")
+          .replace("#include <color_vertex>", "vColor = uTrailCol[int(aCorner + 0.5)];");
+    };
+    trailMaterial.customProgramCacheKey = () => `walker-trail-${n}`;
+    const mesh = new Mesh(tg, trailMaterial);
+    mesh.frustumCulled = false;
+    mesh.renderOrder = 4;
+    mesh.visible = false;
+    mesh.userData.noPick = true;
+    // Light, not a solid: left out of the walker view's ambient occlusion (street/effects.ts).
+    mesh.userData.noAO = true;
+    mesh.raycast = () => {};
+    this.root.add(mesh);
+    this.trail = { mesh, pos: tp, col: tc, life: 0 };
   }
 
   dispose(): void {
@@ -262,6 +549,10 @@ export class Figure {
       this.root.remove(this.body.root);
     }
     this.scooter?.dispose();
+    for (const m of [this.pen, this.trail?.mesh]) {
+      m?.geometry.dispose();
+      (m?.material as Material | undefined)?.dispose();
+    }
     (this.ring.geometry as BufferGeometry).dispose();
     (this.ring.material as Material).dispose();
     this.xrayMaterial.dispose();
@@ -408,7 +699,9 @@ export class Figure {
     this.umbrellaOpen = false;
     b.bone("Head").scale.setScalar(1);
     this.last = undefined;
+    this.dressing = true;
     this.pose(0, 0, 0);
+    this.dressing = false;
     this.umbrellaOpen = open;
     this.root.updateMatrixWorld(true);
     const gear = build.makeGear(this.root, b.mesh, (name) => this.root.worldToLocal(b.bone(name).getWorldPosition(new Vector3())));
@@ -420,6 +713,10 @@ export class Figure {
       b.bone(to).attach(part);
     }
     this.root.add(gear.blot);
+    // The thigh's length, for a crouch in the game; and the highlighter it holds there.
+    this.legLength = local3(this.root, b.bone("RightUpLeg")).distanceTo(local3(this.root, b.bone("RightLeg")));
+    this.penFit = this.fitPen(b);
+    if (this.penOn) this.makePen();
     // On the scooter the body stands on its deck.
     b.root.position.y = this.ride === "scooter" ? DECK : 0;
     // The umbrella stays upright over the right hand; holdUmbrella moves it there.
@@ -428,7 +725,7 @@ export class Figure {
     this.showHead();
     // Every part of the figure marks where it is seen, so that its x-ray stays off it.
     this.root.traverse((part) => {
-      if (!(part instanceof Mesh) || part === this.ring || part === gear.blot || part === this.xray) return;
+      if (!(part instanceof Mesh) || part === this.ring || part === gear.blot || part === this.xray || part === this.trail?.mesh) return;
       for (const m of [part.material].flat() as Material[]) {
         m.stencilWrite = true;
         m.stencilRef = 1;
@@ -479,6 +776,29 @@ export class Figure {
     const hand = this.root.worldToLocal(b.bone("RightHand").getWorldPosition(new Vector3()));
     this.umbrella.position.copy(hand);
   }
+}
+
+const _up = new Vector3();
+const _right = new Vector3();
+const _v = new Vector3();
+const _leg = new Vector3();
+const _q = new Quaternion();
+const _qa = new Quaternion();
+const _qb = new Quaternion();
+
+/** A bone's place in `frame`'s axes. */
+function local3(frame: Object3D, bone: Bone): Vector3 {
+  return frame.worldToLocal(bone.getWorldPosition(new Vector3()));
+}
+
+/** Turns `bone` towards pointing at `child` along `dir` (in `frame`'s axes), `k` of the way from where it is. */
+function limb(bone: Bone, child: Bone, frame: Object3D, dir: Vector3 | readonly number[], k: number): void {
+  _qa.copy(bone.quaternion);
+  if (dir instanceof Vector3) aim(bone, child, frame, dir);
+  else aim(bone, child, frame, _v.set(dir[0]!, dir[1]!, dir[2]!));
+  _qb.copy(bone.quaternion);
+  bone.quaternion.copy(_qa).slerp(_qb, k);
+  bone.updateMatrixWorld(true);
 }
 
 const tmp = { from: new Vector3(), to: new Vector3(), dir: new Vector3(), want: new Vector3(), q: new Quaternion(), world: new Quaternion(), parent: new Quaternion() };

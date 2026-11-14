@@ -16,6 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
+import { gameHolds, gameMenu, setPadSteer, stopGame } from "./gameState.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -347,6 +348,8 @@ export function startWalking(opts: { name?: string; near?: unknown } = {}): Repl
 /** Turns walking off: every walker leaves and the view goes back to the map. */
 export function stopWalking(): void {
   const s = scene;
+  // A game played with the walker ends with the walk.
+  stopGame();
   if (s) {
     s.setWalkerView("map");
     s.walkers.clear();
@@ -860,8 +863,16 @@ export function startWalkerFromUrl(): void {
 export function steerByHand(forward: number, turnRate: number, climb = 0): void {
   const s = scene;
   if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
-  s.walkers.steer(MY_WALKER, forward, turnRate, climb);
+  // A menu over the game holds the walker still.
+  if (gameHolds()) s.walkers.steer(MY_WALKER, 0, 0, 0);
+  else s.walkers.steer(MY_WALKER, forward, turnRate, climb);
 }
+
+// A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn.
+setPadSteer((forward, turn) => {
+  const pace = PACE[walkerRide.peek()];
+  steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
+});
 
 /** The visitor's walker gets about another way: from the buttons, the number keys and the address. */
 export function rideAs(want: Ride): void {
@@ -930,12 +941,16 @@ export function startWalkerKeys(): () => void {
   window.addEventListener("keydown", down);
   window.addEventListener("keyup", up);
   window.addEventListener("blur", blur);
-  // Keys still held when it gets about another way go on steering it, at that way's pace.
+  // Keys still held when it gets about another way go on steering it, at that way's pace; and when a
+  // menu over the game shuts, they steer it again.
   let wasRide = walkerRide.peek();
+  let wasMenu = gameMenu.peek();
   const stopRide = effect(() => {
     const now = walkerRide.value;
-    if (now === wasRide) return;
+    const menu = gameMenu.value;
+    if (now === wasRide && menu === wasMenu) return;
     wasRide = now;
+    wasMenu = menu;
     if (held.size) apply();
   });
   return () => {

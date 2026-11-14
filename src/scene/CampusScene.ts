@@ -50,12 +50,14 @@ import { MeshBuilder, drape, levelSlope, ringsBounds, type FacadeSpec } from "./
 import { SEA_PLANE, Terrain } from "./terrain.ts";
 import { WALL_HEIGHT, buildInterior, disposeGroup, inset } from "./interior.ts";
 import { LabelLayer, type LabelSpec } from "./labels.ts";
+import type { GameWorld } from "./game.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
 import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
 import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
+import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -158,6 +160,50 @@ const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }>
   scooter: { yaw: 0, elevation: 14, distance: 8.5 },
   fly: { yaw: 0, elevation: 14, distance: 5 },
 };
+/** The fight's camera: degrees it stands off the line from the foe through the walker, metres back it goes at most, and ms after a turn of the view by hand before it frames a foe not locked on to again. */
+const FIGHT_OFFSET = 6;
+/**
+ * Seconds before a charging foe passes the walker that the fight's camera starts round to where the
+ * charge will end, and how quickly it comes (as FIGHT's easing rates): it is there as the foe stops.
+ */
+const FIGHT_CHARGE_LEAD = 0.3;
+// Upright on a phone the camera stands nearer the charge's line (LANE_DODGE_UPRIGHT): it waits until the foe is nearly by.
+const FIGHT_CHARGE_LEAD_UPRIGHT = 0.15;
+const FIGHT_CHARGE_RATE = 6;
+const FIGHT_REACH = 26;
+const FIGHT_HANDS_OFF = 2500;
+/**
+ * Metres the fight's camera keeps clear of a foe's body, at least; metres back from the walker it
+ * stands while a foe charges (out of the way of the charge's end, which runs past the walker); and
+ * degrees it may turn off the line from the foe to find open ground behind the walker, where a
+ * wall would bring it in close.
+ */
+const FIGHT_CLEAR = 3.5;
+const FIGHT_LANE_REACH = 11;
+// Upright on a phone the camera stands less far off a charge's line (LANE_DODGE_UPRIGHT), so it goes further back instead.
+const FIGHT_LANE_REACH_UPRIGHT = 16;
+const FIGHT_WALL_TURN = [15, 30, 40] as const;
+/** Metres the camera goes to the right while the walker strikes (over its shoulder), and the share of its distance it comes in as the boss changes phase. */
+const SHOULDER = 1.35;
+const FIGHT_PUSH_IN = 0.14;
+// Upright on a phone the boss already fills the picture: in less, so that the walker stays in it.
+const FIGHT_PUSH_IN_UPRIGHT = 0.08;
+/** Degrees the fight's camera sees wider, upright on a phone and otherwise. */
+const FIGHT_WIDEN_UPRIGHT = 10;
+const FIGHT_WIDEN = 3;
+/**
+ * Metres at most the fight's camera rises when a wall behind the walker brings it in: enough to see
+ * over the walker's shoulder to its foe, never so much that it looks straight down on it.
+ */
+const FIGHT_WALL_RISE = 2.2;
+/**
+ * The clear band the fight's camera frames in, shares of the picture's height from its top: the
+ * top of it, the lowest the walker's feet go, the lowest the foe's go. Upright on a phone, the
+ * boss's bar and the vitals take the top quarter, the stick and the buttons the foot, with the
+ * walker between them.
+ */
+const FIGHT_BAND = [0.09, 0.76, 0.76] as const;
+const FIGHT_BAND_UPRIGHT = [0.25, 0.86, 0.64] as const;
 /** Degrees the view through the eyes looks down at first: the drone's camera, more. */
 const EYES_PITCH: Record<Ride, number> = { walk: -4, scooter: -4, fly: -14 };
 /** Milliseconds at least between taking one landmark's roofs and the next's (roofMap). */
@@ -448,6 +494,14 @@ export class CampusScene {
 
   /** The walkers on the map (walkers.ts). */
   readonly walkers: WalkerWorld;
+  /**
+   * Study Quest's world, played with a walker (game.ts): made up, and off until the visitor starts
+   * it. Its code comes in a chunk of its own and it is made the first time a game is asked for
+   * (withGame), so that a visitor who never plays builds none of it.
+   */
+  game?: GameWorld;
+  /** Where the game's marks over the picture go (gameOverlay.ts). */
+  private gameOverlayParent?: HTMLElement;
   /** Floor outlines in metres, by building and floor, for walkers steered by hand indoors. */
   private floorRingCache = new Map<string, [number, number][][][]>();
   private walkMapCache?: WalkMap;
@@ -474,8 +528,11 @@ export class CampusScene {
   private lastFrame = 0;
   /** The walkers' labelsVersion the labels were last built for; a new world starts at 0, with none. */
   private walkerLabelsVersion = 0;
+  private gameLabelsVersion = 0;
   /** A click in a walker view: on a University building, or on the ground at a point. */
   onWalkPick?: (pick: { building?: string; at?: [number, number] }) => void;
+  /** A click with the mouse in a walker view while the game is on. */
+  onGameClick?: (action: "strike" | "card") => void;
 
   constructor(container: HTMLElement, labelRoot: HTMLElement, opts: SceneOptions) {
     this.container = container;
@@ -576,6 +633,7 @@ export class CampusScene {
       ringColour: () => this.palette.accent,
     });
     this.scene.add(this.walkers.group);
+    this.gameOverlayParent = labelRoot.parentElement ?? undefined;
 
     // The buildings drawn in detail from code, and the measured massings, each made the first time
     // the camera comes near it.
@@ -855,6 +913,7 @@ export class CampusScene {
     this.contextRoofs = undefined;
     // A walker steered by hand keeps a grid of the ground round it: rebuild it with the surroundings.
     this.walkers.refresh();
+    this.game?.refresh();
     this.contextGroup.clear();
     this.contextMaterials = [];
     this.groundLayers = [];
@@ -1621,6 +1680,7 @@ export class CampusScene {
     if (this.campus) this.setCampus(this.campus);
     if (this.lastContext) this.setContext(this.lastContext);
     this.walkers.refresh();
+    this.game?.refresh();
     if (this.selection.building) {
       this.rebuildDetail();
       this.rebuildPin();
@@ -1969,8 +2029,10 @@ export class CampusScene {
     } else {
       // From a walker's height only the buildings near it are labelled; the rest would crowd the horizon.
       const near = this.viewWalker ? this.walkers.pose(this.viewWalker)?.at : undefined;
+      // A game keeps the walker's view clear: the buildings' names wait until it ends.
+      const quiet = !!this.game?.on && this.game.quiet && this.view !== "map";
       for (const b of this.campus.buildings) {
-        if (b.offMap) continue;
+        if (b.offMap || quiet) continue;
         if (near && Math.hypot(b.center[0] - near[0], b.center[1] - near[1]) > 260) continue;
         const l = this.opts.buildingLabel(b);
         const badge = this.badges.get(b.id);
@@ -1989,7 +2051,10 @@ export class CampusScene {
         });
       }
     }
-    specs.push(...this.walkers.labels());
+    // In a game its walker's own name is left off: it would sit on the villain it faces.
+    const player = this.game?.on ? `walker:${this.game.player}` : undefined;
+    for (const l of this.walkers.labels()) if (l.id !== player) specs.push(l);
+    if (this.game) specs.push(...this.game.labels());
     this.labels.set(specs);
     this.needsLabels = true;
     this.needsRender = true;
@@ -2288,12 +2353,79 @@ export class CampusScene {
     // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
     // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
     // By the clock, so that it comes round on a renderer that takes a second or more a frame too.
-    if (!snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
+    const flying = pose.ride === "fly";
+    // In a fight the view from behind comes round onto the line from the foe through the walker,
+    // so that both are in the picture: always for a foe locked on to and for the boss, and for
+    // others unless the visitor turned the view in the last moments.
+    const focus = this.view === "follow" && !flying && !pose.indoor && this.game?.on ? this.game.fightFocus() : undefined;
+    const fight = this.fight;
+    let framing = false;
+    if (focus) {
+      const sep = Math.hypot(focus.at[0] - x, focus.at[1] - y);
+      framing = focus.hard || (!this.drag && performance.now() - fight.turnedAt > FIGHT_HANDS_OFF);
+      if (framing) {
+        // Kept as a bearing, so that the walker turning to its blow does not swing the view with it;
+        // a foe on top of the walker gives no line to stand on, and the view keeps the way it looks.
+        const cur = fight.held ? fight.yaw : pose.heading + this.follow.yaw;
+        if (!fight.held) fight.yawV = 0;
+        fight.yaw = cur;
+        if (sep > 1.5 || focus.lane !== undefined) {
+          // Off the line of a charge, to the side it is on; and turned a little to open ground where
+          // a wall behind the walker would bring it in against the walker's back. A charge about to
+          // pass the walker is followed to where it will end, ahead of time: the view comes round as
+          // the foe goes by, so that it is not left at the edge of the picture when it stops.
+          const ahead = focus.lane !== undefined && focus.passIn < (this.persp.aspect < 1 ? FIGHT_CHARGE_LEAD_UPRIGHT : FIGHT_CHARGE_LEAD);
+          const to = ahead ? focus.laneEnd : focus.at;
+          const line = (Math.atan2(to[0] - x, to[1] - y) * 180) / Math.PI + FIGHT_OFFSET;
+          const dodge = this.persp.aspect < 1 ? LANE_DODGE_UPRIGHT : LANE_DODGE;
+          const want = ahead ? line : dodgeLane(line, focus.lane, cur, dodge) + (focus.lane === undefined ? this.fightWallTurn(x, y, line, dt) : 0);
+          const off = ((((want - cur) % 360) + 540) % 360) - 180;
+          // A spring held at its critical damping: it gathers speed and settles without a jerk at
+          // either end, and comes round as far as an easing at `rate` does in the same time.
+          const rate = ahead ? FIGHT_CHARGE_RATE : focus.lane !== undefined ? 7 : focus.hard ? 4 : 2.5;
+          if (snap || dt >= 1) {
+            fight.yaw += off;
+            fight.yawV = 0;
+          } else {
+            const w = rate * 1.8;
+            const e = Math.exp(-w * dt);
+            const y0 = -off;
+            const v0 = fight.yawV;
+            const y1 = (y0 + (v0 + w * y0) * dt) * e;
+            fight.yawV = (v0 - w * (v0 + w * y0) * dt) * e;
+            fight.yaw += y1 - y0;
+          }
+        } else fight.yawV = 0;
+        this.follow.yaw = (((fight.yaw - pose.heading) % 360) + 360) % 360;
+      }
+      // The foe framed glides from one to the next.
+      const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * 6);
+      fight.at[0] += (focus.at[0] - fight.at[0]) * k;
+      fight.at[1] += (focus.at[1] - fight.at[1]) * k;
+      fight.foot += (focus.foot - fight.foot) * k;
+      fight.top += (focus.top - fight.top) * k;
+    }
+    fight.held = framing;
+    {
+      const want = framing ? 1 : 0;
+      fight.k = snap || dt >= 1 ? want : fight.k + (want - fight.k) * (1 - Math.exp(-dt * 3));
+      if (fight.k < 0.002) fight.k = 0;
+    }
+    // A little wider in a fight, more on a phone held upright, where a big foe is wider than the picture.
+    if (this.view === "follow") {
+      const fov = FOLLOW_FOV + fight.k * (this.persp.aspect < 1 ? FIGHT_WIDEN_UPRIGHT : FIGHT_WIDEN);
+      if (Math.abs(fov - this.persp.fov) > 0.01) {
+        this.persp.fov = fov;
+        this.persp.updateProjectionMatrix();
+        this.needsRender = true;
+        this.needsLabels = true;
+      }
+    }
+    if (!framing && !snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
       const k = Math.exp(-dt * 2.5);
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
       else this.follow.yaw = towardsAhead(this.follow.yaw, k);
     }
-    const flying = pose.ride === "fly";
     if (this.view === "eyes") {
       const yaw = ((pose.heading + this.eyes.yaw) * Math.PI) / 180;
       const pitch = (this.eyes.pitch * Math.PI) / 180;
@@ -2303,11 +2435,68 @@ export class CampusScene {
       const yaw = ((pose.heading + this.follow.yaw) * Math.PI) / 180;
       const up = (this.follow.elevation * Math.PI) / 180;
       let d = this.follow.distance;
+      // In a fight it stands back as far as it must for the walker and the whole of the foe: a boss is tall.
+      if (focus && framing) {
+        const ahead = (focus.at[0] - x) * Math.sin(yaw) + (focus.at[1] - y) * Math.cos(yaw);
+        const half = (this.persp.fov * Math.PI) / 360;
+        const shot = this.fightShot;
+        shot.walkerFoot = pose.height;
+        shot.walkerTop = pose.height + 1.9;
+        shot.base = pose.aim + 0.15;
+        shot.tanUp = Math.tan(up);
+        shot.ahead = ahead;
+        shot.foeFoot = focus.foot;
+        shot.foeTop = focus.top;
+        shot.foeHalf = focus.half;
+        shot.halfFov = half;
+        shot.tanHalfWide = Math.tan(half) * this.persp.aspect;
+        // The clear band of the picture (shares of its height from the top): under the panels at
+        // its top, and over the boss's bar; on a phone held upright, under the boss's bar and the
+        // vitals, the walker between the stick and the buttons and the foe over them.
+        const upright = this.persp.aspect < 1;
+        shot.top = upright ? FIGHT_BAND_UPRIGHT[0] : FIGHT_BAND[0];
+        shot.bottom = upright ? FIGHT_BAND_UPRIGHT[1] : FIGHT_BAND[1];
+        shot.foeBottom = upright ? FIGHT_BAND_UPRIGHT[2] : FIGHT_BAND[2];
+        shot.wide = upright ? 0.8 : 0.7;
+        // Out of the way of a charge before it comes.
+        shot.minReach = Math.max(Math.cos(up) * d, focus.lane !== undefined ? (upright ? FIGHT_LANE_REACH_UPRIGHT : FIGHT_LANE_REACH) : 0);
+        shot.maxReach = FIGHT_REACH;
+        const f = frameFight(shot, this.fightFrame);
+        // Out at once nearly, for a foe that rushes in; back in slowly.
+        const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * (f.reach > fight.reach ? 12 : 1.2));
+        fight.reach += (f.reach - fight.reach) * k;
+        // A foe that cannot be framed with the walker from anywhere behind it (high on a roof over a
+        // lane, or come round under the camera): the camera stays as near as when walking, turned to
+        // the foe and pitched to keep the walker in the clear band (bandPitch), rather than going far
+        // back and up to look down on the walker's head with the foe off the picture all the same.
+        const fit = f.fits ? 1 : 0;
+        fight.fit = snap || dt >= 1 ? fit : fight.fit + (fit - fight.fit) * (1 - Math.exp(-dt * 2));
+      }
+      // How far the framing applies: the fight's camera, as far as the walker and its foe fit.
+      const fk = fight.k * fight.fit;
+      if (fk > 0) d += (Math.max(d, fight.reach / Math.cos(up)) - d) * fk;
+      // The game's nudges: in on the boss as it changes phase, and over the right shoulder while
+      // the walker strikes, so that the swing is not hidden behind its body.
+      const nudge = this.game?.on ? this.game.cameraNudge() : undefined;
+      if (nudge && nudge.push > 0) d *= 1 - (this.persp.aspect < 1 ? FIGHT_PUSH_IN_UPRIGHT : FIGHT_PUSH_IN) * nudge.push;
       // A wall between the walker and the camera would hide it: the camera comes in front of the wall.
       let blocked = false;
-      const reach = Math.cos(up) * d;
+      let reach = Math.cos(up) * d;
       const map = pose.indoor ? undefined : this.walkMap();
       const back: [number, number] = [x - Math.sin(yaw) * reach, y - Math.cos(yaw) * reach];
+      // Never in a foe or right against it: out from its middle past its body, and a little more. This
+      // comes before the walls, which still bring the camera in (and up) when they must; and the
+      // camera goes there quickly, ahead of a foe that rushes at it.
+      let pushed = false;
+      if (focus && fight.k > 0) {
+        const c = clearOf(back, focus.at, focus.body + FIGHT_CLEAR, this.fightClear);
+        pushed = Math.hypot(c[0] - back[0], c[1] - back[1]) > 0.3;
+        back[0] += (c[0] - back[0]) * fight.k;
+        back[1] += (c[1] - back[1]) * fight.k;
+        reach = Math.hypot(back[0] - x, back[1] - y);
+        d = Math.max(d, reach / Math.cos(up));
+      }
+      const wantD = d;
       // A drone flies over the walls: what hides it is a roof, or the ground, higher than the line to the camera.
       const roofs = flying ? this.roofMap() : undefined;
       if (flying && reach > 1) {
@@ -2330,17 +2519,73 @@ export class CampusScene {
         }
       }
       let cy = pose.aim + 0.15 + Math.sin(up) * d;
-      const cx = x - Math.sin(yaw) * Math.cos(up) * d;
-      const cn = y - Math.cos(yaw) * Math.cos(up) * d;
+      // In a fight, a wall that brings the camera in sends it up as well, to see over the walker to its foe.
+      if (blocked && fk > 0) cy += Math.min(FIGHT_WALL_RISE, Math.max(0, wantD - d) * 0.6) * fk;
+      const side = nudge ? nudge.side * SHOULDER : 0;
+      // Along the line to the place behind the walker, as far as the walls let it go.
+      const along = Math.cos(up) * d;
+      const ux = reach > 1e-6 ? (back[0] - x) / reach : -Math.sin(yaw);
+      const un = reach > 1e-6 ? (back[1] - y) / reach : -Math.cos(yaw);
+      const cx = x + ux * along + Math.cos(yaw) * side;
+      const cn = y + un * along - Math.sin(yaw) * side;
       // Never under the ground behind a walker on a slope, nor in a roof behind a drone.
       cy = Math.max(cy, this.groundAt(cx, cn) + 0.8, (roofs?.at([cx, cn]) ?? -Infinity) + 0.8);
       // It glides after the walker, but out from behind a wall at once.
-      const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * 7);
-      const want = new Vector3(cx, cy, -cn);
-      if (k >= 1) this.persp.position.copy(want);
-      else this.persp.position.lerp(want, k);
-      this.persp.lookAt(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
+      const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * (pushed ? 18 : 7));
+      const want = this._camPoint.set(cx, cy, -cn);
+      const p = this.persp.position;
+      if (k >= 1) p.copy(want);
+      else if (fight.k > 0) {
+        // In a fight its bearing round the walker is already eased (fight.yaw): it glides only in and
+        // out and up and down, so that it is never left behind as it comes round quickly after a
+        // charge, to catch up in one frame when a wall brings it in.
+        const cb = Math.atan2(p.x - x, -p.z - y);
+        const wb = Math.atan2(cx - x, cn - y);
+        const turnBy = ((((wb - cb) % (2 * Math.PI)) + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+        const b = cb + turnBy * (k + (1 - k) * fight.k);
+        const cd = Math.hypot(p.x - x, -p.z - y);
+        const dd = cd + (Math.hypot(cx - x, cn - y) - cd) * k;
+        p.set(x + Math.sin(b) * dd, p.y + (cy - p.y) * k, -(y + Math.cos(b) * dd));
+      } else p.lerp(want, k);
+      const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, pose.aim, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
+      if (fight.k > 0) {
+        // Looking at the pitch that centres the walker and the foe from where the camera is now, so
+        // that they stay framed while it glides, or when a wall has brought it in.
+        const p = this.persp.position;
+        let sy = Math.sin(yaw);
+        let ny = Math.cos(yaw);
+        // Towards the walker from where the camera is: moved off its line to keep clear of a foe, it
+        // still looks at the walker, which stays in the middle of the picture.
+        const hx = x - p.x;
+        const hn = y + p.z;
+        const hl = Math.hypot(hx, hn);
+        if (hl > 0.5) (sy = hx / hl), (ny = hn / hl);
+        const toWalker = Math.max(0.5, (x - p.x) * sy + (y + p.z) * ny);
+        const ahead = (fight.at[0] - p.x) * sy + (fight.at[1] + p.z) * ny;
+        const toFoe = Math.max(0.5, ahead);
+        const a0 = Math.atan2(pose.height - p.y, toWalker);
+        const a1 = Math.atan2(pose.height + 1.9 - p.y, toWalker);
+        // A foe beside the camera or behind it cannot be in the picture: the walker alone sets the
+        // pitch then, rather than the view tipping straight down after a foe at the camera's feet.
+        const seen = ahead > Math.min(2, toWalker * 0.5);
+        const b0 = seen ? Math.atan2(fight.foot - p.y, toFoe) : a0;
+        const b1 = seen ? Math.atan2(fight.top - p.y, toFoe) : a1;
+        const shot = this.fightShot;
+        shot.halfFov = (this.persp.fov * Math.PI) / 360;
+        const pitch = bandPitch(Math.max(a1, b1), Math.min(a0, a1), Math.min(b0, b1), shot).pitch;
+        const c = Math.cos(pitch) * 10;
+        look.lerp(this._camPoint.set(p.x + sy * c, p.y + Math.sin(pitch) * 10, p.z - ny * c), fight.k);
+      }
+      this.persp.lookAt(look);
     }
+    // No crown between the camera and the walker or its foe while the fight's camera is on.
+    const trees = this.street.trees;
+    if (trees && (fight.k > 0 || fight.cut)) {
+      trees.clearLine(fight.k, this.persp.position, pose.at, fight.at);
+      fight.cut = fight.k > 0;
+    }
+    // A blow in the game shakes the view a little; it settles back on the walker by itself.
+    if (this.game?.on) this.persp.position.add(this.game.shake(this.shakeBy));
     this.persp.updateMatrixWorld();
     // The shadows follow the walker round the map.
     if (Math.hypot(this.shadowCentre.x - x, this.shadowCentre.z + y) > 70) this.fitShadow();
@@ -2356,11 +2601,116 @@ export class CampusScene {
       this.needsLandmarks = true;
     }
   }
+
+  /** Makes Study Quest's world the first time it is asked for, from its own chunk (app/gameState.ts). */
+  withGame(World: typeof GameWorld): GameWorld {
+    if (this.game) return this.game;
+    const game = new World({
+      groundAt: (x, y) => this.groundAt(x, y),
+      walkMap: () => this.walkMap(),
+      roofs: () => this.roofMap(),
+      buildings: () => this.campus?.buildings ?? [],
+      walker: (name) => this.walkers.state(name),
+      shove: (name, dx, dy) => this.walkers.shove(name, dx, dy),
+      face: (name, bearing) => this.walkers.turn(name, bearing, true),
+      paceScale: (name, k) => this.walkers.setPaceScale(name, k),
+      camera: () => this.activeCamera,
+      viewSize: () => ({ width: this.width, height: this.height }),
+      act: (name, move) => this.walkers.figure(name)?.play(move),
+      pen: (name, on) => this.walkers.figure(name)?.setPen(on),
+      teleport: (name, at, heading) => {
+        this.walkers.teleport(name, at);
+        this.walkers.turn(name, heading, true);
+        // The view comes with it at once, behind it, not gliding across the campus.
+        if (this.viewWalker === name) {
+          this.follow = { ...this.follow, yaw: 0 };
+          this.placeWalkerCamera(1, true);
+        }
+        this.needsRender = true;
+      },
+    }, this.gameOverlayParent);
+    this.scene.add(game.group);
+    this.game = game;
+    return game;
+  }
+
   /** The walker view's camera matrix when last drawn. */
   private lastView?: number[];
+  /**
+   * The fight's camera (placeWalkerCamera): how far it has come in, 0-1; metres back it frames
+   * from; the bearing it looks along and whether it held
+   * it last frame; the foe framed, metres east and north, and its feet and top; when the visitor
+   * last turned the view (performance.now); whether trees are left out of the picture now.
+   */
+  private fight = { k: 0, reach: 0, yaw: 0, yawV: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false, turn: 0, turnWant: 0, turnAt: 0, fit: 1 };
+  private fightClear: [number, number] = [0, 0];
+
+  /**
+   * Degrees the fight's camera turns off the line from its foe (`line`, the bearing it would look
+   * along) to stand on open ground: none while the ground behind the walker is clear for the
+   * distance it stands back; otherwise the least turn of FIGHT_WALL_TURN that clears it, on the
+   * side it turned last, looked for a few times a second and eased, so that it does not jump.
+   */
+  private fightWallTurn(x: number, y: number, line: number, dt: number): number {
+    const f = this.fight;
+    const map = this.walkMap();
+    const now = performance.now();
+    if (map && now - f.turnAt > 200) {
+      f.turnAt = now;
+      // Room for a fair shot: the walk's own distance and some, not the whole of a boss's pull-back.
+      const reach = Math.max(this.follow.distance + 3, Math.min(f.reach, 14));
+      const clear = (deg: number) => {
+        const r = ((line + deg) * Math.PI) / 180;
+        return map.wallAlong([x, y], [x - Math.sin(r) * reach, y - Math.cos(r) * reach]) ?? 1;
+      };
+      if (clear(0) >= 0.8) f.turnWant = 0;
+      else if (f.turnWant === 0 || clear(f.turnWant) < 0.8) {
+        // The least turn that clears it, the side turned to last first; else the clearest there is.
+        const pref = Math.sign(f.turnWant) || 1;
+        let best = f.turnWant;
+        let bestClear = clear(best);
+        search: for (const mag of FIGHT_WALL_TURN) {
+          for (const sign of [pref, -pref]) {
+            const c = clear(mag * sign);
+            if (c >= 0.8) {
+              best = mag * sign;
+              break search;
+            }
+            if (c > bestClear + 0.1) (best = mag * sign), (bestClear = c);
+          }
+        }
+        f.turnWant = best;
+      }
+    }
+    f.turn += (f.turnWant - f.turn) * (dt >= 1 ? 1 : 1 - Math.exp(-dt * 2.5));
+    return f.turn;
+  }
+  private fightFrame: FightFrame = { reach: 0, pitch: 0 };
+  private fightShot: FightShot = {
+    walkerFoot: 0,
+    walkerTop: 0,
+    base: 0,
+    tanUp: 0,
+    ahead: 0,
+    foeFoot: 0,
+    foeTop: 0,
+    foeHalf: 0,
+    halfFov: 0,
+    tanHalfWide: 0,
+    minReach: 0,
+    maxReach: 0,
+    top: FIGHT_BAND[0],
+    bottom: FIGHT_BAND[1],
+    foeBottom: FIGHT_BAND[2],
+    wide: 0.7,
+  };
+  private fightLook = new Vector3();
+  private _camPoint = new Vector3();
+  private shakeBy = new Vector3();
 
   /** Turns the walker view by a drag of the pointer, in pixels. */
   private turnWalkerView(dx: number, dy: number): void {
+    this.fight.turnedAt = performance.now();
     if (this.view === "eyes") {
       this.eyes.yaw = (((this.eyes.yaw + dx * 0.25) % 360) + 360) % 360;
       this.eyes.pitch = Math.max(-60, Math.min(50, this.eyes.pitch - dy * 0.2));
@@ -2470,6 +2820,11 @@ export class CampusScene {
       const drag = this.drag;
       this.drag = undefined;
       this.renderer.domElement.style.cursor = "grab";
+      // In the game a click with the mouse strikes (the right button throws a flashcard), rather than sending the walker.
+      if (drag && !drag.moved && this.game?.on && e.pointerType === "mouse" && (e.button === 0 || e.button === 2)) {
+        this.onGameClick?.(e.button === 0 ? "strike" : "card");
+        return;
+      }
       if (drag && !drag.moved && e.button === 0) {
         const pick = this.walkPickAt(e.clientX, e.clientY);
         if (pick) this.onWalkPick?.(pick);
@@ -2583,8 +2938,9 @@ export class CampusScene {
     if (this.disposed) return;
     this.raf = requestAnimationFrame(this.frame);
     // Walkers move by the clock, not by frames: on a slow renderer a frame can take a second, and
-    // a walk must still take as long as it takes. A long gap (a hidden tab) counts as two seconds.
-    const dt = this.lastFrame ? Math.min(2, (now - this.lastFrame) / 1000) : 0;
+    // a walk must still take as long as it takes. A long gap (a hidden tab) counts as two seconds,
+    // and a clock that goes back (a test's fake clock taking over) as none.
+    const dt = this.lastFrame ? Math.max(0, Math.min(2, (now - this.lastFrame) / 1000)) : 0;
     this.lastFrame = now;
     if (this.tweens.length) {
       this.tweens = this.tweens.filter((t) => {
@@ -2599,8 +2955,16 @@ export class CampusScene {
       this.needsLabels = true;
     }
     // Also when the last walker has just gone: its name and words come off the map with it.
-    if (this.walkers.labelsVersion !== this.walkerLabelsVersion) {
+    // The game after the walkers: it reads where its walker now stands.
+    if (this.game?.on) this.game.mapView = this.view === "map";
+    if (this.game?.on && this.game.step(dt, now)) {
+      this.needsRender = true;
+      this.needsLabels = true;
+    }
+    const gameLabels = this.game?.labelsVersion ?? 0;
+    if (this.walkers.labelsVersion !== this.walkerLabelsVersion || gameLabels !== this.gameLabelsVersion) {
       this.walkerLabelsVersion = this.walkers.labelsVersion;
+      this.gameLabelsVersion = gameLabels;
       this.rebuildLabels();
     }
     if (this.view === "map") this.controls.update();
@@ -3084,6 +3448,7 @@ export class CampusScene {
 
   dispose(): void {
     this.disposed = true;
+    this.game?.dispose();
     this.walkers.clear();
     cancelAnimationFrame(this.raf);
     this.controls.dispose();

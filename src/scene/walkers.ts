@@ -126,6 +126,8 @@ export interface WalkerState {
   speed: number;
   /** Flying: metres the drone is above the ground under it. */
   altitude?: number;
+  /** Feet its figure has put down so far, on foot (see Figure.footfalls). */
+  footfalls?: number;
 }
 
 class Walker {
@@ -143,6 +145,8 @@ class Walker {
   heardUpTo = 0;
   /** Steering by hand: metres a second forward, degrees a second of turn, and flying, metres a second up. */
   drive = { forward: 0, turn: 0, climb: 0 };
+  /** Share of the pace steered by hand that it keeps on foot: under 1 while a game slows it. */
+  paceScale = 1;
   ride: Ride = "walk";
   /** On the scooter and flying: metres a second it goes on, which it keeps for a while when let go. */
   speed = 0;
@@ -248,6 +252,7 @@ export class WalkerWorld {
       ride: w.ride,
       speed: Math.round(w.pace * 10) / 10,
       altitude: w.ride === "fly" ? Math.round((w.alt - this.host.groundAt(w.at[0], w.at[1])) * 10) / 10 : undefined,
+      footfalls: w.ride === "walk" ? w.figure.footfalls : undefined,
     };
   }
 
@@ -477,6 +482,32 @@ export class WalkerWorld {
     return travelled;
   }
 
+  /**
+   * Pushes a walker on foot or on the scooter by a few metres, east and north, as far as free ground
+   * lets it: a dodge in a game, or a blow it takes. It stops at a wall. Returns the metres it went.
+   */
+  shove(name: string, dx: number, dy: number): number {
+    const w = this.walkers.get(name);
+    const len = Math.hypot(dx, dy);
+    if (!w || w.ride === "fly" || w.walk || len < 1e-4) return 0;
+    const steps = Math.ceil(len / 0.25);
+    let went = 0;
+    for (let i = 0; i < steps; i++) {
+      const next: Pt = [w.at[0] + dx / steps, w.at[1] + dy / steps];
+      if (!this.passable(w, next)) break;
+      w.at = next;
+      went += len / steps;
+    }
+    if (went > 0) this.place(w);
+    return went;
+  }
+
+  /** Sets the share of its pace on foot that a walker keeps (1: all of it). */
+  setPaceScale(name: string, k: number): void {
+    const w = this.walkers.get(name);
+    if (w) w.paceScale = k;
+  }
+
   /** Moves a walker straight to a point, without walking: into or out of a building. */
   teleport(name: string, at: Pt, indoor?: { building: string; floor: number }): void {
     const w = this.walkers.get(name);
@@ -649,7 +680,7 @@ export class WalkerWorld {
       w.heading = (((w.heading + w.drive.turn * dt) % 360) + 360) % 360;
       w.figure.setHeading(w.heading);
     }
-    let pace = w.drive.forward;
+    let pace = w.drive.forward * (w.ride === "walk" ? w.paceScale : 1);
     if (w.ride === "scooter") {
       const want = w.drive.forward;
       const rate = !want ? SCOOTER_COAST : want * w.speed < 0 || Math.abs(want) < Math.abs(w.speed) ? SCOOTER_BRAKE : SCOOTER_ACCEL;
