@@ -99,7 +99,7 @@ export function schoolLine(school: PickerSchool, shared: Words) {
 
 // The project's palette (src/ui/styles.css and src/scene/palette.ts): the map's sky and ground
 // behind, the panels' ink, and the accent #ffb454. No university's colours and no logo.
-const STYLE = `
+export const STYLE = `
 :root{--ink:#0f1b25;--panel:#14222e;--text:#eef3f6;--muted:#a3b3bf;--accent:#ffb454;--sky:#dfe8ec;--ground:#e9e5da;--edge:#8b7b62;
 --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue","Noto Sans",Arial,sans-serif;
 --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Noto Serif",serif}
@@ -309,11 +309,17 @@ ${withAbout ? `${questions(shared)}\n${inspiredBy(shared)}\n${about(shared, scho
 }
 
 /**
- * The pages of the sitemap: the picker, dated by the newest school's data, then each school's page, dated by its
- * meta.json's generatedAt.
+ * The pages of the sitemap: the picker, dated by the newest school's data, then each school's page and the pages
+ * under it, its building list and its buildings' pages (buildingPagePaths in scripts/lib/building-pages.ts), dated
+ * by its meta.json's generatedAt.
  */
-export function sitemapEntries(schools: PickerSchool[]): SitemapEntry[] {
-  const pages = schools.map((s) => ({ url: siteUrl(`${s.id}/`), lastmod: isoDate(s.meta.generatedAt) }));
+export function sitemapEntries(schools: PickerSchool[], pagesUnder: Record<string, string[]>): SitemapEntry[] {
+  const pages = schools.flatMap((s) => {
+    const lastmod = isoDate(s.meta.generatedAt);
+    const under = pagesUnder[s.id];
+    if (!under) throw new Error(`no pages given under ${s.id}`);
+    return [`${s.id}/`, ...under.map((p) => `${s.id}/${p}`)].map((p) => ({ url: siteUrl(p), lastmod }));
+  });
   const newest = pages.map((p) => p.lastmod).sort().at(-1);
   return [{ url: siteUrl(), lastmod: newest }, ...pages];
 }
@@ -327,7 +333,7 @@ export function llmsTxt(schools: PickerSchool[], shared: Words): string {
   const maps = schools.map((school) => {
     const s = schoolLine(school, shared);
     const name = s.reo ? `${s.name} (${s.reo})` : s.name;
-    return `- [${s.site}](${siteUrl(`${s.id}/`)}): ${name}, ${s.city}. ${s.form}. ${s.snapshot}.`;
+    return `- [${s.site}](${siteUrl(`${s.id}/`)}): ${name}, ${s.city}. ${s.form}. ${s.snapshot}. [${word(shared, "picker.llms.buildings")}](${siteUrl(`${s.id}/buildings/`)})`;
   });
   const [what, ...rest] = faq(shared);
   return [

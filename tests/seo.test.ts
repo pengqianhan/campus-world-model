@@ -7,7 +7,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { REPO, SITE } from "../src/app/links.ts";
 import type { Words } from "../src/shared/school.ts";
-import type { Campus, Meta } from "../src/shared/types.ts";
+import type { Campus, CampusData, Meta } from "../src/shared/types.ts";
+import { buildingPagePaths } from "../scripts/lib/building-pages.ts";
 import { lookupWords } from "../src/shared/words.ts";
 import { loadSchoolAbout } from "../scripts/lib/about.ts";
 import { type PickerSchool, faq, llmsTxt, pickerPages, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
@@ -168,13 +169,21 @@ describe("the pictures for link previews", () => {
 });
 
 describe("the files at the site's root", () => {
-  it("sitemap.xml lists the picker and each school's page, each dated", () => {
-    const xml = sitemapXml(sitemapEntries(schools));
+  it("sitemap.xml lists the picker, each school's page and the pages under it, each dated", () => {
+    const pagesUnder = Object.fromEntries(ids.map((id) => [id, buildingPagePaths({ campus: read<CampusData>(id, "campus.json") })]));
+    const xml = sitemapXml(sitemapEntries(schools, pagesUnder));
     expect(xml).toMatch(/^<\?xml version="1.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
     const locs = [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual([SITE, ...ids.map((id) => `${SITE}${id}/`)]);
+    expect(locs).toEqual([SITE, ...ids.flatMap((id) => [`${SITE}${id}/`, ...pagesUnder[id]!.map((p) => `${SITE}${id}/${p}`)])]);
+    // every school's building list, and one page for each building with learning spaces
+    for (const id of ids) {
+      expect(locs).toContain(`${SITE}${id}/buildings/`);
+      expect(pagesUnder[id]).toHaveLength(1 + read<CampusData>(id, "campus.json").buildings.filter((b) => b.roomCount > 0).length);
+    }
+    expect(locs).toContain(`${SITE}uoa/buildings/303/`);
+    expect(() => sitemapEntries(schools, {})).toThrow();
     const dates = [...xml.matchAll(/<lastmod>([^<]*)<\/lastmod>/g)].map((m) => m[1]!);
-    expect(dates).toHaveLength(ids.length + 1);
+    expect(dates).toHaveLength(locs.length);
     for (const d of dates) expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dates[0]).toBe([...dates.slice(1)].sort().at(-1));
     expect(sitemapXml([{ url: `${SITE}?a=1&b=2` }])).toContain("<loc>https://campusworldmodel.com/?a=1&amp;b=2</loc>");

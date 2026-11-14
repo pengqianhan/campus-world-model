@@ -8,13 +8,14 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { locales } from "../src/app/i18n.ts";
 import type { Words } from "../src/shared/school.ts";
-import type { Meta } from "../src/shared/types.ts";
+import type { CampusData, Meta } from "../src/shared/types.ts";
 import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
 import { type PickerSchool, escapeHtml, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
 import { robotsTxt, sitemapXml } from "../scripts/lib/seo.ts";
+import { buildingPagePaths } from "../scripts/lib/building-pages.ts";
 
 const root = process.cwd();
 const shared = JSON.parse(fs.readFileSync("src/i18n/locales/en.json", "utf8")) as Words;
@@ -157,7 +158,8 @@ describe("the school picker at the site's root", () => {
       expect(fs.readFileSync(path.join(dir, "favicon.svg"))).toEqual(fs.readFileSync(path.join("public", "favicon.svg")));
       // and what search engines and AI assistants read (scripts/lib/seo.ts)
       expect(fs.readFileSync(path.join(dir, "og.jpg"))).toEqual(fs.readFileSync(path.join("docs", "og", "home.jpg")));
-      expect(fs.readFileSync(path.join(dir, "sitemap.xml"), "utf8")).toBe(sitemapXml(sitemapEntries(schools)));
+      const pagesUnder = Object.fromEntries(ids.map((id) => [id, buildingPagePaths({ campus: JSON.parse(fs.readFileSync(path.join("public", "data", id, "campus.json"), "utf8")) as CampusData })]));
+      expect(fs.readFileSync(path.join(dir, "sitemap.xml"), "utf8")).toBe(sitemapXml(sitemapEntries(schools, pagesUnder)));
       expect(fs.readFileSync(path.join(dir, "robots.txt"), "utf8")).toBe(robotsTxt());
       expect(fs.readFileSync(path.join(dir, "llms.txt"), "utf8")).toBe(llmsTxt(schools, shared));
 

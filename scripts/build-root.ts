@@ -12,8 +12,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../src/shared/school.ts";
-import type { Meta } from "../src/shared/types.ts";
+import type { CampusData, Meta } from "../src/shared/types.ts";
 import { loadSchoolAbout } from "./lib/about.ts";
+import { buildingPagePaths } from "./lib/building-pages.ts";
 import { llmsTxt, pickerPages, schoolWords, sitemapEntries } from "./lib/picker.ts";
 import { parseSchoolList } from "./lib/school-list.ts";
 import { robotsTxt, sitemapXml } from "./lib/seo.ts";
@@ -41,7 +42,8 @@ try {
   // What search engines and AI assistants read (scripts/lib/seo.ts): the picker's picture for link
   // previews, the sitemap of the picker and each school's page, robots.txt and llms.txt.
   fs.copyFileSync(path.join(root, "docs", "og", "home.jpg"), path.join(site, "og.jpg"));
-  fs.writeFileSync(path.join(site, "sitemap.xml"), sitemapXml(sitemapEntries(schools)));
+  const pagesUnder = Object.fromEntries(ids.map((id) => [id, buildingPagePaths({ campus: readJson<CampusData>(path.join(site, id, "data", "campus.json")) })]));
+  fs.writeFileSync(path.join(site, "sitemap.xml"), sitemapXml(sitemapEntries(schools, pagesUnder)));
   fs.writeFileSync(path.join(site, "robots.txt"), robotsTxt());
   fs.writeFileSync(path.join(site, "llms.txt"), llmsTxt(schools, shared));
   console.log(`${site}: index.html and 404.html list ${ids.join(", ")}; sitemap.xml, robots.txt and llms.txt written`);
