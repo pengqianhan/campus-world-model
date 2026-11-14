@@ -105,7 +105,7 @@ A change to what the site does or shows adds its line here, and the README's
   is made up and says so (the Game button's hint, the title card, the menus, the debrief and About), and the buildings'
   names and the walker's own wait while it is on, on every screen. The best grade, the game's settings and the first
   minute's prompts already seen stay in the browser; nothing is sent anywhere. Its code, its look and its villains
-  load the first time it is started, so the map itself loads as before for a visitor who does not play.
+  load the first time it is started, so the map itself loads as before for a visitor who does not play (#178).
 
 ## 2026-11-13
 
