@@ -61,6 +61,15 @@ A change to what the site does or shows adds its line here, and the README's
   carry overtones a phone's speaker can play, the stick and the game's buttons no longer show through its menus, and
   a game started in a corner (as at Victoria University of Wellington's starting spot) steps out to open ground so the
   camera behind the walker is not pressed against a wall.
+  The Final Exam is redrawn as a figure of its own: a brass-and-wood hourglass whose sand runs down with its health,
+  shoulders of bound books, a ruff and a cape of printed exam sheets, a scroll head whose one red eye goes from bored to
+  stern to furious, a crown of pencils, red-pen arms that bend at the elbow and drip ink, and grade tiles bobbing round
+  it; each phase cracks its glass, runs its sand faster and tears its papers more. In a fight the camera keeps clear of
+  its body, steps off the line of a charge before it comes, thins the boss's near parts for the moment it would hide the
+  walker, and turns to open ground or keeps the walker in the clear band where a wall or a foe high on a roof leaves no
+  room for both. The roar is a shockwave, a glow on the boss and a pulse at the picture's edges, not a pink wash; the
+  ways of getting about leave the lower band at once when the phase line takes it; the hit combo lapses after 2.5
+  seconds without a blow that lands, and a blow the boss's guard turns counts a third; and the arena keeps off the roads.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere. Its code, its look and its villains
