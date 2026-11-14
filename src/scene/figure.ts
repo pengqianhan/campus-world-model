@@ -159,6 +159,8 @@ export class Figure {
   private last?: number;
   private walkCycles = 0;
   private runCycles = 0;
+  /** Feet put down so far, two a cycle of the walk or the run, whichever leads: for the game's footsteps. */
+  footfalls = 0;
   private runBlend = 0;
   private stance = { moving: 0, speed: 0, t: 0 };
   /**
@@ -315,8 +317,11 @@ export class Figure {
     this.last = t;
     const run = Math.max(0, Math.min(1, (speed - RUN_FROM) / (RUN_AT - RUN_FROM)));
     this.runBlend += (run - this.runBlend) * Math.min(1, dt * 5);
-    this.walkCycles = (this.walkCycles + (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE) % 1;
-    this.runCycles = (this.runCycles + (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE) % 1;
+    const walked = (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE;
+    const ran = (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE;
+    this.walkCycles = (this.walkCycles + walked) % 1;
+    this.runCycles = (this.runCycles + ran) % 1;
+    if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
     b.idle.time = t % b.idle.getClip().duration;
     b.walk.time = this.walkCycles * b.walk.getClip().duration;
     b.run.time = this.runCycles * b.run.getClip().duration;

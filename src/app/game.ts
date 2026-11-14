@@ -2,13 +2,13 @@
 // grows by learning and fights made-up villains for study troubles. It is off until asked for, and
 // it is a game laid over the map: no villain, book or quest is campus data, and none stands for a
 // real class, course, person or due date. Progress is kept for the visit only; the best grade and
-// the settings (sound, reduced motion) are kept in this browser's storage, as conveniences, and
-// nothing leaves the browser.
+// the settings (sound, the music's and the effects' volumes, reduced motion) are kept in this
+// browser's storage, as conveniences, and nothing leaves the browser.
 import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
 import type { GameAction, GameView } from "../scene/game.ts";
 import { FOE_KINDS, FOE_TIME, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
-import { hush, sfx, setSound, type Sfx } from "./gameAudio.ts";
+import { audioStats, audioTap, deathSound, lashSound, release, resetMusic, setMusic, setSound, setVolumes, sfx, stinger, tellSound, type Sfx } from "./gameAudio.ts";
 import { pick, t } from "./i18n.ts";
 
 export const gameOn = signal(false);
@@ -67,6 +67,9 @@ export const gameQuestFlash = signal(0);
 export interface GameSettings {
   sound: boolean;
   reducedMotion: boolean;
+  /** The music's and the effects' volumes, 0 to 1. */
+  music: number;
+  effects: number;
 }
 const SETTINGS_KEY = "studyQuest.settings";
 const BEST_KEY = "studyQuest.best";
@@ -80,12 +83,18 @@ function systemReducedMotion(): boolean {
 }
 
 function loadSettings(): GameSettings {
-  const fallback = { sound: true, reducedMotion: systemReducedMotion() };
+  const fallback = { sound: true, reducedMotion: systemReducedMotion(), music: 0.7, effects: 0.9 };
+  const level = (v: unknown, d: number) => (typeof v === "number" && v >= 0 && v <= 1 ? v : d);
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return fallback;
     const s = JSON.parse(raw) as Partial<GameSettings>;
-    return { sound: s.sound !== false, reducedMotion: typeof s.reducedMotion === "boolean" ? s.reducedMotion : fallback.reducedMotion };
+    return {
+      sound: s.sound !== false,
+      reducedMotion: typeof s.reducedMotion === "boolean" ? s.reducedMotion : fallback.reducedMotion,
+      music: level(s.music, fallback.music),
+      effects: level(s.effects, fallback.effects),
+    };
   } catch {
     return fallback;
   }
@@ -97,6 +106,7 @@ export function setGameSettings(next: Partial<GameSettings>): void {
   const s = { ...gameSettings.peek(), ...next };
   gameSettings.value = s;
   setSound(s.sound);
+  setVolumes(s.music, s.effects);
   if (scene) scene.game.reducedMotion = s.reducedMotion;
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
@@ -183,17 +193,18 @@ function feed(text: string, kind: string, value?: string): void {
 function told(e: GameEvent): void {
   switch (e.type) {
     case "take":
-      sfx(e.kind === "note" ? "note" : e.kind === "coffee" ? "sip" : "pickup");
+      sfx(e.kind === "note" ? "note" : e.kind === "coffee" ? "coffee" : "book");
       if (e.kind === "coffee") feed(t("game.feed.coffee"), "take");
       break;
     case "swing":
-      sfx(e.combo === 2 ? "swing3" : "swing", 1 + e.combo * 0.12);
+      sfx(e.combo === 2 ? "swing2" : e.combo === 1 ? "swing1" : "swing0");
       break;
     case "hit":
-      sfx(e.crit ? "crit" : "hit", e.heavy ? 0.8 : 1);
+      if (e.by === "card") sfx(e.crit ? "crit" : "cardHit");
+      else sfx(e.crit ? "crit" : e.heavy ? "hitHeavy" : "hit");
       break;
     case "kill":
-      sfx(e.kind === "exam" || e.kind === "ddl" ? "bigKill" : "kill");
+      deathSound(e.kind);
       feed(t(`game.foe.${e.kind}.name`), "kill", `+${e.xp}`);
       break;
     case "hurt":
@@ -203,7 +214,7 @@ function told(e: GameEvent): void {
       sfx("evade");
       break;
     case "dodge":
-      sfx("dodge");
+      sfx(e.sprint ? "sprint" : "dodge");
       break;
     case "card":
       sfx("card");
@@ -212,7 +223,7 @@ function told(e: GameEvent): void {
       sfx("eureka");
       break;
     case "rank":
-      sfx("rank");
+      stinger("rank");
       banner({ kind: "rank", title: rankName(e.rank), sub: e.skill ? t("game.unlocked", { skill: t(`game.skill.${e.skill}.name`) }) : t("game.rankUpSub"), ms: 3000 });
       break;
     case "quest":
@@ -230,20 +241,25 @@ function told(e: GameEvent): void {
         sfx("roar");
         card({ kind: "boss", foe: e.kind, title: t("game.foe.exam.name"), sub: t("game.foe.exam.title"), quote: t("game.foe.exam.taunt"), ms: 3800 });
       } else if (e.kind === "ddl") {
-        sfx("alarm");
+        sfx("ddlTell");
         if (e.first) card({ kind: "foe", foe: e.kind, title: t("game.foe.ddl.name"), sub: t("game.foe.ddl.title"), quote: t("game.foe.ddl.taunt"), ms: 3400 });
-      } else if (e.first) card({ kind: "foe", foe: e.kind, title: t(`game.foe.${e.kind}.name`), sub: t(`game.foe.${e.kind}.title`), quote: t(`game.foe.${e.kind}.taunt`), ms: 3000 });
+      } else {
+        if (e.kind === "distraction") sfx("buzz");
+        if (e.first) card({ kind: "foe", foe: e.kind, title: t(`game.foe.${e.kind}.name`), sub: t(`game.foe.${e.kind}.title`), quote: t(`game.foe.${e.kind}.taunt`), ms: 3000 });
+      }
       break;
     case "tell":
-      if (e.kind === "ddl") sfx("ring");
-      else if (e.kind === "exam") sfx("charge");
+      tellSound(e.kind, e.move, e.time);
+      break;
+    case "lash":
+      lashSound(e.kind, e.move);
       break;
     case "phase":
       sfx("phase");
       banner({ kind: "phase", title: t(`game.phase.${e.phase}.title`), sub: t(`game.phase.${e.phase}.name`), ms: FOE_TIME.phase * 1000 });
       break;
     case "over":
-      sfx(e.victory ? "victory" : "defeat");
+      stinger(e.victory ? "victory" : "defeat");
       break;
   }
 }
@@ -255,7 +271,20 @@ function poll(): void {
     stopGame();
     return;
   }
-  const wasOver = gameView.peek()?.phase === "over";
+  const was = gameView.peek();
+  const wasOver = was?.phase === "over";
+  // The Eureka charged: a shimmer, once.
+  if (was && was.eureka < 1 && v.eureka >= 1 && v.phase === "play") sfx("eurekaReady");
+  setMusic({
+    t: performance.now() / 1000,
+    title: gameTitle.peek(),
+    over: v.phase === "over",
+    boss: v.boss && v.boss.hp > 0 ? v.boss.phase : undefined,
+    near: v.threat.near,
+    ddl: v.threat.ddl,
+    paused: gameMenu.peek() !== "none",
+    low: v.phase === "play" && v.focus < v.maxFocus * 0.3,
+  });
   if (v.phase === "over" && !wasOver && v.debrief) {
     gameNewBest.value = keepBest(v.debrief.grade, v.debrief.xp);
     gameMenu.value = "none";
@@ -354,7 +383,7 @@ export function setMenu(m: "none" | "pause" | "sheet"): void {
   // A menu holds the walker still at once, even with a key or the stick still held; the walk's keys
   // take it on again when the menu shuts.
   if (m !== "none") steer?.(0, 0);
-  sfx("click");
+  sfx("uiConfirm");
 }
 
 /** Whether the game holds the walker still: a menu is open over it. */
@@ -384,7 +413,11 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   scene.game.onEvent = told;
   if (!scene.game.start(name, words, quiet, compact)) return false;
   compactHud = compact;
-  setSound(gameSettings.peek().sound);
+  const set = gameSettings.peek();
+  setSound(set.sound);
+  setVolumes(set.music, set.effects);
+  resetMusic();
+  scene.game.onStep = (run) => sfx(run ? "stepRun" : "step");
   window.clearInterval(timer);
   timer = window.setInterval(poll, 100);
   stopKeys?.();
@@ -426,7 +459,9 @@ export function stopGame(): void {
   if (padStick) steer?.(0, 0);
   padStick = false;
   scene?.game.stop();
-  hush();
+  if (scene) scene.game.onStep = undefined;
+  // Every sound stops and its nodes, timers and context are let go.
+  release();
   batch(() => {
     gameOn.value = false;
     gameView.value = undefined;
@@ -447,5 +482,8 @@ export function bindGameScene(s: CampusScene | undefined): void {
     s.onGameClick = (a) => gameAct(a);
   }
 }
+
+/** For a test browser: what the sound is doing, and a tap on its mix for a recording. */
+(window as unknown as { __sqAudio?: unknown }).__sqAudio = { stats: audioStats, tap: audioTap };
 
 export type { Quest, Sfx };

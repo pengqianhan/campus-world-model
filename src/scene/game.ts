@@ -123,6 +123,8 @@ export interface GameView {
   skills: { id: SkillId; open: boolean; rank: number; ready: number }[];
   quests: { id: string; key: QuestKey; main: boolean; place?: string; need: number; got: number; metres?: number; bearing?: number }[];
   boss?: { hp: number; max: number; phase: number };
+  /** Foes up and close enough to fight (for the music), and whether a DDL is among them. */
+  threat: { near: number; ddl: boolean };
   /** Hits in a row. */
   chain: number;
   slowed: boolean;
@@ -142,6 +144,8 @@ const CLOSE_ITEMS = 12;
 const CLOSE_REACH = 75;
 const DRAW_HALF = 110;
 const ITEM_UP = 1.5;
+/** Metres within which a foe counts as a fight, for the music. */
+const THREAT_REACH = 24;
 /** Metres from its building within which the last fight looks for open ground. */
 const ARENA_REACH = 75;
 /** The books' covers: the project's own bright colours, none a university's. */
@@ -186,16 +190,18 @@ function tinted<T extends Material>(m: T, lit: boolean): T {
         "#include <emissivemap_fragment>\n" +
           dissolve +
           "float sqRim = 1.0 - abs(dot(normal, normalize(vViewPosition)));\nfloat sqRim3 = sqRim * sqRim * sqRim;\n" +
-          "totalEmissiveRadiance += vColor.rgb * 0.18 + vTint * (0.12 + 1.8 * sqRim3) + vTint * sqGap * 3.0;\n" +
+          // The warning's red keeps to the edges, where it reads as a glow, and leaves the faces their
+          // own colours: a small foe, nearly all edge, is not washed pink.
+          "totalEmissiveRadiance += vColor.rgb * 0.18 + vTint * (0.02 + 3.4 * smoothstep(0.7, 0.97, sqRim)) + vTint * sqGap * 3.0;\n" +
           "totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * vFx.y * (0.06 + 1.5 * sqRim3);\n",
       );
     else
       s.fragmentShader = s.fragmentShader.replace(
         "#include <color_fragment>",
-        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += vTint * 0.5 + vTint * sqGap * 2.0 + vec3(vFx.y * 0.45);\n",
+        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += vTint * 0.12 + vTint * sqGap * 2.0 + vec3(vFx.y * 0.45);\n",
       );
   };
-  m.customProgramCacheKey = () => (lit ? "study-quest-lit-2" : "study-quest-glow-2");
+  m.customProgramCacheKey = () => (lit ? "study-quest-lit-5" : "study-quest-glow-5");
   return m;
 }
 
@@ -404,6 +410,9 @@ export class GameWorld {
   reducedMotion = false;
   /** Told of each thing that happens, in the frame it happens: for the sound. */
   onEvent?: (e: GameEvent) => void;
+  /** The walker put a foot down while the game is on: `run` when it runs. */
+  onStep?: (run: boolean) => void;
+  private feet = -1;
   private quest?: StudyQuest;
   private name = "";
   private words?: GameWords;
@@ -624,6 +633,14 @@ export class GameWorld {
     };
     // A game won shows its debrief once the boss has broken up, not over its death.
     const over = g.phase === "over" && !(g.victory && g.foes.some((f) => f.kind === "exam"));
+    let near = 0;
+    let ddl = false;
+    for (const f of g.foes) {
+      if (f.state === "dead" || f.state === "rise" || f.kind === "exam") continue;
+      if (Math.hypot(f.at[0] - walker.at[0], f.at[1] - walker.at[1]) > THREAT_REACH) continue;
+      near++;
+      if (f.kind === "ddl") ddl = true;
+    }
     return {
       phase: over ? "over" : "play",
       paused: g.phase === "play" ? this.paused : undefined,
@@ -653,6 +670,7 @@ export class GameWorld {
         };
       }),
       boss: boss ? { hp: boss.hp, max: boss.maxHp, phase: boss.phase } : undefined,
+      threat: { near, ddl },
       chain: g.chain,
       slowed: g.slowT > 0,
       locked: g.lock !== undefined,
@@ -746,6 +764,10 @@ export class GameWorld {
     this.meAt[0] = me.at[0];
     this.meAt[1] = me.at[1];
     for (const e of evs) this.effect(e, me);
+    // A footstep each time the figure puts a foot down, while the game runs.
+    const feet = Math.floor(me.footfalls ?? -1);
+    if (feet !== this.feet && this.feet >= 0 && feet >= 0 && !frozen) this.onStep?.(me.speed > 3.2);
+    this.feet = feet;
     this.events.push(...evs);
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
     this.sync(me, frozen && this.menuPaused ? 0 : dt);

@@ -3359,6 +3359,30 @@ select optgroup {
   color: var(--sq-alarm);
 }
 
+/* On a wide screen the boss's change of phase is one line in the lower black band of the cinematic
+   bars, under the boss's bar, not big words over the boss's crown. */
+.sq:not(.touch) .sq-banner.phase {
+  top: auto;
+  bottom: env(safe-area-inset-bottom, 0px);
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: clamp(18px, 6.5vh, 58px);
+  padding: 0 40px;
+  border: 0;
+  background: none;
+  white-space: nowrap;
+}
+
+.sq:not(.touch) .sq-banner.phase strong {
+  font-size: clamp(18px, 2.2vw, 26px);
+}
+
+.sq:not(.touch) .sq-banner.phase span {
+  font-size: 11px;
+}
+
 .sq-banner.rank strong {
   font-size: clamp(26px, 3.8vw, 46px);
 }
@@ -3667,6 +3691,84 @@ select optgroup {
   color: var(--sq-signal);
 }
 
+/* The music's and the effects' volumes: two sliders under the sound toggle, greyed while it is off. */
+.sq-vols {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 20px 6px;
+  border: 1px solid rgba(238, 240, 234, 0.22);
+  background: rgba(8, 12, 16, 0.4);
+}
+
+.sq-vol {
+  display: grid;
+  grid-template-columns: 7.5em 1fr 2.4em;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  font: 600 13px/1 var(--sq-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sq-bone);
+}
+
+.sq-vol em {
+  font-style: normal;
+  text-align: right;
+  color: var(--sq-signal);
+  font-variant-numeric: tabular-nums;
+}
+
+.sq-vol.off {
+  opacity: 0.45;
+}
+
+.sq-vol input {
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.sq-vol input::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(90deg, var(--sq-signal) var(--v), rgba(238, 240, 234, 0.25) var(--v));
+}
+
+.sq-vol input::-moz-range-track {
+  height: 4px;
+  background: linear-gradient(90deg, var(--sq-signal) var(--v), rgba(238, 240, 234, 0.25) var(--v));
+}
+
+.sq-vol input::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: 2px solid var(--sq-bone);
+  border-radius: 0;
+  background: #0b1014;
+  transform: rotate(45deg);
+  -webkit-appearance: none;
+}
+
+.sq-vol input::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--sq-bone);
+  border-radius: 0;
+  background: #0b1014;
+  transform: rotate(45deg);
+}
+
+.sq-vol input:focus-visible {
+  outline: 1px solid var(--sq-bone);
+  outline-offset: 2px;
+}
+
 .sq .sq-b.primary {
   justify-content: center;
   border-color: var(--sq-signal);
@@ -3868,6 +3970,37 @@ select optgroup {
 }
 
 /* -- On a phone: small panels in the corners, the right thumb's buttons, no tutorial text. -- */
+
+/* The pause menu on a phone: a little tighter, below the credits, with the corner panels out of the
+   way while it is open rather than showing through it. */
+.sq.touch .sq-menu {
+  padding-top: calc(var(--hud-t) + 78px);
+}
+
+.sq.touch .sq-menu h2 {
+  margin-bottom: 6px;
+  font-size: 40px;
+}
+
+.sq.touch .sq-b {
+  min-height: 42px;
+}
+
+.sq.touch .sq-vols {
+  padding: 4px 20px 2px;
+}
+
+.sq.touch .sq-vol {
+  min-height: 32px;
+}
+
+.sq.touch.menu-open .sq-obj,
+.sq.touch.menu-open .sq-vitals,
+.sq.touch.menu-open .sq-boss,
+.sq.touch.menu-open .sq-combo {
+  visibility: hidden;
+}
+
 .sq.touch .sq-obj {
   top: calc(var(--hud-t) + 92px);
   right: var(--hud-r);

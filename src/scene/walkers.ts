@@ -126,6 +126,8 @@ export interface WalkerState {
   speed: number;
   /** Flying: metres the drone is above the ground under it. */
   altitude?: number;
+  /** Feet its figure has put down so far, on foot (see Figure.footfalls). */
+  footfalls?: number;
 }
 
 class Walker {
@@ -250,6 +252,7 @@ export class WalkerWorld {
       ride: w.ride,
       speed: Math.round(w.pace * 10) / 10,
       altitude: w.ride === "fly" ? Math.round((w.alt - this.host.groundAt(w.at[0], w.at[1])) * 10) / 10 : undefined,
+      footfalls: w.ride === "walk" ? w.figure.footfalls : undefined,
     };
   }
 

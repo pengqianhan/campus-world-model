@@ -10,6 +10,7 @@ import {
   CircleGeometry,
   Color,
   CylinderGeometry,
+  DoubleSide,
   DynamicDrawUsage,
   Euler,
   Group,
@@ -543,6 +544,15 @@ class BitPool {
   }
 }
 
+/** A material that adds `k` of its own colour as light: bright on its shaded side, its dark marks dark. */
+function selfLit<T extends Material>(m: T, k: number): T {
+  m.onBeforeCompile = (s) => {
+    s.fragmentShader = s.fragmentShader.replace("#include <emissivemap_fragment>", `#include <emissivemap_fragment>\ntotalEmissiveRadiance += diffuseColor.rgb * ${k.toFixed(2)};`);
+  };
+  m.customProgramCacheKey = () => `study-quest-self-${k}`;
+  return m;
+}
+
 /**
  * Bits that fly from a beaten foe, tumble, bounce on the ground and shrink away: pages that
  * flutter down slowly, gears and drops of ink that fall fast. Lit, three draw calls for all.
@@ -551,21 +561,36 @@ export class Debris {
   readonly group = new Group();
   private pools: Record<Bit, BitPool>;
   private mat = new MeshLambertMaterial({ vertexColors: true, emissive: 0x4a4a4a });
+  /**
+   * Paper lights itself a good deal from its own colour, so that it reads white from afar on its
+   * shaded side too, while its lines of ink stay dark: not the flat grey of a card.
+   */
+  private paper = selfLit(new MeshLambertMaterial({ vertexColors: true, side: DoubleSide }), 0.6);
   density = 1;
 
   constructor() {
+    // A page with a slight fold down its middle, so that its two halves catch the light differently,
+    // and two lines and a short one of dark ink on both its faces.
+    const ink = 0x1f2742;
+    const lines = (y: number) =>
+      [
+        [-0.13, 0.34],
+        [-0.02, 0.34],
+        [0.1, 0.2],
+      ].map(([z, w]) => ({ geo: new BoxGeometry(w!, 0.004, 0.035), color: ink, at: [-0.02 - (0.34 - w!) / 2, y, z!] as [number, number, number] }));
     const page = merge([
-      { geo: new BoxGeometry(0.46, 0.012, 0.6), color: 0xffffff },
-      // Lines of writing on it.
-      ...[-0.16, -0.06, 0.04, 0.14].map((z) => ({ geo: new BoxGeometry(0.32, 0.004, 0.025), color: 0x8e8e9a, at: [0, 0.008, z] as [number, number, number] })),
+      { geo: new BoxGeometry(0.24, 0.01, 0.6), color: 0xffffff, at: [-0.115, 0.012, 0], rot: [0, 0, 0.1] },
+      { geo: new BoxGeometry(0.24, 0.01, 0.6), color: 0xffffff, at: [0.115, 0.012, 0], rot: [0, 0, -0.1] },
+      ...lines(0.03),
+      ...lines(-0.006),
     ]);
     const teeth = Array.from({ length: 8 }, (_, k) => {
       const a = (k / 8) * Math.PI * 2;
       return { geo: new BoxGeometry(0.1, 0.06, 0.1), color: 0xffffff, at: [Math.sin(a) * 0.27, 0, Math.cos(a) * 0.27] as [number, number, number], rot: [0, a, 0] as [number, number, number] };
     });
     const gear = merge([{ geo: new CylinderGeometry(0.24, 0.24, 0.06, 16), color: 0xffffff }, ...teeth, { geo: new CylinderGeometry(0.08, 0.08, 0.08, 10), color: 0x555555 }]);
-    const ink = merge([{ geo: new SphereGeometry(0.12, 10, 8), color: 0xffffff, scale: [1, 1.5, 1] }]);
-    this.pools = { page: new BitPool(page, this.mat), gear: new BitPool(gear, this.mat), ink: new BitPool(ink, this.mat) };
+    const drop = merge([{ geo: new SphereGeometry(0.12, 10, 8), color: 0xffffff, scale: [1, 1.5, 1] }]);
+    this.pools = { page: new BitPool(page, this.paper), gear: new BitPool(gear, this.mat), ink: new BitPool(drop, this.mat) };
     for (const b of BITS) this.group.add(this.pools[b].mesh);
   }
 
@@ -630,11 +655,15 @@ export class Debris {
         p.vel[o]! *= drag;
         p.vel[o + 2]! *= drag;
         p.vel[o + 1] = p.vel[o + 1]! * (flutter ? drag : 1) - g * dt;
-        // A page sways from side to side as it falls.
-        if (flutter) {
-          const sway = Math.sin(p.life[w]! * 9 + w) * 1.6 * dt;
+        // A page sways from side to side as it falls, and rocks over as it swings, as paper does.
+        const up = p.pos[o + 1]! > p.floor[w]! + 0.05;
+        if (flutter && up) {
+          const ph = p.life[w]! * 6.5 + w * 1.7;
+          const sway = Math.sin(ph) * 2.6 * dt;
           p.vel[o]! += sway;
           p.vel[o + 2]! -= sway * 0.6;
+          p.rot[o]! += Math.cos(ph) * 5 * dt;
+          p.rot[o + 2]! += Math.sin(ph * 0.8 + 1) * 4 * dt;
         }
         p.pos[o]! += p.vel[o]! * dt;
         p.pos[o + 1]! += p.vel[o + 1]! * dt;

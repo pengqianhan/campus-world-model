@@ -43,6 +43,12 @@ A change to what the site does or shows adds its line here, and the README's
   finishers and critical blows each pause the fight, shake the view and throw their number differently, with sparks
   and dust where they land; the Eureka is a crisp ring of light, the highlighter is bigger with a pink trail, and the
   camera goes over the walker's shoulder while it strikes.
+  Its music and sounds are made in the browser from no sound files: a title theme, a walking tune that drums and bass
+  join when a villain comes near, a ticking clock against the DDL, the Final Exam's theme quicker in each phase,
+  stingers for a rank, a victory and a defeat, a heartbeat at low Focus, footsteps in time with the walk and a sound
+  of its own for each blow, pick-up, villain's warning, attack and break-up, with Music and Effects volumes in the
+  pause menu, which muffles the music. On a wide screen the boss's change of phase is a line in the lower black band
+  clear of the boss, a villain's warning glows red at its outline only, and paper debris is white with lines of ink.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.

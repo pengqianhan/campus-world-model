@@ -25,6 +25,7 @@ import {
   setMenu,
   stopGame,
 } from "../app/game.ts";
+import { sfx } from "../app/gameAudio.ts";
 import { t } from "../app/i18n.ts";
 import type { GameView } from "../scene/game.ts";
 import { FOE_KINDS, RANKS, SKILLS, type SkillId } from "../shared/game.ts";
@@ -275,12 +276,40 @@ function Title({ touch }: { touch: boolean }) {
   );
 }
 
+/** A volume slider in the pause menu: 0 to 100 in steps of 5, kept as 0 to 1. */
+function Volume({ id, label, value, on, set }: { id: string; label: string; value: number; on: boolean; set: (v: number) => void }) {
+  const pct = Math.round(value * 100);
+  return (
+    <label class={`sq-vol ${on ? "" : "off"}`} for={id}>
+      <span class="sq-vol-k">{label}</span>
+      <input
+        type="range"
+        id={id}
+        min={0}
+        max={100}
+        step={5}
+        value={pct}
+        style={{ "--v": `${pct}%` }}
+        aria-valuetext={`${pct}%`}
+        onInput={(e) => set(Number((e.target as HTMLInputElement).value) / 100)}
+        onChange={() => sfx("uiMove")}
+      />
+      <em>{pct}</em>
+    </label>
+  );
+}
+
 function PauseMenu({ touch }: { touch: boolean }) {
   const s = gameSettings.value;
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus(), []);
+  // Moving through the menu ticks, with the keys or the pointer; the first focus, given on opening, does not.
+  const opened = useRef(performance.now());
+  const move = () => {
+    if (performance.now() - opened.current > 150) sfx("uiMove");
+  };
   return (
-    <div class="sq-menu" id="game-menu" role="dialog" aria-modal="true" aria-label={t("game.menu.title")}>
+    <div class="sq-menu" id="game-menu" role="dialog" aria-modal="true" aria-label={t("game.menu.title")} onFocusIn={move}>
       <div class="sq-menu-body">
         <span class="sq-eyebrow">{t("game.title")}</span>
         <h2>{t("game.menu.title")}</h2>
@@ -294,6 +323,10 @@ function PauseMenu({ touch }: { touch: boolean }) {
           <button type="button" class="sq-b" aria-pressed={s.sound} id="game-sound" onClick={() => setGameSettings({ sound: !s.sound })}>
             {t("game.menu.sound")} <em>{t(s.sound ? "game.menu.on" : "game.menu.off")}</em>
           </button>
+          <div class="sq-vols" role="group" aria-label={t("game.menu.volume")}>
+            <Volume id="game-music" label={t("game.menu.music")} value={s.music} on={s.sound} set={(v) => setGameSettings({ music: v })} />
+            <Volume id="game-effects" label={t("game.menu.effects")} value={s.effects} on={s.sound} set={(v) => setGameSettings({ effects: v })} />
+          </div>
           <button type="button" class="sq-b" aria-pressed={s.reducedMotion} id="game-motion" onClick={() => setGameSettings({ reducedMotion: !s.reducedMotion })}>
             {t("game.menu.motion")} <em>{t(s.reducedMotion ? "game.menu.on" : "game.menu.off")}</em>
           </button>

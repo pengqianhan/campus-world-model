@@ -286,7 +286,8 @@ export interface Quest {
 export type GameEvent =
   | { type: "take"; kind: ItemKind; at: Pt; xp: number }
   | { type: "swing"; combo: number; at: Pt; dir: number }
-  | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean; dir: number; stagger: boolean }
+  /** `by`: what landed it, a blow of the highlighter, a flashcard, the Eureka or the sprint. */
+  | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean; dir: number; stagger: boolean; by: "blow" | "card" | "eureka" | "sprint" }
   | { type: "kill"; foe: number; kind: FoeKind; at: Pt; xp: number }
   | { type: "hurt"; amount: number; from: Pt }
   | { type: "evade"; at: Pt }
@@ -297,7 +298,8 @@ export type GameEvent =
   | { type: "quest"; quest: Quest; done: boolean }
   | { type: "wave"; place: string }
   | { type: "arrive"; foe: number; kind: FoeKind; first: boolean }
-  | { type: "tell"; foe: number; kind: FoeKind; move: FoeMove["type"] }
+  /** `time`: seconds until it strikes. */
+  | { type: "tell"; foe: number; kind: FoeKind; move: FoeMove["type"]; time: number }
   /** A foe's attack that was shown lands, at `at`. */
   | { type: "lash"; foe: number; kind: FoeKind; move: FoeMove["type"]; at: Pt; radius: number }
   | { type: "phase"; phase: number }
@@ -612,7 +614,7 @@ export class StudyQuest {
         if (f.state === "dead" || f.state === "rise") continue;
         const d = dist(f.at, this.player);
         if (d > PLAYER.eurekaRadius + FOES[f.kind].radius) continue;
-        this.damage(f, this.stats.insight * PLAYER.eurekaMult, bearingTo(this.player, f.at), 7, true, false);
+        this.damage(f, this.stats.insight * PLAYER.eurekaMult, bearingTo(this.player, f.at), 7, true, false, "eureka");
       }
       this.hitStop = Math.max(this.hitStop, 0.12);
     }
@@ -695,7 +697,7 @@ export class StudyQuest {
   }
 
   /** Hurts a foe: with a chance of a critical blow, a push, a flash, and a hit-stop. */
-  private damage(f: Foe, base: number, dir: number, push: number, heavy: boolean, charges = true): void {
+  private damage(f: Foe, base: number, dir: number, push: number, heavy: boolean, charges = true, by: "blow" | "card" | "eureka" | "sprint" = "blow"): void {
     if (f.state === "dead" || f.state === "phase" || f.state === "rise") return;
     const crit = this.host.random() < this.stats.crit;
     const amount = Math.max(1, Math.round(base * (0.9 + this.host.random() * 0.2) * (crit ? 1.8 : 1)));
@@ -724,7 +726,7 @@ export class StudyQuest {
       f.move = undefined;
       this.dropTells(f.id);
     }
-    this.events.push({ type: "hit", foe: f.id, kind: f.kind, at: f.at, amount, crit, heavy, dir, stagger: stagger > 0 });
+    this.events.push({ type: "hit", foe: f.id, kind: f.kind, at: f.at, amount, crit, heavy, dir, stagger: stagger > 0, by });
     if (f.kind === "exam") {
       const share = f.hp / f.maxHp;
       const want = share > 0.66 ? 1 : share > 0.33 ? 2 : 3;
@@ -790,7 +792,7 @@ export class StudyQuest {
         if (f.state === "dead" || f.state === "rise" || this.sprintHits.has(f.id)) continue;
         if (dist(f.at, this.player) > FOES[f.kind].radius + 1.2) continue;
         this.sprintHits.add(f.id);
-        this.damage(f, this.stats.insight * 0.8, this.dodgeDir, 1, false);
+        this.damage(f, this.stats.insight * 0.8, this.dodgeDir, 1, false, true, "sprint");
       }
     }
   }
@@ -1138,7 +1140,7 @@ export class StudyQuest {
     f.state = "tell";
     f.t = tell;
     f.cool = spec.cooldown * (f.kind === "exam" ? 1.25 - f.phase * 0.15 : 1);
-    if (f.move) this.events.push({ type: "tell", foe: f.id, kind: f.kind, move: f.move.type });
+    if (f.move) this.events.push({ type: "tell", foe: f.id, kind: f.kind, move: f.move.type, time: tell });
   }
 
   /** The Final Exam picks an attack for its phase, shows it, and says how long it shows it. */
@@ -1281,7 +1283,7 @@ export class StudyQuest {
         for (const f of this.foes) {
           if (f.state === "dead" || f.state === "rise") continue;
           if (dist(f.at, s.at) > FOES[f.kind].radius + s.radius) continue;
-          this.damage(f, s.damage, bearingTo(p, f.at), 1, false);
+          this.damage(f, s.damage, bearingTo(p, f.at), 1, false, true, "card");
           s.life = 0;
           break;
         }
