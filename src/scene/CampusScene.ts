@@ -609,6 +609,8 @@ export class CampusScene {
       paceScale: (name, k) => this.walkers.setPaceScale(name, k),
       camera: () => this.activeCamera,
       viewSize: () => ({ width: this.width, height: this.height }),
+      act: (name, move) => this.walkers.figure(name)?.play(move),
+      pen: (name, on) => this.walkers.figure(name)?.setPen(on),
     }, labelRoot.parentElement ?? undefined);
     this.scene.add(this.game.group);
 

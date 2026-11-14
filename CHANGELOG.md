@@ -31,6 +31,10 @@ A change to what the site does or shows adds its line here, and the README's
   camera and the fight are left out of the picture while it lasts. On a phone the boss's bar is a thin line under the
   credits, the vitals one short row while the boss is out, and the big words a short line at the top, so the middle of
   the screen is the fight's.
+  The walker holds a highlighter in the game and fights with its whole upper body: a forehand, a backhand and an
+  overhead slam with both hands, each wound up, landing as the blow lands and followed through with a short trail; the
+  arm drawn back and snapped forward for a flashcard, which leaves the hand as it is let go; arms swept back for the
+  Cram Sprint, tucked for the sidestep, thrust up for Eureka!; a flinch when hit, and the arms dropping when burnt out.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.

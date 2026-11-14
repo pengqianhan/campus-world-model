@@ -75,6 +75,11 @@ export const PLAYER = {
   strikeTime: [0.26, 0.26, 0.42],
   strikeMult: [1, 1.15, 1.9],
   strikePush: [1.2, 1.4, 4.5],
+  /**
+   * Seconds from the start of each blow to when it lands: the wind-up the walker's arms make
+   * before it (figure.ts), the overhead slam's the longest.
+   */
+  strikeContact: [0.09, 0.09, 0.17],
   /** Seconds after a blow in which the next one carries the combo on. */
   comboWindow: 0.7,
   dodgeTime: 0.3,
@@ -87,6 +92,8 @@ export const PLAYER = {
   cardCooldown: 0.45,
   cardSpeed: 26,
   cardLife: 1.1,
+  /** Seconds from the start of a throw to when the card leaves the hand. */
+  cardRelease: 0.1,
   eurekaRadius: 8.5,
   eurekaMult: 3.2,
   eurekaCharge: 100,
@@ -425,6 +432,9 @@ export class StudyQuest {
   private dodgeLeft = 0;
   /** Foes the Cram Sprint under way has struck already. */
   private sprintHits = new Set<number>();
+  /** A blow under way that has not landed yet, and a card drawn back that has not left the hand. */
+  private blow?: { combo: number; dir: number; t: number };
+  private throwing?: { dir: number; t: number };
 
   constructor(
     private host: QuestHost,
@@ -510,6 +520,7 @@ export class StudyQuest {
     this.grace = Math.max(0, this.grace - dt);
     this.timers(dt);
     this.actions();
+    this.landing(dt);
     this.dodging(dt);
     this.take();
     this.questsStep();
@@ -556,6 +567,7 @@ export class StudyQuest {
       this.sprintHits.clear();
       this.iframes = PLAYER.iframes * (sprint ? 1.3 : 1);
       this.strikeT = 0;
+      this.blow = undefined;
       this.events.push({ type: "dodge", at: this.player, dir: this.heading, sprint });
     } else if (a === "card") {
       this.queued = undefined;
@@ -563,16 +575,9 @@ export class StudyQuest {
       this.stamina -= PLAYER.cardCost;
       this.cardT = PLAYER.cardCooldown;
       const dir = this.aim(PLAYER.lockReach, 25);
-      const [ux, uy] = dirOf(dir);
-      this.shots.push({
-        id: this.nextId++,
-        mine: true,
-        at: [this.player[0] + ux * 0.8, this.player[1] + uy * 0.8],
-        vel: [ux * PLAYER.cardSpeed, uy * PLAYER.cardSpeed],
-        life: PLAYER.cardLife,
-        damage: this.stats.insight * 0.85,
-        radius: 0.6,
-      });
+      if (Math.abs(turnBetween(this.heading, dir)) > 1) this.orders.face = dir;
+      // The arm draws back first; the card leaves the hand a moment later (landing).
+      this.throwing = { dir, t: PLAYER.cardRelease };
       this.events.push({ type: "card", at: this.player, dir });
     } else if (a === "eureka") {
       this.queued = undefined;
@@ -626,16 +631,43 @@ export class StudyQuest {
     const lunge = combo === 2 ? 0.9 : 0.45;
     this.orders.shove = [this.orders.shove[0] + ux * lunge, this.orders.shove[1] + uy * lunge];
     this.events.push({ type: "swing", combo, at: this.player, dir });
-    const s = this.stats;
-    for (const f of this.foes) {
-      if (f.state === "dead" || f.state === "rise") continue;
-      const spec = FOES[f.kind];
-      const d = dist(f.at, this.player);
-      if (d > PLAYER.strikeReach + spec.radius) continue;
-      const off = Math.abs(turnBetween(dir, bearingTo(this.player, f.at)));
-      // Right against it, a foe counts whichever way the blow goes.
-      if (off > PLAYER.strikeArc && d > spec.radius + 0.6) continue;
-      this.damage(f, s.insight * PLAYER.strikeMult[combo]!, dir, PLAYER.strikePush[combo]!, combo === 2);
+    // It lands after the wind-up (landing).
+    this.blow = { combo, dir, t: PLAYER.strikeContact[combo]! };
+  }
+
+  /**
+   * A blow lands, and a card leaves the hand, when its time comes: counted from the start of the
+   * step it began in, so that one whose wind-up is shorter than the step lands in that step.
+   */
+  private landing(dt: number): void {
+    const b = this.blow;
+    if (b && (b.t -= dt) <= 0) {
+      this.blow = undefined;
+      const s = this.stats;
+      for (const f of this.foes) {
+        if (f.state === "dead" || f.state === "rise") continue;
+        const spec = FOES[f.kind];
+        const d = dist(f.at, this.player);
+        if (d > PLAYER.strikeReach + spec.radius) continue;
+        const off = Math.abs(turnBetween(b.dir, bearingTo(this.player, f.at)));
+        // Right against it, a foe counts whichever way the blow goes.
+        if (off > PLAYER.strikeArc && d > spec.radius + 0.6) continue;
+        this.damage(f, s.insight * PLAYER.strikeMult[b.combo]!, b.dir, PLAYER.strikePush[b.combo]!, b.combo === 2);
+      }
+    }
+    const c = this.throwing;
+    if (c && (c.t -= dt) <= 0) {
+      this.throwing = undefined;
+      const [ux, uy] = dirOf(c.dir);
+      this.shots.push({
+        id: this.nextId++,
+        mine: true,
+        at: [this.player[0] + ux * 0.8, this.player[1] + uy * 0.8],
+        vel: [ux * PLAYER.cardSpeed, uy * PLAYER.cardSpeed],
+        life: PLAYER.cardLife,
+        damage: this.stats.insight * 0.85,
+        radius: 0.6,
+      });
     }
   }
 

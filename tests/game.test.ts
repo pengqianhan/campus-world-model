@@ -140,7 +140,7 @@ describe("blows", () => {
     const g = quiet(() => 0.5);
     const f = foe(g, "procrastination", 2);
     g.act("strike");
-    const events = g.step(0.05, at(HERE));
+    const events = g.step(PLAYER.strikeContact[0]!, at(HERE));
     expect(events.find((e) => e.type === "hit")).toBeDefined();
     // 0.5 random: no critical blow, and the middle of the spread.
     expect(f.hp).toBe(FOES.procrastination.hp - statsFor(0).insight);
@@ -154,7 +154,7 @@ describe("blows", () => {
     const behind = foe(g, "procrastination", -2.8);
     const far = foe(g, "procrastination", 12, 3);
     g.act("strike");
-    g.step(0.05, at(HERE));
+    g.step(PLAYER.strikeContact[0]!, at(HERE));
     expect(behind.hp).toBe(behind.maxHp);
     expect(far.hp).toBe(far.maxHp);
   });
@@ -163,7 +163,7 @@ describe("blows", () => {
     const g = quiet(() => 0.5);
     const f = foe(g, "procrastination", 3, 3);
     g.act("strike");
-    g.step(0.05, at(HERE, 0));
+    g.step(PLAYER.strikeContact[0]!, at(HERE, 0));
     expect(f.hp).toBeLessThan(f.maxHp);
     expect(g.orders.face).toBeCloseTo(45, 0);
   });
@@ -175,7 +175,7 @@ describe("blows", () => {
     for (let k = 0; k < 3; k++) {
       const before = f.hp;
       g.act("strike");
-      g.step(0.05, at(HERE));
+      run(g, PLAYER.strikeContact[k]! + 0.01);
       dealt.push(before - f.hp);
       f.at = [0, 2];
       run(g, PLAYER.strikeTime[k]!);
@@ -190,7 +190,7 @@ describe("blows", () => {
     const f = foe(g, "distraction", 2);
     f.hp = 1;
     g.act("strike");
-    const events = g.step(0.05, at(HERE));
+    const events = g.step(PLAYER.strikeContact[0]!, at(HERE));
     expect(events).toContainEqual(expect.objectContaining({ type: "kill", kind: "distraction", xp: FOES.distraction.xp }));
     expect(g.xp).toBe(FOES.distraction.xp);
     expect(g.defeated).toBe(1);
@@ -220,7 +220,10 @@ describe("blows", () => {
     g.rank = 1;
     const f = foe(g, "anxiety", 15);
     expect(g.act("card")).toBe(true);
+    // The arm draws back; the card leaves the hand after its release.
     g.step(0.05, at(HERE));
+    expect(g.shots).toHaveLength(0);
+    g.step(PLAYER.cardRelease, at(HERE));
     expect(g.shots).toHaveLength(1);
     run(g, 0.8);
     expect(f.hp).toBeLessThan(f.maxHp);
@@ -358,7 +361,7 @@ describe("the Final Exam", () => {
       boss.hp = Math.ceil(boss.maxHp * share) + 1;
       boss.at = [place[0], place[1] + 2];
       g.act("strike");
-      return g.step(0.05, at(place));
+      return g.step(PLAYER.strikeContact[0]!, at(place));
     };
     let events = hurtTo(0.66);
     expect(events).toContainEqual({ type: "phase", phase: 2 });
@@ -404,7 +407,7 @@ describe("the Final Exam", () => {
     boss.hp = 1;
     boss.at = [place[0], place[1] + 2];
     g.act("strike");
-    const events = g.step(0.05, at(place));
+    const events = g.step(PLAYER.strikeContact[0]!, at(place));
     expect(events).toContainEqual({ type: "over", victory: true });
     expect(g.victory).toBe(true);
     const d = g.debrief();

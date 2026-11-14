@@ -53,6 +53,7 @@ import type { RoofMap } from "../shared/roofmap.ts";
 import type { Building } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
 import type { WalkGrid } from "../shared/walkpath.ts";
+import type { Move } from "./figureMoves.ts";
 import { Arena, Burst, Missiles, Shadows, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
 import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
 import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
@@ -72,6 +73,10 @@ export interface GameSceneHost {
   paceScale(name: string, k: number): void;
   camera(): Camera;
   viewSize(): { width: number; height: number };
+  /** Starts a move of the walker's arms and body (figureMoves.ts), or lets go of it. */
+  act(name: string, move: Move | undefined): void;
+  /** Puts the highlighter in the walker's hand, or takes it away. */
+  pen(name: string, on: boolean): void;
 }
 
 /** The words the game shows on the map, in the visitor's language. */
@@ -393,6 +398,8 @@ export class GameWorld {
   private overlay?: GameOverlay;
   private camYaw = 0;
   private trailT = 0;
+  /** A blow's arc of light, due when the highlighter meets the foe: seconds to wait, the blow and its bearing. */
+  private slashDue?: { t: number; combo: number; dir: number };
   private motionApplied?: boolean;
 
   constructor(
@@ -440,6 +447,9 @@ export class GameWorld {
     this.group.visible = true;
     this.overlay?.show(true);
     this.overlay?.root.classList.toggle("compact", compact);
+    this.host.pen(name, true);
+    this.host.act(name, undefined);
+    this.slashDue = undefined;
     this.sync(walker, 0);
     this.labelsVersion++;
     return true;
@@ -453,6 +463,8 @@ export class GameWorld {
   stop(): void {
     if (!this.quest) return;
     this.host.paceScale(this.name, 1);
+    this.host.pen(this.name, false);
+    this.host.act(this.name, undefined);
     this.quest = undefined;
     this.field = undefined;
     this.group.visible = false;
@@ -778,8 +790,12 @@ export class GameWorld {
         break;
       }
       case "swing":
-        this.slash.swing(e.combo, e.dir);
-        if (e.combo === 2) this.sparks.ring(sx, sy + 0.3, sz, 10, 6, ACCENT, 0.1);
+        // The arms wind up and strike; the arc of light comes as the blow lands.
+        this.host.act(this.name, e.combo === 0 ? "strike0" : e.combo === 1 ? "strike1" : "strike2");
+        this.slashDue = { t: Math.max(0, PLAYER.strikeContact[e.combo]! - SLASH_LEAD[e.combo]!), combo: e.combo, dir: e.dir };
+        break;
+      case "card":
+        this.host.act(this.name, "card");
         break;
       case "hit": {
         const h = this.footOf(e.foe) + 1.4;
@@ -802,6 +818,7 @@ export class GameWorld {
         break;
       }
       case "hurt":
+        this.host.act(this.name, "flinch");
         o?.hurt(bearingTo(me.at, e.from));
         this.sparks.burst(sx, sy + 1.2, sz, 10, 5, 0xff3b30, 0.1, 0.5, 6);
         this.trauma = Math.min(1, this.trauma + 0.38);
@@ -811,11 +828,15 @@ export class GameWorld {
         break;
       case "dodge":
         this.trailT = e.sprint ? 0.4 : 0.3;
+        this.host.act(this.name, e.sprint ? "sprint" : "dodge");
         break;
       case "eureka":
+        this.host.act(this.name, "eureka");
         this.burst.fire(PLAYER.eurekaRadius);
         this.sparks.ring(sx, sy + 0.4, sz, 36, 14, 0xffc970, 0.2);
-        this.sparks.burst(sx, sy + 1, sz, 30, 10, 0xfff1d0, 0.14, 0.8, 4);
+        // From the hands thrust up over the head.
+        this.sparks.burst(sx, sy + HANDS_UP, sz, 30, 10, 0xfff1d0, 0.14, 0.8, 4);
+        this.sparks.burst(sx, sy + HANDS_UP, sz, 14, 4, 0xffc970, 0.1, 0.6, -3);
         o?.flash("eureka");
         this.trauma = Math.min(1, this.trauma + 0.5);
         break;
@@ -827,6 +848,10 @@ export class GameWorld {
       case "phase":
         o?.flash("phase");
         this.trauma = 1;
+        break;
+      case "over":
+        // Burnt out, the arms drop; a won game keeps the stance it had.
+        if (!e.victory) this.host.act(this.name, "down");
         break;
       case "arrive": {
         const f = this.quest?.foes.find((x) => x.id === e.foe);
@@ -990,6 +1015,12 @@ export class GameWorld {
     this.missiles.end();
 
     // The walker's own: the slash, the burst, the dodge's trail, the slow.
+    if (this.slashDue && (this.slashDue.t -= dt) <= 0) {
+      const d = this.slashDue;
+      this.slashDue = undefined;
+      this.slash.swing(d.combo, d.dir);
+      if (d.combo === 2) this.sparks.ring(wx, wy + 0.3, wz, 10, 6, ACCENT, 0.1);
+    }
     this.slash.step(dt, wx, wy, wz);
     this.burst.step(dt, wx, wy, wz);
     if (this.trailT > 0 && dt > 0) {
@@ -1086,6 +1117,11 @@ export class GameWorld {
 /** Metres within which a foe coming at the walker is framed by the camera: the DDL from further off. */
 const ENGAGE = 12;
 const ENGAGE_DDL = 24;
+
+/** Seconds before each blow lands that its arc of light begins, so that it is brightest as it lands. */
+const SLASH_LEAD = [0.04, 0.04, 0.02];
+/** Metres over the walker's feet of its hands thrust up for the Eureka. */
+const HANDS_UP = 2.15;
 
 /** Metres from a foe's feet to its middle, for the lock-on mark. */
 const KIND_MID: Record<FoeKind, number> = { ddl: 2.6, procrastination: 1.2, distraction: 1.4, plagiarism: 1.5, anxiety: 1.8, exam: 5 };
