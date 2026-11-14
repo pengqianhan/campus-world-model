@@ -1330,3 +1330,48 @@ export function bookSpot(
   }
   return undefined;
 }
+
+/**
+ * Open ground for a fight: of `tries` reachable cells within `reach` metres of `centre`, the one
+ * with the least in the way within `radius` metres (walls, water, trunks: blocked cells; a cell
+ * nearer the middle counts more), so that nothing stands between the camera and a tall foe. A
+ * little nearer `centre` wins a tie. At least `gap` metres from `near`. Undefined when no try
+ * lands on reachable ground.
+ */
+export function openSpot(
+  g: WalkGrid,
+  reached: Uint8Array,
+  centre: Pt,
+  reach: number,
+  radius: number,
+  near: Pt,
+  random: () => number,
+  tries = 80,
+  gap = BOOK_GAP,
+): Pt | undefined {
+  const k = Math.ceil(radius / g.cell);
+  let best: Pt | undefined;
+  let bestScore = Infinity;
+  for (let attempt = 0; attempt < tries; attempt++) {
+    const a = random() * Math.PI * 2;
+    const far = Math.sqrt(random()) * reach;
+    const [c, r] = cellOf(g, [centre[0] + Math.sin(a) * far, centre[1] + Math.cos(a) * far]);
+    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows || !reached[r * g.cols + c]) continue;
+    const at = centreOf(g, c, r);
+    if (Math.hypot(at[0] - near[0], at[1] - near[1]) < gap) continue;
+    let score = 0;
+    for (let dr = -k; dr <= k; dr++) {
+      for (let dc = -k; dc <= k; dc++) {
+        const d = Math.hypot(dc, dr) * g.cell;
+        if (d > radius) continue;
+        const cc = c + dc;
+        const rr = r + dr;
+        const out = cc < 0 || rr < 0 || cc >= g.cols || rr >= g.rows;
+        if (out || g.cost[rr * g.cols + cc] === Infinity) score += 1 + 2 * (1 - d / radius);
+      }
+    }
+    score += Math.hypot(at[0] - centre[0], at[1] - centre[1]) / Math.max(1, reach);
+    if (score < bestScore) (bestScore = score), (best = at);
+  }
+  return best;
+}

@@ -34,6 +34,7 @@ import {
   SphereGeometry,
   UnsignedByteType,
   Vector3,
+  Vector4,
   type IUniform,
   type Material,
   type WebGLRenderer,
@@ -162,6 +163,36 @@ vec3 tcGreen( float which, float deciduous ) {
 `;
 
 type Shader = { vertexShader: string; fragmentShader: string; uniforms: Record<string, IUniform> };
+
+/**
+ * A fight's clear line: a tree whose foot stands within its crown's reach of the line from the
+ * camera to the walker, or from the camera to the foe it frames, is not drawn, so that no crown
+ * fills the picture. Its shadow stays. tcCutOn, 0-1, widens the line as the fight's camera comes in.
+ */
+const CUT = /* glsl */ `
+uniform vec3 tcCutEye;
+uniform vec4 tcCutAims;
+uniform float tcCutOn;
+float tcToLine( vec2 p, vec2 a, vec2 b ) {
+	vec2 ab = b - a;
+	float t = clamp( dot( p - a, ab ) / max( dot( ab, ab ), 1e-4 ), 0.0, 1.0 );
+	return length( p - a - ab * t );
+}
+bool tcCut( vec3 foot, float reach ) {
+	if ( tcCutOn <= 0.0 ) return false;
+	float r = ( reach + 0.6 ) * tcCutOn;
+	return tcToLine( foot.xz, tcCutEye.xz, tcCutAims.xy ) < r || tcToLine( foot.xz, tcCutEye.xz, tcCutAims.zw ) < r;
+}
+`;
+
+/** Leaves a tree out on a fight's clear line (CUT): `card` for the leaves, whose instances are cards, not trees. */
+function patchCut(shader: Shader, card: boolean): void {
+  shader.vertexShader = after(shader.vertexShader, "#include <common>", CUT);
+  const foot = card
+    ? "	if ( tcCut( tcTree.xyz, max( 1.5, tcTree.w * 0.42 ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );"
+    : `	if ( tcCut( ( modelMatrix * instanceMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz, max( 1.0, length( instanceMatrix[ 0 ].xyz ) * ${num(CROWN_HALF_WIDTH)} ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );`;
+  shader.vertexShader = after(shader.vertexShader, "#include <project_vertex>", foot);
+}
 
 /** Where a corner of a card goes in the breeze: the same in its depth and in its colour, so that the two meet. */
 const LEAF_PLACE = `\tvec3 tcWorld = ( modelMatrix * instanceMatrix * vec4( transformed, 1.0 ) ).xyz;
@@ -582,6 +613,9 @@ export class StreetTrees {
       tcTurnB: { value: new Vector3(...linear(LEAVES.summer[1])) },
       tcTwig: { value: new Vector3(...linear(TWIG)) },
       tcBark: { value: bark },
+      tcCutEye: { value: new Vector3() },
+      tcCutAims: { value: new Vector4() },
+      tcCutOn: { value: 0 },
     };
     const make = (name: string, patch: (s: Shader) => void, o: ConstructorParameters<typeof MeshStandardMaterial>[0]) => {
       const m = new MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0, ...o });
@@ -593,7 +627,7 @@ export class StreetTrees {
       m.customProgramCacheKey = () => `street-trees-${name}`;
       return m;
     };
-    this.leaves = make("leaves", patchLeaves, { map: leaves, alphaTest: LEAF_CUTOFF, side: DoubleSide });
+    this.leaves = make("leaves", (sh) => (patchLeaves(sh), patchCut(sh, true)), { map: leaves, alphaTest: LEAF_CUTOFF, side: DoubleSide });
     if (full) {
       // On a graphics card the cards' depth goes in first, with nothing else (patchLeafDepth), and
       // their colour after it only where it is the nearest leaf; a software renderer, which has no
@@ -603,6 +637,7 @@ export class StreetTrees {
       depth.onBeforeCompile = (shader) => {
         Object.assign(shader.uniforms, this.shared);
         patchLeafDepth(shader);
+        patchCut(shader, true);
       };
       depth.customProgramCacheKey = () => "street-trees-leaf-depth";
       this.leafDepth = depth;
@@ -612,10 +647,10 @@ export class StreetTrees {
       this.leaves.depthWrite = false;
       this.leaves.depthFunc = EqualDepth;
     }
-    this.trunk = make("bark", patchBark, { roughness: 0.92 });
+    this.trunk = make("bark", (sh) => (patchBark(sh), patchCut(sh, false)), { roughness: 0.92 });
     this.trunk.color.setRGB(...linear(BARK));
-    this.far = make("far", patchFar, {});
-    this.farTrunk = make("far-trunk", patchGone, {});
+    this.far = make("far", (sh) => (patchFar(sh), patchCut(sh, false)), {});
+    this.farTrunk = make("far-trunk", (sh) => (patchGone(sh), patchCut(sh, false)), {});
     this.farTrunk.color.setRGB(...linear(BARK)).multiplyScalar(0.8);
     this.gone = new MeshDepthMaterial();
     this.gone.onBeforeCompile = (shader) => patchGone(shader);
@@ -680,6 +715,17 @@ export class StreetTrees {
     if (!this.specs.length || (this.centre && this.centre.distanceToSquared(eye) < RELAYOUT * RELAYOUT)) return;
     this.centre = eye.clone();
     this.layout(eye);
+  }
+
+  /**
+   * A fight's clear line (CUT): trees on the way from `eye` to the walker or to the foe framed are
+   * not drawn, `on` 0-1; 0 draws them all. Metres east and north for the walker and the foe.
+   */
+  clearLine(on: number, eye: Vector3, walker: readonly [number, number], foe: readonly [number, number]): void {
+    this.shared.tcCutOn!.value = on;
+    if (on <= 0) return;
+    (this.shared.tcCutEye!.value as Vector3).copy(eye);
+    (this.shared.tcCutAims!.value as Vector4).set(walker[0], -walker[1], foe[0], -foe[1]);
   }
 
   /** The clock the trees sway by, seconds. */

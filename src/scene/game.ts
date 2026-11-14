@@ -37,6 +37,7 @@ import {
   StudyQuest,
   bearingTo,
   bookSpot,
+  openSpot,
   reachable,
   type BookDraw,
   type Debrief,
@@ -84,6 +85,16 @@ export interface GameWords {
 
 export type GameAction = "strike" | "dodge" | "card" | "eureka";
 
+/** What the camera behind the walker frames in a fight (GameWorld.fightFocus). */
+export interface FightFocus {
+  at: [number, number];
+  foot: number;
+  top: number;
+  /** Metres either side of its middle. */
+  half: number;
+  hard: boolean;
+}
+
 /** What the panel shows of a game, ten times a second. */
 export interface GameView {
   phase: "play" | "over";
@@ -124,6 +135,8 @@ const CLOSE_ITEMS = 12;
 const CLOSE_REACH = 75;
 const DRAW_HALF = 110;
 const ITEM_UP = 1.5;
+/** Metres from its building within which the last fight looks for open ground. */
+const ARENA_REACH = 75;
 /** The books' covers: the project's own bright colours, none a university's. */
 const COVERS = [0xff5d73, 0x39c6a5, 0xffb454, 0x6c8cff, 0xc77dff];
 const ACCENT = 0xffb454;
@@ -380,8 +393,6 @@ export class GameWorld {
   private overlay?: GameOverlay;
   private camYaw = 0;
   private trailT = 0;
-  /** Metres the view stands back, more while the boss is out, so that the whole of it is seen. */
-  private pull = 0;
   private motionApplied?: boolean;
 
   constructor(
@@ -416,6 +427,8 @@ export class GameWorld {
     if (!walker || !this.host.walkMap()) return false;
     this.name = name;
     this.words = words;
+    this.meAt[0] = walker.at[0];
+    this.meAt[1] = walker.at[1];
     this.events = [];
     this.seconds = 0;
     this.trauma = 0;
@@ -442,7 +455,6 @@ export class GameWorld {
     this.host.paceScale(this.name, 1);
     this.quest = undefined;
     this.field = undefined;
-    this.pull = 0;
     this.group.visible = false;
     this.sparks.clear();
     this.arena.hide();
@@ -469,10 +481,50 @@ export class GameWorld {
     return out.set(Math.sin(t * 1.3) * k, Math.sin(t * 1.7 + 1) * k * 0.7, Math.sin(t * 1.1 + 2) * k);
   }
 
-  /** Metres to add to the view's distance behind the walker, and degrees to its height: a boss camera. */
-  viewPull(): { distance: number; elevation: number } {
-    return { distance: this.pull, elevation: this.pull * 1.1 };
+  /**
+   * What the camera behind the walker frames in a fight, or undefined when there is none: the foe
+   * locked on to, the boss in its arena (both `hard`: the camera keeps them in view), or else the
+   * nearest foe coming at the walker, the DDL first (soft: the visitor can still turn the view).
+   * Metres east and north, heights of its feet and its top, and its half width. The same object each time.
+   */
+  fightFocus(): FightFocus | undefined {
+    const g = this.quest;
+    if (!g || this.menuPaused || this.paused || g.phase !== "play") return undefined;
+    const me = this.meAt;
+    let pick: Foe | undefined;
+    let hard = true;
+    for (const f of g.foes) if (f.id === g.lock && f.state !== "dead") pick = f;
+    if (!pick && g.arena?.active) pick = g.boss;
+    if (!pick) {
+      hard = false;
+      let best = Infinity;
+      for (const f of g.foes) {
+        if (f.state === "dead" || f.state === "rise") continue;
+        const d = Math.hypot(f.at[0] - me[0], f.at[1] - me[1]);
+        if (d > (f.kind === "ddl" ? ENGAGE_DDL : ENGAGE)) continue;
+        // The DDL comes first: a minion beside it matters less than the clock that charges.
+        const score = d - (f.kind === "ddl" ? 100 : 0);
+        if (score < best) (best = score), (pick = f);
+      }
+    }
+    if (!pick) return undefined;
+    const foot = this.footOf(pick.id);
+    const o = this.focusOut;
+    o.at[0] = pick.at[0];
+    o.at[1] = pick.at[1];
+    o.foot = foot;
+    // Its model's top, with a little over for its crown of pens or its bob in the air.
+    const model = this.kinds[pick.kind].model;
+    const scale = pick.kind === "ddl" ? 1 + (pick.tier - 1) * 0.25 : 1;
+    o.top = foot + (model.float + model.height) * scale + 0.6;
+    // Its arms reach out past its body: the boss's red pens most.
+    o.half = FOES[pick.kind].radius * 1.3 * scale;
+    o.hard = hard;
+    return o;
   }
+  /** Where the walker stood at the last step. */
+  private meAt: [number, number] = [0, 0];
+  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, hard: false };
 
   /** What the panel shows, with what happened since it last asked. */
   view(): GameView | undefined {
@@ -609,11 +661,11 @@ export class GameWorld {
     if (o.shove[0] || o.shove[1]) this.host.shove(this.name, o.shove[0], o.shove[1]);
     this.host.paceScale(this.name, o.slow);
     const me = this.host.walker(this.name) ?? walker;
+    this.meAt[0] = me.at[0];
+    this.meAt[1] = me.at[1];
     for (const e of evs) this.effect(e, me);
     this.events.push(...evs);
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
-    const wantPull = g.arena?.active && g.boss ? 4.5 : 0;
-    this.pull += (wantPull - this.pull) * Math.min(1, dt * 1.5);
     this.sync(me, frozen && this.menuPaused ? 0 : dt);
     return true;
   }
@@ -681,7 +733,8 @@ export class GameWorld {
 
   /**
    * A place for a quest: reachable ground beside a building with rooms to teach in, 60 to 260 m off,
-   * away from the other quests' places. `big`: the building with the most rooms, for the last fight.
+   * away from the other quests' places. `big`: the building with the most rooms, for the last fight,
+   * on the most open ground near it.
    */
   private place(near: Pt, avoid: readonly Pt[], big = false): Place | undefined {
     const f = this.fieldAt(near);
@@ -696,7 +749,12 @@ export class GameWorld {
       return at ? { name: this.words.open, at } : undefined;
     }
     const d = big ? pool.reduce((a, b) => (b.b.roomCount > a.b.roomCount ? b : a)) : pool[Math.floor(Math.random() * pool.length)]!;
-    const at = bookSpot(f.grid, f.reached, [{ center: d.center, weight: 1 }], near, [], Math.random) ?? d.center;
+    // The last fight is on the most open ground near its building, so that the camera sees the
+    // whole of the boss with no wall or tree between.
+    const at =
+      (big ? openSpot(f.grid, f.reached, d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
+      bookSpot(f.grid, f.reached, [{ center: d.center, weight: 1 }], near, [], Math.random) ??
+      d.center;
     return { name: this.words.place(d.b) || this.words.open, at, building: d.b.id };
   }
 
@@ -1024,6 +1082,10 @@ export class GameWorld {
     }
   }
 }
+
+/** Metres within which a foe coming at the walker is framed by the camera: the DDL from further off. */
+const ENGAGE = 12;
+const ENGAGE_DDL = 24;
 
 /** Metres from a foe's feet to its middle, for the lock-on mark. */
 const KIND_MID: Record<FoeKind, number> = { ddl: 2.6, procrastination: 1.2, distraction: 1.4, plagiarism: 1.5, anxiety: 1.8, exam: 5 };

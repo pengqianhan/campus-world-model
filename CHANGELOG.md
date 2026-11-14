@@ -26,6 +26,9 @@ A change to what the site does or shows adds its line here, and the README's
   Exam Anxiety. The story's last quest is a boss fight in an arena with the Final Exam, in three phases. Blows land with a
   pause, a shake, sparks, numbers and a combo count; a quest tracker, a compass tape with quest diamonds, the boss's bar, a
   pause menu, a study record and a graded debrief frame it, with sounds made in the browser and a reduced-motion setting.
+  In a fight the camera behind the walker swings onto the line from the foe through the walker and stands back until both
+  are whole in the picture; the Final Exam's arena is on the most open ground near its building, and trees between the
+  camera and the fight are left out of the picture while it lasts.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.

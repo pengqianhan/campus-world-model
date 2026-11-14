@@ -9,6 +9,7 @@ import {
   bearingTo,
   bookSpot,
   gradeFor,
+  openSpot,
   rankFor,
   reachable,
   statsFor,
@@ -481,6 +482,40 @@ describe("where the pick-ups lie", () => {
     const near: Pt = [-80, -80];
     expect(bookSpot(g, reachable(g, near), [], near, [], seeded(3))).toBeDefined();
     expect(bookSpot(g, new Uint8Array(g.cols * g.rows), [], near, [], seeded(3))).toBeUndefined();
+  });
+});
+
+describe("openSpot", () => {
+  it("puts the last fight on the most open ground near its building, clear of walls and trunks", () => {
+    const g = makeGrid([-120, -120, 120, 120], 2);
+    const box = (x0: number, y0: number, x1: number, y1: number): Pt[] => [
+      [x0, y0],
+      [x1, y0],
+      [x1, y1],
+      [x0, y1],
+    ];
+    // The building, a wing to its east, and a grove of trunks to its south.
+    blockPolygon(g, [box(-15, -15, 15, 15)]);
+    blockPolygon(g, [box(15, -60, 60, 60)]);
+    for (let x = -40; x <= 10; x += 6) for (let y = -60; y <= -20; y += 6) blockPolygon(g, [box(x - 0.45, y - 0.45, x + 0.45, y + 0.45)]);
+    const near: Pt = [-100, -100];
+    const reached = reachable(g, near);
+    const at = openSpot(g, reached, [0, 0], 75, 18, near, seeded(5), 160)!;
+    expect(at).toBeDefined();
+    const [c, r] = cellOf(g, at);
+    expect(reached[r * g.cols + c]).toBe(1);
+    expect(Math.hypot(...at)).toBeLessThanOrEqual(77);
+    // Nothing in the way within 18 m.
+    const k = Math.ceil(18 / g.cell);
+    let blocked = 0;
+    for (let dr = -k; dr <= k; dr++)
+      for (let dc = -k; dc <= k; dc++) if (Math.hypot(dc, dr) * g.cell <= 18 && g.cost[(r + dr) * g.cols + c + dc] === Infinity) blocked++;
+    expect(blocked).toBe(0);
+  });
+
+  it("finds nothing where nothing is reached", () => {
+    const g = makeGrid([-50, -50, 50, 50], 2);
+    expect(openSpot(g, new Uint8Array(g.cols * g.rows), [0, 0], 40, 18, [-40, -40], seeded(2))).toBeUndefined();
   });
 });
 

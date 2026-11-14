@@ -57,6 +57,7 @@ import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
 import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
+import { frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -159,6 +160,13 @@ const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }>
   scooter: { yaw: 0, elevation: 14, distance: 8.5 },
   fly: { yaw: 0, elevation: 14, distance: 5 },
 };
+/** The fight's camera: degrees it stands off the line from the foe through the walker, metres back it goes at most, and ms after a turn of the view by hand before it frames a foe not locked on to again. */
+const FIGHT_OFFSET = 6;
+const FIGHT_REACH = 26;
+const FIGHT_HANDS_OFF = 2500;
+/** Degrees the fight's camera sees wider, upright on a phone and otherwise. */
+const FIGHT_WIDEN_UPRIGHT = 10;
+const FIGHT_WIDEN = 3;
 /** Degrees the view through the eyes looks down at first: the drone's camera, more. */
 const EYES_PITCH: Record<Ride, number> = { walk: -4, scooter: -4, fly: -14 };
 /** Milliseconds at least between taking one landmark's roofs and the next's (roofMap). */
@@ -2314,12 +2322,56 @@ export class CampusScene {
     // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
     // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
     // By the clock, so that it comes round on a renderer that takes a second or more a frame too.
-    if (!snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
+    const flying = pose.ride === "fly";
+    // In a fight the view from behind comes round onto the line from the foe through the walker,
+    // so that both are in the picture: always for a foe locked on to and for the boss, and for
+    // others unless the visitor turned the view in the last moments.
+    const focus = this.view === "follow" && !flying && !pose.indoor && this.game.on ? this.game.fightFocus() : undefined;
+    const fight = this.fight;
+    let framing = false;
+    if (focus) {
+      const sep = Math.hypot(focus.at[0] - x, focus.at[1] - y);
+      framing = focus.hard || (!this.drag && performance.now() - fight.turnedAt > FIGHT_HANDS_OFF);
+      if (framing) {
+        // Kept as a bearing, so that the walker turning to its blow does not swing the view with it;
+        // a foe on top of the walker gives no line to stand on, and the view keeps the way it looks.
+        const cur = fight.held ? fight.yaw : pose.heading + this.follow.yaw;
+        fight.yaw = cur;
+        if (sep > 1.5) {
+          const want = (Math.atan2(focus.at[0] - x, focus.at[1] - y) * 180) / Math.PI + FIGHT_OFFSET;
+          const off = ((((want - cur) % 360) + 540) % 360) - 180;
+          fight.yaw += off * (snap || dt >= 1 ? 1 : 1 - Math.exp(-dt * (focus.hard ? 4 : 2.5)));
+        }
+        this.follow.yaw = (((fight.yaw - pose.heading) % 360) + 360) % 360;
+      }
+      // The foe framed glides from one to the next.
+      const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * 6);
+      fight.at[0] += (focus.at[0] - fight.at[0]) * k;
+      fight.at[1] += (focus.at[1] - fight.at[1]) * k;
+      fight.foot += (focus.foot - fight.foot) * k;
+      fight.top += (focus.top - fight.top) * k;
+    }
+    fight.held = framing;
+    {
+      const want = framing ? 1 : 0;
+      fight.k = snap || dt >= 1 ? want : fight.k + (want - fight.k) * (1 - Math.exp(-dt * 3));
+      if (fight.k < 0.002) fight.k = 0;
+    }
+    // A little wider in a fight, more on a phone held upright, where a big foe is wider than the picture.
+    if (this.view === "follow") {
+      const fov = FOLLOW_FOV + fight.k * (this.persp.aspect < 1 ? FIGHT_WIDEN_UPRIGHT : FIGHT_WIDEN);
+      if (Math.abs(fov - this.persp.fov) > 0.01) {
+        this.persp.fov = fov;
+        this.persp.updateProjectionMatrix();
+        this.needsRender = true;
+        this.needsLabels = true;
+      }
+    }
+    if (!framing && !snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
       const k = Math.exp(-dt * 2.5);
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
       else this.follow.yaw = towardsAhead(this.follow.yaw, k);
     }
-    const flying = pose.ride === "fly";
     if (this.view === "eyes") {
       const yaw = ((pose.heading + this.eyes.yaw) * Math.PI) / 180;
       const pitch = (this.eyes.pitch * Math.PI) / 180;
@@ -2327,10 +2379,34 @@ export class CampusScene {
       this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), pose.eye + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
     } else {
       const yaw = ((pose.heading + this.follow.yaw) * Math.PI) / 180;
-      // In the game the view stands back while a boss is out, so that the whole of it is seen.
-      const pull = this.game.on ? this.game.viewPull() : { distance: 0, elevation: 0 };
-      const up = ((this.follow.elevation + pull.elevation) * Math.PI) / 180;
-      let d = this.follow.distance + pull.distance;
+      const up = (this.follow.elevation * Math.PI) / 180;
+      let d = this.follow.distance;
+      // In a fight it stands back as far as it must for the walker and the whole of the foe: a boss is tall.
+      if (focus && framing) {
+        const ahead = (focus.at[0] - x) * Math.sin(yaw) + (focus.at[1] - y) * Math.cos(yaw);
+        const half = (this.persp.fov * Math.PI) / 360;
+        const shot = this.fightShot;
+        shot.walkerFoot = pose.height;
+        shot.walkerTop = pose.height + 1.9;
+        shot.base = pose.aim + 0.15;
+        shot.tanUp = Math.tan(up);
+        shot.ahead = ahead;
+        shot.foeFoot = focus.foot;
+        shot.foeTop = focus.top;
+        shot.foeHalf = focus.half;
+        shot.halfFov = half;
+        shot.tanHalfWide = Math.tan(half) * this.persp.aspect;
+        shot.minReach = Math.cos(up) * d;
+        shot.maxReach = FIGHT_REACH;
+        // On a phone held upright the bars cover the top of the picture too: the two stand in its middle.
+        fight.lift = this.persp.aspect < 1 ? 0.04 : 0.16;
+        const f = frameFight(shot, this.fightFrame, 0.7, fight.lift);
+        // Out quickly, for a foe that rushes in; back in slowly.
+        const k = snap || dt >= 1 || fight.k < 0.01 ? 1 : 1 - Math.exp(-dt * (f.reach > fight.reach ? 6 : 2));
+        fight.reach += (f.reach - fight.reach) * k;
+      }
+      if (fight.k > 0) d += (Math.max(d, fight.reach / Math.cos(up)) - d) * fight.k;
+      const wantD = d;
       // A wall between the walker and the camera would hide it: the camera comes in front of the wall.
       let blocked = false;
       const reach = Math.cos(up) * d;
@@ -2358,16 +2434,41 @@ export class CampusScene {
         }
       }
       let cy = pose.aim + 0.15 + Math.sin(up) * d;
+      // In a fight, a wall that brings the camera in sends it up as well, to see over the walker to its foe.
+      if (blocked && fight.k > 0) cy += Math.max(0, wantD - d) * 0.6 * fight.k;
       const cx = x - Math.sin(yaw) * Math.cos(up) * d;
       const cn = y - Math.cos(yaw) * Math.cos(up) * d;
       // Never under the ground behind a walker on a slope, nor in a roof behind a drone.
       cy = Math.max(cy, this.groundAt(cx, cn) + 0.8, (roofs?.at([cx, cn]) ?? -Infinity) + 0.8);
       // It glides after the walker, but out from behind a wall at once.
       const k = dt >= 1 || blocked ? 1 : 1 - Math.exp(-dt * 7);
-      const want = new Vector3(cx, cy, -cn);
+      const want = this._camPoint.set(cx, cy, -cn);
       if (k >= 1) this.persp.position.copy(want);
       else this.persp.position.lerp(want, k);
-      this.persp.lookAt(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
+      const look = this.fightLook.set(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
+      if (fight.k > 0) {
+        // Looking at the pitch that centres the walker and the foe from where the camera is now, so
+        // that they stay framed while it glides, or when a wall has brought it in.
+        const p = this.persp.position;
+        const sy = Math.sin(yaw);
+        const ny = Math.cos(yaw);
+        const toWalker = Math.max(0.5, (x - p.x) * sy + (y + p.z) * ny);
+        const toFoe = Math.max(0.5, (fight.at[0] - p.x) * sy + (fight.at[1] + p.z) * ny);
+        const a0 = Math.atan2(pose.height - p.y, toWalker);
+        const a1 = Math.atan2(pose.height + 1.9 - p.y, toWalker);
+        const b0 = Math.atan2(fight.foot - p.y, toFoe);
+        const b1 = Math.atan2(fight.top - p.y, toFoe);
+        const pitch = (Math.min(a0, a1, b0, b1) + Math.max(a0, a1, b0, b1)) / 2 - fight.lift * ((this.persp.fov * Math.PI) / 360);
+        const c = Math.cos(pitch) * 10;
+        look.lerp(this._camPoint.set(p.x + sy * c, p.y + Math.sin(pitch) * 10, p.z - ny * c), fight.k);
+      }
+      this.persp.lookAt(look);
+    }
+    // No crown between the camera and the walker or its foe while the fight's camera is on.
+    const trees = this.street.trees;
+    if (trees && (fight.k > 0 || fight.cut)) {
+      trees.clearLine(fight.k, this.persp.position, pose.at, fight.at);
+      fight.cut = fight.k > 0;
     }
     // A blow in the game shakes the view a little; it settles back on the walker by itself.
     if (this.game.on) this.persp.position.add(this.game.shake(this.shakeBy));
@@ -2388,10 +2489,22 @@ export class CampusScene {
   }
   /** The walker view's camera matrix when last drawn. */
   private lastView?: number[];
+  /**
+   * The fight's camera (placeWalkerCamera): how far it has come in, 0-1; metres back it frames from
+   * and the share of half the picture it looks lower; the bearing it looks along and whether it held
+   * it last frame; the foe framed, metres east and north, and its feet and top; when the visitor
+   * last turned the view (performance.now); whether trees are left out of the picture now.
+   */
+  private fight = { k: 0, reach: 0, lift: 0, yaw: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false };
+  private fightFrame: FightFrame = { reach: 0, pitch: 0 };
+  private fightShot: FightShot = { walkerFoot: 0, walkerTop: 0, base: 0, tanUp: 0, ahead: 0, foeFoot: 0, foeTop: 0, foeHalf: 0, halfFov: 0, tanHalfWide: 0, minReach: 0, maxReach: 0 };
+  private fightLook = new Vector3();
+  private _camPoint = new Vector3();
   private shakeBy = new Vector3();
 
   /** Turns the walker view by a drag of the pointer, in pixels. */
   private turnWalkerView(dx: number, dy: number): void {
+    this.fight.turnedAt = performance.now();
     if (this.view === "eyes") {
       this.eyes.yaw = (((this.eyes.yaw + dx * 0.25) % 360) + 360) % 360;
       this.eyes.pitch = Math.max(-60, Math.min(50, this.eyes.pitch - dy * 0.2));
