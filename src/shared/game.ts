@@ -32,27 +32,32 @@ export interface FoeSpec {
   cooldown: number;
   /** Share of a blow's push it takes (heavy foes take less). */
   weight: number;
+  /**
+   * Share of a blow's harm it takes while it is on guard: all but the moments after its own attack
+   * and while it is staggered. Absent: it never guards. The Eureka breaks any guard.
+   */
+  guard?: number;
 }
 
 export const FOES: Record<FoeKind, FoeSpec> = {
-  ddl: { hp: 280, speed: 3.1, damage: 18, reach: 9, radius: 1.5, xp: 90, tell: 0.95, cooldown: 1.7, weight: 0.35 },
-  procrastination: { hp: 70, speed: 1.5, damage: 7, reach: 3.6, radius: 1.1, xp: 18, tell: 1.0, cooldown: 2.6, weight: 0.6 },
-  distraction: { hp: 22, speed: 4.3, damage: 4, reach: 1.7, radius: 0.55, xp: 6, tell: 0.35, cooldown: 1.2, weight: 1.3 },
-  plagiarism: { hp: 55, speed: 2.7, damage: 10, reach: 2.4, radius: 0.85, xp: 20, tell: 0.55, cooldown: 3.4, weight: 1 },
-  anxiety: { hp: 45, speed: 2.3, damage: 9, reach: 13, radius: 0.85, xp: 16, tell: 0.6, cooldown: 2.3, weight: 1 },
-  exam: { hp: 1500, speed: 2.4, damage: 24, reach: 30, radius: 3.2, xp: 450, tell: 1.15, cooldown: 1.5, weight: 0.08 },
+  ddl: { hp: 700, speed: 3.1, damage: 18, reach: 9, radius: 1.5, xp: 60, tell: 0.95, cooldown: 1.7, weight: 0.35, guard: 0.6 },
+  procrastination: { hp: 100, speed: 1.5, damage: 9, reach: 3.6, radius: 1.1, xp: 18, tell: 1.0, cooldown: 2.6, weight: 0.6 },
+  distraction: { hp: 40, speed: 4.3, damage: 5, reach: 1.7, radius: 0.55, xp: 6, tell: 0.35, cooldown: 1.2, weight: 1.3 },
+  plagiarism: { hp: 80, speed: 2.7, damage: 12, reach: 2.4, radius: 0.85, xp: 20, tell: 0.55, cooldown: 3.4, weight: 1 },
+  anxiety: { hp: 65, speed: 2.3, damage: 9, reach: 13, radius: 0.85, xp: 16, tell: 0.6, cooldown: 2.3, weight: 1 },
+  exam: { hp: 6000, speed: 2.4, damage: 24, reach: 30, radius: 3.2, xp: 450, tell: 1.15, cooldown: 1.5, weight: 0.08, guard: 0.25 },
 };
 
 /** Study ranks: the walker's levels, and the knowledge each needs. */
 export const RANKS = [
   { id: "fresher", xp: 0 },
-  { id: "sophomore", xp: 60 },
-  { id: "junior", xp: 170 },
-  { id: "senior", xp: 330 },
-  { id: "honours", xp: 560 },
-  { id: "masters", xp: 850 },
-  { id: "doctoral", xp: 1200 },
-  { id: "scholar", xp: 1650 },
+  { id: "sophomore", xp: 200 },
+  { id: "junior", xp: 460 },
+  { id: "senior", xp: 760 },
+  { id: "honours", xp: 1100 },
+  { id: "masters", xp: 1480 },
+  { id: "doctoral", xp: 1900 },
+  { id: "scholar", xp: 2360 },
 ] as const;
 export type RankId = (typeof RANKS)[number]["id"];
 
@@ -163,6 +168,65 @@ export const QUEST = {
   grace: 3,
   /** Times a foe's speed while the walker rides the scooter, so that wheels do not win the game. */
   scooterPace: 2,
+  /** Metres from the walker at which a quest's building is looked for, nearest and furthest. */
+  placeRange: [80, 210] as const,
+  /** Share of its kind's knowledge a foe that came by itself gives. */
+  strayXp: 0.5,
+  /** Metres from its place within which a quest's notes lie. */
+  noteReach: 45,
+  /** Share of its Focus the walker gets back at each of the boss's changes of phase: a second wind. */
+  secondWind: 0.3,
+} as const;
+
+/** The main story's quests: what each asks for and the knowledge it gives. */
+export const MAIN = {
+  orientation: { need: 6, reward: 20 },
+  /** The first DDL comes before the first rank: it is weaker than the one that returns. */
+  ddl1: { need: 1, reward: 30, tier: 0.75 },
+  studyGroup: { need: 13, reward: 60 },
+  revision: { need: 5, reward: 100 },
+  ddl2: { need: 3, reward: 80 },
+  finalExam: { need: 1, reward: 200 },
+} as const;
+
+/**
+ * The troubles a quest to clear a place brings out, wave by wave: the next comes when the last is
+ * beaten. As many in all as the quest asks for.
+ */
+export const WAVES: Partial<Record<QuestKey, readonly (readonly FoeKind[])[]>> = {
+  studyGroup: [
+    ["distraction", "distraction", "distraction", "procrastination", "plagiarism"],
+    ["distraction", "distraction", "plagiarism", "anxiety"],
+    ["procrastination", "distraction", "distraction", "plagiarism"],
+  ],
+  ddl2: [["ddl", "anxiety", "anxiety"]],
+  sideClear: [["distraction", "procrastination", "distraction"]],
+};
+/** How much stronger than its kind a wave's foe is, by quest: the DDL that returns is tougher. */
+const WAVE_TIER: Partial<Record<QuestKey, Partial<Record<FoeKind, number>>>> = { ddl2: { ddl: 1.6, anxiety: 1.2 } };
+
+/** The first minute, taught by play: where things are put, and when each prompt comes and goes. */
+export const TEACH = {
+  /** Metres ahead of the walker at which the first book glows. */
+  firstBook: 8,
+  /** Seconds after the start before the first fight's lone foe comes (soon after the first book is taken), and metres ahead it comes. */
+  practiceAfter: 12,
+  practiceSoon: 1.2,
+  practiceAhead: 9,
+  /** How strong it is against its kind, and how much longer its yawn shows before it lands. */
+  practiceTier: 0.85,
+  practiceTell: 1.6,
+  /** Share of its Focus the walker keeps whatever hurts it, until the first quest is done. */
+  floor: 0.35,
+  /** Metres the walker goes before it counts as moving. */
+  moved: 3,
+  /** Metres within which a foe is near enough for the strike's prompt, the band for the flashcard's, and the sprint's. */
+  strikeNear: 7,
+  cardBand: [10, 28] as const,
+  sprintNear: 12,
+  /** Seconds a prompt is up at most, and attacks the dodge's is shown for, before it is let go for good. */
+  maxShown: 14,
+  dodgeTells: 3,
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -210,6 +274,8 @@ export interface Foe {
   age: number;
   /** Whether it came by itself, rather than for a quest. */
   wander: boolean;
+  /** The first fight's lone foe: weak, slow to strike, and unable to burn the walker out. */
+  tutor?: boolean;
 }
 
 export type FoeMove =
@@ -281,6 +347,8 @@ export interface Quest {
   reward: number;
   /** Whether its foes or notes are out yet (they come when the walker reaches the place). */
   started: boolean;
+  /** For a place to clear: the waves of foes out so far. */
+  wave?: number;
 }
 
 export type GameEvent =
@@ -303,11 +371,17 @@ export type GameEvent =
   /** A foe's attack that was shown lands, at `at`. */
   | { type: "lash"; foe: number; kind: FoeKind; move: FoeMove["type"]; at: Pt; radius: number }
   | { type: "phase"; phase: number }
-  | { type: "over"; victory: boolean };
+  | { type: "over"; victory: boolean }
+  /** Burnt out, the walker tries again from `at`, where the quest it was on began (or the boss's arena). */
+  | { type: "retry"; at: Pt; heading: number; boss: boolean }
+  /** A lesson taught: its prompt is not shown again. */
+  | { type: "learn"; lesson: Lesson };
 
 export interface QuestHost {
   /** Somewhere to lay a pick-up near `near`, or beside `place` when given; undefined when it finds none. */
   spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined;
+  /** The ground the walker can reach nearest `p`, for a book or a foe that must be just there; `p` itself when absent. */
+  near?(p: Pt): Pt | undefined;
   /** A place for a quest: beside a building with rooms to teach in, away from `avoid`. */
   place(near: Pt, avoid: readonly Pt[], big?: boolean): Place | undefined;
   /** 0 to 1, as Math.random gives. */
@@ -342,7 +416,16 @@ export interface Debrief {
   maxChain: number;
   focusLost: number;
   quests: number;
+  /** Times the walker was burnt out and tried again. */
+  deaths: number;
 }
+
+/**
+ * What the walker is taught by play, each once: a short prompt when the action is first needed,
+ * gone when it is done (and never again in this browser).
+ */
+export type Lesson = "move" | "strike" | "dodge" | "flashcard" | "sprint" | "eureka";
+export const LESSONS: readonly Lesson[] = ["move", "strike", "dodge", "flashcard", "sprint", "eureka"];
 
 // ---------------------------------------------------------------------------------------------
 // Helpers
@@ -370,26 +453,53 @@ function toSegment(p: Pt, a: Pt, dir: number, length: number): number {
   return Math.hypot(p[0] - (a[0] + ux * t), p[1] - (a[1] + uy * t));
 }
 
+/** What the grade is made of: the course passed, then four factors, each with its most. */
+export const GRADE = {
+  victory: 40,
+  /** Minutes of play for the time's full marks, and at which it gives none. */
+  time: { max: 25, par: 8, zero: 14 },
+  /** Marks for no defeat, one, two, three; none for more. */
+  deaths: [20, 8, 4, 1] as readonly number[],
+  /** The best hit combo for full marks. */
+  combo: { max: 10, full: 30 },
+  /** Knowledge for full marks. */
+  knowledge: { max: 5, full: 1800 },
+} as const;
+
+export type GradeFactor = "time" | "deaths" | "combo" | "knowledge";
+export const GRADE_FACTORS: readonly GradeFactor[] = ["time", "deaths", "combo", "knowledge"];
+
+/**
+ * Each factor's marks and its most: time only counts for a course passed; a defeat costs most of the
+ * clean run's marks, so that an A+ needs a run with none.
+ */
+export function gradeFactors(d: Omit<Debrief, "grade">): Record<GradeFactor, { points: number; max: number }> {
+  const min = d.seconds / 60;
+  const t = GRADE.time;
+  const time = d.victory ? t.max * Math.max(0, Math.min(1, (t.zero - min) / (t.zero - t.par))) : 0;
+  return {
+    time: { points: Math.round(time), max: t.max },
+    deaths: { points: GRADE.deaths[d.deaths] ?? 0, max: GRADE.deaths[0]! },
+    combo: { points: Math.round(GRADE.combo.max * Math.min(1, d.maxChain / GRADE.combo.full)), max: GRADE.combo.max },
+    knowledge: { points: Math.round(GRADE.knowledge.max * Math.min(1, d.xp / GRADE.knowledge.full)), max: GRADE.knowledge.max },
+  };
+}
+
 /** The letter grade a run earns, A+ to F. */
 export function gradeFor(d: Omit<Debrief, "grade">): string {
-  const points =
-    (d.victory ? 45 : 0) +
-    Math.min(20, d.rank * 3) +
-    Math.min(12, d.maxChain * 0.6) +
-    Math.min(13, d.defeated * 0.5) +
-    Math.max(0, Math.min(10, 10 - d.focusLost / 40)) +
-    Math.min(5, d.quests);
+  const f = gradeFactors(d);
+  const points = (d.victory ? GRADE.victory : 0) + f.time.points + f.deaths.points + f.combo.points + f.knowledge.points;
   const scale: [number, string][] = [
-    [92, "A+"],
-    [86, "A"],
-    [80, "A-"],
-    [75, "B+"],
-    [70, "B"],
+    [95, "A+"],
+    [89, "A"],
+    [83, "A-"],
+    [77, "B+"],
+    [71, "B"],
     [65, "B-"],
-    [60, "C+"],
-    [55, "C"],
-    [50, "C-"],
-    [40, "D"],
+    [59, "C+"],
+    [53, "C"],
+    [47, "C-"],
+    [38, "D"],
   ];
   for (const [min, g] of scale) if (points >= min) return g;
   return "F";
@@ -445,6 +555,21 @@ export class StudyQuest {
   cineT = 0;
   grace: number = QUEST.grace;
   orders: PlayerOrders = { shove: [0, 0], slow: 1 };
+  /** Times the walker was burnt out. */
+  deaths = 0;
+  /** Lessons taught, and the one whose prompt is up now. */
+  taught: Set<Lesson>;
+  lesson?: Lesson;
+  /** Seconds each lesson's prompt has been up, and the attacks it was up for (the dodge's). */
+  private shown = new Map<Lesson, number>();
+  private dodgeTells = new Set<number>();
+  /** Where the walker began, for the lesson to move. */
+  private startAt: Pt;
+  /** The first fight's foe, once it has come; and seconds to wait for it. */
+  practice?: number;
+  private practiceT: number = TEACH.practiceAfter;
+  /** Where a retry starts: the start of the main quest under way, or the boss's arena. */
+  private check: { step: number; at: Pt; heading: number; place?: Place; boss: boolean };
   private queued?: Action;
   private nextId = 1;
   private spawnT: number = QUEST.firstSpawn;
@@ -460,14 +585,30 @@ export class StudyQuest {
   private blow?: { combo: number; dir: number; t: number };
   private throwing?: { dir: number; t: number };
 
+  /**
+   * A game for a walker at `player` facing `heading`; `seen` are the lessons this visitor was taught
+   * before (their prompts stay away, and a visitor taught to strike and dodge meets no first fight).
+   */
   constructor(
     private host: QuestHost,
     player: Pt,
+    heading = 0,
+    seen: readonly string[] = [],
   ) {
     this.player = [player[0], player[1]];
+    this.startAt = [player[0], player[1]];
+    this.heading = heading;
+    this.taught = new Set(LESSONS.filter((l) => seen.includes(l)));
+    if (this.taught.has("strike") && this.taught.has("dodge")) this.practiceT = Infinity;
     const s = statsFor(0);
     this.focus = s.maxFocus;
     this.stamina = s.maxStamina;
+    this.check = { step: 0, at: [player[0], player[1]], heading, boss: false };
+    // The first book glows a few steps ahead, where the walker looks: the way to go needs no words.
+    const [ux, uy] = dirOf(heading);
+    const ahead: Pt = [player[0] + ux * TEACH.firstBook, player[1] + uy * TEACH.firstBook];
+    const first = this.host.near ? this.host.near(ahead) : ahead;
+    if (first && dist(first, player) <= TEACH.firstBook * 2) this.items.push({ id: this.nextId++, kind: "book", at: first });
     this.fill(player);
     this.beginMain(player);
   }
@@ -514,7 +655,7 @@ export class StudyQuest {
 
   /** The debrief of a game that is over. */
   debrief(): Debrief {
-    const d = { victory: this.victory, seconds: this.seconds, xp: this.xp, rank: this.rank, defeated: this.defeated, maxChain: this.maxChain, focusLost: Math.round(this.focusLost), quests: this.questsDone };
+    const d = { victory: this.victory, seconds: this.seconds, xp: this.xp, rank: this.rank, defeated: this.defeated, maxChain: this.maxChain, focusLost: Math.round(this.focusLost), quests: this.questsDone, deaths: this.deaths };
     return { ...d, grade: gradeFor(d) };
   }
 
@@ -548,6 +689,7 @@ export class StudyQuest {
     this.dodging(dt);
     this.take();
     this.questsStep();
+    this.practiceStep(dt);
     this.spawning(dt);
     this.foesStep(world, input.pace);
     this.shotsStep(world);
@@ -555,7 +697,77 @@ export class StudyQuest {
     this.tellsStep(world);
     this.foes = this.foes.filter((f) => !(f.state === "dead" && f.t <= 0));
     if (this.lock !== undefined && !this.foes.some((f) => f.id === this.lock && f.state !== "dead")) this.lock = undefined;
+    if (this.phase === "play") this.lessons(dt);
     return this.events;
+  }
+
+  // -------------------------------------------------------------------------------------------
+  // The first minute: taught by play
+  // -------------------------------------------------------------------------------------------
+
+  private learn(l: Lesson): void {
+    if (this.taught.has(l)) return;
+    this.taught.add(l);
+    if (this.lesson === l) this.lesson = undefined;
+    this.events.push({ type: "learn", lesson: l });
+  }
+
+  /** The first fight: a lone, weak Procrastination a few steps ahead, soon after the first book. */
+  private practiceStep(dt: number): void {
+    if (this.practice !== undefined || this.mainStep > 0) return;
+    this.practiceT -= dt;
+    if (this.practiceT > 0) return;
+    const [ux, uy] = dirOf(this.heading);
+    const want: Pt = [this.player[0] + ux * TEACH.practiceAhead, this.player[1] + uy * TEACH.practiceAhead];
+    const f = this.spawn("procrastination", (this.host.near ? this.host.near(want) : want) ?? want, undefined, TEACH.practiceTier);
+    f.tutor = true;
+    this.practice = f.id;
+  }
+
+  /**
+   * The prompt for now, if any: the first time an action is needed, its key or button. Each goes
+   * once the walker has done it, or after it has been up long enough; the dodge's first, while an
+   * attack is about to land where the walker stands.
+   */
+  private lessons(dt: number): void {
+    const t = this.taught;
+    const p = this.player;
+    let want: Lesson | undefined;
+    if (!t.has("move") && dist(p, this.startAt) >= TEACH.moved) this.learn("move");
+    const live = this.foes.filter((f) => f.state !== "dead" && f.state !== "rise");
+    const near = (m: number) => live.some((f) => dist(f.at, p) - FOES[f.kind].radius <= m);
+    if (!t.has("dodge")) {
+      for (const tl of this.tells) {
+        const hits = tl.shape === "circle" ? dist(tl.at, p) <= tl.radius + 0.5 : toSegment(p, tl.at, tl.dir, tl.length) <= tl.width / 2 + 0.5;
+        if (!hits) continue;
+        want = "dodge";
+        this.dodgeTells.add(tl.id);
+      }
+      for (const f of live) {
+        if (f.state !== "tell" || f.move?.type !== "melee" || dist(f.at, p) > FOES[f.kind].reach + FOES[f.kind].radius + 0.5) continue;
+        want = "dodge";
+        this.dodgeTells.add(-f.id);
+      }
+      // Shown for a few attacks and not taken up: it is let go.
+      if (!want && this.dodgeTells.size >= TEACH.dodgeTells) this.learn("dodge");
+    }
+    if (!want && !t.has("strike") && near(TEACH.strikeNear)) want = "strike";
+    if (!want && this.has("flashcard") && !t.has("flashcard") && live.some((f) => {
+      const d = dist(f.at, p);
+      return d >= TEACH.cardBand[0] && d <= TEACH.cardBand[1];
+    })) want = "flashcard";
+    if (!want && this.has("sprint") && !t.has("sprint") && near(TEACH.sprintNear)) want = "sprint";
+    if (!want && this.has("eureka") && !t.has("eureka") && this.eurekaMeter >= PLAYER.eurekaCharge && near(PLAYER.eurekaRadius + 2)) want = "eureka";
+    if (!want && !t.has("move")) want = "move";
+    if (want && want !== "dodge") {
+      const s = (this.shown.get(want) ?? 0) + dt;
+      this.shown.set(want, s);
+      if (s > TEACH.maxShown) {
+        this.learn(want);
+        want = undefined;
+      }
+    }
+    this.lesson = want;
   }
 
   private timers(dt: number): void {
@@ -581,11 +793,14 @@ export class StudyQuest {
       if (this.strikeT > 0 || this.dodgeT > 0) return; // kept for when the blow ends
       this.queued = undefined;
       this.strike();
+      this.learn("strike");
     } else if (a === "dodge") {
       this.queued = undefined;
       if (this.dodgeT > 0 || this.stamina < PLAYER.dodgeCost) return;
       this.stamina -= PLAYER.dodgeCost;
       const sprint = this.has("sprint");
+      this.learn("dodge");
+      if (sprint) this.learn("sprint");
       this.dodgeT = PLAYER.dodgeTime * (sprint ? 1.3 : 1);
       this.dodgeLeft = sprint ? PLAYER.sprintMetres : PLAYER.dodgeMetres;
       this.dodgeDir = this.heading;
@@ -604,10 +819,12 @@ export class StudyQuest {
       // The arm draws back first; the card leaves the hand a moment later (landing).
       this.throwing = { dir, t: PLAYER.cardRelease };
       this.events.push({ type: "card", at: this.player, dir });
+      this.learn("flashcard");
     } else if (a === "eureka") {
       this.queued = undefined;
       if (this.eurekaMeter < PLAYER.eurekaCharge) return;
       this.eurekaMeter = 0;
+      this.learn("eureka");
       this.iframes = Math.max(this.iframes, 0.6);
       this.events.push({ type: "eureka", at: this.player });
       for (const f of this.foes) {
@@ -700,7 +917,9 @@ export class StudyQuest {
   private damage(f: Foe, base: number, dir: number, push: number, heavy: boolean, charges = true, by: "blow" | "card" | "eureka" | "sprint" = "blow"): void {
     if (f.state === "dead" || f.state === "phase" || f.state === "rise") return;
     const crit = this.host.random() < this.stats.crit;
-    const amount = Math.max(1, Math.round(base * (0.9 + this.host.random() * 0.2) * (crit ? 1.8 : 1)));
+    const spec0 = FOES[f.kind];
+    const guard = spec0.guard !== undefined && by !== "eureka" && f.state !== "recover" && f.state !== "stagger" ? spec0.guard : 1;
+    const amount = Math.max(1, Math.round(base * (0.9 + this.host.random() * 0.2) * (crit ? 1.8 : 1) * guard));
     f.hp = Math.max(0, f.hp - amount);
     f.hurtAgo = 0;
     const spec = FOES[f.kind];
@@ -718,7 +937,9 @@ export class StudyQuest {
     // that is the moment to punish them.
     const small = f.kind !== "exam" && f.kind !== "ddl";
     let stagger = 0;
-    if (small && f.hp > 0 && (heavy || spec.weight >= 1) && f.state !== "attack") stagger = heavy ? FOE_TIME.heavyStagger : FOE_TIME.stagger;
+    // A light blow does not stop an attack that is showing: only a finisher does, so that blows
+    // alone do not keep a crowd from ever striking back.
+    if (small && f.hp > 0 && (heavy || (spec.weight >= 1 && f.state !== "tell")) && f.state !== "attack") stagger = heavy ? FOE_TIME.heavyStagger : FOE_TIME.stagger;
     else if (!small && heavy && f.state === "recover" && f.hp > 0) stagger = FOE_TIME.heavyStagger;
     if (stagger) {
       f.state = "stagger";
@@ -736,8 +957,10 @@ export class StudyQuest {
         f.t = FOE_TIME.phase;
         f.move = undefined;
         this.dropTells(f.id);
-        // Its change of phase is a pause for both: what it had thrown is gone, and nothing hurts the walker.
+        // Its change of phase is a pause for both: what it had thrown is gone, nothing hurts the
+        // walker, and the walker gets its second wind.
         this.cineT = FOE_TIME.phase;
+        this.focus = Math.min(this.stats.maxFocus, this.focus + this.stats.maxFocus * QUEST.secondWind);
         this.shots = this.shots.filter((s) => s.mine);
         this.waves = [];
         this.events.push({ type: "phase", phase: want });
@@ -752,7 +975,8 @@ export class StudyQuest {
     f.t = f.kind === "exam" ? FOE_TIME.bossDeath : FOE_TIME.death;
     f.move = undefined;
     this.dropTells(f.id);
-    const xp = Math.round(FOES[f.kind].xp * f.tier);
+    // A stray is worth less than a quest's foe: the story, not the wandering, sets the pace of the ranks.
+    const xp = Math.round(FOES[f.kind].xp * f.tier * (f.wander ? QUEST.strayXp : 1));
     this.defeated++;
     this.events.push({ type: "kill", foe: f.id, kind: f.kind, at: f.at, xp });
     this.gain(xp);
@@ -805,7 +1029,9 @@ export class StudyQuest {
       if (this.has("eureka")) this.eurekaMeter = Math.min(PLAYER.eurekaCharge, this.eurekaMeter + 12);
       return;
     }
-    this.focus = Math.max(0, this.focus - amount);
+    // Until the first quest is done, nothing burns the walker out: the first fight cannot be lost.
+    const floor = this.mainStep === 0 ? this.stats.maxFocus * TEACH.floor : 0;
+    this.focus = Math.max(Math.min(this.focus, floor), this.focus - amount);
     this.focusLost += amount;
     this.hurtAgo = 0;
     this.iframes = 0.35;
@@ -819,6 +1045,8 @@ export class StudyQuest {
   private end(victory: boolean): void {
     this.phase = "over";
     this.victory = victory;
+    this.lesson = undefined;
+    if (!victory) this.deaths++;
     this.tells = [];
     this.waves = [];
     this.shots = [];
@@ -852,6 +1080,8 @@ export class StudyQuest {
       // Coffee waits on the ground for a walker that needs it.
       if (it.kind === "coffee" && this.focus >= s.maxFocus && this.stamina >= s.maxStamina) return true;
       took = true;
+      // The first book taken brings the first fight a moment later.
+      if (it.kind === "book" && Number.isFinite(this.practiceT)) this.practiceT = Math.min(this.practiceT, TEACH.practiceSoon);
       const xp = it.kind === "book" ? QUEST.bookXp : it.kind === "note" ? QUEST.noteXp : 0;
       if (it.kind === "coffee") {
         this.focus = Math.min(s.maxFocus, this.focus + QUEST.coffeeFocus);
@@ -891,26 +1121,72 @@ export class StudyQuest {
    * The next step of the main story. A quest that leads somewhere always has a place: where the map
    * has no building to name, open ground near the walker.
    */
-  private beginMain(near: Pt): void {
+  private beginMain(near: Pt, keep?: Place): void {
     const step = this.mainStep;
-    if (step === 0) this.quest("orientation", true, "collect", 5, 20);
+    const placed = (big = false) => keep ?? this.host.place(near, this.placesTaken(), big) ?? { name: "", at: this.ring(near, big ? 60 : 50) };
+    let q: Quest | undefined;
+    if (step === 0) q = this.quest("orientation", true, "collect", MAIN.orientation.need, MAIN.orientation.reward);
     else if (step === 1) {
-      const q = this.quest("ddl1", true, "defeat", 1, 40);
-      this.spawn("ddl", this.ring(near, 40), q.id, 1);
+      q = this.quest("ddl1", true, "defeat", MAIN.ddl1.need, MAIN.ddl1.reward);
+      this.spawn("ddl", this.ring(near, 40), q.id, MAIN.ddl1.tier);
       q.started = true;
-    } else if (step === 2) this.quest("studyGroup", true, "defeat", 6, 60, this.host.place(near, this.placesTaken()) ?? { name: "", at: this.ring(near, 50) });
-    else if (step === 3) this.quest("revision", true, "collect", 3, 60, this.host.place(near, this.placesTaken()) ?? { name: "", at: this.ring(near, 50) });
-    else if (step === 4) {
-      const q = this.quest("ddl2", true, "defeat", 3, 80);
-      this.spawn("ddl", this.ring(near, 42), q.id, 1.6);
-      this.spawn("anxiety", this.ring(near, 38), q.id, 1.2);
-      this.spawn("anxiety", this.ring(near, 38), q.id, 1.2);
-      q.started = true;
-    } else if (step === 5) {
-      const place = this.host.place(near, this.placesTaken(), true) ?? { name: "", at: this.ring(near, 60) };
-      this.quest("finalExam", true, "boss", 1, 200, place);
+    } else if (step === 2) q = this.quest("studyGroup", true, "defeat", MAIN.studyGroup.need, MAIN.studyGroup.reward, placed());
+    else if (step === 3) q = this.quest("revision", true, "collect", MAIN.revision.need, MAIN.revision.reward, placed());
+    // The DDL returns, with company, at a place of its own: a walk, then the fight.
+    else if (step === 4) q = this.quest("ddl2", true, "defeat", MAIN.ddl2.need, MAIN.ddl2.reward, placed());
+    else if (step === 5) {
+      const place = placed(true);
+      q = this.quest("finalExam", true, "boss", MAIN.finalExam.need, MAIN.finalExam.reward, place);
       this.arena = { at: place.at, radius: QUEST.arenaRadius, active: false };
     }
+    // Each main quest is a checkpoint: a walker burnt out tries it again from here.
+    this.check = { step, at: [near[0], near[1]], heading: this.heading, place: q?.place, boss: false };
+  }
+
+  /**
+   * Burnt out, the walker tries again from the last checkpoint: the start of the quest it was on, or
+   * the edge of the boss's arena with the Final Exam whole and in its first phase. What it learned
+   * it keeps (knowledge and rank); the time and the defeat count on. The events of it, for the
+   * scene; none when the game is not lost.
+   */
+  retry(): GameEvent[] {
+    if (this.phase !== "over" || this.victory) return [];
+    this.events = [];
+    const c = this.check;
+    this.phase = "play";
+    const s = this.stats;
+    this.focus = s.maxFocus;
+    this.stamina = s.maxStamina;
+    this.eurekaMeter = this.has("eureka") ? PLAYER.eurekaCharge : 0;
+    this.mainStep = c.step;
+    this.foes = [];
+    this.tells = [];
+    this.waves = [];
+    this.shots = [];
+    this.lock = undefined;
+    this.chain = this.chainT = this.combo = this.comboT = this.strikeT = this.dodgeT = this.dodgeLeft = 0;
+    this.iframes = this.hitStop = this.cardT = this.slowT = this.cineT = 0;
+    this.hurtAgo = 99;
+    this.blow = this.throwing = this.queued = undefined;
+    this.sprintHits.clear();
+    this.grace = QUEST.grace;
+    this.spawnT = QUEST.firstSpawn;
+    const gone = new Set(this.quests.map((q) => q.id));
+    this.quests = [];
+    this.items = this.items.filter((i) => !i.quest || !gone.has(i.quest));
+    this.arena = undefined;
+    this.player = [c.at[0], c.at[1]];
+    this.heading = c.heading;
+    this.events.push({ type: "retry", at: [c.at[0], c.at[1]], heading: c.heading, boss: c.boss });
+    if (c.boss && c.place) {
+      const q = this.quest("finalExam", true, "boss", MAIN.finalExam.need, MAIN.finalExam.reward, c.place);
+      q.started = true;
+      this.arena = { at: c.place.at, radius: QUEST.arenaRadius, active: true };
+      this.spawn("exam", this.ring(c.place.at, 6), q.id, 1);
+    } else this.beginMain(c.at, c.place);
+    this.check = c;
+    this.refillSides();
+    return this.events;
   }
 
   /** A side quest, beside a building not used by another quest. */
@@ -927,9 +1203,8 @@ export class StudyQuest {
       if (!q.started && q.place && dist(q.place.at, this.player) <= QUEST.placeReach) {
         q.started = true;
         if (q.goal === "defeat") {
-          this.events.push({ type: "wave", place: q.place.name });
-          const kinds: FoeKind[] = q.key === "studyGroup" ? ["distraction", "distraction", "distraction", "procrastination", "plagiarism", "distraction"] : ["distraction", "procrastination", "distraction"];
-          for (const k of kinds.slice(0, q.need)) this.spawn(k, this.ring(q.place.at, 10 + this.host.random() * 8), q.id, 1, false);
+          q.wave = 0;
+          this.nextWave(q);
         } else if (q.goal === "collect") {
           for (let i = 0; i < q.need; i++) {
             const at = this.host.spot(this.player, this.items.map((it) => it.at), q.place.at) ?? this.ring(q.place.at, 6 + i * 3);
@@ -937,9 +1212,13 @@ export class StudyQuest {
           }
         }
       }
+      // A wave beaten, the next comes.
+      if (q.goal === "defeat" && q.wave !== undefined && q.wave < (WAVES[q.key]?.length ?? 0) && !this.foes.some((f) => f.quest === q.id && f.state !== "dead")) this.nextWave(q);
       if (q.goal === "boss" && this.arena && !this.arena.active && dist(this.arena.at, this.player) <= this.arena.radius) {
         this.arena.active = true;
         q.started = true;
+        // The arena's edge is the last checkpoint: a retry starts the fight again from here.
+        this.check = { ...this.check, at: [this.player[0], this.player[1]], heading: bearingTo(this.player, this.arena.at), place: q.place, boss: true };
         // The wanderers leave the hall to the exam.
         for (const f of this.foes) if (f.wander && f.state !== "dead") ((f.state = "dead"), (f.t = 0.5));
         this.spawn("exam", this.ring(this.arena.at, 6), q.id, 1);
@@ -962,7 +1241,20 @@ export class StudyQuest {
         this.beginMain(this.player);
       }
     }
-    // Side quests come after the first fight, two at a time.
+    this.refillSides();
+  }
+
+  /** The next wave of a place to clear, round its place. */
+  private nextWave(q: Quest): void {
+    const kinds = WAVES[q.key]?.[q.wave ?? 0];
+    if (!kinds || !q.place) return;
+    q.wave = (q.wave ?? 0) + 1;
+    this.events.push({ type: "wave", place: q.place.name });
+    for (const k of kinds) this.spawn(k, this.ring(q.place.at, 10 + this.host.random() * 8), q.id, WAVE_TIER[q.key]?.[k] ?? 1, false);
+  }
+
+  /** Side quests come after the first fight, two at a time. */
+  private refillSides(): void {
     while (this.mainStep >= 2 && this.mainStep < 5 && this.quests.filter((q) => !q.main).length < 2) {
       const before = this.quests.length;
       this.beginSide(this.player);
@@ -994,6 +1286,8 @@ export class StudyQuest {
   /** Wanderers: after the first quest, small foes come now and then, more as the walker rises. */
   private spawning(dt: number): void {
     if (this.mainStep < 1 || this.arena?.active) return;
+    // While a quest's own foes are out, the fight is theirs: no strays join it.
+    if (this.foes.some((f) => f.quest && !f.wander && f.state !== "dead" && dist(f.at, this.player) < QUEST.strayRange)) return;
     // Strays far behind go.
     for (const f of this.foes) if (f.wander && f.state !== "dead" && dist(f.at, this.player) > QUEST.strayRange) ((f.state = "dead"), (f.t = 0));
     this.spawnT -= dt;
@@ -1113,6 +1407,8 @@ export class StudyQuest {
         break;
       }
       case "procrastination":
+        // The first fight's foe yawns slowly: time to see the warning, and the prompt, and to dodge.
+        if (f.tutor) tell *= TEACH.practiceTell;
         f.move = { type: "yawn", at: f.at, radius: 4.2 };
         this.addTell(f, { shape: "circle", at: f.at, dir: 0, length: 0, width: 0, radius: 4.2 }, tell);
         break;
@@ -1348,6 +1644,31 @@ export function reachable(g: WalkGrid, from: Pt): Uint8Array {
   return mask;
 }
 
+/**
+ * The middle of the reachable cell nearest `p` (open ground off a path counts, as for pick-ups),
+ * within `rings` cells; undefined when there is none.
+ */
+export function nearestReached(g: WalkGrid, reached: Uint8Array, p: Pt, rings = 12): Pt | undefined {
+  const [c0, r0] = cellOf(g, p);
+  let best: Pt | undefined;
+  let bestD = Infinity;
+  for (let ring = 0; ring <= rings; ring++) {
+    for (let dr = -ring; dr <= ring; dr++) {
+      for (let dc = -ring; dc <= ring; dc++) {
+        if (Math.max(Math.abs(dr), Math.abs(dc)) !== ring) continue;
+        const c = c0 + dc;
+        const r = r0 + dr;
+        if (c < 0 || r < 0 || c >= g.cols || r >= g.rows || !reached[r * g.cols + c]) continue;
+        const at = centreOf(g, c, r);
+        const d = Math.hypot(at[0] - p[0], at[1] - p[1]);
+        if (d < bestD) (bestD = d), (best = at);
+      }
+    }
+    if (best) return best;
+  }
+  return undefined;
+}
+
 /** A place pick-ups gather round: a building's middle, and how many it draws against the others. */
 export interface BookDraw {
   center: Pt;
@@ -1374,6 +1695,7 @@ export function bookSpot(
   taken: readonly Pt[],
   random: () => number,
   openReach: number = OPEN_REACH,
+  drawReach: number = DRAW_REACH,
 ): Pt | undefined {
   const total = draws.reduce((sum, d) => sum + d.weight, 0);
   for (let attempt = 0; attempt < 40; attempt++) {
@@ -1385,7 +1707,7 @@ export function bookSpot(
         pick -= d.weight;
         if (pick <= 0) {
           centre = d.center;
-          reach = DRAW_REACH;
+          reach = drawReach;
           break;
         }
       }

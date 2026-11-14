@@ -3,12 +3,18 @@ import type { Pt } from "../src/shared/geo.ts";
 import {
   FOES,
   FOE_TIME,
+  GRADE,
+  LESSONS,
+  MAIN,
   PLAYER,
   QUEST,
   RANKS,
   StudyQuest,
+  TEACH,
+  WAVES,
   bearingTo,
   bookSpot,
+  gradeFactors,
   gradeFor,
   openSpot,
   rankFor,
@@ -47,9 +53,12 @@ function rowHost(random: () => number = () => 0.5): QuestHost {
 const HERE: Pt = [0, 0];
 const at = (p: Pt, heading = 0): PlayerInput => ({ at: p, heading, active: true, pace: 1 });
 
-/** A game past its first seconds of grace, with nothing out but what a test puts there. */
+/**
+ * A game past its first seconds of grace, with nothing out but what a test puts there, for a visitor
+ * taught every lesson before (so no first fight comes and no prompt shows).
+ */
 function quiet(random?: () => number): StudyQuest {
-  const g = new StudyQuest(rowHost(random), HERE);
+  const g = new StudyQuest(rowHost(random), HERE, 0, LESSONS);
   g.grace = 0;
   g.foes = [];
   return g;
@@ -105,21 +114,43 @@ describe("study ranks and growth", () => {
     expect(g.items.filter((i) => i.kind === "book")).toHaveLength(QUEST.booksOut);
   });
 
-  it("finishes the first quest, rises a rank, opens the flashcard and sends the DDL", () => {
+  it("finishes the first quest and sends the DDL, weaker than the one that returns", () => {
     const g = quiet();
     const events: GameEvent[] = [];
-    for (let k = 0; k < 5; k++) {
+    for (let k = 0; k < MAIN.orientation.need; k++) {
       const book = g.items.find((i) => i.kind === "book")!;
       events.push(...g.step(0.05, at(book.at)));
     }
     expect(events).toContainEqual(expect.objectContaining({ type: "quest", done: true }));
-    expect(g.xp).toBe(5 * QUEST.bookXp + 20);
-    expect(events).toContainEqual({ type: "rank", rank: 1, skill: "flashcard" });
-    expect(g.has("flashcard")).toBe(true);
+    expect(g.xp).toBe(MAIN.orientation.need * QUEST.bookXp + MAIN.orientation.reward);
     expect(g.quests.map((q) => q.key)).toEqual(["ddl1"]);
     const ddl = g.foes.find((f) => f.kind === "ddl")!;
-    expect(ddl).toBeDefined();
+    expect(ddl.maxHp).toBe(Math.round(FOES.ddl.hp * MAIN.ddl1.tier));
     expect(events).toContainEqual(expect.objectContaining({ type: "arrive", kind: "ddl", first: true }));
+  });
+
+  it("rises to Sophomore with the first DDL beaten, which opens the flashcard", () => {
+    const g = quiet();
+    g.mainStep = 1;
+    g.quests = [];
+    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
+    g.xp = RANKS[1]!.xp - MAIN.ddl1.reward - Math.round(FOES.ddl.xp * MAIN.ddl1.tier);
+    const ddl = g.foes.find((f) => f.kind === "ddl")!;
+    ddl.state = "recover";
+    ddl.hp = 1;
+    ddl.at = [0, 2];
+    g.act("strike");
+    const events = run(g, 0.3);
+    expect(events).toContainEqual({ type: "rank", rank: 1, skill: "flashcard" });
+    expect(g.has("flashcard")).toBe(true);
+    expect(g.quests.filter((q) => q.main).map((q) => q.key)).toEqual(["studyGroup"]);
+  });
+
+  it("asks more knowledge for each rank than the last, by a step that grows smoothly", () => {
+    const steps = RANKS.slice(1).map((r, k) => r.xp - RANKS[k]!.xp);
+    for (let k = 1; k < steps.length; k++) expect(steps[k]!).toBeGreaterThan(steps[k - 1]!);
+    const growth = steps.slice(1).map((d, k) => d - steps[k]!);
+    expect(Math.max(...growth) - Math.min(...growth)).toBeLessThanOrEqual(20);
   });
 
   it("refills Focus and Stamina on a new rank", () => {
@@ -396,6 +427,7 @@ describe("villains", () => {
 
   it("burns the walker out at no Focus, and a game that is over stays as it ended", () => {
     const g = quiet(() => 0.5);
+    g.mainStep = 1;
     g.focus = 1;
     const f = g.spawn("distraction", [0, 1]);
     f.state = "tell";
@@ -569,15 +601,255 @@ describe("the Final Exam", () => {
   });
 });
 
+describe("the first minute, taught by play", () => {
+  /** A first game: no lesson taught yet, nothing laid but the first book and the row of others. */
+  function fresh(random: () => number = () => 0.5): StudyQuest {
+    return new StudyQuest(rowHost(random), HERE, 0);
+  }
+
+  it("lays the first book a few steps ahead, and shows the prompt to move until the walker moves", () => {
+    const g = fresh();
+    const first = g.items[0]!;
+    expect(first.kind).toBe("book");
+    expect(first.at[1]).toBeCloseTo(TEACH.firstBook);
+    run(g, 1);
+    expect(g.lesson).toBe("move");
+    const events = run(g, 0.1, [0, TEACH.moved + 0.1]);
+    expect(events).toContainEqual({ type: "learn", lesson: "move" });
+    expect(g.lesson).toBeUndefined();
+    expect(g.taught.has("move")).toBe(true);
+  });
+
+  it("sends one weak, slow Procrastination soon after the first book: the strike's prompt near it, the dodge's in its yawn", () => {
+    const g = fresh();
+    g.step(0.05, at(g.items[0]!.at));
+    run(g, TEACH.practiceSoon + 0.1, g.items[0]!.at);
+    g.grace = 0;
+    const tutor = g.foes.find((f) => f.id === g.practice)!;
+    expect(tutor.kind).toBe("procrastination");
+    expect(tutor.tutor).toBe(true);
+    expect(tutor.maxHp).toBeLessThan(FOES.procrastination.hp);
+    // Beside it, once it has risen, the strike's prompt.
+    tutor.state = "chase";
+    tutor.t = 0;
+    tutor.cool = 99;
+    const by: Pt = [tutor.at[0], tutor.at[1] - 3];
+    run(g, 0.1, by);
+    expect(g.lesson).toBe("strike");
+    // Its yawn shows longer than its kind's, and while it shows, the dodge's prompt.
+    tutor.cool = 0;
+    tutor.at = [by[0], by[1] + 2];
+    const tells = run(g, 0.1, by).filter((e) => e.type === "tell");
+    expect(tells[0]).toMatchObject({ kind: "procrastination", move: "yawn" });
+    expect((tells[0] as { time: number }).time).toBeCloseTo(FOES.procrastination.tell * TEACH.practiceTell);
+    expect(g.lesson).toBe("dodge");
+    g.act("dodge");
+    expect(run(g, 0.1, by)).toContainEqual({ type: "learn", lesson: "dodge" });
+    g.act("strike");
+    expect(run(g, 0.4, by)).toContainEqual({ type: "learn", lesson: "strike" });
+  });
+
+  it("cannot be lost before the first quest is done", () => {
+    const g = fresh();
+    g.grace = 0;
+    for (let k = 0; k < 20; k++) {
+      g.iframes = 0;
+      (g as unknown as { hurt(n: number, p: Pt): void }).hurt(50, [0, 2]);
+    }
+    expect(g.phase).toBe("play");
+    expect(g.focus).toBeCloseTo(statsFor(0).maxFocus * TEACH.floor);
+  });
+
+  it("brings each new skill's prompt when it is first of use: the flashcard for a foe out of reach, the Eureka once charged", () => {
+    const g = quiet();
+    g.taught = new Set(LESSONS.filter((l) => l !== "flashcard" && l !== "eureka"));
+    g.xp = RANKS[3]!.xp;
+    g.rank = 3;
+    run(g, 0.1);
+    expect(g.lesson).toBeUndefined();
+    foe(g, "anxiety", 18);
+    run(g, 0.1);
+    expect(g.lesson).toBe("flashcard");
+    g.act("card");
+    expect(run(g, 0.2)).toContainEqual({ type: "learn", lesson: "flashcard" });
+    g.foes = [];
+    foe(g, "distraction", 3);
+    g.eurekaMeter = PLAYER.eurekaCharge;
+    run(g, 0.1);
+    expect(g.lesson).toBe("eureka");
+  });
+
+  it("lets a prompt go for good when it has been up long enough", () => {
+    const g = new StudyQuest(rowHost(), HERE, 0, ["strike", "dodge"]);
+    const events = run(g, TEACH.maxShown + 0.5, [0, -0.5]);
+    expect(events).toContainEqual({ type: "learn", lesson: "move" });
+    expect(g.taught.has("move")).toBe(true);
+  });
+
+  it("shows none of it to a visitor taught before: no prompt, no first fight", () => {
+    const g = new StudyQuest(rowHost(), HERE, 0, LESSONS);
+    g.step(0.05, at(g.items[0]!.at));
+    run(g, TEACH.practiceAfter + 1);
+    expect(g.practice).toBeUndefined();
+    expect(g.lesson).toBeUndefined();
+    expect(g.foes).toHaveLength(0);
+  });
+});
+
+describe("a retry", () => {
+  it("starts the quest the walker was on again, where it began, keeping what it learned and counting the defeat", () => {
+    const g = quiet(seeded(3));
+    g.mainStep = 2;
+    g.quests = [];
+    (g as unknown as { beginMain(p: Pt): void }).beginMain([5, 5]);
+    const place = g.quests.find((q) => q.main)!.place!;
+    run(g, 0.1, place.at);
+    expect(g.foes.length).toBeGreaterThan(0);
+    g.xp = 300;
+    g.rank = 1;
+    g.focus = 1;
+    g.iframes = 0;
+    (g as unknown as { hurt(n: number, p: Pt): void }).hurt(10, place.at);
+    expect(g.phase).toBe("over");
+    const events = g.retry();
+    expect(events).toContainEqual({ type: "retry", at: [5, 5], heading: 0, boss: false });
+    expect(g.phase).toBe("play");
+    expect(g.deaths).toBe(1);
+    expect(g.xp).toBe(300);
+    expect(g.focus).toBe(statsFor(1).maxFocus);
+    expect(g.foes).toHaveLength(0);
+    const q = g.quests.find((x) => x.main)!;
+    expect(q.key).toBe("studyGroup");
+    expect(q.place).toEqual(place);
+    expect(q.started).toBe(false);
+    expect(g.grace).toBe(QUEST.grace);
+    // Nothing to retry in a game that is on.
+    expect(g.retry()).toEqual([]);
+  });
+
+  it("at the boss, starts again from the arena's edge with the Final Exam whole and in its first phase", () => {
+    const g = quiet(() => 0.3);
+    g.quests = [];
+    g.mainStep = 5;
+    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
+    const arena = g.quests[0]!.place!.at;
+    const edge: Pt = [arena[0], arena[1] - QUEST.arenaRadius + 1];
+    g.step(0.05, at(edge));
+    const boss = g.boss!;
+    boss.hp = 100;
+    boss.phase = 3;
+    g.focus = 1;
+    g.grace = 0;
+    g.iframes = 0;
+    (g as unknown as { hurt(n: number, p: Pt): void }).hurt(10, arena);
+    const r = g.retry().find((e) => e.type === "retry")!;
+    expect(r).toMatchObject({ boss: true, at: edge });
+    expect(g.arena?.active).toBe(true);
+    const again = g.boss!;
+    expect(again.hp).toBe(FOES.exam.hp);
+    expect(again.phase).toBe(1);
+    expect(g.quests.filter((q) => q.main).map((q) => q.key)).toEqual(["finalExam"]);
+  });
+});
+
+describe("the curve's rules", () => {
+  it("brings a place's foes wave by wave: the next when the last is beaten", () => {
+    const g = quiet(seeded(2));
+    g.mainStep = 2;
+    g.quests = [];
+    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
+    const q = g.quests.find((x) => x.main)!;
+    const waves = WAVES.studyGroup!;
+    expect(q.need).toBe(waves.reduce((n, w) => n + w.length, 0));
+    let events = run(g, 0.1, q.place!.at);
+    expect(events.filter((e) => e.type === "wave")).toHaveLength(1);
+    expect(g.foes.filter((f) => f.quest === q.id)).toHaveLength(waves[0]!.length);
+    for (const f of g.foes) if (f.quest === q.id) ((f.state = "dead"), (f.t = 0));
+    events = run(g, 0.1, q.place!.at);
+    expect(events.filter((e) => e.type === "wave")).toHaveLength(1);
+    expect(g.foes.filter((f) => f.quest === q.id && f.state !== "dead")).toHaveLength(waves[1]!.length);
+  });
+
+  it("lets the boss and the DDL guard: a blow does less until they recover from an attack, and the Eureka breaks it", () => {
+    const hitFor = (state: "chase" | "recover", act: "strike" | "eureka") => {
+      const g = quiet(() => 0.5);
+      g.xp = RANKS[3]!.xp;
+      g.rank = 3;
+      g.eurekaMeter = PLAYER.eurekaCharge;
+      const d = foe(g, "ddl", 2);
+      d.state = state;
+      d.t = 9;
+      g.act(act);
+      const e = run(g, 0.2).find((x) => x.type === "hit") as { amount: number };
+      return e.amount;
+    };
+    const guarded = hitFor("chase", "strike");
+    const open = hitFor("recover", "strike");
+    expect(Math.abs(guarded - open * FOES.ddl.guard!)).toBeLessThanOrEqual(1);
+    expect(hitFor("chase", "eureka")).toBe(hitFor("recover", "eureka"));
+  });
+
+  it("gives the walker a second wind at each of the boss's changes of phase", () => {
+    const g = quiet(() => 0.3);
+    g.quests = [];
+    g.mainStep = 5;
+    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
+    const place = g.quests[0]!.place!.at;
+    g.step(0.05, at(place));
+    const boss = g.boss!;
+    boss.state = "recover";
+    boss.t = 9;
+    boss.hp = Math.ceil(boss.maxHp * 0.66) + 1;
+    boss.at = [place[0], place[1] + 2];
+    g.focus = 20;
+    g.act("strike");
+    expect(g.step(PLAYER.strikeContact[0]!, at(place))).toContainEqual({ type: "phase", phase: 2 });
+    expect(g.focus).toBeCloseTo(20 + statsFor(0).maxFocus * QUEST.secondWind, 0);
+  });
+
+  it("sends no strays while a quest's own foes are out", () => {
+    const g = quiet(seeded(4));
+    g.mainStep = 1;
+    g.focus = 1e9;
+    const d = foe(g, "ddl", 20);
+    d.quest = "ddl1-x";
+    run(g, 40);
+    expect(g.foes.filter((f) => f.wander)).toHaveLength(0);
+  });
+
+  it("does not let a light blow stop an attack that is showing", () => {
+    const g = quiet(() => 0.5);
+    const f = foe(g, "plagiarism", 2);
+    f.state = "tell";
+    f.t = 9;
+    f.move = { type: "blink" };
+    g.act("strike");
+    const hit = run(g, 0.2).find((e) => e.type === "hit") as { stagger: boolean };
+    expect(hit.stagger).toBe(false);
+    expect(f.state).toBe("tell");
+  });
+});
+
 describe("grades", () => {
   const order = ["F", "D", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"];
-  it("gives an F to a run that did nothing, and an A+ to a clean victory at a high rank", () => {
-    expect(gradeFor({ victory: false, seconds: 60, xp: 0, rank: 0, defeated: 0, maxChain: 0, focusLost: 400, quests: 0 })).toBe("F");
-    expect(gradeFor({ victory: true, seconds: 900, xp: 2000, rank: 7, defeated: 40, maxChain: 25, focusLost: 0, quests: 8 })).toBe("A+");
+  const clean = { victory: true, seconds: GRADE.time.par * 60, xp: GRADE.knowledge.full, rank: 5, defeated: 40, maxChain: GRADE.combo.full, focusLost: 0, quests: 8, deaths: 0 };
+  it("gives an F to a run that did nothing, and an A+ to a fast, clean victory", () => {
+    expect(gradeFor({ victory: false, seconds: 60, xp: 0, rank: 0, defeated: 0, maxChain: 0, focusLost: 400, quests: 0, deaths: 4 })).toBe("F");
+    expect(gradeFor(clean)).toBe("A+");
   });
-  it("grades the same run better for less Focus lost", () => {
-    const base = { victory: true, seconds: 600, xp: 900, rank: 4, defeated: 20, maxChain: 10, quests: 6 };
-    expect(order.indexOf(gradeFor({ ...base, focusLost: 0 }))).toBeGreaterThan(order.indexOf(gradeFor({ ...base, focusLost: 600 })));
+  it("gives no A+ to a run with a defeat, however fast and however long its combo", () => {
+    expect(gradeFor({ ...clean, deaths: 1 })).not.toBe("A+");
+    expect(order.indexOf(gradeFor({ ...clean, deaths: 1 }))).toBeGreaterThan(order.indexOf(gradeFor({ ...clean, deaths: 3 })));
+  });
+  it("is made of four factors, each with its marks out of its most", () => {
+    const f = gradeFactors({ ...clean, seconds: (GRADE.time.par + GRADE.time.zero) * 30, maxChain: GRADE.combo.full / 2, deaths: 1 });
+    expect(Object.keys(f)).toEqual(["time", "deaths", "combo", "knowledge"]);
+    expect(f.time.points).toBe(Math.round(GRADE.time.max / 2));
+    expect(f.deaths).toEqual({ points: GRADE.deaths[1], max: GRADE.deaths[0] });
+    expect(f.combo.points).toBe(GRADE.combo.max / 2);
+    expect(f.knowledge).toEqual({ points: GRADE.knowledge.max, max: GRADE.knowledge.max });
+    // A run not finished gets nothing for its time.
+    expect(gradeFactors({ ...clean, victory: false }).time.points).toBe(0);
   });
 });
 
