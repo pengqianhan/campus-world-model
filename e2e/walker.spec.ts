@@ -1,5 +1,5 @@
 // The walker: a made-up figure a visitor or an agent walks round the campus, and its views.
-import { expect, test, type Page } from "@playwright/test";
+import { devices, expect, test, type Page } from "@playwright/test";
 import { expectRealRender, open, shot } from "./helpers.ts";
 
 type Reply = Record<string, unknown> & { error?: string };
@@ -308,7 +308,7 @@ test("on a scooter the walker goes faster on the same ways; a drone flies in its
   await expect(page.locator(".topbar")).toBeVisible();
 });
 
-test("Study Quest is off until asked for; its title says it is made up; books lead to the DDL, a strike lands, the pause stops its clock; burnt out, the debrief grades the run; ending it clears the map", async ({ page }) => {
+test("Study Quest is off until asked for; its title says it is made up; the first minute is taught by prompts that come once; books lead to the DDL, a strike lands, the pause stops its clock; burnt out, a retry starts the quest again, the debrief grades the run by its factors, and a game played again starts at once; ending it clears the map", async ({ page }) => {
   type Game = {
     phase: string;
     books: [number, number][];
@@ -320,7 +320,7 @@ test("Study Quest is off until asked for; its title says it is made up; books le
     main: number;
   };
   type GameScene = {
-    game: { state(): Game | undefined; quest?: { seconds: number; focus: number; grace: number; iframes: number } };
+    game: { state(): Game | undefined; quest?: { seconds: number; focus: number; grace: number; iframes: number; deaths: number; practice?: number; taught: Set<string> } };
     walkers: { teleport(name: string, at: [number, number]): void; turn(name: string, by: number, absolute?: boolean): void };
   };
   const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
@@ -362,30 +362,58 @@ test("Study Quest is off until asked for; its title says it is made up; books le
   await expect(page.locator("#game-quests")).toContainText("Orientation");
   await expect(page.locator("#game-rank")).toHaveText("Fresher");
   await expect(page.locator(".gx-compass")).toBeVisible();
+  // No words to read: the title card lists no controls. The first book glows a few steps ahead,
+  // and the one prompt is its keys to move.
+  await expect(page.locator(".sq-legend")).toHaveCount(0);
+  await expect(page.locator("#game-prompt")).toHaveAttribute("data-lesson", "move");
+  await expect(page.locator("#game-prompt kbd")).toHaveCount(4);
+  const start = await page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { at: [number, number] } } }).walkers.state("Walker").at.slice());
+  expect(Math.hypot(g.books[0]![0] - start[0]!, g.books[0]![1] - start[1]!)).toBeLessThan(12);
 
-  // Five books finish the first quest: a rank up, and the DDL comes with its name card.
-  for (let k = 1; k <= 5; k++) {
+  // The first book taken: the prompt to move goes, and a lone weak Procrastination comes; near it,
+  // the prompt to strike.
+  await put(g.books[0]!);
+  await until("g.xp >= 10");
+  await expect(page.locator("#game-prompt")).toHaveCount(0);
+  await page.waitForFunction(() => {
+    const q = (window.__scene as unknown as GameScene).game.quest!;
+    return q.practice !== undefined && (window.__scene as unknown as GameScene).game.state()!.foes.some((f) => f.id === q.practice && f.state !== "rise");
+  });
+  const tutor = (await game())!.foes.find((f) => f.kind === "procrastination")!;
+  await put([tutor.at[0], tutor.at[1] - 5], 0);
+  await expect(page.locator("#game-prompt")).toHaveAttribute("data-lesson", "strike");
+  await expect(page.locator("#game-prompt")).toContainText("Strike");
+  // J strikes: the prompt goes for good, here and in this browser's storage.
+  await put([tutor.at[0], tutor.at[1] - 2.2], 0);
+  await page.keyboard.press("j");
+  await expect(page.locator('#game-prompt[data-lesson="strike"]')).toHaveCount(0);
+  await page.waitForFunction(() => (JSON.parse(localStorage.getItem("studyQuest.settings") ?? "{}").seen ?? []).includes("strike"));
+
+  // The orientation's books finish the first quest: the DDL comes with its name card.
+  for (let k = 0; k < 8; k++) {
     g = (await game())!;
+    if (g.main >= 1) break;
+    const got = g.quests[0]!.got;
     await put(g.books[0]!);
-    await until(`g.xp >= ${k * 10}`);
+    await until(`g.main >= 1 || g.quests[0].got > ${got}`);
   }
   await until("g.main === 1 && g.foes.some((f) => f.kind === 'ddl')");
   await expect(page.locator("#game-namecard")).toContainText("DDL");
   await expect(page.locator("#game-quests")).toContainText("The DDL");
-  await expect(page.locator("#game-rank")).toHaveText("Sophomore");
 
   // Beside the DDL and facing it, J strikes, and the blow lands.
   g = (await game())!;
   const ddl = g.foes.find((f) => f.kind === "ddl")!;
+  const ddlHp = ddl.hp;
   await page.waitForFunction((id) => (window.__scene as unknown as GameScene).game.state()!.foes.find((f) => f.id === id)?.state !== "rise", ddl.id);
   for (let k = 0; k < 6; k++) {
     const d = (await game())!.foes.find((f) => f.kind === "ddl")!;
     await put([d.at[0], d.at[1] - 2.2], 0);
     await page.keyboard.press("j");
     await page.waitForTimeout(350);
-    if ((await game())!.foes.find((f) => f.kind === "ddl")!.hp < 280) break;
+    if ((await game())!.foes.find((f) => f.kind === "ddl")!.hp < ddlHp) break;
   }
-  await until("g.foes.some((f) => f.kind === 'ddl' && f.hp < 280)");
+  await until(`g.foes.some((f) => f.kind === 'ddl' && f.hp < ${ddlHp})`);
   await expect(page.locator(".gx-plate.elite").first()).toContainText("DDL");
 
   // P pauses: the menu opens and the game's clock stops; Resume goes on. A key still held when the
@@ -406,25 +434,52 @@ test("Study Quest is off until asked for; its title says it is made up; books le
   await page.locator("#game-resume").click();
   await expect(page.locator("#game-menu")).toHaveCount(0);
 
-  // With its Focus at one, the next blow burns the walker out: the debrief, with a grade.
-  await page.evaluate(() => {
-    const q = (window.__scene as unknown as GameScene).game.quest!;
-    q.focus = 1;
-    q.grace = 0;
-    q.iframes = 0;
-  });
+  // With its Focus at one, the next blow burns the walker out: a choice, to retry, to see the
+  // debrief, or to end the game.
+  const burn = () =>
+    page.evaluate(() => {
+      const q = (window.__scene as unknown as GameScene).game.quest! as unknown as { focus: number; grace: number; iframes: number; cineT: number; hurt(n: number, p: [number, number]): void };
+      q.focus = 1;
+      q.grace = 0;
+      q.iframes = 0;
+      q.cineT = 0;
+      q.hurt(10, [0, 0]);
+    });
+  await burn();
   await until("g.phase === 'over'");
   await expect(page.locator("#game-over")).toBeVisible();
   await expect(page.locator("#game-over")).toContainText("Burnt out");
-  await expect(page.locator("#game-grade")).toHaveText(/^[A-DF][+-]?$/);
   await expect(page.locator("#game-over")).toContainText(/made up/);
+  await expect(page.locator("#game-retry")).toBeFocused();
+  // Retry: at once, the DDL's quest from where it began, Focus whole, the defeat counted.
+  const retried = Date.now();
+  await page.locator("#game-retry").click();
+  await until("g.phase === 'play' && g.main === 1 && g.focus >= 100 && g.foes.some((f) => f.kind === 'ddl')");
+  expect(Date.now() - retried).toBeLessThan(1500);
+  await expect(page.locator("#game-over")).toHaveCount(0);
+  expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.deaths)).toBe(1);
+  await expect(page.locator("#game-quests")).toContainText("The DDL");
 
-  // Play again: a fresh game.
+  // Burnt out again, the debrief: its grade, and a line for each of the factors that make it.
+  await burn();
+  await page.locator("#game-debrief").click();
+  await expect(page.locator("#game-grade")).toHaveText(/^[A-DF][+-]?$/);
+  const factors = page.locator("#game-factors dd");
+  await expect(factors).toHaveCount(5);
+  await expect(page.locator('#game-factors dd[data-factor="deaths"]')).toContainText("2");
+  for (const k of ["time", "deaths", "combo", "knowledge"]) await expect(page.locator(`#game-factors dd[data-factor="${k}"] .sq-pts`)).toHaveText(/^\d+\/\d+$/);
+
+  // Play again: a fresh game at once, with no reload and no title card; the prompts taught stay away.
+  const again = Date.now();
   await page.locator("#game-again").click();
   await until("g.phase === 'play' && g.xp === 0 && g.main === 0");
+  expect(Date.now() - again).toBeLessThan(1500);
+  await expect(page.locator("#game-title")).toHaveCount(0);
+  await expect(page.locator("#game-over")).toHaveCount(0);
+  await page.waitForTimeout(400);
+  await expect(page.locator('#game-prompt[data-lesson="strike"]')).toHaveCount(0);
 
   // Ending the game takes everything of it off the map; the walk goes on.
-  await page.locator("#game-title").click();
   await page.keyboard.press("p");
   await page.locator("#game-quit").click();
   await expect(page.locator("#game-panel")).toHaveCount(0);
@@ -550,16 +605,99 @@ test("a walker view that stands still is drawn once, however long a frame takes"
     .toBe(true);
   // Until a long frame draws nothing more: the walker, its view, the sky and the Clock Tower have
   // come in. The Clock Tower is made in a worker and its shaders on the graphics driver's threads
-  // (landmark.spec.ts), which the page's clock does not hold back, so they are waited for as well.
+  // (landmark.spec.ts), which the page's clock does not hold back, so they are waited for as well;
+  // with the file's other tests drawing on the same graphics card that can take longer than the
+  // default wait, which says nothing about a still view.
   await expect
-    .poll(async () => {
-      const before = await page.evaluate(() => window.__scene!.frames);
-      await page.clock.fastForward(1500);
-      const drawn = (await page.evaluate(() => window.__scene!.frames)) - before;
-      return drawn + (await page.evaluate(() => window.__scene!.loading + window.__scene!.preparing));
-    })
+    .poll(
+      async () => {
+        const before = await page.evaluate(() => window.__scene!.frames);
+        await page.clock.fastForward(1500);
+        const drawn = (await page.evaluate(() => window.__scene!.frames)) - before;
+        return drawn + (await page.evaluate(() => window.__scene!.loading + window.__scene!.preparing));
+      },
+      { timeout: 40_000 },
+    )
     .toBe(0);
   const before = await page.evaluate(() => window.__scene!.frames);
   for (let i = 0; i < 4; i++) await page.clock.fastForward(1500);
   expect(await page.evaluate(() => window.__scene!.frames), "frames drawn of a still view").toBe(before);
+});
+
+test.describe("on a phone", () => {
+  // A phone held upright (390 by 844, as an iPhone 13), touch and all; drawn at one pixel to the
+  // point, as the other tests in this file share the graphics card with it.
+  const { defaultBrowserType: _browser, ...phone } = devices["Pixel 7"];
+  test.use({ ...phone, viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+
+  test("Study Quest on a phone: the title card, the prompt by the stick, the first fight's strike by the button that pulses, and a pause menu with no stick or buttons through it", async ({ page }) => {
+    type GameScene = {
+      game: { state(): { phase: string; xp: number; books: [number, number][]; foes: { id: number; kind: string; at: [number, number]; hp: number; state: string }[] } | undefined; quest?: { practice?: number; seconds: number } };
+      walkers: { teleport(name: string, at: [number, number]): void; turn(name: string, by: number, absolute?: boolean): void };
+    };
+    const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
+    const put = (at: [number, number], heading = 0) =>
+      page.evaluate(
+        ([p, h]) => {
+          const s = window.__scene as unknown as GameScene;
+          s.walkers.teleport("Walker", p as [number, number]);
+          s.walkers.turn("Walker", h as number, true);
+        },
+        [at, heading] as const,
+      );
+    await open(page, `?walk=1&${QUERY}`);
+    await ready(page);
+    await page.locator("#walker-game").tap();
+    await expect(page.locator("#game-title")).toBeVisible();
+    await expect(page.locator("#game-title")).toContainText("Tap to begin");
+    await page.locator("#game-title").tap();
+    await expect(page.locator("#game-title")).toHaveCount(0);
+
+    // The prompt to move stands by the stick, which pulses; no key glyphs on a phone.
+    const prompt = page.locator("#game-prompt");
+    await expect(prompt).toHaveAttribute("data-lesson", "move");
+    await expect(prompt).toHaveClass(/at-stick/);
+    await expect(page.locator("#game-prompt kbd")).toHaveCount(0);
+    await expect(page.locator("#game-panel")).toHaveClass(/cue-move/);
+    const box = (await prompt.boundingBox())!;
+    const stick = (await page.locator("#walker-stick").boundingBox())!;
+    // Above the stick, not over it, and clear of the middle of the picture.
+    expect(box.y + box.height).toBeLessThanOrEqual(stick.y + 2);
+    expect(box.y).toBeGreaterThan(844 * 0.55);
+
+    // The first book, then the first fight's lone foe: by it, the strike's prompt over the buttons.
+    let g = (await game())!;
+    await put(g.books[0]!);
+    await page.waitForFunction(() => {
+      const s = window.__scene as unknown as GameScene;
+      const id = s.game.quest!.practice;
+      return id !== undefined && s.game.state()!.foes.some((f) => f.id === id && f.state !== "rise");
+    });
+    g = (await game())!;
+    const tutor = g.foes.find((f) => f.kind === "procrastination")!;
+    await put([tutor.at[0], tutor.at[1] - 2.2], 0);
+    await expect(prompt).toHaveAttribute("data-lesson", "strike");
+    await expect(prompt).toHaveClass(/at-pad/);
+    await expect(page.locator("#game-panel")).toHaveClass(/cue-strike/);
+    await shot(page, "33-study-quest-phone-prompt");
+    // The first strike, from its button: it lands, and the prompt goes.
+    await page.locator("#game-strike").dispatchEvent("pointerdown");
+    await page.waitForFunction((id) => (window.__scene as unknown as GameScene).game.state()!.foes.some((f) => f.id === id && f.hp < 85), tutor.id);
+    await expect(page.locator('#game-prompt[data-lesson="strike"]')).toHaveCount(0);
+
+    // The pause menu has the screen: no stick, no buttons, no marks over the picture under it; the clock stops.
+    await page.locator("#game-pause").tap();
+    await expect(page.locator("#game-menu")).toBeVisible();
+    await expect(page.locator("#walker-stick")).toHaveCount(0);
+    await expect(page.locator(".sq-pad")).toHaveCount(0);
+    await expect(page.locator("#game-prompt")).toHaveCount(0);
+    await expect(page.locator(".gx")).toHaveClass(/menu/);
+    const t0 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
+    await page.waitForTimeout(500);
+    expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t0);
+    await page.locator("#game-resume").tap();
+    await expect(page.locator("#game-menu")).toHaveCount(0);
+    await expect(page.locator("#walker-stick")).toBeVisible();
+    await expect(page.locator(".sq-pad")).toBeVisible();
+  });
 });

@@ -6,7 +6,7 @@
 // with the stick while the other drags the view round. The walker, its scooter and its drone are
 // made up; the walk's menu says so, and that doors are not mapped.
 import { useEffect, useRef, useState } from "preact/hooks";
-import { gameOn, startGame, stopGame } from "../app/game.ts";
+import { gameMenu, gameOn, gameView, startGame, stopGame } from "../app/game.ts";
 import { formatDate, t } from "../app/i18n.ts";
 import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -238,6 +238,9 @@ export function WalkerPanel() {
   const clock = shown.value;
   const preview = timeMode.value === "preview";
   const playing = gameOn.value;
+  // A full menu over the game (the pause menu, the study record, the debrief) has the screen: the
+  // stick and the game's buttons are not shown through it.
+  const gameMenuUp = playing && (gameMenu.value !== "none" || gameView.value?.phase === "over");
 
   // The game is played on the ground and seen from the walker: starting it lands the drone, and
   // leaves the map view for the view behind the walker.
@@ -248,6 +251,10 @@ export function WalkerPanel() {
     if (view === "map") setView({ view: "follow", name: MY_WALKER });
     // The buildings' names wait until the game ends, on every screen: the game's own marks lead the way.
     if (!startGame(MY_WALKER, true, touch)) setMessage(t("game.notReady"));
+  };
+  // Played again from the debrief: at once, with no title card.
+  const again = () => {
+    if (!startGame(MY_WALKER, true, touch, false)) setMessage(t("game.notReady"));
   };
 
   const act = async (command: string, args: Record<string, unknown>) => {
@@ -310,7 +317,7 @@ export function WalkerPanel() {
 
   return (
     <section
-      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""} ${playing ? "playing" : ""}`}
+      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""} ${playing ? "playing" : ""} ${gameMenuUp ? "game-menu" : ""}`}
       id="walker-panel"
       aria-label={t("walker.heading")}
       style={lift}
@@ -418,7 +425,7 @@ export function WalkerPanel() {
         </div>
       </div>
 
-      {playing && <GameHud touch={touch} again={play} />}
+      {playing && <GameHud touch={touch} again={again} />}
 
       <div class="hud-corner hud-bl">
         <p class="hud-sign" id="walker-where" aria-live="polite">
@@ -429,7 +436,7 @@ export function WalkerPanel() {
             {message}
           </p>
         )}
-        {touch && <Stick onSteer={() => setMessage(undefined)} />}
+        {touch && !gameMenuUp && <Stick onSteer={() => setMessage(undefined)} />}
       </div>
 
       <footer class="hud-corner hud-bc">

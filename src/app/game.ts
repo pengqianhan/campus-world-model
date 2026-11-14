@@ -2,12 +2,13 @@
 // grows by learning and fights made-up villains for study troubles. It is off until asked for, and
 // it is a game laid over the map: no villain, book or quest is campus data, and none stands for a
 // real class, course, person or due date. Progress is kept for the visit only; the best grade and
-// the settings (sound, the music's and the effects' volumes, reduced motion) are kept in this
+// the settings (sound, the music's and the effects' volumes, reduced motion, and the lessons the
+// first minute has taught, so that a returning visitor is not taught again) are kept in this
 // browser's storage, as conveniences, and nothing leaves the browser.
 import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
 import type { GameAction, GameView } from "../scene/game.ts";
-import { FOE_KINDS, FOE_TIME, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
+import { FOE_KINDS, FOE_TIME, LESSONS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
 import { audioStats, audioTap, deathSound, lashSound, release, resetMusic, setMusic, setSound, setVolumes, sfx, stinger, tellSound, type Sfx } from "./gameAudio.ts";
 import { pick, t } from "./i18n.ts";
 
@@ -70,6 +71,8 @@ export interface GameSettings {
   /** The music's and the effects' volumes, 0 to 1. */
   music: number;
   effects: number;
+  /** The lessons of the first minute this visitor has been taught (shared/game.ts LESSONS). */
+  seen: string[];
 }
 const SETTINGS_KEY = "studyQuest.settings";
 const BEST_KEY = "studyQuest.best";
@@ -83,7 +86,7 @@ function systemReducedMotion(): boolean {
 }
 
 function loadSettings(): GameSettings {
-  const fallback = { sound: true, reducedMotion: systemReducedMotion(), music: 0.7, effects: 0.9 };
+  const fallback = { sound: true, reducedMotion: systemReducedMotion(), music: 0.7, effects: 0.9, seen: [] as string[] };
   const level = (v: unknown, d: number) => (typeof v === "number" && v >= 0 && v <= 1 ? v : d);
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
@@ -94,6 +97,7 @@ function loadSettings(): GameSettings {
       reducedMotion: typeof s.reducedMotion === "boolean" ? s.reducedMotion : fallback.reducedMotion,
       music: level(s.music, fallback.music),
       effects: level(s.effects, fallback.effects),
+      seen: Array.isArray(s.seen) ? LESSONS.filter((l) => (s.seen as unknown[]).includes(l)) : [],
     };
   } catch {
     return fallback;
@@ -150,6 +154,10 @@ let banners: Banner[] = [];
 let bannerTimer = 0;
 let pad = 0;
 let stopKeys: (() => void) | undefined;
+/** When a rank was last risen and a main quest last done, and the next quest's flash that waits for the reward. */
+let rankAt = -1e9;
+let doneAt = -1e9;
+let flashTimer = 0;
 
 export function questTitle(q: { key: string }): string {
   return t(`game.quest.${q.key}.title`);
@@ -223,13 +231,25 @@ function told(e: GameEvent): void {
       sfx("eureka");
       break;
     case "rank":
+      rankAt = performance.now();
       stinger("rank");
       banner({ kind: "rank", title: rankName(e.rank), sub: e.skill ? t("game.unlocked", { skill: t(`game.skill.${e.skill}.name`) }) : t("game.rankUpSub"), ms: 3000 });
       break;
     case "quest":
       if (e.done) {
         sfx("quest");
-        if (e.quest.key !== "finalExam") banner({ kind: "quest", title: t("game.questDone"), sub: `${questTitle(e.quest)} · +${e.quest.reward}`, ms: 2400 });
+        if (e.quest.key !== "finalExam") banner({ kind: "quest", title: t("game.questDone"), sub: `${questTitle(e.quest)} · ${t("game.reward", { xp: e.quest.reward })}`, ms: 2400 });
+        if (e.quest.main && e.quest.key !== "finalExam") {
+          // A main quest done is a beat of its own: the reward's words, a short flourish of music
+          // (the rank's, unless a rank risen with it plays it already), then the next marker.
+          doneAt = performance.now();
+          window.setTimeout(() => {
+            if (performance.now() - rankAt > 300) stinger("rank");
+          }, 0);
+        }
+      } else if (performance.now() - doneAt < 300) {
+        window.clearTimeout(flashTimer);
+        flashTimer = window.setTimeout(() => (gameQuestFlash.value = performance.now()), compactHud ? PHONE_BANNER_MS : 1600);
       } else gameQuestFlash.value = performance.now();
       break;
     case "wave":
@@ -293,6 +313,9 @@ function poll(): void {
     nextBanner();
     nextCard();
   }
+  // A lesson taught is kept, so that a returning visitor is not taught it again.
+  const seen = gameSettings.peek().seen;
+  if (v.taught.some((l) => !seen.includes(l))) setGameSettings({ seen: [...new Set([...seen, ...v.taught])] });
   gameView.value = v;
 }
 
@@ -402,7 +425,7 @@ export function dismissTitle(): void {
  * Starts a game for the walker called `name`, or starts it again. `quiet` leaves the buildings' names
  * off the walker's view meanwhile; `compact` is for a phone. False when there is no such walker.
  */
-export function startGame(name: string, quiet = false, compact = false): boolean {
+export function startGame(name: string, quiet = false, compact = false, title = true): boolean {
   if (!scene) return false;
   const words = {
     foes: Object.fromEntries(FOE_KINDS.map((k) => [k, t(`game.foe.${k}.name`)])) as Record<FoeKind, string>,
@@ -411,7 +434,7 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   };
   scene.game.reducedMotion = gameSettings.peek().reducedMotion;
   scene.game.onEvent = told;
-  if (!scene.game.start(name, words, quiet, compact)) return false;
+  if (!scene.game.start(name, words, quiet, compact, gameSettings.peek().seen)) return false;
   compactHud = compact;
   const set = gameSettings.peek();
   setSound(set.sound);
@@ -430,15 +453,16 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   cards = [];
   window.clearTimeout(bannerTimer);
   window.clearTimeout(cardTimer);
-  // The game waits on its title card until the visitor is ready.
-  scene.game.menuPaused = true;
+  window.clearTimeout(flashTimer);
+  // The game waits on its title card until the visitor is ready; a game played again starts at once.
+  scene.game.menuPaused = title;
   batch(() => {
     gameOn.value = true;
     gameMenu.value = "none";
     gameBanner.value = undefined;
     gameCard.value = undefined;
     gameFeed.value = [];
-    gameTitle.value = true;
+    gameTitle.value = title;
     gameNewBest.value = false;
     gameView.value = undefined;
   });
@@ -447,8 +471,35 @@ export function startGame(name: string, quiet = false, compact = false): boolean
   return true;
 }
 
+/**
+ * Burnt out, tries again from the last checkpoint, at once and with no reload: the start of the
+ * quest the walker was on, or the edge of the boss's arena with the boss whole. False when the game
+ * is not lost.
+ */
+export function retryGame(): boolean {
+  if (!scene || !scene.game.retry()) return false;
+  banners = [];
+  cards = [];
+  window.clearTimeout(bannerTimer);
+  window.clearTimeout(cardTimer);
+  resetMusic();
+  batch(() => {
+    gameMenu.value = "none";
+    gameBanner.value = undefined;
+    gameCard.value = undefined;
+    gameFeed.value = [];
+    gameNewBest.value = false;
+  });
+  scene.game.menuPaused = false;
+  (document.activeElement as HTMLElement | null)?.blur?.();
+  sfx("start");
+  poll();
+  return true;
+}
+
 export function stopGame(): void {
   window.clearInterval(timer);
+  window.clearTimeout(flashTimer);
   window.clearTimeout(bannerTimer);
   window.clearTimeout(cardTimer);
   cancelAnimationFrame(pad);

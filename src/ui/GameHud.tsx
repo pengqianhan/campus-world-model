@@ -2,8 +2,10 @@
 // Stamina and its study rank, the skills, the boss's bar, the big words high in the middle, the pause
 // menu, the study record and the debrief with its grade. It reads the game ten times a second; the
 // marks that move with the picture are drawn by the scene (gameOverlay.ts). On a phone it keeps the
-// view clear: no tutorial text, small panels in the corners, and big buttons under the right thumb.
-// Everything in the game is made up, and the title card, the menu and the debrief say so.
+// view clear: small panels in the corners, and big buttons under the right thumb. Nothing is
+// explained in words: the first minute teaches by play, with one small prompt (a key, or the
+// button itself) the first time each action is needed. Everything in the game is made up, and the
+// title card, the menu and the debrief say so.
 import { useEffect, useRef, useState } from "preact/hooks";
 import {
   gameAct,
@@ -21,6 +23,7 @@ import {
   questGoal,
   questTitle,
   rankName,
+  retryGame,
   setGameSettings,
   setMenu,
   stopGame,
@@ -28,7 +31,7 @@ import {
 import { sfx } from "../app/gameAudio.ts";
 import { t } from "../app/i18n.ts";
 import type { GameView } from "../scene/game.ts";
-import { FOE_KINDS, RANKS, SKILLS, type SkillId } from "../shared/game.ts";
+import { FOE_KINDS, GRADE, GRADE_FACTORS, RANKS, SKILLS, gradeFactors, type Lesson, type SkillId } from "../shared/game.ts";
 
 const ROMAN = ["I", "II", "III"];
 
@@ -41,6 +44,34 @@ const SKILL_ICON: Record<SkillId, string> = {
   eureka: "M12 2a6 6 0 00-3.5 10.9V16h7v-3.1A6 6 0 0012 2zm-3 16h6v2H9v-2zm1 3h4v1h-4v-1z",
 };
 const SKILL_KEY: Record<SkillId, string> = { strike: "J", dodge: "Spc", flashcard: "K", sprint: "Spc", eureka: "R" };
+
+/** Each lesson's keys, and the skill whose button it points to on a phone (none: the stick). */
+const LESSON_KEYS: Record<Lesson, string[]> = { move: ["W", "A", "S", "D"], strike: ["J"], dodge: ["Space"], flashcard: ["K"], sprint: ["Space"], eureka: ["R"] };
+const LESSON_SKILL: Record<Lesson, SkillId | undefined> = { move: undefined, strike: "strike", dodge: "dodge", flashcard: "flashcard", sprint: "sprint", eureka: "eureka" };
+
+/**
+ * The prompt for the action needed now, the first time it is: its key or keys and one word; on a
+ * phone the button's own icon beside the button (which pulses), or by the stick to move.
+ */
+function Prompt({ lesson, touch }: { lesson: Lesson; touch: boolean }) {
+  const skill = LESSON_SKILL[lesson];
+  return (
+    <div class={`sq-prompt ${touch ? (skill ? "at-pad" : "at-stick") : ""}`} key={lesson} id="game-prompt" data-lesson={lesson} role="status">
+      {touch ? (
+        <span class="sq-prompt-ic" aria-hidden="true">
+          {skill ? <SkillIcon id={skill} size={18} /> : <i class="sq-stick-ic" />}
+        </span>
+      ) : (
+        <span class="sq-prompt-keys" aria-hidden="true">
+          {LESSON_KEYS[lesson].map((k) => (
+            <kbd class={k.length > 1 ? "wide" : ""}>{k}</kbd>
+          ))}
+        </span>
+      )}
+      <span class="sq-prompt-word">{t(`game.prompt.${lesson}`)}</span>
+    </div>
+  );
+}
 
 function SkillIcon({ id, size = 22 }: { id: SkillId; size?: number }) {
   return (
@@ -265,13 +296,6 @@ function Title({ touch }: { touch: boolean }) {
         <p class="sq-note">{t("game.madeUp")}</p>
         <p class="sq-press">{t(touch ? "game.tapToBegin" : "game.pressToBegin")}</p>
       </div>
-      {!touch && (
-        <div class="sq-legend" aria-label={t("game.menu.controls")}>
-          {(["move", "strike", "dodge", "card", "eureka", "lock", "pause"] as const).map((k) => (
-            <div>{t(`game.legend.${k}`)}</div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -416,18 +440,41 @@ function Sheet({ v }: { v: GameView }) {
   );
 }
 
+/** Burnt out: try again from the last checkpoint, see the full debrief, or end the game. */
+function BurntOut({ v, show }: { v: GameView; show: () => void }) {
+  const first = useRef<HTMLButtonElement>(null);
+  useEffect(() => first.current?.focus(), []);
+  const r = v.retry;
+  return (
+    <div class="sq-debrief lost burnt" id="game-over" role="dialog" aria-label={t("game.over.defeat")}>
+      <div class="sq-debrief-body">
+        <span class="sq-eyebrow">{t("game.title")}</span>
+        <h2>{t("game.over.defeat")}</h2>
+        {r && <p class="sq-from">{r.boss ? t("game.retry.boss") : t("game.retry.from", { quest: t(`game.quest.${r.quest}.title`) })}</p>}
+        <div class="sq-actions">
+          <button type="button" class="sq-b primary" ref={first} id="game-retry" onClick={() => retryGame()}>
+            {t("game.retry.button")}
+          </button>
+          <button type="button" class="sq-b" id="game-debrief" onClick={show}>
+            {t("game.over.eyebrow")}
+          </button>
+          <button type="button" class="sq-b" id="game-end" onClick={stopGame}>
+            {t("game.stop")}
+          </button>
+        </div>
+        <p class="sq-note">{t("game.madeUp")}</p>
+      </div>
+    </div>
+  );
+}
+
 function Debrief({ v, again }: { v: GameView; again: () => void }) {
   const d = v.debrief!;
   const best = gameBest.value;
-  const rows: [string, string][] = [
-    [t("game.over.time"), clock(d.seconds)],
-    [t("game.stat.knowledge"), String(d.xp)],
-    [t("game.over.rank"), rankName(d.rank)],
-    [t("game.over.defeated"), String(d.defeated)],
-    [t("game.over.combo"), String(d.maxChain)],
-    [t("game.over.focusLost"), String(d.focusLost)],
-    [t("game.over.quests"), String(d.quests)],
-  ];
+  const first = useRef<HTMLButtonElement>(null);
+  useEffect(() => first.current?.focus(), []);
+  const f = gradeFactors(d);
+  const value: Record<(typeof GRADE_FACTORS)[number], string> = { time: clock(d.seconds), deaths: String(d.deaths), combo: String(d.maxChain), knowledge: String(d.xp) };
   return (
     <div class={`sq-debrief ${d.victory ? "won" : "lost"}`} id="game-over" role="dialog" aria-label={t(d.victory ? "game.over.victory" : "game.over.defeat")}>
       <div class="sq-debrief-body">
@@ -437,18 +484,31 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
           <div class="sq-grade" id="game-grade" aria-label={t("game.over.grade", { grade: d.grade })}>
             {d.grade}
           </div>
-          <dl class="sq-tally">
-            {rows.map(([k, val]) => (
+          {/* Why the grade: one line a factor, its value and its marks out of its most. */}
+          <dl class="sq-tally sq-factors" id="game-factors">
+            <dt>{t("game.over.course")}</dt>
+            <dd data-factor="course">
+              <b>{t(d.victory ? "game.over.passed" : "game.over.notPassed")}</b>
+              <span class="sq-pts">
+                {d.victory ? GRADE.victory : 0}/{GRADE.victory}
+              </span>
+            </dd>
+            {GRADE_FACTORS.map((k) => (
               <>
-                <dt>{k}</dt>
-                <dd>{val}</dd>
+                <dt>{t(`game.over.factor.${k}`)}</dt>
+                <dd data-factor={k}>
+                  <b>{value[k]}</b>
+                  <span class="sq-pts">
+                    {f[k].points}/{f[k].max}
+                  </span>
+                </dd>
               </>
             ))}
           </dl>
         </div>
         <p class="sq-best">{gameNewBest.value ? t("game.over.newBest") : best.grade ? t("game.over.best", { grade: best.grade, xp: best.xp }) : ""}</p>
         <div class="sq-actions">
-          <button type="button" class="sq-b primary" id="game-again" onClick={again}>
+          <button type="button" class="sq-b primary" ref={first} id="game-again" onClick={again}>
             {t("game.again")}
           </button>
           <button type="button" class="sq-b" id="game-end" onClick={stopGame}>
@@ -464,12 +524,18 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
 /** The game's whole panel, while a game is on. */
 export function GameHud({ touch, again }: { touch: boolean; again: () => void }) {
   const v = gameView.value;
+  // Burnt out, the choice comes first (retry, debrief, end); the debrief only when asked for.
+  const [full, setFull] = useState(false);
+  const over = v?.phase === "over";
+  useEffect(() => {
+    if (!over) setFull(false);
+  }, [over]);
   if (!v) return null;
   const menu = gameMenu.value;
-  const over = v.phase === "over";
+  const lesson = !over && menu === "none" && !gameTitle.value ? v.lesson : undefined;
   const cinematic = gameTitle.value || over || gameBanner.value?.kind === "phase" || gameCard.value?.kind === "boss";
   return (
-    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : ""}`} id="game-panel" aria-label={t("game.title")}>
+    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : ""} ${lesson ? `cue-${lesson}` : ""}`} id="game-panel" aria-label={t("game.title")}>
       <div class="sq-bars" aria-hidden="true">
         <i />
         <i />
@@ -486,8 +552,10 @@ export function GameHud({ touch, again }: { touch: boolean; again: () => void })
             </div>
           )}
           {!touch && <Feed />}
-          <Skills v={v} touch={touch} />
-          {touch && (
+          {/* Under a full menu the buttons are not shown through it. */}
+          {menu === "none" && <Skills v={v} touch={touch} />}
+          {lesson && <Prompt lesson={lesson} touch={touch} />}
+          {touch && menu === "none" && (
             <button type="button" class="sq-pausebtn" id="game-pause" aria-label={t("game.menu.title")} onClick={() => setMenu("pause")}>
               <i />
               <i />
@@ -505,7 +573,7 @@ export function GameHud({ touch, again }: { touch: boolean; again: () => void })
       {gameTitle.value && !over && <Title touch={touch} />}
       {menu === "pause" && !over && <PauseMenu touch={touch} />}
       {menu === "sheet" && !over && <Sheet v={v} />}
-      {over && v.debrief && <Debrief v={v} again={again} />}
+      {over && v.debrief && (v.debrief.victory || full ? <Debrief v={v} again={again} /> : <BurntOut v={v} show={() => setFull(true)} />)}
     </div>
   );
 }

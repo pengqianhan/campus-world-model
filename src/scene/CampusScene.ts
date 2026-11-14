@@ -173,6 +173,11 @@ const FIGHT_PUSH_IN_UPRIGHT = 0.08;
 const FIGHT_WIDEN_UPRIGHT = 10;
 const FIGHT_WIDEN = 3;
 /**
+ * Metres at most the fight's camera rises when a wall behind the walker brings it in: enough to see
+ * over the walker's shoulder to its foe, never so much that it looks straight down on it.
+ */
+const FIGHT_WALL_RISE = 2.2;
+/**
  * The clear band the fight's camera frames in, shares of the picture's height from its top: the
  * top of it, the lowest the walker's feet go, the lowest the foe's go. Upright on a phone, the
  * boss's bar and the vitals take the top quarter, the stick and the buttons the foot, with the
@@ -616,6 +621,16 @@ export class CampusScene {
       viewSize: () => ({ width: this.width, height: this.height }),
       act: (name, move) => this.walkers.figure(name)?.play(move),
       pen: (name, on) => this.walkers.figure(name)?.setPen(on),
+      teleport: (name, at, heading) => {
+        this.walkers.teleport(name, at);
+        this.walkers.turn(name, heading, true);
+        // The view comes with it at once, behind it, not gliding across the campus.
+        if (this.viewWalker === name) {
+          this.follow = { ...this.follow, yaw: 0 };
+          this.placeWalkerCamera(1, true);
+        }
+        this.needsRender = true;
+      },
     }, labelRoot.parentElement ?? undefined);
     this.scene.add(this.game.group);
 
@@ -2460,7 +2475,7 @@ export class CampusScene {
       }
       let cy = pose.aim + 0.15 + Math.sin(up) * d;
       // In a fight, a wall that brings the camera in sends it up as well, to see over the walker to its foe.
-      if (blocked && fight.k > 0) cy += Math.max(0, wantD - d) * 0.6 * fight.k;
+      if (blocked && fight.k > 0) cy += Math.min(FIGHT_WALL_RISE, Math.max(0, wantD - d) * 0.6) * fight.k;
       const side = nudge ? nudge.side * SHOULDER : 0;
       const cx = x - Math.sin(yaw) * Math.cos(up) * d + Math.cos(yaw) * side;
       const cn = y - Math.cos(yaw) * Math.cos(up) * d - Math.sin(yaw) * side;

@@ -38,6 +38,7 @@ import {
   StudyQuest,
   bearingTo,
   bookSpot,
+  nearestReached,
   openSpot,
   reachable,
   type BookDraw,
@@ -46,6 +47,7 @@ import {
   type FoeKind,
   type GameEvent,
   type ItemKind,
+  type Lesson,
   type Place,
   type QuestKey,
   type SkillId,
@@ -79,6 +81,8 @@ export interface GameSceneHost {
   act(name: string, move: Move | undefined): void;
   /** Puts the highlighter in the walker's hand, or takes it away. */
   pen(name: string, on: boolean): void;
+  /** Puts the walker at once at a place, facing a bearing, and the camera behind it: a retry. */
+  teleport(name: string, at: Pt, heading: number): void;
 }
 
 /** The words the game shows on the map, in the visitor's language. */
@@ -133,6 +137,13 @@ export interface GameView {
   defeated: number;
   /** Kinds met so far. */
   met: FoeKind[];
+  /** The prompt up now, if any, and the lessons taught (kept in this browser). */
+  lesson?: Lesson;
+  taught: Lesson[];
+  /** Times burnt out so far. */
+  deaths: number;
+  /** For a game lost: where a retry starts, at the start of a main quest or the boss's arena. */
+  retry?: { quest: QuestKey; boss: boolean };
   events: GameEvent[];
   debrief?: Debrief;
 }
@@ -484,21 +495,48 @@ export class GameWorld {
    * `quiet` leaves the buildings' names off the walker's view meanwhile; `compact` keeps the marks over
    * the picture few, for a phone. False when the walker or the walking map is not there.
    */
-  start(name: string, words: GameWords, quiet = false, compact = false): boolean {
+  start(name: string, words: GameWords, quiet = false, compact = false, seen: readonly string[] = []): boolean {
     this.stop();
     this.quiet = quiet;
     const walker = this.host.walker(name);
     if (!walker || !this.host.walkMap()) return false;
     this.name = name;
     this.words = words;
-    this.meAt[0] = walker.at[0];
-    this.meAt[1] = walker.at[1];
+    this.field = undefined;
     this.events = [];
     this.seconds = 0;
     this.trauma = 0;
     this.menuPaused = false;
     this.heights.clear();
-    this.quest = new StudyQuest({ spot: (near, taken, place) => this.spot(near, taken, place), place: (near, avoid, big) => this.place(near, avoid, big), random: Math.random }, walker.at);
+    // The game is seen from behind the walker. A walker in a corner between walls (as at some
+    // schools' starting spots) steps out first to the most open ground near, and one with a wall at
+    // its back turns to open ground, so that the camera has room behind it and the first book lies
+    // ahead in the open.
+    let at: Pt = [walker.at[0], walker.at[1]];
+    if (this.cramped(at)) {
+      const f = this.fieldAt(at);
+      const open = f ? openSpot(f.grid, f.reached, at, START_REACH, START_ROOM, at, Math.random, 60, 0) : undefined;
+      if (open) at = open;
+    }
+    const heading = this.openHeading(at, walker.heading);
+    if (at[0] !== walker.at[0] || at[1] !== walker.at[1]) this.host.teleport(name, at, heading);
+    else if (heading !== walker.heading) this.host.face(name, heading);
+    this.meAt[0] = at[0];
+    this.meAt[1] = at[1];
+    this.quest = new StudyQuest(
+      {
+        spot: (near, taken, place) => this.spot(near, taken, place),
+        place: (near, avoid, big) => this.place(near, avoid, big),
+        near: (p) => {
+          const f = this.fieldAt(this.meAt);
+          return f ? nearestReached(f.grid, f.reached, p) : undefined;
+        },
+        random: Math.random,
+      },
+      at,
+      heading,
+      seen,
+    );
     this.events.push(...this.drainStart());
     this.motionApplied = undefined;
     this.group.visible = true;
@@ -508,9 +546,49 @@ export class GameWorld {
     this.host.act(name, undefined);
     this.slashDue = undefined;
     this.warm = 2;
-    this.sync(walker, 0);
+    this.sync(this.host.walker(name) ?? walker, 0);
     this.labelsVersion++;
     return true;
+  }
+
+  /** Whether a wall stands within a couple of metres of a spot, any way round. */
+  private cramped(at: Pt): boolean {
+    const map = this.host.walkMap();
+    if (!map) return false;
+    for (let deg = 0; deg < 360; deg += 45) {
+      const r = (deg * Math.PI) / 180;
+      if (map.wallAlong(at, [at[0] + Math.sin(r) * CRAMPED, at[1] + Math.cos(r) * CRAMPED]) !== undefined) return true;
+    }
+    return false;
+  }
+
+  /**
+   * The bearing to face at the start: the walker's own when the ground behind it is clear for the
+   * camera and ahead of it for the first book, or else the nearest bearing round that is.
+   */
+  private openHeading(at: Pt, heading: number): number {
+    const map = this.host.walkMap();
+    if (!map) return heading;
+    const clear = (deg: number) => {
+      const r = (deg * Math.PI) / 180;
+      const line = (m: number) => map.wallAlong(at, [at[0] + Math.sin(r) * m, at[1] + Math.cos(r) * m]) ?? 1;
+      // Room behind for the camera counts most; then the open ground ahead, and a little each side.
+      const r2 = r + Math.PI / 2;
+      const side = (k: number) => map.wallAlong(at, [at[0] + Math.sin(r2) * k * 4, at[1] + Math.cos(r2) * k * 4]) ?? 1;
+      return (map.wallAlong(at, [at[0] - Math.sin(r) * OPEN_BEHIND, at[1] - Math.cos(r) * OPEN_BEHIND]) ?? 1) * 2 + line(OPEN_AHEAD) + 0.25 * (side(1) + side(-1));
+    };
+    const full = 3.5;
+    if (clear(heading) >= full - 1e-6) return heading;
+    let best = heading;
+    let score = clear(heading);
+    for (let k = 1; k <= 12; k++) {
+      for (const side of [1, -1]) {
+        const deg = (((heading + side * k * 15) % 360) + 360) % 360;
+        const sc = clear(deg);
+        if (sc > score + 1e-6) (score = sc), (best = deg);
+      }
+    }
+    return best;
   }
 
   /** The quests the game opened with, for the panel. */
@@ -535,6 +613,35 @@ export class GameWorld {
     this.arena.hide();
     this.overlay?.show(false);
     this.labelsVersion++;
+  }
+
+  /**
+   * Burnt out, tries again from the last checkpoint: the walker is put where the quest it was on
+   * began (or at the edge of the boss's arena), on its feet, and the game goes on. False when the
+   * game is not lost.
+   */
+  retry(): boolean {
+    const g = this.quest;
+    if (!g) return false;
+    const evs = g.retry();
+    const r = evs.find((e) => e.type === "retry");
+    if (!r || r.type !== "retry") return false;
+    this.host.teleport(this.name, r.at, r.heading);
+    this.host.act(this.name, undefined);
+    this.host.paceScale(this.name, 1);
+    this.trauma = 0;
+    this.slashDue = undefined;
+    this.nudge.side = this.nudge.push = this.nudge.strikeT = 0;
+    this.motion.clear();
+    this.heights.clear();
+    const me = this.host.walker(this.name);
+    if (me) {
+      this.meAt[0] = me.at[0];
+      this.meAt[1] = me.at[1];
+      for (const e of evs) this.effect(e, me);
+    }
+    this.events.push(...evs);
+    return true;
   }
 
   /** An action from the keys, the mouse, a pad or the buttons. False when it cannot be done now. */
@@ -677,6 +784,10 @@ export class GameWorld {
       seconds: g.seconds,
       defeated: g.defeated,
       met: [...g.met],
+      lesson: g.phase === "play" && !this.paused ? g.lesson : undefined,
+      taught: [...g.taught],
+      deaths: g.deaths,
+      retry: over && !g.victory ? { quest: g.quests.find((q) => q.main)?.key ?? "orientation", boss: !!g.arena?.active } : undefined,
       events,
       debrief: over ? g.debrief() : undefined,
     };
@@ -829,14 +940,14 @@ export class GameWorld {
   private spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined {
     const f = this.fieldAt(near);
     if (!f) return undefined;
-    if (place) return bookSpot(f.grid, f.reached, [{ center: place, weight: 1 }], near, taken, Math.random) ?? undefined;
+    if (place) return bookSpot(f.grid, f.reached, [{ center: place, weight: 1 }], near, taken, Math.random, undefined, QUEST.noteReach) ?? undefined;
     const close = taken.filter((t) => Math.hypot(t[0] - near[0], t[1] - near[1]) <= CLOSE_REACH).length;
     const beside = close < CLOSE_ITEMS ? bookSpot(f.grid, f.reached, [], near, taken, Math.random, CLOSE_REACH) : undefined;
     return beside ?? bookSpot(f.grid, f.reached, f.draws, near, taken, Math.random) ?? bookSpot(f.grid, f.reached, [], near, taken, Math.random);
   }
 
   /**
-   * A place for a quest: reachable ground beside a building with rooms to teach in, 60 to 260 m off,
+   * A place for a quest: reachable ground beside a building with rooms to teach in, QUEST.placeRange metres off,
    * away from the other quests' places. `big`: the building with the most rooms, for the last fight,
    * on the most open ground near it.
    */
@@ -845,7 +956,7 @@ export class GameWorld {
     if (!f || !this.words) return undefined;
     const ok = f.draws.filter((d) => {
       const far = Math.hypot(d.center[0] - near[0], d.center[1] - near[1]);
-      return far >= 50 && far <= 260 && avoid.every((a) => Math.hypot(a[0] - d.center[0], a[1] - d.center[1]) > 60);
+      return far >= QUEST.placeRange[0] && far <= QUEST.placeRange[1] && avoid.every((a) => Math.hypot(a[0] - d.center[0], a[1] - d.center[1]) > 60);
     });
     const pool = ok.length ? ok : f.draws;
     if (!pool.length) {
@@ -1038,6 +1149,11 @@ export class GameWorld {
         // Burnt out, the arms drop; a won game keeps the stance it had.
         if (!e.victory) this.host.act(this.name, "down");
         break;
+      case "retry":
+        // Back on its feet where the quest began: a ring of light, as at a rank risen, but smaller.
+        this.sparks.ring(sx, sy + 0.3, sz, 18, 3, ACCENT, 0.12);
+        this.sparks.burst(sx, sy + 1, sz, 16, 4, 0xfff1d0, 0.1, 0.8, -2);
+        break;
       case "arrive": {
         const f = this.quest?.foes.find((x) => x.id === e.foe);
         if (f) this.sparks.burst(f.at[0], this.floatAt(f.at) + 0.5, -f.at[1], e.kind === "exam" ? 60 : 14, e.kind === "exam" ? 10 : 4, HUE[e.kind], 0.2, 0.9, -1);
@@ -1070,6 +1186,8 @@ export class GameWorld {
   private sync(walker: WalkerState, dt: number): void {
     const g = this.quest!;
     // The reduced-motion setting, changed in the pause menu, takes effect at once.
+    // Under a full menu (the pause menu, the record, the debrief) the marks over the picture wait.
+    this.overlay?.root.classList.toggle("menu", this.menuPaused || (g.phase === "over" && !(g.victory && g.foes.some((f) => f.kind === "exam"))));
     if (this.motionApplied !== this.reducedMotion) {
       this.motionApplied = this.reducedMotion;
       this.sparks.density = this.reducedMotion ? 0.4 : 1;
@@ -1322,6 +1440,14 @@ export class GameWorld {
     }
   }
 }
+
+/** Metres behind the walker kept clear for the camera at the start, and ahead of it for the first book. */
+const OPEN_BEHIND = 8;
+const OPEN_AHEAD = 20;
+/** Metres: a wall this near makes the starting spot a corner; then the most open ground within START_REACH, judged over START_ROOM round it. */
+const CRAMPED = 2.5;
+const START_REACH = 16;
+const START_ROOM = 6;
 
 /** Metres within which a foe coming at the walker is framed by the camera: the DDL from further off. */
 const ENGAGE = 12;

@@ -295,7 +295,7 @@
       "daylight": "The sun stands where it does over the City Campus at the date and time shown, from NOAA's published solar-position equations; below 10° above the horizon it is drawn at 10°, so that shadows stay on the map. Night falls as the sun goes from 6° above the horizon to 8° below. In Now mode the cloud, rain and fog follow Open-Meteo's current weather for the City Campus, and the falling rain is drawn by rule; Preview shows a clear sky, because past and future weather are not known here."
     },
     "privacyTitle": "Privacy",
-    "privacy": "The site has no accounts and sets no cookies. Staff names are deliberately left out. Only the copy at campusworldmodel.com is counted: there Cloudflare, which serves the site, counts page views and visits with its Web Analytics. It stores nothing in your browser and does not record which building or room you look at; a content blocker may stop it. If the weather line is shown, your browser asks Open-Meteo for the current weather in Auckland; nothing about you is sent beyond that request. A walk with the walker stays in your browser: where it goes, what it says and what it wears are not sent anywhere. The walk's game keeps its best grade and its sound and motion settings in your browser's own storage, and sends nothing anywhere.",
+    "privacy": "The site has no accounts and sets no cookies. Staff names are deliberately left out. Only the copy at campusworldmodel.com is counted: there Cloudflare, which serves the site, counts page views and visits with its Web Analytics. It stores nothing in your browser and does not record which building or room you look at; a content blocker may stop it. If the weather line is shown, your browser asks Open-Meteo for the current weather in Auckland; nothing about you is sent beyond that request. A walk with the walker stays in your browser: where it goes, what it says and what it wears are not sent anywhere. The walk's game keeps its best grade, its sound and motion settings and which of its first prompts you have seen in your browser's own storage, and sends nothing anywhere.",
     "osm": "Map context © OpenStreetMap contributors, available under the Open Database License.",
     "osmLink": "OpenStreetMap copyright and licence",
     "landmarksTitle": "Buildings drawn in detail",
@@ -479,7 +479,7 @@
       },
       "ddl2": {
         "title": "The DDL returns",
-        "goal": "Beat the DDL and its company"
+        "goal": "Beat the DDL and its company at {place}"
       },
       "finalExam": {
         "title": "The Final Exam",
@@ -622,16 +622,33 @@
       "victory": "Course complete",
       "defeat": "Burnt out",
       "grade": "Grade {grade}",
-      "time": "Time",
-      "rank": "Rank",
-      "defeated": "Troubles beaten",
-      "combo": "Best combo",
-      "focusLost": "Focus lost",
-      "quests": "Quests done",
       "best": "Best in this browser: {grade}, {xp} knowledge",
-      "newBest": "A new best in this browser"
+      "newBest": "A new best in this browser",
+      "course": "Course",
+      "passed": "Passed",
+      "notPassed": "Not passed",
+      "factor": {
+        "time": "Time",
+        "deaths": "Defeats",
+        "combo": "Best combo",
+        "knowledge": "Knowledge"
+      }
     },
-    "again": "Play again"
+    "again": "Play again",
+    "reward": "+{xp} knowledge",
+    "prompt": {
+      "move": "Move",
+      "strike": "Strike",
+      "dodge": "Dodge",
+      "flashcard": "Throw",
+      "sprint": "Sprint",
+      "eureka": "Eureka!"
+    },
+    "retry": {
+      "button": "Retry",
+      "from": "From the start of {quest}",
+      "boss": "From the edge of the arena, the Final Exam whole again"
+    }
   },
   "picker": {
     "documentTitle": "Campus World Model (unofficial student project)",
