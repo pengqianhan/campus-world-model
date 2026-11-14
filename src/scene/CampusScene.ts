@@ -2523,11 +2523,15 @@ export class CampusScene {
         const hl = Math.hypot(hx, hn);
         if (hl > 0.5) (sy = hx / hl), (ny = hn / hl);
         const toWalker = Math.max(0.5, (x - p.x) * sy + (y + p.z) * ny);
-        const toFoe = Math.max(0.5, (fight.at[0] - p.x) * sy + (fight.at[1] + p.z) * ny);
+        const ahead = (fight.at[0] - p.x) * sy + (fight.at[1] + p.z) * ny;
+        const toFoe = Math.max(0.5, ahead);
         const a0 = Math.atan2(pose.height - p.y, toWalker);
         const a1 = Math.atan2(pose.height + 1.9 - p.y, toWalker);
-        const b0 = Math.atan2(fight.foot - p.y, toFoe);
-        const b1 = Math.atan2(fight.top - p.y, toFoe);
+        // A foe beside the camera or behind it cannot be in the picture: the walker alone sets the
+        // pitch then, rather than the view tipping straight down after a foe at the camera's feet.
+        const seen = ahead > Math.min(2, toWalker * 0.5);
+        const b0 = seen ? Math.atan2(fight.foot - p.y, toFoe) : a0;
+        const b1 = seen ? Math.atan2(fight.top - p.y, toFoe) : a1;
         const shot = this.fightShot;
         shot.halfFov = (this.persp.fov * Math.PI) / 360;
         const pitch = bandPitch(Math.max(a1, b1), Math.min(a0, a1), Math.min(b0, b1), shot).pitch;
