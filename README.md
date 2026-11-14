@@ -143,6 +143,9 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
+  for link previews, each school's page says in its HTML what its map shows, the home page answers common
+  questions, and the site has a sitemap, `robots.txt` and `llms.txt`.
 - **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
   links, where two dark buttons stood above it.
 - **2026-11-12:** on the Newmarket campus the map draws Structures Hall in detail, where it stood as a measured
@@ -161,32 +164,6 @@ The three latest days are below; everything, with its pull request, is in the
   a tower of eight storeys of windows over a dark ground storey, a pale band at every floor with louvres hung under it,
   and piers between the windows. Its sizes come from the LiDAR; it was compared with a photograph, which is not
   published, and its card says what is estimated.
-- **2026-11-11:** four more buildings are drawn from the LiDAR as measured massings, their roofs at their
-  measured heights: Engineering Blocks 1 and 2 on the City campus, Carlton Pines on the Grafton campus and
-  Building 908 on the Newmarket campus.
-- **2026-11-11:** on the City campus the map draws Fine Arts Studio Block 433 in detail, where it stood as a measured
-  massing: a long block of four storeys under a shallow vault, a wall of glazing with coloured panels over a red ground
-  storey on its face to the lane, and at its end yellow weatherboards, two balconies and an outside stair. Its sizes
-  come from the LiDAR; it was compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-11:** on the City campus the map draws Fine Arts Studio Block 431 in detail, where it stood as a measured
-  massing: a long block of three storeys under a roof of two pitches with a step between them, and on its south face
-  over the lane rows of windows between columns over a ground storey of roller doors. Its sizes come from the LiDAR; it
-  was compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-11:** on the City campus the map draws 67 Symonds Street (619) in detail, where a measured massing stood
-  for it: a white tower of about eight storeys with its windows, a curved bay of dark glass and louvred panels, on a
-  podium down the slope, a block turned on its roof and a glass porch over its entrance. Its sizes come from the
-  LiDAR; it was compared with a photograph, which is not published, and its card says what is estimated.
-- **2026-11-11:** every school's map has "All schools" in its campus panel, after the campuses: a link back to the
-  page that lists every school's map.
-- **2026-11-11:** on the City campus the map draws Building 114 in detail, where it stood as a measured massing: a
-  long block of two storeys under a deep eave, a band of windows under it over white cladding, and a glass stair
-  tower with red doors up brick steps. Its sizes come from the LiDAR; it was compared with a photograph, which is not
-  published, and its card says what is estimated.
-- **2026-11-11:** "Take a walk" is a game screen on every school's map: the view has the whole screen, with small panels
-  in its corners, and the walker can walk, ride a made-up electric scooter at up to 25 km/h, or fly a made-up drone over
-  the roofs, up to 120 m above the ground. On the City Campus it starts before the Clock Tower, facing it.
-- **2026-11-11:** the map draws 17 Eden Crescent (803) from the LiDAR, as a measured massing: its roofs at their
-  measured heights, with the eaves of its main roof.
 
 </details>
 

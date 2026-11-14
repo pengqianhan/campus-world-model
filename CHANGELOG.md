@@ -14,6 +14,21 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-14
+
+### Added
+
+- **Search engines and AI assistants can read the site.** Each page names its one address on
+  https://campusworldmodel.com/ (the copies on pages.dev and GitHub Pages name the same one) and a picture
+  for link previews, taken from the live map (`docs/og/`). Each school's page carries structured data
+  (schema.org) that describes its map as a free web application about the school, and a summary of the map
+  in its HTML: what it shows, how many buildings, which campuses and the date of the campus snapshot. The
+  summary is for screen readers and for any reader that does not run script; it is hidden on screen, where
+  the map shows the same things. The home page answers six common questions, also as structured data. The
+  site's root has `sitemap.xml`, `robots.txt` (every page may be read, for search results and as input to AI
+  answers) and `llms.txt`, the site in Markdown for AI assistants. The page for an unknown address asks not to
+  be indexed.
+
 ## 2026-11-13
 
 ### Changed
