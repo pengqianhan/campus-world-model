@@ -647,18 +647,22 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     building alike.
   - The villains float in straight lines over the ground and the roofs, so they need no path and cannot get stuck. Pick-ups
     lie only on ground the walker can reach (`reachable` in `src/shared/game.ts`). It is played on the ground and out of
-    doors, on foot or on the scooter, where the villains go twice as fast (`scooterPace`); flying or inside a building the
-    game's clock stops, and so does the pause menu.
+    doors, on foot or on the scooter, where the villains go twice as fast (`scooterPace`); flying, inside a building or in the
+    map view the game's clock stops, and so does the pause menu.
   - While the game is on, the buildings' names wait until it ends, on every screen: the game's own marks (a compass tape,
     quest diamonds, the villains' plates) lead the way. On a phone the view stays clear (the user, 2026-11-13): no tutorial
     text, small panels in the corners, the compass left out, and four round buttons under the right thumb.
   - Cost is a budget, not a hope: each villain kind is one merged, vertex-coloured geometry drawn instanced, effects are a
     few instanced meshes refilled from kept arrays, nothing of the game casts a shadow, there is no post-processing, and the
-    marks over the picture are kept DOM elements moved by transform. Measured on 2026-11-14: the game adds about 30 to 40
-    draw calls at the busiest moment of the boss fight, at 60 fps on the GPU.
+    marks over the picture are kept DOM elements moved by transform. A game held still (its title card, a menu, the
+    walker indoors or in the air, a debrief) is drawn once, not in every frame. Its code, its look and its world come in
+    a chunk of their own, loaded the first time the Game button is pressed (`src/app/gameState.ts`), so a visitor who
+    never plays downloads and builds none of it. Measured on 2026-11-14: the game adds about 30 to 40 draw calls at the
+    busiest moment of the boss fight, at 60 fps on the GPU.
   - No new dependency, no font loaded, no sound file: sounds are made with WebAudio. Progress lives in memory until the page
-    closes; the best grade and the sound and reduced-motion settings stay in the browser's own storage as conveniences, and
-    nothing is sent anywhere. About's privacy text says so.
+    closes; the best grade, the sound, music and effects settings, reduced motion once the visitor sets it, and the first
+    minute's prompts already seen stay in the browser's own storage as conveniences, and nothing is sent anywhere.
+    About's privacy text says so, on every school's map.
   - The rules are in `src/shared/game.ts`, the same for every school.
 - **GOAL.md is gitignored.** It contains the local working-directory path (with a username).
 - **Stack:** Vite + TypeScript + three.js + Preact (+ signals). Shared pure-TS modules in

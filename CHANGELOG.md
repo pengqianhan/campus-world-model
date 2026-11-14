@@ -63,7 +63,8 @@ A change to what the site does or shows adds its line here, and the README's
   camera behind the walker is not pressed against a wall.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
-  grade and the game's settings stay in the browser; nothing is sent anywhere.
+  grade and the game's settings stay in the browser; nothing is sent anywhere. Its code, its look and its villains
+  load the first time it is started, so the map itself loads as before for a visitor who does not play.
 
 ## 2026-11-13
 

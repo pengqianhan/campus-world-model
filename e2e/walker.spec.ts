@@ -460,6 +460,16 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   await page.keyboard.press("c");
   await expect(page.locator("#game-sheet")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBeGreaterThan(t1);
+  // The map view (V twice: through the eyes, then the map) holds it still as well, and says so;
+  // back behind the walker (V once more), it goes on.
+  await page.keyboard.press("v");
+  await page.keyboard.press("v");
+  await expect(page.locator("#game-status")).toContainText("Paused");
+  const t2 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t2);
+  await page.keyboard.press("v");
+  await expect(page.locator("#game-status")).toHaveCount(0);
 
   // With its Focus at one, the next blow burns the walker out: a choice, to retry, to see the
   // debrief, or to end the game.
