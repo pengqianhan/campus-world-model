@@ -189,8 +189,8 @@ bool tcCut( vec3 foot, float reach ) {
 function patchCut(shader: Shader, card: boolean): void {
   shader.vertexShader = after(shader.vertexShader, "#include <common>", CUT);
   const foot = card
-    ? "	if ( tcCut( tcTree.xyz, max( 1.5, tcTree.w * 0.42 ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );"
-    : `	if ( tcCut( ( modelMatrix * instanceMatrix * vec4( 0.0, 0.0, 0.0, 1.0 ) ).xyz, max( 1.0, length( instanceMatrix[ 0 ].xyz ) * ${num(CROWN_HALF_WIDTH)} ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );`;
+    ? "	if ( tcCutOn > 0.0 && tcCut( tcTree.xyz, max( 1.5, tcTree.w * 0.42 ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );"
+    : `	if ( tcCutOn > 0.0 && tcCut( ( modelMatrix * vec4( instanceMatrix[ 3 ].xyz, 1.0 ) ).xyz, max( 1.0, length( instanceMatrix[ 0 ].xyz ) * ${num(CROWN_HALF_WIDTH)} ) ) ) gl_Position = vec4( 0.0, 0.0, 2.0, 1.0 );`;
   shader.vertexShader = after(shader.vertexShader, "#include <project_vertex>", foot);
 }
 

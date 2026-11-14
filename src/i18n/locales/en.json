@@ -597,6 +597,7 @@
     },
     "menu": {
       "title": "Paused",
+      "pause": "Pause",
       "resume": "Resume",
       "record": "Study record",
       "sound": "Sound",
@@ -615,7 +616,8 @@
     },
     "paused": {
       "indoor": "Paused: the game is played out of doors",
-      "fly": "Paused: land the drone to play"
+      "fly": "Paused: land the drone to play",
+      "map": "Paused: the game is played from the walker's view"
     },
     "over": {
       "eyebrow": "Debrief",

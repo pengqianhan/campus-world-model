@@ -5,8 +5,10 @@
 // its place; bottom right, its speed and height, and the view. On a touch screen one thumb steers
 // with the stick while the other drags the view round. The walker, its scooter and its drone are
 // made up; the walk's menu says so, and that doors are not mapped.
+import { signal } from "@preact/signals";
+import { Component } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { gameMenu, gameOn, gameView, startGame, stopGame } from "../app/game.ts";
+import { gameMenu, gameOn, gameOver, loadGame, stopGame } from "../app/gameState.ts";
 import { formatDate, t } from "../app/i18n.ts";
 import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -30,10 +32,50 @@ import {
 import { RIDES, type Ride } from "../scene/rides.ts";
 import { DRONE_CEILING } from "../scene/walkers.ts";
 import { Icon, campusName } from "./common.tsx";
-import { GameHud } from "./GameHud.tsx";
 import { isLite } from "./SceneHost.tsx";
 
 const VIEWS = ["follow", "eyes", "map"] as const;
+
+/** Study Quest's panel (GameHud.tsx), loaded with the game the first time it is started. */
+const gameHud = signal<typeof import("./GameHud.tsx") | undefined>(undefined);
+let launching = false;
+
+/**
+ * Loads the game's code and its panel the first time, then starts a game for the visitor's walker,
+ * with its title card or at once; false when there is no walker to play with or the code did not come.
+ */
+async function launchGame(touch: boolean, title: boolean): Promise<boolean> {
+  if (launching) return true;
+  launching = true;
+  try {
+    const [game, hud] = await Promise.all([loadGame(), import("./GameHud.tsx")]);
+    gameHud.value = hud;
+    // The buildings' names wait until the game ends, on every screen: the game's own marks lead the way.
+    return game.startGame(MY_WALKER, true, touch, title);
+  } catch {
+    return false;
+  } finally {
+    launching = false;
+  }
+}
+
+/**
+ * The game's panel, drawn again only when the screen's kind changes: it follows the game by itself,
+ * ten times a second, and is not drawn again with each refresh of the walk's own panels.
+ */
+class GameHudSlot extends Component<{ touch: boolean; failed: () => void }> {
+  shouldComponentUpdate(next: { touch: boolean }): boolean {
+    return next.touch !== this.props.touch;
+  }
+  // Played again from the debrief: at once, with no title card.
+  private again = () => {
+    void launchGame(this.props.touch, false).then((ok) => ok || this.props.failed());
+  };
+  render() {
+    const Hud = gameHud.value?.GameHud;
+    return Hud ? <Hud touch={this.props.touch} again={this.again} /> : null;
+  }
+}
 const RIDE_ICON: Record<Ride, string> = { walk: "walkLine", scooter: "scooter", fly: "drone" };
 /** The keys the panels name, as a keyboard has them. */
 const KEY = { view: "V", hud: "H" } as const;
@@ -240,7 +282,7 @@ export function WalkerPanel() {
   const playing = gameOn.value;
   // A full menu over the game (the pause menu, the study record, the debrief) has the screen: the
   // stick and the game's buttons are not shown through it.
-  const gameMenuUp = playing && (gameMenu.value !== "none" || gameView.value?.phase === "over");
+  const gameMenuUp = playing && (gameMenu.value !== "none" || gameOver.value);
 
   // The game is played on the ground and seen from the walker: starting it lands the drone, and
   // leaves the map view for the view behind the walker.
@@ -249,12 +291,7 @@ export function WalkerPanel() {
     setMessage(undefined);
     if (ride === "fly") rideAs("walk");
     if (view === "map") setView({ view: "follow", name: MY_WALKER });
-    // The buildings' names wait until the game ends, on every screen: the game's own marks lead the way.
-    if (!startGame(MY_WALKER, true, touch)) setMessage(t("game.notReady"));
-  };
-  // Played again from the debrief: at once, with no title card.
-  const again = () => {
-    if (!startGame(MY_WALKER, true, touch, false)) setMessage(t("game.notReady"));
+    void launchGame(touch, true).then((ok) => ok || setMessage(t("game.notReady")));
   };
 
   const act = async (command: string, args: Record<string, unknown>) => {
@@ -425,7 +462,7 @@ export function WalkerPanel() {
         </div>
       </div>
 
-      {playing && <GameHud touch={touch} again={again} />}
+      {playing && <GameHudSlot touch={touch} failed={() => setMessage(t("game.notReady"))} />}
 
       <div class="hud-corner hud-bl">
         <p class="hud-sign" id="walker-where" aria-live="polite">

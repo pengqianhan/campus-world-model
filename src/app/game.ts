@@ -5,18 +5,19 @@
 // the settings (sound, the music's and the effects' volumes, reduced motion, and the lessons the
 // first minute has taught, so that a returning visitor is not taught again) are kept in this
 // browser's storage, as conveniences, and nothing leaves the browser.
+//
+// This module, its sounds, the scene's game world and the game's panel are loaded the first time
+// the Game button is pressed (gameState.ts): the rest of the site reads only gameState.ts.
 import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
-import type { GameAction, GameView } from "../scene/game.ts";
+import { GameWorld, type GameAction } from "../scene/game.ts";
 import { FOE_KINDS, FOE_TIME, LESSONS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
 import { audioStats, audioTap, deathSound, lashSound, release, resetMusic, setMusic, setSound, setVolumes, sfx, stinger, tellSound, type Sfx } from "./gameAudio.ts";
+import { gameMenu, gameOn, gameView, padSteer } from "./gameState.ts";
 import { pick, t } from "./i18n.ts";
+import "../ui/game.css";
 
-export const gameOn = signal(false);
-/** What the panel shows of the game, refreshed ten times a second. */
-export const gameView = signal<GameView | undefined>(undefined);
-/** The menu over the game: none, the pause menu, or the walker's study record (stats and skills). */
-export const gameMenu = signal<"none" | "pause" | "sheet">("none");
+export { gameMenu, gameOn, gameView };
 /** The title card, until the visitor's first key, tap or click. */
 export const gameTitle = signal(false);
 
@@ -85,6 +86,13 @@ function systemReducedMotion(): boolean {
   }
 }
 
+/**
+ * Whether the visitor has set reduced motion in the pause menu. Until then it follows the system's
+ * setting each time a game starts, and is not stored: the lessons stored in the first minute must
+ * not fix that day's system setting for good.
+ */
+let motionChosen = false;
+
 function loadSettings(): GameSettings {
   const fallback = { sound: true, reducedMotion: systemReducedMotion(), music: 0.7, effects: 0.9, seen: [] as string[] };
   const level = (v: unknown, d: number) => (typeof v === "number" && v >= 0 && v <= 1 ? v : d);
@@ -92,9 +100,10 @@ function loadSettings(): GameSettings {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return fallback;
     const s = JSON.parse(raw) as Partial<GameSettings>;
+    motionChosen = typeof s.reducedMotion === "boolean";
     return {
       sound: s.sound !== false,
-      reducedMotion: typeof s.reducedMotion === "boolean" ? s.reducedMotion : fallback.reducedMotion,
+      reducedMotion: motionChosen ? s.reducedMotion! : fallback.reducedMotion,
       music: level(s.music, fallback.music),
       effects: level(s.effects, fallback.effects),
       seen: Array.isArray(s.seen) ? LESSONS.filter((l) => (s.seen as unknown[]).includes(l)) : [],
@@ -108,12 +117,14 @@ export const gameSettings = signal<GameSettings>(loadSettings());
 
 export function setGameSettings(next: Partial<GameSettings>): void {
   const s = { ...gameSettings.peek(), ...next };
+  if (next.reducedMotion !== undefined) motionChosen = true;
   gameSettings.value = s;
   setSound(s.sound);
   setVolumes(s.music, s.effects);
-  if (scene) scene.game.reducedMotion = s.reducedMotion;
+  if (scene?.game) scene.game.reducedMotion = s.reducedMotion;
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    const { reducedMotion: _motion, ...kept } = s;
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(motionChosen ? s : kept));
   } catch {
     // Kept for this visit only.
   }
@@ -285,7 +296,7 @@ function told(e: GameEvent): void {
 }
 
 function poll(): void {
-  const v = scene?.game.view();
+  const v = scene?.game?.view();
   if (!v) {
     // Its walker left the map: the game went with it.
     stopGame();
@@ -333,7 +344,8 @@ function startKeys(): () => void {
     }
     // C is also the drone's way down: in the air (where the game waits) it is left to the drone.
     if (((k === "c" && gameView.peek()?.paused !== "fly") || k === "i") && !e.repeat && gameView.peek()?.phase === "play") {
-      gameMenu.value = gameMenu.peek() === "sheet" ? "none" : "sheet";
+      // Through setMenu, so that the record holds the game still as the pause menu does.
+      setMenu(gameMenu.peek() === "sheet" ? "none" : "sheet");
       return;
     }
     if (gameMenu.peek() !== "none" || gameView.peek()?.phase !== "play") return;
@@ -350,16 +362,16 @@ function startKeys(): () => void {
 
 /** An action from any of the controls. */
 export function gameAct(a: GameAction | "lock"): void {
-  if (!scene || gameMenu.peek() !== "none") return;
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return;
   if (gameTitle.peek()) dismissTitle();
-  if (a === "lock") scene.game.toggleLock();
-  else scene.game.act(a);
+  if (a === "lock") world.toggleLock();
+  else world.act(a);
 }
 
 /** A game pad, read in each frame while the game is on: the left stick walks, A strikes, B dodges, X throws, Y the Eureka, RB locks on, Start pauses. */
 let padWas: boolean[] = [];
 let padStick = false;
-let steer: ((forward: number, turn: number) => void) | undefined;
 function readPad(): void {
   pad = requestAnimationFrame(readPad);
   const pads = navigator.getGamepads?.() ?? [];
@@ -383,16 +395,11 @@ function readPad(): void {
   const tx = dead(x);
   if (fx || tx) {
     padStick = true;
-    steer?.(fx, tx);
+    padSteer()?.(fx, tx);
   } else if (padStick) {
     padStick = false;
-    steer?.(0, 0);
+    padSteer()?.(0, 0);
   }
-}
-
-/** Lets the walk's own code steer from the pad (set by the walk, which owns the pace). */
-export function setPadSteer(fn: ((forward: number, turn: number) => void) | undefined): void {
-  steer = fn;
 }
 
 export function togglePause(): void {
@@ -402,23 +409,18 @@ export function togglePause(): void {
 
 export function setMenu(m: "none" | "pause" | "sheet"): void {
   gameMenu.value = m;
-  if (scene) scene.game.menuPaused = m !== "none";
+  if (scene?.game) scene.game.menuPaused = m !== "none";
   // A menu holds the walker still at once, even with a key or the stick still held; the walk's keys
   // take it on again when the menu shuts.
-  if (m !== "none") steer?.(0, 0);
+  if (m !== "none") padSteer()?.(0, 0);
   sfx("uiConfirm");
-}
-
-/** Whether the game holds the walker still: a menu is open over it. */
-export function gameHolds(): boolean {
-  return gameOn.peek() && gameMenu.peek() !== "none";
 }
 
 /** The title card goes at the visitor's first key, tap or click, and the game's clock starts. */
 export function dismissTitle(): void {
   if (!gameTitle.peek()) return;
   gameTitle.value = false;
-  if (scene && gameMenu.peek() === "none") scene.game.menuPaused = false;
+  if (scene?.game && gameMenu.peek() === "none") scene.game.menuPaused = false;
 }
 
 /**
@@ -426,21 +428,24 @@ export function dismissTitle(): void {
  * off the walker's view meanwhile; `compact` is for a phone. False when there is no such walker.
  */
 export function startGame(name: string, quiet = false, compact = false, title = true): boolean {
-  if (!scene) return false;
+  const world = scene?.game;
+  if (!world) return false;
   const words = {
     foes: Object.fromEntries(FOE_KINDS.map((k) => [k, t(`game.foe.${k}.name`)])) as Record<FoeKind, string>,
     place: (b: { name: Parameters<typeof pick>[0] }) => pick(b.name),
     open: t("game.openGround"),
   };
-  scene.game.reducedMotion = gameSettings.peek().reducedMotion;
-  scene.game.onEvent = told;
-  if (!scene.game.start(name, words, quiet, compact, gameSettings.peek().seen)) return false;
+  // Until the visitor sets it, reduced motion follows the system's setting of the day.
+  if (!motionChosen) gameSettings.value = { ...gameSettings.peek(), reducedMotion: systemReducedMotion() };
+  world.reducedMotion = gameSettings.peek().reducedMotion;
+  world.onEvent = told;
+  if (!world.start(name, words, quiet, compact, gameSettings.peek().seen)) return false;
   compactHud = compact;
   const set = gameSettings.peek();
   setSound(set.sound);
   setVolumes(set.music, set.effects);
   resetMusic();
-  scene.game.onStep = (run) => sfx(run ? "stepRun" : "step");
+  world.onStep = (run) => sfx(run ? "stepRun" : "step");
   window.clearInterval(timer);
   timer = window.setInterval(poll, 100);
   stopKeys?.();
@@ -455,7 +460,7 @@ export function startGame(name: string, quiet = false, compact = false, title = 
   window.clearTimeout(cardTimer);
   window.clearTimeout(flashTimer);
   // The game waits on its title card until the visitor is ready; a game played again starts at once.
-  scene.game.menuPaused = title;
+  world.menuPaused = title;
   batch(() => {
     gameOn.value = true;
     gameMenu.value = "none";
@@ -477,7 +482,8 @@ export function startGame(name: string, quiet = false, compact = false, title = 
  * is not lost.
  */
 export function retryGame(): boolean {
-  if (!scene || !scene.game.retry()) return false;
+  const world = scene?.game;
+  if (!world || !world.retry()) return false;
   banners = [];
   cards = [];
   window.clearTimeout(bannerTimer);
@@ -490,7 +496,7 @@ export function retryGame(): boolean {
     gameFeed.value = [];
     gameNewBest.value = false;
   });
-  scene.game.menuPaused = false;
+  world.menuPaused = false;
   (document.activeElement as HTMLElement | null)?.blur?.();
   sfx("start");
   poll();
@@ -507,10 +513,10 @@ export function stopGame(): void {
   stopKeys = undefined;
   banners = [];
   cards = [];
-  if (padStick) steer?.(0, 0);
+  if (padStick) padSteer()?.(0, 0);
   padStick = false;
-  scene?.game.stop();
-  if (scene) scene.game.onStep = undefined;
+  scene?.game?.stop();
+  if (scene?.game) scene.game.onStep = undefined;
   // Every sound stops and its nodes, timers and context are let go.
   release();
   batch(() => {
@@ -524,12 +530,15 @@ export function stopGame(): void {
   });
 }
 
-/** Connects the game to the scene; a scene that goes takes its game with it. */
+/**
+ * Connects the game to the scene, whose game world is made now the first time (gameState.ts binds
+ * it when this module comes); a scene that goes takes its game with it.
+ */
 export function bindGameScene(s: CampusScene | undefined): void {
   if (gameOn.peek()) stopGame();
   scene = s;
   if (s) {
-    s.game.reducedMotion = gameSettings.peek().reducedMotion;
+    s.withGame(GameWorld).reducedMotion = gameSettings.peek().reducedMotion;
     s.onGameClick = (a) => gameAct(a);
   }
 }

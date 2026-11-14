@@ -16,7 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
-import { gameHolds, gameMenu, setPadSteer, stopGame } from "./game.ts";
+import { gameHolds, gameMenu, setPadSteer, stopGame } from "./gameState.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 

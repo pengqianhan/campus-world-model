@@ -15,6 +15,9 @@ const QUERY = "light=day&time=preview&date=2026-03-20&t=15:00";
 // A smaller window than the other desktop tests: CI draws in software, and a walker view is redrawn
 // while anything in it moves.
 test.use({ viewport: { width: 1100, height: 720 } });
+// Milliseconds a game started again "at once" may take: a frame or two. In software rendering (as on
+// CI, playwright.config.ts) a frame of a walker view takes a second or more.
+const AT_ONCE = process.platform !== "win32" || process.env.E2E_GL === "swiftshader" ? 6000 : 1500;
 
 async function walker(page: Page, command: string, args: Record<string, unknown> = {}): Promise<Reply> {
   return page.evaluate(([c, a]) => window.__walker!.run(c, a), [command, args] as const);
@@ -323,7 +326,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
     game: { state(): Game | undefined; quest?: { seconds: number; focus: number; grace: number; iframes: number; deaths: number; practice?: number; taught: Set<string> } };
     walkers: { teleport(name: string, at: [number, number]): void; turn(name: string, by: number, absolute?: boolean): void };
   };
-  const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
+  const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game?.state());
   const put = (at: [number, number], heading?: number) =>
     page.evaluate(
       ([p, h]) => {
@@ -333,12 +336,15 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
       },
       [at, heading ?? null] as const,
     );
-  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game.state()), test, { timeout: 60_000 });
+  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game?.state()), test, { timeout: 60_000 });
 
   await open(page, "?walk=1");
   await ready(page);
-  // Nothing of the game is on the map until the visitor starts it.
+  // Nothing of the game is on the map until the visitor starts it, nor is its code loaded: its world
+  // and its look come with the first press of its button.
   expect(await game()).toBeUndefined();
+  expect(await page.evaluate(() => (window.__scene as unknown as { game?: unknown }).game)).toBeUndefined();
+  expect(await page.evaluate(() => [...document.styleSheets].some((s) => /\/game-[^/]*\.css$/.test(s.href ?? "")))).toBe(false);
   await expect(page.locator("#game-panel")).toHaveCount(0);
   await expect(page.locator(".gx")).toBeHidden();
 
@@ -348,6 +354,8 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   // The title card, between letterbox bars, says so again; a tap lets the game begin.
   await expect(page.locator("#game-title")).toBeVisible();
   await expect(page.locator("#game-title")).toContainText(/made up/);
+  // No words to read: the title card lists no controls.
+  await expect(page.locator("#game-title kbd, #game-title .sq-controls")).toHaveCount(0);
   // The game is seen from behind the walker, and the buildings' names wait until it ends.
   await expect(page.locator('#walker-panel button[data-view="follow"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
@@ -362,9 +370,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   await expect(page.locator("#game-quests")).toContainText("Orientation");
   await expect(page.locator("#game-rank")).toHaveText("Fresher");
   await expect(page.locator(".gx-compass")).toBeVisible();
-  // No words to read: the title card lists no controls. The first book glows a few steps ahead,
-  // and the one prompt is its keys to move.
-  await expect(page.locator(".sq-legend")).toHaveCount(0);
+  // The first book glows a few steps ahead, and the one prompt is its keys to move.
   await expect(page.locator("#game-prompt")).toHaveAttribute("data-lesson", "move");
   await expect(page.locator("#game-prompt kbd")).toHaveCount(4);
   const start = await page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { at: [number, number] } } }).walkers.state("Walker").at.slice());
@@ -431,8 +437,29 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   const t0 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
   await page.waitForTimeout(600);
   expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t0);
+  // A game held still is a still picture: once the fight's camera has come back behind the walker,
+  // nothing more is drawn under the pause menu.
+  await expect
+    .poll(
+      async () => {
+        const before = await page.evaluate(() => window.__scene!.frames);
+        await page.waitForTimeout(500);
+        return (await page.evaluate(() => window.__scene!.frames)) - before;
+      },
+      { message: "frames drawn under the pause menu", timeout: 8_000 },
+    )
+    .toBe(0);
   await page.locator("#game-resume").click();
   await expect(page.locator("#game-menu")).toHaveCount(0);
+  // The study record, opened with C, holds the game still as the pause menu does, and C shuts it.
+  await page.keyboard.press("c");
+  await expect(page.locator("#game-sheet")).toBeVisible();
+  const t1 = await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds);
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t1);
+  await page.keyboard.press("c");
+  await expect(page.locator("#game-sheet")).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBeGreaterThan(t1);
 
   // With its Focus at one, the next blow burns the walker out: a choice, to retry, to see the
   // debrief, or to end the game.
@@ -455,7 +482,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   const retried = Date.now();
   await page.locator("#game-retry").click();
   await until("g.phase === 'play' && g.main === 1 && g.focus >= 100 && g.foes.some((f) => f.kind === 'ddl')");
-  expect(Date.now() - retried).toBeLessThan(1500);
+  expect(Date.now() - retried).toBeLessThan(AT_ONCE);
   await expect(page.locator("#game-over")).toHaveCount(0);
   expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.deaths)).toBe(1);
   await expect(page.locator("#game-quests")).toContainText("The DDL");
@@ -473,7 +500,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   const again = Date.now();
   await page.locator("#game-again").click();
   await until("g.phase === 'play' && g.xp === 0 && g.main === 0");
-  expect(Date.now() - again).toBeLessThan(1500);
+  expect(Date.now() - again).toBeLessThan(AT_ONCE);
   await expect(page.locator("#game-title")).toHaveCount(0);
   await expect(page.locator("#game-over")).toHaveCount(0);
   await page.waitForTimeout(400);
@@ -487,6 +514,18 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   expect(await game()).toBeUndefined();
   await expect(page.locator("#walker-panel")).toBeVisible();
   await expect(page.locator('[data-label="walker:Walker"]')).toHaveCount(1);
+
+  // The lessons it stored do not fix the system's motion setting: a visitor who turns on reduced
+  // motion later gets it in the next game, until they set it in the pause menu themselves.
+  expect(JSON.parse((await page.evaluate(() => localStorage.getItem("studyQuest.settings"))) ?? "{}")).not.toHaveProperty("reducedMotion");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator("#walker-game").click();
+  await expect(page.locator("#game-title")).toBeVisible();
+  expect(await page.evaluate(() => (window.__scene as unknown as { game: { reducedMotion: boolean } }).game.reducedMotion)).toBe(true);
+  await page.locator("#game-title").click();
+  await page.keyboard.press("p");
+  await page.locator("#game-quit").click();
+  await expect(page.locator("#game-panel")).toHaveCount(0);
 });
 
 test("in a narrower window with a mouse the walk's panels keep apart, out of doors and inside", async ({ page }) => {
@@ -635,7 +674,7 @@ test.describe("on a phone", () => {
       game: { state(): { phase: string; xp: number; books: [number, number][]; foes: { id: number; kind: string; at: [number, number]; hp: number; state: string }[] } | undefined; quest?: { practice?: number; seconds: number } };
       walkers: { teleport(name: string, at: [number, number]): void; turn(name: string, by: number, absolute?: boolean): void };
     };
-    const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game.state());
+    const game = () => page.evaluate(() => (window.__scene as unknown as GameScene).game?.state());
     const put = (at: [number, number], heading = 0) =>
       page.evaluate(
         ([p, h]) => {

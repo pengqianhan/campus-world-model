@@ -465,7 +465,8 @@ export class Figure {
     // Its origin where the fist grips it.
     g.translate(0, PEN_LENGTH / 2 - PEN_GRIP * PEN_LENGTH, 0);
     const pen = new Mesh(g, new MeshStandardMaterial({ vertexColors: true, roughness: 0.5 }));
-    pen.castShadow = true;
+    // Nothing of the game casts a shadow (PROGRESS.md, Decisions: Study Quest).
+    pen.castShadow = false;
     pen.userData.noPick = true;
     pen.raycast = () => {};
     // In the fist, pointing ahead of it and a little down the line of the forearm, as a sword is held.

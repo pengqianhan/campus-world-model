@@ -50,7 +50,7 @@ import { MeshBuilder, drape, levelSlope, ringsBounds, type FacadeSpec } from "./
 import { SEA_PLANE, Terrain } from "./terrain.ts";
 import { WALL_HEIGHT, buildInterior, disposeGroup, inset } from "./interior.ts";
 import { LabelLayer, type LabelSpec } from "./labels.ts";
-import { GameWorld } from "./game.ts";
+import type { GameWorld } from "./game.ts";
 import { GROUND_PAINT, WalkerWorld } from "./walkers.ts";
 import { WalkMap } from "../shared/walkmap.ts";
 import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
@@ -475,8 +475,14 @@ export class CampusScene {
 
   /** The walkers on the map (walkers.ts). */
   readonly walkers: WalkerWorld;
-  /** The book game played with a walker (game.ts): made up, and off until the visitor starts it. */
-  readonly game: GameWorld;
+  /**
+   * Study Quest's world, played with a walker (game.ts): made up, and off until the visitor starts
+   * it. Its code comes in a chunk of its own and it is made the first time a game is asked for
+   * (withGame), so that a visitor who never plays builds none of it.
+   */
+  game?: GameWorld;
+  /** Where the game's marks over the picture go (gameOverlay.ts). */
+  private gameOverlayParent?: HTMLElement;
   /** Floor outlines in metres, by building and floor, for walkers steered by hand indoors. */
   private floorRingCache = new Map<string, [number, number][][][]>();
   private walkMapCache?: WalkMap;
@@ -608,31 +614,7 @@ export class CampusScene {
       ringColour: () => this.palette.accent,
     });
     this.scene.add(this.walkers.group);
-    this.game = new GameWorld({
-      groundAt: (x, y) => this.groundAt(x, y),
-      walkMap: () => this.walkMap(),
-      roofs: () => this.roofMap(),
-      buildings: () => this.campus?.buildings ?? [],
-      walker: (name) => this.walkers.state(name),
-      shove: (name, dx, dy) => this.walkers.shove(name, dx, dy),
-      face: (name, bearing) => this.walkers.turn(name, bearing, true),
-      paceScale: (name, k) => this.walkers.setPaceScale(name, k),
-      camera: () => this.activeCamera,
-      viewSize: () => ({ width: this.width, height: this.height }),
-      act: (name, move) => this.walkers.figure(name)?.play(move),
-      pen: (name, on) => this.walkers.figure(name)?.setPen(on),
-      teleport: (name, at, heading) => {
-        this.walkers.teleport(name, at);
-        this.walkers.turn(name, heading, true);
-        // The view comes with it at once, behind it, not gliding across the campus.
-        if (this.viewWalker === name) {
-          this.follow = { ...this.follow, yaw: 0 };
-          this.placeWalkerCamera(1, true);
-        }
-        this.needsRender = true;
-      },
-    }, labelRoot.parentElement ?? undefined);
-    this.scene.add(this.game.group);
+    this.gameOverlayParent = labelRoot.parentElement ?? undefined;
 
     // The buildings drawn in detail from code, and the measured massings, each made the first time
     // the camera comes near it.
@@ -912,7 +894,7 @@ export class CampusScene {
     this.contextRoofs = undefined;
     // A walker steered by hand keeps a grid of the ground round it: rebuild it with the surroundings.
     this.walkers.refresh();
-    this.game.refresh();
+    this.game?.refresh();
     this.contextGroup.clear();
     this.contextMaterials = [];
     this.groundLayers = [];
@@ -1679,7 +1661,7 @@ export class CampusScene {
     if (this.campus) this.setCampus(this.campus);
     if (this.lastContext) this.setContext(this.lastContext);
     this.walkers.refresh();
-    this.game.refresh();
+    this.game?.refresh();
     if (this.selection.building) {
       this.rebuildDetail();
       this.rebuildPin();
@@ -2029,7 +2011,7 @@ export class CampusScene {
       // From a walker's height only the buildings near it are labelled; the rest would crowd the horizon.
       const near = this.viewWalker ? this.walkers.pose(this.viewWalker)?.at : undefined;
       // A game keeps the walker's view clear: the buildings' names wait until it ends.
-      const quiet = this.game.on && this.game.quiet && this.view !== "map";
+      const quiet = !!this.game?.on && this.game.quiet && this.view !== "map";
       for (const b of this.campus.buildings) {
         if (b.offMap || quiet) continue;
         if (near && Math.hypot(b.center[0] - near[0], b.center[1] - near[1]) > 260) continue;
@@ -2051,9 +2033,9 @@ export class CampusScene {
       }
     }
     // In a game its walker's own name is left off: it would sit on the villain it faces.
-    const player = this.game.on ? `walker:${this.game.player}` : undefined;
+    const player = this.game?.on ? `walker:${this.game.player}` : undefined;
     for (const l of this.walkers.labels()) if (l.id !== player) specs.push(l);
-    specs.push(...this.game.labels());
+    if (this.game) specs.push(...this.game.labels());
     this.labels.set(specs);
     this.needsLabels = true;
     this.needsRender = true;
@@ -2356,7 +2338,7 @@ export class CampusScene {
     // In a fight the view from behind comes round onto the line from the foe through the walker,
     // so that both are in the picture: always for a foe locked on to and for the boss, and for
     // others unless the visitor turned the view in the last moments.
-    const focus = this.view === "follow" && !flying && !pose.indoor && this.game.on ? this.game.fightFocus() : undefined;
+    const focus = this.view === "follow" && !flying && !pose.indoor && this.game?.on ? this.game.fightFocus() : undefined;
     const fight = this.fight;
     let framing = false;
     if (focus) {
@@ -2444,7 +2426,7 @@ export class CampusScene {
       if (fight.k > 0) d += (Math.max(d, fight.reach / Math.cos(up)) - d) * fight.k;
       // The game's nudges: in on the boss as it changes phase, and over the right shoulder while
       // the walker strikes, so that the swing is not hidden behind its body.
-      const nudge = this.game.on ? this.game.cameraNudge() : undefined;
+      const nudge = this.game?.on ? this.game.cameraNudge() : undefined;
       if (nudge && nudge.push > 0) d *= 1 - (this.persp.aspect < 1 ? FIGHT_PUSH_IN_UPRIGHT : FIGHT_PUSH_IN) * nudge.push;
       const wantD = d;
       // A wall between the walker and the camera would hide it: the camera comes in front of the wall.
@@ -2514,7 +2496,7 @@ export class CampusScene {
       fight.cut = fight.k > 0;
     }
     // A blow in the game shakes the view a little; it settles back on the walker by itself.
-    if (this.game.on) this.persp.position.add(this.game.shake(this.shakeBy));
+    if (this.game?.on) this.persp.position.add(this.game.shake(this.shakeBy));
     this.persp.updateMatrixWorld();
     // The shadows follow the walker round the map.
     if (Math.hypot(this.shadowCentre.x - x, this.shadowCentre.z + y) > 70) this.fitShadow();
@@ -2530,6 +2512,39 @@ export class CampusScene {
       this.needsLandmarks = true;
     }
   }
+
+  /** Makes Study Quest's world the first time it is asked for, from its own chunk (app/gameState.ts). */
+  withGame(World: typeof GameWorld): GameWorld {
+    if (this.game) return this.game;
+    const game = new World({
+      groundAt: (x, y) => this.groundAt(x, y),
+      walkMap: () => this.walkMap(),
+      roofs: () => this.roofMap(),
+      buildings: () => this.campus?.buildings ?? [],
+      walker: (name) => this.walkers.state(name),
+      shove: (name, dx, dy) => this.walkers.shove(name, dx, dy),
+      face: (name, bearing) => this.walkers.turn(name, bearing, true),
+      paceScale: (name, k) => this.walkers.setPaceScale(name, k),
+      camera: () => this.activeCamera,
+      viewSize: () => ({ width: this.width, height: this.height }),
+      act: (name, move) => this.walkers.figure(name)?.play(move),
+      pen: (name, on) => this.walkers.figure(name)?.setPen(on),
+      teleport: (name, at, heading) => {
+        this.walkers.teleport(name, at);
+        this.walkers.turn(name, heading, true);
+        // The view comes with it at once, behind it, not gliding across the campus.
+        if (this.viewWalker === name) {
+          this.follow = { ...this.follow, yaw: 0 };
+          this.placeWalkerCamera(1, true);
+        }
+        this.needsRender = true;
+      },
+    }, this.gameOverlayParent);
+    this.scene.add(game.group);
+    this.game = game;
+    return game;
+  }
+
   /** The walker view's camera matrix when last drawn. */
   private lastView?: number[];
   /**
@@ -2675,7 +2690,7 @@ export class CampusScene {
       this.drag = undefined;
       this.renderer.domElement.style.cursor = "grab";
       // In the game a click with the mouse strikes (the right button throws a flashcard), rather than sending the walker.
-      if (drag && !drag.moved && this.game.on && e.pointerType === "mouse" && (e.button === 0 || e.button === 2)) {
+      if (drag && !drag.moved && this.game?.on && e.pointerType === "mouse" && (e.button === 0 || e.button === 2)) {
         this.onGameClick?.(e.button === 0 ? "strike" : "card");
         return;
       }
@@ -2810,13 +2825,15 @@ export class CampusScene {
     }
     // Also when the last walker has just gone: its name and words come off the map with it.
     // The game after the walkers: it reads where its walker now stands.
-    if (this.game.on && this.game.step(dt, now)) {
+    if (this.game?.on) this.game.mapView = this.view === "map";
+    if (this.game?.on && this.game.step(dt, now)) {
       this.needsRender = true;
       this.needsLabels = true;
     }
-    if (this.walkers.labelsVersion !== this.walkerLabelsVersion || this.game.labelsVersion !== this.gameLabelsVersion) {
+    const gameLabels = this.game?.labelsVersion ?? 0;
+    if (this.walkers.labelsVersion !== this.walkerLabelsVersion || gameLabels !== this.gameLabelsVersion) {
       this.walkerLabelsVersion = this.walkers.labelsVersion;
-      this.gameLabelsVersion = this.game.labelsVersion;
+      this.gameLabelsVersion = gameLabels;
       this.rebuildLabels();
     }
     if (this.view === "map") this.controls.update();
@@ -3300,7 +3317,7 @@ export class CampusScene {
 
   dispose(): void {
     this.disposed = true;
-    this.game.dispose();
+    this.game?.dispose();
     this.walkers.clear();
     cancelAnimationFrame(this.raf);
     this.controls.dispose();

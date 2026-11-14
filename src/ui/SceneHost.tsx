@@ -24,7 +24,7 @@ import {
   sun,
   webglFailed,
 } from "../app/state.ts";
-import { bindGameScene } from "../app/game.ts";
+import { bindGameScene } from "../app/gameState.ts";
 import { bindWalkerScene } from "../app/walker.ts";
 import { CampusScene } from "../scene/CampusScene.ts";
 import { Terrain } from "../scene/terrain.ts";

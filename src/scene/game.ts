@@ -110,7 +110,7 @@ export interface FightFocus {
 export interface GameView {
   phase: "play" | "over";
   /** Why the clock is stopped: the walker is inside a building, or flying. */
-  paused?: "indoor" | "fly";
+  paused?: "indoor" | "fly" | "map";
   focus: number;
   maxFocus: number;
   stamina: number;
@@ -148,6 +148,8 @@ export interface GameView {
   debrief?: Debrief;
 }
 
+/** Seconds after a game ends in which its foes' last moments and the debris are still drawn. */
+const OVER_SETTLE = 5;
 /** Metres: half the side of the ground the pick-ups are laid on, round the walker. */
 const FIELD = 300;
 const FIELD_KEEP = 140;
@@ -417,6 +419,8 @@ export class GameWorld {
   quiet = false;
   /** Set by the visitor's pause menu: the game's clock stops. */
   menuPaused = false;
+  /** Set by the scene: its view is the map, where the game is not played and waits. */
+  mapView = false;
   /** Fewer sparks, and no shaking of the view. */
   reducedMotion = false;
   /** Told of each thing that happens, in the frame it happens: for the sound. */
@@ -429,9 +433,12 @@ export class GameWorld {
   private words?: GameWords;
   private field?: { grid: WalkGrid; reached: Uint8Array; draws: (BookDraw & { b: Building })[]; centre: Pt };
   private events: GameEvent[] = [];
-  private paused?: "indoor" | "fly";
+  private paused?: "indoor" | "fly" | "map";
   private seconds = 0;
   private trauma = 0;
+  /** Seconds since the game ended, and whether the picture of a game held still has been drawn. */
+  private overFor = 0;
+  private stillDrawn = false;
   private heights = new Map<number, number>();
   private kinds: Record<FoeKind, KindView>;
   private items = new ItemsView();
@@ -506,6 +513,8 @@ export class GameWorld {
     this.events = [];
     this.seconds = 0;
     this.trauma = 0;
+    this.overFor = 0;
+    this.stillDrawn = false;
     this.menuPaused = false;
     this.heights.clear();
     // The game is seen from behind the walker. A walker in a corner between walls (as at some
@@ -630,6 +639,8 @@ export class GameWorld {
     this.host.act(this.name, undefined);
     this.host.paceScale(this.name, 1);
     this.trauma = 0;
+    this.overFor = 0;
+    this.stillDrawn = false;
     this.slashDue = undefined;
     this.nudge.side = this.nudge.push = this.nudge.strikeT = 0;
     this.motion.clear();
@@ -851,7 +862,12 @@ export class GameWorld {
     return [];
   }
 
-  /** Moves the game on by `dt` seconds. True while a game is on: it is drawn in every frame. */
+  /**
+   * Moves the game on by `dt` seconds. True when the picture must be drawn again: in every frame
+   * while it is played. A game held still (its title card, a menu over it, the walker indoors or in
+   * the air) is drawn once as it stops, and a game over once its foes' last moments have played, so
+   * that a still picture is not drawn again and again (#53).
+   */
   step(dt: number, _now?: number): boolean {
     const g = this.quest;
     if (!g) return false;
@@ -860,7 +876,7 @@ export class GameWorld {
       this.stop();
       return true;
     }
-    this.paused = walker.indoor ? "indoor" : walker.ride === "fly" ? "fly" : undefined;
+    this.paused = walker.indoor ? "indoor" : walker.ride === "fly" ? "fly" : this.mapView ? "map" : undefined;
     const frozen = this.menuPaused || !!this.paused || g.phase !== "play";
     // A game that is over still runs its foes' last moments; a pause stops everything.
     const gdt = this.menuPaused || this.paused ? 0 : dt;
@@ -882,7 +898,11 @@ export class GameWorld {
     this.events.push(...evs);
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
     this.sync(me, frozen && this.menuPaused ? 0 : dt);
-    return true;
+    this.overFor = g.phase === "play" ? 0 : this.overFor + dt;
+    const still = this.menuPaused || !!this.paused || this.overFor > OVER_SETTLE;
+    const draw = !still || !this.stillDrawn || this.trauma > 0;
+    this.stillDrawn = still;
+    return draw;
   }
 
   /** Puts everything on the ground again, after the ground or the buildings changed. */

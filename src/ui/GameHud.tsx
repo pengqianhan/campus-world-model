@@ -535,7 +535,7 @@ export function GameHud({ touch, again }: { touch: boolean; again: () => void })
   const lesson = !over && menu === "none" && !gameTitle.value ? v.lesson : undefined;
   const cinematic = gameTitle.value || over || gameBanner.value?.kind === "phase" || gameCard.value?.kind === "boss";
   return (
-    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : ""} ${lesson ? `cue-${lesson}` : ""}`} id="game-panel" aria-label={t("game.title")}>
+    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : gameCard.value ? "card-foe" : ""} ${lesson ? `cue-${lesson}` : ""}`} id="game-panel" aria-label={t("game.title")}>
       <div class="sq-bars" aria-hidden="true">
         <i />
         <i />
@@ -556,7 +556,7 @@ export function GameHud({ touch, again }: { touch: boolean; again: () => void })
           {menu === "none" && <Skills v={v} touch={touch} />}
           {lesson && <Prompt lesson={lesson} touch={touch} />}
           {touch && menu === "none" && (
-            <button type="button" class="sq-pausebtn" id="game-pause" aria-label={t("game.menu.title")} onClick={() => setMenu("pause")}>
+            <button type="button" class="sq-pausebtn" id="game-pause" aria-label={t("game.menu.pause")} onClick={() => setMenu("pause")}>
               <i />
               <i />
             </button>

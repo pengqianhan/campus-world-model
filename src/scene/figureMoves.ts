@@ -7,7 +7,7 @@
 // `twist` turns the chest, radians, its right shoulder forward when positive; `lean` bows it
 // forward, radians; `crouch` lowers the hips, metres, the knees bending to keep the feet down;
 // `step` brings the body forward over its feet, metres.
-import { PLAYER } from "../shared/game.ts";
+import { PLAYER } from "../shared/gamePlayer.ts";
 
 export type Move = "strike0" | "strike1" | "strike2" | "card" | "dodge" | "sprint" | "eureka" | "flinch" | "down";
 
