@@ -12,8 +12,12 @@ import {
   StudyQuest,
   TEACH,
   WAVES,
+  HOME_MARGIN,
+  awayFromHomes,
   bearingTo,
   bookSpot,
+  isHome,
+  questDraws,
   gradeFactors,
   gradeFor,
   openSpot,
@@ -1126,6 +1130,119 @@ describe("openSpot", () => {
   it("finds nothing where nothing is reached", () => {
     const g = makeGrid([-50, -50, 50, 50], 2);
     expect(openSpot(g, new Uint8Array(g.cols * g.rows), [0, 0], 40, 18, [-40, -40], seeded(2))).toBeUndefined();
+  });
+});
+
+describe("homes", () => {
+  // A hall of residence, 30 m square, with a teaching block just west of it and open ground round both.
+  const square = (x0: number, y0: number, x1: number, y1: number): Pt[] => [
+    [x0, y0],
+    [x1, y0],
+    [x1, y1],
+    [x0, y1],
+  ];
+  const HALL = square(10, -15, 40, 15);
+  const BLOCK = square(-20, -10, 0, 10);
+  const field = () => {
+    const g = makeGrid([-150, -150, 150, 150], 2);
+    blockPolygon(g, [HALL]);
+    blockPolygon(g, [BLOCK]);
+    return g;
+  };
+  /** Metres from `p` to the hall: 0 on it. */
+  const toHall = (p: Pt) => Math.hypot(Math.max(10 - p[0], 0, p[0] - 40), Math.max(-15 - p[1], 0, p[1] - 15));
+  const near: Pt = [-120, -120];
+
+  it("knows a home by a floor the map leaves blank for the people who live there or the children cared for there", () => {
+    expect(isHome({ floors: [{}, { noPlan: "residential" }] })).toBe(true);
+    expect(isHome({ floors: [{ noPlan: "childcare" }] })).toBe(true);
+    expect(isHome({ floors: [{ noPlan: "unmapped" }, {}] })).toBe(false);
+    expect(isHome({ floors: [] })).toBe(false);
+  });
+
+  it("clears the ground on a home and within the margin round it, and keeps the rest", () => {
+    const g = field();
+    const reached = reachable(g, near);
+    const free = awayFromHomes(g, reached, [HALL]);
+    const cell = (m: Uint8Array, p: Pt) => {
+      const [c, r] = cellOf(g, p);
+      return m[r * g.cols + c];
+    };
+    expect(HOME_MARGIN).toBe(25);
+    expect(cell(free, [50, 0])).toBe(0);
+    expect(cell(free, [25, 30])).toBe(0);
+    expect(cell(free, [75, 0])).toBe(1);
+    expect(cell(free, [-60, 0])).toBe(1);
+    // The mask it was given is left as it was.
+    expect(cell(reached, [50, 0])).toBe(1);
+  });
+
+  it("lays no book beside a hall of residence, where it would have laid some", () => {
+    const g = field();
+    const reached = reachable(g, near);
+    const free = awayFromHomes(g, reached, [HALL]);
+    // The teaching block next to the hall draws the books.
+    const draws = [{ center: [-10, 0] as Pt, weight: 1 }];
+    const lay = (mask: Uint8Array) => {
+      const random = seeded(11);
+      const taken: Pt[] = [];
+      for (let k = 0; k < 30; k++) {
+        const at = bookSpot(g, mask, draws, near, taken, random);
+        if (at) taken.push(at);
+      }
+      return taken;
+    };
+    // On the reachable ground alone, some books lie beside the hall: the case this guards against.
+    expect(lay(reached).some((p) => toHall(p) < HOME_MARGIN)).toBe(true);
+    const books = lay(free);
+    expect(books.length).toBeGreaterThan(10);
+    for (const b of books) expect(toHall(b)).toBeGreaterThan(HOME_MARGIN - 1.5);
+  });
+
+  it("puts the boss's arena on open ground away from a hall that stands in the open", () => {
+    const g = field();
+    // Trunks all round the teaching block, so that the most open ground near it is by the hall.
+    for (let x = -60; x <= 4; x += 5)
+      for (let y = -50; y <= 50; y += 5) if (x < -24 || y < -14 || y > 14) blockPolygon(g, [square(x - 0.45, y - 0.45, x + 0.45, y + 0.45)]);
+    const reached = reachable(g, near);
+    const before = openSpot(g, reached, [-10, 0], 75, 18, near, seeded(5), 160)!;
+    // On the reachable ground alone, the arena (24 m round its middle) reaches within the margin of the hall.
+    expect(toHall(before)).toBeLessThan(HOME_MARGIN + 24);
+    const after = openSpot(g, awayFromHomes(g, reached, [HALL], HOME_MARGIN + 24), [-10, 0], 75, 18, near, seeded(5), 160)!;
+    expect(after).toBeDefined();
+    expect(toHall(after)).toBeGreaterThan(HOME_MARGIN + 24 - 1.5);
+  });
+
+  it("names no quest after a home, even one with rooms, and falls back to the other buildings", () => {
+    const b = (center: Pt, roomCount: number, home = false) => ({ center, roomCount, floors: home ? [{ noPlan: "residential" }, {}] : [{}] });
+    const teaching = b([-10, 0], 4);
+    const lab = b([25, 0], 5, true);
+    const shed = b([60, 60], 0);
+    expect(questDraws([teaching, lab, shed], near, 110).map((d) => d.b)).toEqual([teaching]);
+    // No building near teaches: every building but the home draws alike.
+    expect(questDraws([lab, shed], near, 110).map((d) => d.b)).toEqual([shed]);
+    expect(questDraws([lab], near, 110)).toEqual([]);
+  });
+
+  it("still finds places where the only buildings near are homes", () => {
+    const g = field();
+    const free = awayFromHomes(g, reachable(g, near), [HALL, BLOCK]);
+    const random = seeded(4);
+    for (let k = 0; k < 10; k++) {
+      const at = bookSpot(g, free, [], [0, -60], [], random);
+      expect(at).toBeDefined();
+      expect(toHall(at!)).toBeGreaterThan(HOME_MARGIN - 1.5);
+    }
+    expect(openSpot(g, free, [25, 0], 75, 18, near, seeded(2), 160)).toBeDefined();
+  });
+
+  it("raises no foe beside a home: one sent there rises at the free ground nearest", () => {
+    const host: QuestHost = { ...rowHost(), ground: () => true, free: (p) => toHall(p) > HOME_MARGIN, near: () => [80, 0] };
+    const g = new StudyQuest(host, HERE, 0, LESSONS);
+    g.grace = 0;
+    g.foes = [];
+    expect(g.spawn("distraction", [45, 0]).at).toEqual([80, 0]);
+    expect(g.spawn("distraction", [-60, 0]).at).toEqual([-60, 0]);
   });
 });
 

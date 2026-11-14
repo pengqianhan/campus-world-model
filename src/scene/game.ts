@@ -39,9 +39,13 @@ import {
   bearingTo,
   bodyScale,
   chargeSpeed,
+  HOME_MARGIN,
+  awayFromHomes,
   bookSpot,
+  isHome,
   nearestReached,
   openSpot,
+  questDraws,
   reachable,
   type BookDraw,
   type Debrief,
@@ -54,6 +58,7 @@ import {
   type QuestKey,
   type SkillId,
 } from "../shared/game.ts";
+import { decodeRing } from "../shared/geo.ts";
 import type { RoofMap } from "../shared/roofmap.ts";
 import type { Building } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
@@ -457,7 +462,11 @@ export class GameWorld {
   private quest?: StudyQuest;
   private name = "";
   private words?: GameWords;
-  private field?: { grid: WalkGrid; reached: Uint8Array; draws: (BookDraw & { b: Building })[]; centre: Pt };
+  /**
+   * The ground round the walker. `reached`: what it can walk to. `free`: the part of that away from
+   * homes (isHome), where the game lays books, places, arenas and foes.
+   */
+  private field?: { grid: WalkGrid; reached: Uint8Array; free: Uint8Array; homes: Pt[][]; draws: (BookDraw & { b: Building })[]; centre: Pt };
   private events: GameEvent[] = [];
   private paused?: "indoor" | "fly" | "map";
   private seconds = 0;
@@ -566,15 +575,16 @@ export class GameWorld {
         place: (near, avoid, big) => this.place(near, avoid, big),
         near: (p) => {
           const f = this.fieldAt(this.meAt);
-          return f ? nearestReached(f.grid, f.reached, p, NEAR_RINGS) : undefined;
+          return f ? nearestReached(f.grid, f.free, p, NEAR_RINGS) : undefined;
         },
         ground: (p) => this.onGround(p),
+        free: (p) => this.onGround(p, true),
         open: (centre, away) => {
           const f = this.fieldAt(this.meAt);
           if (!f) return undefined;
           // Round the point asked for; where that is all buildings, round the walker, as far off.
           const far = Math.hypot(centre[0] - away[0], centre[1] - away[1]);
-          return openSpot(f.grid, f.reached, centre, BIG_FROM_REACH, BIG_FROM_ROOM, away, Math.random, 60, BIG_FROM_GAP) ?? openSpot(f.grid, f.reached, away, far, BIG_FROM_ROOM, away, Math.random, 120, BIG_FROM_GAP);
+          return openSpot(f.grid, f.free, centre, BIG_FROM_REACH, BIG_FROM_ROOM, away, Math.random, 60, BIG_FROM_GAP) ?? openSpot(f.grid, f.free, away, far, BIG_FROM_ROOM, away, Math.random, 120, BIG_FROM_GAP);
         },
         random: Math.random,
       },
@@ -984,12 +994,15 @@ export class GameWorld {
     return Math.max(this.host.groundAt(p[0], p[1]), this.host.roofs()?.at(p) ?? -Infinity);
   }
 
-  /** Whether the walker could stand at `p`: ground it can reach from where it is (not a building, nor a roof over it). */
-  private onGround(p: Pt): boolean {
+  /**
+   * Whether the walker could stand at `p`: ground it can reach from where it is (not a building, nor a
+   * roof over it). `free`: and not on or beside a home, where the game lays nothing.
+   */
+  private onGround(p: Pt, free = false): boolean {
     const f = this.fieldAt(this.meAt);
     if (!f) return true;
     const [c, r] = cellOf(f.grid, p);
-    return c >= 0 && r >= 0 && c < f.grid.cols && r < f.grid.rows && !!f.reached[r * f.grid.cols + c];
+    return c >= 0 && r >= 0 && c < f.grid.cols && r < f.grid.rows && !!(free ? f.free : f.reached)[r * f.grid.cols + c];
   }
 
   /**
@@ -1010,13 +1023,15 @@ export class GameWorld {
       const inField = (b: Building) => !b.offMap && Math.abs(b.center[0] - near[0]) < FIELD - 40 && Math.abs(b.center[1] - near[1]) < FIELD - 40;
       const all = this.host.buildings().filter(inField);
       // Buildings with teaching rooms draw the pick-ups and the quests, more the more rooms they
-      // have; where the map names no rooms, every building draws alike.
-      const teaching = all.filter((b) => b.roomCount > 0);
-      const draws = (teaching.length ? teaching : all).map((b) => {
-        const far = Math.hypot(b.center[0] - near[0], b.center[1] - near[1]) / DRAW_HALF;
-        return { b, center: b.center, weight: (1 + Math.sqrt(b.roomCount)) / (1 + far * far) };
-      });
-      f = this.field = { grid, reached: reachable(grid, near), draws, centre: [near[0], near[1]] };
+      // have; where the map names no rooms, every building draws alike. Homes draw nothing, and
+      // nothing lies on them or within HOME_MARGIN of them.
+      const draws = questDraws(all, near, DRAW_HALF);
+      const homes = this.host
+        .buildings()
+        .filter((b) => !b.offMap && isHome(b) && Math.abs(b.center[0] - near[0]) < FIELD + 60 && Math.abs(b.center[1] - near[1]) < FIELD + 60)
+        .map((b) => decodeRing(b.outline[0] ?? []));
+      const reached = reachable(grid, near);
+      f = this.field = { grid, reached, free: awayFromHomes(grid, reached, homes), homes, draws, centre: [near[0], near[1]] };
     }
     return f;
   }
@@ -1025,10 +1040,10 @@ export class GameWorld {
   private spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined {
     const f = this.fieldAt(near);
     if (!f) return undefined;
-    if (place) return bookSpot(f.grid, f.reached, [{ center: place, weight: 1 }], near, taken, Math.random, undefined, QUEST.noteReach) ?? undefined;
+    if (place) return bookSpot(f.grid, f.free, [{ center: place, weight: 1 }], near, taken, Math.random, undefined, QUEST.noteReach) ?? undefined;
     const close = taken.filter((t) => Math.hypot(t[0] - near[0], t[1] - near[1]) <= CLOSE_REACH).length;
-    const beside = close < CLOSE_ITEMS ? bookSpot(f.grid, f.reached, [], near, taken, Math.random, CLOSE_REACH) : undefined;
-    return beside ?? bookSpot(f.grid, f.reached, f.draws, near, taken, Math.random) ?? bookSpot(f.grid, f.reached, [], near, taken, Math.random);
+    const beside = close < CLOSE_ITEMS ? bookSpot(f.grid, f.free, [], near, taken, Math.random, CLOSE_REACH) : undefined;
+    return beside ?? bookSpot(f.grid, f.free, f.draws, near, taken, Math.random) ?? bookSpot(f.grid, f.free, [], near, taken, Math.random);
   }
 
   /**
@@ -1045,15 +1060,18 @@ export class GameWorld {
     });
     const pool = ok.length ? ok : f.draws;
     if (!pool.length) {
-      const at = bookSpot(f.grid, f.reached, [], near, [], Math.random, 160);
+      const at = bookSpot(f.grid, f.free, [], near, [], Math.random, 160);
       return at ? { name: this.words.open, at } : undefined;
     }
     const d = big ? pool.reduce((a, b) => (b.b.roomCount > a.b.roomCount ? b : a)) : pool[Math.floor(Math.random() * pool.length)]!;
     // The last fight is on the most open ground near its building, so that the camera sees the
     // whole of the boss with no wall or tree between.
     const at =
-      (big ? openSpot(f.grid, f.reached, d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
-      bookSpot(f.grid, f.reached, [{ center: d.center, weight: 1 }], near, [], Math.random) ??
+      // The whole arena keeps clear of homes, not only its middle.
+      (big ? openSpot(f.grid, awayFromHomes(f.grid, f.reached, f.homes, HOME_MARGIN + QUEST.arenaRadius), d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
+      (big ? openSpot(f.grid, f.free, d.center, ARENA_REACH, QUEST.arenaRadius * 0.75, near, Math.random) : undefined) ??
+      bookSpot(f.grid, f.free, [{ center: d.center, weight: 1 }], near, [], Math.random) ??
+      nearestReached(f.grid, f.free, d.center, NEAR_RINGS) ??
       d.center;
     return { name: this.words.place(d.b) || this.words.open, at, building: d.b.id };
   }

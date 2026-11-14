@@ -5,7 +5,7 @@
 // copies and blinks; the Exam Anxiety shade that throws from afar; and a boss, the Final Exam.
 // None of it is campus data: no villain, book or quest stands for a real class, course, person,
 // room's timetable or due date. Quests name buildings only as places to go, as a map would.
-import type { Pt } from "./geo.ts";
+import { pointInRing, type Pt } from "./geo.ts";
 import { WALK_COST, cellOf, centreOf, nearestFree, type WalkGrid } from "./walkpath.ts";
 import { PLAYER } from "./gamePlayer.ts";
 
@@ -355,10 +355,12 @@ export type GameEvent =
 export interface QuestHost {
   /** Somewhere to lay a pick-up near `near`, or beside `place` when given; undefined when it finds none. */
   spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined;
-  /** The ground the walker can reach nearest `p`, for a book or a foe that must be just there; `p` itself when absent. */
+  /** The ground the walker can reach nearest `p`, away from homes, for a book or a foe that must be just there; `p` itself when absent. */
   near?(p: Pt): Pt | undefined;
   /** Whether the walker could stand at `p`: on ground it can reach, not in a building or on a roof. Everywhere when absent. */
   ground?(p: Pt): boolean;
+  /** Whether a foe may rise at `p`: ground as `ground` gives it, and not on or beside a home (isHome). As `ground` when absent. */
+  free?(p: Pt): boolean;
   /** Open ground the walker can reach within about 20 m of `centre`, well away from `away`, for a big foe to come from. */
   open?(centre: Pt, away: Pt): Pt | undefined;
   /** A place for a quest: beside a building with rooms to teach in, away from `avoid`. */
@@ -1355,8 +1357,8 @@ export class StudyQuest {
   }
 
   spawn(kind: FoeKind, at: Pt, quest?: string, tier = 1, wander = false): Foe {
-    // It rises from the ground the walker can reach, not from a roof or inside a building.
-    if (!this.onGround(at)) at = this.host.near?.(at) ?? at;
+    // It rises from the ground the walker can reach, not from a roof, inside a building or beside a home.
+    if (!(this.host.free ? this.host.free(at) : this.onGround(at))) at = this.host.near?.(at) ?? at;
     const spec = FOES[kind];
     const hp = Math.round(spec.hp * tier);
     const f: Foe = { id: this.nextId++, kind, at, hp, maxHp: hp, facing: bearingTo(at, this.player), state: "rise", t: kind === "exam" ? 3.2 : 0.8, cool: spec.cooldown * 0.6, push: [0, 0], hurtAgo: 99, quest, tier, phase: 1, age: 0, wander };
@@ -1790,10 +1792,85 @@ export function nearestReached(g: WalkGrid, reached: Uint8Array, p: Pt, rings = 
   return undefined;
 }
 
+// Homes: buildings where people live or children are cared for. The map leaves their floors blank
+// (AGENTS.md, "Places, not people"), and the game lays nothing on them or beside them: no book, no
+// quest's place, no arena and no foe.
+
+/** Metres round a home within which the game lays nothing. */
+export const HOME_MARGIN = 25;
+
+/**
+ * Whether people live in a building or children are cared for in it: a floor of it that the map
+ * leaves blank for that reason (Floor.noPlan "residential" or "childcare").
+ */
+export function isHome(b: { floors: readonly { noPlan?: string }[] }): boolean {
+  return b.floors.some((f) => f.noPlan === "residential" || f.noPlan === "childcare");
+}
+
+/** Metres from `p` to the nearest edge of `ring`. */
+function toEdge(p: Pt, ring: readonly Pt[]): number {
+  let best = Infinity;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const a = ring[j]!;
+    const b = ring[i]!;
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const len = dx * dx + dy * dy;
+    const t = len > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / len)) : 0;
+    best = Math.min(best, Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy));
+  }
+  return best;
+}
+
+/**
+ * A copy of `mask` without the cells on a home or within `margin` metres of it. `homes` are the
+ * homes' outer rings, in metres. The game lays things only on the cells that are left.
+ */
+export function awayFromHomes(g: WalkGrid, mask: Uint8Array, homes: readonly Pt[][], margin: number = HOME_MARGIN): Uint8Array {
+  const out = mask.slice();
+  for (const ring of homes) {
+    if (ring.length < 3) continue;
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const [x, y] of ring) (x0 = Math.min(x0, x)), (y0 = Math.min(y0, y)), (x1 = Math.max(x1, x)), (y1 = Math.max(y1, y));
+    const [c0, r0] = cellOf(g, [x0 - margin, y0 - margin]);
+    const [c1, r1] = cellOf(g, [x1 + margin, y1 + margin]);
+    for (let r = Math.max(0, r0); r <= Math.min(g.rows - 1, r1); r++) {
+      for (let c = Math.max(0, c0); c <= Math.min(g.cols - 1, c1); c++) {
+        const i = r * g.cols + c;
+        if (!out[i]) continue;
+        const p = centreOf(g, c, r);
+        if (pointInRing(p, ring) || toEdge(p, ring) <= margin) out[i] = 0;
+      }
+    }
+  }
+  return out;
+}
+
 /** A place pick-ups gather round: a building's middle, and how many it draws against the others. */
 export interface BookDraw {
   center: Pt;
   weight: number;
+}
+
+/**
+ * The buildings that draw the pick-ups and the quests round `near`: those with rooms to teach in,
+ * more the more rooms they have, less the farther they are (`half` metres off draws half as much);
+ * where none has rooms, every building alike. A home draws nothing.
+ */
+export function questDraws<B extends { center: Pt; roomCount: number; floors: readonly { noPlan?: string }[] }>(
+  buildings: readonly B[],
+  near: Pt,
+  half: number,
+): (BookDraw & { b: B })[] {
+  const all = buildings.filter((b) => !isHome(b));
+  const teaching = all.filter((b) => b.roomCount > 0);
+  return (teaching.length ? teaching : all).map((b) => {
+    const far = Math.hypot(b.center[0] - near[0], b.center[1] - near[1]) / half;
+    return { b, center: b.center, weight: (1 + Math.sqrt(b.roomCount)) / (1 + far * far) };
+  });
 }
 
 /** Metres from a building's middle within which its pick-ups lie. */
