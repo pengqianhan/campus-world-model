@@ -6,7 +6,6 @@
 // turn and stands with its feet at its origin.
 import {
   AdditiveAnimationBlendMode,
-  AdditiveBlending,
   AnimationClip,
   AnimationMixer,
   BufferAttribute,
@@ -93,16 +92,27 @@ const ACT_BONES = ["Spine1", "Spine2", "RightArm", "RightForeArm", "LeftArm", "L
 const SPINE = ["Spine1", "Spine2"] as const;
 /** Seconds over which a move cut short by none lets go. */
 const LET_GO = 0.2;
-/** The highlighter held in the game: metres long and across, and the share of it from the back at which the fist grips it. */
-const PEN_LENGTH = 0.17;
-const PEN_RADIUS = 0.016;
-const PEN_GRIP = 0.35;
-/** The trail a blow leaves: samples kept, metres from the grip along the pen at which it starts and ends, its colour, seconds it fades over. */
-const TRAIL_SAMPLES = 9;
-const TRAIL_FROM = 0.3;
-const TRAIL_TO = 0.5;
-const TRAIL_COLOUR = [0.5, 0.34, 0.06] as const;
-const TRAIL_FADE = 0.12;
+/**
+ * The highlighter held in the game, a toy one big enough to read from behind the walker: metres
+ * long and across, and the share of it from the back at which the fist grips it.
+ */
+const PEN_LENGTH = 0.36;
+const PEN_RADIUS = 0.034;
+const PEN_GRIP = 0.3;
+/** Its ink: a bright pink that reads against the sky, the grass and the paving alike. */
+const PEN_INK = [1, 0.27, 0.62] as const;
+/**
+ * The trail a blow leaves: samples kept, metres from the grip along the pen at which it starts and
+ * ends (past its tip), its colour at the newest sample and the oldest, its opacity at the newest
+ * sample's outer and inner edge, and seconds it fades over.
+ */
+const TRAIL_SAMPLES = 12;
+const TRAIL_FROM = 0.06;
+const TRAIL_TO = 0.42;
+const TRAIL_HEAD = [1, 0.3, 0.66] as const;
+const TRAIL_TAIL = [1, 0.62, 0.25] as const;
+const TRAIL_ALPHA = [0.92, 0.25] as const;
+const TRAIL_FADE = 0.15;
 
 /** Radians the rider leans at most into a turn, and the share of the lean that would hold it up that it takes. */
 const MAX_LEAN = 0.2;
@@ -414,15 +424,18 @@ export class Figure {
       }
       if (was <= 0) for (let i = 6; i < pos.length; i += 6) pos.copyWithin(i, 0, 6);
     } else pos.copyWithin(6, 0, pos.length - 6);
+    // Coloured, not white: pink at the newest sample turning orange down the ribbon, and fading out
+    // to nothing at its oldest, its outer edge (the tip's way) the strongest.
     const fade = tr.life / TRAIL_FADE;
     for (let i = 0; i < TRAIL_SAMPLES; i++) {
-      const k = (1 - i / (TRAIL_SAMPLES - 1)) * fade;
+      const age = i / (TRAIL_SAMPLES - 1);
+      const k = (1 - age) * (1 - age) * fade;
       for (let e = 0; e < 2; e++) {
-        const o = (i * 2 + e) * 3;
-        const edge = e === 0 ? 0.3 : 1;
-        tr.col[o] = TRAIL_COLOUR[0] * k * edge;
-        tr.col[o + 1] = TRAIL_COLOUR[1] * k * edge;
-        tr.col[o + 2] = TRAIL_COLOUR[2] * k * edge;
+        const o = (i * 2 + e) * 4;
+        tr.col[o] = TRAIL_HEAD[0] + (TRAIL_TAIL[0] - TRAIL_HEAD[0]) * age;
+        tr.col[o + 1] = TRAIL_HEAD[1] + (TRAIL_TAIL[1] - TRAIL_HEAD[1]) * age;
+        tr.col[o + 2] = TRAIL_HEAD[2] + (TRAIL_TAIL[2] - TRAIL_HEAD[2]) * age;
+        tr.col[o + 3] = TRAIL_ALPHA[e === 0 ? 1 : 0] * k;
       }
     }
     const g = tr.mesh.geometry;
@@ -435,10 +448,14 @@ export class Figure {
   private makePen(b: Body): void {
     if (this.pen) return;
     // One mesh: a bright barrel and a dark cap at the writing end, coloured by height.
-    const g = new CylinderGeometry(PEN_RADIUS, PEN_RADIUS * 0.9, PEN_LENGTH, 8, 4);
+    const g = new CylinderGeometry(PEN_RADIUS, PEN_RADIUS * 0.9, PEN_LENGTH, 10, 12);
     const pos = g.getAttribute("position");
     const colours = new Float32Array(pos.count * 3);
-    for (let i = 0; i < pos.count; i++) colours.set(pos.getY(i) > PEN_LENGTH * 0.25 ? [0.12, 0.12, 0.14] : [1, 0.86, 0.2], i * 3);
+    // A pink barrel, a dark cap at the writing end, and a white band where the fist holds it.
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      colours.set(y > PEN_LENGTH * 0.32 ? [0.13, 0.12, 0.15] : y < -PEN_LENGTH * 0.38 ? [0.95, 0.95, 0.95] : PEN_INK, i * 3);
+    }
     g.setAttribute("color", new BufferAttribute(colours, 3));
     // Its origin where the fist grips it.
     g.translate(0, PEN_LENGTH / 2 - PEN_GRIP * PEN_LENGTH, 0);
@@ -461,21 +478,23 @@ export class Figure {
     // The trail: quads between each sample and the next, in the figure's frame.
     const n = TRAIL_SAMPLES;
     const tp = new Float32Array(n * 2 * 3);
-    const tc = new Float32Array(n * 2 * 3);
+    const tc = new Float32Array(n * 2 * 4);
     const tg = new BufferGeometry();
     tg.setAttribute("position", new BufferAttribute(tp, 3));
-    tg.setAttribute("color", new BufferAttribute(tc, 3));
+    tg.setAttribute("color", new BufferAttribute(tc, 4));
     const idx: number[] = [];
     for (let i = 0; i < n - 1; i++) {
       const a = i * 2;
       idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
     }
     tg.setIndex(idx);
-    const mesh = new Mesh(tg, new MeshBasicMaterial({ vertexColors: true, transparent: true, blending: AdditiveBlending, depthWrite: false, side: DoubleSide }));
+    const mesh = new Mesh(tg, new MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: DoubleSide, toneMapped: false }));
     mesh.frustumCulled = false;
     mesh.renderOrder = 4;
     mesh.visible = false;
     mesh.userData.noPick = true;
+    // Light, not a solid: left out of the walker view's ambient occlusion (street/effects.ts).
+    mesh.userData.noAO = true;
     mesh.raycast = () => {};
     this.root.add(mesh);
     this.trail = { mesh, pos: tp, col: tc, life: 0 };

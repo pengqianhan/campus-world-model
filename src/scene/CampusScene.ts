@@ -164,6 +164,11 @@ const FOLLOW: Record<Ride, { yaw: number; elevation: number; distance: number }>
 const FIGHT_OFFSET = 6;
 const FIGHT_REACH = 26;
 const FIGHT_HANDS_OFF = 2500;
+/** Metres the camera goes to the right while the walker strikes (over its shoulder), and the share of its distance it comes in as the boss changes phase. */
+const SHOULDER = 1.35;
+const FIGHT_PUSH_IN = 0.3;
+// Upright on a phone the boss already fills the picture: in less, so that the walker stays in it.
+const FIGHT_PUSH_IN_UPRIGHT = 0.08;
 /** Degrees the fight's camera sees wider, upright on a phone and otherwise. */
 const FIGHT_WIDEN_UPRIGHT = 10;
 const FIGHT_WIDEN = 3;
@@ -2422,6 +2427,10 @@ export class CampusScene {
         fight.reach += (f.reach - fight.reach) * k;
       }
       if (fight.k > 0) d += (Math.max(d, fight.reach / Math.cos(up)) - d) * fight.k;
+      // The game's nudges: in on the boss as it changes phase, and over the right shoulder while
+      // the walker strikes, so that the swing is not hidden behind its body.
+      const nudge = this.game.on ? this.game.cameraNudge() : undefined;
+      if (nudge && nudge.push > 0) d *= 1 - (this.persp.aspect < 1 ? FIGHT_PUSH_IN_UPRIGHT : FIGHT_PUSH_IN) * nudge.push;
       const wantD = d;
       // A wall between the walker and the camera would hide it: the camera comes in front of the wall.
       let blocked = false;
@@ -2452,8 +2461,9 @@ export class CampusScene {
       let cy = pose.aim + 0.15 + Math.sin(up) * d;
       // In a fight, a wall that brings the camera in sends it up as well, to see over the walker to its foe.
       if (blocked && fight.k > 0) cy += Math.max(0, wantD - d) * 0.6 * fight.k;
-      const cx = x - Math.sin(yaw) * Math.cos(up) * d;
-      const cn = y - Math.cos(yaw) * Math.cos(up) * d;
+      const side = nudge ? nudge.side * SHOULDER : 0;
+      const cx = x - Math.sin(yaw) * Math.cos(up) * d + Math.cos(yaw) * side;
+      const cn = y - Math.cos(yaw) * Math.cos(up) * d - Math.sin(yaw) * side;
       // Never under the ground behind a walker on a slope, nor in a roof behind a drone.
       cy = Math.max(cy, this.groundAt(cx, cn) + 0.8, (roofs?.at([cx, cn]) ?? -Infinity) + 0.8);
       // It glides after the walker, but out from behind a wall at once.
@@ -2461,7 +2471,7 @@ export class CampusScene {
       const want = this._camPoint.set(cx, cy, -cn);
       if (k >= 1) this.persp.position.copy(want);
       else this.persp.position.lerp(want, k);
-      const look = this.fightLook.set(x + Math.sin(yaw) * 2, pose.aim, -y - Math.cos(yaw) * 2);
+      const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, pose.aim, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
       if (fight.k > 0) {
         // Looking at the pitch that centres the walker and the foe from where the camera is now, so
         // that they stay framed while it glides, or when a wall has brought it in.
@@ -2767,8 +2777,9 @@ export class CampusScene {
     if (this.disposed) return;
     this.raf = requestAnimationFrame(this.frame);
     // Walkers move by the clock, not by frames: on a slow renderer a frame can take a second, and
-    // a walk must still take as long as it takes. A long gap (a hidden tab) counts as two seconds.
-    const dt = this.lastFrame ? Math.min(2, (now - this.lastFrame) / 1000) : 0;
+    // a walk must still take as long as it takes. A long gap (a hidden tab) counts as two seconds,
+    // and a clock that goes back (a test's fake clock taking over) as none.
+    const dt = this.lastFrame ? Math.max(0, Math.min(2, (now - this.lastFrame) / 1000)) : 0;
     this.lastFrame = now;
     if (this.tweens.length) {
       this.tweens = this.tweens.filter((t) => {

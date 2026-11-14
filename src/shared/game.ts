@@ -107,6 +107,24 @@ export const PLAYER = {
   lockReach: 28,
   /** Seconds a hit chain lasts without another hit. */
   chainTime: 2.6,
+  /**
+   * Seconds the foes freeze when a blow lands (hit-stop): a light blow, the combo's finisher (or a
+   * Eureka, or a heavy blow), a critical blow, and a critical finisher. Each harder blow holds longer.
+   */
+  hitStop: { light: 0.045, heavy: 0.085, crit: 0.11, critHeavy: 0.13 },
+} as const;
+
+/** Seconds of a foe's reactions and of the boss's change of phase. */
+export const FOE_TIME = {
+  /** A small foe knocked off balance by a light blow (the heavier kinds by any). */
+  stagger: 0.3,
+  /** Any foe hit by a finisher: small ones at any time, the DDL and the boss only while they recover from an attack. */
+  heavyStagger: 0.55,
+  /** The boss's change of phase: it roars, and nothing can hurt it or the walker. */
+  phase: 2.0,
+  /** A foe beaten, as it breaks up; the boss takes longer. */
+  death: 0.7,
+  bossDeath: 1.6,
 } as const;
 
 /** What the walker is, at a rank. */
@@ -268,7 +286,7 @@ export interface Quest {
 export type GameEvent =
   | { type: "take"; kind: ItemKind; at: Pt; xp: number }
   | { type: "swing"; combo: number; at: Pt; dir: number }
-  | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean }
+  | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean; dir: number; stagger: boolean }
   | { type: "kill"; foe: number; kind: FoeKind; at: Pt; xp: number }
   | { type: "hurt"; amount: number; from: Pt }
   | { type: "evade"; at: Pt }
@@ -280,6 +298,8 @@ export type GameEvent =
   | { type: "wave"; place: string }
   | { type: "arrive"; foe: number; kind: FoeKind; first: boolean }
   | { type: "tell"; foe: number; kind: FoeKind; move: FoeMove["type"] }
+  /** A foe's attack that was shown lands, at `at`. */
+  | { type: "lash"; foe: number; kind: FoeKind; move: FoeMove["type"]; at: Pt; radius: number }
   | { type: "phase"; phase: number }
   | { type: "over"; victory: boolean };
 
@@ -419,6 +439,8 @@ export class StudyQuest {
   slowT = 0;
   hurtAgo = 99;
   chainT = 0;
+  /** Seconds left of the boss's change of phase, in which nothing hurts the walker. */
+  cineT = 0;
   grace: number = QUEST.grace;
   orders: PlayerOrders = { shove: [0, 0], slow: 1 };
   private queued?: Action;
@@ -504,7 +526,7 @@ export class StudyQuest {
     // A game that is over lets its foes go: they fade where they stand.
     if (this.phase === "over" && dt > 0 && this.foes.length) {
       for (const f of this.foes) {
-        if (f.state !== "dead") ((f.state = "dead"), (f.t = 0.7));
+        if (f.state !== "dead") ((f.state = "dead"), (f.t = FOE_TIME.death));
         f.t -= Math.min(dt, 0.1);
       }
       this.foes = this.foes.filter((f) => f.t > 0);
@@ -544,6 +566,7 @@ export class StudyQuest {
     this.slowT = Math.max(0, this.slowT - dt);
     this.chainT = Math.max(0, this.chainT - dt);
     if (this.chainT <= 0) this.chain = 0;
+    this.cineT = Math.max(0, this.cineT - dt);
     this.hurtAgo += dt;
     if (this.dodgeT <= 0) this.stamina = Math.min(s.maxStamina, this.stamina + PLAYER.staminaRegen * dt);
     if (this.hurtAgo > PLAYER.calm) this.focus = Math.min(s.maxFocus, this.focus + PLAYER.focusRegen * dt);
@@ -591,7 +614,7 @@ export class StudyQuest {
         if (d > PLAYER.eurekaRadius + FOES[f.kind].radius) continue;
         this.damage(f, this.stats.insight * PLAYER.eurekaMult, bearingTo(this.player, f.at), 7, true, false);
       }
-      this.hitStop = 0.12;
+      this.hitStop = Math.max(this.hitStop, 0.12);
     }
   }
 
@@ -686,23 +709,35 @@ export class StudyQuest {
     this.chainT = PLAYER.chainTime;
     this.maxChain = Math.max(this.maxChain, this.chain);
     if (charges && this.has("eureka")) this.eurekaMeter = Math.min(PLAYER.eurekaCharge, this.eurekaMeter + amount * 0.3);
-    this.hitStop = Math.max(this.hitStop, heavy || crit ? 0.09 : 0.05);
-    this.events.push({ type: "hit", foe: f.id, kind: f.kind, at: f.at, amount, crit, heavy });
-    // A heavy blow stops a small foe's attack; the DDL and the boss shrug off all but their phases.
-    if ((heavy || spec.weight >= 1) && f.kind !== "exam" && f.kind !== "ddl" && f.state !== "attack") {
+    const hs = PLAYER.hitStop;
+    this.hitStop = Math.max(this.hitStop, crit ? (heavy ? hs.critHeavy : hs.crit) : heavy ? hs.heavy : hs.light);
+    // A heavy blow stops a small foe's attack, and a finisher knocks it off balance for longer. The
+    // DDL and the boss shrug off all blows but a finisher landed while they recover from an attack:
+    // that is the moment to punish them.
+    const small = f.kind !== "exam" && f.kind !== "ddl";
+    let stagger = 0;
+    if (small && f.hp > 0 && (heavy || spec.weight >= 1) && f.state !== "attack") stagger = heavy ? FOE_TIME.heavyStagger : FOE_TIME.stagger;
+    else if (!small && heavy && f.state === "recover" && f.hp > 0) stagger = FOE_TIME.heavyStagger;
+    if (stagger) {
       f.state = "stagger";
-      f.t = 0.3;
+      f.t = stagger;
+      f.move = undefined;
       this.dropTells(f.id);
     }
+    this.events.push({ type: "hit", foe: f.id, kind: f.kind, at: f.at, amount, crit, heavy, dir, stagger: stagger > 0 });
     if (f.kind === "exam") {
       const share = f.hp / f.maxHp;
       const want = share > 0.66 ? 1 : share > 0.33 ? 2 : 3;
       if (want > f.phase && f.hp > 0) {
         f.phase = want;
         f.state = "phase";
-        f.t = 2.6;
+        f.t = FOE_TIME.phase;
         f.move = undefined;
         this.dropTells(f.id);
+        // Its change of phase is a pause for both: what it had thrown is gone, and nothing hurts the walker.
+        this.cineT = FOE_TIME.phase;
+        this.shots = this.shots.filter((s) => s.mine);
+        this.waves = [];
         this.events.push({ type: "phase", phase: want });
         return;
       }
@@ -712,7 +747,7 @@ export class StudyQuest {
 
   private kill(f: Foe): void {
     f.state = "dead";
-    f.t = 0.7;
+    f.t = f.kind === "exam" ? FOE_TIME.bossDeath : FOE_TIME.death;
     f.move = undefined;
     this.dropTells(f.id);
     const xp = Math.round(FOES[f.kind].xp * f.tier);
@@ -762,7 +797,7 @@ export class StudyQuest {
 
   /** The walker is hurt, unless it is dodging. */
   private hurt(amount: number, from: Pt): void {
-    if (this.phase !== "play" || this.grace > 0) return;
+    if (this.phase !== "play" || this.grace > 0 || this.cineT > 0) return;
     if (this.iframes > 0) {
       this.events.push({ type: "evade", at: this.player });
       if (this.has("eureka")) this.eurekaMeter = Math.min(PLAYER.eurekaCharge, this.eurekaMeter + 12);
@@ -1163,6 +1198,9 @@ export class StudyQuest {
     f.state = "recover";
     f.t = f.kind === "exam" ? 0.7 : 0.5;
     if (!m) return;
+    const lands = m.type === "slam" || m.type === "yawn" ? m.at : f.at;
+    const radius = m.type === "slam" || m.type === "yawn" ? m.radius : 0;
+    this.events.push({ type: "lash", foe: f.id, kind: f.kind, move: m.type, at: [lands[0], lands[1]], radius });
     switch (m.type) {
       case "melee":
         if (dist(f.at, p) <= spec.reach + spec.radius + 0.4) this.hurt(dmg, f.at);

@@ -61,7 +61,7 @@ export class GameOverlay {
   private heading: HTMLSpanElement;
   private cmarks: { e: HTMLDivElement; d: HTMLSpanElement }[] = [];
   private plates: { e: HTMLDivElement; name: HTMLElement; fill: HTMLElement; id: number; text: string }[] = [];
-  private nums: { e: HTMLSpanElement; t: number; x: number; y: number; z: number; drift: number }[] = [];
+  private nums: { e: HTMLSpanElement; t: number; x: number; y: number; z: number; drift: number; pop: number }[] = [];
   private nextNum = 0;
   private marks: { e: HTMLDivElement; d: HTMLSpanElement }[] = [];
   private lock: HTMLDivElement;
@@ -131,7 +131,7 @@ export class GameOverlay {
     for (let k = 0; k < 28; k++) {
       const e = el("span", "gx-num", nums);
       e.style.opacity = "0";
-      this.nums.push({ e, t: 0, x: 0, y: 0, z: 0, drift: 0 });
+      this.nums.push({ e, t: 0, x: 0, y: 0, z: 0, drift: 0, pop: 1 });
     }
     for (let k = 0; k < 4; k++) {
       const e = el("div", "gx-hit", this.root);
@@ -165,6 +165,10 @@ export class GameOverlay {
     n.z = z;
     n.drift = (Math.random() - 0.5) * 40;
     n.e.className = `gx-num ${cls}`;
+    // How far it jumps out at first: more for a harder blow.
+    n.pop = cls.includes("crit") ? (cls.includes("heavy") ? 2.1 : 1.9) : cls.includes("heavy") ? 1.6 : cls.includes("light") ? 1.25 : 1.5;
+    // Hidden until it is put in its place in the next frame, not shown where its last use left it.
+    n.e.style.opacity = "0";
     setText(n.e, text);
   }
 
@@ -303,7 +307,8 @@ export class GameOverlay {
       }
       const age = (n.e.className.includes("xp") ? 1.3 : 0.9) - n.t;
       const rise = 26 * age + 40 * Math.min(age, 0.15);
-      const pop = age < 0.08 ? 1.5 - age * 6 : 1;
+      // Out big at once, back to its size in a tenth of a second.
+      const pop = age < 0.1 ? 1 + (n.pop - 1) * (1 - age / 0.1) * (1 - age / 0.1) : 1;
       n.e.style.opacity = String(Math.min(1, n.t * 3));
       n.e.style.transform = `translate3d(${s[0] + n.drift * age}px, ${s[1] - rise}px, 0) translate(-50%, -50%) scale(${pop})`;
     }

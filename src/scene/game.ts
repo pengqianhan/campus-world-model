@@ -30,6 +30,7 @@ import type { Pt } from "../shared/geo.ts";
 import {
   FOES,
   FOE_KINDS,
+  FOE_TIME,
   PLAYER,
   QUEST,
   RANKS,
@@ -54,7 +55,8 @@ import type { Building } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
 import type { WalkGrid } from "../shared/walkpath.ts";
 import type { Move } from "./figureMoves.ts";
-import { Arena, Burst, Missiles, Shadows, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
+import { Arena, Debris, Decals, Missiles, Puffs, Shadows, Shocks, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
+import { FoeMotion, newLook } from "./gameMotion.ts";
 import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
 import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
 import type { LabelSpec } from "./labels.ts";
@@ -162,17 +164,38 @@ const _v = new Vector3();
 const _r = new Matrix4();
 const _tint = new Color();
 
-/** Makes a material take a per-instance tint (`aTint`): white for a blow's flash, red for a warning. */
+/**
+ * Makes a material take, for each instance, a colour that glows at its edges (`aTint`: red for a
+ * warning, the boss's rage, the edges of what breaks up), a blow's flash (`aFx.y`: a white glint at
+ * the edges, its form kept) and how much of it has broken up (`aFx.x`: pieces gone, the edges of the
+ * gaps alight).
+ */
 function tinted<T extends Material>(m: T, lit: boolean): T {
   m.onBeforeCompile = (s) => {
-    s.vertexShader = "attribute vec3 aTint;\nvarying vec3 vTint;\n" + s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvTint = aTint;");
-    s.fragmentShader =
-      "varying vec3 vTint;\n" +
-      (lit
-        ? s.fragmentShader.replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\ntotalEmissiveRadiance += vTint + vColor.rgb * 0.18;")
-        : s.fragmentShader.replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.rgb += vTint;"));
+    s.vertexShader =
+      "attribute vec3 aTint;\nattribute vec2 aFx;\nvarying vec3 vTint;\nvarying vec2 vFx;\nvarying vec3 vLocal;\n" +
+      s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvTint = aTint;\nvFx = aFx;\nvLocal = position;");
+    const pars = "varying vec3 vTint;\nvarying vec2 vFx;\nvarying vec3 vLocal;\nfloat sqHash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }\n";
+    // Pieces about a seventh of a metre, some smaller, go first where the noise is lowest.
+    const dissolve =
+      "float sqGap = 0.0;\nif (vFx.x > 0.0) {\n  float n = 0.7 * sqHash(floor(vLocal * 7.0)) + 0.3 * sqHash(floor(vLocal * 19.0));\n  if (n < vFx.x) discard;\n  sqGap = 1.0 - smoothstep(vFx.x, vFx.x + 0.07, n);\n}\n";
+    s.fragmentShader = pars + s.fragmentShader;
+    if (lit)
+      s.fragmentShader = s.fragmentShader.replace(
+        "#include <emissivemap_fragment>",
+        "#include <emissivemap_fragment>\n" +
+          dissolve +
+          "float sqRim = 1.0 - abs(dot(normal, normalize(vViewPosition)));\nfloat sqRim3 = sqRim * sqRim * sqRim;\n" +
+          "totalEmissiveRadiance += vColor.rgb * 0.18 + vTint * (0.12 + 1.8 * sqRim3) + vTint * sqGap * 3.0;\n" +
+          "totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * vFx.y * (0.06 + 1.5 * sqRim3);\n",
+      );
+    else
+      s.fragmentShader = s.fragmentShader.replace(
+        "#include <color_fragment>",
+        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += vTint * 0.5 + vTint * sqGap * 2.0 + vec3(vFx.y * 0.45);\n",
+      );
   };
-  m.customProgramCacheKey = () => (lit ? "study-quest-lit" : "study-quest-glow");
+  m.customProgramCacheKey = () => (lit ? "study-quest-lit-2" : "study-quest-glow-2");
   return m;
 }
 
@@ -180,6 +203,7 @@ function tinted<T extends Material>(m: T, lit: boolean): T {
 interface Layer {
   mesh: InstancedMesh;
   tint: InstancedBufferAttribute;
+  fx: InstancedBufferAttribute;
   part?: { name: string; pivot: [number, number, number] };
 }
 
@@ -200,6 +224,9 @@ class KindView {
       const tint = new InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       tint.setUsage(DynamicDrawUsage);
       geo.setAttribute("aTint", tint);
+      const fx = new InstancedBufferAttribute(new Float32Array(cap * 2), 2);
+      fx.setUsage(DynamicDrawUsage);
+      geo.setAttribute("aFx", fx);
       const mesh = new InstancedMesh(geo, mat, cap);
       mesh.instanceMatrix.setUsage(DynamicDrawUsage);
       mesh.count = 0;
@@ -207,7 +234,7 @@ class KindView {
       mesh.frustumCulled = false;
       mesh.castShadow = mesh.receiveShadow = false;
       group.add(mesh);
-      this.layers.push({ mesh, tint, part });
+      this.layers.push({ mesh, tint, fx, part });
     };
     add(this.model.body, lit);
     add(this.model.glow, glow);
@@ -218,8 +245,8 @@ class KindView {
     this.n = 0;
   }
 
-  /** One foe: its matrix, its tint, and how its parts are turned. */
-  put(base: Matrix4, tint: Color, local: (name: string, out: Matrix4) => void): void {
+  /** One foe: its matrix, its tint, how much it has broken up and how bright its flash, and how its parts are turned. */
+  put(base: Matrix4, tint: Color, dissolve: number, flash: number, local: (name: string, out: Matrix4) => void): void {
     if (this.n >= CAP[this.kind]) return;
     const i = this.n++;
     for (const l of this.layers) {
@@ -230,6 +257,7 @@ class KindView {
         l.mesh.setMatrixAt(i, _m);
       } else l.mesh.setMatrixAt(i, base);
       l.tint.setXYZ(i, tint.r, tint.g, tint.b);
+      l.fx.setXY(i, dissolve, flash);
     }
   }
 
@@ -240,6 +268,7 @@ class KindView {
       if (this.n) {
         l.mesh.instanceMatrix.needsUpdate = true;
         l.tint.needsUpdate = true;
+        l.fx.needsUpdate = true;
       }
     }
   }
@@ -391,8 +420,20 @@ export class GameWorld {
   private shadows = new Shadows();
   private missiles = new Missiles();
   private slash = new Slash();
-  private burst = new Burst();
   private arena = new Arena();
+  private debris = new Debris();
+  private puffs = new Puffs();
+  private shocks = new Shocks();
+  private decals = new Decals();
+  private motion = new FoeMotion();
+  private look = newLook();
+  /**
+   * The camera's nudges (cameraNudge): over the walker's shoulder while it strikes, and in on the
+   * boss as it changes phase. Each 0 to 1, eased.
+   */
+  private nudge = { side: 0, push: 0, strikeT: 0 };
+  /** Frames left in which a few of each effect are drawn out of sight, to make their shaders. */
+  private warm = 0;
   private lit = tinted(new MeshLambertMaterial({ vertexColors: true, emissive: 0x1c1c22 }), true);
   private glow = tinted(new MeshBasicMaterial({ vertexColors: true }), false);
   private overlay?: GameOverlay;
@@ -409,7 +450,14 @@ export class GameWorld {
     this.group.userData.noPick = true;
     this.group.visible = false;
     this.kinds = Object.fromEntries(FOE_KINDS.map((k) => [k, new KindView(k, this.lit, this.glow, this.group)])) as Record<FoeKind, KindView>;
-    this.group.add(this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.burst.mesh, this.arena.mesh);
+    this.group.add(this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.arena.mesh, this.debris.group, this.puffs.mesh, this.shocks.mesh, this.decals.group);
+    // What is see-through (light, dust, warnings on the ground) stays out of the ambient occlusion
+    // of the walker view (street/effects.ts): drawn there for depth and normals, a ring of light
+    // would shade the ground round it as if it were a wall.
+    this.group.traverse((o) => {
+      const m = (o as InstancedMesh).material as Material | undefined;
+      if ((o as InstancedMesh).isMesh && m?.transparent) o.userData.noAO = true;
+    });
     if (overlayParent) this.overlay = new GameOverlay(overlayParent);
   }
 
@@ -450,6 +498,7 @@ export class GameWorld {
     this.host.pen(name, true);
     this.host.act(name, undefined);
     this.slashDue = undefined;
+    this.warm = 2;
     this.sync(walker, 0);
     this.labelsVersion++;
     return true;
@@ -469,6 +518,11 @@ export class GameWorld {
     this.field = undefined;
     this.group.visible = false;
     this.sparks.clear();
+    this.debris.clear();
+    this.puffs.clear();
+    this.shocks.clear();
+    this.motion.clear();
+    this.nudge.side = this.nudge.push = this.nudge.strikeT = 0;
     this.arena.hide();
     this.overlay?.show(false);
     this.labelsVersion++;
@@ -494,6 +548,15 @@ export class GameWorld {
   }
 
   /**
+   * How the camera behind the walker is nudged now, each 0 to 1 and eased: `side`, over the
+   * walker's right shoulder while it strikes, so that the swing is not hidden by its body; `push`,
+   * in on the boss as it changes phase. Both 0 for reduced motion, and when no game is on.
+   */
+  cameraNudge(): { side: number; push: number } {
+    return this.nudge;
+  }
+
+  /**
    * What the camera behind the walker frames in a fight, or undefined when there is none: the foe
    * locked on to, the boss in its arena (both `hard`: the camera keeps them in view), or else the
    * nearest foe coming at the walker, the DDL first (soft: the visitor can still turn the view).
@@ -501,11 +564,16 @@ export class GameWorld {
    */
   fightFocus(): FightFocus | undefined {
     const g = this.quest;
-    if (!g || this.menuPaused || this.paused || g.phase !== "play") return undefined;
+    if (!g || this.menuPaused || this.paused) return undefined;
     const me = this.meAt;
     let pick: Foe | undefined;
     let hard = true;
-    for (const f of g.foes) if (f.id === g.lock && f.state !== "dead") pick = f;
+    if (g.phase !== "play") {
+      // A game won: the camera stays on the boss while it breaks up.
+      if (g.victory) for (const f of g.foes) if (f.kind === "exam") pick = f;
+      if (!pick) return undefined;
+    }
+    for (const f of g.foes) if (!pick && f.id === g.lock && f.state !== "dead") pick = f;
     if (!pick && g.arena?.active) pick = g.boss;
     if (!pick) {
       hard = false;
@@ -528,7 +596,7 @@ export class GameWorld {
     // Its model's top, with a little over for its crown of pens or its bob in the air.
     const model = this.kinds[pick.kind].model;
     const scale = pick.kind === "ddl" ? 1 + (pick.tier - 1) * 0.25 : 1;
-    o.top = foot + (model.float + model.height) * scale + 0.6;
+    o.top = foot + (model.float + model.height) * scale + 0.6 + (pick.state === "phase" ? PHASE_RISE : 0);
     // Its arms reach out past its body: the boss's red pens most.
     o.half = FOES[pick.kind].radius * 1.3 * scale;
     o.hard = hard;
@@ -554,8 +622,10 @@ export class GameWorld {
       sprint: g.stamina >= PLAYER.dodgeCost ? 1 : g.stamina / PLAYER.dodgeCost,
       eureka: g.eurekaMeter / PLAYER.eurekaCharge,
     };
+    // A game won shows its debrief once the boss has broken up, not over its death.
+    const over = g.phase === "over" && !(g.victory && g.foes.some((f) => f.kind === "exam"));
     return {
-      phase: g.phase,
+      phase: over ? "over" : "play",
       paused: g.phase === "play" ? this.paused : undefined,
       focus: g.focus,
       maxFocus: s.maxFocus,
@@ -590,7 +660,7 @@ export class GameWorld {
       defeated: g.defeated,
       met: [...g.met],
       events,
-      debrief: g.phase === "over" ? g.debrief() : undefined,
+      debrief: over ? g.debrief() : undefined,
     };
   }
 
@@ -790,31 +860,103 @@ export class GameWorld {
         break;
       }
       case "swing":
-        // The arms wind up and strike; the arc of light comes as the blow lands.
+        // The arms wind up and strike; the arc of light comes as the blow lands. The camera goes
+        // over the shoulder for the blow and a moment after.
         this.host.act(this.name, e.combo === 0 ? "strike0" : e.combo === 1 ? "strike1" : "strike2");
         this.slashDue = { t: Math.max(0, PLAYER.strikeContact[e.combo]! - SLASH_LEAD[e.combo]!), combo: e.combo, dir: e.dir };
+        this.nudge.strikeT = PLAYER.strikeTime[e.combo]! + SHOULDER_HOLD;
         break;
       case "card":
         this.host.act(this.name, "card");
         break;
       case "hit": {
-        const h = this.footOf(e.foe) + 1.4;
-        this.sparks.burst(e.at[0], h, -e.at[1], e.heavy || e.crit ? 16 : 9, e.heavy ? 9 : 6, e.crit ? 0xffd54a : 0xfff1d0, 0.11, 0.45, 8);
-        this.sparks.burst(e.at[0], h, -e.at[1], 4, 3, HUE[e.kind], 0.16, 0.5, 2);
-        o?.number(e.at[0], h + 1, -e.at[1], String(e.amount), e.crit ? "crit" : e.heavy ? "heavy" : "");
+        const f = this.foeById(e.foe);
+        if (f) this.motion.hit(f, e.dir, e.heavy, e.crit);
+        // Light, finisher and critical blows each look and feel their own: the flash, the sparks,
+        // the dust, the number and the shake grow with the blow.
+        const tier = e.crit ? 2 : e.heavy ? 1 : 0;
+        const foot = this.footOf(e.foe);
+        const r = (e.dir * Math.PI) / 180;
+        const near = FOES[e.kind].radius * 0.7;
+        const hx = e.at[0] - Math.sin(r) * near;
+        const hz = -(e.at[1] - Math.cos(r) * near);
+        const h = foot + Math.min(KIND_MID[e.kind], 2.2);
+        this.sparks.one(hx, h, hz, 0, 0, 0, 0.07, HIT_CORE[tier]!, e.crit ? 0xffe27a : 0xfff4dc, 0);
+        this.sparks.cone(hx, h, hz, e.dir, 55, HIT_STREAKS[tier]!, HIT_SPEED[tier]!, e.crit ? 0xffd54a : 0xffe8b0, 0.09, 0.26, 12, 0.03);
+        this.sparks.cone(hx, h, hz, e.dir, 75, 2 + tier * 2, 5, HUE[e.kind], 0.13, 0.4, 6, 0);
+        this.puffs.puff(e.at[0], foot, -e.at[1], 2 + tier * 2, FOES[e.kind].radius * 0.8, DUST, 0.45 + 0.15 * tier, 0.55);
+        if (tier > 0) this.shocks.fire(e.at[0], foot + 0.08, -e.at[1], FOES[e.kind].radius + 1.4 + tier, 0.22, e.crit ? 0xffd54a : 0xffb454, 0.22);
+        o?.number(e.at[0], h + 1, -e.at[1], String(e.amount), e.crit ? (e.heavy ? "crit heavy" : "crit") : e.heavy ? "heavy" : "light");
         o?.hit(e.at[0], h, -e.at[1], false, cam, width, height);
-        this.trauma = Math.min(1, this.trauma + (e.heavy || e.crit ? 0.28 : 0.14));
+        this.trauma = Math.min(1, this.trauma + HIT_SHAKE[tier]! + (e.crit && e.heavy ? 0.08 : 0));
         break;
       }
       case "kill": {
-        const h = this.footOf(e.foe) + 1.2;
+        const foot = this.footOf(e.foe);
+        const h = foot + Math.min(KIND_MID[e.kind], 3);
+        const x = e.at[0];
+        const z = -e.at[1];
         const big = e.kind === "exam" ? 3 : e.kind === "ddl" ? 2 : 1;
-        this.sparks.burst(e.at[0], h, -e.at[1], 26 * big, 8 * big, HUE[e.kind], 0.18, 0.9, 5);
-        this.sparks.burst(e.at[0], h, -e.at[1], 12 * big, 5, 0xffffff, 0.1, 0.6, 3);
-        this.sparks.ring(e.at[0], h - 1, -e.at[1], 18, 7 * big, HUE[e.kind], 0.16);
-        o?.number(e.at[0], h + 1.6, -e.at[1], `+${e.xp}`, "xp");
-        o?.hit(e.at[0], h, -e.at[1], true, cam, width, height);
+        // Each breaks into the stuff of its trouble: gears from the clock, stuffing from the pillow,
+        // shards of screen, copied pages, ink, and the exam's papers, pencils and red ink.
+        const d = this.debris;
+        switch (e.kind) {
+          case "ddl":
+            d.burst("gear", x, h, z, foot, 12, 7, 0xc8ccd4, 1.1);
+            d.burst("gear", x, h, z, foot, 6, 6, 0xd8262e, 0.8);
+            d.burst("page", x, h + 0.6, z, foot, 4, 4, 0xfff4dc, 0.7);
+            break;
+          case "procrastination":
+            d.burst("page", x, h, z, foot, 10, 5, 0xf6efe0, 0.8);
+            d.burst("page", x, h, z, foot, 6, 4, 0xcfc2f2, 0.6);
+            break;
+          case "distraction":
+            d.burst("page", x, h, z, foot, 7, 5, 0x2fd7ff, 0.4, 0.9);
+            d.burst("ink", x, h, z, foot, 3, 4, 0x23242c, 0.6, 0.9);
+            break;
+          case "plagiarism":
+            d.burst("page", x, h, z, foot, 14, 4, 0xe7ecff, 0.8);
+            d.burst("page", x, h, z, foot, 5, 4, 0xffb3c7, 0.8);
+            break;
+          case "anxiety":
+            d.burst("ink", x, h, z, foot, 14, 5, 0x2b2450, 1);
+            d.burst("ink", x, h, z, foot, 6, 4, 0x8b5cff, 0.8);
+            break;
+          case "exam":
+            d.burst("page", x, h + 2, z, foot, 24, 7, 0xf7f3e8, 1.4, 2);
+            d.burst("gear", x, h + 1, z, foot, 10, 8, 0xffc300, 1.6, 2);
+            d.burst("ink", x, h + 1, z, foot, 10, 6, 0xc1121f, 1.4, 2);
+            break;
+        }
+        this.sparks.burst(x, h, z, 12 * big, 7 * big, HUE[e.kind], 0.14, 0.7, 5);
+        this.sparks.cone(x, h, z, 0, 180, 8 * big, 9 * big, 0xfff4dc, 0.08, 0.3, 8, 0.03);
+        this.shocks.fire(x, foot + 0.1, z, 2.5 * big + 1, 0.3 * big, HUE[e.kind], 0.35);
+        this.puffs.puff(x, foot, z, 4 * big, FOES[e.kind].radius, DUST, 0.6 * big, 0.7);
+        o?.number(x, h + 1.6, -e.at[1], `+${e.xp}`, "xp");
+        o?.hit(x, h, -e.at[1], true, cam, width, height);
         this.trauma = Math.min(1, this.trauma + 0.2 * big);
+        break;
+      }
+      case "lash": {
+        // An attack lands: the foe strikes, and the ground answers where it lands.
+        const f = this.foeById(e.foe);
+        if (f) this.motion.lash(f, e.move);
+        const gy = this.host.groundAt(e.at[0], e.at[1]) + 0.1;
+        if (e.move === "slam") {
+          this.shocks.fire(e.at[0], gy, -e.at[1], e.radius + 0.6, 0.55, 0xff6a3d, 0.36);
+          this.puffs.puff(e.at[0], gy, -e.at[1], e.kind === "exam" ? 10 : 7, e.radius * 0.6, DUST, 0.9, 0.7);
+          this.sparks.ring(e.at[0], gy + 0.2, -e.at[1], 18, e.radius * 2.2, 0xffb08a, 0.12);
+          this.trauma = Math.min(1, this.trauma + (e.kind === "exam" ? 0.45 : 0.3));
+        } else if (e.move === "yawn") {
+          this.shocks.fire(e.at[0], gy, -e.at[1], e.radius + 0.4, 0.5, 0xb9a6ff, 0.42);
+          this.puffs.puff(e.at[0], gy, -e.at[1], 6, e.radius * 0.5, 0xd9cff5, 0.8, 0.8);
+        } else if (e.move === "charge") {
+          this.puffs.puff(e.at[0], gy, -e.at[1], 4, 1.2, DUST, 0.7, 0.6);
+          this.trauma = Math.min(1, this.trauma + 0.12);
+        } else if (e.move === "melee" || e.move === "blink") {
+          const fx = f ? f.at : e.at;
+          this.sparks.cone(fx[0], gy + 1.3, -fx[1], f ? f.facing : 0, 30, 6, 7, HUE[e.kind], 0.1, 0.25, 4, 0.03);
+        }
         break;
       }
       case "hurt":
@@ -830,25 +972,46 @@ export class GameWorld {
         this.trailT = e.sprint ? 0.4 : 0.3;
         this.host.act(this.name, e.sprint ? "sprint" : "dodge");
         break;
-      case "eureka":
+      case "eureka": {
         this.host.act(this.name, "eureka");
-        this.burst.fire(PLAYER.eurekaRadius);
-        this.sparks.ring(sx, sy + 0.4, sz, 36, 14, 0xffc970, 0.2);
+        // A crisp ring of light that runs out to the Eureka's reach and is gone, a thinner one just
+        // behind it, and sparks that race out along the ground: no wash over the picture.
+        const gy = sy + 0.1;
+        this.shocks.fire(sx, gy, sz, PLAYER.eurekaRadius, 0.5, 0xfff0c8, 0.32);
+        this.shocks.fire(sx, gy + 0.02, sz, PLAYER.eurekaRadius * 0.82, 0.22, 0xffb454, 0.3, 0.06);
+        const n = Math.round(28 * this.sparks.density);
+        for (let k = 0; k < n; k++) {
+          const a = (k / n) * Math.PI * 2 + Math.random() * 0.2;
+          const v = 18 + Math.random() * 6;
+          this.sparks.one(sx + Math.cos(a) * 0.8, gy + 0.3, sz + Math.sin(a) * 0.8, Math.cos(a) * v, 1 + Math.random() * 2, Math.sin(a) * v, 0.3, 0.12, 0xffe2a0, 3, 0.025);
+        }
         // From the hands thrust up over the head.
-        this.sparks.burst(sx, sy + HANDS_UP, sz, 30, 10, 0xfff1d0, 0.14, 0.8, 4);
-        this.sparks.burst(sx, sy + HANDS_UP, sz, 14, 4, 0xffc970, 0.1, 0.6, -3);
+        this.sparks.burst(sx, sy + HANDS_UP, sz, 14, 7, 0xfff1d0, 0.1, 0.5, 4);
+        this.puffs.puff(sx, sy, sz, 6, 1.6, DUST, 0.7, 0.6);
         o?.flash("eureka");
-        this.trauma = Math.min(1, this.trauma + 0.5);
+        this.trauma = Math.min(1, this.trauma + 0.4);
         break;
+      }
       case "rank":
         for (let k = 0; k < 3; k++) this.sparks.ring(sx, sy + 0.3 + k * 0.8, sz, 20, 4 + k, ACCENT, 0.14);
         this.sparks.burst(sx, sy + 1, sz, 30, 6, 0xfff1d0, 0.12, 1.2, -2);
         o?.flash("rank");
         break;
-      case "phase":
+      case "phase": {
+        // The boss's change of phase: knocked back, then a roar that sends rings out over the hall.
         o?.flash("phase");
-        this.trauma = 1;
+        this.trauma = Math.min(1, this.trauma + 0.6);
+        const b = this.quest?.boss;
+        if (b) {
+          const foot = this.footOf(b.id);
+          const roar = FOE_TIME.phase * 0.2;
+          this.shocks.fire(b.at[0], foot + 0.12, -b.at[1], QUEST.arenaRadius * 0.9, 0.9, 0xffb347, 0.7, roar);
+          this.shocks.fire(b.at[0], foot + 0.14, -b.at[1], QUEST.arenaRadius * 0.7, 0.4, 0xff5a3d, 0.6, roar + 0.18);
+          this.sparks.burst(b.at[0], foot + 5, -b.at[1], 40, 12, 0xffd27a, 0.16, 0.9, 6);
+          this.puffs.puff(b.at[0], foot, -b.at[1], 10, 4, DUST, 1.3, 0.9);
+        }
         break;
+      }
       case "over":
         // Burnt out, the arms drop; a won game keeps the stance it had.
         if (!e.victory) this.host.act(this.name, "down");
@@ -864,6 +1027,13 @@ export class GameWorld {
       default:
         break;
     }
+  }
+
+  /** The foe of an id, while the game has it. */
+  private foeById(id: number): Foe | undefined {
+    const foes = this.quest?.foes;
+    if (foes) for (const f of foes) if (f.id === id) return f;
+    return undefined;
   }
 
   /** Metres above sea level of a foe's feet as last drawn. */
@@ -899,8 +1069,11 @@ export class GameWorld {
     // Foes.
     for (const k of FOE_KINDS) this.kinds[k].begin();
     this.shadows.begin();
+    this.motion.begin();
     const plates: PlateIn[] = [];
     const tint = _tint;
+    const look = this.look;
+    let bossPhase = -1;
     for (const f of g.foes) {
       const far = Math.hypot(f.at[0] - wx, f.at[1] - walker.at[1]);
       if (far > 180) continue;
@@ -912,95 +1085,89 @@ export class GameWorld {
       const rise = 12 * dt;
       const foot = had === undefined || dt <= 0 ? want : had + Math.max(-rise, Math.min(rise, want - had));
       this.heights.set(f.id, foot);
-      const phase = f.id * 1.37;
-      let y = foot + model.float + Math.sin(t * (f.kind === "distraction" ? 6 : 2.2) + phase) * (f.kind === "distraction" ? 0.22 : 0.1);
+      this.motion.look(f, dt, t, look);
+      let y = foot + model.float + look.oy;
       let scale = f.kind === "ddl" ? 1 + (f.tier - 1) * 0.25 : 1;
-      let sx = 1;
-      let sy = 1;
-      let lean = 0;
-      let roll = 0;
-      let spin = 0;
-      let jx = 0;
-      let jz = 0;
-      tint.setRGB(0, 0, 0);
       if (f.state === "rise") {
         const total = f.kind === "exam" ? 3.2 : 0.8;
         const k = Math.max(0, Math.min(1, 1 - f.t / total));
         const back = 1 + 2.2 * Math.pow(k - 1, 3) + 1.2 * Math.pow(k - 1, 2);
         scale *= Math.max(0.01, back);
         y -= (1 - k) * 2;
-      } else if (f.state === "dead") {
-        const k = Math.max(0, f.t / 0.7);
-        scale *= Math.max(0.01, k);
-        spin = (1 - k) * 7;
-        y += (1 - k) * 1.5;
-        tint.setRGB(1 - k, 1 - k, 1 - k);
-      } else if (f.state === "tell" || f.state === "phase") {
-        const pulse = 0.5 + 0.5 * Math.sin(t * 28);
-        tint.setRGB(0.75 * pulse, 0.08 * pulse, 0);
-        lean = f.kind === "exam" ? -0.08 : -0.22;
-        jx = (Math.random() - 0.5) * (f.state === "phase" ? 0.4 : 0.1);
-        jz = (Math.random() - 0.5) * (f.state === "phase" ? 0.4 : 0.1);
-        if (f.kind === "ddl") roll = Math.sin(t * 45) * 0.12;
-        if (f.kind === "procrastination") ((sx = 1.15), (sy = 0.85));
-      } else if (f.state === "attack") {
-        lean = 0.45;
-      } else if (f.state === "stagger") {
-        lean = -0.35;
       }
-      if (f.state !== "dead" && f.hurtAgo < 0.14) {
-        // A blow flashes it white; the boss, so big, only a little.
-        const k = (1 - f.hurtAgo / 0.14) * (f.kind === "exam" ? 0.4 : 1);
-        tint.setRGB(Math.max(tint.r, k), Math.max(tint.g, k), Math.max(tint.b, k));
-        scale *= 1 + k * 0.08;
-      }
-      if (f.kind === "procrastination" && f.state === "chase") ((sx = 1 + Math.sin(t * 1.6 + phase) * 0.05), (sy = 1 - Math.sin(t * 1.6 + phase) * 0.05));
-      if (f.kind === "anxiety" && f.state !== "dead") ((jx += (Math.random() - 0.5) * 0.06), (jz += (Math.random() - 0.5) * 0.06));
-      if (f.kind === "ddl" && f.state === "chase") roll = Math.sin(t * 9 + phase) * 0.06;
-      if (f.kind === "exam" && f.phase === 3 && f.state !== "dead") tint.r = Math.max(tint.r, 0.25 + 0.15 * Math.sin(t * 6));
-      if (f.kind === "plagiarism") roll += Math.sin(t * 2.5 + phase) * 0.1;
-      _p.set(f.at[0] + jx, y, -f.at[1] + jz);
-      _q.setFromEuler(_e.set(lean, yawOf(f.facing) + spin, roll));
-      _s.set(scale * sx, scale * sy, scale * sx);
+      tint.setRGB(look.tr, look.tg, look.tb);
+      // What breaks up glows at the edges of its gaps in its own colour.
+      if (f.state === "dead" && f.kind !== "exam") tint.setHex(HUE[f.kind]).multiplyScalar(0.8);
+      if (f.kind === "exam" && f.phase === 3 && f.state !== "dead" && f.state !== "phase") tint.r = Math.max(tint.r, 0.22 + 0.12 * Math.sin(t * 6));
+      if (f.kind === "exam" && f.state === "phase") bossPhase = this.motion.since(f.id) / FOE_TIME.phase;
+      _p.set(f.at[0] + look.ox, y, -(f.at[1] + look.on));
+      _q.setFromEuler(_e.set(look.pitch, yawOf(f.facing) + look.yaw, look.roll));
+      _s.set(scale * look.sx, scale * look.sy, scale * look.sz);
       _b.compose(_p, _q, _s);
-      kv.put(_b, tint, (name, out) => this.partPose(name, f, t, out));
-      if (f.state !== "dead") this.shadows.add(f.at[0], foot, -f.at[1], FOES[f.kind].radius * (f.kind === "exam" ? 1.2 : 0.9) * scale);
+      this.posing = f;
+      this.posingT = t;
+      kv.put(_b, tint, look.dissolve, look.flash, this.poseOf);
+      if (f.state !== "dead") this.shadows.add(f.at[0] + look.ox, foot, -(f.at[1] + look.on), FOES[f.kind].radius * (f.kind === "exam" ? 1.2 : 0.9) * scale * Math.max(0.6, 1 - look.oy * 0.15));
       // Its plate: the big ones always; the small ones when near, or hurt.
       const elite = f.kind === "ddl" || f.kind === "exam";
       if (f.state !== "dead" && f.state !== "rise" && f.kind !== "exam" && (elite || far < 26 || f.hp < f.maxHp) && this.words) {
-        plates.push({ id: f.id, x: f.at[0], y: y + model.height * scale + 0.5, z: -f.at[1], name: this.words.foes[f.kind], hp: f.hp, max: f.maxHp, elite, warn: f.state === "tell" });
+        plates.push({ id: f.id, x: f.at[0], y: foot + model.float + model.height * scale + 0.5, z: -f.at[1], name: this.words.foes[f.kind], hp: f.hp, max: f.maxHp, elite, warn: f.state === "tell" });
       }
-      // Trails and moods.
-      if (dt > 0 && f.state !== "dead") {
+      // Trails, moods, steps and daze.
+      if (dt > 0) {
+        const head = foot + model.float + model.height * scale * 0.92 + look.oy;
+        if (f.state === "dead") {
+          // The last hour breaks up slowly, shedding its pages.
+          if (f.kind === "exam" && Math.random() < dt * 30) this.debris.burst("page", f.at[0] + (Math.random() - 0.5) * 3, foot + 2 + Math.random() * 7, -f.at[1] + (Math.random() - 0.5) * 3, foot, 1, 3, 0xf7f3e8, 1.2, 1.6);
+          continue;
+        }
+        if (look.step) this.puffs.puff(f.at[0], foot, -f.at[1], f.kind === "exam" ? 3 : 2, FOES[f.kind].radius * 0.7, DUST, f.kind === "exam" ? 0.9 : 0.45, 0.5);
+        if (look.dazed && Math.random() < dt * 9) {
+          // Stars round its head: it is open.
+          const a = t * 7 + f.id;
+          const r = FOES[f.kind].radius * 0.6 + 0.2;
+          this.sparks.one(f.at[0] + Math.cos(a) * r, head + 0.25, -f.at[1] + Math.sin(a) * r, -Math.sin(a) * 2.2, 0.3, Math.cos(a) * 2.2, 0.4, 0.16, 0xffe14a, 0);
+        }
         if (f.kind === "procrastination" && Math.random() < dt * 1.5) this.sparks.one(f.at[0] + 0.6, y + 2.6, -f.at[1], 0.3, 0.8, 0, 1.6, 0.12, 0xbfd8ff, -0.2);
         if (f.kind === "anxiety" && Math.random() < dt * 6) this.sparks.one(f.at[0], y + 1.5, -f.at[1], (Math.random() - 0.5) * 2, 1.2, (Math.random() - 0.5) * 2, 0.7, 0.14, 0x5b3dbb, -0.5);
         if (f.kind === "exam" && Math.random() < dt * 12) this.sparks.one(f.at[0] + (Math.random() - 0.5) * 3, y + 3 + Math.random() * 4, -f.at[1] + (Math.random() - 0.5) * 3, 0, 1.5, 0, 1.0, 0.12, 0xffb347, -0.3);
-        if (f.state === "attack") this.sparks.burst(f.at[0], y + 1.2, -f.at[1], 2, 2, HUE[f.kind], 0.2, 0.4, 0);
+        if (f.state === "attack" && look.step) this.puffs.puff(f.at[0], foot, -f.at[1], 2, 1, DUST, 0.6, 0.5);
       }
+    }
+    this.motion.end();
+    // The camera: over the walker's shoulder while it strikes, in on the boss as it changes phase.
+    {
+      const n = this.nudge;
+      n.strikeT = Math.max(0, n.strikeT - dt);
+      const wantSide = this.reducedMotion || g.phase !== "play" ? 0 : n.strikeT > 0 ? 1 : 0;
+      n.side += (wantSide - n.side) * (1 - Math.exp(-dt * (wantSide > n.side ? 9 : 2.2)));
+      const wantPush = this.reducedMotion || bossPhase < 0 ? 0 : Math.sin(Math.PI * Math.min(1, bossPhase / 0.85)) * (bossPhase < 0.85 ? 1 : 0);
+      n.push += (wantPush - n.push) * (1 - Math.exp(-dt * 5));
+      if (n.side < 1e-3) n.side = 0;
+      if (n.push < 1e-3) n.push = 0;
     }
     for (const k of FOE_KINDS) this.kinds[k].end();
     this.shadows.end();
 
-    // Warnings on the ground, the boss's rings, and rings at the walker's feet.
+    // Warnings on the ground that fill as the attack comes, the boss's rings, and rings at the walker's feet.
     this.tells.begin();
+    this.decals.begin(t);
     for (const tl of g.tells) {
-      const h = this.host.groundAt(tl.at[0], tl.at[1]) + 0.18;
+      const h = this.host.groundAt(tl.at[0], tl.at[1]) + 0.17;
       const k = 1 - tl.t / tl.total;
-      const blink = tl.t < 0.25 ? (Math.floor(t * 20) % 2 ? 1 : 0.4) : 1;
-      if (tl.shape === "circle") {
-        this.tells.ring({ x: tl.at[0], y: h, z: -tl.at[1], r: tl.radius, color: 0xff3b2f, alpha: 0.9 * blink });
-        this.tells.disc({ x: tl.at[0], y: h - 0.01, z: -tl.at[1], r: tl.radius * k, color: 0xff3b2f, alpha: 0.55 });
-      } else {
-        this.tells.line({ x: tl.at[0], y: h, z: -tl.at[1], dir: tl.dir, length: tl.length, width: tl.width, color: 0xff3b2f, alpha: 0.45 * blink }, k);
-      }
+      // Brighter in the last moment before it lands.
+      const alpha = tl.t < 0.2 ? 0.85 + 0.15 * Math.sin(t * 60) : 0.8;
+      if (tl.shape === "circle") this.decals.circle(tl.at[0], h, -tl.at[1], tl.radius, k, 0xff3b2f, alpha);
+      else this.decals.line(tl.at[0], h, -tl.at[1], tl.dir, tl.length, tl.width, k, 0xff3b2f, alpha);
     }
+    this.decals.end();
     for (const w of g.waves) {
       const h = this.host.groundAt(w.at[0], w.at[1]) + 0.25;
       this.tells.ring({ x: w.at[0], y: h, z: -w.at[1], r: w.r, color: 0xff7a2f, alpha: 1 - w.r / w.max });
       this.tells.ring({ x: w.at[0], y: h + 0.4, z: -w.at[1], r: w.r - 0.3, color: 0xffc06a, alpha: 0.6 * (1 - w.r / w.max) });
     }
     if (g.eurekaMeter >= PLAYER.eurekaCharge && g.phase === "play") this.tells.ring({ x: wx, y: wy + 0.12, z: wz, r: 1.1 + Math.sin(t * 6) * 0.08, color: ACCENT, alpha: 0.9 });
-    const locked = g.foes.find((f) => f.id === g.lock);
+    const locked = g.lock === undefined ? undefined : this.foeById(g.lock);
     if (locked) this.tells.ring({ x: locked.at[0], y: this.footOf(locked.id) + 0.15, z: -locked.at[1], r: FOES[locked.kind].radius + 0.5, color: 0xff5a3d, alpha: 0.8 });
     this.tells.end();
 
@@ -1022,7 +1189,22 @@ export class GameWorld {
       if (d.combo === 2) this.sparks.ring(wx, wy + 0.3, wz, 10, 6, ACCENT, 0.1);
     }
     this.slash.step(dt, wx, wy, wz);
-    this.burst.step(dt, wx, wy, wz);
+    if (this.warm > 0) {
+      // A few of each effect, out of sight far under the walker, in the first frames of a game: their
+      // shaders are made then, behind the title card, not in the middle of the first fight.
+      this.warm--;
+      const y = wy - 400;
+      for (const bit of ["page", "gear", "ink"] as const) this.debris.burst(bit, wx, y, wz, y - 1, 1, 0, 0xffffff, 1, 0.05);
+      this.puffs.puff(wx, y, wz, 1, 1, DUST, 1, 0.05);
+      this.shocks.fire(wx, y, wz, 2, 0.3, 0xffffff, 0.05);
+      this.decals.begin(t);
+      this.decals.circle(wx, y, wz, 2, 0.5, 0xff3b2f, 0.5);
+      this.decals.line(wx, y, wz, 0, 4, 2, 0.5, 0xff3b2f, 0.5);
+      this.decals.end();
+    }
+    this.debris.step(dt);
+    this.puffs.step(dt);
+    this.shocks.step(dt);
     if (this.trailT > 0 && dt > 0) {
       this.trailT -= dt;
       for (let k = 0; k < 3; k++) this.sparks.one(wx + (Math.random() - 0.5) * 0.6, wy + 0.4 + Math.random() * 1.3, wz + (Math.random() - 0.5) * 0.6, 0, 0.2, 0, 0.45, 0.16, g.has("sprint") ? 0xffc970 : 0x9fd8ff, 0);
@@ -1066,6 +1248,11 @@ export class GameWorld {
   }
 
   /** How a moving part of a foe is turned now, about its pivot. */
+  /** The foe whose parts are being turned, and the clock: partPose by way of poseOf, made once. */
+  private posing?: Foe;
+  private posingT = 0;
+  private poseOf = (name: string, out: Matrix4): void => this.partPose(name, this.posing!, this.posingT, out);
+
   private partPose(name: string, f: Foe, t: number, out: Matrix4): void {
     const ph = f.id * 0.9;
     switch (name) {
@@ -1120,6 +1307,18 @@ const ENGAGE_DDL = 24;
 
 /** Seconds before each blow lands that its arc of light begins, so that it is brightest as it lands. */
 const SLASH_LEAD = [0.04, 0.04, 0.02];
+/** Metres the boss rises as it roars at its change of phase (gameMotion.ts), with a little over: the camera frames it. */
+const PHASE_RISE = 1.6;
+/** Seconds after a blow ends that the camera stays over the walker's shoulder. */
+const SHOULDER_HOLD = 0.3;
+/** By a blow's strength (light, finisher, critical): the flash's size, the streaks, their speed, and the shake. */
+const HIT_CORE = [0.75, 1.05, 1.4];
+const HIT_STREAKS = [6, 11, 16];
+const HIT_SPEED = [9, 12, 15];
+const HIT_SHAKE = [0.1, 0.28, 0.4];
+/** The colour of dust kicked up: a pale grey-brown that reads on grass and paving alike. */
+const DUST = 0xcdc3ad;
+
 /** Metres over the walker's feet of its hands thrust up for the Eureka. */
 const HANDS_UP = 2.15;
 

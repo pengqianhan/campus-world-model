@@ -53,4 +53,25 @@ describe("the walker's moves in the game", () => {
     sampleMove("strike2", PLAYER.strikeContact[2], p);
     expect(p.rFo[2]).toBeLessThan(-0.5);
   });
+
+  it("keep the slam's hands wide of the head and over it as it winds up, never through it", () => {
+    // The figure about as built (figureBuild.ts): shoulders 0.17 m either side at 1.42 m, upper arm
+    // 0.28 m, forearm 0.26 m; the head a ball about 0.12 m across each way, its middle at 1.62 m.
+    const p = newPose();
+    const hand = (up: readonly number[], fo: readonly number[], side: number) => [side * 0.17 + up[0]! * 0.28 + fo[0]! * 0.26, 1.42 + up[1]! * 0.28 + fo[1]! * 0.26, up[2]! * 0.28 + fo[2]! * 0.26];
+    const end = PLAYER.strikeContact[2] * 0.86;
+    for (let t = MOVES.strike2.keys[0]!.t; t <= end + 1e-9; t += 0.005) {
+      sampleMove("strike2", t, p);
+      for (const [h, side] of [
+        [hand(p.rUp, p.rFo, 1), 1],
+        [hand(p.lUp, p.lFo, -1), -1],
+      ] as const) {
+        // Out past the head's side, or above its top: in front of the face is where it went wrong.
+        const wide = side * h[0]! > 0.24;
+        const over = h[1]! > 1.62 + 0.2;
+        expect(wide || over).toBe(true);
+        expect(Math.hypot(h[0]!, h[1]! - 1.62, h[2]!)).toBeGreaterThan(0.25);
+      }
+    }
+  });
 });

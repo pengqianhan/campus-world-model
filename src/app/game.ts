@@ -7,7 +7,7 @@
 import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
 import type { GameAction, GameView } from "../scene/game.ts";
-import { FOE_KINDS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
+import { FOE_KINDS, FOE_TIME, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
 import { hush, sfx, setSound, type Sfx } from "./gameAudio.ts";
 import { pick, t } from "./i18n.ts";
 
@@ -240,7 +240,7 @@ function told(e: GameEvent): void {
       break;
     case "phase":
       sfx("phase");
-      banner({ kind: "phase", title: t(`game.phase.${e.phase}.title`), sub: t(`game.phase.${e.phase}.name`), ms: 2600 });
+      banner({ kind: "phase", title: t(`game.phase.${e.phase}.title`), sub: t(`game.phase.${e.phase}.name`), ms: FOE_TIME.phase * 1000 });
       break;
     case "over":
       sfx(e.victory ? "victory" : "defeat");

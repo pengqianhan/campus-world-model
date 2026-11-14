@@ -4280,7 +4280,9 @@ select optgroup {
 }
 
 .gx-flash.eureka {
-  background: radial-gradient(circle at 50% 60%, rgba(255, 220, 160, 0.55), rgba(255, 180, 84, 0) 60%);
+  /* A faint warm ring at the edges of the picture, not a wash over the middle. */
+  background: radial-gradient(circle at 50% 60%, rgba(255, 210, 150, 0) 45%, rgba(255, 200, 120, 0.16) 70%, rgba(255, 180, 84, 0) 90%);
+  animation-duration: 0.3s;
 }
 
 .gx-flash.rank {
@@ -4545,14 +4547,33 @@ select optgroup {
   will-change: transform, opacity;
 }
 
+/* Each blow's number by its strength: small and white for a light one, bigger and orange for the
+   finisher, biggest and gold for a critical one, with a dark edge so that each reads on the sky. */
+.gx-num.light,
+.gx-num.heavy,
+.gx-num.crit {
+  -webkit-text-stroke: 1px rgba(30, 16, 8, 0.55);
+  paint-order: stroke fill;
+}
+
+.gx-num.light {
+  font-size: 18px;
+  color: #fff6e6;
+}
+
 .gx-num.heavy {
-  font-size: 26px;
-  color: #ffe2b3;
+  font-size: 28px;
+  color: #ffab4a;
 }
 
 .gx-num.crit {
-  font-size: 32px;
+  font-size: 34px;
   color: #ffd23f;
+  text-shadow: 0 0 10px rgba(255, 180, 40, 0.65);
+}
+
+.gx-num.crit.heavy {
+  font-size: 40px;
 }
 
 .gx-num.crit::after {

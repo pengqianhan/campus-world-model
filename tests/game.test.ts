@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { Pt } from "../src/shared/geo.ts";
 import {
   FOES,
+  FOE_TIME,
   PLAYER,
   QUEST,
   RANKS,
@@ -246,6 +247,103 @@ describe("blows", () => {
     expect(b.hp).toBeLessThan(b.maxHp);
     expect(g.eurekaMeter).toBe(0);
   });
+
+  it("holds the world longer for a finisher than a light blow, and longest for a critical one", () => {
+    const hs = PLAYER.hitStop;
+    expect(hs.light).toBeLessThan(hs.heavy);
+    expect(hs.heavy).toBeLessThan(hs.crit);
+    expect(hs.crit).toBeLessThan(hs.critHeavy);
+    // A light blow at 0.5 random is not critical: the light hold.
+    const g = quiet(() => 0.5);
+    foe(g, "procrastination", 2);
+    g.act("strike");
+    g.step(PLAYER.strikeContact[0]!, at(HERE));
+    expect(g.hitStop).toBeCloseTo(hs.light, 5);
+    // At 0 random every blow is critical.
+    const c = quiet(() => 0);
+    foe(c, "procrastination", 2);
+    c.act("strike");
+    c.step(PLAYER.strikeContact[0]!, at(HERE));
+    expect(c.hitStop).toBeCloseTo(hs.crit, 5);
+  });
+});
+
+describe("hit reactions", () => {
+  /** The combo's finisher, landed on `f` 2 m in front: two blows first, each let finish. */
+  function finisher(g: StudyQuest, f: Foe): GameEvent[] {
+    for (let k = 0; k < 2; k++) {
+      g.act("strike");
+      run(g, PLAYER.strikeTime[k]!);
+      f.at = [0, 2];
+    }
+    g.act("strike");
+    return run(g, PLAYER.strikeContact[2]! + 0.01);
+  }
+
+  /** Seconds left of a state begun in the step just run: its length, less up to that step. */
+  function justBegun(t: number, length: number): void {
+    expect(t).toBeLessThanOrEqual(length);
+    expect(t).toBeGreaterThan(length - 0.1);
+  }
+
+  it("staggers a small foe for longer after the finisher than after a light blow", () => {
+    const g = quiet(() => 0.5);
+    const f = foe(g, "plagiarism", 2);
+    g.act("strike");
+    const light = g.step(PLAYER.strikeContact[0]!, at(HERE));
+    expect(f.state).toBe("stagger");
+    justBegun(f.t, FOE_TIME.stagger);
+    expect(light).toContainEqual(expect.objectContaining({ type: "hit", heavy: false, stagger: true }));
+    run(g, PLAYER.strikeTime[0]!);
+    f.at = [0, 2];
+    f.hp = f.maxHp;
+    g.act("strike");
+    run(g, PLAYER.strikeTime[1]! + 0.05);
+    f.at = [0, 2];
+    f.hp = f.maxHp;
+    g.act("strike");
+    const heavy = run(g, PLAYER.strikeContact[2]! + 0.01);
+    expect(heavy).toContainEqual(expect.objectContaining({ type: "hit", heavy: true, stagger: true }));
+    expect(f.state).toBe("stagger");
+    expect(f.t).toBeGreaterThan(FOE_TIME.stagger);
+    justBegun(f.t, FOE_TIME.heavyStagger);
+    // It is let go after the stagger.
+    run(g, FOE_TIME.heavyStagger + 0.05);
+    expect(f.state).toBe("chase");
+  });
+
+  it("gives the blow's bearing with each hit, for the recoil away from it", () => {
+    const g = quiet(() => 0.5);
+    foe(g, "procrastination", 2);
+    g.act("strike");
+    const hit = g.step(PLAYER.strikeContact[0]!, at(HERE)).find((e) => e.type === "hit");
+    expect(hit && hit.type === "hit" && Math.abs(turnBetween(hit.dir, 0))).toBeLessThan(1);
+  });
+
+  it("lets the DDL shrug off a finisher while it chases, and staggers it in its recovery", () => {
+    const g = quiet(() => 0.5);
+    const f = foe(g, "ddl", 2);
+    finisher(g, f);
+    expect(f.state).toBe("chase");
+    const h = quiet(() => 0.5);
+    const d = foe(h, "ddl", 2);
+    d.state = "recover";
+    d.t = 99;
+    // Its recovery lasts through the first two blows here.
+    const events = finisher(h, d);
+    expect(events).toContainEqual(expect.objectContaining({ type: "hit", heavy: true, stagger: true }));
+    expect(d.state).toBe("stagger");
+    justBegun(d.t, FOE_TIME.heavyStagger);
+  });
+
+  it("tells where an attack lands as it lands", () => {
+    const g = quiet(() => 0.5);
+    const f = g.spawn("procrastination", [0, 2]);
+    run(g, 0.85 + FOES.procrastination.cooldown * 0.6);
+    expect(f.state).toBe("tell");
+    const events = run(g, FOES.procrastination.tell + 0.1);
+    expect(events).toContainEqual(expect.objectContaining({ type: "lash", foe: f.id, move: "yawn" }));
+  });
 });
 
 describe("villains", () => {
@@ -377,6 +475,61 @@ describe("the Final Exam", () => {
     run(g, 0.5, place);
     events = hurtTo(0.33);
     expect(events).toContainEqual({ type: "phase", phase: 3 });
+  });
+
+  it("changes phase in a pause of its own length, in which nothing hurts the walker and what it threw is gone", () => {
+    const { g, boss, place } = exam();
+    boss.state = "chase";
+    boss.t = 0;
+    boss.cool = 99;
+    boss.hp = Math.ceil(boss.maxHp * 0.66) + 1;
+    boss.at = [place[0], place[1] + 2];
+    // An answer on its way, and a ring over the ground.
+    g.shots.push({ id: 999, mine: false, at: [place[0], place[1] + 5], vel: [0, -10], life: 3, damage: 13, radius: 0.7 });
+    g.waves.push({ id: 998, at: [place[0], place[1] + 2], r: 1, speed: 13, max: 32, hit: false });
+    g.act("strike");
+    g.step(PLAYER.strikeContact[0]!, at(place));
+    expect(boss.state).toBe("phase");
+    // Begun in the step just run, it has a step's worth less left than its length.
+    expect(boss.t).toBeGreaterThan(FOE_TIME.phase - 0.1);
+    expect(g.cineT).toBeCloseTo(FOE_TIME.phase, 5);
+    expect(g.shots.filter((s) => !s.mine)).toHaveLength(0);
+    expect(g.waves).toHaveLength(0);
+    // A foe's blow in the pause does no harm, and is not even an evade.
+    const minion = foe(g, "distraction", 1);
+    const focus = g.focus;
+    minion.state = "tell";
+    minion.t = 0.01;
+    minion.move = { type: "melee" };
+    minion.at = [place[0], place[1] + 1];
+    const during = run(g, 0.2, place);
+    expect(g.focus).toBe(focus);
+    expect(during.some((e) => e.type === "hurt" || e.type === "evade")).toBe(false);
+    // It ends with the pause.
+    run(g, FOE_TIME.phase, place);
+    expect(g.cineT).toBe(0);
+    expect(boss.state).not.toBe("phase");
+    minion.state = "tell";
+    minion.t = 0.01;
+    minion.move = { type: "melee" };
+    minion.at = [place[0], place[1] + 1];
+    g.iframes = 0;
+    const after = run(g, 0.1, place);
+    expect(after).toContainEqual(expect.objectContaining({ type: "hurt" }));
+  });
+
+  it("breaks up more slowly than a small foe when beaten", () => {
+    const { g, boss, place } = exam();
+    boss.state = "chase";
+    boss.phase = 3;
+    boss.hp = 1;
+    boss.at = [place[0], place[1] + 2];
+    g.act("strike");
+    g.step(PLAYER.strikeContact[0]!, at(place));
+    expect(boss.state).toBe("dead");
+    expect(boss.t).toBeGreaterThan(FOE_TIME.bossDeath - 0.1);
+    expect(boss.t).toBeLessThanOrEqual(FOE_TIME.bossDeath);
+    expect(FOE_TIME.bossDeath).toBeGreaterThan(FOE_TIME.death);
   });
 
   it("throws a fan of four answers in its first phase, and sends rings over the ground in its last", () => {

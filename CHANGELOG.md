@@ -35,6 +35,14 @@ A change to what the site does or shows adds its line here, and the README's
   overhead slam with both hands, each wound up, landing as the blow lands and followed through with a short trail; the
   arm drawn back and snapped forward for a flashcard, which leaves the hand as it is let go; arms swept back for the
   Cram Sprint, tucked for the sidestep, thrust up for Eureka!; a flinch when hit, and the arms dropping when burnt out.
+  Each villain moves with a mood of its own at rest, bobs and leans into its walk, and attacks in three beats: it
+  gathers itself glowing red at its edges, strikes fast, and is left open a moment, dazed; a blow makes it recoil away
+  from the walker with a glint at its edges, a finisher staggers it, and a beaten one pops and breaks up into pages,
+  clock gears or ink. The Final Exam's change of phase is a two-second roar in which the camera comes in and nothing
+  hurts the walker, and its attacks are shown by warnings on the ground that fill up before they land. Light blows,
+  finishers and critical blows each pause the fight, shake the view and throw their number differently, with sparks
+  and dust where they land; the Eureka is a crisp ring of light, the highlighter is bigger with a pink trail, and the
+  camera goes over the walker's shoulder while it strikes.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons. It is off until it is started,
   every part of it is made up and says so, and the buildings' names and the walker's own wait while it is on. The best
   grade and the game's settings stay in the browser; nothing is sent anywhere.

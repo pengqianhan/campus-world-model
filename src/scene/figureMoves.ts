@@ -82,10 +82,13 @@ export const MOVES: Record<Move, MoveSpec> = {
     out: [PLAYER.strikeTime[1], PLAYER.strikeTime[1] + 0.26],
     trail: [C1 - 0.035, C1 + 0.07],
   },
-  // The overhead slam: both hands up behind the head, the back arched, then down in front.
+  // The overhead slam: both hands up behind and above the head, wide of it, the back arched; over
+  // the top; then down in front. The hands never pass through the head: in the wind-up each is a
+  // shoulder's width out and behind it, and over the top they are above it.
   strike2: {
     keys: [
-      { t: C2 * 0.68, ease: "out", p: { rUp: [0.3, 0.92, 0.2], rFo: [-0.25, 0.55, 0.8], lUp: L([0.3, 0.92, 0.2]), lFo: L([-0.25, 0.55, 0.8]), lean: -0.22, step: -0.05 } },
+      { t: C2 * 0.6, ease: "out", p: { rUp: [0.42, 0.88, 0.22], rFo: [0.12, 0.62, 0.78], lUp: L([0.42, 0.88, 0.22]), lFo: L([0.12, 0.62, 0.78]), lean: -0.22, step: -0.05 } },
+      { t: C2 * 0.86, ease: "in", p: { rUp: [0.3, 0.95, -0.08], rFo: [0.08, 0.85, -0.52], lUp: L([0.3, 0.95, -0.08]), lFo: L([0.08, 0.85, -0.52]), lean: -0.04, step: 0.06 } },
       { t: C2, ease: "in", p: { rUp: [0.18, -0.25, -0.95], rFo: [-0.08, -0.55, -0.85], lUp: L([0.18, -0.25, -0.95]), lFo: L([-0.08, -0.55, -0.85]), lean: 0.4, crouch: 0.05, step: 0.22 } },
       { t: C2 + 0.1, ease: "out", p: { rUp: [0.18, -0.6, -0.75], rFo: [-0.05, -0.85, -0.5], lUp: L([0.18, -0.6, -0.75]), lFo: L([-0.05, -0.85, -0.5]), lean: 0.45, crouch: 0.07, step: 0.25 } },
       { t: PLAYER.strikeTime[2], ease: "io", p: { rUp: [0.18, -0.65, -0.7], rFo: [-0.05, -0.85, -0.45], lUp: L([0.18, -0.65, -0.7]), lFo: L([-0.05, -0.85, -0.45]), lean: 0.38, crouch: 0.06, step: 0.22 } },
