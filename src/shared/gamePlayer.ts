@@ -18,6 +18,19 @@ export const PLAYER = {
   strikeContact: [0.09, 0.09, 0.17],
   /** Seconds after a blow in which the next one carries the combo on. */
   comboWindow: 0.7,
+  /**
+   * Metres each blow lunges towards its foe (spread over its wind-up), and up to `lungeReach` more
+   * at a foe whose edge is further than `lungeFrom` metres: the blow closes in a little.
+   */
+  lunge: [0.45, 0.45, 0.9],
+  lungeReach: 0.5,
+  lungeFrom: 2.2,
+  /** Share of its pace the walker keeps steering while a blow is under way: its feet are set. */
+  strikeSlow: 0.3,
+  /** A blow taken: metres it is knocked back over `staggerTime` seconds, keeping `staggerSlow` of its pace. */
+  knockMetres: 1.2,
+  staggerTime: 0.24,
+  staggerSlow: 0.25,
   dodgeTime: 0.3,
   /** Metres round its middle the walker's body takes, for keeping out of the big foes (FoeSpec.body). */
   body: 0.4,

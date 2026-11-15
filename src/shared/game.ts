@@ -373,6 +373,12 @@ export interface PlayerInput {
   at: Pt;
   /** Degrees the walker faces, clockwise from north. */
   heading: number;
+  /**
+   * The bearing the stick (the keys, the pad) asks the walker to go along, read against the camera;
+   * undefined when it is let go. A blow's soft aim looks this way, and a dodge goes this way (back,
+   * with none). Left out: the way it faces.
+   */
+  move?: number;
   /** False while the walker cannot play (indoors or flying): the clock stops. */
   active: boolean;
   /** Times the foes' speed: more after a walker on the scooter. */
@@ -488,6 +494,17 @@ export function knockAside(p: Pt, d: Pt, c: Pt, dir: number, r: number): Pt {
 }
 
 /** Metres a second a foe charges at (the DDL, the Final Exam): faster after a walker on the scooter. */
+/**
+ * Metres a blow lunges: PLAYER.lunge for each blow of the combo, and up to PLAYER.lungeReach more
+ * at a foe whose edge (`gap`, metres; undefined without a foe) is further than PLAYER.lungeFrom:
+ * the blow closes in on a foe a little out of reach.
+ */
+export function lungeMetres(combo: number, gap?: number): number {
+  const base = PLAYER.lunge[combo] ?? PLAYER.lunge[0];
+  if (gap === undefined) return base;
+  return base + Math.max(0, Math.min(PLAYER.lungeReach, gap - PLAYER.lungeFrom));
+}
+
 export function chargeSpeed(kind: FoeKind, pace = 1): number {
   return (kind === "exam" ? 20 : 17) * Math.max(1, pace * 0.75);
 }
@@ -635,8 +652,12 @@ export class StudyQuest {
   private player: Pt;
   private heading = 0;
   private events: GameEvent[] = [];
+  private move?: number;
   private dodgeDir = 0;
   private dodgeLeft = 0;
+  /** A blow's lunge still to go (it is spread over the wind-up), and a knock back still to go (a stagger). */
+  private lunge?: { dir: number; left: number; rate: number };
+  private knock?: { dir: number; left: number };
   /** Foes the Cram Sprint under way has struck already. */
   private sprintHits = new Set<number>();
   /** A blow under way that has not landed yet, and a card drawn back that has not left the hand. */
@@ -736,6 +757,7 @@ export class StudyQuest {
     dt = Math.min(dt, 0.1);
     this.player = [input.at[0], input.at[1]];
     this.heading = input.heading;
+    this.move = "move" in input ? input.move : input.heading;
     this.seconds += dt;
     // Hit-stop: the foes and what they throw freeze for a few hundredths; the walker goes on.
     const world = this.hitStop > 0 ? dt * 0.08 : dt;
@@ -744,6 +766,7 @@ export class StudyQuest {
     this.timers(dt);
     this.actions();
     this.landing(dt);
+    this.lunging(dt);
     this.dodging(dt);
     this.take();
     this.questsStep();
@@ -755,6 +778,10 @@ export class StudyQuest {
     this.tellsStep(world);
     this.foes = this.foes.filter((f) => !(f.state === "dead" && f.t <= 0));
     if (this.lock !== undefined && !this.foes.some((f) => f.id === this.lock && f.state !== "dead")) this.lock = undefined;
+    // The walker's own steering is held back while it strikes, dodges or staggers: its feet are set.
+    if (this.dodgeT > 0) this.orders.slow = 0;
+    else if (this.knock) this.orders.slow = Math.min(this.orders.slow, PLAYER.staggerSlow);
+    else if (this.strikeT > 0) this.orders.slow = Math.min(this.orders.slow, PLAYER.strikeSlow);
     this.keepOut();
     if (this.phase === "play") this.lessons(dt);
     return this.events;
@@ -880,12 +907,16 @@ export class StudyQuest {
       if (sprint) this.learn("sprint");
       this.dodgeT = PLAYER.dodgeTime * (sprint ? 1.3 : 1);
       this.dodgeLeft = sprint ? PLAYER.sprintMetres : PLAYER.dodgeMetres;
-      this.dodgeDir = this.heading;
+      // The way the stick asks; with none, a step back.
+      this.dodgeDir = this.move ?? (this.heading + 180) % 360;
       this.sprintHits.clear();
       this.iframes = PLAYER.iframes * (sprint ? 1.3 : 1);
+      // It cuts short a blow under way (the recovery, or the wind-up), its lunge, and a stagger.
       this.strikeT = 0;
       this.blow = undefined;
-      this.events.push({ type: "dodge", at: this.player, dir: this.heading, sprint });
+      this.lunge = undefined;
+      this.knock = undefined;
+      this.events.push({ type: "dodge", at: this.player, dir: this.dodgeDir, sprint });
     } else if (a === "card") {
       this.queued = undefined;
       if (this.cardT > 0 || this.stamina < PLAYER.cardCost) return;
@@ -919,15 +950,32 @@ export class StudyQuest {
    * within `reach` and `arc` degrees (soft aim), or straight ahead.
    */
   private aim(reach: number = PLAYER.softReach, arc: number = PLAYER.softArc): number {
+    return this.aimed(reach, arc).dir;
+  }
+
+  /**
+   * The way a blow goes and the foe it goes at: the one locked on to, or the nearest within `reach`
+   * and `arc` degrees of the way the stick asks (of the way the walker faces, with the stick let go).
+   */
+  private aimed(reach: number = PLAYER.softReach, arc: number = PLAYER.softArc): { dir: number; foe?: Foe } {
     const locked = this.foes.find((f) => f.id === this.lock && f.state !== "dead");
-    if (locked) return bearingTo(this.player, locked.at);
+    if (locked) return { dir: bearingTo(this.player, locked.at), foe: locked };
+    const ref = this.move ?? this.heading;
+    // The way the stick asks first; with none of them that way, the way the walker faces (locked on
+    // to the boss's arena, that is the boss, whichever way the walker steps round it).
+    const best = this.nearestTo(ref, reach, arc) ?? (Math.abs(turnBetween(ref, this.heading)) > 1 ? this.nearestTo(this.heading, reach, arc) : undefined);
+    return best ? { dir: bearingTo(this.player, best.at), foe: best } : { dir: ref };
+  }
+
+  /** The nearest foe within `reach` (from its edge) and `arc` degrees of `ref`, the turn off it counting a little. */
+  private nearestTo(ref: number, reach: number, arc: number): Foe | undefined {
     let best: Foe | undefined;
     let score = Infinity;
     for (const f of this.foes) {
       if (f.state === "dead" || f.state === "rise") continue;
       const d = dist(f.at, this.player) - FOES[f.kind].radius;
       if (d > reach) continue;
-      const off = Math.abs(turnBetween(this.heading, bearingTo(this.player, f.at)));
+      const off = Math.abs(turnBetween(ref, bearingTo(this.player, f.at)));
       if (off > arc) continue;
       const s = d + off * 0.05;
       if (s < score) {
@@ -935,7 +983,7 @@ export class StudyQuest {
         best = f;
       }
     }
-    return best ? bearingTo(this.player, best.at) : this.heading;
+    return best;
   }
 
   private strike(): void {
@@ -943,12 +991,14 @@ export class StudyQuest {
     this.combo = combo;
     this.strikeT = PLAYER.strikeTime[combo]!;
     this.comboT = this.strikeT + PLAYER.comboWindow;
-    const dir = this.aim();
+    const { dir, foe } = this.aimed();
     if (Math.abs(turnBetween(this.heading, dir)) > 1) this.orders.face = dir;
-    // A small lunge into the blow.
-    const [ux, uy] = dirOf(dir);
-    const lunge = combo === 2 ? 0.9 : 0.45;
-    this.orders.shove = [this.orders.shove[0] + ux * lunge, this.orders.shove[1] + uy * lunge];
+    // A lunge into the blow, a little longer at a foe a little out of reach, spread over the wind-up
+    // so that the walker steps into it rather than jumping (lunging); the blow reaches from where it ends.
+    const gap = foe ? dist(foe.at, this.player) - FOES[foe.kind].radius : undefined;
+    const metres = lungeMetres(combo, gap);
+    this.lunge = { dir, left: metres, rate: metres / PLAYER.strikeContact[combo]! };
+    this.knock = undefined;
     this.events.push({ type: "swing", combo, at: this.player, dir });
     // It lands after the wind-up (landing).
     this.blow = { combo, dir, t: PLAYER.strikeContact[combo]! };
@@ -963,12 +1013,16 @@ export class StudyQuest {
     if (b && (b.t -= dt) <= 0) {
       this.blow = undefined;
       const s = this.stats;
+      // From where the lunge ends: the part of it still to go is on its way.
+      const left = this.lunge?.left ?? 0;
+      const [lx, ly] = dirOf(this.lunge?.dir ?? b.dir);
+      const from: Pt = [this.player[0] + lx * left, this.player[1] + ly * left];
       for (const f of this.foes) {
         if (f.state === "dead" || f.state === "rise") continue;
         const spec = FOES[f.kind];
-        const d = dist(f.at, this.player);
+        const d = dist(f.at, from);
         if (d > PLAYER.strikeReach + spec.radius) continue;
-        const off = Math.abs(turnBetween(b.dir, bearingTo(this.player, f.at)));
+        const off = Math.abs(turnBetween(b.dir, bearingTo(from, f.at)));
         // Right against it, a foe counts whichever way the blow goes.
         if (off > PLAYER.strikeArc && d > spec.radius + 0.6) continue;
         this.damage(f, s.insight * PLAYER.strikeMult[b.combo]!, b.dir, PLAYER.strikePush[b.combo]!, b.combo === 2);
@@ -1083,6 +1137,26 @@ export class StudyQuest {
     }
   }
 
+  /** A blow's lunge and a blow's knock back, a step at a time. */
+  private lunging(dt: number): void {
+    const l = this.lunge;
+    if (l) {
+      const go = Math.min(l.left, l.rate * dt);
+      l.left -= go;
+      const [ux, uy] = dirOf(l.dir);
+      this.orders.shove = [this.orders.shove[0] + ux * go, this.orders.shove[1] + uy * go];
+      if (l.left <= 1e-6) this.lunge = undefined;
+    }
+    const k = this.knock;
+    if (k) {
+      const go = Math.min(k.left, (PLAYER.knockMetres / PLAYER.staggerTime) * dt);
+      k.left -= go;
+      const [ux, uy] = dirOf(k.dir);
+      this.orders.shove = [this.orders.shove[0] + ux * go, this.orders.shove[1] + uy * go];
+      if (k.left <= 1e-6) this.knock = undefined;
+    }
+  }
+
   private dodging(dt: number): void {
     if (this.dodgeT <= 0) return;
     const sprint = this.has("sprint");
@@ -1117,9 +1191,9 @@ export class StudyQuest {
     this.focusLost += amount;
     this.hurtAgo = 0;
     this.iframes = 0.35;
-    const away = bearingTo(from, this.player);
-    const [ux, uy] = dirOf(away);
-    this.orders.shove = [this.orders.shove[0] + ux * 1.2, this.orders.shove[1] + uy * 1.2];
+    // Knocked back over a stagger, not all at once; it ends a blow's lunge.
+    this.knock = { dir: bearingTo(from, this.player), left: PLAYER.knockMetres };
+    this.lunge = undefined;
     this.events.push({ type: "hurt", amount, from });
     if (this.focus <= 0) this.end(false);
   }
@@ -1251,7 +1325,7 @@ export class StudyQuest {
     this.chain = this.chainT = this.combo = this.comboT = this.strikeT = this.dodgeT = this.dodgeLeft = 0;
     this.iframes = this.hitStop = this.cardT = this.slowT = this.cineT = 0;
     this.hurtAgo = 99;
-    this.blow = this.throwing = this.queued = undefined;
+    this.blow = this.throwing = this.queued = this.lunge = this.knock = undefined;
     this.sprintHits.clear();
     this.grace = QUEST.grace;
     this.spawnT = QUEST.firstSpawn;
