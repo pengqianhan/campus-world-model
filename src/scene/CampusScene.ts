@@ -631,6 +631,13 @@ export class CampusScene {
       roofs: () => this.roofMap(),
       rain: () => this.weather?.wet ?? 0,
       ringColour: () => this.palette.accent,
+      // The bearing the camera looks along, for the game's stick read against it.
+      viewYaw: (name) => {
+        if (name !== this.viewWalker || this.view === "map") return undefined;
+        const d = this.persp.getWorldDirection(this._viewDir);
+        if (Math.hypot(d.x, d.z) < 1e-4) return undefined;
+        return (((Math.atan2(d.x, -d.z) * 180) / Math.PI) % 360 + 360) % 360;
+      },
     });
     this.scene.add(this.walkers.group);
     this.gameOverlayParent = labelRoot.parentElement ?? undefined;
@@ -2421,8 +2428,22 @@ export class CampusScene {
         this.needsLabels = true;
       }
     }
-    if (!framing && !snap && !this.drag && this.walkers.handForward(this.viewWalker!) !== 0) {
-      const k = Math.exp(-dt * 2.5);
+    // Steered by the game's stick, the view comes round behind the walker as it runs on away from
+    // it, less as it runs across the picture, and not at all as it runs at the camera: the stick is
+    // read against the camera, and a view that swung round as the walker came towards it would
+    // send it back the way it came.
+    const stickPace = this.walkers.stickPace(this.viewWalker!);
+    // The view from behind is kept as a turn from the way the walker faces. Steered by the game's
+    // stick, the walker turning does not turn the view with it: it stays where it looks, and comes
+    // round behind the walker only as below.
+    if (stickPace !== undefined && !framing && !snap && this.view === "follow" && this.followHeading !== undefined) {
+      const dh = ((((pose.heading - this.followHeading) % 360) + 540) % 360) - 180;
+      this.follow.yaw = (((this.follow.yaw - dh) % 360) + 360) % 360;
+    }
+    this.followHeading = pose.heading;
+    const swing = stickPace === undefined ? (this.walkers.handForward(this.viewWalker!) !== 0 ? 1 : 0) : stickPace > 0.3 ? ((1 + Math.cos(((this.view === "eyes" ? this.eyes.yaw : this.follow.yaw) * Math.PI) / 180)) / 2) ** 2 : 0;
+    if (!framing && !snap && !this.drag && swing > 0) {
+      const k = Math.exp(-dt * 2.5 * swing);
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
       else this.follow.yaw = towardsAhead(this.follow.yaw, k);
     }
@@ -2616,11 +2637,13 @@ export class CampusScene {
       paceScale: (name, k) => this.walkers.setPaceScale(name, k),
       camera: () => this.activeCamera,
       viewSize: () => ({ width: this.width, height: this.height }),
-      act: (name, move) => this.walkers.figure(name)?.play(move),
+      act: (name, move, opts) => this.walkers.figure(name)?.play(move, opts),
+      strafe: (name, at) => this.walkers.setFace(name, at),
+      intent: (name) => this.walkers.intent(name),
       pen: (name, on) => this.walkers.figure(name)?.setPen(on),
       teleport: (name, at, heading) => {
         this.walkers.teleport(name, at);
-        this.walkers.turn(name, heading, true);
+        this.walkers.turn(name, heading, true, true);
         // The view comes with it at once, behind it, not gliding across the campus.
         if (this.viewWalker === name) {
           this.follow = { ...this.follow, yaw: 0 };
@@ -2644,6 +2667,9 @@ export class CampusScene {
    */
   private fight = { k: 0, reach: 0, yaw: 0, yawV: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false, turn: 0, turnWant: 0, turnAt: 0, fit: 1 };
   private fightClear: [number, number] = [0, 0];
+  private _viewDir = new Vector3();
+  /** The way the walker followed faced at the last frame, degrees. */
+  private followHeading?: number;
 
   /**
    * Degrees the fight's camera turns off the line from its foe (`line`, the bearing it would look

@@ -64,6 +64,7 @@ import type { Building } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
 import { cellOf, type WalkGrid } from "../shared/walkpath.ts";
 import type { Move } from "./figureMoves.ts";
+import { dodgeWay, turnBetween } from "../shared/locomotion.ts";
 import { Arena, Debris, Decals, Missiles, Puffs, Shadows, Shocks, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
 import { FoeMotion, newLook } from "./gameMotion.ts";
 import { BossView, bossPose } from "./gameBoss.ts";
@@ -86,8 +87,15 @@ export interface GameSceneHost {
   paceScale(name: string, k: number): void;
   camera(): Camera;
   viewSize(): { width: number; height: number };
-  /** Starts a move of the walker's arms and body (figureMoves.ts), or lets go of it. */
-  act(name: string, move: Move | undefined): void;
+  /**
+   * Starts a move of the walker's arms and body (figureMoves.ts), or lets go of it: a flinch with the
+   * way the blow came from (degrees off the way it faces, clockwise), a move played slower or faster.
+   */
+  act(name: string, move: Move | undefined, opts?: { dir?: number; rate?: number }): void;
+  /** Locked on: the walker faces the foe at `at` and steps round it (walkers.ts setFace); undefined lets go. */
+  strafe(name: string, at: Pt | undefined): void;
+  /** The bearing the walker's steering asks it to go along, read against the camera; undefined when nothing is held. */
+  intent(name: string): number | undefined;
   /** Puts the highlighter in the walker's hand, or takes it away. */
   pen(name: string, on: boolean): void;
   /** Puts the walker at once at a place, facing a bearing, and the camera behind it: a retry. */
@@ -657,6 +665,7 @@ export class GameWorld {
   stop(): void {
     if (!this.quest) return;
     this.host.paceScale(this.name, 1);
+    this.host.strafe(this.name, undefined);
     this.host.pen(this.name, false);
     this.host.act(this.name, undefined);
     this.quest = undefined;
@@ -942,13 +951,17 @@ export class GameWorld {
     const frozen = this.menuPaused || !!this.paused || g.phase !== "play";
     // A game that is over still runs its foes' last moments; a pause stops everything.
     const gdt = this.menuPaused || this.paused ? 0 : dt;
-    const evs = g.step(gdt, { at: walker.at, heading: walker.heading, active: !frozen, pace: walker.ride === "scooter" ? QUEST.scooterPace : 1 });
+    const evs = g.step(gdt, { at: walker.at, heading: walker.heading, move: this.host.intent(this.name), active: !frozen, pace: walker.ride === "scooter" ? QUEST.scooterPace : 1 });
     if (!frozen) this.seconds += dt;
     // What the game asks of the walker: to be pushed, to turn to its blow, to go slower.
     const o = g.orders;
     if (o.face !== undefined) this.host.face(this.name, o.face);
     if (o.shove[0] || o.shove[1]) this.host.shove(this.name, o.shove[0], o.shove[1]);
     this.host.paceScale(this.name, o.slow);
+    // Locked on (a foe locked on to, or the Final Exam in its arena), the walker faces it and steps
+    // round it; otherwise it faces the way it goes.
+    const focus = g.phase === "play" && !frozen ? this.fightFocus() : undefined;
+    this.host.strafe(this.name, focus?.hard ? focus.at : undefined);
     const me = this.host.walker(this.name) ?? walker;
     this.meAt[0] = me.at[0];
     this.meAt[1] = me.at[1];
@@ -1205,7 +1218,8 @@ export class GameWorld {
         break;
       }
       case "hurt":
-        this.host.act(this.name, "flinch");
+        // A flinch from the way the blow came, and a stagger as it is knocked back.
+        this.host.act(this.name, "flinch", { dir: turnBetween(me.heading, bearingTo(me.at, e.from)) });
         o?.hurt(bearingTo(me.at, e.from));
         this.sparks.burst(sx, sy + 1.2, sz, 10, 5, 0xff3b30, 0.1, 0.5, 6);
         this.trauma = Math.min(1, this.trauma + 0.38);
@@ -1213,10 +1227,21 @@ export class GameWorld {
       case "evade":
         o?.number(sx, sy + 2.3, sz, "✦", "evade");
         break;
-      case "dodge":
+      case "dodge": {
         this.trailT = e.sprint ? 0.4 : 0.3;
-        this.host.act(this.name, e.sprint ? "sprint" : "dodge");
+        // Locked on, the walker keeps facing its foe and the dodge reads as the way it goes: a roll
+        // forward, a hop back, a side-step. Otherwise it turns to the way the stick asks and rolls
+        // (or, the Cram Sprint, dashes) that way; with the stick let go it hops back.
+        const locked = !!this.fightFocus()?.hard;
+        let way = dodgeWay(e.dir, me.heading);
+        if (!locked && way !== "B") {
+          this.host.face(this.name, e.dir);
+          way = "F";
+        }
+        const rate = e.sprint ? 1 / 1.3 : 1;
+        this.host.act(this.name, e.sprint && way === "F" ? "sprint" : `dodge${way}`, { rate: e.sprint && way === "F" ? 1 : rate });
         break;
+      }
       case "eureka": {
         this.host.act(this.name, "eureka");
         // A crisp ring of light that runs out to the Eureka's reach and is gone, a thinner one just

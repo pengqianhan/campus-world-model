@@ -21,6 +21,8 @@ import {
   run,
   setView,
   steerByHand,
+  stickByHand,
+  stickSteers,
   stopWalking,
   walkerGauge,
   walkerOn,
@@ -107,6 +109,11 @@ function steerHand(part: Partial<typeof hand>): void {
   Object.assign(hand, part);
   const ride = walkerRide.peek();
   const f = hand.forward;
+  // In the game, on foot: the way it points on the screen, a walk at a little tilt and a run at all of it.
+  if (stickSteers()) {
+    stickByHand(hand.turn, hand.forward, STICK_TOP[ride]);
+    return;
+  }
   // Squared, so that a little push to the side turns a little and the stick can hold a line.
   steerByHand(f > 0 ? f * STICK_TOP[ride] : f * PACE[ride].back, hand.turn * Math.abs(hand.turn) * STICK_TURN, hand.climb);
 }

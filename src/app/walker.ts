@@ -16,7 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
-import { gameHolds, gameMenu, setPadSteer, stopGame } from "./gameState.ts";
+import { gameHolds, gameMenu, gameOn, setPadSteer, stopGame } from "./gameState.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -868,10 +868,33 @@ export function steerByHand(forward: number, turnRate: number, climb = 0): void 
   else s.walkers.steer(MY_WALKER, forward, turnRate, climb);
 }
 
-// A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn.
+/**
+ * In Study Quest, on foot, the keys, the thumb stick and a pad steer as in an action game
+ * (locomotion.ts): the way they point is a way on the screen, read against the camera, and the
+ * walker turns and goes that way (locked on to a foe, it faces the foe and steps that way); how far a
+ * stick is pushed is how fast, from a walk to a run.
+ */
+export function stickSteers(): boolean {
+  return gameOn.peek() && walkerRide.peek() === "walk";
+}
+
+/**
+ * Steers the visitor's walker as in an action game while it is held: `x` to the right of the screen
+ * and `y` up it, -1 to 1 each, and `top` metres a second pushed all the way.
+ */
+export function stickByHand(x: number, y: number, top: number): void {
+  const s = scene;
+  if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
+  if (gameHolds()) s.walkers.steerStick(MY_WALKER, 0, 0, top);
+  else s.walkers.steerStick(MY_WALKER, x, y, top);
+}
+
+// A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn; in
+// the game, the way it points on the screen, a walk at a little tilt and a run at all of it.
 setPadSteer((forward, turn) => {
   const pace = PACE[walkerRide.peek()];
-  steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
+  if (stickSteers()) stickByHand(turn, forward, pace.fast);
+  else steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
 });
 
 /** The visitor's walker gets about another way: from the buttons, the number keys and the address. */
@@ -899,6 +922,12 @@ export function startWalkerKeys(): () => void {
     const forward = (held.has("w") || held.has("arrowup") ? 1 : 0) - (held.has("s") || held.has("arrowdown") ? 1 : 0);
     const turnDir = (held.has("d") || held.has("arrowright") ? 1 : 0) - (held.has("a") || held.has("arrowleft") ? 1 : 0);
     const climbDir = (held.has(" ") || held.has("e") ? 1 : 0) - (held.has("q") || held.has("c") ? 1 : 0);
+    if (stickSteers()) {
+      // In the game: the keys point the way on the screen, a walk, or a run with Shift.
+      const n = Math.hypot(turnDir, forward) || 1;
+      stickByHand(turnDir / n, forward / n, fast ? pace.fast : pace.forward);
+      return;
+    }
     const speed = forward > 0 ? (fast ? pace.fast : pace.forward) : forward < 0 ? -pace.back : 0;
     steerByHand(speed, turnDir * pace.turn, "climb" in pace ? climbDir * pace.climb * (fast ? 1.5 : 1) : 0);
   };
@@ -945,13 +974,17 @@ export function startWalkerKeys(): () => void {
   // menu over the game shuts, they steer it again.
   let wasRide = walkerRide.peek();
   let wasMenu = gameMenu.peek();
+  let wasGame = gameOn.peek();
   const stopRide = effect(() => {
     const now = walkerRide.value;
     const menu = gameMenu.value;
-    if (now === wasRide && menu === wasMenu) return;
+    const game = gameOn.value;
+    if (now === wasRide && menu === wasMenu && game === wasGame) return;
     wasRide = now;
     wasMenu = menu;
-    if (held.size) apply();
+    wasGame = game;
+    // Also with nothing held: the game's way of steering starts and ends with the game, on foot.
+    apply();
   });
   return () => {
     stopRide();
