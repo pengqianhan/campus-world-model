@@ -102,8 +102,10 @@ A change to what the site does or shows adds its line here, and the README's
   lies on or within 25 m of a building where people live or children are cared for.
   In the game the walker moves as in an action game. The keys, the phone's stick and a game pad point the way to go on
   the screen, read against the camera, and the stick's tilt sets the pace from a walk to a run. Locked on, and always
-  against the Final Exam, the walker faces its foe and side-steps, backpedals or steps between: holding left goes round
-  the boss on a circle, and the legs step for themselves with the planted foot left where it was put down. Not locked
+  against the Final Exam, the walker faces its foe, holds its highlighter up on guard, and side-steps, backpedals or
+  steps between: holding left goes round the boss on a circle, and the legs step for themselves with the planted foot
+  left where it was put down; however fast it moves next to the boss, the camera never comes into the boss or onto
+  the walker. Not locked
   on, it turns at a limited rate, leans into turns, speeds up and slows over a moment, and plants and pivots for a sharp
   reversal. Each blow steps into a short lunge, aimed the way the stick points at the nearest foe that way, the feet set
   meanwhile; the blows still land 0.09 s after the press, and 0.17 s for the overhead slam. The dodge goes the way the

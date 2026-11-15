@@ -116,6 +116,12 @@ const WALK_LEAN = 0.16;
 const WALK_LEAN_SHARE = 0.55;
 const LEAN_SPRING = 13;
 const LEAN_DAMP = 0.45;
+/**
+ * The guard, locked on: the highlighter held up before the right shoulder, the left hand forward,
+ * the right shoulder a little back; laid over the walk's arms by GUARD_SHARE.
+ */
+const GUARD: MovePose = { rUp: [0.4, -0.75, -0.35], rFo: [-0.05, 0.6, -0.8], lUp: [-0.3, -0.75, -0.5], lFo: [0.05, 0.05, -1], twist: -0.12, lean: 0.06, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0 };
+const GUARD_SHARE = 0.8;
 /** Metres the hips dip in a pivot, all the way into it. */
 const PIVOT_DIP = 0.06;
 /** The two bones of the back that a move twists and bows. */
@@ -218,7 +224,9 @@ export class Figure {
    * that changes; degrees a second it turns; the share left of a pivot; and whether it is steered by
    * the stick (it leans then). See setGait.
    */
-  private gait = { x: 0, z: 0, ax: 0, az: 0, turn: 0, pivot: 0, lean: false };
+  private gait = { x: 0, z: 0, ax: 0, az: 0, turn: 0, pivot: 0, lean: false, guard: false };
+  /** How much of the guard (GUARD) is laid over the arms: locked on to a foe in the game. */
+  private guardW = 0;
   /** How much the legs' own steps have taken over from the clips, and where they are in their cycle (0-1, the left foot down at 0). */
   private gaitW = 0;
   private phase = 0;
@@ -317,7 +325,7 @@ export class Figure {
    * ahead (in the figure's own frame), how fast each changes, degrees a second it turns, the share
    * left of a pivot, and whether it is steered by the stick (it leans into turns and speeding up only then).
    */
-  setGait(right: number, ahead: number, accRight: number, accAhead: number, turnRate: number, pivot: number, lean: boolean): void {
+  setGait(right: number, ahead: number, accRight: number, accAhead: number, turnRate: number, pivot: number, lean: boolean, guard = false): void {
     const g = this.gait;
     g.x = right;
     g.z = ahead;
@@ -326,6 +334,7 @@ export class Figure {
     g.turn = turnRate;
     g.pivot = pivot;
     g.lean = lean;
+    g.guard = guard;
   }
 
   /** Shows the highlighter in the right hand, for the game. */
@@ -435,6 +444,15 @@ export class Figure {
     if (own && (this.gaitW > 0 || a.move || a.fromW > 0 || g.pivot > 0)) this.keep(b);
     if (own && this.gaitW > 0) this.gaitLegs(b, over, rel, stride);
     if (own && g.pivot > 0) b.root.position.y -= PIVOT_DIP * Math.min(1, g.pivot / 0.1);
+    // Locked on, the arms hold a guard rather than swinging as in a walk; a move comes out of it.
+    const guardWant = own && g.guard ? GUARD_SHARE : 0;
+    this.guardW += (guardWant - this.guardW) * Math.min(1, dt * 6);
+    if (this.guardW < 0.002) this.guardW = 0;
+    if (own && this.guardW > 0) {
+      this.keep(b);
+      this.lay(b, GUARD, this.guardW);
+      this.changed = true;
+    }
     if (own) this.acting(b, dt);
     else this.act.w = 0;
     this.trailStep(dt);

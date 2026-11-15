@@ -491,6 +491,9 @@ export class WalkerWorld {
     }
     w.drive = { forward: 0, turn: 0, climb: 0 };
     w.stick = { x, y, top };
+    // Let go, it asks for no way at once: a walker already still is not steered again to clear it,
+    // and a blow struck then would aim the way the stick last pointed.
+    if (!x && !y) w.want = undefined;
   }
 
   /** Locked on: the walker faces the foe at `at` and steps round it; undefined lets go. */
@@ -702,7 +705,7 @@ export class WalkerWorld {
         }
       } else w.yaw = w.heading;
       this.show(w);
-      w.figure.setGait(w.local.x, w.local.z, w.local.ax, w.local.az, w.stick ? w.turnRate : 0, w.motion.pivot, !!w.stick);
+      w.figure.setGait(w.local.x, w.local.z, w.local.ax, w.local.az, w.stick ? w.turnRate : 0, w.motion.pivot, !!w.stick, !!w.stick && !!w.face);
       w.figure.pose(w.moving, w.pace, now / 1000);
       w.figure.rideOn(travelled, w.pace, w.turnRate, dt);
       if (w.ride === "fly" && w.drone) {
