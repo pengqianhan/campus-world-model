@@ -100,6 +100,15 @@ A change to what the site does or shows adds its line here, and the README's
   and its cracks are straight; the first DDL is gentler than the one that returns; and the big words wait out a pause,
   the menus keep Tab inside them, and the compass speaks the page's language. No book, quest's place, arena or villain
   lies on or within 25 m of a building where people live or children are cared for.
+  In the game the walker moves as in an action game. The keys, the phone's stick and a game pad point the way to go on
+  the screen, read against the camera, and the stick's tilt sets the pace from a walk to a run. Locked on, and always
+  against the Final Exam, the walker faces its foe and side-steps, backpedals or steps between: holding left goes round
+  the boss on a circle, and the legs step for themselves with the planted foot left where it was put down. Not locked
+  on, it turns at a limited rate, leans into turns, speeds up and slows over a moment, and plants and pivots for a sharp
+  reversal. Each blow steps into a short lunge, aimed the way the stick points at the nearest foe that way, the feet set
+  meanwhile; the blows still land 0.09 s after the press, and 0.17 s for the overhead slam. The dodge goes the way the
+  stick points, or back with none: a roll forward, a hop back, a side-step to either side. A blow taken throws the
+  walker back from the way it came, in a stagger over a quarter of a second rather than a jump.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons, on foot or on the scooter (where
   the villains go twice as fast), out of doors, on every school's map. It is off until it is started, every part of it
   is made up and says so (the Game button's hint, the title card, the menus, the debrief and About), and the buildings'

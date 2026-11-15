@@ -147,7 +147,9 @@ The three latest days are below; everything, with its pull request, is in the
   troubles such as the DDL, and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
   teaches by play with one small prompt at a time, and a defeat can be retried at once. The Final Exam is an hourglass
   titan whose sand runs down with its health and whose face hardens each phase, and the fight's camera keeps the
-  walker in sight through its charges. Every part of it is made up.
+  walker in sight through its charges. The walker moves as in an action game: the stick points the way on the screen,
+  it faces the boss and side-steps round it, and it rolls, hops or side-steps the way it dodges. Every part of it is
+  made up.
 - **2026-11-14:** every school has a list of its buildings at `/<school>/buildings/`, and each University of
   Auckland building with learning spaces has a page of its floors and rooms, each room a link to it on the map.
 - **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
