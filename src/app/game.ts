@@ -14,6 +14,7 @@ import { GameWorld, type GameAction } from "../scene/game.ts";
 import { FOE_KINDS, FOE_TIME, LESSONS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
 import { audioStats, audioTap, deathSound, lashSound, release, resetMusic, setMusic, setSound, setVolumes, sfx, stinger, tellSound, type Sfx } from "./gameAudio.ts";
 import { gameMenu, gameOn, gameView, padSteer } from "./gameState.ts";
+import { SHIFT_TAP, isShiftTap } from "../shared/locomotion.ts";
 import { pick, t } from "./i18n.ts";
 import "../ui/game.css";
 
@@ -363,9 +364,37 @@ function poll(): void {
   gameView.value = v;
 }
 
-/** The keys of the game, besides the walker's own: J or F strike, Space dodges, K or E throw, R the Eureka, Tab locks on, P pauses, C the record. */
+/**
+ * Whether Space jumps: on foot, out of doors and in the air of the game. Elsewhere it does what it
+ * did before (flying, the drone climbs; on the scooter and indoors, the dodge).
+ */
+function jumpsHere(): boolean {
+  const world = scene?.game;
+  const v = gameView.peek();
+  return !!world && !v?.paused && scene!.walkers.rideOf(world.walkerName) === "walk";
+}
+
+/**
+ * The keys of the game, besides the walker's own: J or F strike, Space jumps, Shift tapped dodges
+ * (held, the walk's own run), K or E throw, R the Eureka, Tab locks on, P pauses, C the record.
+ */
 function startKeys(): () => void {
+  // When Shift went down, and whether another key came while it was held (Shift with a key is no tap).
+  let shiftAt = -1;
+  let shiftAlone = false;
+  const up = (e: KeyboardEvent) => {
+    if (e.key.toLowerCase() !== "shift") return;
+    const held = shiftAt >= 0 ? (performance.now() - shiftAt) / 1000 : Infinity;
+    const alone = shiftAlone;
+    shiftAt = -1;
+    if (!isShiftTap(held, alone) || gameMenu.peek() !== "none" || gameView.peek()?.phase !== "play") return;
+    gameAct("dodge");
+  };
   const down = (e: KeyboardEvent) => {
+    const kk = e.key.toLowerCase();
+    if (kk === "shift") {
+      if (!e.repeat) ((shiftAt = performance.now()), (shiftAlone = true));
+    } else shiftAlone = false;
     const target = e.target as HTMLElement | null;
     if (target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA")) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -382,29 +411,43 @@ function startKeys(): () => void {
       return;
     }
     if (gameMenu.peek() !== "none" || gameView.peek()?.phase !== "play") return;
-    const map: Record<string, GameAction | "lock"> = { j: "strike", f: "strike", " ": "dodge", k: "card", e: "card", r: "eureka", l: "eureka", tab: "lock" };
-    const a = map[k];
+    const map: Record<string, GameAction | "lock" | "jump"> = { j: "strike", f: "strike", " ": "jump", k: "card", e: "card", r: "eureka", l: "eureka", tab: "lock" };
+    let a = map[k];
+    // Space jumps on foot out of doors; elsewhere it dodges, as it did.
+    if (a === "jump" && !jumpsHere()) a = "dodge";
     if (!a) return;
     e.preventDefault();
     if (e.repeat && a !== "strike") return;
     gameAct(a);
   };
   window.addEventListener("keydown", down);
-  return () => window.removeEventListener("keydown", down);
+  window.addEventListener("keyup", up);
+  return () => {
+    window.removeEventListener("keydown", down);
+    window.removeEventListener("keyup", up);
+  };
 }
 
+
 /** An action from any of the controls. */
-export function gameAct(a: GameAction | "lock"): void {
+export function gameAct(a: GameAction | "lock" | "jump"): void {
   const world = scene?.game;
   if (!world || gameMenu.peek() !== "none") return;
   if (gameTitle.peek()) dismissTitle();
   if (a === "lock") world.toggleLock();
+  else if (a === "jump") world.jump();
   else world.act(a);
 }
 
-/** A game pad, read in each frame while the game is on: the left stick walks, A strikes, B dodges, X throws, Y the Eureka, RB locks on, Start pauses. */
+/**
+ * A game pad, read in each frame while the game is on, laid out as action games lay theirs: the left
+ * stick walks, A jumps, B tapped dodges and held runs, X strikes, Y throws, RT the Eureka, RB locks
+ * on, Start pauses.
+ */
 let padWas: boolean[] = [];
 let padStick = false;
+/** When B went down, ms; -1 while it is up. */
+let padB = -1;
 function readPad(): void {
   const pads = navigator.getGamepads?.() ?? [];
   const p = Array.from(pads).find((x) => x && x.connected);
@@ -417,14 +460,24 @@ function readPad(): void {
   const press = (i: number) => !!p.buttons[i]?.pressed;
   const edge = (i: number) => press(i) && !padWas[i];
   if (edge(9)) togglePause();
-  if (gameMenu.peek() === "none" && gameView.peek()?.phase === "play") {
-    if (edge(0)) gameAct("strike");
-    if (edge(1)) gameAct("dodge");
-    if (edge(2)) gameAct("card");
-    if (edge(3)) gameAct("eureka");
+  const playing = gameMenu.peek() === "none" && gameView.peek()?.phase === "play";
+  if (playing) {
+    if (edge(0)) gameAct("jump");
+    if (edge(2)) gameAct("strike");
+    if (edge(3)) gameAct("card");
+    if (edge(7)) gameAct("eureka");
     if (edge(5)) gameAct("lock");
   }
-  padWas = p.buttons.map((b) => b.pressed);
+  // B: tapped, the dodge as it is let go; held, a run.
+  const now = performance.now();
+  if (edge(1)) padB = now;
+  const bHeld = press(1);
+  if (!bHeld && padB >= 0) {
+    if (playing && isShiftTap((now - padB) / 1000, true)) gameAct("dodge");
+    padB = -1;
+  }
+  const run = bHeld && padB >= 0 && now - padB >= SHIFT_TAP * 1000;
+  for (let i = 0; i < p.buttons.length; i++) padWas[i] = !!p.buttons[i]?.pressed;
   const x = p.axes[0] ?? 0;
   const y = p.axes[1] ?? 0;
   const dead = (v: number) => (Math.abs(v) < 0.18 ? 0 : (v - Math.sign(v) * 0.18) / 0.82);
@@ -432,7 +485,7 @@ function readPad(): void {
   const tx = dead(x);
   if (fx || tx) {
     padStick = true;
-    padSteer()?.(fx, tx);
+    padSteer()?.(fx, tx, run);
   } else if (padStick) {
     padStick = false;
     padSteer()?.(0, 0);
@@ -496,6 +549,7 @@ export function startGame(name: string, quiet = false, compact = false, title = 
   setVolumes(set.music, set.effects);
   resetMusic();
   world.onStep = (run) => sfx(run ? "stepRun" : "step");
+  world.onJump = (what) => sfx(what);
   window.clearInterval(timer);
   timer = window.setInterval(poll, 100);
   stopKeys?.();

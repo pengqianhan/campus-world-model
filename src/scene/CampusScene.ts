@@ -2664,6 +2664,8 @@ export class CampusScene {
       act: (name, move, opts) => this.walkers.figure(name)?.play(move, opts),
       strafe: (name, at) => this.walkers.setFace(name, at),
       intent: (name) => this.walkers.intent(name),
+      jump: (name) => this.walkers.jump(name),
+      jumpable: (name, can) => this.walkers.setJumpable(name, can),
       pen: (name, on) => this.walkers.figure(name)?.setPen(on),
       teleport: (name, at, heading) => {
         this.walkers.teleport(name, at);

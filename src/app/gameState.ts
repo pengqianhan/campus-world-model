@@ -21,12 +21,16 @@ export function gameHolds(): boolean {
   return gameOn.peek() && gameMenu.peek() !== "none";
 }
 
-/** How the walk steers its walker from a game pad (set by the walk, which owns the pace). */
-let steer: ((forward: number, turn: number) => void) | undefined;
-export function setPadSteer(fn: ((forward: number, turn: number) => void) | undefined): void {
+/**
+ * How the walk steers its walker from a game pad (set by the walk, which owns the pace): the stick
+ * forward and round, and in the game whether a button held asks for a run.
+ */
+type PadSteer = (forward: number, turn: number, run?: boolean) => void;
+let steer: PadSteer | undefined;
+export function setPadSteer(fn: PadSteer | undefined): void {
   steer = fn;
 }
-export function padSteer(): ((forward: number, turn: number) => void) | undefined {
+export function padSteer(): PadSteer | undefined {
   return steer;
 }
 

@@ -34,8 +34,8 @@ import {
 } from "three";
 import type { Gear } from "./figureBuild.ts";
 import { DECK, GRIP, Scooter, type Ride } from "./rides.ts";
-import { MOVES, comingIn, mixPose, moveLength, newPose, sampleFlinch, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
-import { dutyFactor, footAt, strafeWeights, strideLength } from "../shared/locomotion.ts";
+import { JUMP_POSES, MOVES, comingIn, mixPose, moveLength, newPose, sampleFlinch, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
+import { JUMP_SPEED, dutyFactor, footAt, strafeWeights, strideLength } from "../shared/locomotion.ts";
 
 /** Where the eyes are, for the view from the walker. */
 export const EYE_HEIGHT = 1.6;
@@ -120,8 +120,11 @@ const LEAN_DAMP = 0.45;
  * The guard, locked on: the highlighter held up before the right shoulder, the left hand forward,
  * the right shoulder a little back; laid over the walk's arms by GUARD_SHARE.
  */
-const GUARD: MovePose = { rUp: [0.4, -0.75, -0.35], rFo: [-0.05, 0.6, -0.8], lUp: [-0.3, -0.75, -0.5], lFo: [0.05, 0.05, -1], twist: -0.12, lean: 0.06, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0 };
+const GUARD: MovePose = { rUp: [0.4, -0.75, -0.35], rFo: [-0.05, 0.6, -0.8], lUp: [-0.3, -0.75, -0.5], lFo: [0.05, 0.05, -1], twist: -0.12, lean: 0.06, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0, tuck: 0 };
 const GUARD_SHARE = 0.8;
+/** Seconds a landing is taken in the knees, and more after the longest fall. */
+const LAND_TIME = 0.22;
+const LAND_TIME_HARD = 0.2;
 /** Metres the hips dip in a pivot, all the way into it. */
 const PIVOT_DIP = 0.06;
 /** The two bones of the back that a move twists and bows. */
@@ -227,6 +230,12 @@ export class Figure {
   private gait = { x: 0, z: 0, ax: 0, az: 0, turn: 0, pivot: 0, lean: false, guard: false };
   /** How much of the guard (GUARD) is laid over the arms: locked on to a foe in the game. */
   private guardW = 0;
+  /**
+   * The jump (setAir): metres the feet are off the ground, how fast they rise, whether it is in the
+   * air, seconds left of the crouch before it leaves the ground, seconds since it landed and how hard.
+   */
+  private air = { z: 0, vz: 0, on: false, windup: 0, land: 9, hard: 0 };
+  private jumpPose = newPose();
   /** How much the legs' own steps have taken over from the clips, and where they are in their cycle (0-1, the left foot down at 0). */
   private gaitW = 0;
   private phase = 0;
@@ -282,6 +291,23 @@ export class Figure {
   /** Turns the figure to face a compass bearing, degrees clockwise from north. */
   setHeading(deg: number): void {
     this.root.rotation.y = (-deg * Math.PI) / 180;
+  }
+
+  /** The jump, for the figure's pose and its ring, which stays on the ground below it. See `air`. */
+  setAir(z: number, vz: number, on: boolean, windup: number, land: number, hard: number): void {
+    const a = this.air;
+    a.z = z;
+    a.vz = vz;
+    a.on = on;
+    a.windup = windup;
+    a.land = land;
+    a.hard = hard;
+    this.ring.position.y = 0.1 - z;
+  }
+
+  /** Draw a frame: something changed that the figure does not see itself (a landing). */
+  changedNow(): void {
+    this.changed = true;
   }
 
   /** Opens or closes the umbrella. */
@@ -406,7 +432,8 @@ export class Figure {
     const over = Math.hypot(g.x, g.z);
     const rel = over > 1e-3 ? (Math.atan2(g.x, g.z) * 180) / Math.PI : 0;
     const off = Math.abs(rel);
-    const gaitWant = this.ride === "walk" && !this.dressing && over > 0.12 ? smooth((off - GAIT_FROM) / (GAIT_TO - GAIT_FROM)) : 0;
+    // Off the ground, the feet do not step.
+    const gaitWant = this.ride === "walk" && !this.dressing && over > 0.12 && !this.air.on ? smooth((off - GAIT_FROM) / (GAIT_TO - GAIT_FROM)) : 0;
     this.gaitW += (gaitWant - this.gaitW) * Math.min(1, dt * 10);
     if (this.gaitW < 0.002) this.gaitW = 0;
     const sw = strafeWeights(rel, this.sw);
@@ -453,9 +480,39 @@ export class Figure {
       this.lay(b, GUARD, this.guardW);
       this.changed = true;
     }
+    // The jump: its crouch, push off, tuck, reach for the ground and landing, over the walk; a blow
+    // comes out of it.
+    const jw = own ? this.jumping() : 0;
+    if (jw > 0) {
+      this.keep(b);
+      this.lay(b, this.jumpPose, jw);
+      this.changed = true;
+    }
     if (own) this.acting(b, dt);
     else this.act.w = 0;
     this.trailStep(dt);
+  }
+
+  /** The jump's pose now (into jumpPose), and how much of it is laid over the walk: 0 to 1. */
+  private jumping(): number {
+    const a = this.air;
+    const P = JUMP_POSES;
+    const out = this.jumpPose;
+    if (a.windup > 0) {
+      mixPose(out, P.windup, P.windup, 0);
+      return 1;
+    }
+    if (a.on) {
+      if (a.vz > 0) mixPose(out, P.rise, P.apex, smooth(1 - a.vz / JUMP_SPEED));
+      else mixPose(out, P.apex, P.fall, smooth(-a.vz / (JUMP_SPEED * 1.1)));
+      return 1;
+    }
+    // Landed: taken in the knees, deeper and longer after a long fall, and up again.
+    const length = LAND_TIME + LAND_TIME_HARD * a.hard;
+    if (a.land >= length) return 0;
+    mixPose(out, P.land, P.landHard, a.hard);
+    const k = a.land / length;
+    return (1 - k) * (1 - k);
   }
 
   /** Keeps the bones the figure turns itself as the mixer left them, to put back before the next pose. */
@@ -635,9 +692,11 @@ export class Figure {
     limb(b.bone("LeftArm"), b.bone("LeftForeArm"), this.root, p.lUp, w);
     limb(b.bone("LeftForeArm"), b.bone("LeftHand"), this.root, p.lFo, w);
     const splay = Math.sin(p.splay);
-    if (crouch > 0.005 || splay > 0.01) {
+    // A tuck bends the knees as a crouch does, but draws the feet up rather than the hips down.
+    const tuck = Math.max(0, p.tuck) * w;
+    if (crouch > 0.005 || splay > 0.01 || tuck > 0.005) {
       // Thigh and shin about as long as each other: down by 2 L (1 - cos a) for a bend of a each way.
-      const bend = Math.acos(Math.max(0.2, 1 - crouch / w / (2 * this.legLength)));
+      const bend = Math.acos(Math.max(0.2, 1 - (crouch + tuck) / w / (2 * this.legLength)));
       const c = Math.cos(bend);
       const sn = Math.sin(bend);
       // Set apart for a side-step: each leg out to its side.

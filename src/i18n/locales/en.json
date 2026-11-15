@@ -435,6 +435,7 @@
     "eyebrow": "A made-up game on the walk",
     "premise": "Learn to grow. Beat the DDL. Pass the Final Exam.",
     "pressToBegin": "Press any key to begin",
+    "jump": "Jump",
     "tapToBegin": "Tap to begin",
     "madeUp": "All of it is made up: no villain, book or quest stands for a real class, course, person, room or due date. Nothing leaves your browser.",
     "openGround": "open ground",
@@ -595,15 +596,16 @@
       }
     },
     "legend": {
-      "move": "W A S D  move · Shift  run",
+      "move": "W A S D  move · hold Shift  run",
       "strike": "J or click  strike",
-      "dodge": "Space  dodge",
+      "dodge": "tap Shift  dodge",
+      "jump": "Space  jump (a strike in the air comes down as you land)",
       "card": "K or right-click  flashcard",
       "eureka": "R  Eureka",
       "lock": "Tab  lock on",
       "pause": "P or Esc  pause",
       "record": "C  study record",
-      "pad": "Game pad: A strike · B dodge · X flashcard · Y Eureka · RB lock on"
+      "pad": "Game pad: A jump · B dodge, held run · X strike · Y flashcard · RT Eureka · RB lock on"
     },
     "menu": {
       "title": "Paused",
@@ -652,6 +654,7 @@
       "move": "Move",
       "strike": "Strike",
       "dodge": "Dodge",
+      "jump": "Jump",
       "flashcard": "Throw",
       "sprint": "Sprint",
       "eureka": "Eureka!"

@@ -75,7 +75,10 @@ export type Sfx =
   | "bossBreak"
   | "uiMove"
   | "uiConfirm"
-  | "start";
+  | "start"
+  | "jump"
+  | "land"
+  | "landHard";
 
 /** Seconds of look-ahead, and how often the scheduler wakes. */
 const AHEAD = 0.12;
@@ -826,6 +829,19 @@ export function sfx(name: Sfx, k = 1): void {
       noise(out, t, 0.18, 0.32 * v, { type: "lowpass", f: 700 });
       duck(-5, 0.2);
       break;
+    case "jump":
+      // Off the ground: a short push of air, rising.
+      noise(out, t, 0.08, 0.12 * v, { type: "bandpass", f: 900 * p, q: 1.2, to: 2200 * p });
+      tone(out, t, "sine", 160 * p, 260 * p, 0.06, 0.06 * v);
+      break;
+    case "land":
+    case "landHard": {
+      // Down again: a scuff and a thud, heavier after a long fall.
+      const hard = name === "landHard";
+      noise(out, t, hard ? 0.12 : 0.07, (hard ? 0.26 : 0.14) * v, { type: "lowpass", f: 1100 * p, to: 250 });
+      tone(out, t, "sine", (hard ? 90 : 130) * p, 45, hard ? 0.14 : 0.07, (hard ? 0.3 : 0.14) * v);
+      break;
+    }
     case "evade":
       tone(out, t, "sine", 1200 * p, 2400 * p, 0.1, 0.12 * v);
       noise(out, t, 0.05, 0.06 * v, { type: "highpass", f: 6000 });

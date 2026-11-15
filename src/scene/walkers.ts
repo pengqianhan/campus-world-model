@@ -5,7 +5,7 @@
 // (rides.ts). Nothing here is about a real person or where one is.
 import { Group } from "three";
 import type { Pt } from "../shared/geo.ts";
-import { keepCircle, latchView, newLatch, newMotion, stepMotion, stickBearing, turnBetween, type Latch, type Motion } from "../shared/locomotion.ts";
+import { keepCircle, latchView, newLatch, newMotion, pressJump, stepJump, stepMotion, stickBearing, turnBetween, type Latch, type Motion } from "../shared/locomotion.ts";
 import type { RoofMap } from "../shared/roofmap.ts";
 import { WalkMap, type WalkPlan } from "../shared/walkmap.ts";
 import type { WalkGrid } from "../shared/walkpath.ts";
@@ -142,6 +142,11 @@ export interface WalkerState {
   altitude?: number;
   /** Feet its figure has put down so far, on foot (see Figure.footfalls). */
   footfalls?: number;
+  /** Steered by the game's stick: metres its feet are off the ground (a jump), and its jumps and landings so far, and how hard the last landing was (0-1). */
+  air?: number;
+  jumps?: number;
+  landings?: number;
+  hard?: number;
 }
 
 class Walker {
@@ -192,6 +197,8 @@ class Walker {
   latch: Latch = newLatch();
   /** Its legs' way and speed over the ground, steered by the stick (locomotion.ts). */
   motion: Motion = newMotion();
+  /** Whether it may leave the ground now (the game says: not in a blow, a dodge or a stagger). */
+  jumpable = true;
   /** Locked on: the foe it faces, metres east and north; it steps round it. */
   face?: Pt;
   /** The bearing the stick asks for now; undefined when it is let go. */
@@ -288,14 +295,38 @@ export class WalkerWorld {
       speed: Math.round(w.pace * 10) / 10,
       altitude: w.ride === "fly" ? Math.round((w.alt - this.host.groundAt(w.at[0], w.at[1])) * 10) / 10 : undefined,
       footfalls: w.ride === "walk" ? w.figure.footfalls : undefined,
+      ...(w.stick ? { air: Math.round(this.airOf(w) * 1000) / 1000, jumps: w.motion.jumps, landings: w.motion.landings, hard: w.motion.hard } : {}),
     };
+  }
+
+  /** Metres the walker's feet are off the ground under them: a jump's height, 0 on the ground. */
+  private airOf(w: Walker): number {
+    return w.motion.air ? Math.max(0, w.motion.y - (w.groundRef + GROUND_PAINT)) : 0;
+  }
+
+  /**
+   * Jumps, steered by the game's stick, on foot and out of doors: kept a moment until it can
+   * (locomotion.ts JUMP.buffer). False when it cannot jump at all where it is.
+   */
+  jump(name: string): boolean {
+    const w = this.walkers.get(name);
+    if (!w || !w.stick || w.ride !== "walk" || w.indoor || w.walk) return false;
+    this.driveUntil(w, performance.now());
+    pressJump(w.motion);
+    return true;
+  }
+
+  /** Whether the walker may leave the ground now (the game: not in a blow, a dodge or a stagger). */
+  setJumpable(name: string, can: boolean): void {
+    const w = this.walkers.get(name);
+    if (w) w.jumpable = can;
   }
 
   /**
    * The point, heading and height a camera follows: `eye`, where it sees from (the walker's eyes,
    * or the drone's camera), and `aim`, the height a camera behind it looks at.
    */
-  pose(name: string): { at: Pt; heading: number; height: number; indoor: boolean; ride: Ride; eye: number; aim: number } | undefined {
+  pose(name: string): { at: Pt; heading: number; height: number; indoor: boolean; ride: Ride; eye: number; aim: number; air: number } | undefined {
     const w = this.walkers.get(name);
     if (!w) return undefined;
     const lift = w.ride === "scooter" ? DECK : 0;
@@ -308,6 +339,7 @@ export class WalkerWorld {
       ride: w.ride,
       eye: flying ? w.alt + DRONE_MIDDLE - 0.1 : w.height + lift + EYE_HEIGHT,
       aim: flying ? w.alt + DRONE_MIDDLE : w.height + lift + 1.35,
+      air: this.airOf(w),
     };
   }
 
@@ -551,7 +583,7 @@ export class WalkerWorld {
 
   /** Whether steering by hand still moves it: held, or let go of a scooter or a drone still going. */
   private driven(w: Walker): boolean {
-    return !!(w.drive.forward || w.drive.turn || w.drive.climb || w.speed || w.climb || w.lift || (w.stick && (w.stick.x || w.stick.y || w.motion.vx || w.motion.vy || w.motion.pivot || this.turningToFace(w))));
+    return !!(w.drive.forward || w.drive.turn || w.drive.climb || w.speed || w.climb || w.lift || (w.stick && (w.stick.x || w.stick.y || w.motion.vx || w.motion.vy || w.motion.pivot || this.turningToFace(w) || w.motion.air || w.motion.windup > 0 || w.motion.buffer > 0)));
   }
 
   /** Locked on and not yet facing its foe. */
@@ -693,7 +725,7 @@ export class WalkerWorld {
       // Come to rest, it is at rest: a rate dwindling for ever would lean the rider or bank the drone a hair each frame.
       if (Math.abs(w.turnRate) < 0.5) w.turnRate = 0;
       w.figure.setUmbrella(rain > 0 && !w.indoor && w.ride === "walk");
-      if (travelled > 0 || w.moving > 0 || w.alt !== was.a) this.place(w);
+      if (travelled > 0 || w.moving > 0 || w.alt !== was.a || w.motion.air || w.motion.land < 1) this.place(w);
       // Steered by the stick, the figure comes round to the way it faces over a moment: a blow's turn
       // to its foe is a quick whip, not a jump from one frame to the next.
       if (w.stick) {
@@ -706,6 +738,7 @@ export class WalkerWorld {
       } else w.yaw = w.heading;
       this.show(w);
       w.figure.setGait(w.local.x, w.local.z, w.local.ax, w.local.az, w.stick ? w.turnRate : 0, w.motion.pivot, !!w.stick, !!w.stick && !!w.face);
+      w.figure.setAir(w.stick ? this.airOf(w) : 0, w.motion.vy3, w.motion.air, w.motion.windup, w.motion.land, w.motion.hard);
       w.figure.pose(w.moving, w.pace, now / 1000);
       w.figure.rideOn(travelled, w.pace, w.turnRate, dt);
       if (w.ride === "fly" && w.drone) {
@@ -720,7 +753,7 @@ export class WalkerWorld {
         w.speech = undefined;
         this.labelsVersion++;
       }
-      if (was.x !== w.at[0] || was.y !== w.at[1] || was.h !== w.heading || was.m !== w.moving || was.a !== w.alt) changed = true;
+      if (was.x !== w.at[0] || was.y !== w.at[1] || was.h !== w.heading || was.m !== w.moving || was.a !== w.alt || w.motion.air || w.motion.windup > 0) changed = true;
     }
     return changed;
   }
@@ -862,6 +895,11 @@ export class WalkerWorld {
     _ask.face = face;
     const speed = stepMotion(w.motion, _ask, dt);
     w.heading = w.motion.heading;
+    // The jump and the fall, over the ground where it stands (indoors it does not leave the floor).
+    if (!w.indoor) {
+      const ground = this.host.groundAt(w.at[0], w.at[1]) + GROUND_PAINT;
+      if (stepJump(w.motion, dt, ground, w.jumpable, st.top)) w.figure.changedNow();
+    }
     if (speed < 1e-4) return 0;
     // Written in place, into an array of its own: no new array a step.
     if (w.at !== w.own) {
@@ -1063,6 +1101,9 @@ export class WalkerWorld {
     // Out of doors the feet stand on the paint of paths and streets, which lies a little over the ground.
     w.groundRef = this.host.groundAt(w.at[0], w.at[1]);
     w.height = inside ?? w.groundRef + GROUND_PAINT;
+    // In a jump the feet are where the jump has them; on the ground the jump starts from the ground.
+    if (w.stick && w.ride === "walk" && inside === undefined && w.motion.air) w.height = Math.max(w.height, w.motion.y);
+    else if (!w.motion.air) w.motion.y = w.height;
     w.figure.root.position.set(w.at[0], w.height, -w.at[1]);
     this.show(w);
     if (w.ride === "fly" && w.drone) {

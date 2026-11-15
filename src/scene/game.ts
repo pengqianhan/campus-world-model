@@ -96,6 +96,10 @@ export interface GameSceneHost {
   strafe(name: string, at: Pt | undefined): void;
   /** The bearing the walker's steering asks it to go along, read against the camera; undefined when nothing is held. */
   intent(name: string): number | undefined;
+  /** A press of the jump (walkers.ts jump); false where the walker cannot jump (indoors, on the scooter). */
+  jump(name: string): boolean;
+  /** Whether the walker may leave the ground now. */
+  jumpable(name: string, can: boolean): void;
   /** Puts the highlighter in the walker's hand, or takes it away. */
   pen(name: string, on: boolean): void;
   /** Puts the walker at once at a place, facing a bearing, and the camera behind it: a retry. */
@@ -468,9 +472,18 @@ export class GameWorld {
   onEvent?: (e: GameEvent) => void;
   /** The walker put a foot down while the game is on: `run` when it runs. */
   onStep?: (run: boolean) => void;
+  /** A jump leaves the ground, or lands (hard after a long fall): for its sound. */
+  onJump?: (what: "jump" | "land" | "landHard") => void;
   private feet = -1;
+  /** The walker's jumps and landings at the last step, to see a new one. */
+  private jumps = -1;
+  private landings = -1;
   private quest?: StudyQuest;
   private name = "";
+  /** The walker the game is played with. */
+  get walkerName(): string {
+    return this.name;
+  }
   private words?: GameWords;
   /**
    * The ground round the walker. `reached`: what it can walk to. `free`: the part of that away from
@@ -719,6 +732,12 @@ export class GameWorld {
     return this.quest.act(a);
   }
 
+  /** The jump: a press kept a moment until the walker can leave the ground. False where it cannot jump. */
+  jump(): boolean {
+    if (!this.quest || this.menuPaused || this.paused || this.quest.phase !== "play") return false;
+    return this.host.jump(this.name);
+  }
+
   toggleLock(): void {
     if (this.quest && !this.menuPaused) this.quest.toggleLock();
   }
@@ -951,7 +970,9 @@ export class GameWorld {
     const frozen = this.menuPaused || !!this.paused || g.phase !== "play";
     // A game that is over still runs its foes' last moments; a pause stops everything.
     const gdt = this.menuPaused || this.paused ? 0 : dt;
-    const evs = g.step(gdt, { at: walker.at, heading: walker.heading, move: this.host.intent(this.name), active: !frozen, pace: walker.ride === "scooter" ? QUEST.scooterPace : 1 });
+    const evs = g.step(gdt, { at: walker.at, heading: walker.heading, move: this.host.intent(this.name), air: walker.air ?? 0, active: !frozen, pace: walker.ride === "scooter" ? QUEST.scooterPace : 1 });
+    // Not in a blow, a dodge or a stagger: a jump pressed meanwhile waits a moment for it.
+    this.host.jumpable(this.name, g.canJump && !frozen);
     if (!frozen) this.seconds += dt;
     // What the game asks of the walker: to be pushed, to turn to its blow, to go slower.
     const o = g.orders;
@@ -969,6 +990,18 @@ export class GameWorld {
     // A footstep each time the figure puts a foot down, while the game runs.
     const feet = Math.floor(me.footfalls ?? -1);
     if (feet !== this.feet && this.feet >= 0 && feet >= 0 && !frozen) this.onStep?.(me.speed > 3.2);
+    // A jump leaves the ground; a landing puffs up dust from the pool, more after a long fall.
+    const jumps = me.jumps ?? -1;
+    const lands = me.landings ?? -1;
+    if (jumps !== this.jumps && this.jumps >= 0 && jumps >= 0 && !frozen) this.onJump?.("jump");
+    if (lands !== this.landings && this.landings >= 0 && lands >= 0 && !frozen) {
+      const hard = me.hard ?? 0;
+      this.onJump?.(hard > 0.5 ? "landHard" : "land");
+      if (!this.reducedMotion || hard > 0.5) this.sparks.burst(me.at[0], me.height + 0.06, -me.at[1], 8 + 10 * hard, 2.2 + 2 * hard, DUST, 0.11 + 0.05 * hard, 0.42, 2.5);
+      if (hard > 0.5) this.trauma = Math.min(1, this.trauma + 0.15 * hard);
+    }
+    this.jumps = jumps;
+    this.landings = lands;
     this.feet = feet;
     this.events.push(...evs);
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
@@ -1119,10 +1152,20 @@ export class GameWorld {
       }
       case "swing":
         // The arms wind up and strike; the arc of light comes as the blow lands. The camera goes
-        // over the shoulder for the blow and a moment after.
+        // over the shoulder for the blow and a moment after. A strike pressed in the air comes down
+        // as the walker lands: the landing slash.
+        if (e.plunge) {
+          this.host.act(this.name, "plunge");
+          this.slashDue = { t: Math.max(0, PLAYER.plungeContact - SLASH_LEAD[2]!), combo: 2, dir: e.dir };
+          this.nudge.strikeT = PLAYER.plungeTime + SHOULDER_HOLD;
+          break;
+        }
         this.host.act(this.name, e.combo === 0 ? "strike0" : e.combo === 1 ? "strike1" : "strike2");
         this.slashDue = { t: Math.max(0, PLAYER.strikeContact[e.combo]! - SLASH_LEAD[e.combo]!), combo: e.combo, dir: e.dir };
         this.nudge.strikeT = PLAYER.strikeTime[e.combo]! + SHOULDER_HOLD;
+        break;
+      case "plungeReady":
+        this.host.act(this.name, "plungeUp");
         break;
       case "card":
         this.host.act(this.name, "card");

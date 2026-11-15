@@ -43,11 +43,14 @@ const SKILL_ICON: Record<SkillId, string> = {
   sprint: "M4 6l6 6-6 6V6zm7 0l6 6-6 6V6zm7 0h2v12h-2V6z",
   eureka: "M12 2a6 6 0 00-3.5 10.9V16h7v-3.1A6 6 0 0012 2zm-3 16h6v2H9v-2zm1 3h4v1h-4v-1z",
 };
-const SKILL_KEY: Record<SkillId, string> = { strike: "J", dodge: "Spc", flashcard: "K", sprint: "Spc", eureka: "R" };
+/** The dodge and the Cram Sprint are a tap of Shift (held, Shift runs); Space jumps. */
+const SKILL_KEY: Record<SkillId, string> = { strike: "J", dodge: "Shift", flashcard: "K", sprint: "Shift", eureka: "R" };
+/** The jump's icon: an arrow up off a line, for its button on a phone and its prompt. */
+const JUMP_ICON = "M12 3l6.5 6.5h-4.2V15H9.7V9.5H5.5L12 3zM5 18h14v2.5H5V18z";
 
-/** Each lesson's keys, and the skill whose button it points to on a phone (none: the stick). */
-const LESSON_KEYS: Record<Lesson, string[]> = { move: ["W", "A", "S", "D"], strike: ["J"], dodge: ["Space"], flashcard: ["K"], sprint: ["Space"], eureka: ["R"] };
-const LESSON_SKILL: Record<Lesson, SkillId | undefined> = { move: undefined, strike: "strike", dodge: "dodge", flashcard: "flashcard", sprint: "sprint", eureka: "eureka" };
+/** Each lesson's keys, and the skill whose button it points to on a phone (none: the stick, or for the jump its own button). */
+const LESSON_KEYS: Record<Lesson, string[]> = { move: ["W", "A", "S", "D"], strike: ["J"], dodge: ["Shift"], jump: ["Space"], flashcard: ["K"], sprint: ["Shift"], eureka: ["R"] };
+const LESSON_SKILL: Record<Lesson, SkillId | undefined> = { move: undefined, strike: "strike", dodge: "dodge", jump: undefined, flashcard: "flashcard", sprint: "sprint", eureka: "eureka" };
 
 /**
  * The prompt for the action needed now, the first time it is: its key or keys and one word; on a
@@ -55,11 +58,12 @@ const LESSON_SKILL: Record<Lesson, SkillId | undefined> = { move: undefined, str
  */
 function Prompt({ lesson, touch }: { lesson: Lesson; touch: boolean }) {
   const skill = LESSON_SKILL[lesson];
+  const jump = lesson === "jump";
   return (
-    <div class={`sq-prompt ${touch ? (skill ? "at-pad" : "at-stick") : ""}`} key={lesson} id="game-prompt" data-lesson={lesson} role="status">
+    <div class={`sq-prompt ${touch ? (skill || jump ? "at-pad" : "at-stick") : ""}`} key={lesson} id="game-prompt" data-lesson={lesson} role="status">
       {touch ? (
         <span class="sq-prompt-ic" aria-hidden="true">
-          {skill ? <SkillIcon id={skill} size={18} /> : <i class="sq-stick-ic" />}
+          {jump ? <JumpIcon size={18} /> : skill ? <SkillIcon id={skill} size={18} /> : <i class="sq-stick-ic" />}
         </span>
       ) : (
         <span class="sq-prompt-keys" aria-hidden="true">
@@ -70,6 +74,14 @@ function Prompt({ lesson, touch }: { lesson: Lesson; touch: boolean }) {
       )}
       <span class="sq-prompt-word">{t(`game.prompt.${lesson}`)}</span>
     </div>
+  );
+}
+
+function JumpIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <path d={JUMP_ICON} fill="currentColor" />
+    </svg>
   );
 }
 
@@ -195,6 +207,19 @@ function Skills({ v, touch }: { v: GameView; touch: boolean }) {
             <SkillIcon id={s.id} size={s.id === "strike" ? 34 : 24} />
           </button>
         ))}
+        {/* The jump, beside the strike: not a skill of a rank, always there. */}
+        <button
+          type="button"
+          class="sq-btn sk-jump"
+          id="game-jump"
+          aria-label={t("game.jump")}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            gameAct("jump");
+          }}
+        >
+          <JumpIcon size={26} />
+        </button>
       </div>
     );
   }
@@ -385,7 +410,7 @@ function PauseMenu({ touch }: { touch: boolean }) {
         {!touch && (
           <div class="sq-controls">
             <span class="sq-eyebrow">{t("game.menu.controls")}</span>
-            {(["move", "strike", "dodge", "card", "eureka", "lock", "pause", "record", "pad"] as const).map((k) => (
+            {(["move", "strike", "dodge", "jump", "card", "eureka", "lock", "pause", "record", "pad"] as const).map((k) => (
               <span>{t(`game.legend.${k}`)}</span>
             ))}
           </div>

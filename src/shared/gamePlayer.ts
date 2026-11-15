@@ -31,6 +31,20 @@ export const PLAYER = {
   knockMetres: 1.2,
   staggerTime: 0.24,
   staggerSlow: 0.25,
+  /** Metres off the ground above which the walker counts as in the air (a strike there comes down on landing, a dodge waits for it). */
+  airborne: 0.05,
+  /** Metres off the ground at which a shockwave over the ground (a slam, a ring) passes under the walker. */
+  jumpClear: 0.25,
+  /**
+   * A strike pressed in the air comes down as a slash as the walker lands: seconds from landing to
+   * when it lands, the time it takes in all, how hard it hits and how far it pushes, and the degrees
+   * either side of the aim it sweeps (a wider blow than a strike's, and as hard as the slam).
+   */
+  plungeContact: 0.06,
+  plungeTime: 0.36,
+  plungeMult: 1.6,
+  plungePush: 2.6,
+  plungeArc: 100,
   dodgeTime: 0.3,
   /** Metres round its middle the walker's body takes, for keeping out of the big foes (FoeSpec.body). */
   body: 0.4,

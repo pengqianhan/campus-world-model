@@ -981,7 +981,7 @@
 
 .sq.touch .sq-prompt.at-pad {
   right: var(--hud-r);
-  bottom: calc(var(--hud-b) + 74px + 172px + 10px);
+  bottom: calc(var(--hud-b) + 74px + 180px + 10px);
   left: auto;
   border-right: 2px solid var(--sq-signal);
   border-left: 0;
@@ -999,6 +999,7 @@
 .sq.cue-sprint .sq-btn.sk-sprint,
 .sq.cue-flashcard .sq-btn.sk-flashcard,
 .sq.cue-eureka .sq-btn.sk-eureka,
+.sq.cue-jump .sq-btn.sk-jump,
 .sq.cue-strike .sq-skill[data-skill="strike"] .sq-skill-ic,
 .sq.cue-dodge .sq-skill[data-skill="dodge"] .sq-skill-ic,
 .sq.cue-dodge .sq-skill[data-skill="sprint"] .sq-skill-ic,
@@ -1548,6 +1549,16 @@
   animation-name: sq-in-top;
 }
 
+/* A phone on its side: the bar ends before the column of the right thumb's buttons, which reach up
+   past it (it is still centred on its own width, as its entrance has it). */
+@media (orientation: landscape) and (max-height: 500px) {
+  .sq.touch .sq-boss {
+    --boss-w: calc(100vw - var(--hud-l) - var(--hud-r) - 196px);
+    left: calc(var(--hud-l) + var(--boss-w) / 2);
+    width: var(--boss-w);
+  }
+}
+
 @keyframes sq-in-top {
   from {
     opacity: 0;
@@ -1762,13 +1773,25 @@
   align-items: center;
 }
 
-/* The right thumb's buttons: a big strike, the rest round it. */
+/* The right thumb's buttons: a big strike in the corner, and the dodge, the jump, the flashcard and
+   the Eureka on an arc round it, 106px from its middle, from the left round to above it (-10, 27, 63
+   and 100 degrees up from the left), each 11px from the next and 36px from the strike. */
 .sq-pad {
   position: absolute;
   right: var(--hud-r);
   bottom: calc(var(--hud-b) + 74px);
-  width: 172px;
-  height: 172px;
+  width: 180px;
+  height: 180px;
+}
+
+/* On the narrowest phones (an iPhone SE of the first kind, 320px), the buttons and the stick do not
+   both fit at full size: the buttons are drawn a little smaller, from their corner (the small ones
+   48px, over the 44pt a finger needs). */
+@media (max-width: 359px) {
+  .sq-pad {
+    transform: scale(0.86);
+    transform-origin: 100% 100%;
+  }
 }
 
 .sq .sq-btn {
@@ -1792,8 +1815,8 @@
 }
 
 .sq .sq-btn.sk-strike {
-  right: 0;
-  bottom: 0;
+  right: 4px;
+  bottom: 4px;
   width: 84px;
   height: 84px;
   border-color: var(--sq-signal);
@@ -1802,18 +1825,23 @@
 
 .sq .sq-btn.sk-dodge,
 .sq .sq-btn.sk-sprint {
-  right: 98px;
+  right: 122px;
   bottom: 0;
 }
 
+.sq .sq-btn.sk-jump {
+  right: 113px;
+  bottom: 66px;
+}
+
 .sq .sq-btn.sk-flashcard {
-  right: 90px;
-  bottom: 70px;
+  right: 66px;
+  bottom: 113px;
 }
 
 .sq .sq-btn.sk-eureka {
-  right: 14px;
-  bottom: 100px;
+  right: 0;
+  bottom: 122px;
 }
 
 .sq .sq-btn.locked {

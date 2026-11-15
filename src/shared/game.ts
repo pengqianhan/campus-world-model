@@ -198,6 +198,8 @@ export const TEACH = {
   /** Seconds a prompt is up at most, and attacks the dodge's is shown for, before it is let go for good. */
   maxShown: 14,
   dodgeTells: 3,
+  /** Ground shockwaves (a slam, a ring) the jump's prompt is shown for, once the dodge is taught, before it is let go. */
+  jumpTells: 3,
 } as const;
 
 // ---------------------------------------------------------------------------------------------
@@ -328,7 +330,9 @@ export interface Quest {
 
 export type GameEvent =
   | { type: "take"; kind: ItemKind; at: Pt; xp: number }
-  | { type: "swing"; combo: number; at: Pt; dir: number }
+  | { type: "swing"; combo: number; at: Pt; dir: number; plunge?: boolean }
+  /** A strike pressed in the air: the highlighter raised, to come down as the walker lands. */
+  | { type: "plungeReady"; at: Pt }
   /** `by`: what landed it, a blow of the highlighter, a flashcard, the Eureka or the sprint. */
   | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean; dir: number; stagger: boolean; by: "blow" | "card" | "eureka" | "sprint" }
   | { type: "kill"; foe: number; kind: FoeKind; at: Pt; xp: number }
@@ -379,6 +383,8 @@ export interface PlayerInput {
    * with none). Left out: the way it faces.
    */
   move?: number;
+  /** Metres the walker's feet are off the ground (a jump); none or 0 on the ground. */
+  air?: number;
   /** False while the walker cannot play (indoors or flying): the clock stops. */
   active: boolean;
   /** Times the foes' speed: more after a walker on the scooter. */
@@ -411,8 +417,8 @@ export interface Debrief {
  * What the walker is taught by play, each once: a short prompt when the action is first needed,
  * gone when it is done (and never again in this browser).
  */
-export type Lesson = "move" | "strike" | "dodge" | "flashcard" | "sprint" | "eureka";
-export const LESSONS: readonly Lesson[] = ["move", "strike", "dodge", "flashcard", "sprint", "eureka"];
+export type Lesson = "move" | "strike" | "dodge" | "jump" | "flashcard" | "sprint" | "eureka";
+export const LESSONS: readonly Lesson[] = ["move", "strike", "dodge", "jump", "flashcard", "sprint", "eureka"];
 
 // ---------------------------------------------------------------------------------------------
 // Helpers
@@ -661,7 +667,13 @@ export class StudyQuest {
   /** Foes the Cram Sprint under way has struck already. */
   private sprintHits = new Set<number>();
   /** A blow under way that has not landed yet, and a card drawn back that has not left the hand. */
-  private blow?: { combo: number; dir: number; t: number };
+  private blow?: { combo: number; dir: number; t: number; plunge?: boolean };
+  /** Metres the walker's feet are off the ground now and at the last step; and a strike pressed in the air, to come down on landing. */
+  private air = 0;
+  private wasAir = 0;
+  private plunge = false;
+  /** The ground shockwaves the jump's prompt has been shown for. */
+  private jumpTells = new Set<number>();
   private throwing?: { dir: number; t: number };
 
   /**
@@ -698,6 +710,14 @@ export class StudyQuest {
 
   has(skill: SkillId): boolean {
     return this.rank >= (SKILLS.find((s) => s.id === skill)?.rank ?? 99);
+  }
+
+  /**
+   * Whether the walker may leave the ground now: not in a blow (its wind-up or its recovery), a
+   * dodge or a stagger. A jump pressed meanwhile is kept a moment (locomotion.ts JUMP.buffer).
+   */
+  get canJump(): boolean {
+    return this.phase === "play" && this.strikeT <= 0 && this.dodgeT <= 0 && !this.knock && !this.blow;
   }
 
   /** The boss, while it is out. */
@@ -758,12 +778,16 @@ export class StudyQuest {
     this.player = [input.at[0], input.at[1]];
     this.heading = input.heading;
     this.move = "move" in input ? input.move : input.heading;
+    this.wasAir = this.air;
+    this.air = Math.max(0, input.air ?? 0);
+    if (this.air > PLAYER.airborne) this.learn("jump");
     this.seconds += dt;
     // Hit-stop: the foes and what they throw freeze for a few hundredths; the walker goes on.
     const world = this.hitStop > 0 ? dt * 0.08 : dt;
     this.hitStop = Math.max(0, this.hitStop - dt);
     this.grace = Math.max(0, this.grace - dt);
     this.timers(dt);
+    this.landed();
     this.actions();
     this.landing(dt);
     this.lunging(dt);
@@ -855,6 +879,21 @@ export class StudyQuest {
       // Shown for a few attacks and not taken up: it is let go.
       if (!want && this.dodgeTells.size >= TEACH.dodgeTells) this.learn("dodge");
     }
+    if (!want && t.has("dodge") && !t.has("jump")) {
+      // Once the dodge is taught: a shockwave over the ground (a slam, a ring) about to reach the
+      // walker, which a jump clears.
+      for (const tl of this.tells) {
+        const f = this.foes.find((o) => o.id === tl.foe);
+        const ground = f?.move?.type === "slam" || f?.move?.type === "wave";
+        if (!ground || tl.shape !== "circle") continue;
+        const hits = f!.move!.type === "wave" || dist(tl.at, p) <= tl.radius + 0.5;
+        if (!hits) continue;
+        want = "jump";
+        this.jumpTells.add(tl.id);
+      }
+      if (!want && this.waves.some((w) => !w.hit && dist(w.at, p) > w.r)) want = "jump";
+      if (!want && this.jumpTells.size >= TEACH.jumpTells) this.learn("jump");
+    }
     if (!want && !t.has("strike") && near(TEACH.strikeNear)) want = "strike";
     if (!want && this.has("flashcard") && !t.has("flashcard") && live.some((f) => {
       const d = dist(f.at, p);
@@ -863,7 +902,7 @@ export class StudyQuest {
     if (!want && this.has("sprint") && !t.has("sprint") && near(TEACH.sprintNear)) want = "sprint";
     if (!want && this.has("eureka") && !t.has("eureka") && this.eurekaMeter >= PLAYER.eurekaCharge && near(PLAYER.eurekaRadius + 2)) want = "eureka";
     if (!want && !t.has("move")) want = "move";
-    if (want && want !== "dodge") {
+    if (want && want !== "dodge" && want !== "jump") {
       const s = (this.shown.get(want) ?? 0) + dt;
       this.shown.set(want, s);
       if (s > TEACH.maxShown) {
@@ -896,9 +935,18 @@ export class StudyQuest {
     if (a === "strike") {
       if (this.strikeT > 0 || this.dodgeT > 0) return; // kept for when the blow ends
       this.queued = undefined;
-      this.strike();
       this.learn("strike");
+      if (this.air > PLAYER.airborne) {
+        // In the air: the highlighter raised, to come down as the walker lands (landed).
+        if (!this.plunge) {
+          this.plunge = true;
+          this.events.push({ type: "plungeReady", at: this.player });
+        }
+        return;
+      }
+      this.strike();
     } else if (a === "dodge") {
+      if (this.air > PLAYER.airborne) return; // kept for when the walker lands
       this.queued = undefined;
       if (this.dodgeT > 0 || this.stamina < PLAYER.dodgeCost) return;
       this.stamina -= PLAYER.dodgeCost;
@@ -986,6 +1034,22 @@ export class StudyQuest {
     return best;
   }
 
+  /** The walker lands: a strike pressed in the air comes down as a slash (PLAYER.plunge*). */
+  private landed(): void {
+    if (!(this.wasAir > PLAYER.airborne && this.air <= PLAYER.airborne)) return;
+    if (!this.plunge) return;
+    this.plunge = false;
+    const { dir } = this.aimed();
+    if (Math.abs(turnBetween(this.heading, dir)) > 1) this.orders.face = dir;
+    this.combo = 0;
+    this.comboT = 0;
+    this.strikeT = PLAYER.plungeTime;
+    this.lunge = undefined;
+    this.knock = undefined;
+    this.events.push({ type: "swing", combo: 2, at: this.player, dir, plunge: true });
+    this.blow = { combo: 2, dir, t: PLAYER.plungeContact, plunge: true };
+  }
+
   private strike(): void {
     const combo = this.comboT > 0 ? (this.combo + 1) % 3 : 0;
     this.combo = combo;
@@ -1024,8 +1088,8 @@ export class StudyQuest {
         if (d > PLAYER.strikeReach + spec.radius) continue;
         const off = Math.abs(turnBetween(b.dir, bearingTo(from, f.at)));
         // Right against it, a foe counts whichever way the blow goes.
-        if (off > PLAYER.strikeArc && d > spec.radius + 0.6) continue;
-        this.damage(f, s.insight * PLAYER.strikeMult[b.combo]!, b.dir, PLAYER.strikePush[b.combo]!, b.combo === 2);
+        if (off > (b.plunge ? PLAYER.plungeArc : PLAYER.strikeArc) && d > spec.radius + 0.6) continue;
+        this.damage(f, s.insight * (b.plunge ? PLAYER.plungeMult : PLAYER.strikeMult[b.combo]!), b.dir, b.plunge ? PLAYER.plungePush : PLAYER.strikePush[b.combo]!, b.combo === 2);
       }
     }
     const c = this.throwing;
@@ -1326,6 +1390,8 @@ export class StudyQuest {
     this.iframes = this.hitStop = this.cardT = this.slowT = this.cineT = 0;
     this.hurtAgo = 99;
     this.blow = this.throwing = this.queued = this.lunge = this.knock = undefined;
+    this.plunge = false;
+    this.air = this.wasAir = 0;
     this.sprintHits.clear();
     this.grace = QUEST.grace;
     this.spawnT = QUEST.firstSpawn;
@@ -1696,7 +1762,11 @@ export class StudyQuest {
         if (dist(f.at, p) <= spec.reach + 0.8) this.hurt(dmg, f.at);
         break;
       case "slam":
-        if (dist(m.at, p) <= m.radius) this.hurt(dmg, m.at);
+        // A shockwave over the ground: a walker in the air at that moment is clear of it.
+        if (dist(m.at, p) <= m.radius) {
+          if (this.air >= PLAYER.jumpClear) this.events.push({ type: "evade", at: this.player });
+          else this.hurt(dmg, m.at);
+        }
         break;
       case "yawn":
         if (dist(m.at, p) <= m.radius) {
@@ -1796,7 +1866,9 @@ export class StudyQuest {
       const d = dist(w.at, p);
       if (!w.hit && d >= before - 0.6 && d <= w.r + 0.6) {
         w.hit = true;
-        this.hurt(20, w.at);
+        // A ring over the ground passes under a walker in the air.
+        if (this.air >= PLAYER.jumpClear) this.events.push({ type: "evade", at: this.player });
+        else this.hurt(20, w.at);
       }
     }
     this.waves = this.waves.filter((w) => w.r < w.max);

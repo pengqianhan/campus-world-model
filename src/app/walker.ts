@@ -891,10 +891,14 @@ export function stickByHand(x: number, y: number, top: number): void {
 
 // A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn; in
 // the game, the way it points on the screen, a walk at a little tilt and a run at all of it.
-setPadSteer((forward, turn) => {
+setPadSteer((forward, turn, run) => {
   const pace = PACE[walkerRide.peek()];
-  if (stickSteers()) stickByHand(turn, forward, pace.fast);
-  else steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
+  if (stickSteers()) {
+    // B held: a run the way the stick points, however little it is pushed.
+    const n = run ? Math.hypot(turn, forward) : 0;
+    if (n > 1e-3) stickByHand(turn / n, forward / n, pace.fast);
+    else stickByHand(turn, forward, pace.fast);
+  } else steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
 });
 
 /** The visitor's walker gets about another way: from the buttons, the number keys and the address. */

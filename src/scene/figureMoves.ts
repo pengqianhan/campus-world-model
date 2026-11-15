@@ -8,7 +8,8 @@
 // forward, radians; `crouch` lowers the hips, metres, the knees bending to keep the feet down;
 // `step` brings the body forward over its feet, metres. The whole body turns about its middle:
 // `roll` heels over head forward, radians (a forward roll is a whole turn); `bank` over to its right;
-// `hop` lifts it off the ground, metres; `splay` sets its feet apart, radians each leg.
+// `hop` lifts it off the ground, metres; `splay` sets its feet apart, radians each leg; `tuck` draws
+// the feet up under it, metres, the knees bent and the hips where they are (in a jump).
 import { PLAYER } from "../shared/gamePlayer.ts";
 import { strafeWeights } from "../shared/locomotion.ts";
 
@@ -29,6 +30,8 @@ export type Move =
   | "flinchB"
   | "flinchL"
   | "flinchR"
+  | "plungeUp"
+  | "plunge"
   | "down";
 
 type V = readonly [number, number, number];
@@ -46,6 +49,7 @@ export interface MovePose {
   bank: number;
   hop: number;
   splay: number;
+  tuck: number;
 }
 
 interface KeyPose {
@@ -61,6 +65,7 @@ interface KeyPose {
   bank?: number;
   hop?: number;
   splay?: number;
+  tuck?: number;
 }
 
 /** How a move comes into a key: speeding up into it (a blow), slowing into it, or both. */
@@ -86,6 +91,7 @@ const L = (v: V): V => [-v[0], v[1], v[2]];
 
 const [C0, C1, C2] = PLAYER.strikeContact;
 const RELEASE = PLAYER.cardRelease;
+const PLUNGE_C = PLAYER.plungeContact;
 
 const OWN: Record<Exclude<Move, "dodgeL" | "flinchR" | "flinch">, MoveSpec> = {
   // A forehand: the highlighter drawn back high on the right, then across the front to the left.
@@ -212,6 +218,24 @@ const OWN: Record<Exclude<Move, "dodgeL" | "flinchR" | "flinch">, MoveSpec> = {
     ],
     out: [0.42, 0.6],
   },
+  // A strike pressed in the air: both hands raise the highlighter over the head, held until the
+  // walker lands (let go after a while, should it not).
+  plungeUp: {
+    keys: [{ t: 0.08, ease: "out", p: { rUp: [0.3, 0.95, -0.08], rFo: [0.08, 0.85, -0.52], lUp: L([0.3, 0.95, -0.08]), lFo: L([0.08, 0.85, -0.52]), lean: -0.12 } }],
+    out: [1.2, 1.4],
+  },
+  // And as it lands, brought down hard in front: the landing slash (PLAYER.plunge*), landing as the
+  // blow lands, low in the crouch the landing takes anyway.
+  plunge: {
+    keys: [
+      { t: PLUNGE_C * 0.5, ease: "in", p: { rUp: [0.3, 0.95, -0.08], rFo: [0.08, 0.85, -0.52], lUp: L([0.3, 0.95, -0.08]), lFo: L([0.08, 0.85, -0.52]), lean: -0.05, crouch: 0.04 } },
+      { t: PLUNGE_C, ease: "in", p: { rUp: [0.18, -0.25, -0.95], rFo: [-0.08, -0.55, -0.85], lUp: L([0.18, -0.25, -0.95]), lFo: L([-0.08, -0.55, -0.85]), lean: 0.45, crouch: 0.12, step: 0.12 } },
+      { t: PLUNGE_C + 0.1, ease: "out", p: { rUp: [0.18, -0.65, -0.72], rFo: [-0.05, -0.88, -0.45], lUp: L([0.18, -0.65, -0.72]), lFo: L([-0.05, -0.88, -0.45]), lean: 0.5, crouch: 0.16, step: 0.14 } },
+      { t: PLAYER.plungeTime, ease: "io", p: { rUp: [0.18, -0.7, -0.68], rFo: [-0.05, -0.88, -0.45], lUp: L([0.18, -0.7, -0.68]), lFo: L([-0.05, -0.88, -0.45]), lean: 0.38, crouch: 0.1, step: 0.1 } },
+    ],
+    out: [PLAYER.plungeTime, PLAYER.plungeTime + 0.28],
+    trail: [PLUNGE_C - 0.04, PLUNGE_C + 0.08],
+  },
   // Burnt out: the arms hang and the back bows. Held until the game ends.
   down: {
     keys: [{ t: 0.35, ease: "out", p: { rUp: [0.15, -0.98, -0.15], rFo: [0.05, -0.95, -0.3], lUp: L([0.15, -0.98, -0.15]), lFo: L([0.05, -0.95, -0.3]), lean: 0.45, crouch: 0.1 } }],
@@ -278,6 +302,7 @@ export function sampleMove(move: Move, t: number, out: MovePose): number {
   out.bank = (p.bank ?? 0) + ((q.bank ?? 0) - (p.bank ?? 0)) * k;
   out.hop = (p.hop ?? 0) + ((q.hop ?? 0) - (p.hop ?? 0)) * k;
   out.splay = (p.splay ?? 0) + ((q.splay ?? 0) - (p.splay ?? 0)) * k;
+  out.tuck = (p.tuck ?? 0) + ((q.tuck ?? 0) - (p.tuck ?? 0)) * k;
   // In over the first key, out over `out`.
   const first = keys[0]!.t;
   let w = t >= first ? 1 : eased(Math.max(0, t / first), "out");
@@ -296,7 +321,7 @@ export function moveLength(move: Move): number {
 
 /** A pose to write into. */
 export function newPose(): MovePose {
-  return { rUp: [0, -1, 0], rFo: [0, -1, 0], lUp: [0, -1, 0], lFo: [0, -1, 0], twist: 0, lean: 0, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0 };
+  return { rUp: [0, -1, 0], rFo: [0, -1, 0], lUp: [0, -1, 0], lFo: [0, -1, 0], twist: 0, lean: 0, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0, tuck: 0 };
 }
 
 /** `out` set to `a` turned `k` of the way to `b`. */
@@ -313,7 +338,27 @@ export function mixPose(out: MovePose, a: MovePose, b: MovePose, k: number): voi
   out.bank = a.bank + (b.bank - a.bank) * k;
   out.hop = a.hop + (b.hop - a.hop) * k;
   out.splay = a.splay + (b.splay - a.splay) * k;
+  out.tuck = a.tuck + (b.tuck - a.tuck) * k;
 }
+
+/** A pose from its parts, the rest at rest. */
+function pose(p: KeyPose): MovePose {
+  return { rUp: [...p.rUp], rFo: [...p.rFo], lUp: [...p.lUp], lFo: [...p.lFo], twist: p.twist ?? 0, lean: p.lean ?? 0, crouch: p.crouch ?? 0, step: p.step ?? 0, roll: p.roll ?? 0, bank: p.bank ?? 0, hop: p.hop ?? 0, splay: p.splay ?? 0, tuck: p.tuck ?? 0 };
+}
+
+/**
+ * The jump's poses, laid over the walk and the run (figure.ts): the crouch before it leaves the
+ * ground, the push off with the arms swung up, tucked at the top with the arms out for balance, the
+ * legs reaching down as it falls, and the landing taken in the knees; harder after a long fall.
+ */
+export const JUMP_POSES = {
+  windup: pose({ rUp: [0.25, -0.75, 0.6], rFo: [0.1, -0.6, 0.8], lUp: L([0.25, -0.75, 0.6]), lFo: L([0.1, -0.6, 0.8]), lean: 0.25, crouch: 0.12 }),
+  rise: pose({ rUp: [0.3, 0.25, -0.92], rFo: [0.15, 0.65, -0.75], lUp: L([0.3, 0.25, -0.92]), lFo: L([0.15, 0.65, -0.75]), lean: 0.06, tuck: 0.04 }),
+  apex: pose({ rUp: [0.9, -0.1, -0.35], rFo: [0.85, 0.25, -0.45], lUp: L([0.9, -0.1, -0.35]), lFo: L([0.85, 0.25, -0.45]), lean: 0.12, tuck: 0.3 }),
+  fall: pose({ rUp: [0.85, 0.25, -0.3], rFo: [0.7, 0.6, -0.35], lUp: L([0.85, 0.25, -0.3]), lFo: L([0.7, 0.6, -0.35]), lean: 0.04, tuck: 0.07 }),
+  land: pose({ rUp: [0.35, -0.7, -0.6], rFo: [0.1, -0.4, -0.9], lUp: L([0.35, -0.7, -0.6]), lFo: L([0.1, -0.4, -0.9]), lean: 0.3, crouch: 0.15 }),
+  landHard: pose({ rUp: [0.35, -0.6, -0.7], rFo: [0.05, -0.8, -0.6], lUp: L([0.4, -0.75, -0.5]), lFo: L([0.1, -0.95, -0.3]), lean: 0.5, crouch: 0.3 }),
+};
 
 const FLINCH: readonly ["flinchF", "flinchB", "flinchL", "flinchR"] = ["flinchF", "flinchB", "flinchL", "flinchR"];
 const _fw = { f: 0, b: 0, l: 0, r: 0 };
