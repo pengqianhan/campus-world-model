@@ -133,10 +133,32 @@ export interface Motion {
   pivot: number;
   /** The bearing it pivots to. */
   pivotTo: number;
+  // The jump (stepJump):
+  /** The feet's height, metres above sea level, and how fast it rises (negative: falls). */
+  y: number;
+  vy3: number;
+  /** Off the ground: jumping, or gone over an edge. */
+  air: boolean;
+  /** Whether it left the ground by a jump (no second jump in the air); and seconds since it was last on the ground. */
+  jumped: boolean;
+  since: number;
+  /** Seconds left of a press of the jump kept for when it can jump (the buffer), and of the crouch before take-off. */
+  buffer: number;
+  windup: number;
+  /** The highest its feet were in this time off the ground, for how hard it lands. */
+  top: number;
+  /** Seconds since it last landed, and how hard that was: 0 a hop, 1 a long fall. */
+  land: number;
+  hard: number;
+  /** Times its pace kept from a jump at a run (the burst): JUMP.boost in the air, easing back to 1 after landing. */
+  boost: number;
+  /** Jumps and landings so far, for whoever shows them. */
+  jumps: number;
+  landings: number;
 }
 
-export function newMotion(heading = 0): Motion {
-  return { vx: 0, vy: 0, heading, pivot: 0, pivotTo: heading };
+export function newMotion(heading = 0, y = 0): Motion {
+  return { vx: 0, vy: 0, heading, pivot: 0, pivotTo: heading, y, vy3: 0, air: false, jumped: false, since: 0, buffer: 0, windup: 0, top: y, land: 9, hard: 0, boost: 1, jumps: 0, landings: 0 };
 }
 
 /**
@@ -149,17 +171,25 @@ export interface Ask {
   face?: number;
 }
 
-/** Moves `m` on by `dt` seconds of what it is asked. Returns metres a second over the ground. */
+/**
+ * Moves `m` on by `dt` seconds of what it is asked. Returns metres a second over the ground. In the
+ * air it keeps its way and pace, and steers and speeds up or slows only a little (JUMP.air); the
+ * burst of a jump at a run (m.boost) raises the pace it goes to.
+ */
 export function stepMotion(m: Motion, ask: Ask, dt: number): number {
   let speed = Math.hypot(m.vx, m.vy);
+  const air = m.air || m.windup > 0;
+  const accel = LOCO.accel * (air ? JUMP.airAccel : 1);
+  const decel = LOCO.decel * (air ? JUMP.airDecel : 1);
+  const asked = ask.speed * m.boost;
   if (ask.face !== undefined) {
-    // Locked on: facing the foe, the legs go any way at all.
+    // Locked on: facing the foe, the legs go any way at all; in the air too.
     m.pivot = 0;
     m.heading = turnToward(m.heading, ask.face, LOCO.faceRate * dt);
     let tx = 0;
     let ty = 0;
     if (ask.want !== undefined && ask.speed > 0) {
-      const s = ask.speed * strafePace(turnBetween(m.heading, ask.want));
+      const s = asked * strafePace(turnBetween(m.heading, ask.want));
       const r = (ask.want * Math.PI) / 180;
       tx = Math.sin(r) * s;
       ty = Math.cos(r) * s;
@@ -168,14 +198,20 @@ export function stepMotion(m: Motion, ask: Ask, dt: number): number {
     const dy = ty - m.vy;
     const dv = Math.hypot(dx, dy);
     // Speeding up when the new way has more pace along the old, slowing down otherwise.
-    const rate = tx * m.vx + ty * m.vy >= m.vx * m.vx + m.vy * m.vy ? LOCO.accel : LOCO.decel;
+    const rate = tx * m.vx + ty * m.vy >= m.vx * m.vx + m.vy * m.vy ? accel : decel;
     const k = dv > rate * dt ? (rate * dt) / dv : 1;
     m.vx += dx * k;
     m.vy += dy * k;
     return Math.hypot(m.vx, m.vy);
   }
   // Not locked on: it goes the way it faces, turning to the way it is asked.
-  if (m.pivot > 0) {
+  if (air) {
+    // In the air: no pivot, a slow turn, and its pace mostly kept.
+    if (ask.want !== undefined && ask.speed > 0) {
+      m.heading = turnToward(m.heading, ask.want, LOCO.turnRun * JUMP.airTurn * dt);
+      speed = asked > speed ? Math.min(asked, speed + accel * dt) : Math.max(asked, speed - decel * dt);
+    } else speed = Math.max(0, speed - decel * dt);
+  } else if (m.pivot > 0) {
     m.pivot = Math.max(0, m.pivot - dt);
     speed = Math.max(0, speed - LOCO.pivotDecel * dt);
     m.heading = turnToward(m.heading, m.pivotTo, LOCO.pivotTurn * dt);
@@ -194,10 +230,10 @@ export function stepMotion(m: Motion, ask: Ask, dt: number): number {
       // It does not set off the wrong way: well off the way it is asked, it turns before it goes.
       const left = Math.abs(turnBetween(m.heading, ask.want));
       const keep = Math.max(0, Math.min(1, (Math.cos((left * Math.PI) / 180) + 0.3) / 1.0));
-      const want = ask.speed * keep;
-      speed = want > speed ? Math.min(want, speed + LOCO.accel * dt) : Math.max(want, speed - LOCO.decel * dt);
+      const want = asked * keep;
+      speed = want > speed ? Math.min(want, speed + accel * dt) : Math.max(want, speed - decel * dt);
     }
-  } else speed = Math.max(0, speed - LOCO.decel * dt);
+  } else speed = Math.max(0, speed - decel * dt);
   const r = (m.heading * Math.PI) / 180;
   m.vx = Math.sin(r) * speed;
   m.vy = Math.cos(r) * speed;
@@ -226,6 +262,124 @@ export function keepCircle(from: readonly [number, number], to: readonly [number
   out[0] = centre[0] + ((to[0] - centre[0]) / r1) * want;
   out[1] = centre[1] + ((to[1] - centre[1]) / r1) * want;
   return out;
+}
+
+// ---------------------------------------------------------------------------------------------
+// The jump
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * The jump. Its feet rise `apex` metres in `rise` seconds and fall `fall` times as hard as they
+ * rose: a quick rise and a faster fall, with weight. A press is kept for `buffer` seconds until it can
+ * jump (just before landing, or at the end of a blow); a walker gone over an edge can still jump for
+ * `coyote` seconds. It crouches for `windup` seconds before it leaves the ground. In the air it steers
+ * `airTurn` and speeds up `airAccel`, and slows `airDecel`, of what it does on the ground. A jump at a
+ * run (from `boostFrom` of its pace with the stick all the way) goes `boost` times as fast, never more,
+ * however many jumps follow each other, easing back over `boostEase` seconds after landing. A fall of
+ * more than `hardFrom` metres lands hard. An edge more than `edge` metres down is gone over, not walked
+ * down.
+ */
+export const JUMP = {
+  apex: 0.62,
+  rise: 0.3,
+  fall: 1.7,
+  buffer: 0.12,
+  coyote: 0.1,
+  windup: 0.05,
+  airTurn: 0.4,
+  airAccel: 0.35,
+  airDecel: 0.2,
+  boost: 1.35,
+  boostFrom: 0.8,
+  boostEase: 0.4,
+  hardFrom: 1.2,
+  edge: 0.3,
+} as const;
+
+/** Metres a second the feet leave the ground at, and the pull down on the way up and on the way down. */
+export const JUMP_SPEED = (2 * JUMP.apex) / JUMP.rise;
+export const RISE_PULL = JUMP_SPEED / JUMP.rise;
+export const FALL_PULL = RISE_PULL * JUMP.fall;
+
+/** A press of the jump: kept for JUMP.buffer seconds until it can jump. */
+export function pressJump(m: Motion): void {
+  m.buffer = JUMP.buffer;
+}
+
+/**
+ * The jump and the fall for `dt` seconds, over ground `ground` metres above sea level where the
+ * walker is now; `can` says whether it may jump now (not in a blow or a dodge), `top` is metres a
+ * second with the stick all the way, for the burst. Returns true in the step it lands.
+ */
+export function stepJump(m: Motion, dt: number, ground: number, can: boolean, top: number): boolean {
+  let landed = false;
+  if (!m.air) {
+    if (m.y - ground > JUMP.edge && m.windup <= 0) {
+      // Over an edge: it falls, and can still jump for a moment.
+      m.air = true;
+      m.jumped = false;
+      m.vy3 = 0;
+      m.top = m.y;
+    } else {
+      m.y = ground;
+      m.since = 0;
+    }
+  }
+  if (m.air) m.since += dt;
+  // A press kept until it can jump: on the ground, or just after going over an edge.
+  if (m.buffer > 0 && m.windup <= 0 && can && (!m.air || (!m.jumped && m.since <= JUMP.coyote))) {
+    m.buffer = 0;
+    m.windup = JUMP.windup;
+  }
+  m.buffer = Math.max(0, m.buffer - dt);
+  if (m.windup > 0) {
+    m.windup -= dt;
+    if (m.windup <= 0) {
+      m.windup = 0;
+      // Off the ground: up at the jump's speed, and a jump at a run carries a burst of pace.
+      m.air = true;
+      m.jumped = true;
+      m.vy3 = JUMP_SPEED;
+      m.top = m.y;
+      m.jumps++;
+      const speed = Math.hypot(m.vx, m.vy);
+      if (top > 0 && speed >= top * JUMP.boostFrom) {
+        m.boost = JUMP.boost;
+        const want = Math.min(speed * JUMP.boost, top * JUMP.boost);
+        if (speed > 1e-6) {
+          m.vx *= want / speed;
+          m.vy *= want / speed;
+        }
+      }
+    }
+  }
+  if (m.air) {
+    m.vy3 -= (m.vy3 > 0 ? RISE_PULL : FALL_PULL) * dt;
+    m.y += m.vy3 * dt;
+    m.top = Math.max(m.top, m.y);
+    if (m.y <= ground && m.vy3 <= 0) {
+      const fell = m.top - ground;
+      m.y = ground;
+      m.vy3 = 0;
+      m.air = false;
+      m.jumped = false;
+      m.since = 0;
+      m.land = 0;
+      m.hard = Math.max(0, Math.min(1, (fell - JUMP.apex) / (JUMP.hardFrom - JUMP.apex)));
+      m.landings++;
+      landed = true;
+    }
+  } else m.land += dt;
+  // The burst eases off once it is down, and never stacks.
+  if (!m.air && m.windup <= 0 && m.boost > 1) m.boost = Math.max(1, m.boost - ((JUMP.boost - 1) / JUMP.boostEase) * dt);
+  // Its pace over the ground held to the burst's cap.
+  const cap = top * JUMP.boost;
+  const sp = Math.hypot(m.vx, m.vy);
+  if (top > 0 && sp > cap) {
+    m.vx *= cap / sp;
+    m.vy *= cap / sp;
+  }
+  return landed;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -281,6 +435,17 @@ export function footAt(p: number, stride: number, duty: number, lift: number, ou
 // ---------------------------------------------------------------------------------------------
 
 export type DodgeWay = "F" | "B" | "L" | "R";
+
+/**
+ * Seconds under which a press of the dodge's key (Shift, or B on a pad) is a tap, the dodge, rather
+ * than a hold, the run, as in Elden Ring: the dodge goes as the key is let go.
+ */
+export const SHIFT_TAP = 0.2;
+
+/** Whether a press held `seconds`, with no other key meanwhile (`alone`), is a tap: the dodge. */
+export function isShiftTap(seconds: number, alone: boolean): boolean {
+  return alone && seconds < SHIFT_TAP;
+}
 
 /**
  * Which way the dodge reads as, for a dodge along `dir` by a walker facing `facing`: a forward roll,
