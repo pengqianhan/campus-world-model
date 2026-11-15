@@ -116,6 +116,32 @@ export function dodgeLane(want: number, lane: number | undefined, now: number, d
 }
 
 /**
+ * The camera's place over the ground, metres east and north, kept out of a foe and off the walker
+ * however it got there (gliding round the walker, it sweeps an arc that can cross a foe beside it):
+ * at least `foeMin` from the foe's middle and `walkerMin` from the walker. Pushed straight out from
+ * each in turn, a few times, so that a push off the one does not leave it in the other; where both
+ * cannot be had (the walker pressed against the foe), the foe wins and the camera goes round the
+ * walker, away from the foe. Writes into `out`, which it returns.
+ */
+export function keepClear(cam: readonly [number, number], walker: readonly [number, number], foe: readonly [number, number], foeMin: number, walkerMin: number, out: [number, number]): [number, number] {
+  out[0] = cam[0];
+  out[1] = cam[1];
+  for (let i = 0; i < 4; i++) {
+    clearOf(out, walker, walkerMin, out);
+    clearOf(out, foe, foeMin, out);
+    if (Math.hypot(out[0] - walker[0], out[1] - walker[1]) >= walkerMin - 1e-6) return out;
+  }
+  // Still on the walker: straight out from the foe through the walker, past it by `walkerMin`.
+  const dx = walker[0] - foe[0];
+  const dy = walker[1] - foe[1];
+  const d = Math.hypot(dx, dy) || 1;
+  const r = Math.max(foeMin, d + walkerMin);
+  out[0] = foe[0] + (dx / d) * r;
+  out[1] = foe[1] + (dy / d) * r;
+  return out;
+}
+
+/**
  * The camera's place over the ground (metres east and north) moved straight out from a foe's
  * middle to `min` metres from it, when it is nearer: never inside or against a big foe. Writes
  * into `out`, which it returns; the camera as it was when it is far enough.

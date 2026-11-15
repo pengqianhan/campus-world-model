@@ -388,6 +388,34 @@ describe("the rules: the stick's way, the lunge and the stagger", () => {
     }
   });
 
+  it("stops a lunge at the boss's edge: blow after blow, holding forward into it, the walker never goes in", () => {
+    for (const from of [2.6, 3, 4, 5.5]) {
+      const g = quiet();
+      const boss = foe(g, "exam", [0, from]);
+      boss.cool = 99;
+      boss.hp = 1e7;
+      const edge = FOES.exam.body! + PLAYER.body;
+      let p: Pt = [0, 0];
+      let nearest = Infinity;
+      const dt = 1 / 60;
+      for (let k = 0; k < 6 * 60; k++) {
+        // Five blows in a row, then on; walking at a run straight at the boss all the while, as the
+        // scene does: its own steering (slowed as the rules say), then the rules' push.
+        if (k % 20 === 0 && k < 100) g.act("strike");
+        boss.at = [0, from];
+        const step = 3.5 * g.orders.slow * dt;
+        p = [p[0], p[1] + step];
+        g.step(dt, { at: p, heading: 0, move: 0, active: true, pace: 1 });
+        boss.at = [0, from];
+        p = [p[0] + g.orders.shove[0], p[1] + g.orders.shove[1]];
+        nearest = Math.min(nearest, Math.hypot(p[0] - boss.at[0], p[1] - boss.at[1]));
+      }
+      // At its edge, no further: within one frame's walk of it (the rules see a step the frame after).
+      expect(nearest, `from ${from} m`).toBeGreaterThan(edge - 3.5 * dt - 1e-6);
+      expect(nearest).toBeLessThan(edge + 0.05);
+    }
+  });
+
   it("lands each blow when it did: the wind-up's time after the press", () => {
     for (const combo of [0, 2]) {
       const g = quiet();

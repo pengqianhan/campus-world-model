@@ -57,7 +57,7 @@ import { RoofMap, type RoofGrid, type RoofShape } from "../shared/roofmap.ts";
 import { roofGrid } from "./roofgrid.ts";
 import type { Ride } from "./rides.ts";
 import { towardsAhead } from "../shared/walkerLook.ts";
-import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
+import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, keepClear, type FightFrame, type FightShot } from "../shared/fightCamera.ts";
 import { floorRings } from "../shared/indoor.ts";
 import { DAY, NIGHT, ROOM_COLOURS, lerpColour, mixPalette, type Palette } from "./palette.ts";
 import { StreetLook, type StreetState } from "./street/look.ts";
@@ -179,6 +179,13 @@ const FIGHT_HANDS_OFF = 2500;
  * wall would bring it in close.
  */
 const FIGHT_CLEAR = 3.5;
+/**
+ * However the camera got where it is in a fight, metres it keeps at the least past the foe's drawn
+ * edge (its middle out to FightFocus.body, the boss's skirt and arms), and over the ground from the
+ * walker: the nearest a wall brings it in (1.2 m along the camera's slope).
+ */
+const FIGHT_INSIDE = 1;
+const FIGHT_NEAR = 1.1;
 const FIGHT_LANE_REACH = 11;
 // Upright on a phone the camera stands less far off a charge's line (LANE_DODGE_UPRIGHT), so it goes further back instead.
 const FIGHT_LANE_REACH_UPRIGHT = 16;
@@ -2568,6 +2575,23 @@ export class CampusScene {
         const dd = cd + (Math.hypot(cx - x, cn - y) - cd) * k;
         p.set(x + Math.sin(b) * dd, p.y + (cy - p.y) * k, -(y + Math.cos(b) * dd));
       } else p.lerp(want, k);
+      // Wherever the glide took it, never in the foe or on the walker: a lunge, a dodge or a knock
+      // back next to the boss swings the line round fast, and the arc the camera comes round on can
+      // cross the boss beside the walker.
+      if (focus && fight.k > 0) {
+        const c = this.fightClear;
+        c[0] = p.x;
+        c[1] = -p.z;
+        const w = this._walkerAt;
+        w[0] = x;
+        w[1] = y;
+        keepClear(c, w, focus.at, focus.body + FIGHT_INSIDE, FIGHT_NEAR, c);
+        if (c[0] !== p.x || c[1] !== -p.z) {
+          p.x = c[0];
+          p.z = -c[1];
+          p.y = Math.max(p.y, this.groundAt(c[0], c[1]) + 0.8);
+        }
+      }
       const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, pose.aim, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
       if (fight.k > 0) {
         // Looking at the pitch that centres the walker and the foe from where the camera is now, so
@@ -2668,6 +2692,7 @@ export class CampusScene {
   private fight = { k: 0, reach: 0, yaw: 0, yawV: 0, held: false, at: [0, 0] as [number, number], foot: 0, top: 0, turnedAt: -Infinity, cut: false, turn: 0, turnWant: 0, turnAt: 0, fit: 1 };
   private fightClear: [number, number] = [0, 0];
   private _viewDir = new Vector3();
+  private _walkerAt: [number, number] = [0, 0];
   /** The way the walker followed faced at the last frame, degrees. */
   private followHeading?: number;
 

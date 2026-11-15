@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
+import { LANE_DODGE, LANE_DODGE_UPRIGHT, bandPitch, clearOf, dodgeLane, frameFight, keepClear, type FightFrame, type FightShot } from "../src/shared/fightCamera.ts";
+import { FOES, PLAYER } from "../src/shared/game.ts";
 
 const HALF = (55 * Math.PI) / 360;
 const UP = Math.tan((16 * Math.PI) / 180);
@@ -118,5 +119,46 @@ describe("clearOf", () => {
     expect(clearOf([3, 4], [0, 0], 8, out)).toEqual([4.8, 6.4]);
     expect(clearOf([30, 4], [0, 0], 8, out)).toEqual([30, 4]);
     expect(Math.hypot(...clearOf([0, 0], [0, 0], 8, out))).toBeCloseTo(8);
+  });
+});
+
+describe("the fight's camera next to the boss", () => {
+  // The Final Exam's drawn edge (FightFocus.body, its radius) and a metre more; and the nearest a
+  // wall brings the camera to the walker over the ground (CampusScene FIGHT_INSIDE, FIGHT_NEAR).
+  const foeMin = FOES.exam.radius + 1;
+  const walkerMin = 1.1;
+  const boss: [number, number] = [0, 0];
+
+  it("never stands in the boss or on the walker, wherever a glide round the walker has taken it", () => {
+    const out: [number, number] = [0, 0];
+    // The walker as near the boss as the rules let it stand (its body and the walker's), all round it.
+    const edge = FOES.exam.body! + PLAYER.body;
+    for (let a = 0; a < 360; a += 15) {
+      const r = (a * Math.PI) / 180;
+      const walker: [number, number] = [Math.sin(r) * edge, Math.cos(r) * edge];
+      // The camera anywhere on rings round the walker, from on top of it to well back, and on the boss.
+      for (const reach of [0, 0.3, 1, 3, 7, 12]) {
+        for (let c = 0; c < 360; c += 10) {
+          const q = (c * Math.PI) / 180;
+          const cam: [number, number] = [walker[0] + Math.sin(q) * reach, walker[1] + Math.cos(q) * reach];
+          keepClear(cam, walker, boss, foeMin, walkerMin, out);
+          expect(Math.hypot(out[0] - boss[0], out[1] - boss[1])).toBeGreaterThanOrEqual(foeMin - 1e-9);
+          expect(Math.hypot(out[0] - walker[0], out[1] - walker[1])).toBeGreaterThanOrEqual(walkerMin - 1e-9);
+        }
+      }
+    }
+  });
+
+  it("leaves a camera that is clear of both where it is", () => {
+    const out: [number, number] = [0, 0];
+    expect(keepClear([0, -12], [0, -3], [0, 0], foeMin, walkerMin, out)).toEqual([0, -12]);
+  });
+
+  it("goes round the walker away from the boss, not into it, when the walker is pressed against it", () => {
+    const out: [number, number] = [0, 0];
+    // Camera between the walker and the boss: out behind the walker.
+    keepClear([0, -2.8], [0, -2.5], [0, 0], foeMin, walkerMin, out);
+    expect(out[1]).toBeLessThan(-2.5);
+    expect(Math.hypot(...out)).toBeGreaterThanOrEqual(foeMin - 1e-9);
   });
 });
