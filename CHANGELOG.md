@@ -105,12 +105,20 @@ A change to what the site does or shows adds its line here, and the README's
   against the Final Exam, the walker faces its foe, holds its highlighter up on guard, and side-steps, backpedals or
   steps between: holding left goes round the boss on a circle, and the legs step for themselves with the planted foot
   left where it was put down; however fast it moves next to the boss, the camera never comes into the boss or onto
-  the walker. Not locked
-  on, it turns at a limited rate, leans into turns, speeds up and slows over a moment, and plants and pivots for a sharp
+  the walker. Not locked on, it turns at a limited rate, leans into turns, speeds up and slows over a moment, and plants and pivots for a sharp
   reversal. Each blow steps into a short lunge, aimed the way the stick points at the nearest foe that way, the feet set
   meanwhile; the blows still land 0.09 s after the press, and 0.17 s for the overhead slam. The dodge goes the way the
   stick points, or back with none: a roll forward, a hop back, a side-step to either side. A blow taken throws the
   walker back from the way it came, in a stagger over a quarter of a second rather than a jump.
+  The walker jumps: Space on the keyboard, A on a game pad, and a button of its own by the strike on a phone. A jump
+  rises about 0.6 m and falls faster than it rose, with a crouch before it, the legs tucked at the top, the arms out for
+  balance and the landing taken in the knees with a puff of dust (harder after a long fall); a press just before it can
+  jump is kept, and one just after going over an edge still counts. A jump at a run goes a third as fast again in the
+  air, easing back after landing, and a chain of jumps never goes faster. In a fight a jump clears the slams and the
+  rings the DDL and the Final Exam send over the ground, but nothing else, and a strike pressed in the air comes down
+  as a slash as the walker lands; locked on, it keeps facing its foe. In the game Shift tapped dodges and Shift held
+  runs (B on a pad), and the dodge's prompt, the pause menu's controls and the pad's buttons say so; the first
+  shockwave over the ground after the dodge is learnt teaches the jump, once.
   It plays with the keys and mouse, a game pad, or the phone's stick and four buttons, on foot or on the scooter (where
   the villains go twice as fast), out of doors, on every school's map. It is off until it is started, every part of it
   is made up and says so (the Game button's hint, the title card, the menus, the debrief and About), and the buildings'

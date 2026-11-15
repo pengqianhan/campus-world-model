@@ -429,6 +429,38 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   await until(`g.foes.some((f) => f.kind === 'ddl' && f.hp < ${ddlHp})`);
   await expect(page.locator(".gx-plate.elite").first()).toContainText("DDL");
 
+  // Space jumps (in the game it is no longer the dodge): the walker leaves the ground and lands. A
+  // tap of Shift dodges; Shift held runs, and does not dodge. Counted, not caught in the air: a frame
+  // of a software renderer can take longer than a jump.
+  await page.evaluate(() => {
+    const q = (window.__scene as unknown as GameScene).game.quest! as unknown as { act(a: string): boolean };
+    const w = window as unknown as { __acts: string[] };
+    w.__acts = [];
+    const act = q.act.bind(q);
+    q.act = (a: string) => (w.__acts.push(a), act(a));
+  });
+  const jumps = () => page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { jumps?: number; landings?: number } } }).walkers.state("Walker"));
+  const acts = () => page.evaluate(() => (window as unknown as { __acts: string[] }).__acts.slice());
+  const before = await jumps();
+  // Pressed once the walker may leave the ground (not still in the blow above: on a software renderer
+  // the game's clock, a tenth of a second a frame at most, runs behind the jump's buffer).
+  const canJump = () => page.waitForFunction(() => ((window.__scene as unknown as GameScene).game.quest as unknown as { canJump: boolean }).canJump);
+  await canJump();
+  await page.keyboard.press(" ");
+  await expect.poll(async () => (await jumps()).landings ?? 0, { timeout: 15_000 }).toBeGreaterThan(before.landings ?? 0);
+  expect((await jumps()).jumps).toBe((before.jumps ?? 0) + 1);
+  expect(await acts()).not.toContain("dodge");
+  await page.keyboard.down("Shift");
+  await page.waitForTimeout(60);
+  await page.keyboard.up("Shift");
+  await expect.poll(acts).toContain("dodge");
+  await page.evaluate(() => ((window as unknown as { __acts: string[] }).__acts = []));
+  await page.keyboard.down("Shift");
+  await page.waitForTimeout(600);
+  await page.keyboard.up("Shift");
+  await page.waitForTimeout(200);
+  expect(await acts()).not.toContain("dodge");
+
   // P pauses: the menu opens and the game's clock stops; Resume goes on. A key still held when the
   // menu opens does not walk the walker on under it.
   const walkerAt = () => page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { at: [number, number] } } }).walkers.state("Walker").at.slice());
@@ -744,6 +776,21 @@ test.describe("on a phone", () => {
     await page.locator("#game-strike").dispatchEvent("pointerdown");
     await page.waitForFunction((id) => (window.__scene as unknown as GameScene).game.state()!.foes.some((f) => f.id === id && f.hp < 85), tutor.id);
     await expect(page.locator('#game-prompt[data-lesson="strike"]')).toHaveCount(0);
+
+    // The jump's button stands with the others, none over another or the stick, all on the screen;
+    // and it jumps.
+    const rects = await page.locator(".sq-btn, #walker-stick").evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, r: r.width / 2, right: r.right, bottom: r.bottom }; }));
+    expect(rects.length).toBeGreaterThanOrEqual(6);
+    for (const a of rects) {
+      expect(a.right).toBeLessThanOrEqual(390);
+      expect(a.bottom).toBeLessThanOrEqual(844);
+      for (const b of rects) if (a !== b) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(a.r + b.r);
+    }
+    const landed = () => page.evaluate(() => (window.__scene as unknown as { walkers: { state(n: string): { landings?: number } } }).walkers.state("Walker").landings ?? 0);
+    const was = await landed();
+    await page.waitForFunction(() => ((window.__scene as unknown as GameScene).game.quest as unknown as { canJump: boolean }).canJump);
+    await page.locator("#game-jump").dispatchEvent("pointerdown");
+    await expect.poll(landed, { timeout: 15_000 }).toBeGreaterThan(was);
 
     // The pause menu has the screen: no stick, no buttons, no marks over the picture under it; the clock stops.
     await page.locator("#game-pause").tap();
