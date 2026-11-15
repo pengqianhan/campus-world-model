@@ -34,7 +34,8 @@ import {
 } from "three";
 import type { Gear } from "./figureBuild.ts";
 import { DECK, GRIP, Scooter, type Ride } from "./rides.ts";
-import { MOVES, comingIn, mixPose, moveLength, newPose, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
+import { MOVES, comingIn, mixPose, moveLength, newPose, sampleFlinch, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
+import { dutyFactor, footAt, strafeWeights, strideLength } from "../shared/locomotion.ts";
 
 /** Where the eyes are, for the view from the walker. */
 export const EYE_HEIGHT = 1.6;
@@ -87,8 +88,36 @@ const RIDE_LEGS: [bone: string, child: string, dir: [number, number, number]][] 
   ["RightUpLeg", "RightLeg", [-0.07, -1, 0.14]],
   ["RightLeg", "RightFoot", [-0.04, -1, 0.06]],
 ];
-/** The bones a move of the game turns (figureMoves.ts), each after its parent. */
-const ACT_BONES = ["Spine1", "Spine2", "RightArm", "RightForeArm", "LeftArm", "LeftForeArm", "LeftUpLeg", "LeftLeg", "RightUpLeg", "RightLeg"] as const;
+/**
+ * The bones the figure turns itself after the mixer, each after its parent: a move of the game
+ * (figureMoves.ts) and the legs' own steps (gaitLegs). Kept as the mixer left them and put back
+ * before the next pose, since the mixer sets again only a bone whose value it changes.
+ */
+const ACT_BONES = ["Hips", "Spine", "Spine1", "Spine2", "RightArm", "RightForeArm", "LeftArm", "LeftForeArm", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot"] as const;
+/**
+ * The legs' own steps, for a way of going off the way the figure faces (a side-step, a backpedal),
+ * where the walk and the run clips, made for going ahead, would slide the feet: from `GAIT_FROM` to
+ * `GAIT_TO` degrees off ahead they take over from the clips.
+ */
+const GAIT_FROM = 20;
+const GAIT_TO = 50;
+/** Radians the hips turn at most towards a diagonal, the chest turned back to face ahead. */
+const HIP_TWIST = 0.45;
+/** Metres a foot lifts as it swings, walking and running; and the hips' dip as a foot comes down. */
+const LIFT_WALK = 0.1;
+const LIFT_RUN = 0.2;
+const BOB = 0.025;
+/**
+ * The lean into a turn and into speeding up or slowing (steered by the stick): radians at most, the
+ * share of the lean that would hold it up that it takes, and the spring that sways it there and
+ * settles it (radians a second, and its damping: under 1 it overshoots a little and settles).
+ */
+const WALK_LEAN = 0.16;
+const WALK_LEAN_SHARE = 0.55;
+const LEAN_SPRING = 13;
+const LEAN_DAMP = 0.45;
+/** Metres the hips dip in a pivot, all the way into it. */
+const PIVOT_DIP = 0.06;
 /** The two bones of the back that a move twists and bows. */
 const SPINE = ["Spine1", "Spine2"] as const;
 /** Seconds over which a move cut short by none lets go. */
@@ -168,12 +197,13 @@ export class Figure {
    * A move of the game laid over the walk (figureMoves.ts): which, seconds since it began, how much
    * of it is laid over now, and how much of the one before it was when this began (`fromPose`).
    */
-  private act: { move?: Move; t: number; w: number; fromW: number } = { t: 0, w: 0, fromW: 0 };
+  private act: { move?: Move; t: number; w: number; fromW: number; rate: number; dir?: number } = { t: 0, w: 0, fromW: 0, rate: 1 };
   private actPose = newPose();
   private keyPose = newPose();
   private fromPose = newPose();
-  /** The bones a move turned, as the mixer left them; put back before the next pose. */
+  /** The bones a move or the gait turned, and the hips' place, as the mixer left them; put back before the next pose. */
   private actSaved?: Quaternion[];
+  private hipsSaved = new Vector3();
   private acted = false;
   /** Metres the thigh is long (and the shin about the same), for a crouch. */
   private legLength = 0.42;
@@ -183,6 +213,23 @@ export class Figure {
   /** Where the highlighter sits in the right hand, as fitted at the last dressing: made only once the game asks for it. */
   private penFit?: Matrix4;
   private trail?: { mesh: Mesh; pos: Float32Array; col: Float32Array; life: number };
+  /**
+   * How it goes over the ground, in its own frame (to its right, ahead), metres a second, and how
+   * that changes; degrees a second it turns; the share left of a pivot; and whether it is steered by
+   * the stick (it leans then). See setGait.
+   */
+  private gait = { x: 0, z: 0, ax: 0, az: 0, turn: 0, pivot: 0, lean: false };
+  /** How much the legs' own steps have taken over from the clips, and where they are in their cycle (0-1, the left foot down at 0). */
+  private gaitW = 0;
+  private phase = 0;
+  /** Where in the walk's and the run's cycles the left foot comes down, measured from the clips at the dressing. */
+  private walkDown = 0;
+  private runDown = 0;
+  /** The legs' measures, standing: thigh and shin, the hips' and the ankles' heights, and the foot (ankle to toe) along and down. */
+  private legs = { thigh: 0.42, shin: 0.42, hipY: 0.9, ankleY: 0.08, toeAlong: 0.12, toeDown: -0.05 };
+  private sw = { f: 0, b: 0, l: 0, r: 0 };
+  /** The lean (radians ahead, and over to its right), and how fast each changes. */
+  private sway = { x: 0, vx: 0, z: 0, vz: 0 };
 
   constructor(ringColour: number) {
     // A ring on the ground round the feet, so the walker can be found from above.
@@ -252,13 +299,33 @@ export class Figure {
    * Starts a move of the game (figureMoves.ts), from wherever the last one had got to; none lets go
    * of what is laid over the walk.
    */
-  play(move: Move | undefined): void {
+  play(move: Move | undefined, opts?: { dir?: number; rate?: number }): void {
     const a = this.act;
     mixPose(this.fromPose, this.actPose, this.actPose, 0);
     a.fromW = a.w;
     a.move = move;
     a.t = 0;
+    // A flinch is the blend of the four for the way the blow came from (degrees off ahead, clockwise);
+    // a move can be played slower or faster (the Cram Sprint's longer dodge).
+    a.dir = opts?.dir;
+    a.rate = opts?.rate ?? 1;
     this.changed = true;
+  }
+
+  /**
+   * How the walker goes over the ground, for its legs and its lean: metres a second to its right and
+   * ahead (in the figure's own frame), how fast each changes, degrees a second it turns, the share
+   * left of a pivot, and whether it is steered by the stick (it leans into turns and speeding up only then).
+   */
+  setGait(right: number, ahead: number, accRight: number, accAhead: number, turnRate: number, pivot: number, lean: boolean): void {
+    const g = this.gait;
+    g.x = right;
+    g.z = ahead;
+    g.ax = accRight;
+    g.az = accAhead;
+    g.turn = turnRate;
+    g.pivot = pivot;
+    g.lean = lean;
   }
 
   /** Shows the highlighter in the right hand, for the game. */
@@ -284,6 +351,8 @@ export class Figure {
     if (this.body) this.body.root.position.y = ride === "scooter" ? DECK : 0;
     this.root.visible = ride !== "fly";
     if (ride !== "scooter") this.seat.rotation.z = 0;
+    this.seat.rotation.x = 0;
+    this.sway = { x: 0, vx: 0, z: 0, vz: 0 };
     this.changed = true;
   }
 
@@ -309,10 +378,12 @@ export class Figure {
     // The bones the scooter turned go back to where the mixer left them, which it may not set again.
     for (const [bone, q] of this.riding ?? []) bone.quaternion.copy(q);
     this.riding = undefined;
-    // And those a move of the game turned.
+    // And those a move of the game or the gait turned.
     if (this.acted) {
       for (let i = 0; i < ACT_BONES.length; i++) b.bone(ACT_BONES[i]!).quaternion.copy(this.actSaved![i]!);
+      b.bone("Hips").position.copy(this.hipsSaved);
       b.root.position.set(0, this.ride === "scooter" ? DECK : 0, 0);
+      b.root.rotation.set(0, 0, 0);
       this.acted = false;
     }
     // On the scooter it stands at ease, however fast it goes.
@@ -321,11 +392,32 @@ export class Figure {
     this.last = t;
     const run = Math.max(0, Math.min(1, (speed - RUN_FROM) / (RUN_AT - RUN_FROM)));
     this.runBlend += (run - this.runBlend) * Math.min(1, dt * 5);
-    const walked = (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE;
-    const ran = (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE;
-    this.walkCycles = (this.walkCycles + walked) % 1;
-    this.runCycles = (this.runCycles + ran) % 1;
-    if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
+    // Going off the way it faces (a side-step, a backpedal), the legs step for themselves.
+    const g = this.gait;
+    const over = Math.hypot(g.x, g.z);
+    const rel = over > 1e-3 ? (Math.atan2(g.x, g.z) * 180) / Math.PI : 0;
+    const off = Math.abs(rel);
+    const gaitWant = this.ride === "walk" && !this.dressing && over > 0.12 ? smooth((off - GAIT_FROM) / (GAIT_TO - GAIT_FROM)) : 0;
+    this.gaitW += (gaitWant - this.gaitW) * Math.min(1, dt * 10);
+    if (this.gaitW < 0.002) this.gaitW = 0;
+    const sw = strafeWeights(rel, this.sw);
+    const stride = strideLength(over, sw.l + sw.r, sw.b);
+    if (this.gaitW > 0) {
+      // The legs' own cycle leads, at the stride's cadence, and the clips keep in step with it, so
+      // that the two agree on which foot is down while one hands over to the other.
+      const went = (dt * over) / stride;
+      this.phase = (this.phase + went) % 1;
+      this.walkCycles = (this.phase + this.walkDown) % 1;
+      this.runCycles = (this.phase + this.runDown) % 1;
+      if (moving > 0.5) this.footfalls += 2 * went;
+    } else {
+      const walked = (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE;
+      const ran = (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE;
+      this.walkCycles = (this.walkCycles + walked) % 1;
+      this.runCycles = (this.runCycles + ran) % 1;
+      if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
+      this.phase = (this.runBlend > 0.5 ? this.runCycles - this.runDown + 1 : this.walkCycles - this.walkDown + 1) % 1;
+    }
     b.idle.time = t % b.idle.getClip().duration;
     b.walk.time = this.walkCycles * b.walk.getClip().duration;
     b.run.time = this.runCycles * b.run.getClip().duration;
@@ -337,19 +429,137 @@ export class Figure {
     b.mixer.update(0);
     if (this.ride === "scooter") this.holdBars(b);
     else if (this.umbrellaOpen && this.headVisible) this.holdUmbrella(b);
-    if (this.ride === "walk" && !this.dressing) this.acting(b, dt);
+    const own = this.ride === "walk" && !this.dressing;
+    if (own) this.leaning(b, dt);
+    const a = this.act;
+    if (own && (this.gaitW > 0 || a.move || a.fromW > 0 || g.pivot > 0)) this.keep(b);
+    if (own && this.gaitW > 0) this.gaitLegs(b, over, rel, stride);
+    if (own && g.pivot > 0) b.root.position.y -= PIVOT_DIP * Math.min(1, g.pivot / 0.1);
+    if (own) this.acting(b, dt);
     else this.act.w = 0;
     this.trailStep(dt);
+  }
+
+  /** Keeps the bones the figure turns itself as the mixer left them, to put back before the next pose. */
+  private keep(b: Body): void {
+    if (this.acted) return;
+    const saved = (this.actSaved ??= ACT_BONES.map(() => new Quaternion()));
+    for (let i = 0; i < ACT_BONES.length; i++) saved[i]!.copy(b.bone(ACT_BONES[i]!).quaternion);
+    this.hipsSaved.copy(b.bone("Hips").position);
+    this.acted = true;
+  }
+
+  /**
+   * Steered by the stick: leans into a turn and into speeding up, back as it slows, on a spring that
+   * overshoots a little and settles. Otherwise it comes upright.
+   */
+  private leaning(b: Body, dt: number): void {
+    const g = this.gait;
+    const sp = Math.hypot(g.x, g.z);
+    let ahead = 0;
+    let right = 0;
+    if (g.lean) {
+      ahead = Math.max(-WALK_LEAN, Math.min(WALK_LEAN, WALK_LEAN_SHARE * Math.atan(g.az / 9.81)));
+      right = Math.max(-WALK_LEAN, Math.min(WALK_LEAN, WALK_LEAN_SHARE * Math.atan((g.ax + sp * ((g.turn * Math.PI) / 180)) / 9.81)));
+    }
+    const s = this.sway;
+    for (let left = Math.min(dt, 0.2); left > 1e-6; left -= 0.02) {
+      const h = Math.min(0.02, left);
+      s.vx += (LEAN_SPRING * LEAN_SPRING * (ahead - s.x) - 2 * LEAN_DAMP * LEAN_SPRING * s.vx) * h;
+      s.x += s.vx * h;
+      s.vz += (LEAN_SPRING * LEAN_SPRING * (right - s.z) - 2 * LEAN_DAMP * LEAN_SPRING * s.vz) * h;
+      s.z += s.vz * h;
+    }
+    // Come upright, it is upright: a sway dwindling for ever would draw a frame each time.
+    if (Math.abs(ahead) + Math.abs(right) < 1e-4 && Math.abs(s.x) + Math.abs(s.z) + Math.abs(s.vx) + Math.abs(s.vz) < 1e-3) s.x = s.z = s.vx = s.vz = 0;
+    // Over its feet: ahead is a turn about its x, to its right one about its z.
+    this.seat.rotation.x = -s.x;
+    this.seat.rotation.z = -s.z;
+    if (s.x || s.z) this.changed = true;
+    void b;
+  }
+
+  /**
+   * The legs' own steps (locomotion.ts): each foot put down ahead along the way it goes and left
+   * where it was put while the body goes over it, then swung on to the next; the hips turned a
+   * little towards a diagonal, the chest turned back to the front, the knees bent to reach (two
+   * bones, the knee forward). Laid over the clips by how far it goes off ahead (gaitW).
+   */
+  private gaitLegs(b: Body, speed: number, rel: number, stride: number): void {
+    const w = this.gaitW;
+    const L = this.legs;
+    const sw = this.sw;
+    const r = (rel * Math.PI) / 180;
+    // The way it goes, in the figure's frame (ahead is -z).
+    const dx = Math.sin(r);
+    const dz = -Math.cos(r);
+    const duty = dutyFactor(speed);
+    const run = Math.max(0, Math.min(1, (speed - 2.2) / 1.0));
+    const lift = (LIFT_WALK + (LIFT_RUN - LIFT_WALK) * run) * (1 - 0.35 * (sw.l + sw.r));
+    const reach = (L.thigh + L.shin) * 0.97;
+    const half = (stride * duty) / 2;
+    // The hips come down as far as the legs need to reach the feet at the ends of a step, and dip as
+    // each foot comes down.
+    const drop = Math.max(0, L.hipY - L.ankleY - Math.sqrt(Math.max(0, reach * reach - half * half))) + BOB * Math.min(1, speed / 2) * (0.5 + 0.5 * Math.cos(4 * Math.PI * this.phase));
+    b.root.position.y -= drop * w;
+    this.root.updateMatrixWorld(true);
+    const up = _up.set(0, 1, 0).transformDirection(this.root.matrixWorld);
+    const twist = HIP_TWIST * Math.sin(2 * r) * Math.min(1, speed / 1.2) * w;
+    if (twist) {
+      turn(b.bone("Hips"), _q.setFromAxisAngle(up, -twist));
+      turn(b.bone("Spine"), _q.setFromAxisAngle(up, twist));
+    }
+    // The knees point the way the hips face.
+    const kx = Math.sin(twist);
+    const kz = -Math.cos(twist);
+    for (const leg of LEGS) {
+      const s = leg.s;
+      const p = (this.phase + (s < 0 ? 0 : 0.5)) % 1;
+      const f = footAt(p, stride, duty, lift, _foot);
+      const thigh = b.bone(leg.up);
+      const knee = b.bone(leg.knee);
+      const ankle = b.bone(leg.ankle);
+      const hip = this.local(thigh, _h);
+      // Under the hip, a little wider going to the side, along the way it goes.
+      const ft = _ft.set(hip.x + s * 0.07 * (sw.l + sw.r) + dx * f.along, L.ankleY + f.up, hip.z + dz * f.along);
+      // Two bones: the knee where the thigh and the shin meet, bent forward.
+      _d.subVectors(ft, hip);
+      let dist = _d.length();
+      if (dist > reach) {
+        _d.multiplyScalar(reach / dist);
+        dist = reach;
+      }
+      _d.normalize();
+      const a = L.thigh;
+      const c = L.shin;
+      const cosA = Math.max(-1, Math.min(1, (a * a + dist * dist - c * c) / (2 * a * dist)));
+      const sinA = Math.sqrt(1 - cosA * cosA);
+      _pole.set(kx, 0, kz).addScaledVector(_d, -(kx * _d.x + kz * _d.z));
+      if (_pole.lengthSq() < 1e-6) _pole.set(0, 0, -1);
+      _pole.normalize();
+      _k.copy(hip).addScaledVector(_d, a * cosA).addScaledVector(_pole, a * sinA);
+      const end = _e.copy(hip).addScaledVector(_d, dist);
+      limb(thigh, knee, this.root, _kd.subVectors(_k, hip), w);
+      limb(knee, ankle, this.root, _kd.subVectors(end, _k), w);
+      // The foot flat, toes along the way the knee points and a little out; tipped up off the ground as it swings.
+      const tip = f.down ? 0 : 0.25 * Math.sin(Math.PI * Math.min(1, (p - duty) / (1 - duty)));
+      limb(ankle, b.bone(leg.toe), this.root, _kd.set((kx + s * TOES_OUT) * L.toeAlong, L.toeDown - tip * L.toeAlong, kz * L.toeAlong), w);
+    }
+  }
+
+  /** A bone's place in the figure's own frame, into `out`. */
+  private local(bone: Bone, out: Vector3): Vector3 {
+    return this.root.worldToLocal(bone.getWorldPosition(out));
   }
 
   /** Lays the move of the game under way over the pose the mixer left: see figureMoves.ts. */
   private acting(b: Body, dt: number): void {
     const a = this.act;
     if (!a.move && a.fromW <= 0) return;
-    a.t += dt;
+    a.t += dt * a.rate;
     let w: number;
     if (a.move) {
-      const own = sampleMove(a.move, a.t, this.keyPose);
+      const own = a.move === "flinch" && a.dir !== undefined ? sampleFlinch(a.dir, a.t, this.keyPose) : sampleMove(a.move, a.t, this.keyPose);
       const k = comingIn(a.move, a.t);
       if (k < 1 && a.fromW > 0) {
         // Coming in from where the move before it had got to, not from the walk.
@@ -371,18 +581,29 @@ export class Figure {
       a.w = 0;
       return;
     }
+    this.keep(b);
     this.lay(b, this.actPose, a.w);
     this.changed = true;
   }
 
   /** Turns the bones to `p`, `w` of the way from where the mixer left them. */
   private lay(b: Body, p: MovePose, w: number): void {
-    const saved = (this.actSaved ??= ACT_BONES.map(() => new Quaternion()));
-    for (let i = 0; i < ACT_BONES.length; i++) saved[i]!.copy(b.bone(ACT_BONES[i]!).quaternion);
-    this.acted = true;
-    // The hips down for a crouch and forward for a step; the knees bend to keep the feet down.
+    // The hips down for a crouch and forward for a step; the knees bend to keep the feet down. Up
+    // for a hop; and the whole body turned about its middle for a roll, and about its feet for a lean over.
     const crouch = Math.max(0, p.crouch) * w;
-    b.root.position.set(0, -crouch, -p.step * w);
+    const roll = wrapPi(p.roll) * w;
+    const bank = p.bank * w;
+    const pos = b.root.position;
+    // A roll turns the body about its hips, held at the crouch's height (so that rolling over, the
+    // tucked head comes no lower than the ground); a lean over turns it about its feet. The point
+    // turned about rises from the feet to the hips as the roll starts.
+    const mid = this.legs.hipY * Math.min(1, Math.abs(roll) * 3);
+    b.root.rotation.set(-roll, 0, -bank);
+    // Where the turn takes that point (0, mid, 0), with the bank first and then the roll (Euler XYZ).
+    const cb = Math.cos(bank);
+    pos.x -= mid * Math.sin(bank);
+    pos.y += -crouch + p.hop * w + mid - mid * cb * Math.cos(roll);
+    pos.z += -p.step * w + mid * cb * Math.sin(roll);
     this.root.updateMatrixWorld(true);
     const up = _up.set(0, 1, 0).transformDirection(this.root.matrixWorld);
     const right = _right.set(1, 0, 0).transformDirection(this.root.matrixWorld);
@@ -395,15 +616,17 @@ export class Figure {
     limb(b.bone("RightForeArm"), b.bone("RightHand"), this.root, p.rFo, w);
     limb(b.bone("LeftArm"), b.bone("LeftForeArm"), this.root, p.lUp, w);
     limb(b.bone("LeftForeArm"), b.bone("LeftHand"), this.root, p.lFo, w);
-    if (crouch > 0.005) {
+    const splay = Math.sin(p.splay);
+    if (crouch > 0.005 || splay > 0.01) {
       // Thigh and shin about as long as each other: down by 2 L (1 - cos a) for a bend of a each way.
       const bend = Math.acos(Math.max(0.2, 1 - crouch / w / (2 * this.legLength)));
       const c = Math.cos(bend);
       const sn = Math.sin(bend);
-      limb(b.bone("LeftUpLeg"), b.bone("LeftLeg"), this.root, _leg.set(-0.04, -c, -sn), w);
-      limb(b.bone("LeftLeg"), b.bone("LeftFoot"), this.root, _leg.set(0, -c, sn), w);
-      limb(b.bone("RightUpLeg"), b.bone("RightLeg"), this.root, _leg.set(0.04, -c, -sn), w);
-      limb(b.bone("RightLeg"), b.bone("RightFoot"), this.root, _leg.set(0, -c, sn), w);
+      // Set apart for a side-step: each leg out to its side.
+      limb(b.bone("LeftUpLeg"), b.bone("LeftLeg"), this.root, _leg.set(-0.04 - splay, -c, -sn), w);
+      limb(b.bone("LeftLeg"), b.bone("LeftFoot"), this.root, _leg.set(-splay * 0.5, -c, sn), w);
+      limb(b.bone("RightUpLeg"), b.bone("RightLeg"), this.root, _leg.set(0.04 + splay, -c, -sn), w);
+      limb(b.bone("RightLeg"), b.bone("RightFoot"), this.root, _leg.set(splay * 0.5, -c, sn), w);
     }
   }
 
@@ -732,9 +955,46 @@ uniform vec4 uTrailCol[${n * 2}];
         m.stencilZPass = ReplaceStencilOp;
       }
     });
+    // The legs' measures and the clips' steps, last: it runs the clips through.
+    this.measureLegs(b);
     // Back to the pose it had.
     this.last = undefined;
     this.pose(stance.moving, stance.speed, stance.t);
+  }
+
+  /**
+   * The legs' measures standing at ease, for their own steps (gaitLegs); and where in the walk's and
+   * the run's cycles the left foot comes down (furthest ahead), so that the clips keep in step with them.
+   */
+  private measureLegs(b: Body): void {
+    const at = (n: string) => local3(this.root, b.bone(n));
+    const hip = at("LeftUpLeg");
+    const knee = at("LeftLeg");
+    const ankle = at("LeftFoot");
+    const toe = at("LeftToeBase");
+    this.legs = {
+      thigh: hip.distanceTo(knee),
+      shin: knee.distanceTo(ankle),
+      hipY: hip.y,
+      ankleY: ankle.y,
+      toeAlong: Math.hypot(toe.x - ankle.x, toe.z - ankle.z),
+      toeDown: toe.y - ankle.y,
+    };
+    const down = (clip: AnimationAction) => {
+      for (const a of [b.idle, b.walk, b.run, b.stand]) a.setEffectiveWeight(a === clip ? 1 : 0);
+      let best = 0;
+      let most = Infinity;
+      for (let k = 0; k < 32; k++) {
+        clip.time = (k / 32) * clip.getClip().duration;
+        b.mixer.update(0);
+        this.root.updateMatrixWorld(true);
+        const z = at("LeftFoot").z;
+        if (z < most) ((most = z), (best = k / 32));
+      }
+      return best;
+    };
+    this.walkDown = down(b.walk);
+    this.runDown = down(b.run);
   }
 
   /** The head shows, or shrinks to nothing, for the view from the eyes. */
@@ -776,6 +1036,28 @@ uniform vec4 uTrailCol[${n * 2}];
     const hand = this.root.worldToLocal(b.bone("RightHand").getWorldPosition(new Vector3()));
     this.umbrella.position.copy(hand);
   }
+}
+
+/** Each leg's bones, by name, and its side (-1 left). */
+const LEGS = (["Left", "Right"] as const).map((side) => ({ s: side === "Left" ? -1 : 1, up: `${side}UpLeg`, knee: `${side}Leg`, ankle: `${side}Foot`, toe: `${side}ToeBase` }));
+const _foot = { along: 0, up: 0, down: true };
+const _h = new Vector3();
+const _ft = new Vector3();
+const _d = new Vector3();
+const _pole = new Vector3();
+const _k = new Vector3();
+const _e = new Vector3();
+const _kd = new Vector3();
+
+/** 0 to 1, eased at both ends, for `k` from 0 to 1. */
+function smooth(k: number): number {
+  const x = Math.max(0, Math.min(1, k));
+  return x * x * (3 - 2 * x);
+}
+
+/** An angle, radians, as the same turn between -pi and pi. */
+function wrapPi(a: number): number {
+  return a - 2 * Math.PI * Math.round(a / (2 * Math.PI));
 }
 
 const _up = new Vector3();
