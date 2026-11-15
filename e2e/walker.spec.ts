@@ -15,8 +15,10 @@ const QUERY = "light=day&time=preview&date=2026-03-20&t=15:00";
 // A smaller window than the other desktop tests: CI draws in software, and a walker view is redrawn
 // while anything in it moves.
 test.use({ viewport: { width: 1100, height: 720 } });
-// Milliseconds a game started again "at once" may take: a frame or two. In software rendering (as on
-// CI, playwright.config.ts) a frame of a walker view takes a second or more.
+// Milliseconds a game started again "at once" may take, from the click to the game's state read ten
+// times a second: a frame or two. In software rendering (as on CI, playwright.config.ts) a frame of a
+// walker view takes a second or more; a reload would take far longer. The click itself is not timed:
+// Playwright waits frames of its own for the button to stand still, four seconds or more each on CI.
 const AT_ONCE = process.platform !== "win32" || process.env.E2E_GL === "swiftshader" ? 6000 : 1500;
 
 async function walker(page: Page, command: string, args: Record<string, unknown> = {}): Promise<Reply> {
@@ -341,7 +343,7 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
       },
       [at, heading ?? null] as const,
     );
-  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game?.state()), test, { timeout: 180_000 });
+  const until = (test: string) => page.waitForFunction((t) => new Function("g", `return !!g && (${t})`)((window.__scene as unknown as GameScene).game?.state()), test, { timeout: 180_000, polling: 100 });
 
   await open(page, "?walk=1");
   await ready(page);
@@ -494,8 +496,8 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   await expect(page.locator("#game-over")).toContainText(/made up/);
   await expect(page.locator("#game-retry")).toBeFocused();
   // Retry: at once, the DDL's quest from where it began, Focus whole, the defeat counted.
-  const retried = Date.now();
   await page.locator("#game-retry").click();
+  const retried = Date.now();
   await until("g.phase === 'play' && g.main === 1 && g.focus >= 100 && g.foes.some((f) => f.kind === 'ddl')");
   expect(Date.now() - retried).toBeLessThan(AT_ONCE);
   await expect(page.locator("#game-over")).toHaveCount(0);
@@ -512,8 +514,8 @@ test("Study Quest is off until asked for; its title says it is made up; the firs
   for (const k of ["time", "deaths", "combo", "knowledge"]) await expect(page.locator(`#game-factors dd[data-factor="${k}"] .sq-pts`)).toHaveText(/^\d+\/\d+$/);
 
   // Play again: a fresh game at once, with no reload and no title card; the prompts taught stay away.
-  const again = Date.now();
   await page.locator("#game-again").click();
+  const again = Date.now();
   await until("g.phase === 'play' && g.xp === 0 && g.main === 0");
   expect(Date.now() - again).toBeLessThan(AT_ONCE);
   await expect(page.locator("#game-title")).toHaveCount(0);
