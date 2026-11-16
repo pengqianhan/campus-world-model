@@ -111,10 +111,15 @@ A change to what the site does or shows adds its line here, and the README's
   stick points, or back with none: a roll forward, a hop back, a side-step to either side. A blow taken throws the
   walker back from the way it came, in a stagger over a quarter of a second rather than a jump.
   The walker jumps: Space on the keyboard, A on a game pad, and a button of its own by the strike on a phone. A jump
-  rises about 0.6 m and falls faster than it rose, with a crouch before it, the legs tucked at the top, the arms out for
-  balance and the landing taken in the knees with a puff of dust (harder after a long fall); a press just before it can
-  jump is kept, and one just after going over an edge still counts. A jump at a run goes a third as fast again in the
-  air, easing back after landing, and a chain of jumps never goes faster. In a fight a jump clears the slams and the
+  rises about 0.6 m and falls faster than it rose. Standing, it is a hop off both feet after a short crouch, the legs
+  tucked at the top and the landing taken in the knees; moving, it leaves the ground on the press, off the foot that is
+  down: a step-up at a walk, and at a run a running leap, the other knee driven up and forward, the trail leg reaching
+  back, the arms swinging against the legs and the body leaning on, landing on the lead foot at its own step and running
+  straight on with only a dip of the hips. Its stride goes on through the air without a break, the pace keeps up, and
+  only a long fall lands hard (at a run, a quick roll on). Locked on, a jump to the side is a side leap and backing off
+  a small hop back. A landing puffs up dust; a press just before it can jump is kept, and one just after going over an
+  edge still counts. A jump at a run goes a third as fast again in the air, easing back after landing, and a chain of
+  jumps never goes faster. In a fight a jump clears the slams and the
   rings the DDL and the Final Exam send over the ground, but nothing else, and a strike pressed in the air comes down
   as a slash as the walker lands; locked on, it keeps facing its foe. In the game Shift tapped dodges and Shift held
   runs (B on a pad), and the dodge's prompt, the pause menu's controls and the pad's buttons say so; the first

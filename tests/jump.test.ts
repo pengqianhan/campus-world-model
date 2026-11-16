@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest";
 import type { Pt } from "../src/shared/geo.ts";
 import { LESSONS, PLAYER, StudyQuest, type Foe, type GameEvent, type PlayerInput, type QuestHost } from "../src/shared/game.ts";
-import { FALL_PULL, JUMP, JUMP_SPEED, RISE_PULL, SHIFT_TAP, isShiftTap, newMotion, pressJump, stepJump, stepMotion, type Motion } from "../src/shared/locomotion.ts";
+import { FALL_PULL, JUMP, JUMP_SPEED, LEAP, RISE_PULL, SHIFT_TAP, airCycle, airTimeLeft, dutyFactor, isShiftTap, jumpKind, newMotion, oneFoot, pressJump, stepJump, stepMotion, takeoffFoot, type Motion } from "../src/shared/locomotion.ts";
 import { JUMP_POSES, MOVES, newPose, sampleMove } from "../src/scene/figureMoves.ts";
 
 const DT = 1 / 120;
@@ -339,5 +339,148 @@ describe("the rules: what a jump clears", () => {
     const evs = g.step(0.01, input(0.2));
     expect(evs).toContainEqual({ type: "learn", lesson: "jump" });
     expect(g.lesson).toBeUndefined();
+  });
+});
+
+describe("the jump's kind: a hop standing, a step-up at a walk, a running leap at a run", () => {
+  it("chooses by the pace over the ground, and locked on by the way it goes against the way it faces", () => {
+    expect(jumpKind(0, 0)).toBe("hop");
+    expect(jumpKind(LEAP.stepFrom - 0.01, 0)).toBe("hop");
+    expect(jumpKind(1.4, 0)).toBe("step");
+    expect(jumpKind(LEAP.leapFrom - 0.01, 10)).toBe("step");
+    expect(jumpKind(3.5, 0)).toBe("leap");
+    expect(jumpKind(3.5, -30)).toBe("leap");
+    expect(jumpKind(3, 90)).toBe("side");
+    expect(jumpKind(3, -60)).toBe("side");
+    expect(jumpKind(2.4, 180)).toBe("back");
+    expect(jumpKind(2.4, -140)).toBe("back");
+    expect(oneFoot("leap") && oneFoot("step")).toBe(true);
+    expect(oneFoot("hop") || oneFoot("side") || oneFoot("back")).toBe(false);
+  });
+
+  it("leaves the ground on the press when moving, and only a hop from standing crouches first", () => {
+    const run = newMotion(0, 0);
+    fly(run, 1, { want: 0, speed: 3.5 });
+    pressJump(run);
+    stepMotion(run, { want: 0, speed: 3.5 }, DT);
+    stepJump(run, DT, 0, true, 3.5);
+    expect(run.air).toBe(true);
+    expect(run.kind).toBe("leap");
+    expect(run.y).toBeGreaterThan(0);
+    const walk = newMotion(0, 0);
+    fly(walk, 1, { want: 0, speed: 1.4 });
+    pressJump(walk);
+    stepJump(walk, DT, 0, true, 3.5);
+    expect(walk.air).toBe(true);
+    expect(walk.kind).toBe("step");
+    const stand = newMotion(0, 0);
+    pressJump(stand);
+    stepJump(stand, DT, 0, true, 3.5);
+    expect(stand.air).toBe(false);
+    expect(stand.kind).toBe("hop");
+    expect(stand.windup).toBeGreaterThan(0);
+  });
+});
+
+describe("the take-off foot and the landing foot, from the stride", () => {
+  const run = dutyFactor(3.5);
+  const walk = dutyFactor(1.4);
+  /** The foot whose step in the cycle a share of a cycle `p` is: the left's at 0, the right's at 0.5. */
+  const contact = (p: number) => {
+    const q = ((p % 1) + 1) % 1;
+    return Math.min(q, 1 - q) < 1e-9 ? "L" : Math.abs(q - 0.5) < 1e-9 ? "R" : "none";
+  };
+
+  it("pushes off the foot that is down", () => {
+    expect(takeoffFoot(0.1, run).push).toBe("L");
+    expect(takeoffFoot(0.35, run).push).toBe("L");
+    expect(takeoffFoot(0.6, run).push).toBe("R");
+    expect(takeoffFoot(0.85, run).push).toBe("R");
+  });
+
+  it("between steps, pushes off the foot about to come down, at once", () => {
+    // At a run both feet are off the ground between 0.4 and 0.5 and between 0.9 and 1.
+    expect(run).toBeLessThan(0.5);
+    expect(takeoffFoot(0.45, run).push).toBe("R");
+    expect(takeoffFoot(0.95, run).push).toBe("L");
+  });
+
+  it("with both feet down (a walk), pushes off the front one, just put down, and the back one swings through to land", () => {
+    expect(walk).toBeGreaterThan(0.5);
+    // At 0.55 the right was put down 0.05 of a cycle ago and the left 0.55: the right pushes, and
+    // the left lands at its next step, in half a cycle.
+    expect(takeoffFoot(0.55, walk)).toEqual({ push: "R", ahead: expect.closeTo(0.45, 9) });
+    expect(takeoffFoot(0.05, walk)).toEqual({ push: "L", ahead: expect.closeTo(0.45, 9) });
+  });
+
+  it("lands on the other foot, at that foot's own step in the cycle, on the next stride", () => {
+    for (const duty of [run, walk]) {
+      for (let p = 0; p < 1; p += 0.01) {
+        const t = takeoffFoot(p, duty);
+        const lead = t.push === "L" ? "R" : "L";
+        expect(contact(p + t.ahead), `phase ${p.toFixed(2)}`).toBe(lead);
+        expect(t.ahead).toBeGreaterThanOrEqual(0.15);
+        expect(t.ahead).toBeLessThanOrEqual(1.15);
+      }
+    }
+  });
+});
+
+describe("the stride carried through the air", () => {
+  it("knows how long the feet have left in the air, as the jump plays it", () => {
+    const m = newMotion(0, 0);
+    m.air = true;
+    m.jumped = true;
+    m.vy3 = JUMP_SPEED;
+    const predicted = airTimeLeft(0, JUMP_SPEED);
+    let t = 0;
+    while (!stepJump(m, DT, 0, true, 3.5)) t += DT;
+    expect(Math.abs(t - predicted)).toBeLessThan(2 * DT);
+    expect(airTimeLeft(0, 0)).toBe(0);
+  });
+
+  it("goes on through take-off, the air and the landing without going back or jumping, and lands on the lead foot's step", () => {
+    for (const start of [0.1, 0.33, 0.45, 0.62, 0.8, 0.97]) {
+      const m = newMotion(0, 0);
+      fly(m, 1, { want: 0, speed: 3.5 });
+      // The stride before: 1.46 cycles a second at a run, as the clip has it.
+      let cycles = 3 + start;
+      const pace = 3.5 / 2.4;
+      for (let t = 0; t < 0.5; t += DT) cycles += pace * DT;
+      const tk = takeoffFoot(cycles % 1, dutyFactor(3.5));
+      const land = cycles + tk.ahead;
+      pressJump(m);
+      const seen: number[] = [cycles];
+      let landed = false;
+      while (!landed) {
+        stepMotion(m, { want: 0, speed: 3.5 }, DT);
+        landed = stepJump(m, DT, 0, true, 3.5);
+        const left = landed ? 0 : airTimeLeft(m.y, m.vy3);
+        cycles = airCycle(cycles, land, left, DT);
+        seen.push(cycles);
+      }
+      // On through the air: never back, no step bigger than the run's own.
+      for (let k = 1; k < seen.length; k++) {
+        expect(seen[k]!).toBeGreaterThanOrEqual(seen[k - 1]!);
+        expect(seen[k]! - seen[k - 1]!).toBeLessThan(pace * DT * 1.5);
+      }
+      // Down exactly at the lead foot's step.
+      expect(cycles).toBeCloseTo(land, 9);
+      const lead = tk.push === "L" ? 0.5 : 0;
+      expect(Math.abs((((cycles - lead) % 1) + 1) % 1)).toBeLessThan(1e-9);
+    }
+  });
+
+  it("keeps the run's pace over the ground through take-off and landing: the burst, never a dip", () => {
+    const m = newMotion(0, 0);
+    fly(m, 1, { want: 0, speed: 3.5 });
+    let least = Infinity;
+    pressJump(m);
+    for (let t = 0; t < 1.5; t += DT) {
+      stepMotion(m, { want: 0, speed: 3.5 }, DT);
+      stepJump(m, DT, 0, true, 3.5);
+      least = Math.min(least, Math.hypot(m.vx, m.vy));
+    }
+    expect(least).toBeGreaterThan(3.5 - 1e-6);
   });
 });

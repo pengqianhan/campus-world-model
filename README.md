@@ -149,8 +149,8 @@ The three latest days are below; everything, with its pull request, is in the
   titan whose sand runs down with its health and whose face hardens each phase, and the fight's camera keeps the
   walker in sight through its charges. The walker moves as in an action game: the stick points the way on the screen,
   it faces the boss and side-steps round it, and it rolls, hops or side-steps the way it dodges. It jumps, too (Space,
-  or a button on a phone), faster at a run, over the boss's shockwaves, and with a slash as it lands; Shift tapped
-  dodges and held runs. Every part of it is made up (#178).
+  or a button on a phone): a running leap at a run that carries its stride and its pace on, over the boss's
+  shockwaves, and with a slash as it lands; Shift tapped dodges and held runs. Every part of it is made up (#178).
 - **2026-11-14:** every school has a list of its buildings at `/<school>/buildings/`, and each University of
   Auckland building with learning spaces has a page of its floors and rooms, each room a link to it on the map.
 - **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
