@@ -155,10 +155,12 @@ export interface Motion {
   /** Jumps and landings so far, for whoever shows them. */
   jumps: number;
   landings: number;
+  /** The kind of the jump under way or last made (jumpKind): a hop, a step-up, a running leap, a side leap or a back hop. */
+  kind: JumpKind;
 }
 
 export function newMotion(heading = 0, y = 0): Motion {
-  return { vx: 0, vy: 0, heading, pivot: 0, pivotTo: heading, y, vy3: 0, air: false, jumped: false, since: 0, buffer: 0, windup: 0, top: y, land: 9, hard: 0, boost: 1, jumps: 0, landings: 0 };
+  return { vx: 0, vy: 0, heading, pivot: 0, pivotTo: heading, y, vy3: 0, air: false, jumped: false, since: 0, buffer: 0, windup: 0, top: y, land: 9, hard: 0, boost: 1, jumps: 0, landings: 0, kind: "hop" };
 }
 
 /**
@@ -301,6 +303,84 @@ export const JUMP_SPEED = (2 * JUMP.apex) / JUMP.rise;
 export const RISE_PULL = JUMP_SPEED / JUMP.rise;
 export const FALL_PULL = RISE_PULL * JUMP.fall;
 
+/**
+ * How a jump leaves the ground, by how fast the walker goes and which way against the way it faces
+ * (`rel`, degrees clockwise): standing (under `stepFrom` m/s), a hop off both feet after a short
+ * crouch; at a walk, a step-up off one foot; at a run (from `leapFrom` m/s), a running leap off one
+ * foot; locked on and going to the side, a side leap (a crossover hop); backpedalling, a back hop.
+ * Only the hop crouches first: moving, it leaves the ground on the press.
+ */
+export type JumpKind = "hop" | "step" | "leap" | "side" | "back";
+export const LEAP = { stepFrom: 0.5, leapFrom: 2.2, sideFrom: 45, backFrom: 135 } as const;
+
+export function jumpKind(speed: number, rel: number): JumpKind {
+  if (speed < LEAP.stepFrom) return "hop";
+  const off = Math.abs(rel);
+  if (off >= LEAP.backFrom) return "back";
+  if (off >= LEAP.sideFrom) return "side";
+  return speed >= LEAP.leapFrom ? "leap" : "step";
+}
+
+/** Whether a kind of jump leaves the ground off one foot, carrying the stride (the step-up and the leap). */
+export function oneFoot(kind: JumpKind): boolean {
+  return kind === "step" || kind === "leap";
+}
+
+/**
+ * The foot a one-foot jump pushes off, for a jump at `phase` (0-1) of the gait's cycle, whose left
+ * foot comes down at 0 and right at 0.5 and each stays down `duty` of it: the foot on the ground;
+ * with both down (at a walk), the front one, just put down, which takes the weight and springs; and
+ * between steps, the one about to come down, at once and with no wait. And how far round the cycle
+ * (at least LAND_AHEAD of it) to the other foot's coming down, which is where the jump lands: the
+ * stride goes on through the air.
+ */
+export function takeoffFoot(phase: number, duty: number, out = { push: "L" as "L" | "R", ahead: 0 }): { push: "L" | "R"; ahead: number } {
+  const p = ((phase % 1) + 1) % 1;
+  const sinceL = p;
+  const sinceR = (p + 0.5) % 1;
+  const downL = sinceL < duty;
+  const downR = sinceR < duty;
+  if (downL && downR) out.push = sinceL < sinceR ? "L" : "R";
+  else if (downL) out.push = "L";
+  else if (downR) out.push = "R";
+  else out.push = 1 - sinceL < 1 - sinceR ? "L" : "R";
+  // The lead foot (the other) comes down at 0 (left) or 0.5 (right).
+  const lead = out.push === "L" ? 0.5 : 0;
+  let ahead = (((lead - p) % 1) + 1) % 1;
+  if (ahead < LAND_AHEAD) ahead += 1;
+  out.ahead = ahead;
+  return out;
+}
+/** The least share of a cycle a jump's air carries the stride on, so that it lands on the next stride, not this one. */
+const LAND_AHEAD = 0.15;
+
+/**
+ * Seconds left in the air for feet `z` metres over level ground, rising at `vz` metres a second
+ * (negative: falling), under the jump's pulls. 0 on the ground.
+ */
+export function airTimeLeft(z: number, vz: number): number {
+  if (z <= 0 && vz <= 0) return 0;
+  if (vz > 0) {
+    // Up to the top, then down from it.
+    const top = z + (vz * vz) / (2 * RISE_PULL);
+    return vz / RISE_PULL + Math.sqrt((2 * top) / FALL_PULL);
+  }
+  // Falling: z = top + vz t - g t^2 / 2 reaches 0.
+  const g = FALL_PULL;
+  return (vz + Math.sqrt(vz * vz + 2 * g * Math.max(0, z))) / g;
+}
+
+/**
+ * The gait's cycle carried on through the air of a one-foot jump: from `at` (cycles, counted on, not
+ * wrapped) towards `land`, the cycle at which the lead foot comes down, at the pace that gets there
+ * as the feet do (`left` seconds of air). Returns the cycle after `dt` seconds; never past `land`.
+ */
+export function airCycle(at: number, land: number, left: number, dt: number): number {
+  if (at >= land) return land;
+  if (left <= dt) return land;
+  return Math.min(land, at + ((land - at) * dt) / left);
+}
+
 /** A press of the jump: kept for JUMP.buffer seconds until it can jump. */
 export function pressJump(m: Motion): void {
   m.buffer = JUMP.buffer;
@@ -327,29 +407,36 @@ export function stepJump(m: Motion, dt: number, ground: number, can: boolean, to
   }
   if (m.air) m.since += dt;
   // A press kept until it can jump: on the ground, or just after going over an edge.
+  let launch = false;
   if (m.buffer > 0 && m.windup <= 0 && can && (!m.air || (!m.jumped && m.since <= JUMP.coyote))) {
     m.buffer = 0;
-    m.windup = JUMP.windup;
+    // Its kind, from how fast it goes and which way: only a hop from standing crouches first.
+    const sp = Math.hypot(m.vx, m.vy);
+    const way = sp > 1e-3 ? (Math.atan2(m.vx, m.vy) * 180) / Math.PI : m.heading;
+    m.kind = jumpKind(sp, turnBetween(m.heading, way));
+    if (m.kind === "hop") m.windup = JUMP.windup;
+    else launch = true;
   }
   m.buffer = Math.max(0, m.buffer - dt);
   if (m.windup > 0) {
     m.windup -= dt;
-    if (m.windup <= 0) {
-      m.windup = 0;
-      // Off the ground: up at the jump's speed, and a jump at a run carries a burst of pace.
-      m.air = true;
-      m.jumped = true;
-      m.vy3 = JUMP_SPEED;
-      m.top = m.y;
-      m.jumps++;
-      const speed = Math.hypot(m.vx, m.vy);
-      if (top > 0 && speed >= top * JUMP.boostFrom) {
-        m.boost = JUMP.boost;
-        const want = Math.min(speed * JUMP.boost, top * JUMP.boost);
-        if (speed > 1e-6) {
-          m.vx *= want / speed;
-          m.vy *= want / speed;
-        }
+    if (m.windup <= 0) launch = true;
+  }
+  if (launch) {
+    m.windup = 0;
+    // Off the ground: up at the jump's speed, and a jump at a run carries a burst of pace.
+    m.air = true;
+    m.jumped = true;
+    m.vy3 = JUMP_SPEED;
+    m.top = m.y;
+    m.jumps++;
+    const speed = Math.hypot(m.vx, m.vy);
+    if (top > 0 && speed >= top * JUMP.boostFrom) {
+      m.boost = JUMP.boost;
+      const want = Math.min(speed * JUMP.boost, top * JUMP.boost);
+      if (speed > 1e-6) {
+        m.vx *= want / speed;
+        m.vy *= want / speed;
       }
     }
   }
