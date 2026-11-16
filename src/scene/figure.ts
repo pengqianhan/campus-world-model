@@ -35,7 +35,7 @@ import {
 import type { Gear } from "./figureBuild.ts";
 import { DECK, GRIP, Scooter, type Ride } from "./rides.ts";
 import { JUMP_POSES, MOVES, comingIn, mixPose, moveLength, newPose, sampleFlinch, sampleMove, type Move, type MovePose } from "./figureMoves.ts";
-import { JUMP_SPEED, dutyFactor, footAt, strafeWeights, strideLength } from "../shared/locomotion.ts";
+import { JUMP_SPEED, airCycle, airTimeLeft, dutyFactor, footAt, oneFoot, strafeWeights, strideLength, takeoffFoot, type JumpKind } from "../shared/locomotion.ts";
 
 /** Where the eyes are, for the view from the walker. */
 export const EYE_HEIGHT = 1.6;
@@ -93,7 +93,7 @@ const RIDE_LEGS: [bone: string, child: string, dir: [number, number, number]][] 
  * (figureMoves.ts) and the legs' own steps (gaitLegs). Kept as the mixer left them and put back
  * before the next pose, since the mixer sets again only a bone whose value it changes.
  */
-const ACT_BONES = ["Hips", "Spine", "Spine1", "Spine2", "RightArm", "RightForeArm", "LeftArm", "LeftForeArm", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot"] as const;
+const ACT_BONES = ["Hips", "Spine", "Spine1", "Spine2", "Neck", "RightArm", "RightForeArm", "LeftArm", "LeftForeArm", "LeftUpLeg", "LeftLeg", "LeftFoot", "RightUpLeg", "RightLeg", "RightFoot"] as const;
 /**
  * The legs' own steps, for a way of going off the way the figure faces (a side-step, a backpedal),
  * where the walk and the run clips, made for going ahead, would slide the feet: from `GAIT_FROM` to
@@ -122,6 +122,19 @@ const LEAN_DAMP = 0.45;
  */
 const GUARD: MovePose = { rUp: [0.4, -0.75, -0.35], rFo: [-0.05, 0.6, -0.8], lUp: [-0.3, -0.75, -0.5], lFo: [0.05, 0.05, -1], twist: -0.12, lean: 0.06, crouch: 0, step: 0, roll: 0, bank: 0, hop: 0, splay: 0, tuck: 0 };
 const GUARD_SHARE = 0.8;
+/**
+ * A one-foot jump (leaping): radians the lead thigh drives up at most and the trail thigh reaches
+ * back, and the body's lean (at a standstill, and more at a run). Half as much for a step-up.
+ */
+const LEAD_LIFT = 0.6;
+const TRAIL_BACK = 0.4;
+const LEAP_LEAN = 0.08;
+const LEAP_LEAN_SPEED = 0.1;
+/** Down from one: metres the hips dip (and more at a run, and after a long fall), and seconds it takes. */
+const DIP = 0.025;
+const DIP_SPEED = 0.025;
+const DIP_HARD = 0.06;
+const DIP_TIME = 0.16;
 /** Seconds a landing is taken in the knees, and more after the longest fall. */
 const LAND_TIME = 0.22;
 const LAND_TIME_HARD = 0.2;
@@ -234,8 +247,23 @@ export class Figure {
    * The jump (setAir): metres the feet are off the ground, how fast they rise, whether it is in the
    * air, seconds left of the crouch before it leaves the ground, seconds since it landed and how hard.
    */
-  private air = { z: 0, vz: 0, on: false, windup: 0, land: 9, hard: 0 };
+  private air = { z: 0, vz: 0, on: false, windup: 0, land: 9, hard: 0, kind: "hop" as JumpKind };
   private jumpPose = newPose();
+  /**
+   * The gait's cycle counted on and never wrapped (`phase` is its share of a cycle), so that it can
+   * be seen to run on without a break through a jump.
+   */
+  private cycles = 0;
+  /**
+   * A one-foot jump under way (a step-up or a running leap): the foot it pushed off, the cycle at
+   * which the other (the lead) comes down to land, the cycle and the seconds since it left the ground.
+   */
+  private leap = { on: false, kind: "leap" as JumpKind, push: "L" as "L" | "R", land: 0, from: 0, t: 0 };
+  /** The last landing: its kind and the pace then, for the dip that takes it; whether it was in the air at the last pose. */
+  private landed = { kind: "hop" as JumpKind, speed: 0 };
+  private wasOn = false;
+  /** What the gait is doing, for a test or a recording to read (gaitInfo). */
+  private info = { phase: 0, cycles: 0, planted: "", kind: "", push: "", leap: false };
   /** How much the legs' own steps have taken over from the clips, and where they are in their cycle (0-1, the left foot down at 0). */
   private gaitW = 0;
   private phase = 0;
@@ -294,8 +322,9 @@ export class Figure {
   }
 
   /** The jump, for the figure's pose and its ring, which stays on the ground below it. See `air`. */
-  setAir(z: number, vz: number, on: boolean, windup: number, land: number, hard: number): void {
+  setAir(z: number, vz: number, on: boolean, windup: number, land: number, hard: number, kind: JumpKind = "hop"): void {
     const a = this.air;
+    a.kind = kind;
     a.z = z;
     a.vz = vz;
     a.on = on;
@@ -303,6 +332,15 @@ export class Figure {
     a.land = land;
     a.hard = hard;
     this.ring.position.y = 0.1 - z;
+  }
+
+  /**
+   * The gait now, for a test or a recording: the share of the cycle it is at (the left foot comes
+   * down at 0, the right at 0.5), the cycles counted on, the foot or feet on the ground (L, R, LR, or
+   * none in the air), and the jump's kind and the foot it pushed off. The same object each time.
+   */
+  gaitInfo(): { phase: number; cycles: number; planted: string; kind: string; push: string; leap: boolean } {
+    return this.info;
   }
 
   /** Draw a frame: something changed that the figure does not see itself (a landing). */
@@ -438,7 +476,40 @@ export class Figure {
     if (this.gaitW < 0.002) this.gaitW = 0;
     const sw = strafeWeights(rel, this.sw);
     const stride = strideLength(over, sw.l + sw.r, sw.b);
-    if (this.gaitW > 0) {
+    const air = this.air;
+    let was = this.phase;
+    const L = this.leap;
+    const legs = this.ride === "walk" && !this.dressing;
+    const leaping = legs && air.on && oneFoot(air.kind);
+    if (L.on && !leaping) {
+      // Down: on the lead foot, at its step in the cycle (the air's pace got it there; on ground that
+      // rose or fell under it, the little left over is taken now). The gait goes on from there.
+      L.on = false;
+      this.cycles = Math.max(this.cycles, L.land);
+      this.phase = this.cycles - Math.floor(this.cycles);
+      this.walkCycles = (this.phase + this.walkDown) % 1;
+      this.runCycles = (this.phase + this.runDown) % 1;
+      was = this.phase;
+    }
+    if (leaping) {
+      // A step-up or a running leap: the stride goes on through the air, off the foot down (or about
+      // to come down) as it left the ground, and lands on the other foot as that foot's step comes
+      // round. The clips are kept to the same cycle.
+      if (!L.on) {
+        const tk = takeoffFoot(this.phase, dutyFactor(over), _takeoff);
+        L.on = true;
+        L.kind = air.kind;
+        L.push = tk.push;
+        L.from = this.cycles;
+        L.land = this.cycles + tk.ahead;
+        L.t = 0;
+      }
+      L.t += dt;
+      this.cycles = airCycle(this.cycles, L.land, airTimeLeft(air.z, air.vz), dt);
+      this.phase = this.cycles - Math.floor(this.cycles);
+      this.walkCycles = (this.phase + this.walkDown) % 1;
+      this.runCycles = (this.phase + this.runDown) % 1;
+    } else if (this.gaitW > 0) {
       // The legs' own cycle leads, at the stride's cadence, and the clips keep in step with it, so
       // that the two agree on which foot is down while one hands over to the other.
       const went = (dt * over) / stride;
@@ -453,6 +524,33 @@ export class Figure {
       this.runCycles = (this.runCycles + ran) % 1;
       if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
       this.phase = (this.runBlend > 0.5 ? this.runCycles - this.runDown + 1 : this.walkCycles - this.walkDown + 1) % 1;
+    }
+    // The cycle counted on (in the leap above it counts itself).
+    if (!leaping) {
+      let d = this.phase - was;
+      if (d < -0.5) d += 1;
+      else if (d > 0.5) d -= 1;
+      this.cycles += d;
+    }
+    // A landing: its kind and pace, for the dip that takes it; a long fall at a run, a quick roll on.
+    if (this.wasOn && !air.on) {
+      this.landed.kind = air.kind;
+      this.landed.speed = over;
+      if (legs && air.hard >= 0.99 && over >= 2 && oneFoot(air.kind)) this.play("dodgeF", { rate: 1.4 });
+    }
+    this.wasOn = air.on;
+    const inf = this.info;
+    inf.phase = this.phase;
+    inf.cycles = this.cycles;
+    inf.kind = air.on || air.windup > 0 ? air.kind : "";
+    inf.push = L.on ? L.push : "";
+    inf.leap = L.on;
+    if (air.on) inf.planted = "";
+    else {
+      const duty = dutyFactor(over);
+      const dl = this.phase < duty;
+      const dr = (this.phase + 0.5) % 1 < duty;
+      inf.planted = moving < 0.5 ? "LR" : dl && dr ? "LR" : dl ? "L" : dr ? "R" : "";
     }
     b.idle.time = t % b.idle.getClip().duration;
     b.walk.time = this.walkCycles * b.walk.getClip().duration;
@@ -488,12 +586,29 @@ export class Figure {
       this.lay(b, this.jumpPose, jw);
       this.changed = true;
     }
+    // A one-foot jump in the air: the lead knee driven up and forward, the trail leg reaching back,
+    // the body leaning on with the pace and the head held level; the lead foot reaching down to land.
+    if (own && L.on) {
+      this.keep(b);
+      this.leaping(b, over);
+      this.changed = true;
+    }
+    // Down from a one-foot jump: the hips dip a little and come up, in stride; no squat.
+    if (own && !air.on && oneFoot(this.landed.kind) && air.land < DIP_TIME) {
+      this.keep(b);
+      const k = 1 - air.land / DIP_TIME;
+      b.root.position.y -= (DIP + DIP_SPEED * Math.min(1, this.landed.speed / 3.5) + DIP_HARD * air.hard) * k * k;
+      this.changed = true;
+    }
     if (own) this.acting(b, dt);
     else this.act.w = 0;
     this.trailStep(dt);
   }
 
-  /** The jump's pose now (into jumpPose), and how much of it is laid over the walk: 0 to 1. */
+  /**
+   * The pose of a jump off both feet now (into jumpPose), and how much of it is laid over the walk: 0
+   * to 1. A one-foot jump (a step-up, a leap) has none: its legs keep their stride (leaping).
+   */
   private jumping(): number {
     const a = this.air;
     const P = JUMP_POSES;
@@ -503,16 +618,56 @@ export class Figure {
       return 1;
     }
     if (a.on) {
+      if (oneFoot(a.kind)) return 0;
+      if (a.kind === "side" || a.kind === "back") {
+        // A side leap, the legs crossing over and the body leaning the way it goes; a small back hop.
+        const pose = a.kind === "side" ? P.side : P.back;
+        mixPose(out, pose, pose, 0);
+        if (a.kind === "side" && this.gait.x < 0) {
+          out.bank = -out.bank;
+          out.twist = -out.twist;
+        }
+        return Math.min(1, 0.4 + 0.6 * Math.min(1, a.z / 0.2));
+      }
       if (a.vz > 0) mixPose(out, P.rise, P.apex, smooth(1 - a.vz / JUMP_SPEED));
       else mixPose(out, P.apex, P.fall, smooth(-a.vz / (JUMP_SPEED * 1.1)));
       return 1;
     }
-    // Landed: taken in the knees, deeper and longer after a long fall, and up again.
-    const length = LAND_TIME + LAND_TIME_HARD * a.hard;
+    if (oneFoot(this.landed.kind)) return 0;
+    // Landed: taken in the knees, deeper and longer after a long fall, and up again; lightly after a
+    // side leap or a back hop.
+    const light = this.landed.kind === "side" || this.landed.kind === "back" ? 0.5 : 1;
+    const length = (LAND_TIME + LAND_TIME_HARD * a.hard) * light;
     if (a.land >= length) return 0;
     mixPose(out, P.land, P.landHard, a.hard);
     const k = a.land / length;
-    return (1 - k) * (1 - k);
+    return (1 - k) * (1 - k) * light;
+  }
+
+  /** The legs and the body of a one-foot jump in the air, over the run's (or the walk's) own pose. */
+  private leaping(b: Body, speed: number): void {
+    const L = this.leap;
+    const a = this.air;
+    const left = airTimeLeft(a.z, a.vz);
+    const u = Math.min(1, L.t / Math.max(1e-3, L.t + left));
+    const w = smooth(L.t / 0.06);
+    const big = L.kind === "leap" ? 1 : 0.55;
+    this.root.updateMatrixWorld(true);
+    const right = _right.set(1, 0, 0).transformDirection(this.root.matrixWorld);
+    const lead = L.push === "L" ? LEG_R : LEG_L;
+    const trail = L.push === "L" ? LEG_L : LEG_R;
+    // The lead knee up and forward early, and down again to reach for the ground at the end.
+    const lift = LEAD_LIFT * big * Math.sin(Math.PI * Math.min(1, u * 1.15)) * w;
+    turn(b.bone(lead.up), _q.setFromAxisAngle(right, lift));
+    turn(b.bone(lead.knee), _q.setFromAxisAngle(right, -lift * 0.85));
+    // The trail leg left reaching back from the push.
+    const back = TRAIL_BACK * big * Math.sin(Math.PI * u) * w;
+    turn(b.bone(trail.up), _q.setFromAxisAngle(right, -back));
+    turn(b.bone(trail.knee), _q.setFromAxisAngle(right, -back * 0.6));
+    // Leaning on with the pace, the head kept level.
+    const lean = (LEAP_LEAN + LEAP_LEAN_SPEED * Math.min(1, speed / 3.5)) * big * w;
+    for (const n of SPINE) turn(b.bone(n), _q.setFromAxisAngle(right, -lean / 2));
+    turn(b.bone("Neck"), _q.setFromAxisAngle(right, lean * 0.8));
   }
 
   /** Keeps the bones the figure turns itself as the mixer left them, to put back before the next pose. */
@@ -1118,6 +1273,9 @@ uniform vec4 uTrailCol[${n * 2}];
 /** Each leg's bones, by name, and its side (-1 left). */
 const LEGS = (["Left", "Right"] as const).map((side) => ({ s: side === "Left" ? -1 : 1, up: `${side}UpLeg`, knee: `${side}Leg`, ankle: `${side}Foot`, toe: `${side}ToeBase` }));
 const _foot = { along: 0, up: 0, down: true };
+const LEG_L = { up: "LeftUpLeg", knee: "LeftLeg" } as const;
+const LEG_R = { up: "RightUpLeg", knee: "RightLeg" } as const;
+const _takeoff = { push: "L" as "L" | "R", ahead: 0 };
 const _h = new Vector3();
 const _ft = new Vector3();
 const _d = new Vector3();

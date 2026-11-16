@@ -738,7 +738,7 @@ export class WalkerWorld {
       } else w.yaw = w.heading;
       this.show(w);
       w.figure.setGait(w.local.x, w.local.z, w.local.ax, w.local.az, w.stick ? w.turnRate : 0, w.motion.pivot, !!w.stick, !!w.stick && !!w.face);
-      w.figure.setAir(w.stick ? this.airOf(w) : 0, w.motion.vy3, w.motion.air, w.motion.windup, w.motion.land, w.motion.hard);
+      w.figure.setAir(w.stick ? this.airOf(w) : 0, w.motion.vy3, w.motion.air, w.motion.windup, w.motion.land, w.motion.hard, w.motion.kind);
       w.figure.pose(w.moving, w.pace, now / 1000);
       w.figure.rideOn(travelled, w.pace, w.turnRate, dt);
       if (w.ride === "fly" && w.drone) {

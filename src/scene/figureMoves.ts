@@ -357,6 +357,10 @@ export const JUMP_POSES = {
   apex: pose({ rUp: [0.9, -0.1, -0.35], rFo: [0.85, 0.25, -0.45], lUp: L([0.9, -0.1, -0.35]), lFo: L([0.85, 0.25, -0.45]), lean: 0.12, tuck: 0.3 }),
   fall: pose({ rUp: [0.85, 0.25, -0.3], rFo: [0.7, 0.6, -0.35], lUp: L([0.85, 0.25, -0.3]), lFo: L([0.7, 0.6, -0.35]), lean: 0.04, tuck: 0.07 }),
   land: pose({ rUp: [0.35, -0.7, -0.6], rFo: [0.1, -0.4, -0.9], lUp: L([0.35, -0.7, -0.6]), lFo: L([0.1, -0.4, -0.9]), lean: 0.3, crouch: 0.15 }),
+  // Locked on: a side leap, the legs crossed over and the body leaning the way it goes (to its right
+  // here; the figure mirrors it for the left), and a small hop back, leaning back a little.
+  side: pose({ rUp: [0.85, -0.2, -0.35], rFo: [0.8, 0.2, -0.45], lUp: [-0.6, -0.5, -0.5], lFo: [-0.2, 0.3, -0.9], lean: 0.08, twist: -0.15, bank: 0.18, splay: 0.12, tuck: 0.14 }),
+  back: pose({ rUp: [0.3, -0.5, -0.8], rFo: [0.1, 0.2, -1], lUp: L([0.3, -0.5, -0.8]), lFo: L([0.1, 0.2, -1]), lean: -0.08, tuck: 0.12 }),
   landHard: pose({ rUp: [0.35, -0.6, -0.7], rFo: [0.05, -0.8, -0.6], lUp: L([0.4, -0.75, -0.5]), lFo: L([0.1, -0.95, -0.3]), lean: 0.5, crouch: 0.3 }),
 };
 
