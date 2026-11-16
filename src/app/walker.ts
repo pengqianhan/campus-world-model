@@ -16,6 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
+import { gameHolds, gameMenu, gameOn, setPadSteer, stopGame } from "./gameState.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -347,6 +348,8 @@ export function startWalking(opts: { name?: string; near?: unknown } = {}): Repl
 /** Turns walking off: every walker leaves and the view goes back to the map. */
 export function stopWalking(): void {
   const s = scene;
+  // A game played with the walker ends with the walk.
+  stopGame();
   if (s) {
     s.setWalkerView("map");
     s.walkers.clear();
@@ -860,8 +863,43 @@ export function startWalkerFromUrl(): void {
 export function steerByHand(forward: number, turnRate: number, climb = 0): void {
   const s = scene;
   if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
-  s.walkers.steer(MY_WALKER, forward, turnRate, climb);
+  // A menu over the game holds the walker still.
+  if (gameHolds()) s.walkers.steer(MY_WALKER, 0, 0, 0);
+  else s.walkers.steer(MY_WALKER, forward, turnRate, climb);
 }
+
+/**
+ * In Study Quest, on foot, the keys, the thumb stick and a pad steer as in an action game
+ * (locomotion.ts): the way they point is a way on the screen, read against the camera, and the
+ * walker turns and goes that way (locked on to a foe, it faces the foe and steps that way); how far a
+ * stick is pushed is how fast, from a walk to a run.
+ */
+export function stickSteers(): boolean {
+  return gameOn.peek() && walkerRide.peek() === "walk";
+}
+
+/**
+ * Steers the visitor's walker as in an action game while it is held: `x` to the right of the screen
+ * and `y` up it, -1 to 1 each, and `top` metres a second pushed all the way.
+ */
+export function stickByHand(x: number, y: number, top: number): void {
+  const s = scene;
+  if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
+  if (gameHolds()) s.walkers.steerStick(MY_WALKER, 0, 0, top);
+  else s.walkers.steerStick(MY_WALKER, x, y, top);
+}
+
+// A game pad's left stick steers as the thumb stick does: forward to a run, round at its turn; in
+// the game, the way it points on the screen, a walk at a little tilt and a run at all of it.
+setPadSteer((forward, turn, run) => {
+  const pace = PACE[walkerRide.peek()];
+  if (stickSteers()) {
+    // B held: a run the way the stick points, however little it is pushed.
+    const n = run ? Math.hypot(turn, forward) : 0;
+    if (n > 1e-3) stickByHand(turn / n, forward / n, pace.fast);
+    else stickByHand(turn, forward, pace.fast);
+  } else steerByHand(forward > 0 ? forward * pace.fast : forward * pace.back, turn * Math.abs(turn) * 120);
+});
 
 /** The visitor's walker gets about another way: from the buttons, the number keys and the address. */
 export function rideAs(want: Ride): void {
@@ -888,6 +926,12 @@ export function startWalkerKeys(): () => void {
     const forward = (held.has("w") || held.has("arrowup") ? 1 : 0) - (held.has("s") || held.has("arrowdown") ? 1 : 0);
     const turnDir = (held.has("d") || held.has("arrowright") ? 1 : 0) - (held.has("a") || held.has("arrowleft") ? 1 : 0);
     const climbDir = (held.has(" ") || held.has("e") ? 1 : 0) - (held.has("q") || held.has("c") ? 1 : 0);
+    if (stickSteers()) {
+      // In the game: the keys point the way on the screen, a walk, or a run with Shift.
+      const n = Math.hypot(turnDir, forward) || 1;
+      stickByHand(turnDir / n, forward / n, fast ? pace.fast : pace.forward);
+      return;
+    }
     const speed = forward > 0 ? (fast ? pace.fast : pace.forward) : forward < 0 ? -pace.back : 0;
     steerByHand(speed, turnDir * pace.turn, "climb" in pace ? climbDir * pace.climb * (fast ? 1.5 : 1) : 0);
   };
@@ -930,13 +974,21 @@ export function startWalkerKeys(): () => void {
   window.addEventListener("keydown", down);
   window.addEventListener("keyup", up);
   window.addEventListener("blur", blur);
-  // Keys still held when it gets about another way go on steering it, at that way's pace.
+  // Keys still held when it gets about another way go on steering it, at that way's pace; and when a
+  // menu over the game shuts, they steer it again.
   let wasRide = walkerRide.peek();
+  let wasMenu = gameMenu.peek();
+  let wasGame = gameOn.peek();
   const stopRide = effect(() => {
     const now = walkerRide.value;
-    if (now === wasRide) return;
+    const menu = gameMenu.value;
+    const game = gameOn.value;
+    if (now === wasRide && menu === wasMenu && game === wasGame) return;
     wasRide = now;
-    if (held.size) apply();
+    wasMenu = menu;
+    wasGame = game;
+    // Also with nothing held: the game's way of steering starts and ends with the game, on foot.
+    apply();
   });
   return () => {
     stopRide();

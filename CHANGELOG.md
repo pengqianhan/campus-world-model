@@ -39,6 +39,98 @@ A change to what the site does or shows adds its line here, and the README's
   answers, but not to train AI models) and `llms.txt`, the site in Markdown for AI assistants. The page for an
   unknown address asks not to be indexed (#176).
 
+- **A game in the walk: Study Quest, an action game about study.** The walk's top bar has a Game button; on a phone it
+  stands under the speed. The walker grows by learning: books, notes and quests give knowledge, study ranks run from
+  Fresher to Scholar, and each rank raises its Focus, Insight and Stamina and opens a skill named for a study habit
+  (Highlighter Strike, Sidestep, Flashcard Throw, Cram Sprint, Eureka!). Made-up villains for study troubles come after
+  it, each with a name card, a line, an idle, a warning before it strikes and a death: the DDL (an alarm-clock brute
+  that charges), Procrastination, Distraction, Plagiarism and Exam Anxiety. The story's last quest is a boss fight in an
+  arena with the Final Exam, in three phases. Blows land with a pause, a shake, sparks, numbers and a combo count; a
+  quest tracker, a compass tape with quest diamonds, the boss's bar, a pause menu, a study record and a graded debrief
+  frame it, with sounds made in the browser and a reduced-motion setting.
+  In a fight the camera behind the walker swings onto the line from the foe through the walker and stands back until both
+  are whole in the picture; the Final Exam's arena is on the most open ground near its building, and trees between the
+  camera and the fight are left out of the picture while it lasts. On a phone the boss's bar is a thin line under the
+  credits, the vitals one short row while the boss is out, and the big words a short line at the top, so the middle of
+  the screen is the fight's.
+  The walker holds a highlighter in the game and fights with its whole upper body: a forehand, a backhand and an
+  overhead slam with both hands, each wound up, landing as the blow lands and followed through with a short trail; the
+  arm drawn back and snapped forward for a flashcard, which leaves the hand as it is let go; arms swept back for the
+  Cram Sprint, tucked for the sidestep, thrust up for Eureka!; a flinch when hit, and the arms dropping when burnt out.
+  Each villain moves with a mood of its own at rest, bobs and leans into its walk, and attacks in three beats: it
+  gathers itself glowing red at its edges, strikes fast, and is left open a moment, dazed; a blow makes it recoil away
+  from the walker with a glint at its edges, a finisher staggers it, and a beaten one pops and breaks up into pages,
+  clock gears or ink. The Final Exam's change of phase is a two-second roar in which the camera comes in and nothing
+  hurts the walker, and its attacks are shown by warnings on the ground that fill up before they land. Light blows,
+  finishers and critical blows each pause the fight, shake the view and throw their number differently, with sparks
+  and dust where they land; the Eureka is a crisp ring of light, the highlighter is bigger with a pink trail, and the
+  camera goes over the walker's shoulder while it strikes.
+  Its music and sounds are made in the browser from no sound files: a title theme, a walking tune that drums and bass
+  join when a villain comes near, a ticking clock against the DDL, the Final Exam's theme quicker in each phase,
+  stingers for a rank, a victory and a defeat, a heartbeat at low Focus, footsteps in time with the walk and a sound
+  of its own for each blow, pick-up, villain's warning, attack and break-up, with Music and Effects volumes in the
+  pause menu, which muffles the music. On a wide screen the boss's change of phase is a line in the lower black band
+  clear of the boss, a villain's warning glows red at its outline only, and paper debris is white with lines of ink.
+  The first minute teaches by play, not by words: the first book glows a few steps ahead, then a lone, weak
+  Procrastination that cannot burn the walker out comes, and the first time each action is needed (moving, a strike,
+  a dodge in its slow yawn, a flashcard at a foe out of reach, each new skill as it opens) one small prompt shows its
+  key, or on a phone beside its button, which pulses; once done it never shows again in that browser. Burnt out, the
+  walker can retry at once from the start of the quest it was on, or from the arena's edge with the Final Exam whole,
+  keeping what it learned; the debrief's grade is explained in one line each for time, defeats, best combo and
+  knowledge, and Play again starts at once. The pace was tuned with a headless playtest bot: an average player meets
+  the Final Exam after about eight minutes with a rank about every two, the first DDL comes before the first rank,
+  study groups come in waves, and the Final Exam guards except just after it attacks. The boss's bass and drums
+  carry overtones a phone's speaker can play, the stick and the game's buttons do not show through its menus, and
+  a game started in a corner (as at Victoria University of Wellington's starting spot) steps out to open ground so the
+  camera behind the walker is not pressed against a wall.
+  The Final Exam is a figure of its own: a brass-and-wood hourglass whose sand runs down with its health,
+  shoulders of bound books, a ruff and a cape of printed exam sheets, a scroll head whose one red eye goes from bored to
+  stern to furious, a crown of pencils, red-pen arms that bend at the elbow and drip ink, and grade tiles bobbing round
+  it; each phase cracks its glass, runs its sand faster and tears its papers more. In a fight the camera keeps clear of
+  its body, steps off the line of a charge before it comes, thins the boss's near parts for the moment it would hide the
+  walker, and turns to open ground or keeps the walker in the clear band where a wall or a foe high on a roof leaves no
+  room for both. The roar is a shockwave, a glow on the boss and a pulse at the picture's edges; the
+  ways of getting about leave the lower band at once when the phase line takes it; the hit combo lapses after 2.5
+  seconds without a blow that lands, and a blow the boss's guard turns counts a third; and the arena keeps off the roads.
+  Walking with the game on costs no frames on an Intel graphics card (60 fps, as with it off): its foes and effects take
+  what changes from uniforms and a small texture, not from vertex buffers written in every frame, and its prompts pulse
+  without repainting the page. The walker slides round the Final Exam and the DDL rather than into them, and a charge
+  knocks it aside; after a charge the camera has already come round to the boss; fights stay on the ground the walker
+  can reach, never on a roof; the Final Exam's back has a rolled seam, a ribbon and a wax seal, its cape hangs in folds,
+  and its cracks are straight; the first DDL is gentler than the one that returns; and the big words wait out a pause,
+  the menus keep Tab inside them, and the compass speaks the page's language. No book, quest's place, arena or villain
+  lies on or within 25 m of a building where people live or children are cared for.
+  In the game the walker moves as in an action game. The keys, the phone's stick and a game pad point the way to go on
+  the screen, read against the camera, and the stick's tilt sets the pace from a walk to a run. Locked on, and always
+  against the Final Exam, the walker faces its foe, holds its highlighter up on guard, and side-steps, backpedals or
+  steps between: holding left goes round the boss on a circle, and the legs step for themselves with the planted foot
+  left where it was put down; however fast it moves next to the boss, the camera never comes into the boss or onto
+  the walker. Not locked on, it turns at a limited rate, leans into turns, speeds up and slows over a moment, and plants and pivots for a sharp
+  reversal. Each blow steps into a short lunge, aimed the way the stick points at the nearest foe that way, the feet set
+  meanwhile; the blows still land 0.09 s after the press, and 0.17 s for the overhead slam. The dodge goes the way the
+  stick points, or back with none: a roll forward, a hop back, a side-step to either side. A blow taken throws the
+  walker back from the way it came, in a stagger over a quarter of a second rather than a jump.
+  The walker jumps: Space on the keyboard, A on a game pad, and a button of its own by the strike on a phone. A jump
+  rises about 0.6 m and falls faster than it rose. Standing, it is a hop off both feet after a short crouch, the legs
+  tucked at the top and the landing taken in the knees; moving, it leaves the ground on the press, off the foot that is
+  down: a step-up at a walk, and at a run a running leap, the other knee driven up and forward, the trail leg reaching
+  back, the arms swinging against the legs and the body leaning on, landing on the lead foot at its own step and running
+  straight on with only a dip of the hips. Its stride goes on through the air without a break, the pace keeps up, and
+  only a long fall lands hard (at a run, a quick roll on). Locked on, a jump to the side is a side leap and backing off
+  a small hop back. A landing puffs up dust; a press just before it can jump is kept, and one just after going over an
+  edge still counts. A jump at a run goes a third as fast again in the air, easing back after landing, and a chain of
+  jumps never goes faster. In a fight a jump clears the slams and the
+  rings the DDL and the Final Exam send over the ground, but nothing else, and a strike pressed in the air comes down
+  as a slash as the walker lands; locked on, it keeps facing its foe. In the game Shift tapped dodges and Shift held
+  runs (B on a pad), and the dodge's prompt, the pause menu's controls and the pad's buttons say so; the first
+  shockwave over the ground after the dodge is learnt teaches the jump, once.
+  It plays with the keys and mouse, a game pad, or the phone's stick and four buttons, on foot or on the scooter (where
+  the villains go twice as fast), out of doors, on every school's map. It is off until it is started, every part of it
+  is made up and says so (the Game button's hint, the title card, the menus, the debrief and About), and the buildings'
+  names and the walker's own wait while it is on, on every screen. The best grade, the game's settings and the first
+  minute's prompts already seen stay in the browser; nothing is sent anywhere. Its code, its look and its villains
+  load the first time it is started, so the map itself loads as before for a visitor who does not play (#178).
+
 ## 2026-11-13
 
 ### Changed

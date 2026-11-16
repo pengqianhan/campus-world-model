@@ -5,7 +5,10 @@
 // its place; bottom right, its speed and height, and the view. On a touch screen one thumb steers
 // with the stick while the other drags the view round. The walker, its scooter and its drone are
 // made up; the walk's menu says so, and that doors are not mapped.
+import { signal } from "@preact/signals";
+import { Component } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
+import { gameMenu, gameOn, gameOver, loadGame, stopGame } from "../app/gameState.ts";
 import { formatDate, t } from "../app/i18n.ts";
 import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -18,6 +21,8 @@ import {
   run,
   setView,
   steerByHand,
+  stickByHand,
+  stickSteers,
   stopWalking,
   walkerGauge,
   walkerOn,
@@ -27,11 +32,52 @@ import {
   wanderingNow,
 } from "../app/walker.ts";
 import { RIDES, type Ride } from "../scene/rides.ts";
-import { DRONE_CEILING, WALK_SPEED } from "../scene/walkers.ts";
+import { DRONE_CEILING } from "../scene/walkers.ts";
 import { Icon, campusName } from "./common.tsx";
 import { isLite } from "./SceneHost.tsx";
 
 const VIEWS = ["follow", "eyes", "map"] as const;
+
+/** Study Quest's panel (GameHud.tsx), loaded with the game the first time it is started. */
+const gameHud = signal<typeof import("./GameHud.tsx") | undefined>(undefined);
+let launching = false;
+
+/**
+ * Loads the game's code and its panel the first time, then starts a game for the visitor's walker,
+ * with its title card or at once; false when there is no walker to play with or the code did not come.
+ */
+async function launchGame(touch: boolean, title: boolean): Promise<boolean> {
+  if (launching) return true;
+  launching = true;
+  try {
+    const [game, hud] = await Promise.all([loadGame(), import("./GameHud.tsx")]);
+    gameHud.value = hud;
+    // The buildings' names wait until the game ends, on every screen: the game's own marks lead the way.
+    return game.startGame(MY_WALKER, true, touch, title);
+  } catch {
+    return false;
+  } finally {
+    launching = false;
+  }
+}
+
+/**
+ * The game's panel, drawn again only when the screen's kind changes: it follows the game by itself,
+ * ten times a second, and is not drawn again with each refresh of the walk's own panels.
+ */
+class GameHudSlot extends Component<{ touch: boolean; failed: () => void }> {
+  shouldComponentUpdate(next: { touch: boolean }): boolean {
+    return next.touch !== this.props.touch;
+  }
+  // Played again from the debrief: at once, with no title card.
+  private again = () => {
+    void launchGame(this.props.touch, false).then((ok) => ok || this.props.failed());
+  };
+  render() {
+    const Hud = gameHud.value?.GameHud;
+    return Hud ? <Hud touch={this.props.touch} again={this.again} /> : null;
+  }
+}
 const RIDE_ICON: Record<Ride, string> = { walk: "walkLine", scooter: "scooter", fly: "drone" };
 /** The keys the panels name, as a keyboard has them. */
 const KEY = { view: "V", hud: "H" } as const;
@@ -40,8 +86,8 @@ const GAUGE_TOP: Record<Ride, number> = { walk: 15, scooter: 25, fly: 60 };
 
 /** How far the stick must be pushed, as a share of its reach, before it does anything. */
 const DEAD_ZONE = 0.18;
-/** Metres a second with the stick pushed all the way up: on foot a jog; on the scooter and flying, flat out. */
-const STICK_TOP: Record<Ride, number> = { walk: WALK_SPEED * 2.2, scooter: PACE.scooter.fast, fly: PACE.fly.fast };
+/** Metres a second with the stick pushed all the way up: on foot a run, as Shift gives; on the scooter and flying, flat out. */
+const STICK_TOP: Record<Ride, number> = { walk: PACE.walk.fast, scooter: PACE.scooter.fast, fly: PACE.fly.fast };
 /** Degrees a second with the stick pushed all the way to one side. */
 const STICK_TURN = 120;
 /** Share of the stick's reach that its knob travels. */
@@ -63,6 +109,11 @@ function steerHand(part: Partial<typeof hand>): void {
   Object.assign(hand, part);
   const ride = walkerRide.peek();
   const f = hand.forward;
+  // In the game, on foot: the way it points on the screen, a walk at a little tilt and a run at all of it.
+  if (stickSteers()) {
+    stickByHand(hand.turn, hand.forward, STICK_TOP[ride]);
+    return;
+  }
   // Squared, so that a little push to the side turns a little and the stick can hold a line.
   steerByHand(f > 0 ? f * STICK_TOP[ride] : f * PACE[ride].back, hand.turn * Math.abs(hand.turn) * STICK_TURN, hand.climb);
 }
@@ -235,6 +286,20 @@ export function WalkerPanel() {
   const indoor = !!status?.indoor;
   const clock = shown.value;
   const preview = timeMode.value === "preview";
+  const playing = gameOn.value;
+  // A full menu over the game (the pause menu, the study record, the debrief) has the screen: the
+  // stick and the game's buttons are not shown through it.
+  const gameMenuUp = playing && (gameMenu.value !== "none" || gameOver.value);
+
+  // The game is played on the ground and seen from the walker: starting it lands the drone, and
+  // leaves the map view for the view behind the walker.
+  const play = () => {
+    setMore(false);
+    setMessage(undefined);
+    if (ride === "fly") rideAs("walk");
+    if (view === "map") setView({ view: "follow", name: MY_WALKER });
+    void launchGame(touch, true).then((ok) => ok || setMessage(t("game.notReady")));
+  };
 
   const act = async (command: string, args: Record<string, unknown>) => {
     const r = await run(command, { name: MY_WALKER, ...args });
@@ -296,7 +361,7 @@ export function WalkerPanel() {
 
   return (
     <section
-      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""}`}
+      class={`hud view-${view} ride-${ride} ${touch ? "touch" : ""} ${hidden ? "hud-hidden" : ""} ${indoor ? "hud-indoor" : ""} ${playing ? "playing" : ""} ${gameMenuUp ? "game-menu" : ""}`}
       id="walker-panel"
       aria-label={t("walker.heading")}
       style={lift}
@@ -345,6 +410,24 @@ export function WalkerPanel() {
             <span class="hud-label">{t("walker.goTo")}</span>
             <Icon name="chevronDown" size={14} />
           </button>
+          {/* On a phone the top row has no room for it: there the game's button stands under the speed. */}
+          {!touch && (
+            <>
+              <span class="hud-divider" aria-hidden="true" />
+              <button
+                type="button"
+                class={`hud-tool hud-game-tool ${playing ? "on" : ""}`}
+                id="walker-game"
+                aria-pressed={playing}
+                aria-label={t(playing ? "game.stopHint" : "game.startHint")}
+                title={t(playing ? "game.stopHint" : "game.startHint")}
+                onClick={() => (playing ? stopGame() : play())}
+              >
+                <Icon name="book" size={16} />
+                <span class="hud-label">{t(playing ? "game.stop" : "game.start")}</span>
+              </button>
+            </>
+          )}
           <span class="hud-divider" aria-hidden="true" />
           <button
             type="button"
@@ -386,6 +469,8 @@ export function WalkerPanel() {
         </div>
       </div>
 
+      {playing && <GameHudSlot touch={touch} failed={() => setMessage(t("game.notReady"))} />}
+
       <div class="hud-corner hud-bl">
         <p class="hud-sign" id="walker-where" aria-live="polite">
           {where}
@@ -395,7 +480,7 @@ export function WalkerPanel() {
             {message}
           </p>
         )}
-        {touch && <Stick onSteer={() => setMessage(undefined)} />}
+        {touch && !gameMenuUp && <Stick onSteer={() => setMessage(undefined)} />}
       </div>
 
       <footer class="hud-corner hud-bc">
@@ -472,6 +557,19 @@ export function WalkerPanel() {
             {!touch && <kbd>{KEY.view}</kbd>}
           </div>
         </section>
+        {touch && (
+          <button
+            type="button"
+            class={`hud-card hud-btn hud-game-pill ${playing ? "on" : ""}`}
+            id="walker-game"
+            aria-pressed={playing}
+            title={t(playing ? "game.stopHint" : "game.startHint")}
+            onClick={() => (playing ? stopGame() : play())}
+          >
+            <Icon name="book" size={16} />
+            <span>{t(playing ? "game.stop" : "game.start")}</span>
+          </button>
+        )}
       </div>
     </section>
   );
