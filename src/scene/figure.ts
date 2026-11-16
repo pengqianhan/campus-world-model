@@ -518,12 +518,15 @@ export class Figure {
       this.runCycles = (this.phase + this.runDown) % 1;
       if (moving > 0.5) this.footfalls += 2 * went;
     } else {
-      const walked = (dt * Math.min(speed, WALK_CADENCE_MAX)) / WALK_CYCLE;
-      const ran = (dt * Math.min(speed, RUN_CADENCE_MAX)) / RUN_CYCLE;
-      this.walkCycles = (this.walkCycles + walked) % 1;
-      this.runCycles = (this.runCycles + ran) % 1;
-      if (moving > 0.5) this.footfalls += 2 * (this.runBlend > 0.5 ? ran : walked);
-      this.phase = (this.runBlend > 0.5 ? this.runCycles - this.runDown + 1 : this.walkCycles - this.walkDown + 1) % 1;
+      // One cycle for the walk and the run, at a stride between theirs as the one hands over to the
+      // other, so that the two clips agree on which foot is down and slowing from a run to a walk
+      // never jumps the cycle.
+      const k = this.runBlend;
+      const went = (dt * Math.min(speed, WALK_CADENCE_MAX + (RUN_CADENCE_MAX - WALK_CADENCE_MAX) * k)) / (WALK_CYCLE + (RUN_CYCLE - WALK_CYCLE) * k);
+      this.phase = (this.phase + went) % 1;
+      this.walkCycles = (this.phase + this.walkDown) % 1;
+      this.runCycles = (this.phase + this.runDown) % 1;
+      if (moving > 0.5) this.footfalls += 2 * went;
     }
     // The cycle counted on (in the leap above it counts itself).
     if (!leaping) {
