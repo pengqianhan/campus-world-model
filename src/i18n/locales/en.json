@@ -93,6 +93,7 @@
       "osm-levels": "Height from OpenStreetMap's number of levels, {levels}, at {storey} m each",
       "estimated": "Height estimated: OpenStreetMap gives no height and no number of levels, so it stands at {height} m, the default of the surrounding buildings"
     },
+    "photoOpen": "Open the full photo",
     "fromOsm": "Outline, name and code from OpenStreetMap",
     "fromOsmName": "Outline and name from OpenStreetMap",
     "fromOsmCampusMap": "Outline from OpenStreetMap; its name is its block code on the school's own campus map",

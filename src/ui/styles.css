@@ -2719,3 +2719,34 @@ select optgroup {
     transition: none !important;
   }
 }
+
+/* A real photograph of the building at the top of its card (src/app/photos.ts). */
+.building-photo {
+  margin: 0 0 10px;
+}
+
+.building-photo a {
+  display: block;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+.building-photo img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.building-photo figcaption {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 640px) {
+  .building-photo img {
+    height: 110px;
+  }
+}
