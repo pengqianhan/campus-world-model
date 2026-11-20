@@ -269,7 +269,6 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(index).toContain('<figure id="globe" hidden aria-label="A globe with a pin for each campus world">');
     expect(index.match(/<script type="module" src="([^"]*)"><\/script>/g)).toEqual(['<script type="module" src="/globe/globe-abc.js"></script>']);
     expect(notFound).not.toContain('id="globe"');
-    const at = (s: string) => index.indexOf(s);
     // the list first, for those who read the page in order; the globe beside it, and above it on a narrow screen (CSS)
     expect(index).toMatch(/<div class="explorer">\n<section id="worlds"[\s\S]*<\/section>\n<figure id="globe"[\s\S]*<\/figure>\n<\/div>/);
     expect(index).toContain('<body class="wide">');
