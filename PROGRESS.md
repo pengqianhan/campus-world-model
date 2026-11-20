@@ -754,7 +754,12 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
     map at `/<id>/`. Every other entry has a static page at `/worlds/<id>/`: its screenshot, what it
     is, its school in English and in the school's own language (as `.reo` shows te reo Māori), its
     flags, and links to play it and to its source. The Tsinghua, ZJU and Westlake cards become
-    entries; FAQ and About stay, and FAQ says how to add a project.
+    entries. About stays. Changed by the user on 2026-11-21: the questions
+    left the page (llms.txt keeps them, and the structured data no longer lists them), and a note under the
+    list says how to add a project, with a link to open an issue. The same day, at the user's word, the list
+    stands on the left and the globe on the right on a wide screen, and the page turned light: white cards,
+    a pale sea and sand-coloured land, the accent kept for fills and pins and a darker orange (#a65400) for
+    accent text, which passes WCAG AA on white.
   - *Data.* Other entries are in `src/worlds/worlds.json` (JSON: no new dependency), read when the
     root is built (`scripts/build-root.ts`), not by `npm run data:build`, so a contributor can
     build it. The site's own schools come from `.github/schools.json` and their published data. Each

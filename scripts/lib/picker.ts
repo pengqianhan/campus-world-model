@@ -186,7 +186,7 @@ export function byCountry(entries: ListEntry[]): [string, ListEntry[]][] {
 // The project's palette (src/ui/styles.css and src/scene/palette.ts): the map's sky and ground
 // behind, the panels' ink, and the accent #ffb454. No university's colours and no logo.
 export const STYLE = `
-:root{--ink:#0f1b25;--panel:#14222e;--text:#eef3f6;--muted:#a3b3bf;--accent:#ffb454;--sky:#dfe8ec;--ground:#e9e5da;--edge:#8b7b62;
+:root{--ink:#0f1b25;--panel:#14222e;--text:#eef3f6;--muted:#a3b3bf;--accent:#ffb454;--accent-ink:#a65400;--card:#ffffff;--line:#d3dde3;--sky:#dfe8ec;--ground:#e9e5da;--edge:#8b7b62;
 --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue","Noto Sans",Arial,sans-serif;
 --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Noto Serif",serif}
 *{box-sizing:border-box}
@@ -197,21 +197,23 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .lead{margin:0 0 16px;color:#33424d}
 .notice{margin:0;padding:10px 14px;border-left:4px solid var(--accent);border-radius:8px;background:rgba(255,255,255,.6);font-size:.9375rem}
 .schools{display:grid;gap:12px;margin:28px 0 0;padding:0;list-style:none}
-.schools>li{position:relative;padding:16px 48px 16px 18px;border:1px solid transparent;border-radius:12px;background:var(--panel);color:var(--text);box-shadow:0 10px 34px rgba(5,12,18,.18)}
-.schools>li::after{content:"";position:absolute;top:50%;right:22px;width:10px;height:10px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transform:translateY(-50%) rotate(45deg)}
-.schools>li:hover{border-color:var(--accent)}
+.schools>li{position:relative;padding:16px 48px 16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);box-shadow:0 4px 16px rgba(15,27,37,.06)}
+.schools>li::after{content:"";position:absolute;top:50%;right:22px;width:10px;height:10px;border-top:2px solid #c06a0c;border-right:2px solid #c06a0c;transform:translateY(-50%) rotate(45deg)}
+.schools>li:hover{border-color:var(--accent);box-shadow:0 6px 22px rgba(15,27,37,.12)}
 .schools>li:focus-within{outline:2px solid var(--accent);outline-offset:3px}
-.site{margin:0 0 2px;color:var(--accent);font:600 .75rem/1.3 var(--font);letter-spacing:.06em;text-transform:uppercase}
+.site{margin:0 0 2px;color:var(--accent-ink);font:600 .75rem/1.3 var(--font);letter-spacing:.06em;text-transform:uppercase}
 .schools h3{margin:0 0 6px;font:600 1.375rem/1.25 var(--font-display);overflow-wrap:anywhere}
 .schools h3 a{color:inherit;text-decoration:none}
 .schools h3 a::before{content:"";position:absolute;inset:0;border-radius:12px}
 .schools h3 a:focus{outline:none}
 .country{margin:32px 0 0;font:600 1.5rem/1.2 var(--font-display)}
 .country+.schools{margin-top:12px}
-.mark{color:var(--accent)}
+.mark{color:var(--accent-ink);font-weight:600}
+.add-note{margin:20px 0 0;padding:10px 14px;border:1px dashed var(--line);border-radius:12px;color:#33424d;font-size:.9375rem}
+.add-note a{color:#0b4f7c}
 .schools>li.lit{border-color:var(--accent)}
 body.wide main{max-width:84rem}
-body.wide .lead,body.wide .notice,body.wide .faq,body.wide #about{max-width:46rem}
+body.wide .lead,body.wide .notice,body.wide #about{max-width:46rem}
 .explorer{display:flex;flex-direction:column;gap:8px;margin-top:24px}
 .explorer #globe{order:-1}
 .explorer .country:first-child{margin-top:8px}
@@ -225,15 +227,15 @@ body.wide .lead,body.wide .notice,body.wide .faq,body.wide #about{max-width:46re
 .explorer:has(#globe:not([hidden])) .schools>li{padding:12px 40px 12px 14px}
 .explorer:has(#globe:not([hidden])) .schools h3{font-size:1.125rem}
 }
-.globe-stage{position:relative;height:440px;border-radius:16px;background:radial-gradient(circle at 50% 45%,#22384a 0%,var(--ink) 70%);overflow:hidden;cursor:grab}
+.globe-stage{position:relative;height:440px;border:1px solid var(--line);border-radius:16px;background:radial-gradient(circle at 50% 45%,#ffffff 0%,#eaf1f4 55%,#dbe6eb 100%);overflow:hidden;cursor:grab}
 .globe-stage canvas{display:block;width:100%;height:100%}
-.globe-tip{position:absolute;max-width:220px;padding:8px 12px;border-radius:10px;background:var(--panel);color:var(--text);box-shadow:0 6px 20px rgba(5,12,18,.35);pointer-events:none}
+.globe-tip{position:absolute;max-width:220px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);box-shadow:0 6px 20px rgba(15,27,37,.15);pointer-events:none}
 .globe-tip .site{margin:0}
 .globe-tip .name{margin:0;font:600 1rem/1.3 var(--font-display)}
 #globe figcaption{margin:6px 0 0;color:#4a5a66;font-size:.875rem}
 @media (max-width:560px){.globe-stage{height:320px}}
-.reo{margin:-2px 0 6px;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
-.facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:var(--muted);font-size:.9375rem}
+.reo{margin:-2px 0 6px;color:#33424d;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
+.facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:#4a5a66;font-size:.9375rem}
 .masthead{display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:space-between;gap:8px 20px;margin:0 0 8px}
 .masthead h1{margin:0}
 .top{display:flex;align-items:center;gap:4px;margin-left:auto}
@@ -264,10 +266,6 @@ body.wide .lead,body.wide .notice,body.wide .faq,body.wide #about{max-width:46re
 .coverage .sub th{padding-left:14px;color:#4a5a66}
 .limits{margin:0;padding-left:18px}
 .built{color:#4a5a66}
-.faq{margin-top:40px}
-.faq h2{margin:0 0 4px;font:600 1.75rem/1.2 var(--font-display)}
-.faq h3{margin:20px 0 4px;font:600 1.0625rem/1.35 var(--font)}
-.faq p{margin:0;color:#33424d}
 `.trim();
 
 /** The GitHub mark, as the app draws it (src/ui/icons.ts). */
@@ -296,28 +294,20 @@ function about(shared: Words, schools: PickerSchool[]): string {
   ].join("\n");
 }
 
-/** The keys of the questions under the list, picker.faq.<key>, in the order shown. */
+/**
+ * The keys of the site's questions and answers, picker.faq.<key>, in their order. Since 2026-11-21 (the maintainer)
+ * the page no longer shows them; llms.txt still gives them to AI assistants.
+ */
 export const FAQ_KEYS = ["what", "shows", "add", "room", "sources", "official", "mistake"] as const;
 
-/** The questions under the list, each with its answer, as plain text. */
+/** The site's questions, each with its answer, as plain text. */
 export function faq(shared: Words): { q: string; a: string }[] {
   return FAQ_KEYS.map((k) => ({ q: word(shared, `picker.faq.${k}.q`), a: word(shared, `picker.faq.${k}.a`) }));
 }
 
-/** The questions under the list of schools, each a heading with its answer under it. */
-function questions(shared: Words): string {
-  const e = escapeHtml;
-  return [
-    `<section class="faq" aria-labelledby="faq-title">`,
-    `<h2 id="faq-title">${e(word(shared, "picker.faqTitle"))}</h2>`,
-    ...faq(shared).map(({ q, a }) => `<h3>${e(q)}</h3>\n<p>${e(a)}</p>`),
-    `</section>`,
-  ].join("\n");
-}
-
 /**
- * The picker's structured data (scripts/lib/seo.ts): the site, the list of its schools' maps, and the
- * questions under the list with their answers, in the words the page shows.
+ * The picker's structured data (scripts/lib/seo.ts): the site and the list of its campus worlds, in the words the
+ * page shows.
  */
 function pickerJsonLd(shared: Words, entries: ListEntry[]): object {
   return {
@@ -334,10 +324,6 @@ function pickerJsonLd(shared: Words, entries: ListEntry[]): object {
         "@type": "ItemList",
         name: word(shared, "picker.listLabel"),
         itemListElement: entries.map((x, i) => ({ "@type": "ListItem", position: i + 1, name: `${x.site}: ${x.name}`, url: siteUrl(x.href.slice(1)) })),
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: faq(shared).map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
       },
     ],
   };
@@ -403,7 +389,7 @@ function page(shared: Words, schools: PickerSchool[], worlds: World[], words: { 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0f1b25">
+<meta name="theme-color" content="#dfe8ec">
 <meta name="description" content="${e(word(shared, "picker.description"))}">
 <meta property="og:title" content="${e(words.documentTitle)}">
 <meta property="og:description" content="${e(word(shared, "picker.description"))}">
@@ -427,10 +413,11 @@ ${seo}
 <div class="explorer">
 <section id="worlds" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${lists.join("\n")}
+${withAbout ? `<p class="add-note">${e(word(shared, "picker.worlds.addNote"))} <a href="${e(REPO)}/issues/new" rel="noopener noreferrer">${e(word(shared, "picker.worlds.addLink"))}</a></p>` : ""}
 </section>
 ${g ? g.figure : ""}
 </div>
-${withAbout ? `${questions(shared)}\n${about(shared, schools)}` : ""}${g ? `\n${g.scripts}` : ""}
+${withAbout ? about(shared, schools) : ""}${g ? `\n${g.scripts}` : ""}
 </main>
 </body>
 </html>
@@ -456,8 +443,9 @@ export function sitemapEntries(schools: PickerSchool[], pagesUnder: Record<strin
 
 /**
  * llms.txt (llmstxt.org): the site in Markdown for AI assistants. What it is, each school's map with its line
- * from the picker, the questions with their answers, the addresses that open a place on a map, and the links
- * to About and the source code. Every text is the picker's.
+ * from the picker, the worlds made by others, the site's questions with their answers (which the page itself no
+ * longer shows), the addresses that open a place on a map, and the links to About and the source code. Every text
+ * comes from the picker.* words.
  */
 export function llmsTxt(schools: PickerSchool[], shared: Words, worlds: World[] = []): string {
   const maps = schools.map((school) => {

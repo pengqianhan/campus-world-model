@@ -14,13 +14,15 @@ import { escapeHtml as e, word, worldNative, worldPlace } from "./picker.ts";
 import { siteUrl } from "./seo.ts";
 
 const WORLD_STYLE = `
-.shot{display:block;width:100%;height:auto;aspect-ratio:16/9;margin:16px 0 4px;border-radius:12px;background:var(--panel);box-shadow:0 10px 34px rgba(5,12,18,.18)}
+.shot{display:block;width:100%;height:auto;aspect-ratio:16/9;margin:16px 0 4px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 6px 22px rgba(15,27,37,.1)}
+.open{background:var(--accent);color:var(--ink);margin-right:8px}
+.open:hover{box-shadow:0 0 0 2px var(--ink)}
 .credit,.why{margin:0;color:#4a5a66;font-size:.875rem}
 .why{margin-top:16px}
 .about{margin:16px 0 0;font-size:1.0625rem}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
 .flags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0;padding:0;list-style:none}
-.flags li{padding:2px 10px;border-radius:999px;background:var(--panel);color:var(--accent);font-size:.8125rem;font-weight:600}
+.flags li{padding:2px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--accent-ink);font-size:.8125rem;font-weight:600}
 .facts-list{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}
 .facts-list dt{color:#4a5a66}
 .facts-list dd{margin:0;overflow-wrap:anywhere}

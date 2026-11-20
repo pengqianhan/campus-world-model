@@ -3,6 +3,7 @@
 // A pin under the pointer names its campus; a click or a tap opens its page. It turns slowly by itself until
 // someone touches it, and not at all for those who ask for less motion. It draws only while on screen.
 import {
+  BackSide,
   CanvasTexture,
   Group,
   Mesh,
@@ -16,10 +17,14 @@ import {
 } from "three";
 import { type GlobeData, type GlobeLand, type GlobePoint, facing, latLonToVector, mapPixel, middle } from "./data.ts";
 
-/** The site's palette: the panels' ink for the sea, a lighter ink for the land, the accent for the site's own schools. */
-const COLOURS = { sea: "#14222e", land: "#3b5163", coast: "#5d7487", own: 0xffb454, other: 0xeef3f6 };
+/**
+ * The site's palette, light: a pale sky blue for the sea, its sand (--ground) for the land with its edge colour for
+ * the coast, the accent for the site's own schools and a deep sea blue for the others'. Every pin has a thin
+ * outline in the site's ink, so both show on sea and sand alike.
+ */
+const COLOURS = { sea: "#bfd9e6", land: "#f6f1e4", coast: "#8b7b62", own: 0xffb454, other: 0x2c6e8f, ring: 0x0f1b25 };
 const TEXTURE = { width: 2048, height: 1024 };
-const PIN = 0.024;
+const PIN = 0.021;
 const DISTANCE = { near: 1.9, far: 5.5, start: 4.1 };
 
 /** The land drawn on an equirectangular map, sea behind it. */
@@ -41,7 +46,7 @@ function landTexture(land: GlobeLand): CanvasTexture {
   }
   g.fillStyle = COLOURS.land;
   g.fill("evenodd");
-  g.lineWidth = 1.5;
+  g.lineWidth = 2;
   g.strokeStyle = COLOURS.coast;
   g.stroke();
   const texture = new CanvasTexture(canvas);
@@ -84,11 +89,15 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
   const sphere = new Mesh(new SphereGeometry(1, 96, 64), new MeshBasicMaterial({ map: landTexture(land) }));
   globe.add(sphere);
   const pinGeometry = new SphereGeometry(PIN, 16, 12);
-  const materials = { own: new MeshBasicMaterial({ color: COLOURS.own }), other: new MeshBasicMaterial({ color: COLOURS.other }) };
+  const materials = { own: new MeshBasicMaterial({ color: COLOURS.own }), other: new MeshBasicMaterial({ color: COLOURS.other }), ring: new MeshBasicMaterial({ color: COLOURS.ring, side: BackSide }) };
   const pins: Mesh[] = data.points.map((p) => {
     const pin = new Mesh(pinGeometry, p.own ? materials.own : materials.other);
     const [x, y, z] = latLonToVector(p.lat, p.lon);
-    pin.position.set(x * (1 + PIN * 0.6), y * (1 + PIN * 0.6), z * (1 + PIN * 0.6));
+    pin.position.set(x * (1 + PIN * 1.2), y * (1 + PIN * 1.2), z * (1 + PIN * 1.2));
+    // the outline: a larger ball drawn on its far side only, so it rims the pin from every angle
+    const ring = new Mesh(pinGeometry, materials.ring);
+    ring.scale.setScalar(1.28);
+    pin.add(ring);
     pin.userData.point = p;
     globe.add(pin);
     return pin;

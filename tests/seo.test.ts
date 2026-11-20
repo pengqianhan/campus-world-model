@@ -78,22 +78,26 @@ describe("the picker at the site's root", () => {
     expect(meta(pages.index, "og:image:alt")).toBe(lookupWords(shared, "picker.imageAlt"));
   });
 
-  it("describes the site, its schools' maps and its questions in structured data, in the words it shows", () => {
+  it("describes the site and its schools' maps in structured data, in the words it shows, and no questions it does not show", () => {
     const [data] = ld(pages.index);
     expect(ld(pages.index)).toHaveLength(1);
     const graph = data!["@graph"] as Record<string, unknown>[];
-    expect(graph.map((x) => x["@type"])).toEqual(["WebSite", "ItemList", "FAQPage"]);
+    // the questions left the page on 2026-11-21 (the maintainer), so they left its structured data too
+    expect(graph.map((x) => x["@type"])).toEqual(["WebSite", "ItemList"]);
     expect(graph[0]).toMatchObject({ name: "Campus World Model", url: SITE, description: lookupWords(shared, "picker.description") });
     const items = graph[1]!.itemListElement as { position: number; name: string; url: string }[];
     expect(items.map((x) => x.url)).toEqual(ids.map((id) => `${SITE}${id}/`));
     expect(items.map((x) => x.position)).toEqual(ids.map((_, i) => i + 1));
-    const questions = graph[2]!.mainEntity as { name: string; acceptedAnswer: { text: string } }[];
-    expect(questions.map((x) => ({ q: x.name, a: x.acceptedAnswer.text }))).toEqual(faq(shared));
-    // each question and its answer is on the page, as people see it
-    for (const { q, a } of faq(shared)) expect(pages.index).toContain(`<h3>${q.replace(/'/g, "&#39;")}</h3>\n<p>${a.replace(/'/g, "&#39;")}</p>`);
+    expect(pages.index).not.toContain('class="faq"');
+    for (const { q } of faq(shared)) expect(pages.index).not.toContain(`<h3>${q.replace(/'/g, "&#39;")}</h3>`);
   });
 
-  it("says it is not affiliated with any university, in its first answer", () => {
+  it("says how to add a campus world, under the list, with a link to suggest one on GitHub", () => {
+    expect(pages.index).toMatch(/<p class="add-note">Made a 3D world of a real university campus\?[^<]*<a href="https:\/\/github\.com\/pengqianhan\/campus-world-model\/issues\/new" rel="noopener noreferrer">Suggest it on GitHub<\/a><\/p>\n<\/section>/);
+    expect(pages.notFound).not.toContain('class="add-note"');
+  });
+
+  it("says in llms.txt that it is not affiliated with any university, in its first answer", () => {
     expect(faq(shared)[0]!.a).toMatch(/not affiliated with any university/);
     expect(faq(shared).find((x) => /official/.test(x.q))!.a).toMatch(/^No\./);
   });
