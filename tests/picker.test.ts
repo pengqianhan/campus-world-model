@@ -226,7 +226,9 @@ describe("About, at the site's root since 2026-11-10", () => {
     for (const id of ids) expect(pages.index).toMatch(new RegExp(`<li data-school="${id}">[^\n]*<span class="mark">Map on this site</span>`));
     // the worlds of a country follow the day they joined, and on one day their ids
     const china = byCountry(listEntries(schools, worlds, shared)).find(([c]) => c === "China")![1].map((x) => x.id);
-    expect(china).toEqual(["tsinghua", "westlake-yungu", "zju-zijingang"]); // the same day: by id
+    const key = (id: string) => { const w = worlds.find((x) => x.id === id)!; return `${w.added} ${w.id}`; };
+    expect(china[0]).toBe("tsinghua");
+    expect(china).toEqual([...china].sort((a, b) => key(a).localeCompare(key(b))));
   });
 
   it("gives each world made by others a page: what it is, our screenshot with its source and day or why there is none, its links, and that it is not this site's", () => {

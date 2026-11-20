@@ -37,7 +37,7 @@ try {
   await page.waitForLoadState("networkidle", { timeout: waitMs }).catch(() => {});
   await page.waitForTimeout(5000);
   if (rest.includes("--close")) {
-    const closers = page.locator("button, [role=button]").filter({ hasText: /^\s*[✕×]\s*$/ });
+    const closers = page.locator("button, [role=button]").filter({ hasText: /^\s*([✕×]|close|关闭|閉じる)\s*$/i });
     const named = page.locator('button[aria-label*="close" i], button[title*="close" i], button[aria-label*="关闭"], button[title*="关闭"]');
     for (const l of [closers, named]) {
       for (const b of await l.all()) {

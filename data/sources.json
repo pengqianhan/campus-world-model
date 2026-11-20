@@ -4121,6 +4121,86 @@
       "source": "osm"
     },
     {
+      "file": "osm/nominatim/bupt-xitucheng.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=%E5%8C%97%E4%BA%AC%E9%82%AE%E7%94%B5%E5%A4%A7%E5%AD%A6",
+      "fetchedAt": "2026-11-20T11:19:45.279Z",
+      "bytes": 507,
+      "sha256": "0ed52cdf9b123e0cfdb09179d0e9e7e98f84c33d2a79d784db9492c081f30e54",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/fh-dortmund.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Fachhochschule%20Dortmund%2C%20Emil-Figge-Stra%C3%9Fe%2C%20Dortmund",
+      "fetchedAt": "2026-11-20T11:19:34.676Z",
+      "bytes": 556,
+      "sha256": "1b9bfc644f332c773ce8564a2aad6515f37d531e610c02677695c05580f234f8",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/gdut-hemc.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Guangdong%20University%20of%20Technology%2C%20Panyu%2C%20Guangzhou",
+      "fetchedAt": "2026-11-20T11:19:25.400Z",
+      "bytes": 579,
+      "sha256": "3d10df770234cb0c0a5df7d44330f328f2a19f6a4a4914ebed4706a27b9f7874",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/gxu.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Guangxi%20University%2C%20Nanning",
+      "fetchedAt": "2026-11-20T11:19:24.255Z",
+      "bytes": 518,
+      "sha256": "68579132b70bcee6052cc2ae9607d7016ed7bf973aeaa7d88f49d6bd733f80fb",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/lancaster.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Lancaster%20University%2C%20Bailrigg%2C%20Lancaster",
+      "fetchedAt": "2026-11-20T11:19:32.241Z",
+      "bytes": 532,
+      "sha256": "233d5cc04684be125d66f1406f2fbc52c43702a01d9746844323ed66053e1c42",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/lau.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Lebanese%20American%20University%2C%20Beirut",
+      "fetchedAt": "2026-11-20T11:19:33.280Z",
+      "bytes": 601,
+      "sha256": "4df639a114abd181d579d40e1a2ac4e92fb69518ca6edfd71c9ce86318af9386",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/njupt.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Nanjing%20University%20of%20Posts%20and%20Telecommunications%2C%20Xianlin%2C%20Nanjing",
+      "fetchedAt": "2026-11-20T11:19:27.723Z",
+      "bytes": 558,
+      "sha256": "67a2721307ba8a70d4981e07a8f5b858fb81f35b2aaf38b3c5e5362a4c6d7a23",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/puc-sp.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Pontif%C3%ADcia%20Universidade%20Cat%C3%B3lica%20de%20S%C3%A3o%20Paulo%2C%20Rua%20Monte%20Alegre%2C%20S%C3%A3o%20Paulo",
+      "fetchedAt": "2026-11-20T11:19:28.959Z",
+      "bytes": 487,
+      "sha256": "ef809a423c274defb08a41a359db0be60c49f7ab11141340ee63be381ff932b0",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/ritsumeikan-bkc.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=%E7%AB%8B%E5%91%BD%E9%A4%A8%E5%A4%A7%E5%AD%A6%2C%20%E8%8D%89%E6%B4%A5%E5%B8%82",
+      "fetchedAt": "2026-11-20T11:19:58.409Z",
+      "bytes": 521,
+      "sha256": "097dd8fd87b0e6a1948bf992d8421d51a7349434c7ac88b5a7305511702ea5d3",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/tdu-senju.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=%E6%9D%B1%E4%BA%AC%E9%9B%BB%E6%A9%9F%E5%A4%A7%E5%AD%A6%20%E6%9D%B1%E4%BA%AC%E5%8D%83%E4%BD%8F%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%91%E3%82%B9",
+      "fetchedAt": "2026-11-20T11:19:48.725Z",
+      "bytes": 554,
+      "sha256": "72cb75d84310f904d21e608cc69458170fa0feab637e5070e29a59987dfac504",
+      "source": "nominatim"
+    },
+    {
       "file": "osm/nominatim/tsinghua.json",
       "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Tsinghua%20University%2C%20Haidian%20District%2C%20Beijing",
       "fetchedAt": "2026-11-20T09:47:42.702Z",
@@ -4129,11 +4209,35 @@
       "source": "nominatim"
     },
     {
+      "file": "osm/nominatim/uvic.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=University%20of%20Victoria",
+      "fetchedAt": "2026-11-20T11:19:46.555Z",
+      "bytes": 542,
+      "sha256": "1a7245d3c13685929616d9d7e7392a6b768490b4818f9cfea101d2a7b9578cc5",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/vit-ap.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=VIT-AP%20University%2C%20Amaravati",
+      "fetchedAt": "2026-11-20T11:19:30.124Z",
+      "bytes": 579,
+      "sha256": "9770303b140088b1f9ff877cff84ac3affeb07d03407c89104249925321a0920",
+      "source": "nominatim"
+    },
+    {
       "file": "osm/nominatim/westlake-yungu.json",
       "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Westlake%20University%20Yungu%20Campus%2C%20Hangzhou",
       "fetchedAt": "2026-11-20T09:47:44.331Z",
       "bytes": 530,
       "sha256": "4588cfb95e2dd756b730abebfdd9ddfc904839e14e4b3761830bccbad333daae",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/zjsru-gongchenqiao.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=%E6%B5%99%E6%B1%9F%E6%A0%91%E4%BA%BA%E5%A4%A7%E5%AD%A6%2C%20%E6%8B%B1%E5%A2%85%E5%8C%BA%2C%20%E6%9D%AD%E5%B7%9E%E5%B8%82",
+      "fetchedAt": "2026-11-20T11:20:07.310Z",
+      "bytes": 535,
+      "sha256": "f7bd9804020093575acfd12d4b997af6df413be82aebf699ad6fae52146058cd",
       "source": "nominatim"
     },
     {
