@@ -14,14 +14,10 @@ export const LINZ_ELEVATION_CREDIT = "https://www.linz.govt.nz/products-services
 export const INSPIRED_BY = { id: "tsinghua", url: "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live" };
 
 /**
- * Other independent projects that let you walk through a campus, in the order their cards stand under the
- * Tsinghua World Model's (the maintainer, 2026-11-20). Each links to its source code; its name, its school
- * and what it is are under `travel.worlds.<id>` in the locale files.
+ * The collection that gave the idea of a list of campus worlds on a globe (PROGRESS.md, "Decisions", A global
+ * collection of campus worlds). About links to it; nothing is taken from it.
  */
-export const OTHER_WORLDS = [
-  { id: "zju", url: "https://github.com/ZJU-LAPUTA/zju-laputa-campus" },
-  { id: "westlake", url: "https://github.com/Westlake-AGI-Lab/westlake-campus-game" },
-] as const;
+export const INSPIRED_LIST = { name: "Awesome Slop Cities", url: "https://zz85.github.io/slop-cities/" };
 
 /** The site whose root carries About, one section a school (scripts/lib/about.ts). */
 export const SITE = "https://campusworldmodel.com/";

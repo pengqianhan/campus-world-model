@@ -307,7 +307,6 @@
     "landmarksLidar": "The LiDAR point cloud",
     "landmarksCredit": "LINZ: attributing elevation data",
     "inspirationTitle": "Inspiration",
-    "otherWorldsTitle": "Inspiration and other campus worlds",
     "inspiration": "This site was inspired by the Tsinghua World Model, an independent student project that lets you walk through Tsinghua University's campus and find courses and classrooms in it. The idea of a campus you can step into comes from there. The code, models and data here were made separately.",
     "codeTitle": "Code and corrections",
     "code": "The code is open source under the MIT licence. If a room is in the wrong place, please open an issue.",
@@ -360,16 +359,6 @@
     "worlds": {
       "tsinghua": {
         "name": "Tsinghua World Model"
-      },
-      "zju": {
-        "name": "ZJU-LAPUTA",
-        "school": "Zhejiang University",
-        "about": "An independent project: a 3D web adventure game set on Zhejiang University's Zijingang campus, along its real roads, with a robot lab where you take robots apart and put them back together. Its code is on GitHub."
-      },
-      "westlake": {
-        "name": "Westlake Campus Game",
-        "school": "Westlake University",
-        "about": "An independent project from the Westlake AGI Lab: an unofficial 3D model of Westlake University's Yungu campus that several players can walk through together, find buildings in and plan walking routes across. Its code is on GitHub."
       }
     }
   },
@@ -678,12 +667,12 @@
     }
   },
   "picker": {
-    "documentTitle": "Campus World Model (unofficial student project)",
-    "description": "Unofficial student-made 3D maps of university campuses in New Zealand. Not affiliated with any of these universities.",
+    "documentTitle": "Campus World Model: 3D campus worlds (unofficial student project)",
+    "description": "A collection of 3D campus worlds from around the world: unofficial student-made 3D maps of New Zealand's universities, and independent campus projects made by others. Not affiliated with any university.",
     "heading": "Campus World Model",
-    "lead": "Unofficial 3D maps of university campuses in New Zealand. Choose a school.",
-    "notice": "An unofficial student project. Not affiliated with any of these universities.",
-    "listLabel": "Schools",
+    "lead": "3D campus worlds from around the world: the maps made on this site, and projects made by others. Choose a campus.",
+    "notice": "An unofficial student project. Not affiliated with any university. Projects made by others are their makers' own.",
+    "listLabel": "Campus worlds",
     "navLabel": "Source code and About",
     "aboutSchools": "Each school's map: what it shows, its sources and their licences, its coverage and its limits",
     "form": {
@@ -695,18 +684,22 @@
     "notFound": {
       "documentTitle": "No page at this address · Campus World Model (unofficial student project)",
       "heading": "No page at this address",
-      "lead": "This address is not on the site. Choose a school."
+      "lead": "This address is not on the site. Choose a campus."
     },
     "imageAlt": "Campus World Model: the buildings of a university campus in New Zealand on a 3D map",
     "faqTitle": "Questions",
     "faq": {
       "what": {
         "q": "What is Campus World Model?",
-        "a": "Campus World Model is a free 3D map of the campuses of the eight universities in New Zealand. It runs in a web browser. A student made it, and its code is open source. It is not affiliated with any of these universities."
+        "a": "Campus World Model is a collection of 3D campus worlds from around the world. It has free 3D maps of the campuses of the eight universities in New Zealand, made on this site, and it lists independent campus projects that others made, each with a page that says what it is and links to it. It runs in a web browser. A student made it, and its code is open source. It is not affiliated with any university."
       },
       "shows": {
         "q": "What does each map show?",
         "a": "Each map shows the buildings of its school's campuses in 3D. Some maps also show the floors and the teaching rooms of the buildings. The line of each school in the list above says what its map shows."
+      },
+      "add": {
+        "q": "How do I add my campus project?",
+        "a": "A project can join if it shows a real university campus in 3D, says it is unofficial, and has a link to play it without signing in or public source code. Open an issue or a pull request at github.com/pengqianhan/campus-world-model with its links; the entries are in src/worlds/worlds.json."
       },
       "room": {
         "q": "How do I find a room at the University of Auckland?",
@@ -799,6 +792,40 @@
       "lincoln": {
         "name": "Lincoln University",
         "city": "Lincoln"
+      }
+    },
+    "worlds": {
+      "ownMark": "Map on this site",
+      "by": "By {name}",
+      "othersTitle": "Campus worlds made by others",
+      "inspirationList": "The idea of a list of campus worlds on a globe comes from a collection of 3D cities made with AI. The code, data and look here are this site's own.",
+      "flags": {
+        "game": "Game",
+        "multiplayer": "Multiplayer",
+        "classes": "Class times",
+        "wip": "Work in progress",
+        "heavy": "Slow to load; needs a strong graphics card"
+      },
+      "page": {
+        "crumb": "Campus worlds",
+        "documentTitle": "{title}: {place} · Campus World Model (unofficial)",
+        "description": "{title}: {about} Listed on Campus World Model, a collection of 3D campus worlds.",
+        "notOurs": "{title} is made by others, not by this site. Campus World Model links to it and says what it is. It is not affiliated with {school}.",
+        "play": "Play {title}",
+        "source": "Source code",
+        "screenshotAlt": "A screenshot of {title}",
+        "screenshotCredit": "Screenshot of {url}, taken on {date} by this site.",
+        "noScreenshot": "No screenshot. {why}",
+        "factsTitle": "Facts",
+        "school": "School",
+        "campus": "Campus",
+        "city": "City",
+        "country": "Country",
+        "by": "Made by",
+        "added": "On this list since",
+        "inspiredBy": "In its own words, it was inspired by {name}:",
+        "placeCredit": "Placed with OpenStreetMap Nominatim on {date}. © OpenStreetMap contributors, ODbL.",
+        "imageAlt": "Campus World Model: 3D campus worlds from around the world"
       }
     }
   }

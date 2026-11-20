@@ -94,7 +94,7 @@ describe("the picker at the site's root", () => {
   });
 
   it("says it is not affiliated with any university, in its first answer", () => {
-    expect(faq(shared)[0]!.a).toMatch(/not affiliated with any of these universities/);
+    expect(faq(shared)[0]!.a).toMatch(/not affiliated with any university/);
     expect(faq(shared).find((x) => /official/.test(x.q))!.a).toMatch(/^No\./);
   });
 
