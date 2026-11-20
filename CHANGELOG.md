@@ -14,6 +14,16 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
+## 2026-11-20
+
+### Added
+
+- **Two more campus worlds on the home page.** Under the Tsinghua World Model's card on
+  https://campusworldmodel.com/, a card for each of two other independent projects that let you walk through a
+  campus, each with its school, what it is and a link to its source code: ZJU-LAPUTA, a 3D web adventure game on
+  Zhejiang University's Zijingang campus, and the Westlake Campus Game, a 3D model of Westlake University's Yungu
+  campus that several players can walk through together.
+
 ## 2026-11-14
 
 ### Added

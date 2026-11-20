@@ -737,7 +737,10 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   of its own; it keeps its GitHub link, and its attribution and its "Why?" links open its section
   of About (`aboutHref` in `src/app/links.ts`: the root it is served from, or campusworldmodel.com's
   from the GitHub Pages copy). The "Other worlds" row and its 2.2 s flight, from 2026-10-14 to
-  2026-11-10, are gone. The other site is linked to and nothing is loaded from it.
+  2026-11-10, are gone. The other site is linked to and nothing is loaded from it. Since 2026-11-20 (the user), under that card stands a
+  card like it for each of two other independent campus worlds, in this order, each with its school,
+  what it is and a link to its source code on GitHub (`OTHER_WORLDS` in `src/app/links.ts`):
+  ZJU-LAPUTA (Zhejiang University) and the Westlake Campus Game (Westlake University).
 - **How a University building looks from outside (the user, 2026-10-14).** After comparing with
   the Tsinghua World Model the user asked for five changes, in this order: roofs in a colour of
   their own; floors that are alike drawn as one block; a rim and firmer edges on roofs; storeys and
