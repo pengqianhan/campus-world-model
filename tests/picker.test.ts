@@ -262,7 +262,7 @@ describe("About, at the site's root since 2026-11-10", () => {
     }
   });
 
-  it("puts the globe above the list on the picker only: a figure hidden until its script shows it, its data, and one module script", () => {
+  it("puts the globe beside the list on the picker only: a figure hidden until its script shows it, its data, and one module script", () => {
     const placed = schools.map((s, i) => ({ ...s, origin: { lat: -36 - i, lon: 174 + i } }));
     const files = { script: "/globe/globe-abc.js", land: "/globe/land-abc.json" };
     const { index, notFound } = pickerPages(placed, shared, worlds, files);
@@ -270,7 +270,10 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(index.match(/<script type="module" src="([^"]*)"><\/script>/g)).toEqual(['<script type="module" src="/globe/globe-abc.js"></script>']);
     expect(notFound).not.toContain('id="globe"');
     const at = (s: string) => index.indexOf(s);
-    expect(at('<figure id="globe"')).toBeLessThan(at('<section id="worlds"'));
+    // the list first, for those who read the page in order; the globe beside it, and above it on a narrow screen (CSS)
+    expect(index).toMatch(/<div class="explorer">\n<section id="worlds"[\s\S]*<\/section>\n<figure id="globe"[\s\S]*<\/figure>\n<\/div>/);
+    expect(index).toContain('<body class="wide">');
+    expect(notFound).toContain("<body>");
     const data = JSON.parse(index.match(/<script type="application\/json" id="globe-data">([^<]*)<\/script>/)![1]!) as GlobeData;
     expect(data.land).toBe(files.land);
     // a pin for every line of the list, in its order, the site's own schools marked as such

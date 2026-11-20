@@ -209,8 +209,22 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .country{margin:32px 0 0;font:600 1.5rem/1.2 var(--font-display)}
 .country+.schools{margin-top:12px}
 .mark{color:var(--accent)}
-#globe{margin:24px 0 0}
+.schools>li.lit{border-color:var(--accent)}
+body.wide main{max-width:84rem}
+body.wide .lead,body.wide .notice,body.wide .faq,body.wide #about{max-width:46rem}
+.explorer{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+.explorer #globe{order:-1}
+.explorer .country:first-child{margin-top:8px}
+#globe{margin:0}
 #globe[hidden]{display:none}
+@media (min-width:900px){
+.explorer:has(#globe:not([hidden])){display:grid;grid-template-columns:minmax(300px,25rem) 1fr;gap:24px;height:min(82vh,820px)}
+.explorer:has(#globe:not([hidden])) #worlds{min-height:0;overflow-y:auto;padding:0 10px 16px 2px;scrollbar-width:thin}
+.explorer:has(#globe:not([hidden])) #globe{order:0;display:flex;flex-direction:column;min-height:0}
+.explorer:has(#globe:not([hidden])) .globe-stage{flex:1;height:auto}
+.explorer:has(#globe:not([hidden])) .schools>li{padding:12px 40px 12px 14px}
+.explorer:has(#globe:not([hidden])) .schools h3{font-size:1.125rem}
+}
 .globe-stage{position:relative;height:440px;border-radius:16px;background:radial-gradient(circle at 50% 45%,#22384a 0%,var(--ink) 70%);overflow:hidden;cursor:grab}
 .globe-stage canvas{display:block;width:100%;height:100%}
 .globe-tip{position:absolute;max-width:220px;padding:8px 12px;border-radius:10px;background:var(--panel);color:var(--text);box-shadow:0 6px 20px rgba(5,12,18,.35);pointer-events:none}
@@ -342,16 +356,20 @@ export function globeData(schools: PickerSchool[], worlds: World[], shared: Word
 }
 
 /** The globe above the list, hidden until its script shows it, with its data as JSON that no browser runs. */
-function globe(shared: Words, data: GlobeData, script: string): string {
+function globe(shared: Words, data: GlobeData, script: string): { figure: string; scripts: string } {
   const e = escapeHtml;
-  return [
-    `<figure id="globe" hidden aria-label="${e(data.words.label)}">`,
-    `<div class="globe-stage"><div class="globe-tip" hidden><p class="site"></p><p class="name"></p></div></div>`,
-    `<figcaption>${e(word(shared, "picker.worlds.globe.caption"))}</figcaption>`,
-    `</figure>`,
-    `<script type="application/json" id="globe-data">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`,
-    `<script type="module" src="${e(script)}"></script>`,
-  ].join("\n");
+  return {
+    figure: [
+      `<figure id="globe" hidden aria-label="${e(data.words.label)}">`,
+      `<div class="globe-stage"><div class="globe-tip" hidden><p class="site"></p><p class="name"></p></div></div>`,
+      `<figcaption>${e(word(shared, "picker.worlds.globe.caption"))}</figcaption>`,
+      `</figure>`,
+    ].join("\n"),
+    scripts: [
+      `<script type="application/json" id="globe-data">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`,
+      `<script type="module" src="${e(script)}"></script>`,
+    ].join("\n"),
+  };
 }
 
 /**
@@ -375,6 +393,8 @@ function page(shared: Words, schools: PickerSchool[], worlds: World[], words: { 
       `<p class="facts">${x.facts.map((f) => `<span>${e(f)}</span>`).join("")}${x.kind === "own" ? `<span class="mark">${e(word(shared, "picker.worlds.ownMark"))}</span>` : ""}</p>`,
       `</li>`,
     ].join("");
+  // The globe, on the picker: beside the list on a wide screen, above it on a narrow one (STYLE, .explorer).
+  const g = withAbout && files ? globe(shared, globeData(schools, worlds, shared, files.land), files.script) : undefined;
   const lists = byCountry(entries).map(([country, xs]) =>
     [`<h2 class="country">${e(country)}</h2>`, `<ul class="schools" aria-label="${e(country)}">`, ...xs.map(item), `</ul>`].join("\n"),
   );
@@ -393,7 +413,7 @@ ${seo}
 <title>${e(words.documentTitle)}</title>
 <style>${STYLE}</style>
 </head>
-<body>
+<body${g ? ' class="wide"' : ""}>
 <main>
 <header class="masthead">
 <h1>${e(words.heading)}</h1>
@@ -404,11 +424,13 @@ ${seo}
 </header>
 <p class="lead">${e(words.lead)}</p>
 <p class="notice">${e(word(shared, "picker.notice"))}</p>
-${withAbout && files ? globe(shared, globeData(schools, worlds, shared, files.land), files.script) : ""}
+<div class="explorer">
 <section id="worlds" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${lists.join("\n")}
 </section>
-${withAbout ? `${questions(shared)}\n${about(shared, schools)}` : ""}
+${g ? g.figure : ""}
+</div>
+${withAbout ? `${questions(shared)}\n${about(shared, schools)}` : ""}${g ? `\n${g.scripts}` : ""}
 </main>
 </body>
 </html>

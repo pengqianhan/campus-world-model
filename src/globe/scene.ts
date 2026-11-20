@@ -50,8 +50,19 @@ function landTexture(land: GlobeLand): CanvasTexture {
   return texture;
 }
 
-/** Puts the globe into `figure` and shows it. */
-export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: string): Promise<void> {
+/** What the list beside the globe can ask of it. */
+export interface GlobeControl {
+  /** Turns the globe to a campus, lights its pin and names it. */
+  focus(id: string): void;
+  /** Lets go of the campus focus() named. */
+  release(): void;
+}
+
+/**
+ * Puts the globe into `figure` and shows it. `onHover` hears the campus whose pin is under the pointer, or
+ * undefined when none is, so that the list can light its line.
+ */
+export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: string, onHover: (id: string | undefined) => void = () => {}): Promise<GlobeControl> {
   const res = await fetch(landUrl);
   if (!res.ok) throw new Error(`${landUrl}: HTTP ${res.status}`);
   const land = (await res.json()) as GlobeLand;
@@ -85,6 +96,20 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
 
   const start = facing(middle(data.points).lat, middle(data.points).lon);
   globe.rotation.set(start.pitch, start.yaw, 0);
+
+  // The pin that is lit, from the list or under the pointer, drawn larger.
+  let lit: Mesh | undefined;
+  const light = (id: string | undefined) => {
+    const pin = id === undefined ? undefined : pins.find((m) => (m.userData.point as GlobePoint).id === id);
+    if (pin === lit) return;
+    lit?.scale.setScalar(1);
+    lit = pin;
+    lit?.scale.setScalar(1.9);
+    dirty = true;
+  };
+  // Where the globe is turning to, for a campus named from the list, and that campus, whose name follows its pin.
+  let aim: { yaw: number; pitch: number } | undefined;
+  let focused: GlobePoint | undefined;
 
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let touchedAt = still ? Infinity : -Infinity;
@@ -126,6 +151,7 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
     return best?.p;
   };
   const show = (p: GlobePoint | undefined, clientX = 0, clientY = 0) => {
+    light(p?.id);
     if (!p) {
       tip.hidden = true;
       stage.style.cursor = "grab";
@@ -162,7 +188,10 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
       // A mouse over the globe holds it still, so the pin it names stays under it.
       if (e.pointerType === "mouse") {
         touchedAt = still ? Infinity : performance.now();
-        show(pick(e.clientX, e.clientY), e.clientX, e.clientY);
+        const p = pick(e.clientX, e.clientY);
+        focused = undefined;
+        show(p, e.clientX, e.clientY);
+        onHover(p?.id);
       }
       return;
     }
@@ -179,6 +208,7 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
       return;
     }
     travelled += Math.abs(dx) + Math.abs(dy);
+    aim = undefined;
     const k = (0.9 * (camera.position.z - 1)) / stage.clientHeight;
     globe.rotation.y += dx * k * 2;
     globe.rotation.x = Math.max(-1.3, Math.min(1.3, globe.rotation.x + dy * k * 2));
@@ -190,6 +220,7 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
     if (pointers.size < 2) pinchFrom = 0;
     if (!was || travelled > 6) return;
     const p = pick(e.clientX, e.clientY, e.pointerType === "mouse" ? 14 : 24);
+    onHover(p?.id);
     if (!p) return show(undefined);
     // A mouse opens at once; a touch names the campus first, and a second tap on it opens it.
     if (e.pointerType === "mouse" || (!tip.hidden && tip.dataset.id === p.id)) window.location.href = p.href;
@@ -201,7 +232,10 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
   el.addEventListener("pointerup", release);
   el.addEventListener("pointercancel", (e) => pointers.delete(e.pointerId));
   el.addEventListener("pointerleave", (e) => {
-    if (e.pointerType === "mouse" && !pointers.size) show(undefined);
+    if (e.pointerType === "mouse" && !pointers.size) {
+      show(undefined);
+      onHover(undefined);
+    }
   });
   const zoom = (factor: number) => {
     camera.position.z = Math.max(DISTANCE.near, Math.min(DISTANCE.far, camera.position.z * factor));
@@ -229,10 +263,33 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
     });
   };
 
+  /** Where a pin is on the page, or undefined when it is behind the globe. */
+  const onScreen = (pin: Mesh): { x: number; y: number } | undefined => {
+    const r = renderer.domElement.getBoundingClientRect();
+    camera.updateMatrixWorld();
+    pin.getWorldPosition(world);
+    if (world.dot(screen.copy(camera.position).sub(world)) <= 0) return undefined;
+    screen.copy(world).project(camera);
+    return { x: r.left + ((screen.x + 1) / 2) * r.width, y: r.top + ((1 - screen.y) / 2) * r.height };
+  };
+
   let last = performance.now();
   const frame = (now: number) => {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
+    if (aim) {
+      // Eases toward the campus named from the list, the short way round.
+      const k = still ? 1 : 1 - Math.exp(-dt * 5);
+      globe.rotation.y += (aim.yaw - globe.rotation.y) * k;
+      globe.rotation.x += (aim.pitch - globe.rotation.x) * k;
+      if (Math.abs(aim.yaw - globe.rotation.y) + Math.abs(aim.pitch - globe.rotation.x) < 1e-3) aim = undefined;
+      dirty = true;
+    }
+    if (focused && dirty) {
+      const at = lit && onScreen(lit);
+      if (at) show(focused, at.x - 14, at.y - 14);
+      else tip.hidden = true;
+    }
     if (visible) {
       // Turns eastward by itself, as the Earth does, after ten seconds untouched.
       if (now - touchedAt > 10_000 && pointers.size === 0) {
@@ -247,4 +304,25 @@ export async function mountGlobe(figure: HTMLElement, data: GlobeData, landUrl: 
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+
+  return {
+    focus(id) {
+      const p = data.points.find((x) => x.id === id);
+      if (!p) return;
+      touchedAt = still ? Infinity : performance.now() + 60_000;
+      const to = facing(p.lat, p.lon);
+      // the same turn, give or take whole turns, nearest to where the globe is now
+      const turns = Math.round((globe.rotation.y - to.yaw) / (2 * Math.PI));
+      aim = { yaw: to.yaw + turns * 2 * Math.PI, pitch: Math.max(-1.3, Math.min(1.3, to.pitch)) };
+      focused = p;
+      light(id);
+      dirty = true;
+    },
+    release() {
+      focused = undefined;
+      aim = undefined;
+      touchedAt = still ? Infinity : performance.now();
+      show(undefined);
+    },
+  };
 }
