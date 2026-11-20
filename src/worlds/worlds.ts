@@ -33,7 +33,7 @@ export interface Screenshot {
 }
 
 /** What a world is or has, shown on its page as a short label (worlds.flags.<flag> in the locale files). */
-export const FLAGS = ["game", "multiplayer", "classes", "wip"] as const;
+export const FLAGS = ["game", "multiplayer", "classes", "wip", "heavy"] as const;
 export type Flag = (typeof FLAGS)[number];
 
 /** One campus world made by others. */

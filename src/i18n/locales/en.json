@@ -803,7 +803,8 @@
         "game": "Game",
         "multiplayer": "Multiplayer",
         "classes": "Class times",
-        "wip": "Work in progress"
+        "wip": "Work in progress",
+        "heavy": "Slow to load; needs a strong graphics card"
       },
       "page": {
         "crumb": "Campus worlds",

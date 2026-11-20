@@ -53,6 +53,7 @@
       "city": "Hangzhou",
       "country": "China",
       "placeQuery": "Zhejiang University Zijingang Campus, Hangzhou",
+      "play": "https://jixie1111-zju-laputa-campus.ms.show/",
       "source": "https://github.com/ZJU-LAPUTA/zju-laputa-campus",
       "by": {
         "name": "ZJU-LAPUTA",
@@ -60,7 +61,8 @@
       },
       "about": "A 3D web adventure game set on Zhejiang University's Zijingang campus, along its real roads, with a robot lab where you take robots apart and put them back together.",
       "flags": [
-        "game"
+        "game",
+        "heavy"
       ],
       "added": "2026-11-20",
       "place": {
@@ -70,7 +72,7 @@
         "file": "data/raw/osm/nominatim/zju-zijingang.json",
         "date": "2026-11-20"
       },
-      "noScreenshot": "Its play page is on ModelScope, which loads a sign-in script and a captcha, so this site could not confirm that it opens without signing in. Its source code is public, and it runs on your own computer."
+      "noScreenshot": "Its play page is on ModelScope, which loads its scripts from hosts this site does not visit, so there is no screenshot."
     },
     {
       "id": "westlake-yungu",
@@ -179,11 +181,7 @@
         "file": "data/raw/osm/nominatim/gdut-hemc.json",
         "date": "2026-11-20"
       },
-      "screenshot": {
-        "file": "gdut-hemc.jpg",
-        "url": "https://gdut-campus-atlas.gdut-campus-atlas.workers.dev/",
-        "date": "2026-11-20"
-      }
+      "noScreenshot": "Its page shows the university's logo, and this site shows no university's logo."
     },
     {
       "id": "bupt-xitucheng",
