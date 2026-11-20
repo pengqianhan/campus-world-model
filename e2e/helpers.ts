@@ -5,6 +5,7 @@ import type { Meta } from "../src/shared/types.ts";
 import type { Words } from "../src/shared/school.ts";
 import { loadSchoolAbout } from "../scripts/lib/about.ts";
 import { pickerPages, schoolWords } from "../scripts/lib/picker.ts";
+import { readWorlds } from "../scripts/lib/worlds-pages.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
 
 export const SHOTS = path.join("e2e", "screenshots");
@@ -178,7 +179,7 @@ export async function openRoot(page: Page, hash = ""): Promise<void> {
     meta: JSON.parse(fs.readFileSync(path.join("public", "data", id, "meta.json"), "utf8")) as Meta,
     about: loadSchoolAbout(root, path.join("public", "data", id), id),
   }));
-  const html = pickerPages(schools, shared).index;
+  const html = pickerPages(schools, shared, readWorlds(root, schools.map((s) => s.id))).index;
   await page.route("**/site-root/", (route) => route.fulfill({ contentType: "text/html; charset=utf-8", body: html }));
   await page.goto(`site-root/${hash}`);
 }

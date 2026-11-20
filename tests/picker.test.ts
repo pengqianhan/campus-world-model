@@ -9,10 +9,12 @@ import { describe, expect, it } from "vitest";
 import { locales } from "../src/app/i18n.ts";
 import type { Words } from "../src/shared/school.ts";
 import type { CampusData, Meta } from "../src/shared/types.ts";
-import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, OTHER_WORLDS, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
+import { INSPIRED_BY, INSPIRED_LIST, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
-import { type PickerSchool, escapeHtml, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
+import { type PickerSchool, byCountry, escapeHtml, listEntries, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
+import { readWorlds, worldPageFile } from "../scripts/lib/worlds-pages.ts";
+import { type World, worldProblems } from "../src/worlds/worlds.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
 import { robotsTxt, sitemapXml } from "../scripts/lib/seo.ts";
 import { buildingPagePaths } from "../scripts/lib/building-pages.ts";
@@ -23,7 +25,8 @@ const ids = parseSchoolList(fs.readFileSync(".github/schools.json", "utf8"));
 const meta = (id: string) => JSON.parse(fs.readFileSync(path.join("public", "data", id, "meta.json"), "utf8")) as Meta;
 const aboutOf = (id: string) => loadSchoolAbout(root, path.join("public", "data", id), id);
 const schools: PickerSchool[] = ids.map((id) => ({ id, words: schoolWords(root, id, shared), meta: meta(id), about: aboutOf(id) }));
-const pages = pickerPages(schools, shared);
+const worlds = readWorlds(root, ids);
+const pages = pickerPages(schools, shared, worlds);
 
 /** The links of the list, in order. */
 const links = (html: string) => [...html.matchAll(/<li data-school="([^"]*)">.*?<a href="([^"]*)">/g)].map((m) => [m[1], m[2]]);
@@ -48,15 +51,16 @@ function shownTexts(html: string): string[] {
 
 /** Every text the page may show: each picker.* text, and each school's facts from its meta.json and words. */
 function allowedTexts(): Set<string> {
-  // the bar's words, and the cards under the schools: the Tsinghua World Model's and the other campus worlds'
-  const worlds = OTHER_WORLDS.flatMap((w) => ["name", "school", "about"].map((f) => `travel.worlds.${w.id}.${f}`));
-  const bar = ["nav.about", "about.repo", "about.inspirationTitle", "about.otherWorldsTitle", "about.inspiration", "travel.worlds.tsinghua.name", ...worlds];
+  // the bar's words
+  const bar = ["nav.about", "about.repo"];
   const picker = [...wordKeys(shared).filter((k) => k.startsWith("picker.")), ...bar].map((k) => lookupWords(shared, k)!);
   const facts = schools.flatMap((s) => {
     const line = schoolLine(s, shared);
     return [line.site, line.name, line.city, line.form, line.snapshot];
   });
-  return new Set([...picker, ...facts]);
+  // each line of the list, from this site's schools and from src/worlds/worlds.json
+  const lines = listEntries(schools, worlds, shared).flatMap((x) => [x.site, x.name, x.country, ...x.facts, ...(x.native ? [x.native.text] : [])]);
+  return new Set([...picker, ...facts, ...lines]);
 }
 
 describe("the school picker at the site's root", () => {
@@ -81,7 +85,7 @@ describe("the school picker at the site's root", () => {
     it(`${page} says it is unofficial, in its title and in the notice`, () => {
       expect(html).toContain(`<title>${escapeHtml(lookupWords(shared, page === "404.html" ? "picker.notFound.documentTitle" : "picker.documentTitle")!)}</title>`);
       expect(html).toMatch(/<title>[^<]*unofficial[^<]*<\/title>/);
-      expect(html).toContain("An unofficial student project. Not affiliated with any of these universities.");
+      expect(html).toContain(escapeHtml("An unofficial student project. Not affiliated with any university. Projects made by others are their makers' own."));
     });
   }
 
@@ -160,9 +164,14 @@ describe("the school picker at the site's root", () => {
       // and what search engines and AI assistants read (scripts/lib/seo.ts)
       expect(fs.readFileSync(path.join(dir, "og.jpg"))).toEqual(fs.readFileSync(path.join("docs", "og", "home.jpg")));
       const pagesUnder = Object.fromEntries(ids.map((id) => [id, buildingPagePaths({ campus: JSON.parse(fs.readFileSync(path.join("public", "data", id, "campus.json"), "utf8")) as CampusData })]));
-      expect(fs.readFileSync(path.join(dir, "sitemap.xml"), "utf8")).toBe(sitemapXml(sitemapEntries(schools, pagesUnder)));
+      expect(fs.readFileSync(path.join(dir, "sitemap.xml"), "utf8")).toBe(sitemapXml(sitemapEntries(schools, pagesUnder, worlds)));
       expect(fs.readFileSync(path.join(dir, "robots.txt"), "utf8")).toBe(robotsTxt());
-      expect(fs.readFileSync(path.join(dir, "llms.txt"), "utf8")).toBe(llmsTxt(schools, shared));
+      expect(fs.readFileSync(path.join(dir, "llms.txt"), "utf8")).toBe(llmsTxt(schools, shared, worlds));
+      // and each world's page, with its screenshot beside it
+      for (const w of worlds) {
+        expect(fs.readFileSync(path.join(dir, "worlds", w.id, "index.html"), "utf8")).toBe(worldPageFile(w, worlds, shared).html);
+        expect(fs.existsSync(path.join(dir, "worlds", w.id, "screenshot.jpg"))).toBe(!!w.screenshot);
+      }
 
       // A school on the list that was not laid out stops it.
       fs.rmSync(path.join(dir, ids.at(-1)!), { recursive: true });
@@ -193,34 +202,67 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(pages.notFound).not.toContain('<section id="about"');
   });
 
-  it("names the Tsinghua World Model, which inspired the site, in a card under the schools that links to it", () => {
+  it("names in About the Tsinghua World Model, which inspired the site, and the collection that gave the idea of the list", () => {
     expect(INSPIRED_BY.url).toBe("https://tsinghua-world-model.pages.dev/?campus=1&classMode=live");
-    const card = pages.index.match(/<ul class="schools inspired"[\s\S]*?<\/ul>/)?.[0] ?? "";
-    expect(card).toContain(`<p class="site">Inspiration</p>`);
-    expect(card).toContain(`<h2><a id="inspired-by" href="${escapeHtml(INSPIRED_BY.url)}" rel="noopener noreferrer">Tsinghua World Model</a></h2>`);
-    expect(card).toContain(`<p class="facts" id="inspiration">${escapeHtml(lookupWords(shared, "about.inspiration")!)}</p>`);
-    // after the schools and before About, once
-    const at = (s: string) => pages.index.indexOf(s);
-    expect(at('<ul class="schools" aria-label')).toBeLessThan(at('<ul class="schools inspired"'));
-    expect(at('<ul class="schools inspired"')).toBeLessThan(at('<section id="about"'));
+    expect(INSPIRED_LIST.url).toBe("https://zz85.github.io/slop-cities/");
+    const about = pages.index.match(/<section id="about"[\s\S]*?<\/section>/)?.[0] ?? "";
+    expect(about).toContain(`<p id="inspiration">${escapeHtml(lookupWords(shared, "about.inspiration")!)} <a id="inspired-by" href="${escapeHtml(INSPIRED_BY.url)}" rel="noopener noreferrer">Tsinghua World Model</a></p>`);
+    expect(about).toContain(`<a href="${escapeHtml(INSPIRED_LIST.url)}" rel="noopener noreferrer">Awesome Slop Cities</a>`);
     expect(pages.index.split('id="inspired-by"')).toHaveLength(2);
     expect(pages.notFound).not.toContain('id="inspired-by"');
     expect(pages.index).toContain(`${escapeHtml(lookupWords(shared, "about.code")!)} <a href="${escapeHtml(REPO)}"`);
   });
 
-  it("under the Tsinghua World Model's card, a card for Zhejiang's and Westlake's campus worlds, each linking to its code", () => {
-    expect(OTHER_WORLDS.map((w) => [w.id, w.url])).toEqual([
-      ["zju", "https://github.com/ZJU-LAPUTA/zju-laputa-campus"],
-      ["westlake", "https://github.com/Westlake-AGI-Lab/westlake-campus-game"],
-    ]);
-    const card = pages.index.match(/<ul class="schools inspired"[\s\S]*?<\/ul>/)?.[0] ?? "";
-    const at = (s: string) => card.indexOf(s);
-    expect(at('data-world="tsinghua"')).toBeLessThan(at('data-world="zju"'));
-    expect(at('data-world="zju"')).toBeLessThan(at('data-world="westlake"'));
-    expect(card).toContain(`<p class="site">Zhejiang University</p><h2><a href="${escapeHtml(OTHER_WORLDS[0].url)}" rel="noopener noreferrer">ZJU-LAPUTA</a></h2>`);
-    expect(card).toContain(`<p class="site">Westlake University</p><h2><a href="${escapeHtml(OTHER_WORLDS[1].url)}" rel="noopener noreferrer">Westlake Campus Game</a></h2>`);
-    for (const w of OTHER_WORLDS) expect(card).toContain(`<p class="facts">${escapeHtml(lookupWords(shared, `travel.worlds.${w.id}.about`)!)}</p>`);
-    expect(pages.notFound).not.toContain("zju-laputa-campus");
+  it("lists every campus world by country, in alphabetical order: this site's schools marked as its maps, the others linking to their pages", () => {
+    const countries = [...pages.index.matchAll(/<h2 class="country">([^<]*)<\/h2>/g)].map((m) => m[1]);
+    expect(countries).toEqual([...new Set(["New Zealand", ...worlds.map((w) => w.country)])].sort((a, b) => a.localeCompare(b, "en")));
+    for (const w of worlds) {
+      expect(pages.index).toMatch(new RegExp(`<li data-world="${w.id}"><p class="site">${escapeHtml(w.title)}</p><h3><a href="/worlds/${w.id}/">`));
+      expect(pages.notFound).toContain(`href="/worlds/${w.id}/"`);
+    }
+    // a school's name in its own language, marked with its language
+    expect(pages.index).toContain('<p class="reo" lang="zh">浙江大学 紫金港校区</p>');
+    // each school of this site says its map is here
+    for (const id of ids) expect(pages.index).toMatch(new RegExp(`<li data-school="${id}">[^\n]*<span class="mark">Map on this site</span>`));
+    // the worlds of a country follow the day they joined, and on one day their ids
+    const china = byCountry(listEntries(schools, worlds, shared)).find(([c]) => c === "China")![1].map((x) => x.id);
+    expect(china).toEqual(["tsinghua", "westlake-yungu", "zju-zijingang"]); // the same day: by id
+  });
+
+  it("gives each world made by others a page: what it is, our screenshot with its source and day or why there is none, its links, and that it is not this site's", () => {
+    for (const w of worlds) {
+      const { path: file, html } = worldPageFile(w, worlds, shared);
+      expect(file).toBe(`worlds/${w.id}/index.html`);
+      expect(html).toContain(`<h1>${escapeHtml(w.title)}</h1>`);
+      expect(html).toContain(`<p class="about">${escapeHtml(w.about)}</p>`);
+      expect(html).toMatch(/<title>[^<]*unofficial[^<]*<\/title>/);
+      expect(html).toContain(`<link rel="canonical" href="https://campusworldmodel.com/worlds/${w.id}/">`);
+      expect(html).toContain("is made by others, not by this site.");
+      if (w.screenshot) {
+        expect(html).toContain('<img class="shot" src="screenshot.jpg" width="960" height="540"');
+        expect(html).toContain(escapeHtml(w.screenshot.url));
+      } else {
+        expect(html).toContain(escapeHtml(`No screenshot. ${w.noScreenshot}`));
+        expect(html).not.toContain("<img");
+      }
+      if (w.play) expect(html).toContain(`<a class="open" href="${escapeHtml(w.play)}" rel="noopener noreferrer">`);
+      if (w.source) expect(html).toContain(`<a class="open" href="${escapeHtml(w.source)}" rel="noopener noreferrer">Source code</a>`);
+      expect(html).toContain("© OpenStreetMap contributors, ODbL.");
+      expect(html.replace(/<script type="application\/ld\+json">[^<]*<\/script>/g, "")).not.toMatch(/<script|<canvas|<iframe/i);
+    }
+  });
+
+  it("keeps a world off the list until it keeps the rules", () => {
+    const ok: World = { id: "x", title: "X", school: { en: "X University" }, city: "C", country: "K", placeQuery: "q", source: "https://example.org/x", about: "A.", flags: [], noScreenshot: "None.", added: "2026-11-20" };
+    expect(worldProblems([ok])).toEqual([]);
+    expect(worldProblems([{ ...ok, source: undefined }])).toEqual(['world "x": a link to play it or to its source code, or both']);
+    expect(worldProblems([{ ...ok, play: "http://example.org" }])[0]).toMatch(/https/);
+    expect(worldProblems([{ ...ok, noScreenshot: undefined }])[0]).toMatch(/noScreenshot/);
+    expect(worldProblems([{ ...ok, flags: ["vr" as never] }])[0]).toMatch(/no flag "vr"/);
+    expect(worldProblems([{ ...ok, id: "uoa" }], ["uoa"])[0]).toMatch(/taken/);
+    expect(worldProblems([{ ...ok, inspiredBy: { id: "nowhere", quote: "q", url: "https://example.org" } }])[0]).toMatch(/not on the list/);
+    // every world on the list has its place from Nominatim, kept in the committed OpenStreetMap snapshots
+    for (const w of worlds) expect(fs.existsSync(path.join(root, w.place!.file)), w.id).toBe(true);
   });
 
   it("About is hidden until asked for: shown while the address points at it or at a section in it, with a link that hides it", () => {

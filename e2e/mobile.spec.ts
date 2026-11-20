@@ -66,13 +66,14 @@ test("6. phone: search for a room and see the building and class information", a
   await expect(bar).toContainText("Engineering");
 
   // About is reachable and readable: on the page at the site's root since 2026-11-10, from its bar.
-  // The page shows the schools and, under them, the Tsinghua World Model's card; About is hidden until asked for.
+  // The page lists the campus worlds by country, the others' worlds among them; About is hidden until asked for.
   await openRoot(page);
   await expect(page.locator("#about")).toBeHidden();
-  await expect(page.locator("#inspired-by")).toBeVisible();
+  await expect(page.locator('li[data-world="tsinghua"] a')).toBeVisible();
   await page.locator("#about-link").tap();
   await expect(page.locator("#about")).toBeInViewport();
   await expect(page.locator("#about-uoa .unofficial")).toBeVisible();
+  await expect(page.locator("#inspired-by")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()!.width);
   await shot(page, "06-mobile-about");
   // Close hides it again.

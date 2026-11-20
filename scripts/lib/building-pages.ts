@@ -77,7 +77,7 @@ function counted(words: Words, key: string, n: number): string {
 /** By code, numbers in order (303 before 1439), then by name. */
 const byCode = (a: Building, b: Building) => buildingCode(a).localeCompare(buildingCode(b), "en", { numeric: true }) || a.name.en.localeCompare(b.name.en, "en");
 
-const EXTRA_STYLE = `
+export const EXTRA_STYLE = `
 .crumbs{margin:0 0 16px;font-size:.9375rem;color:#33424d}
 .crumbs a{color:#0b4f7c}
 .where{margin:0 0 4px;color:#33424d}
@@ -98,7 +98,7 @@ section>h3{margin:24px 0 4px;font:600 1.125rem/1.3 var(--font)}
 `.trim();
 
 /** One static page in the picker's style, with its head tags and structured data. */
-function shell(p: { title: string; description: string; url: string; image: string; imageAlt: string; favicon: string; data: object; body: string }): string {
+export function shell(p: { title: string; description: string; url: string; image: string; imageAlt: string; favicon: string; data: object; body: string }): string {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -125,13 +125,13 @@ ${p.body}
 }
 
 /** The trail from the site's root to a page, each step a link but the last. */
-function crumbs(words: Words, steps: { name: string; href?: string }[]): string {
+export function crumbs(words: Words, steps: { name: string; href?: string }[]): string {
   const parts = steps.map((s) => (s.href ? `<a href="${e(s.href)}">${e(s.name)}</a>` : `<span aria-current="page">${e(s.name)}</span>`));
   return `<nav class="crumbs" aria-label="${e(word(words, "picker.buildings.crumbsLabel"))}">${parts.join(" › ")}</nav>`;
 }
 
 /** The same trail as structured data. */
-function breadcrumbList(steps: { name: string; url: string }[]): object {
+export function breadcrumbList(steps: { name: string; url: string }[]): object {
   return { "@type": "BreadcrumbList", itemListElement: steps.map((s, i) => ({ "@type": "ListItem", position: i + 1, name: s.name, item: s.url })) };
 }
 

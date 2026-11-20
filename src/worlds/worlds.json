@@ -1,0 +1,116 @@
+{
+  "note": "Campus worlds made by others, shown with this site's own schools on the page at the site's root (PROGRESS.md, Decisions, A global collection of campus worlds). Edit by hand; `place` is written by `node scripts/worlds/geocode.ts`. Types and rules: src/worlds/worlds.ts.",
+  "worlds": [
+    {
+      "id": "tsinghua",
+      "title": "Tsinghua World Model",
+      "school": {
+        "en": "Tsinghua University",
+        "native": {
+          "lang": "zh",
+          "text": "清华大学"
+        }
+      },
+      "city": "Beijing",
+      "country": "China",
+      "placeQuery": "Tsinghua University, Haidian District, Beijing",
+      "play": "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live",
+      "about": "An independent student project that lets you walk through Tsinghua University's campus and find courses and classrooms in it.",
+      "flags": [
+        "classes"
+      ],
+      "added": "2026-10-14",
+      "place": {
+        "lat": 40.00229,
+        "lon": 116.32096,
+        "osm": "relation/7469216",
+        "file": "data/raw/osm/nominatim/tsinghua.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "tsinghua.jpg",
+        "url": "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "zju-zijingang",
+      "title": "ZJU-LAPUTA",
+      "school": {
+        "en": "Zhejiang University",
+        "native": {
+          "lang": "zh",
+          "text": "浙江大学"
+        }
+      },
+      "campus": {
+        "en": "Zijingang campus",
+        "native": {
+          "lang": "zh",
+          "text": "紫金港校区"
+        }
+      },
+      "city": "Hangzhou",
+      "country": "China",
+      "placeQuery": "Zhejiang University Zijingang Campus, Hangzhou",
+      "source": "https://github.com/ZJU-LAPUTA/zju-laputa-campus",
+      "by": {
+        "name": "ZJU-LAPUTA",
+        "url": "https://github.com/ZJU-LAPUTA"
+      },
+      "about": "A 3D web adventure game set on Zhejiang University's Zijingang campus, along its real roads, with a robot lab where you take robots apart and put them back together.",
+      "flags": [
+        "game"
+      ],
+      "added": "2026-11-20",
+      "place": {
+        "lat": 30.30685,
+        "lon": 120.06846,
+        "osm": "way/519369444",
+        "file": "data/raw/osm/nominatim/zju-zijingang.json",
+        "date": "2026-11-20"
+      },
+      "noScreenshot": "Its play page is on ModelScope, which loads a sign-in script and a captcha, so this site could not confirm that it opens without signing in. Its source code is public, and it runs on your own computer."
+    },
+    {
+      "id": "westlake-yungu",
+      "title": "Westlake Campus Game",
+      "school": {
+        "en": "Westlake University",
+        "native": {
+          "lang": "zh",
+          "text": "西湖大学"
+        }
+      },
+      "campus": {
+        "en": "Yungu campus",
+        "native": {
+          "lang": "zh",
+          "text": "云谷校区"
+        }
+      },
+      "city": "Hangzhou",
+      "country": "China",
+      "placeQuery": "Westlake University Yungu Campus, Hangzhou",
+      "source": "https://github.com/Westlake-AGI-Lab/westlake-campus-game",
+      "by": {
+        "name": "Westlake AGI Lab",
+        "url": "https://github.com/Westlake-AGI-Lab"
+      },
+      "about": "An unofficial 3D model of Westlake University's Yungu campus that several players can walk through together, find buildings in and plan walking routes across.",
+      "flags": [
+        "game",
+        "multiplayer"
+      ],
+      "noScreenshot": "It has no public address to play it at: its source code is public, and it runs on your own computer.",
+      "added": "2026-11-20",
+      "place": {
+        "lat": 30.33598,
+        "lon": 120.03197,
+        "osm": "way/587362728",
+        "file": "data/raw/osm/nominatim/westlake-yungu.json",
+        "date": "2026-11-20"
+      }
+    }
+  ]
+}

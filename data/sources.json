@@ -4121,6 +4121,30 @@
       "source": "osm"
     },
     {
+      "file": "osm/nominatim/tsinghua.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Tsinghua%20University%2C%20Haidian%20District%2C%20Beijing",
+      "fetchedAt": "2026-11-20T09:47:42.702Z",
+      "bytes": 484,
+      "sha256": "8ae336d146f0101a69a54c8e1616f0dabf780048e109565bca7b2b4f2d949019",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/westlake-yungu.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Westlake%20University%20Yungu%20Campus%2C%20Hangzhou",
+      "fetchedAt": "2026-11-20T09:47:44.331Z",
+      "bytes": 530,
+      "sha256": "4588cfb95e2dd756b730abebfdd9ddfc904839e14e4b3761830bccbad333daae",
+      "source": "nominatim"
+    },
+    {
+      "file": "osm/nominatim/zju-zijingang.json",
+      "url": "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=Zhejiang%20University%20Zijingang%20Campus%2C%20Hangzhou",
+      "fetchedAt": "2026-11-20T09:47:43.402Z",
+      "bytes": 533,
+      "sha256": "f302f4e4da51192fe1ffeddb55df2e4acec9a53b34747f9f792b1bd9e51f1aae",
+      "source": "nominatim"
+    },
+    {
       "file": "terrain/14/15951/10545.png",
       "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/14/15951/10545.png",
       "fetchedAt": "2026-10-27T08:52:27.352Z",
