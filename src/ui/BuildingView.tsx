@@ -18,6 +18,7 @@ import {
   timeMode,
 } from "../app/state.ts";
 import { landmarkOf, measuredOf } from "../app/landmarks.ts";
+import { photoOf } from "../app/photos.ts";
 import { groundLevel } from "../shared/massing.ts";
 import { sessionsOnDate } from "../shared/schedule.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -217,6 +218,21 @@ function RoomCard({ d, b }: { d: AppData; b: Building }) {
   );
 }
 
+/** The real photograph of the building, when the site has one (src/app/photos.ts). */
+function BuildingPhotoFigure({ id }: { id: string }) {
+  const photo = photoOf(id);
+  // With a room selected the dock needs the space for the room card.
+  if (!photo || selRoom.value) return null;
+  return (
+    <figure class="building-photo" id="building-photo">
+      <a href={photo.src} target="_blank" rel="noopener noreferrer" title={t("building.photoOpen")}>
+        <img src={photo.src} alt="" loading="lazy" />
+      </a>
+      {photo.credit && <figcaption>{photo.credit}</figcaption>}
+    </figure>
+  );
+}
+
 export function BuildingView() {
   const d = data.value;
   const b = d && selBuilding.value ? d.buildingById.get(selBuilding.value) : undefined;
@@ -238,6 +254,7 @@ export function BuildingView() {
       <div class="dock">
         <RoomCard d={d} b={b} />
         <div class="building-bar" id="building-bar">
+          <BuildingPhotoFigure id={b.id} />
           <div class="building-id">
             {buildingCode(b) && <b>{buildingCode(b)}</b>}
             <span class="building-name">{title || t("building.number", { id: buildingCode(b) })}</span>
