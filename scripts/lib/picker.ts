@@ -1,6 +1,7 @@
 // The two pages at the root of the Cloudflare site (docs/schools/DESIGN.md, section 7): index.html,
-// the school picker, and 404.html, the page an unknown path gets. Both are static: no script and
-// no WebGL. Each school's line comes from its meta.json and its words, and every other text from
+// the school picker, and 404.html, the page an unknown path gets. Both are static HTML. Since 2026-11-21 the
+// picker also carries the globe (src/globe/), one module script that draws with WebGL above the list and leaves
+// the page as it was where it cannot; 404.html still runs nothing. Each school's line comes from its meta.json and its words, and every other text from
 // the picker.* keys of src/i18n/locales/en.json. A school's `reo`, shown under its name, is its name in
 // te reo Māori as the school gives it on its own site: the University of Auckland's and AUT's home
 // pages, read on 2026-10-27 through scripts/research/polite.mjs, robots.txt first ("Waipapa Taumata
@@ -21,6 +22,7 @@ import type { Words } from "../../src/shared/school.ts";
 import { INSPIRED_BY, INSPIRED_LIST, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../../src/app/links.ts";
 import type { Meta } from "../../src/shared/types.ts";
 import type { World } from "../../src/worlds/worlds.ts";
+import type { GlobeData } from "../../src/globe/data.ts";
 import { lookupWords, overlayWords } from "../../src/shared/words.ts";
 import { ICON_BOXES, ICON_PATHS } from "../../src/ui/icons.ts";
 import { type SchoolAbout, schoolAboutHtml } from "./about.ts";
@@ -35,6 +37,14 @@ export interface PickerSchool {
   meta: Meta;
   /** What its section of About is made from (scripts/lib/about.ts, loadSchoolAbout). */
   about: SchoolAbout;
+  /** Where its campus stands, from its published campus.json: its pin on the globe. A school without it has none. */
+  origin?: { lat: number; lon: number };
+}
+
+/** The globe's files beside the page, as scripts/build-root.ts wrote them: its script and its land, by their paths from the root. */
+export interface GlobeFiles {
+  script: string;
+  land: string;
 }
 
 /** How much of a school the site shows, in the forms of docs/schools/DESIGN.md, section 2. */
@@ -199,6 +209,15 @@ h1{margin:0 0 8px;font:600 2.25rem/1.15 var(--font-display);overflow-wrap:anywhe
 .country{margin:32px 0 0;font:600 1.5rem/1.2 var(--font-display)}
 .country+.schools{margin-top:12px}
 .mark{color:var(--accent)}
+#globe{margin:24px 0 0}
+#globe[hidden]{display:none}
+.globe-stage{position:relative;height:440px;border-radius:16px;background:radial-gradient(circle at 50% 45%,#22384a 0%,var(--ink) 70%);overflow:hidden;cursor:grab}
+.globe-stage canvas{display:block;width:100%;height:100%}
+.globe-tip{position:absolute;max-width:220px;padding:8px 12px;border-radius:10px;background:var(--panel);color:var(--text);box-shadow:0 6px 20px rgba(5,12,18,.35);pointer-events:none}
+.globe-tip .site{margin:0}
+.globe-tip .name{margin:0;font:600 1rem/1.3 var(--font-display)}
+#globe figcaption{margin:6px 0 0;color:#4a5a66;font-size:.875rem}
+@media (max-width:560px){.globe-stage{height:320px}}
 .reo{margin:-2px 0 6px;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
 .facts{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;color:var(--muted);font-size:.9375rem}
 .masthead{display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:space-between;gap:8px 20px;margin:0 0 8px}
@@ -310,13 +329,38 @@ function pickerJsonLd(shared: Words, entries: ListEntry[]): object {
   };
 }
 
+/** What the page gives the globe (src/globe/data.ts): a point for each line of the list that has a place, and its words. */
+export function globeData(schools: PickerSchool[], worlds: World[], shared: Words, land: string): GlobeData {
+  const where = new Map<string, { lat: number; lon: number }>();
+  for (const s of schools) if (s.origin) where.set(s.id, s.origin);
+  for (const w of worlds) if (w.place) where.set(w.id, { lat: w.place.lat, lon: w.place.lon });
+  const points = listEntries(schools, worlds, shared).flatMap((x) => {
+    const at = where.get(x.id);
+    return at ? [{ id: x.id, site: x.site, name: x.name, href: x.href, lat: at.lat, lon: at.lon, own: x.kind === "own" }] : [];
+  });
+  return { points, land, words: { label: word(shared, "picker.worlds.globe.label") } };
+}
+
+/** The globe above the list, hidden until its script shows it, with its data as JSON that no browser runs. */
+function globe(shared: Words, data: GlobeData, script: string): string {
+  const e = escapeHtml;
+  return [
+    `<figure id="globe" hidden aria-label="${e(data.words.label)}">`,
+    `<div class="globe-stage"><div class="globe-tip" hidden><p class="site"></p><p class="name"></p></div></div>`,
+    `<figcaption>${e(word(shared, "picker.worlds.globe.caption"))}</figcaption>`,
+    `</figure>`,
+    `<script type="application/json" id="globe-data">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`,
+    `<script type="module" src="${e(script)}"></script>`,
+  ].join("\n");
+}
+
 /**
  * One page: the heading with, on its line, the links to About and the source code, its lead, the notice, the list of
  * schools, and on the picker the questions with their answers, the Tsinghua World Model's card and About below it,
  * hidden until asked for (the page for an unknown path links to the picker's). The picker's head names its one
  * address, its picture and its structured data; the page for an unknown path asks not to be indexed.
  */
-function page(shared: Words, schools: PickerSchool[], worlds: World[], words: { documentTitle: string; heading: string; lead: string }, withAbout: boolean): string {
+function page(shared: Words, schools: PickerSchool[], worlds: World[], words: { documentTitle: string; heading: string; lead: string }, withAbout: boolean, files?: GlobeFiles): string {
   const e = escapeHtml;
   const entries = listEntries(schools, worlds, shared);
   const seo = withAbout
@@ -360,6 +404,7 @@ ${seo}
 </header>
 <p class="lead">${e(words.lead)}</p>
 <p class="notice">${e(word(shared, "picker.notice"))}</p>
+${withAbout && files ? globe(shared, globeData(schools, worlds, shared, files.land), files.script) : ""}
 <section id="worlds" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${lists.join("\n")}
 </section>
@@ -431,14 +476,14 @@ export function llmsTxt(schools: PickerSchool[], shared: Words, worlds: World[] 
 }
 
 /** The picker, index.html, and the page for an unknown path, 404.html, for the schools on the list in its order. */
-export function pickerPages(schools: PickerSchool[], shared: Words, worlds: World[] = []): { index: string; notFound: string } {
+export function pickerPages(schools: PickerSchool[], shared: Words, worlds: World[] = [], files?: GlobeFiles): { index: string; notFound: string } {
   if (schools.length === 0) throw new Error("the picker needs one school or more");
   return {
     index: page(shared, schools, worlds, {
       documentTitle: word(shared, "picker.documentTitle"),
       heading: word(shared, "picker.heading"),
       lead: word(shared, "picker.lead"),
-    }, true),
+    }, true, files),
     notFound: page(shared, schools, worlds, {
       documentTitle: word(shared, "picker.notFound.documentTitle"),
       heading: word(shared, "picker.notFound.heading"),

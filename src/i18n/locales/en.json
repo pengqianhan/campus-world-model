@@ -826,6 +826,10 @@
         "inspiredBy": "In its own words, it was inspired by {name}:",
         "placeCredit": "Placed with OpenStreetMap Nominatim on {date}. © OpenStreetMap contributors, ODbL.",
         "imageAlt": "Campus World Model: 3D campus worlds from around the world"
+      },
+      "globe": {
+        "label": "A globe with a pin for each campus world",
+        "caption": "Drag to turn the globe, and scroll or pinch to zoom. Point at a pin to see its campus, and click it to open it. Every campus is also in the list below."
       }
     }
   }

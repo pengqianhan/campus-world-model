@@ -12,7 +12,8 @@ import type { CampusData, Meta } from "../src/shared/types.ts";
 import { INSPIRED_BY, INSPIRED_LIST, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
-import { type PickerSchool, byCountry, escapeHtml, listEntries, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
+import type { GlobeData } from "../src/globe/data.ts";
+import { type PickerSchool, byCountry, escapeHtml, globeData, listEntries, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
 import { readWorlds, worldPageFile } from "../scripts/lib/worlds-pages.ts";
 import { type World, worldProblems } from "../src/worlds/worlds.ts";
 import { parseSchoolList } from "../scripts/lib/school-list.ts";
@@ -158,7 +159,14 @@ describe("the school picker at the site's root", () => {
         for (const f of ["meta.json", "schedule.json", "campus.json"]) fs.copyFileSync(path.join("public", "data", id, f), path.join(dir, id, "data", f));
       }
       execFileSync(process.execPath, ["scripts/build-root.ts", ".github/schools.json", dir], { stdio: "pipe" });
-      expect(fs.readFileSync(path.join(dir, "index.html"), "utf8")).toBe(pages.index);
+      // the picker with the globe: its script and its land beside it, and each school's pin from its campus.json
+      const built = fs.readdirSync(path.join(dir, "globe"));
+      const files = { script: `/globe/${built.find((f) => /^globe-[\w-]+\.js$/.test(f) && !f.startsWith("globe-scene"))}`, land: `/globe/${built.find((f) => f.startsWith("land-"))}` };
+      const placed = schools.map((s) => ({ ...s, origin: (JSON.parse(fs.readFileSync(path.join("public", "data", s.id, "campus.json"), "utf8")) as { origin: { lat: number; lon: number } }).origin }));
+      expect(fs.readFileSync(path.join(dir, "index.html"), "utf8")).toBe(pickerPages(placed, shared, worlds, files).index);
+      const land = JSON.parse(fs.readFileSync(path.join(dir, files.land), "utf8")) as number[][];
+      expect(land.length).toBeGreaterThan(100);
+      expect(land.every((r) => r.length >= 6 && r.length % 2 === 0)).toBe(true);
       expect(fs.readFileSync(path.join(dir, "404.html"), "utf8")).toBe(pages.notFound);
       expect(fs.readFileSync(path.join(dir, "favicon.svg"))).toEqual(fs.readFileSync(path.join("public", "favicon.svg")));
       // and what search engines and AI assistants read (scripts/lib/seo.ts)
@@ -252,6 +260,29 @@ describe("About, at the site's root since 2026-11-10", () => {
       expect(html).toContain("© OpenStreetMap contributors, ODbL.");
       expect(html.replace(/<script type="application\/ld\+json">[^<]*<\/script>/g, "")).not.toMatch(/<script|<canvas|<iframe/i);
     }
+  });
+
+  it("puts the globe above the list on the picker only: a figure hidden until its script shows it, its data, and one module script", () => {
+    const placed = schools.map((s, i) => ({ ...s, origin: { lat: -36 - i, lon: 174 + i } }));
+    const files = { script: "/globe/globe-abc.js", land: "/globe/land-abc.json" };
+    const { index, notFound } = pickerPages(placed, shared, worlds, files);
+    expect(index).toContain('<figure id="globe" hidden aria-label="A globe with a pin for each campus world">');
+    expect(index.match(/<script type="module" src="([^"]*)"><\/script>/g)).toEqual(['<script type="module" src="/globe/globe-abc.js"></script>']);
+    expect(notFound).not.toContain('id="globe"');
+    const at = (s: string) => index.indexOf(s);
+    expect(at('<figure id="globe"')).toBeLessThan(at('<section id="worlds"'));
+    const data = JSON.parse(index.match(/<script type="application\/json" id="globe-data">([^<]*)<\/script>/)![1]!) as GlobeData;
+    expect(data.land).toBe(files.land);
+    // a pin for every line of the list, in its order, the site's own schools marked as such
+    expect(data.points.map((p) => p.id)).toEqual(listEntries(placed, worlds, shared).map((x) => x.id));
+    expect(data.points.filter((p) => p.own).map((p) => p.id)).toEqual(ids);
+    const tsinghua = data.points.find((p) => p.id === "tsinghua")!;
+    expect(tsinghua).toMatchObject({ href: "/worlds/tsinghua/", own: false, lat: worlds[0]!.place!.lat, lon: worlds[0]!.place!.lon });
+    // a school with no place has no pin, and stays in the list
+    expect(globeData(schools, [], shared, "x").points).toEqual([]);
+    // the page without its JSON data and its one module script runs nothing else
+    const rest = index.replace(/<script type="application\/(?:ld\+)?json"[^>]*>[^<]*<\/script>/g, "").replace('<script type="module" src="/globe/globe-abc.js"></script>', "");
+    expect(rest).not.toMatch(/<script|javascript:|\bon[a-z]+=|<canvas|<iframe/i);
   });
 
   it("keeps a world off the list until it keeps the rules", () => {
