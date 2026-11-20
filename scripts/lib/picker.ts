@@ -15,7 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../../src/shared/school.ts";
-import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../../src/app/links.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, OTHER_WORLDS, REPO } from "../../src/app/links.ts";
 import type { Meta } from "../../src/shared/types.ts";
 import { lookupWords, overlayWords } from "../../src/shared/words.ts";
 import { ICON_BOXES, ICON_PATHS } from "../../src/ui/icons.ts";
@@ -166,17 +166,27 @@ const github = () =>
 
 /**
  * The Tsinghua World Model, which inspired the site: a card under the schools, as they are drawn, with what
- * it inspired (the maintainer, 2026-11-10).
+ * it inspired (the maintainer, 2026-11-10); under it a card for each of the other campus worlds, with its
+ * school and what it is (the maintainer, 2026-11-20).
  */
 function inspiredBy(shared: Words): string {
   const e = escapeHtml;
   return [
-    `<ul class="schools inspired" aria-label="${e(word(shared, "about.inspirationTitle"))}">`,
+    `<ul class="schools inspired" aria-label="${e(word(shared, "about.otherWorldsTitle"))}">`,
     `<li data-world="${e(INSPIRED_BY.id)}">`,
     `<p class="site">${e(word(shared, "about.inspirationTitle"))}</p>`,
     `<h2><a id="inspired-by" href="${e(INSPIRED_BY.url)}" rel="noopener noreferrer">${e(word(shared, `travel.worlds.${INSPIRED_BY.id}.name`))}</a></h2>`,
     `<p class="facts" id="inspiration">${e(word(shared, "about.inspiration"))}</p>`,
     `</li>`,
+    ...OTHER_WORLDS.map((w) =>
+      [
+        `<li data-world="${e(w.id)}">`,
+        `<p class="site">${e(word(shared, `travel.worlds.${w.id}.school`))}</p>`,
+        `<h2><a href="${e(w.url)}" rel="noopener noreferrer">${e(word(shared, `travel.worlds.${w.id}.name`))}</a></h2>`,
+        `<p class="facts">${e(word(shared, `travel.worlds.${w.id}.about`))}</p>`,
+        `</li>`,
+      ].join(""),
+    ),
     `</ul>`,
   ].join("");
 }

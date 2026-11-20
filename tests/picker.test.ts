@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
 import { locales } from "../src/app/i18n.ts";
 import type { Words } from "../src/shared/school.ts";
 import type { CampusData, Meta } from "../src/shared/types.ts";
-import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
+import { INSPIRED_BY, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, OTHER_WORLDS, REPO, SITE, aboutHref, homeHref } from "../src/app/links.ts";
 import { lookupWords, wordKeys } from "../src/shared/words.ts";
 import { absentLayers, loadSchoolAbout, longDate } from "../scripts/lib/about.ts";
 import { type PickerSchool, escapeHtml, llmsTxt, pickerPages, schoolForm, schoolLine, schoolWords, sitemapEntries } from "../scripts/lib/picker.ts";
@@ -48,8 +48,9 @@ function shownTexts(html: string): string[] {
 
 /** Every text the page may show: each picker.* text, and each school's facts from its meta.json and words. */
 function allowedTexts(): Set<string> {
-  // the bar's words, and the Tsinghua World Model's card under the schools
-  const bar = ["nav.about", "about.repo", "about.inspirationTitle", "about.inspiration", "travel.worlds.tsinghua.name"];
+  // the bar's words, and the cards under the schools: the Tsinghua World Model's and the other campus worlds'
+  const worlds = OTHER_WORLDS.flatMap((w) => ["name", "school", "about"].map((f) => `travel.worlds.${w.id}.${f}`));
+  const bar = ["nav.about", "about.repo", "about.inspirationTitle", "about.otherWorldsTitle", "about.inspiration", "travel.worlds.tsinghua.name", ...worlds];
   const picker = [...wordKeys(shared).filter((k) => k.startsWith("picker.")), ...bar].map((k) => lookupWords(shared, k)!);
   const facts = schools.flatMap((s) => {
     const line = schoolLine(s, shared);
@@ -205,6 +206,21 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(pages.index.split('id="inspired-by"')).toHaveLength(2);
     expect(pages.notFound).not.toContain('id="inspired-by"');
     expect(pages.index).toContain(`${escapeHtml(lookupWords(shared, "about.code")!)} <a href="${escapeHtml(REPO)}"`);
+  });
+
+  it("under the Tsinghua World Model's card, a card for Zhejiang's and Westlake's campus worlds, each linking to its code", () => {
+    expect(OTHER_WORLDS.map((w) => [w.id, w.url])).toEqual([
+      ["zju", "https://github.com/ZJU-LAPUTA/zju-laputa-campus"],
+      ["westlake", "https://github.com/Westlake-AGI-Lab/westlake-campus-game"],
+    ]);
+    const card = pages.index.match(/<ul class="schools inspired"[\s\S]*?<\/ul>/)?.[0] ?? "";
+    const at = (s: string) => card.indexOf(s);
+    expect(at('data-world="tsinghua"')).toBeLessThan(at('data-world="zju"'));
+    expect(at('data-world="zju"')).toBeLessThan(at('data-world="westlake"'));
+    expect(card).toContain(`<p class="site">Zhejiang University</p><h2><a href="${escapeHtml(OTHER_WORLDS[0].url)}" rel="noopener noreferrer">ZJU-LAPUTA</a></h2>`);
+    expect(card).toContain(`<p class="site">Westlake University</p><h2><a href="${escapeHtml(OTHER_WORLDS[1].url)}" rel="noopener noreferrer">Westlake Campus Game</a></h2>`);
+    for (const w of OTHER_WORLDS) expect(card).toContain(`<p class="facts">${escapeHtml(lookupWords(shared, `travel.worlds.${w.id}.about`)!)}</p>`);
+    expect(pages.notFound).not.toContain("zju-laputa-campus");
   });
 
   it("About is hidden until asked for: shown while the address points at it or at a section in it, with a link that hides it", () => {

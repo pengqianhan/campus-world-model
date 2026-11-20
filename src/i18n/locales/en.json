@@ -306,6 +306,7 @@
     "landmarksLidar": "The LiDAR point cloud",
     "landmarksCredit": "LINZ: attributing elevation data",
     "inspirationTitle": "Inspiration",
+    "otherWorldsTitle": "Inspiration and other campus worlds",
     "inspiration": "This site was inspired by the Tsinghua World Model, an independent student project that lets you walk through Tsinghua University's campus and find courses and classrooms in it. The idea of a campus you can step into comes from there. The code, models and data here were made separately.",
     "codeTitle": "Code and corrections",
     "code": "The code is open source under the MIT licence. If a room is in the wrong place, please open an issue.",
@@ -358,6 +359,16 @@
     "worlds": {
       "tsinghua": {
         "name": "Tsinghua World Model"
+      },
+      "zju": {
+        "name": "ZJU-LAPUTA",
+        "school": "Zhejiang University",
+        "about": "An independent project: a 3D web adventure game set on Zhejiang University's Zijingang campus, along its real roads, with a robot lab where you take robots apart and put them back together. Its code is on GitHub."
+      },
+      "westlake": {
+        "name": "Westlake Campus Game",
+        "school": "Westlake University",
+        "about": "An independent project from the Westlake AGI Lab: an unofficial 3D model of Westlake University's Yungu campus that several players can walk through together, find buildings in and plan walking routes across. Its code is on GitHub."
       }
     }
   },

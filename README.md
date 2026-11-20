@@ -143,6 +143,9 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-20:** the home page has a card, under the Tsinghua World Model's, for two other campus worlds:
+  ZJU-LAPUTA on Zhejiang University's Zijingang campus and the Westlake Campus Game on Westlake University's Yungu
+  campus, each linking to its source code.
 - **2026-11-14:** the walk has a game, Study Quest, off until you start it: grow by learning, beat made-up study
   troubles such as the DDL, and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
   teaches by play with one small prompt at a time, and a defeat can be retried at once. The Final Exam is an hourglass
@@ -158,22 +161,6 @@ The three latest days are below; everything, with its pull request, is in the
   questions, and the site has a sitemap, `robots.txt` and `llms.txt`.
 - **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
   links, where two dark buttons stood above it.
-- **2026-11-12:** on the Newmarket campus the map draws Structures Hall in detail, where it stood as a measured
-  massing: two long blocks under roofs of one slope with three stacks between them, and a glazed south face over a
-  ground storey set back behind piers and braces. Its sizes come from the LiDAR; it was compared with a
-  photograph, which is not published, and its card says what is estimated.
-- **2026-11-12:** on the Newmarket campus the map draws Building 903 in detail, where it stood as a measured
-  massing: a box clad in pale corrugated metal over two glazed storeys set back on piers, under a low roof of two
-  slopes. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and its card
-  says what is estimated.
-- **2026-11-12:** on the City campus the map draws Security in detail, where it stood as a measured massing: a
-  band of pale concrete over a glazed ground storey set back on columns, its south corner cut, with a deck and
-  steps before it. Its sizes come from the LiDAR; it was compared with a photograph, which is not published, and
-  its card says what is estimated.
-- **2026-11-12:** on the City campus the map draws 58 Symonds Street in detail, where it stood as a measured massing:
-  a tower of eight storeys of windows over a dark ground storey, a pale band at every floor with louvres hung under it,
-  and piers between the windows. Its sizes come from the LiDAR; it was compared with a photograph, which is not
-  published, and its card says what is estimated.
 
 </details>
 
@@ -248,6 +235,12 @@ This project was inspired by the
 independent student project that lets you walk through Tsinghua University's campus and find
 courses and classrooms in it. The idea of a campus you can step into comes from there. The code,
 models and data here were made separately; nothing is copied from that site.
+
+The home page also links to two other independent campus worlds:
+[ZJU-LAPUTA](https://github.com/ZJU-LAPUTA/zju-laputa-campus), a 3D web adventure game on Zhejiang
+University's Zijingang campus, and the
+[Westlake Campus Game](https://github.com/Westlake-AGI-Lab/westlake-campus-game), a 3D model of
+Westlake University's Yungu campus that several players can walk through together.
 
 ## Star history
 
