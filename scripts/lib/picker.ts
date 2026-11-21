@@ -1,5 +1,5 @@
 // The two pages at the root of the Cloudflare site (docs/schools/DESIGN.md, section 7): index.html,
-// the school picker, and 404.html, the page an unknown path gets. Both are static HTML. Since 2026-11-21 the
+// the school picker, and 404.html, the page an unknown path gets. Both are static HTML. Since 2026-11-22 the
 // picker also carries the globe (src/globe/), one module script that draws with WebGL above the list and leaves
 // the page as it was where it cannot; 404.html still runs nothing. Each school's line comes from its meta.json and its words, and every other text from
 // the picker.* keys of src/i18n/locales/en.json. A school's `reo`, shown under its name, is its name in

@@ -14,7 +14,7 @@ A change to what the site does or shows adds its line here, and the README's
   the Classes API key arrives, so that what the timetable and the catalogue each supply can be
   settled with both in hand.
 
-## 2026-11-21
+## 2026-11-22
 
 ### Added
 
@@ -24,20 +24,20 @@ A change to what the site does or shows adds its line here, and the README's
   `/worlds/<id>/` with what it is, its school in English and in the school's own language, a screenshot taken by
   this site where it can be played without signing in (or why there is none), and links to play it and to its
   source code. The idea of the collection comes from Awesome Slop Cities; the code, data and look are this
-  site's own.
+  site's own (#181).
 - **A globe beside the list.** On a wide screen the list stands on the left and a globe on the right, with a pin
   for each campus: the site's own in its orange, the others in blue. Drag to turn it and scroll or pinch to zoom;
   a pin names its campus and a click opens it, and where pins stand together a click offers the choice. A row
   of the list under the pointer turns the globe to its campus. A tour visits each campus in the order it joined, and a line marks
   where one project says another inspired it: the Tsinghua World Model, which inspired this site. Its land is
   Natural Earth's (public domain), each campus is placed with OpenStreetMap, and three.js loads only where the
-  browser can draw it; without WebGL the list is the page.
-- **A form to suggest a campus world**, "A campus world", linked from a note under the list.
+  browser can draw it; without WebGL the list is the page (#182, #184).
+- **A form to suggest a campus world**, "A campus world", linked from a note under the list (#185).
 
 ### Changed
 
 - **The home page is light**: white cards, a pale sea and sand-coloured land, and a darker orange for its
-  orange text so that it can be read on white. Its questions left the page; `llms.txt` keeps them.
+  orange text so that it can be read on white. Its questions left the page; `llms.txt` keeps them (#182).
 
 ## 2026-11-20
 

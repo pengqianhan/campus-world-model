@@ -143,7 +143,7 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
-- **2026-11-21:** the home page is a collection of 3D campus worlds from around the world: this site's eight
+- **2026-11-22:** the home page is a collection of 3D campus worlds from around the world: this site's eight
   New Zealand maps and 16 independent worlds of other universities, listed by country beside a globe with a
   pin for each, a tour of them and a page for each world made by others.
 - **2026-11-20:** the home page has a card, under the Tsinghua World Model's, for two other campus worlds:
