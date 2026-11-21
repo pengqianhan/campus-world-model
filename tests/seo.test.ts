@@ -93,7 +93,7 @@ describe("the picker at the site's root", () => {
   });
 
   it("says how to add a campus world, under the list, with a link to suggest one on GitHub", () => {
-    expect(pages.index).toMatch(/<p class="add-note">Made a 3D world of a real university campus\?[^<]*<a href="https:\/\/github\.com\/pengqianhan\/campus-world-model\/issues\/new" rel="noopener noreferrer">Suggest it on GitHub<\/a><\/p>\n<\/section>/);
+    expect(pages.index).toMatch(/<p class="add-note">Made a 3D world of a real university campus\?[^<]*<a href="https:\/\/github\.com\/pengqianhan\/campus-world-model\/issues\/new\?template=campus-world\.yml" rel="noopener noreferrer">Suggest it on GitHub<\/a><\/p>\n<\/section>/);
     expect(pages.notFound).not.toContain('class="add-note"');
   });
 

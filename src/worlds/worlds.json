@@ -127,7 +127,6 @@
       "city": "Nanning",
       "country": "China",
       "placeQuery": "Guangxi University, Nanning",
-      "play": "https://wcqqq1214.github.io/gxu-campus-3d/",
       "source": "https://github.com/wcqqq1214/gxu-campus-3d",
       "by": {
         "name": "wcqqq1214",
@@ -143,7 +142,7 @@
         "file": "data/raw/osm/nominatim/gxu.json",
         "date": "2026-11-20"
       },
-      "noScreenshot": "Its play page dropped this site's connection while a screenshot was being taken, and this site does not ask it again."
+      "noScreenshot": "Its play page dropped this site's connection while a screenshot was being taken, and this site does not ask it again, so it is listed by its source code, which is public."
     },
     {
       "id": "gdut-hemc",

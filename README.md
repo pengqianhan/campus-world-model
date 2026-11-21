@@ -143,6 +143,9 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-21:** the home page is a collection of 3D campus worlds from around the world: this site's eight
+  New Zealand maps and 16 independent worlds of other universities, listed by country beside a globe with a
+  pin for each, a tour of them and a page for each world made by others.
 - **2026-11-20:** the home page has a card, under the Tsinghua World Model's, for two other campus worlds:
   ZJU-LAPUTA on Zhejiang University's Zijingang campus and the Westlake Campus Game on Westlake University's Yungu
   campus, each linking to its source code.
@@ -159,8 +162,6 @@ The three latest days are below; everything, with its pull request, is in the
 - **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
   for link previews, each school's page says in its HTML what its map shows, the home page answers common
   questions, and the site has a sitemap, `robots.txt` and `llms.txt`.
-- **2026-11-13:** on the home page, About and the link to the source code stand on the heading's line as plain
-  links, where two dark buttons stood above it.
 
 </details>
 
@@ -236,11 +237,11 @@ independent student project that lets you walk through Tsinghua University's cam
 courses and classrooms in it. The idea of a campus you can step into comes from there. The code,
 models and data here were made separately; nothing is copied from that site.
 
-The home page also links to two other independent campus worlds:
-[ZJU-LAPUTA](https://github.com/ZJU-LAPUTA/zju-laputa-campus), a 3D web adventure game on Zhejiang
-University's Zijingang campus, and the
-[Westlake Campus Game](https://github.com/Westlake-AGI-Lab/westlake-campus-game), a 3D model of
-Westlake University's Yungu campus that several players can walk through together.
+The home page is a collection of independent 3D campus worlds from around the world, after the
+idea of [Awesome Slop Cities](https://zz85.github.io/slop-cities/), a collection of 3D cities; the
+code, data and look here are this project's own. The worlds made by others are listed in
+[src/worlds/worlds.json](src/worlds/worlds.json), each with its makers' own links. To suggest one,
+open an issue with the form "A campus world".
 
 ## Star history
 
