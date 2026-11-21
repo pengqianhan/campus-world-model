@@ -18,15 +18,16 @@ async function start(): Promise<void> {
   if (!figure || !json?.textContent || !webgl()) return;
   const data = JSON.parse(json.textContent) as GlobeData;
   const { mountGlobe } = await import("./scene.ts");
-  // The list beside the globe: a line under the pointer or the keyboard turns the globe to its campus, and a pin
-  // under the pointer lights its line.
+  // The list beside the globe: a line under the pointer or the keyboard turns the globe to its campus, and the pins
+  // the globe names light their lines.
   const lines = new Map<string, HTMLElement>();
   for (const li of document.querySelectorAll<HTMLElement>("#worlds li[data-school], #worlds li[data-world]")) lines.set(li.dataset.school ?? li.dataset.world!, li);
-  let lit: HTMLElement | undefined;
-  const control = await mountGlobe(figure, data, new URL(data.land, import.meta.url).href, (id) => {
-    lit?.classList.remove("lit");
-    lit = id === undefined ? undefined : lines.get(id);
-    lit?.classList.add("lit");
+  // Lit lines are never scrolled to: the tour lights them by itself, and must not move the page under a reader.
+  let lit: HTMLElement[] = [];
+  const control = await mountGlobe(figure, data, new URL(data.land, import.meta.url).href, (ids) => {
+    for (const li of lit) li.classList.remove("lit");
+    lit = ids.flatMap((id) => lines.get(id) ?? []);
+    for (const li of lit) li.classList.add("lit");
   });
   for (const [id, li] of lines) {
     li.addEventListener("mouseenter", () => control.focus(id));
