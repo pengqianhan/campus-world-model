@@ -62,10 +62,19 @@ Pages alone until it has them. Only the steps that run `wrangler` get the two se
 
 The root of the Cloudflare site is the school picker, `index.html`, and an unknown path gets
 `404.html` with status 404. After the schools are laid out in `site/`, `scripts/build-root.ts`
-writes both: static pages with no script, which list each school on the list with its name, its
-city, its form and the date of its campus snapshot, from its `meta.json` and the `picker.*` words
-of `src/i18n/locales/en.json`. To make them on your machine after the same layout:
+writes both, with each campus world's page at `worlds/<id>/` and the globe's script and land in
+`globe/`. The list on `index.html` is static HTML, from each school's `meta.json`, the campus worlds
+of `src/worlds/worlds.json` and the `picker.*` words of `src/i18n/locales/en.json`; the globe beside
+it is one module script, and `404.html` runs none. To make them on your machine after the same layout:
 `node scripts/build-root.ts .github/schools.json site`. The root does not redirect.
+
+A campus world made by others joins by an entry in `src/worlds/worlds.json` (its rules are in
+`src/worlds/worlds.ts`). The maintainer then places it with `node scripts/worlds/geocode.ts`, which
+asks OpenStreetMap's Nominatim once a campus, and takes its screenshot with
+`node scripts/worlds/screenshot.ts <id> --close`, through the research browser. `npm run worlds:check`
+asks for every play and source link once and says which are broken, which hosts have closed
+(`src/worlds/closed.json`, never asked again) and which play pages may be framed. Nothing runs it on
+a schedule.
 
 A pull request from a branch of this repository also gets a preview on the same Pages project, at
 `https://<branch>.<project>.pages.dev/uoa/` (the picker at `/`), once its checks pass; the pull request's "View

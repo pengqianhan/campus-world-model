@@ -428,7 +428,7 @@ ${seo}
 <div class="explorer">
 <section id="worlds" aria-label="${e(word(shared, "picker.listLabel"))}">
 ${lists.join("\n")}
-${withAbout ? `<p class="add-note">${e(word(shared, "picker.worlds.addNote"))} <a href="${e(REPO)}/issues/new" rel="noopener noreferrer">${e(word(shared, "picker.worlds.addLink"))}</a></p>` : ""}
+${withAbout ? `<p class="add-note">${e(word(shared, "picker.worlds.addNote"))} <a href="${e(REPO)}/issues/new?template=campus-world.yml" rel="noopener noreferrer">${e(word(shared, "picker.worlds.addLink"))}</a></p>` : ""}
 </section>
 ${g ? g.figure : ""}
 </div>

@@ -16,7 +16,8 @@
     "data:build": "tsx scripts/build-data.ts",
     "data:classes": "tsx scripts/schools/uoa/fetch-classes.ts",
     "walker": "node scripts/walker/cli.ts",
-    "walker:mcp": "node scripts/walker/mcp.ts"
+    "walker:mcp": "node scripts/walker/mcp.ts",
+    "worlds:check": "node scripts/worlds/check.ts"
   },
   "dependencies": {
     "@preact/signals": "^2.11.3",

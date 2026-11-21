@@ -83,7 +83,7 @@ export function sitemapXml(entries: SitemapEntry[]): string {
  */
 export function robotsTxt(): string {
   return [
-    `# ${SITE_NAME}: unofficial, student-made 3D maps of university campuses in New Zealand.`,
+    `# ${SITE_NAME}: unofficial 3D campus worlds from around the world, and student-made 3D maps of New Zealand's universities.`,
     "User-agent: *",
     "Content-Signal: search=yes, ai-input=yes, ai-train=no",
     "Allow: /",

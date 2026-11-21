@@ -410,6 +410,16 @@ the same Vite plugin. Two of those texts are not in `en.json` today (the `og:des
   coverage, its limits and its privacy. On the heading's line, at its right, two plain links: About,
   and the source code on GitHub, with its mark (above the heading on a narrow screen). A school's page has no About of its own: its attribution and its "Why?"
   links open its section, `/#about-<id>`, which shows About.
+- **Campus worlds (the maintainer, 2026-11-20 and 21; PROGRESS.md, "Decisions", A global collection of
+  campus worlds).** The page became a collection of 3D campus worlds from around the world. The list
+  holds this site's schools ("Map on this site") and worlds made by others (`src/worlds/worlds.json`),
+  by country; each world by others has a static page at `/worlds/<id>/` (`scripts/lib/worlds-pages.ts`).
+  On a wide screen the list stands on the left and a globe on the right (`src/globe/`, built by
+  `scripts/lib/globe-build.ts` from `build-root.ts`): one module script, which loads three.js only
+  where WebGL can draw, and leaves the static list as the page where it cannot. The questions left the
+  page; a note under the list says how to add a world, through the issue form "A campus world". The
+  Tsinghua World Model's card became a line of About and the globe's one line of lineage. The 404 page
+  still runs no script.
 - **`_redirects`.** The line `/ /uoa/ 302` comes out in the same commit that ships the picker, and
   not before. That is deployment, so it is a gate.
 - **When.** With the second school (decision 6). Until then the root keeps redirecting. A visitor
