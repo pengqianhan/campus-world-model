@@ -2,7 +2,8 @@
 // have laid out each school at <site>/<id>/: index.html, the school picker; 404.html, which
 // Cloudflare Pages gives every unknown path with status 404 (a site without a top-level 404.html is
 // taken for a single-page app, and every unknown path would get the picker with status 200); and
-// the favicon both pages name. The pages are static: no script and no WebGL (scripts/lib/picker.ts).
+// the favicon both pages name. The pages are static HTML; the picker also loads the globe, built into
+// globe/ by scripts/lib/globe-build.ts (scripts/lib/picker.ts).
 // Beside them, what search engines and AI assistants read (scripts/lib/seo.ts): og.jpg, the
 // picker's picture for link previews (docs/og/home.jpg), sitemap.xml, robots.txt and llms.txt.
 //   node scripts/build-root.ts <list.json> <site>
@@ -17,6 +18,7 @@ import type { Words } from "../src/shared/school.ts";
 import type { CampusData, Meta } from "../src/shared/types.ts";
 import { loadSchoolAbout } from "./lib/about.ts";
 import { buildingPagePaths } from "./lib/building-pages.ts";
+import { buildGlobe } from "./lib/globe-build.ts";
 import { llmsTxt, pickerPages, schoolWords, sitemapEntries } from "./lib/picker.ts";
 import { readWorlds, worldPageFile } from "./lib/worlds-pages.ts";
 import { parseSchoolList } from "./lib/school-list.ts";
@@ -36,10 +38,12 @@ try {
   const schools = ids.map((id) => {
     const meta = path.join(site, id, "data", "meta.json");
     if (!fs.existsSync(meta)) throw new Error(`${meta} is missing: lay out every school on the list before the picker`);
-    return { id, words: schoolWords(root, id, shared), meta: readJson<Meta>(meta), about: loadSchoolAbout(root, path.join(site, id, "data"), id) };
+    const { origin } = readJson<{ origin: { lat: number; lon: number } }>(path.join(site, id, "data", "campus.json"));
+    return { id, words: schoolWords(root, id, shared), meta: readJson<Meta>(meta), about: loadSchoolAbout(root, path.join(site, id, "data"), id), origin };
   });
   const worlds = readWorlds(root, ids);
-  const { index, notFound } = pickerPages(schools, shared, worlds);
+  const globe = await buildGlobe(root, site);
+  const { index, notFound } = pickerPages(schools, shared, worlds, globe);
   for (const w of worlds) {
     const page = worldPageFile(w, worlds, shared);
     fs.mkdirSync(path.join(site, path.dirname(page.path)), { recursive: true });
