@@ -24,9 +24,13 @@ const glArgs = software
 
 // CI runs the suite in two halves at once, on two machines (.github/workflows/deploy.yml).
 // E2E_HALF=1 runs the specs FIRST_HALF names; E2E_HALF=2 runs every other one, so a new spec file
-// runs in the second half without being listed here. Measured on CI (2026-10-26), the two take
-// about as long. Without E2E_HALF, every spec runs.
-const FIRST_HALF = /[\\/](site|sky|mobile)\.spec\.ts$/;
+// runs in the second half without being listed here. Without E2E_HALF, every spec runs. The halves are
+// rebalanced by the time of each spec's tests on CI. On 2026-11-20 (run of 8287b1a), the first half's
+// tests took 1363 s and the second's 2660 s: landmark 1570, walker 790, polite 158, street 100,
+// ground 41. The second half took 22 minutes against the first's 11, and once ran past the jobs'
+// 35-minute limit. With walker in the first half the halves come to about 2150 s and 1870 s, about
+// 18 and 16 minutes with two workers.
+const FIRST_HALF = /[\\/](site|sky|mobile|walker)\.spec\.ts$/;
 // The phone's spec, matched as FIRST_HALF matches it, so that no other file can run in both halves.
 const MOBILE = /[\\/]mobile\.spec\.ts$/;
 const half = process.env.E2E_HALF || undefined;
