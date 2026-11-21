@@ -829,7 +829,11 @@
       },
       "globe": {
         "label": "A globe with a pin for each campus world",
-        "caption": "Drag to turn the globe, and scroll or pinch to zoom. Point at a pin to see its campus, and click it to open it. Every campus is also in the list below."
+        "caption": "Drag to turn the globe, and scroll or pinch to zoom. Point at a pin to see its campus, and click it to open it; where pins stand together, choose one. The tour visits each campus in the order it joined. The line shows where one project says another inspired it. Every campus is also in the list.",
+        "tour": "Tour the campuses",
+        "stop": "Stop the tour",
+        "group": "{count} campuses here",
+        "inspired": "Inspired by {from}"
       },
       "addNote": "Made a 3D world of a real university campus? It can join the list if it says it is unofficial and has a link to play it without signing in, or public source code.",
       "addLink": "Suggest it on GitHub"

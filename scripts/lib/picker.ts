@@ -19,7 +19,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Words } from "../../src/shared/school.ts";
-import { INSPIRED_BY, INSPIRED_LIST, LANDMARK_LIDAR, LINZ_ELEVATION_CREDIT, REPO } from "../../src/app/links.ts";
+import { INSPIRED_BY, INSPIRED_LIST, LANDMARK_LIDAR, OWN_LINEAGE, LINZ_ELEVATION_CREDIT, REPO } from "../../src/app/links.ts";
 import type { Meta } from "../../src/shared/types.ts";
 import type { World } from "../../src/worlds/worlds.ts";
 import type { GlobeData } from "../../src/globe/data.ts";
@@ -232,6 +232,14 @@ body.wide .lead,body.wide .notice,body.wide #about{max-width:46rem}
 .globe-tip{position:absolute;max-width:220px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);box-shadow:0 6px 20px rgba(15,27,37,.15);pointer-events:none}
 .globe-tip .site{margin:0}
 .globe-tip .name{margin:0;font:600 1rem/1.3 var(--font-display)}
+.globe-tip .name a{color:inherit}
+.globe-tip.open{pointer-events:auto}
+.globe-tip ul{margin:4px 0 0;padding:0;list-style:none}
+.globe-tip li+li{margin-top:6px}
+.globe-tip .lineage{margin:6px 0 0;color:#4a5a66;font-size:.8125rem}
+.globe-tour{position:absolute;left:12px;bottom:12px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 .875rem/1 var(--font);cursor:pointer;box-shadow:0 2px 8px rgba(15,27,37,.08)}
+.globe-tour:hover{border-color:var(--accent)}
+.globe-tour:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 #globe figcaption{margin:6px 0 0;color:#4a5a66;font-size:.875rem}
 @media (max-width:560px){.globe-stage{height:320px}}
 .reo{margin:-2px 0 6px;color:#33424d;font:1rem/1.3 var(--font-display);overflow-wrap:anywhere}
@@ -336,9 +344,16 @@ export function globeData(schools: PickerSchool[], worlds: World[], shared: Word
   for (const w of worlds) if (w.place) where.set(w.id, { lat: w.place.lat, lon: w.place.lon });
   const points = listEntries(schools, worlds, shared).flatMap((x) => {
     const at = where.get(x.id);
-    return at ? [{ id: x.id, site: x.site, name: x.name, href: x.href, lat: at.lat, lon: at.lon, own: x.kind === "own" }] : [];
+    return at ? [{ id: x.id, site: x.site, name: x.name, href: x.href, lat: at.lat, lon: at.lon, own: x.kind === "own", added: x.added }] : [];
   });
-  return { points, land, words: { label: word(shared, "picker.worlds.globe.label") } };
+  // Lineage, only where a project says so in public: this site's own (OWN_LINEAGE), and each world's inspiredBy.
+  const on = new Set(points.map((p) => p.id));
+  const arcs = [
+    { from: INSPIRED_BY.id, to: OWN_LINEAGE.to, quote: OWN_LINEAGE.quote, url: OWN_LINEAGE.url },
+    ...worlds.flatMap((w) => (w.inspiredBy ? [{ from: w.inspiredBy.id, to: w.id, quote: w.inspiredBy.quote, url: w.inspiredBy.url }] : [])),
+  ].filter((a) => on.has(a.from) && on.has(a.to));
+  const g = (k: string) => word(shared, `picker.worlds.globe.${k}`);
+  return { points, arcs, land, words: { label: g("label"), tour: g("tour"), stop: g("stop"), group: g("group"), inspired: g("inspired") } };
 }
 
 /** The globe above the list, hidden until its script shows it, with its data as JSON that no browser runs. */
@@ -347,7 +362,7 @@ function globe(shared: Words, data: GlobeData, script: string): { figure: string
   return {
     figure: [
       `<figure id="globe" hidden aria-label="${e(data.words.label)}">`,
-      `<div class="globe-stage"><div class="globe-tip" hidden><p class="site"></p><p class="name"></p></div></div>`,
+      `<div class="globe-stage"><div class="globe-tip" hidden></div><button class="globe-tour" type="button" hidden>${e(data.words.tour)}</button></div>`,
       `<figcaption>${e(word(shared, "picker.worlds.globe.caption"))}</figcaption>`,
       `</figure>`,
     ].join("\n"),

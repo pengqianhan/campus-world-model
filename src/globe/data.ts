@@ -16,14 +16,27 @@ export interface GlobePoint {
   lon: number;
   /** A school of this site. */
   own: boolean;
+  /** The day it joined the list, YYYY-MM-DD: the tour visits the campuses in this order. */
+  added: string;
+}
+
+/** A line of lineage: a project that says in public it was inspired by another, in its own words. */
+export interface GlobeArc {
+  /** The point of the project that inspired it. */
+  from: string;
+  /** The point of the project it inspired. */
+  to: string;
+  quote: string;
+  url: string;
 }
 
 /** What the page gives the globe: its points, its land file and its words. */
 export interface GlobeData {
   points: GlobePoint[];
+  arcs: GlobeArc[];
   /** The land, as GlobeLand, beside the script. */
   land: string;
-  words: { label: string };
+  words: { label: string; tour: string; stop: string; group: string; inspired: string };
 }
 
 /** The land as the globe draws it: rings, each a flat list of lon, lat, lon, lat… in tenths of a degree, filled even-odd. */
@@ -85,4 +98,45 @@ export function middle(points: { lat: number; lon: number }[]): { lat: number; l
   const r = Math.hypot(x, y, z);
   if (r < 1e-9) return { lat: 0, lon: 0 };
   return { lat: (Math.asin(y / r) * 180) / Math.PI, lon: (Math.atan2(-z, x) * 180) / Math.PI };
+}
+
+/** The order of the tour: by the day each campus joined the list, and on one day in the list's own order. */
+export function tourOrder(points: GlobePoint[]): GlobePoint[] {
+  return points.map((p, i) => ({ p, i })).sort((a, b) => a.p.added.localeCompare(b.p.added) || a.i - b.i).map((x) => x.p);
+}
+
+/**
+ * The pins within `reach` pixels of a place on screen, nearest first: where campuses stand closer than any zoom
+ * can part (the University of Auckland and AUT, 300 m apart; three Hangzhou campuses within 20 km), the pointer
+ * names them all.
+ */
+export function within<T extends { x: number; y: number }>(pins: T[], x: number, y: number, reach: number): T[] {
+  return pins
+    .map((p) => ({ p, d: Math.hypot(p.x - x, p.y - y) }))
+    .filter((q) => q.d <= reach)
+    .sort((a, b) => a.d - b.d)
+    .map((q) => q.p);
+}
+
+/**
+ * The points of an arc between two places, along the great circle between them and raised above the globe in the
+ * middle by `lift` of its radius, so that a long arc clears the land: `steps` + 1 points, the first at `a` and the
+ * last at `b`, both on the surface.
+ */
+export function arcPoints(a: { lat: number; lon: number }, b: { lat: number; lon: number }, steps = 48, lift = 0.25): [number, number, number][] {
+  const u = latLonToVector(a.lat, a.lon);
+  const v = latLonToVector(b.lat, b.lon);
+  const dot = Math.max(-1, Math.min(1, u[0] * v[0] + u[1] * v[1] + u[2] * v[2]));
+  const angle = Math.acos(dot);
+  const out: [number, number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    // slerp between the two unit vectors
+    const s = Math.sin(angle);
+    const wa = s < 1e-9 ? 1 - t : Math.sin((1 - t) * angle) / s;
+    const wb = s < 1e-9 ? t : Math.sin(t * angle) / s;
+    const r = 1 + lift * Math.sin(Math.PI * t) * Math.min(1, angle / (Math.PI / 2));
+    out.push([(u[0] * wa + v[0] * wb) * r, (u[1] * wa + v[1] * wb) * r, (u[2] * wa + v[2] * wb) * r]);
+  }
+  return out;
 }

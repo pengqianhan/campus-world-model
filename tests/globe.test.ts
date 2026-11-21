@@ -2,7 +2,7 @@
 // where it falls on the land's map, and the land as the globe draws it from Natural Earth.
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import { facing, landFromGeoJson, latLonToVector, mapPixel, middle } from "../src/globe/data.ts";
+import { arcPoints, facing, landFromGeoJson, latLonToVector, mapPixel, middle, tourOrder, within } from "../src/globe/data.ts";
 
 const near = (a: number[], b: number[]) => a.forEach((x, i) => expect(x).toBeCloseTo(b[i]!, 6));
 
@@ -51,5 +51,31 @@ describe("the globe's arithmetic", () => {
       }
     }
     expect(landFromGeoJson({ features: [{ geometry: { type: "MultiPolygon", coordinates: [[[[0, 0], [0, 0.01], [1, 0], [1, 1], [0, 0]]]] } }] })).toEqual([[0, 0, 10, 0, 10, 10, 0, 0]]);
+  });
+});
+
+describe("the globe's tour, groups and arcs", () => {
+  const point = (id: string, added: string) => ({ id, site: id, name: id, href: `/${id}/`, lat: 0, lon: 0, own: false, added });
+
+  it("tours the campuses by the day they joined, and on one day in the list's order", () => {
+    expect(tourOrder([point("b", "2026-11-20"), point("a", "2026-10-13"), point("c", "2026-11-20")]).map((p) => p.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("names every pin within reach, nearest first, so that campuses no zoom can part are all named", () => {
+    const pins = [{ id: "far", x: 100, y: 100 }, { id: "aut", x: 12, y: 10 }, { id: "uoa", x: 10, y: 10 }];
+    expect(within(pins, 10, 10, 14).map((p) => p.id)).toEqual(["uoa", "aut"]);
+    expect(within(pins, 50, 50, 14)).toEqual([]);
+  });
+
+  it("draws an arc along the great circle, from one place to the other on the surface, raised in the middle", () => {
+    const a = { lat: 40, lon: 116.3 };
+    const b = { lat: -36.85, lon: 174.77 };
+    const pts = arcPoints(a, b, 32);
+    expect(pts).toHaveLength(33);
+    near(pts[0]!, latLonToVector(a.lat, a.lon));
+    near(pts[32]!, latLonToVector(b.lat, b.lon));
+    const r = (v: number[]) => Math.hypot(v[0]!, v[1]!, v[2]!);
+    expect(r(pts[16]!)).toBeGreaterThan(1.15);
+    for (const p of pts) expect(r(p)).toBeGreaterThanOrEqual(1 - 1e-9);
   });
 });

@@ -19,6 +19,16 @@ export const INSPIRED_BY = { id: "tsinghua", url: "https://tsinghua-world-model.
  */
 export const INSPIRED_LIST = { name: "Awesome Slop Cities", url: "https://zz85.github.io/slop-cities/" };
 
+/**
+ * This site's own line of lineage on the globe (src/globe/data.ts, GlobeArc): from the Tsinghua World Model to the
+ * University of Auckland's map, where the site began, in the words of its README, "Inspiration".
+ */
+export const OWN_LINEAGE = {
+  to: "uoa",
+  quote: "This project was inspired by the Tsinghua World Model, an independent student project that lets you walk through Tsinghua University's campus and find courses and classrooms in it.",
+  url: "https://github.com/pengqianhan/campus-world-model#inspiration",
+};
+
 /** The site whose root carries About, one section a school (scripts/lib/about.ts). */
 export const SITE = "https://campusworldmodel.com/";
 

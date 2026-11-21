@@ -280,6 +280,11 @@ describe("About, at the site's root since 2026-11-10", () => {
     expect(data.points.filter((p) => p.own).map((p) => p.id)).toEqual(ids);
     const tsinghua = data.points.find((p) => p.id === "tsinghua")!;
     expect(tsinghua).toMatchObject({ href: "/worlds/tsinghua/", own: false, lat: worlds[0]!.place!.lat, lon: worlds[0]!.place!.lon });
+    // lineage only where a project says so in public: this site's README, from the Tsinghua World Model to the University of Auckland's map
+    expect(data.arcs).toEqual([{ from: "tsinghua", to: "uoa", quote: expect.stringMatching(/^This project was inspired by the Tsinghua World Model/), url: "https://github.com/pengqianhan/campus-world-model#inspiration" }]);
+    expect(fs.readFileSync("README.md", "utf8").replace(/\s+/g, " ")).toContain(data.arcs[0]!.quote.replace(/Tsinghua World Model/, "[Tsinghua World Model](https://tsinghua-world-model.pages.dev/?campus=1&classMode=live)"));
+    expect(data.points.every((p) => /^\d{4}-\d{2}-\d{2}$/.test(p.added))).toBe(true);
+    expect(index).toContain('<button class="globe-tour" type="button" hidden>Tour the campuses</button>');
     // a school with no place has no pin, and stays in the list
     expect(globeData(schools, [], shared, "x").points).toEqual([]);
     // the page without its JSON data and its one module script runs nothing else
