@@ -741,6 +741,43 @@ Snapshot: `data/raw/mapsindoors/*.json` (gitignored; URL/date/sha256 in `data/so
   card like it for each of two other independent campus worlds, in this order, each with its school,
   what it is and a link to its source code on GitHub (`OTHER_WORLDS` in `src/app/links.ts`):
   ZJU-LAPUTA (Zhejiang University) and the Westlake Campus Game (Westlake University).
+- **A global collection of campus worlds (the user, 2026-11-20).** The page at the site's root becomes a
+  collection of independent 3D campus projects from around the world, after the idea of Awesome Slop
+  Cities (`zz85.github.io/slop-cities`), with its own code, data and look and a link to it. Decided
+  with the user in one session, question by question:
+  - *Scope.* Real university campuses only, in 3D, to walk, explore or play in a browser. An entry
+    has a play link that opens without signing in, or public source code, or both; it says it is
+    unofficial; a link that no longer opens is marked or removed. Entries come by pull request or by
+    an issue form that the maintainer turns into one; candidates found by an agent wait for the
+    user's yes, one by one.
+  - *One list.* The site's own schools are entries too, marked as maps on this site, and open their
+    map at `/<id>/`. Every other entry has a static page at `/worlds/<id>/`: its screenshot, what it
+    is, its school in English and in the school's own language (as `.reo` shows te reo Māori), its
+    flags, and links to play it and to its source. The Tsinghua, ZJU and Westlake cards become
+    entries. About stays. Changed by the user on 2026-11-21: the questions
+    left the page (llms.txt keeps them, and the structured data no longer lists them), and a note under the
+    list says how to add a project, with a link to open an issue. The same day, at the user's word, the list
+    stands on the left and the globe on the right on a wide screen, and the page turned light: white cards,
+    a pale sea and sand-coloured land, the accent kept for fills and pins and a darker orange (#a65400) for
+    accent text, which passes WCAG AA on white.
+  - *Data.* Other entries are in `src/worlds/worlds.json` (JSON: no new dependency), read when the
+    root is built (`scripts/build-root.ts`), not by `npm run data:build`, so a contributor can
+    build it. The site's own schools come from `.github/schools.json` and their published data. Each
+    campus is placed by one OpenStreetMap Nominatim search through `snapshot.ts`, recorded in
+    `data/sources.json`. A screenshot is taken by us through `scripts/research/polite.mjs`, 960×540
+    JPEG, with its site and date; an entry with no public play link has none, and says why.
+  - *Lineage.* `inspiredBy` is set only where a project says so in public, quoted with its link.
+  - *Globe.* Drawn with three.js, coastlines from Natural Earth 1:110m (public domain, committed),
+    in the site's own palette. A tour visits the campuses in the order they were added; any input
+    stops it. Lineage is drawn as arcs. Without WebGL the static list stands alone; on a phone the
+    globe is shorter and the tour does not start by itself. The list stays static HTML under it.
+  - *Links.* `npm run worlds:check`, run by the maintainer by hand, checks that each link opens and
+    whether it can be framed. No scheduled job.
+  - *Landing.* A long-lived branch `worlds` takes four pull requests: the data, list and pages; the
+    globe; the tour and lineage; the issue form and `worlds:check`. It merges into `main` once, after
+    the preview is checked. Gates the user accepted for it: this decision, Nominatim and Natural
+    Earth as new sources (Natural Earth joins OpenStreetMap and LINZ as committed raw data), the
+    visits to each project's site for its screenshot, and the issue form under `.github/`.
 - **How a University building looks from outside (the user, 2026-10-14).** After comparing with
   the Tsinghua World Model the user asked for five changes, in this order: roofs in a colour of
   their own; floors that are alike drawn as one block; a rim and firmer edges on roofs; storeys and

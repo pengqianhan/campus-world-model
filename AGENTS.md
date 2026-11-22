@@ -15,7 +15,7 @@ These bind every change, whoever or whatever wrote it.
 - **Snapshot once.** Every fetch goes through `scripts/lib/snapshot.ts`, which caches, paces to one
   request a second, names the project in its User-Agent, and logs URL, date and hash to
   `data/sources.json`. Raw snapshots stay in gitignored `data/raw/`; openly licensed raw data
-  (OpenStreetMap and the LINZ elevation tiles) is the exception and is committed. `public/data/` is
+  (OpenStreetMap, the LINZ elevation tiles and Natural Earth) is the exception and is committed. `public/data/` is
   written only by `npm run data:build`. Looking at a site is fetching from it: a browser opened for
   research goes through `scripts/research/polite.mjs`, which keeps the same pace and only the hosts
   being studied.

@@ -1,0 +1,70 @@
+name: A campus world
+description: Suggest a 3D world of a real university campus, made by someone else, for the list and the globe
+labels: ["campus-world"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        The list at campusworldmodel.com shows independent 3D worlds of real university campuses. A world joins
+        when it says it is unofficial and has a link to play it without signing in, or public source code, or
+        both. The maintainer checks each one, places its campus with OpenStreetMap, takes a screenshot of it
+        and writes its entry in `src/worlds/worlds.json`. Give its makers only as the project itself credits
+        them: a team or an account, never a private person's details.
+  - type: input
+    id: title
+    attributes:
+      label: The project's name
+      description: As the project names itself.
+    validations:
+      required: true
+  - type: input
+    id: school
+    attributes:
+      label: University and campus
+      description: In English, and in the university's own language if it has one, e.g. "Zhejiang University, Zijingang campus (浙江大学 紫金港校区)".
+    validations:
+      required: true
+  - type: input
+    id: city
+    attributes:
+      label: City and country
+    validations:
+      required: true
+  - type: input
+    id: play
+    attributes:
+      label: Where to play it
+      description: A page that opens without signing in. Leave empty if there is none.
+  - type: input
+    id: source
+    attributes:
+      label: Its source code
+      description: A public repository. Leave empty if there is none.
+  - type: input
+    id: by
+    attributes:
+      label: Its makers, as the project credits them
+      description: A team or an account, with its link if it has one.
+  - type: textarea
+    id: about
+    attributes:
+      label: What it is
+      description: A sentence or two, after the project's own description.
+    validations:
+      required: true
+  - type: textarea
+    id: inspired
+    attributes:
+      label: What inspired it, in the project's own words
+      description: Only if the project says so in public. Quote it and link to where it says so; the globe draws a line between the two.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you send it
+      options:
+        - label: It shows a real university campus.
+          required: true
+        - label: It says it is unofficial, or is plainly not the university's own.
+          required: true
+        - label: It has a link to play it without signing in, or public source code.
+          required: true

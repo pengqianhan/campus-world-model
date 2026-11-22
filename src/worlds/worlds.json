@@ -1,0 +1,581 @@
+{
+  "note": "Campus worlds made by others, shown with this site's own schools on the page at the site's root (PROGRESS.md, Decisions, A global collection of campus worlds). Edit by hand; `place` is written by `node scripts/worlds/geocode.ts`. Types and rules: src/worlds/worlds.ts.",
+  "worlds": [
+    {
+      "id": "tsinghua",
+      "title": "Tsinghua World Model",
+      "school": {
+        "en": "Tsinghua University",
+        "native": {
+          "lang": "zh",
+          "text": "清华大学"
+        }
+      },
+      "city": "Beijing",
+      "country": "China",
+      "placeQuery": "Tsinghua University, Haidian District, Beijing",
+      "play": "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live",
+      "about": "An independent student project that lets you walk through Tsinghua University's campus and find courses and classrooms in it.",
+      "flags": [
+        "classes"
+      ],
+      "added": "2026-10-14",
+      "place": {
+        "lat": 40.00229,
+        "lon": 116.32096,
+        "osm": "relation/7469216",
+        "file": "data/raw/osm/nominatim/tsinghua.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "tsinghua.jpg",
+        "url": "https://tsinghua-world-model.pages.dev/?campus=1&classMode=live",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "zju-zijingang",
+      "title": "ZJU-LAPUTA",
+      "school": {
+        "en": "Zhejiang University",
+        "native": {
+          "lang": "zh",
+          "text": "浙江大学"
+        }
+      },
+      "campus": {
+        "en": "Zijingang campus",
+        "native": {
+          "lang": "zh",
+          "text": "紫金港校区"
+        }
+      },
+      "city": "Hangzhou",
+      "country": "China",
+      "placeQuery": "Zhejiang University Zijingang Campus, Hangzhou",
+      "play": "https://jixie1111-zju-laputa-campus.ms.show/",
+      "source": "https://github.com/ZJU-LAPUTA/zju-laputa-campus",
+      "by": {
+        "name": "ZJU-LAPUTA",
+        "url": "https://github.com/ZJU-LAPUTA"
+      },
+      "about": "A 3D web adventure game set on Zhejiang University's Zijingang campus, along its real roads, with a robot lab where you take robots apart and put them back together.",
+      "flags": [
+        "game",
+        "heavy"
+      ],
+      "added": "2026-11-20",
+      "place": {
+        "lat": 30.30685,
+        "lon": 120.06846,
+        "osm": "way/519369444",
+        "file": "data/raw/osm/nominatim/zju-zijingang.json",
+        "date": "2026-11-20"
+      },
+      "noScreenshot": "Its play page is on ModelScope, which loads its scripts from hosts this site does not visit, so there is no screenshot."
+    },
+    {
+      "id": "westlake-yungu",
+      "title": "Westlake Campus Game",
+      "school": {
+        "en": "Westlake University",
+        "native": {
+          "lang": "zh",
+          "text": "西湖大学"
+        }
+      },
+      "campus": {
+        "en": "Yungu campus",
+        "native": {
+          "lang": "zh",
+          "text": "云谷校区"
+        }
+      },
+      "city": "Hangzhou",
+      "country": "China",
+      "placeQuery": "Westlake University Yungu Campus, Hangzhou",
+      "source": "https://github.com/Westlake-AGI-Lab/westlake-campus-game",
+      "by": {
+        "name": "Westlake AGI Lab",
+        "url": "https://github.com/Westlake-AGI-Lab"
+      },
+      "about": "An unofficial 3D model of Westlake University's Yungu campus that several players can walk through together, find buildings in and plan walking routes across.",
+      "flags": [
+        "game",
+        "multiplayer"
+      ],
+      "noScreenshot": "It has no public address to play it at: its source code is public, and it runs on your own computer.",
+      "added": "2026-11-20",
+      "place": {
+        "lat": 30.33598,
+        "lon": 120.03197,
+        "osm": "way/587362728",
+        "file": "data/raw/osm/nominatim/westlake-yungu.json",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "gxu",
+      "title": "广西大学 校园地图",
+      "school": {
+        "en": "Guangxi University",
+        "native": {
+          "lang": "zh",
+          "text": "广西大学"
+        }
+      },
+      "city": "Nanning",
+      "country": "China",
+      "placeQuery": "Guangxi University, Nanning",
+      "source": "https://github.com/wcqqq1214/gxu-campus-3d",
+      "by": {
+        "name": "wcqqq1214",
+        "url": "https://github.com/wcqqq1214"
+      },
+      "about": "An interactive 3D map of Guangxi University's main campus, built with Three.js and Blender from OpenStreetMap and public material, with times of day and a guided route.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 22.84714,
+        "lon": 108.29135,
+        "osm": "way/398115378",
+        "file": "data/raw/osm/nominatim/gxu.json",
+        "date": "2026-11-20"
+      },
+      "noScreenshot": "Its play page dropped this site's connection while a screenshot was being taken, and this site does not ask it again, so it is listed by its source code, which is public."
+    },
+    {
+      "id": "gdut-hemc",
+      "title": "广工漫游",
+      "school": {
+        "en": "Guangdong University of Technology",
+        "native": {
+          "lang": "zh",
+          "text": "广东工业大学"
+        }
+      },
+      "campus": {
+        "en": "Higher Education Mega Center campus",
+        "native": {
+          "lang": "zh",
+          "text": "大学城校区"
+        }
+      },
+      "city": "Guangzhou",
+      "country": "China",
+      "placeQuery": "Guangdong University of Technology, Panyu, Guangzhou",
+      "play": "https://gdut-campus-atlas.gdut-campus-atlas.workers.dev/",
+      "source": "https://github.com/Xuezhenggdut/gdut-campus-atlas",
+      "by": {
+        "name": "Xuezhenggdut",
+        "url": "https://github.com/Xuezhenggdut"
+      },
+      "about": "A Three.js miniature of Guangdong University of Technology's campus at the Higher Education Mega Center, with its teaching and living areas, building search and a campus walk.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 23.04173,
+        "lon": 113.38736,
+        "osm": "relation/13970407",
+        "file": "data/raw/osm/nominatim/gdut-hemc.json",
+        "date": "2026-11-20"
+      },
+      "noScreenshot": "Its page shows the university's logo, and this site shows no university's logo."
+    },
+    {
+      "id": "bupt-xitucheng",
+      "title": "西土城四季",
+      "school": {
+        "en": "Beijing University of Posts and Telecommunications",
+        "native": {
+          "lang": "zh",
+          "text": "北京邮电大学"
+        }
+      },
+      "campus": {
+        "en": "Xitucheng campus",
+        "native": {
+          "lang": "zh",
+          "text": "西土城校区"
+        }
+      },
+      "city": "Beijing",
+      "country": "China",
+      "placeQuery": "北京邮电大学",
+      "source": "https://github.com/limit-coding/bupt-galgame",
+      "by": {
+        "name": "limit-coding",
+        "url": "https://github.com/limit-coding"
+      },
+      "about": "A stylised 3D model of the Beijing University of Posts and Telecommunications campus through the seasons and from day to night, seen from above, walked as a character or flown over.",
+      "flags": [
+        "game"
+      ],
+      "noScreenshot": "Its source code is public; it has no public address to play it at, and it runs on your own computer.",
+      "added": "2026-11-21",
+      "place": {
+        "lat": 39.96023,
+        "lon": 116.35193,
+        "osm": "way/279303636",
+        "file": "data/raw/osm/nominatim/bupt-xitucheng.json",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "njupt",
+      "title": "StuDev",
+      "school": {
+        "en": "Nanjing University of Posts and Telecommunications",
+        "native": {
+          "lang": "zh",
+          "text": "南京邮电大学"
+        }
+      },
+      "city": "Nanjing",
+      "country": "China",
+      "placeQuery": "Nanjing University of Posts and Telecommunications, Xianlin, Nanjing",
+      "play": "https://studev.hicancan.top/map/",
+      "source": "https://github.com/NJUPT-CS-StuDev/studev",
+      "by": {
+        "name": "NJUPT-CS-StuDev",
+        "url": "https://github.com/NJUPT-CS-StuDev"
+      },
+      "about": "A 3D map of the Nanjing University of Posts and Telecommunications campuses that shows which classrooms are free at a chosen time, with floors cut open and walking routes. It says it is unofficial.",
+      "flags": [
+        "classes"
+      ],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 32.11527,
+        "lon": 118.92596,
+        "osm": "way/89910254",
+        "file": "data/raw/osm/nominatim/njupt.json",
+        "date": "2026-11-20"
+      },
+      "noScreenshot": "Its map loads its data from a second host of the project, which dropped this site's connection while a screenshot was being taken, and this site does not ask it again."
+    },
+    {
+      "id": "puc-sp",
+      "title": "3D PUC",
+      "school": {
+        "en": "Pontifical Catholic University of São Paulo",
+        "native": {
+          "lang": "pt",
+          "text": "Pontifícia Universidade Católica de São Paulo"
+        }
+      },
+      "campus": {
+        "en": "Consolação campus",
+        "native": {
+          "lang": "pt",
+          "text": "Campus Consolação"
+        }
+      },
+      "city": "São Paulo",
+      "country": "Brazil",
+      "placeQuery": "Pontifícia Universidade Católica de São Paulo, Rua Monte Alegre, São Paulo",
+      "play": "https://mapa.puctech.com.br/",
+      "source": "https://github.com/PUCTech/3D-puc",
+      "by": {
+        "name": "PUC Tech",
+        "url": "https://github.com/PUCTech"
+      },
+      "about": "An isometric 3D map of PUC-SP's campus from real footprints and measured LiDAR heights, with floor plans and rooms, a 1943 view and a night mode, by a student science and technology league.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": -23.53796,
+        "lon": -46.67124,
+        "osm": "way/226756679",
+        "file": "data/raw/osm/nominatim/puc-sp.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "puc-sp.jpg",
+        "url": "https://mapa.puctech.com.br/",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "vit-ap",
+      "title": "VIT-AP 3D",
+      "school": {
+        "en": "VIT-AP University"
+      },
+      "city": "Amaravati",
+      "country": "India",
+      "placeQuery": "VIT-AP University, Amaravati",
+      "play": "https://mjanthony819.github.io/vitap-3d/",
+      "source": "https://github.com/mjanthony819/vitap-3d",
+      "by": {
+        "name": "mjanthony819",
+        "url": "https://github.com/mjanthony819"
+      },
+      "about": "An unofficial, student-built 3D map of VIT-AP University from OpenStreetMap footprints, with search, walking routes, a tour for new students and live day and night.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 16.4928,
+        "lon": 80.49824,
+        "osm": "way/750542244",
+        "file": "data/raw/osm/nominatim/vit-ap.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "vit-ap.jpg",
+        "url": "https://mjanthony819.github.io/vitap-3d/",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "uvic",
+      "title": "UVic Tour",
+      "school": {
+        "en": "University of Victoria"
+      },
+      "city": "Victoria",
+      "country": "Canada",
+      "placeQuery": "University of Victoria",
+      "source": "https://github.com/benedek-art/uvic-tour",
+      "by": {
+        "name": "benedek-art",
+        "url": "https://github.com/benedek-art"
+      },
+      "about": "A stylised 3D map of the University of Victoria campus with walking times between buildings and tour stops.",
+      "flags": [],
+      "noScreenshot": "Its source code is public; it has no public address to play it at, and it runs on your own computer.",
+      "added": "2026-11-21",
+      "place": {
+        "lat": 48.46206,
+        "lon": -123.31142,
+        "osm": "relation/1373463",
+        "file": "data/raw/osm/nominatim/uvic.json",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "lancaster",
+      "title": "Interactive 3D Map via OSM",
+      "school": {
+        "en": "Lancaster University"
+      },
+      "city": "Lancaster",
+      "country": "United Kingdom",
+      "placeQuery": "Lancaster University, Bailrigg, Lancaster",
+      "play": "https://sinzolo.github.io/interactive-3D-Map-via-OSM/",
+      "source": "https://github.com/Sinzolo/interactive-3D-Map-via-OSM",
+      "by": {
+        "name": "Sinzolo",
+        "url": "https://github.com/Sinzolo"
+      },
+      "about": "A third-year project that builds an interactive 3D map of Lancaster University's campus from OpenStreetMap, with walking routes.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 54.00995,
+        "lon": -2.7876,
+        "osm": "way/23347159",
+        "file": "data/raw/osm/nominatim/lancaster.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "lancaster.jpg",
+        "url": "https://sinzolo.github.io/interactive-3D-Map-via-OSM/",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "lau",
+      "title": "Campus Compass",
+      "school": {
+        "en": "Lebanese American University",
+        "native": {
+          "lang": "ar",
+          "text": "الجامعة اللبنانية الأميركية"
+        }
+      },
+      "campus": {
+        "en": "Beirut campus"
+      },
+      "city": "Beirut",
+      "country": "Lebanon",
+      "placeQuery": "Lebanese American University, Beirut",
+      "play": "https://campus-compass-nine-chi.vercel.app/",
+      "source": "https://github.com/harfoushleen/campus-compass",
+      "by": {
+        "name": "harfoushleen",
+        "url": "https://github.com/harfoushleen"
+      },
+      "about": "A 3D model of the Lebanese American University's campuses: tap a building to see what is inside. The Byblos campus is still to come.",
+      "flags": [
+        "wip"
+      ],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 33.89284,
+        "lon": 35.4775,
+        "osm": "way/244891449",
+        "file": "data/raw/osm/nominatim/lau.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "lau.jpg",
+        "url": "https://campus-compass-nine-chi.vercel.app/",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "fh-dortmund",
+      "title": "Campus Compass",
+      "school": {
+        "en": "Dortmund University of Applied Sciences and Arts",
+        "native": {
+          "lang": "de",
+          "text": "Fachhochschule Dortmund"
+        }
+      },
+      "campus": {
+        "en": "Emil-Figge-Straße campus",
+        "native": {
+          "lang": "de",
+          "text": "Campus Emil-Figge-Straße"
+        }
+      },
+      "city": "Dortmund",
+      "country": "Germany",
+      "placeQuery": "Fachhochschule Dortmund, Emil-Figge-Straße, Dortmund",
+      "source": "https://github.com/lakshay6666/fh-dortmund-campus-compass",
+      "by": {
+        "name": "lakshay6666",
+        "url": "https://github.com/lakshay6666"
+      },
+      "about": "A React and Three.js explorer of FH Dortmund's campus from OpenStreetMap building outlines, with searchable places and cards about them.",
+      "flags": [],
+      "noScreenshot": "Its source code is public; it has no public address to play it at, and it runs on your own computer.",
+      "added": "2026-11-21",
+      "place": {
+        "lat": 51.49443,
+        "lon": 7.41962,
+        "osm": "node/269199548",
+        "file": "data/raw/osm/nominatim/fh-dortmund.json",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "ritsumeikan-bkc",
+      "title": "立命館大学BKC バーチャルキャンパスマップ",
+      "school": {
+        "en": "Ritsumeikan University",
+        "native": {
+          "lang": "ja",
+          "text": "立命館大学"
+        }
+      },
+      "campus": {
+        "en": "Biwako-Kusatsu campus",
+        "native": {
+          "lang": "ja",
+          "text": "びわこ・くさつキャンパス"
+        }
+      },
+      "city": "Kusatsu",
+      "country": "Japan",
+      "placeQuery": "立命館大学, 草津市",
+      "source": "https://github.com/notic2025-lab/bkc-virtual-map",
+      "by": {
+        "name": "notic2025-lab",
+        "url": "https://github.com/notic2025-lab"
+      },
+      "about": "A 3D virtual campus of Ritsumeikan University's Biwako-Kusatsu campus, rebuilt from its campus map, with routes between its buildings.",
+      "flags": [],
+      "noScreenshot": "Its source code is public; it has no public address to play it at, and it runs on your own computer.",
+      "added": "2026-11-21",
+      "place": {
+        "lat": 34.98267,
+        "lon": 135.96254,
+        "osm": "node/2749065252",
+        "file": "data/raw/osm/nominatim/ritsumeikan-bkc.json",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "tdu-senju",
+      "title": "東京千住キャンパス Three.js Scene",
+      "school": {
+        "en": "Tokyo Denki University",
+        "native": {
+          "lang": "ja",
+          "text": "東京電機大学"
+        }
+      },
+      "campus": {
+        "en": "Tokyo Senju campus",
+        "native": {
+          "lang": "ja",
+          "text": "東京千住キャンパス"
+        }
+      },
+      "city": "Tokyo",
+      "country": "Japan",
+      "placeQuery": "東京電機大学 東京千住キャンパス",
+      "play": "https://masanori64.github.io/tdu-tokyo-senju-campus-threejs/",
+      "source": "https://github.com/masanori64/tdu-tokyo-senju-campus-threejs",
+      "by": {
+        "name": "masanori64",
+        "url": "https://github.com/masanori64"
+      },
+      "about": "A coursework scene of Tokyo Denki University's Tokyo Senju campus built from Three.js shapes, with passing cars, falling leaves and the time of day.",
+      "flags": [],
+      "added": "2026-11-21",
+      "place": {
+        "lat": 35.74785,
+        "lon": 139.80662,
+        "osm": "way/352629471",
+        "file": "data/raw/osm/nominatim/tdu-senju.json",
+        "date": "2026-11-20"
+      },
+      "screenshot": {
+        "file": "tdu-senju.jpg",
+        "url": "https://masanori64.github.io/tdu-tokyo-senju-campus-threejs/",
+        "date": "2026-11-20"
+      }
+    },
+    {
+      "id": "zjsru-gongchenqiao",
+      "title": "浙江树人学院数字孪生交互系统",
+      "school": {
+        "en": "Zhejiang Shuren University",
+        "native": {
+          "lang": "zh",
+          "text": "浙江树人学院"
+        }
+      },
+      "campus": {
+        "en": "Gongchenqiao campus",
+        "native": {
+          "lang": "zh",
+          "text": "拱宸桥校区"
+        }
+      },
+      "city": "Hangzhou",
+      "country": "China",
+      "placeQuery": "浙江树人大学, 拱墅区, 杭州市",
+      "source": "https://github.com/lysyminger/digital-twin-campus-threejs",
+      "by": {
+        "name": "lysyminger",
+        "url": "https://github.com/lysyminger"
+      },
+      "about": "A coursework digital twin of Zhejiang Shuren University's campus in Three.js, laid out from satellite imagery, with a tour and first-person walking.",
+      "flags": [],
+      "noScreenshot": "Its source code is public; it has no public address to play it at, and it runs on your own computer.",
+      "added": "2026-11-21",
+      "place": {
+        "lat": 30.3184,
+        "lon": 120.15163,
+        "osm": "way/331503475",
+        "file": "data/raw/osm/nominatim/zjsru-gongchenqiao.json",
+        "date": "2026-11-20"
+      }
+    }
+  ]
+}

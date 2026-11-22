@@ -1,0 +1,13 @@
+{
+  "note": "Hosts of campus worlds that closed to this site, each recorded once and never asked again (AGENTS.md, \"Closed is a verdict\"). scripts/worlds/check.ts reads it before it fetches anything, and adds to it.",
+  "hosts": {
+    "wcqqq1214.github.io": {
+      "reason": "dropped connection while a screenshot was taken",
+      "date": "2026-11-21"
+    },
+    "data.hicancan.top": {
+      "reason": "dropped connection while a screenshot was taken",
+      "date": "2026-11-21"
+    }
+  }
+}
