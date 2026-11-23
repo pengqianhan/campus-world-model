@@ -138,24 +138,28 @@ export class Terrain {
    * than FOOTING above its lowest corner: on a slope the uphill side goes into the hill, as real
    * buildings do, and a footing fills the gap down to `low` on the other side, so nothing floats.
    * Near a cliff or the shore the source's smooth ground would otherwise bury a building or hang
-   * it in the air.
+   * it in the air. `high` is the highest ground under the footprint: where the hill covers the floors.
    */
-  footing(ring: FlatRing): { base: number; low: number } {
+  footing(ring: FlatRing): { base: number; low: number; high: number } {
     let low = Infinity;
+    let high = -Infinity;
     let sx = 0;
     let sy = 0;
     for (let i = 0; i + 1 < ring.length; i += 2) {
       const x = ring[i]! / 10;
       const y = ring[i + 1]! / 10;
-      low = Math.min(low, this.height(x, y));
+      const h = this.height(x, y);
+      low = Math.min(low, h);
+      high = Math.max(high, h);
       sx += x;
       sy += y;
     }
     const n = ring.length / 2;
-    if (!n) return { base: 0, low: 0 };
+    if (!n) return { base: 0, low: 0, high: 0 };
     const middle = this.height(sx / n, sy / n);
     low = Math.min(low, middle);
-    return { base: Math.min(middle, low + FOOTING), low };
+    high = Math.max(high, middle);
+    return { base: Math.min(middle, low + FOOTING), low, high };
   }
 
   /** One grid as a mesh, with a skirt down to the sea plane round its edge. */
