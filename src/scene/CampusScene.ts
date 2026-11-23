@@ -301,6 +301,8 @@ const CUT_WALL_THICKNESS = 0.3;
 const FLOOR_FILL = { wide: [0.56, 0.66], narrow: [0.84, 0.48] } as const;
 /** How much of the ground shows over an open floor below it: the floor is seen through the ground. */
 const GROUND_VEIL = 0.45;
+/** How far the ground must rise above the open floor's slab, metres, for it to be drawn see-through over the floor. */
+const HILL_COVER = 0.5;
 /** The panes of the windows drawn on University building walls (makeWindowTexture), and of a landmark's light form. */
 const WINDOW_PANE = "#93a3ab";
 /**
@@ -457,7 +459,7 @@ export class CampusScene {
   private terrain?: Terrain;
   private terrainMeshes: Mesh[] = [];
   /** Where each University building stands on the ground, by id. */
-  private bases = new Map<string, { base: number; low: number }>();
+  private bases = new Map<string, { base: number; low: number; high: number }>();
   /** Floor outlines without their strips (see withoutStrips), by the outline they were made from. */
   private cleanOutlines = new WeakMap<object, FlatRing[][]>();
   private lastContext?: ContextData;
@@ -1002,7 +1004,7 @@ export class CampusScene {
         // A bridge whose base is not known is not drawn. It takes its shade all the same, so the
         // buildings after it keep theirs.
         if (!drawnContext(b)) continue;
-        const foot = terrain ? terrain.footing(b.p) : { base: 0, low: 0 };
+        const foot = terrain ? terrain.footing(b.p) : { base: 0, low: 0, high: 0 };
         const g = foot.base;
         const start = mb.vertexCount;
         const base = b.b ?? 0;
@@ -1563,10 +1565,16 @@ export class CampusScene {
     return this.baseOf(b) + ((i - groundLevel(b)) / 10) * (this.campus?.floorHeight ?? 3.6);
   }
 
-  /** Whether the open floor lies below the ground, and is to be seen through it. */
+  /**
+   * Whether the open floor lies below the ground, and is to be seen through it: a floor under the street
+   * level, or a floor the hill covers on its uphill side (the ground rises above its slab by more than
+   * HILL_COVER). The ground stays as the map has it; it is only drawn see-through over the floor.
+   */
   private get openBelowGround(): boolean {
     const cur = this.focus > 0 ? this.currentFloor() : undefined;
-    return !!cur && cur.floor.i < groundLevel(cur.b);
+    if (!cur) return false;
+    if (cur.floor.i < groundLevel(cur.b)) return true;
+    return this.footingOf(cur.b).high - this.floorY(cur.b, cur.floor.i) > HILL_COVER;
   }
 
   /** Height of the ground at a point, metres east and north; 0 until the terrain has come. */
@@ -1662,8 +1670,8 @@ export class CampusScene {
     return this.footingOf(b).base;
   }
 
-  private footingOf(b: Building): { base: number; low: number } {
-    if (!this.terrain) return { base: 0, low: 0 };
+  private footingOf(b: Building): { base: number; low: number; high: number } {
+    if (!this.terrain) return { base: 0, low: 0, high: 0 };
     let f = this.bases.get(b.id);
     if (!f) this.bases.set(b.id, (f = this.terrain.footing(b.outline[0]!)));
     return f;
