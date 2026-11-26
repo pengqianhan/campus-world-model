@@ -17,6 +17,9 @@ export type Move =
   | "strike0"
   | "strike1"
   | "strike2"
+  | "punch0"
+  | "punch1"
+  | "punch2"
   | "card"
   | "dodge"
   | "dodgeF"
@@ -129,6 +132,36 @@ const OWN: Record<Exclude<Move, "dodgeL" | "flinchR" | "flinch">, MoveSpec> = {
     ],
     out: [PLAYER.strikeTime[2], PLAYER.strikeTime[2] + 0.3],
     trail: [C2 - 0.04, C2 + 0.08],
+  },
+  // Street-boxing right cross: tight guard up, hips rotate into straight punch (no glowing trail).
+  punch0: {
+    keys: [
+      { t: C0 * 0.55, ease: "out", p: { rUp: [0.38, -0.35, 0.35], rFo: [0.1, 0.45, -0.88], lUp: [-0.28, -0.45, -0.85], lFo: [0.12, 0.62, -0.78], twist: -0.38, lean: 0.06, crouch: 0.03 } },
+      { t: C0, ease: "in", p: { rUp: [0.14, -0.06, -0.99], rFo: [-0.08, 0.04, -0.99], lUp: [-0.32, -0.52, -0.79], lFo: [0.15, 0.65, -0.74], twist: 0.46, lean: 0.15, crouch: 0.04, step: 0.12 } },
+      { t: C0 + 0.08, ease: "out", p: { rUp: [0.06, -0.14, -0.99], rFo: [-0.18, -0.05, -0.98], lUp: [-0.32, -0.55, -0.77], lFo: [0.14, 0.62, -0.77], twist: 0.5, lean: 0.16, crouch: 0.04, step: 0.13 } },
+      { t: PLAYER.strikeTime[0], ease: "io", p: { rUp: [0.28, -0.5, -0.82], rFo: [-0.05, 0.38, -0.92], lUp: [-0.28, -0.5, -0.82], lFo: [0.08, 0.52, -0.85], twist: 0.15, lean: 0.08, crouch: 0.03, step: 0.06 } },
+    ],
+    out: [PLAYER.strikeTime[0], PLAYER.strikeTime[0] + 0.22],
+  },
+  // Street-boxing left hook / straight cross.
+  punch1: {
+    keys: [
+      { t: C1 * 0.55, ease: "out", p: { rUp: [0.28, -0.45, -0.85], rFo: [-0.12, 0.62, -0.78], lUp: [-0.45, -0.32, 0.38], lFo: [-0.15, 0.42, -0.89], twist: 0.4, lean: 0.08, crouch: 0.03 } },
+      { t: C1, ease: "in", p: { rUp: [0.32, -0.52, -0.79], rFo: [-0.15, 0.65, -0.74], lUp: [-0.16, -0.05, -0.98], lFo: [0.22, 0.04, -0.97], twist: -0.48, lean: 0.16, crouch: 0.04, step: 0.13 } },
+      { t: C1 + 0.08, ease: "out", p: { rUp: [0.32, -0.55, -0.77], rFo: [-0.14, 0.62, -0.77], lUp: [0.05, -0.12, -0.99], lFo: [0.36, -0.06, -0.93], twist: -0.54, lean: 0.17, crouch: 0.04, step: 0.14 } },
+      { t: PLAYER.strikeTime[1], ease: "io", p: { rUp: [0.28, -0.5, -0.82], rFo: [-0.08, 0.52, -0.85], lUp: [-0.28, -0.5, -0.82], lFo: [0.05, 0.38, -0.92], twist: -0.15, lean: 0.08, crouch: 0.03, step: 0.06 } },
+    ],
+    out: [PLAYER.strikeTime[1], PLAYER.strikeTime[1] + 0.22],
+  },
+  // Heavy street haymaker finisher with torso torque & forward weight step.
+  punch2: {
+    keys: [
+      { t: C2 * 0.58, ease: "out", p: { rUp: [0.68, -0.25, 0.68], rFo: [0.22, 0.48, -0.85], lUp: [-0.32, -0.42, -0.85], lFo: [0.14, 0.62, -0.77], twist: -0.68, lean: 0.04, crouch: 0.08, step: -0.04 } },
+      { t: C2, ease: "in", p: { rUp: [0.1, 0.04, -0.99], rFo: [-0.42, 0.12, -0.9], lUp: [-0.35, -0.62, -0.7], lFo: [-0.1, 0.35, -0.93], twist: 0.66, lean: 0.26, crouch: 0.06, step: 0.22 } },
+      { t: C2 + 0.1, ease: "out", p: { rUp: [-0.28, -0.12, -0.95], rFo: [-0.68, -0.08, -0.73], lUp: [-0.35, -0.68, -0.64], lFo: [-0.1, 0.25, -0.96], twist: 0.74, lean: 0.28, crouch: 0.06, step: 0.24 } },
+      { t: PLAYER.strikeTime[2], ease: "io", p: { rUp: [0.25, -0.52, -0.82], rFo: [-0.08, 0.4, -0.91], lUp: [-0.28, -0.52, -0.81], lFo: [0.08, 0.48, -0.87], twist: 0.2, lean: 0.12, crouch: 0.04, step: 0.1 } },
+    ],
+    out: [PLAYER.strikeTime[2], PLAYER.strikeTime[2] + 0.26],
   },
   // The flashcard: the right arm drawn back by the ear, the left pointing, then a snap forward.
   card: {

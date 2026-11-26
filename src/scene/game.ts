@@ -1,55 +1,25 @@
-// Study Quest on the map: the villains, the pick-ups, the blows and the warnings, drawn over the walk.
-// The rules are in shared/game.ts; this draws them, and lends them the walker, the ground and the
-// walking map. Everything here is made up and looks it: cartoon villains for study troubles, toy
-// books and coffee with a beam of light over each. None of it is campus data, none of it stands for
-// a real class, person or due date, and none of it can be picked or opened.
-//
-// Cost: each kind of villain is one merged geometry drawn instanced (two or three calls for a whole
-// crowd), the effects are a handful of instanced meshes filled again each frame from kept arrays,
-// nothing casts a shadow, and the marks over the picture are kept DOM elements moved by transform.
+// Study Quest over the campus map: realistic human NPCs, traffic & drivable vehicles,
+// Slice Co. pizza van, grounded pickups, Campus Security, and GTA Harbour-Night HUD bridge.
+// Rules live in shared/game.ts, openWorld.ts, and campusVehicles.ts; 3D models live in openWorldScene.ts.
+import { Group, Vector3, type Camera, type Material, type InstancedMesh } from "three";
+import { decodeRing, type Pt } from "../shared/geo.ts";
 import {
-  AdditiveBlending,
-  BufferAttribute,
-  Color,
-  CylinderGeometry,
-  Euler,
-  Group,
-  Mesh,
-  InstancedMesh,
-  Matrix4,
-  MeshBasicMaterial,
-  MeshLambertMaterial,
-  Quaternion,
-  Vector2,
-  Vector3,
-  type BufferGeometry,
-  type Camera,
-  type Material,
-} from "three";
-import type { Pt } from "../shared/geo.ts";
-import {
-  FOES,
-  FOE_KINDS,
-  FOE_TIME,
+  HOME_MARGIN,
   PLAYER,
   QUEST,
   RANKS,
   SKILLS,
   StudyQuest,
-  bearingTo,
-  bodyScale,
-  chargeSpeed,
-  HOME_MARGIN,
   awayFromHomes,
+  bearingTo,
   bookSpot,
   isHome,
   nearestReached,
   openSpot,
   questDraws,
   reachable,
-  type BookDraw,
+  turnBetween,
   type Debrief,
-  type Foe,
   type FoeKind,
   type GameEvent,
   type ItemKind,
@@ -58,21 +28,20 @@ import {
   type QuestKey,
   type SkillId,
 } from "../shared/game.ts";
-import { decodeRing } from "../shared/geo.ts";
+import { OPEN_WORLD, STORY_JOBS, SIDE_HUSTLES, type ActiveJob, type HumanNpc, type JobId, type PickupKind } from "../shared/openWorld.ts";
+import type { CampusVehicle, VehicleControlInput, VehicleKind } from "../shared/campusVehicles.ts";
 import type { RoofMap } from "../shared/roofmap.ts";
-import type { Building } from "../shared/types.ts";
+import type { Building, ContextData } from "../shared/types.ts";
 import type { WalkMap } from "../shared/walkmap.ts";
 import { cellOf, type WalkGrid } from "../shared/walkpath.ts";
 import type { Move } from "./figureMoves.ts";
-import { dodgeWay, turnBetween } from "../shared/locomotion.ts";
-import { Arena, Debris, Decals, Missiles, Puffs, Shadows, Shocks, Slash, Sparks, Telegraphs, yawOf } from "./gameFx.ts";
-import { FoeMotion, newLook } from "./gameMotion.ts";
-import { BossView, bossPose } from "./gameBoss.ts";
-import { MODELS, bookParts, coffeeGeo, noteGeo, type Model } from "./gameModels.ts";
-import { GameOverlay, type MarkIn, type PlateIn } from "./gameOverlay.ts";
-import { disposeInstances, everyFrame, sendInstances } from "./gameBuffers.ts";
+import { dodgeWay } from "../shared/locomotion.ts";
+import { Debris, Puffs, Shocks, Slash, Sparks } from "./gameFx.ts";
+import { GameOverlay } from "./gameOverlay.ts";
+import { OpenWorldScene, type OpenWorldHuman, type OpenWorldPickup, type OpenWorldSpot, type OpenWorldVehicle } from "./openWorldScene.ts";
 import type { LabelSpec } from "./labels.ts";
-import type { WalkerState } from "./walkers.ts";
+import { GROUND_PAINT, type WalkerState } from "./walkers.ts";
+import type { GtaHudView, GtaPhoneCmd, GtaPhoneJob, GtaRadarBlip, GtaRadarBuilding, GtaRadarRoad } from "../ui/GameRadar.tsx";
 
 /** What the scene lends the game. */
 export interface GameSceneHost {
@@ -81,58 +50,52 @@ export interface GameSceneHost {
   roofs(): RoofMap | undefined;
   buildings(): readonly Building[];
   walker(name: string): WalkerState | undefined;
-  /** Pushes the walker over free ground; turns it to a bearing; sets the share of its pace it keeps. */
   shove(name: string, dx: number, dy: number): void;
   face(name: string, bearing: number): void;
   paceScale(name: string, k: number): void;
   camera(): Camera;
   viewSize(): { width: number; height: number };
-  /**
-   * Starts a move of the walker's arms and body (figureMoves.ts), or lets go of it: a flinch with the
-   * way the blow came from (degrees off the way it faces, clockwise), a move played slower or faster.
-   */
   act(name: string, move: Move | undefined, opts?: { dir?: number; rate?: number }): void;
-  /** Locked on: the walker faces the foe at `at` and steps round it (walkers.ts setFace); undefined lets go. */
   strafe(name: string, at: Pt | undefined): void;
-  /** The bearing the walker's steering asks it to go along, read against the camera; undefined when nothing is held. */
   intent(name: string): number | undefined;
-  /** A press of the jump (walkers.ts jump); false where the walker cannot jump (indoors, on the scooter). */
   jump(name: string): boolean;
-  /** Whether the walker may leave the ground now. */
   jumpable(name: string, can: boolean): void;
-  /** Puts the highlighter in the walker's hand, or takes it away. */
   pen(name: string, on: boolean): void;
-  /** Puts the walker at once at a place, facing a bearing, and the camera behind it: a retry. */
+  ring?(name: string, on: boolean): void;
+  bodyVisible?(name: string, on: boolean): void;
+  scooterPose?(name: string, on: boolean, speed: number, turnRate: number, dt: number): void;
+  context?(): ContextData | undefined;
+  drivePose?(name: string, at: Pt, heading: number): void;
   teleport(name: string, at: Pt, heading: number): void;
 }
 
-/** The words the game shows on the map, in the visitor's language. */
+/** Localized strings and formatters provided by app/game.ts. */
 export interface GameWords {
   foes: Record<FoeKind, string>;
-  /** A building's name, as the map shows it. */
   place(b: Building): string;
-  /** The word for a quest's place on open ground. */
   open: string;
-  /** The compass's eight points, north first and clockwise, as the tape over the view shows them. */
   compass: readonly string[];
-  /** A distance in whole metres, as the marks over the view show it. */
   metres(m: number): string;
+  pizzaTake?: string;
+  promptText?(action: string, label?: string): string;
+  vehicleName?(kind: VehicleKind): string;
+  radioInfo?(station: number): { id: string; name: string; genre?: string; off?: boolean };
+  objectiveText?(active: ActiveJob | undefined, hasNextStory: boolean, nextJob?: { id: string; giver?: string; placeName?: string }): string | undefined;
+  subtitleText?(speaker: string, key: string): string;
+  statLabel?(key: string): string;
+  zoneName?: string;
 }
 
-export type GameAction = "strike" | "dodge" | "card" | "eureka";
+export type GameAction = "strike" | "heavy" | "dodge" | "card" | "eureka";
 
-/** What the camera behind the walker frames in a fight (GameWorld.fightFocus). */
+/** Legacy fight camera focus type preserved for CampusScene compatibility. */
 export interface FightFocus {
   at: [number, number];
   foot: number;
   top: number;
-  /** Metres either side of its middle. */
   half: number;
-  /** Metres from its middle to the edge of its body: the camera keeps out of it. */
   body: number;
-  /** The bearing a charge it shows or makes runs along, degrees; undefined when it is not charging. */
   lane?: number;
-  /** While it charges: where the charge will end, and seconds until it passes the walker (less than 0 once past). */
   laneEnd: [number, number];
   passIn: number;
   hard: boolean;
@@ -141,7 +104,6 @@ export interface FightFocus {
 /** What the panel shows of a game, ten times a second. */
 export interface GameView {
   phase: "play" | "over";
-  /** Why the clock is stopped: the walker is inside a building, or flying. */
   paused?: "indoor" | "fly" | "map";
   focus: number;
   maxFocus: number;
@@ -149,385 +111,158 @@ export interface GameView {
   maxStamina: number;
   xp: number;
   rank: number;
-  /** Knowledge at which this rank began, and at which the next begins (undefined at the top). */
   rankXp: number;
   nextXp?: number;
   insight: number;
   crit: number;
-  /** 0 to 1: the Eureka's charge. */
   eureka: number;
   skills: { id: SkillId; open: boolean; rank: number; ready: number }[];
   quests: { id: string; key: QuestKey; main: boolean; place?: string; need: number; got: number; metres?: number; bearing?: number }[];
   boss?: { hp: number; max: number; phase: number };
-  /** Foes up and close enough to fight (for the music), and whether a DDL is among them. */
   threat: { near: number; ddl: boolean };
-  /** Hits in a row. */
   chain: number;
   slowed: boolean;
   locked: boolean;
   seconds: number;
   defeated: number;
-  /** Kinds met so far. */
   met: FoeKind[];
-  /** The prompt up now, if any, and the lessons taught (kept in this browser). */
   lesson?: Lesson;
   taught: Lesson[];
-  /** Times burnt out so far. */
   deaths: number;
-  /** For a game lost: where a retry starts, at the start of a main quest or the boss's arena. */
   retry?: { quest: QuestKey; boss: boolean };
   events: GameEvent[];
   debrief?: Debrief;
+  gta: GtaHudView;
 }
 
-/** Seconds after a game ends in which its foes' last moments and the debris are still drawn. */
 const OVER_SETTLE = 5;
-/** Metres: half the side of the ground the pick-ups are laid on, round the walker. */
-const FIELD = 300;
+const FIELD = 320;
 const FIELD_KEEP = 140;
 const CLOSE_ITEMS = 12;
 const CLOSE_REACH = 75;
-const DRAW_HALF = 110;
-const ITEM_UP = 1.5;
-/** Metres within which a foe counts as a fight, for the music. */
-const THREAT_REACH = 24;
-/** Metres from its building within which the last fight looks for open ground. */
+const DRAW_HALF = 140;
+const ITEM_UP = 0.55;
 const ARENA_REACH = 75;
-/** Buildings, most rooms first, tried for an arena clear of homes before one nearer them is taken. */
 const ARENA_TRIES = 8;
-/** The books' covers: the project's own bright colours, none a university's. */
-const COVERS = [0xff5d73, 0x39c6a5, 0xffb454, 0x6c8cff, 0xc77dff];
+const NEAR_RINGS = 30;
 const ACCENT = 0xffb454;
-/** How many of each kind can be drawn at once. */
-const CAP: Record<FoeKind, number> = { ddl: 3, procrastination: 8, distraction: 18, plagiarism: 6, anxiety: 8, exam: 1 };
-/** Each kind's colour, for its sparks. */
-const HUE: Record<FoeKind, number> = { ddl: 0xff3b1f, procrastination: 0xb9a6ff, distraction: 0x2fd7ff, plagiarism: 0xd9c7ff, anxiety: 0x8b5cff, exam: 0xffb347 };
+const OPEN_BEHIND = 8;
+const OPEN_AHEAD = 20;
+const CRAMPED = 2.5;
+const START_REACH = 16;
+const START_ROOM = 6;
+const BIG_FROM_REACH = 22;
+const BIG_FROM_ROOM = 8;
+const BIG_FROM_GAP = 25;
+const SHOULDER_HOLD = 0.3;
+const DUST = 0xcdc3ad;
 
-const _m = new Matrix4();
-const _b = new Matrix4();
-const _l = new Matrix4();
-const _p = new Vector3();
-const _q = new Quaternion();
-const _s = new Vector3();
-const _e = new Euler(0, 0, 0, "YXZ");
-const _c = new Color();
-const _v = new Vector3();
-const _r = new Matrix4();
-const _tint = new Color();
+const SPEAKER_COLOR_INDEX: Record<string, number> = {
+  Maya: 0,
+  Sam: 1,
+  Tane: 2,
+  "Slice Co.": 5,
+  "Campus Security": 6,
+};
 
-/** What a foe's materials show of it, for one foe: set in each frame, sent as uniforms. */
-interface FoeLook {
-  /** A colour that glows at its edges: red for a warning, the boss's rage, the edges of what breaks up. */
-  tint: { value: Color };
-  /** x: how much of it has broken up (pieces gone, the edges of the gaps alight); y: a blow's flash. */
-  fx: { value: Vector2 };
+function mapHumanState(state: HumanNpc["state"]): string {
+  if (state === "windup") return "tell";
+  return state;
+}
+
+function isPickupKind(kind: ItemKind): kind is PickupKind {
+  return kind === "pizza" || kind === "cash" || kind === "coffee" || kind === "package";
+}
+
+function humanBlipKind(h: HumanNpc): GtaRadarBlip["kind"] {
+  if (h.role === "security") return "security";
+  if (h.isMissionTarget) return "objective";
+  if (h.role === "freeRider" || h.role === "debateRival" || h.role === "allNighter") return "rival";
+  if (h.role === "giver") return "mission";
+  return "pedestrian";
+}
+
+function vehicleStateOf(hp: number): "ok" | "smoking" | "wrecked" {
+  if (hp <= 20) return "wrecked";
+  if (hp <= 55) return "smoking";
+  return "ok";
+}
+
+function formatGear(v: CampusVehicle): string {
+  if (v.kind === "mecha") {
+    if (v.flying) return Math.abs(v.speed) >= 24 ? `MACH · ${Math.round(v.altitude)}m` : `HOVER · ${Math.round(v.altitude)}m`;
+    return v.altitude > 0.5 ? `ROOF · ${Math.round(v.altitude)}m` : "WALK";
+  }
+  if (v.kind === "scooter") return "E";
+  if (v.speed < -0.5) return "R";
+  if (Math.abs(v.speed) < 0.4) return "N";
+  return String(Math.max(1, v.gear));
 }
 
 /**
- * Makes a material show a foe's look (FoeLook): a tint that glows at its edges, a blow's flash (a white
- * glint at the edges, its form kept) and how much of it has broken up. Uniforms, not instance
- * attributes: a vertex buffer written in every frame stalls ANGLE on Direct3D 11 (gameBuffers.ts),
- * and the villains' models are big. Every foe's materials share one program.
+ * Open-campus Study Quest world: owns `StudyQuest`, `OpenWorldScene`, lightweight sparks/dust/slash FX,
+ * driving seat synchronization, and the Harbour-Night `GtaHudView` projection.
  */
-function tinted<T extends Material>(m: T, lit: boolean, look: FoeLook): T {
-  m.onBeforeCompile = (s) => {
-    s.uniforms.uTint = look.tint;
-    s.uniforms.uFx = look.fx;
-    s.vertexShader = "varying vec3 vLocal;\n" + s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvLocal = position;");
-    const pars = "uniform vec3 uTint;\nuniform vec2 uFx;\nvarying vec3 vLocal;\nfloat sqHash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }\n";
-    // Pieces about a seventh of a metre, some smaller, go first where the noise is lowest.
-    const dissolve =
-      "float sqGap = 0.0;\nif (uFx.x > 0.0) {\n  float n = 0.7 * sqHash(floor(vLocal * 7.0)) + 0.3 * sqHash(floor(vLocal * 19.0));\n  if (n < uFx.x) discard;\n  sqGap = 1.0 - smoothstep(uFx.x, uFx.x + 0.07, n);\n}\n";
-    s.fragmentShader = pars + s.fragmentShader;
-    if (lit)
-      s.fragmentShader = s.fragmentShader.replace(
-        "#include <emissivemap_fragment>",
-        "#include <emissivemap_fragment>\n" +
-          dissolve +
-          "float sqRim = 1.0 - abs(dot(normal, normalize(vViewPosition)));\nfloat sqRim3 = sqRim * sqRim * sqRim;\n" +
-          // The warning's red keeps to the edges, where it reads as a glow, and leaves the faces their
-          // own colours: a small foe, nearly all edge, is not washed pink.
-          "totalEmissiveRadiance += vColor.rgb * 0.18 + uTint * (0.02 + 3.4 * smoothstep(0.7, 0.97, sqRim)) + uTint * sqGap * 3.0;\n" +
-          "totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * uFx.y * (0.06 + 1.5 * sqRim3);\n",
-      );
-    else
-      s.fragmentShader = s.fragmentShader.replace(
-        "#include <color_fragment>",
-        "#include <color_fragment>\n" + dissolve + "diffuseColor.rgb += uTint * 0.12 + uTint * sqGap * 2.0 + vec3(uFx.y * 0.45);\n",
-      );
-  };
-  m.customProgramCacheKey = () => (lit ? "study-quest-lit-6" : "study-quest-glow-6");
-  return m;
-}
-
-/** The villains drawn in crowds; the Final Exam is drawn by a figure of its own (gameBoss.ts). */
-type CrowdKind = Exclude<FoeKind, "exam">;
-const CROWD_KINDS = FOE_KINDS.filter((k): k is CrowdKind => k !== "exam");
-
-/** One foe's place in a kind's pool: its meshes (the body, the glow, the moving parts), its look. */
-interface Slot {
-  root: Group;
-  parts: { mesh: Mesh; name: string; pivot: [number, number, number] }[];
-  look: FoeLook;
-  mats: Material[];
-}
-
-/**
- * A kind's villains: a pool of CAP of them, each its own meshes placed by their matrices (uniforms),
- * left out of the picture when off it. Not instanced: an instanced mesh's matrices are a vertex
- * buffer written in every frame, which stalls ANGLE on Direct3D 11 for models this big (gameBuffers.ts).
- */
-class KindView {
-  readonly model: Model;
-  private slots: Slot[] = [];
-  n = 0;
-
-  constructor(
-    readonly kind: CrowdKind,
-    group: Group,
-  ) {
-    this.model = MODELS[kind]();
-    for (let i = 0; i < CAP[kind]; i++) {
-      const look: FoeLook = { tint: { value: new Color(0, 0, 0) }, fx: { value: new Vector2() } };
-      const lit = tinted(new MeshLambertMaterial({ vertexColors: true, emissive: 0x1c1c22 }), true, look);
-      const glow = tinted(new MeshBasicMaterial({ vertexColors: true }), false, look);
-      const root = new Group();
-      root.matrixAutoUpdate = false;
-      root.visible = false;
-      const mesh = (geo: BufferGeometry, mat: Material) => {
-        const m = new Mesh(geo, mat);
-        m.matrixAutoUpdate = false;
-        m.castShadow = m.receiveShadow = false;
-        root.add(m);
-        return m;
-      };
-      mesh(this.model.body, lit);
-      mesh(this.model.glow, glow);
-      const parts = this.model.parts.map((p) => ({ mesh: mesh(p.geo, p.glow ? glow : lit), name: p.name, pivot: p.pivot }));
-      group.add(root);
-      this.slots.push({ root, parts, look, mats: [lit, glow] });
-    }
-  }
-
-  begin(): void {
-    this.n = 0;
-  }
-
-  /** Whether a mesh is one of this pool's (its geometry is the kind's model's, disposed of here). */
-  owns(m: Mesh): boolean {
-    return this.slots.some((s) => s.root === m.parent);
-  }
-
-  /** One foe: its matrix, its tint, how much it has broken up and how bright its flash, and how its parts are turned. */
-  put(base: Matrix4, tint: Color, dissolve: number, flash: number, local: (name: string, out: Matrix4) => void): void {
-    const slot = this.slots[this.n];
-    if (!slot) return;
-    this.n++;
-    slot.root.matrix.copy(base);
-    slot.root.matrixWorldNeedsUpdate = true;
-    for (const p of slot.parts) {
-      local(p.name, _l);
-      p.mesh.matrix.makeTranslation(p.pivot[0], p.pivot[1], p.pivot[2]).multiply(_l);
-    }
-    slot.look.tint.value.copy(tint);
-    slot.look.fx.value.set(dissolve, flash);
-  }
-
-  end(): void {
-    this.slots.forEach((s, i) => (s.root.visible = i < this.n));
-  }
-
-  dispose(): void {
-    for (const s of this.slots) for (const m of s.mats) m.dispose();
-    this.model.body.dispose();
-    this.model.glow.dispose();
-    for (const p of this.model.parts) p.geo.dispose();
-  }
-}
-
-/** The instanced pick-ups: books, notes and coffee, and a beam of light over each. */
-class ItemsView {
-  readonly group = new Group();
-  private cover: InstancedMesh;
-  private pages: InstancedMesh;
-  private coffee: InstancedMesh;
-  private note: InstancedMesh;
-  private beam: InstancedMesh;
-  private nb = 0;
-  private nc = 0;
-  private nn = 0;
-  private nbeam = 0;
-  private lit: MeshLambertMaterial;
-
-  constructor() {
-    // Lit, and a little lit from within by its own colours, so that a cover reads in shade and at night.
-    this.lit = new MeshLambertMaterial({ vertexColors: true });
-    this.lit.onBeforeCompile = (s) => {
-      s.fragmentShader = s.fragmentShader.replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\ntotalEmissiveRadiance += vColor.rgb * 0.35;");
-    };
-    this.lit.customProgramCacheKey = () => "study-quest-items";
-    const { cover, pages } = bookParts();
-    const im = (g: BufferGeometry, mat: Material, n: number) => {
-      // Written in every frame: its instances through a texture (gameBuffers.ts).
-      const m = new InstancedMesh(g, mat, n);
-      m.setColorAt(0, _c.setRGB(1, 1, 1));
-      everyFrame(m);
-      m.count = 0;
-      m.frustumCulled = false;
-      m.castShadow = false;
-      this.group.add(m);
-      return m;
-    };
-    this.cover = im(cover, this.lit, 56);
-    this.pages = im(pages, this.lit, 56);
-    this.coffee = im(coffeeGeo(), this.lit, 10);
-    this.note = im(noteGeo(), this.lit, 14);
-    // A beam that fades to nothing at the top: colours in its vertices, as additive light.
-    const g = new CylinderGeometry(0.06, 0.2, 14, 8, 1, true);
-    const pos = g.getAttribute("position");
-    const col = new Float32Array(pos.count * 3);
-    for (let i = 0; i < pos.count; i++) {
-      const k = pos.getY(i) > 0 ? 0 : 0.6;
-      col.set([k, k, k], i * 3);
-    }
-    g.setAttribute("color", new BufferAttribute(col, 3));
-    this.beam = im(g, new MeshBasicMaterial({ vertexColors: true, transparent: true, blending: AdditiveBlending, depthWrite: false }), 80);
-    this.beam.renderOrder = 2;
-  }
-
-  begin(): void {
-    this.nb = this.nc = this.nn = this.nbeam = 0;
-  }
-
-  add(kind: ItemKind, id: number, x: number, ground: number, z: number, t: number, quest: boolean): void {
-    const phase = id * 1.7;
-    const y = ground + ITEM_UP + Math.sin(t * 2.2 + phase) * 0.14;
-    _q.setFromEuler(_e.set(0, t * 1.6 + phase, kind === "book" ? 0.18 : 0));
-    _p.set(x, y, z);
-    _s.setScalar(kind === "note" ? 1.15 : 1);
-    _m.compose(_p, _q, _s);
-    let colour = 0xffffff;
-    if (kind === "book" && this.nb < 56) {
-      colour = COVERS[id % COVERS.length]!;
-      this.cover.setMatrixAt(this.nb, _m);
-      this.cover.setColorAt(this.nb, _c.setHex(colour));
-      this.pages.setMatrixAt(this.nb, _m);
-      this.nb++;
-    } else if (kind === "coffee" && this.nc < 10) {
-      colour = 0x8ff0d0;
-      this.coffee.setMatrixAt(this.nc++, _m);
-    } else if (kind === "note" && this.nn < 14) {
-      colour = ACCENT;
-      this.note.setMatrixAt(this.nn++, _m);
-    } else return;
-    if (this.nbeam >= 80) return;
-    _q.identity();
-    _p.set(x, ground + ITEM_UP + 8.1, z);
-    _s.set(quest ? 1.8 : 1, 1, quest ? 1.8 : 1);
-    _m.compose(_p, _q, _s);
-    this.beam.setMatrixAt(this.nbeam, _m);
-    this.beam.setColorAt(this.nbeam++, _c.setHex(quest ? ACCENT : colour));
-  }
-
-  end(): void {
-    for (const [m, n] of [
-      [this.cover, this.nb],
-      [this.pages, this.nb],
-      [this.coffee, this.nc],
-      [this.note, this.nn],
-      [this.beam, this.nbeam],
-    ] as const) {
-      m.count = n;
-      m.visible = n > 0;
-      if (n) sendInstances(m, n);
-    }
-  }
-
-  dispose(): void {
-    for (const m of [this.cover, this.pages, this.coffee, this.note, this.beam]) {
-      disposeInstances(m);
-      (m.material as Material).dispose();
-      m.geometry.dispose();
-      m.dispose();
-    }
-    this.lit.dispose();
-    (this.beam.material as Material).dispose();
-  }
-}
-
-/** Everything of the game on the map, and the game it draws. */
 export class GameWorld {
   readonly group = new Group();
-  /** Bumped when the labels must be built again: the game started or stopped. */
-  labelsVersion = 0;
-  /** Whether the buildings' names are left off the walker's view while the game is on: on a phone. */
-  quiet = false;
-  /** Set by the visitor's pause menu: the game's clock stops. */
   menuPaused = false;
-  /** Set by the scene: its view is the map, where the game is not played and waits. */
-  mapView = false;
-  /** Fewer sparks, and no shaking of the view. */
   reducedMotion = false;
-  /** Told of each thing that happens, in the frame it happens: for the sound. */
+  mapView = false;
+  labelsVersion = 0;
+
   onEvent?: (e: GameEvent) => void;
-  /** The walker put a foot down while the game is on: `run` when it runs. */
   onStep?: (run: boolean) => void;
-  /** A jump leaves the ground, or lands (hard after a long fall): for its sound. */
   onJump?: (what: "jump" | "land" | "landHard") => void;
-  private feet = -1;
-  /** The walker's jumps and landings at the last step, to see a new one. */
-  private jumps = -1;
-  private landings = -1;
+  onPhoneCmd?: (cmd: GtaPhoneCmd) => void;
+
   private quest?: StudyQuest;
   private name = "";
-  /** The walker the game is played with. */
-  get walkerName(): string {
-    return this.name;
-  }
   private words?: GameWords;
-  /**
-   * The ground round the walker. `reached`: what it can walk to. `free`: the part of that away from
-   * homes (isHome), where the game lays books, places, arenas and foes.
-   */
-  private field?: { grid: WalkGrid; reached: Uint8Array; free: Uint8Array; homes: Pt[][]; draws: (BookDraw & { b: Building })[]; centre: Pt };
+  quiet = false;
   private events: GameEvent[] = [];
-  private paused?: "indoor" | "fly" | "map";
   private seconds = 0;
   private trauma = 0;
-  /** Seconds since the game ended, and whether the picture of a game held still has been drawn. */
+  private paused?: "indoor" | "fly" | "map";
   private overFor = 0;
   private stillDrawn = false;
-  private heights = new Map<number, number>();
-  private kinds: Record<CrowdKind, KindView>;
-  /** The Final Exam, and how it is posed; how far its near parts are thinned for the walker to show. */
-  private boss = new BossView();
-  private bossPose = bossPose();
-  private bossFade = 0;
-  private items = new ItemsView();
+  private feet = -1;
+  private jumps = -1;
+  private landings = -1;
+  private bodyHidden = false;
+  private onScooter = false;
+  private lastScooterHeading?: number;
+  private lastCash = 0;
+  private cashDelta = 0;
+  private cashDeltaKey = 0;
+  private cashDeltaT = 0;
+  private radioKey = 0;
+  private lastZone = "";
+  private lastStreet = "";
+  private placeShowKey = 0;
+  private activeSub?: { who: string; text: string; colorIdx: number; left: number };
+
+  private field?: {
+    grid: WalkGrid;
+    reached: Uint8Array;
+    free: Uint8Array;
+    homes: Pt[][];
+    draws: { b: Building; center: Pt; weight: number }[];
+    centre: Pt;
+  };
+  private meAt: Pt = [0, 0];
+  private camYaw = 0;
+  private drivingCtrl: VehicleControlInput = { throttle: 0, brake: 0, steer: 0, handbrake: false, horn: false };
+
+  private openWorldScene = new OpenWorldScene(true);
   private sparks = new Sparks();
-  private tells = new Telegraphs();
-  private shadows = new Shadows();
-  private missiles = new Missiles();
   private slash = new Slash();
-  private arena = new Arena();
   private debris = new Debris();
   private puffs = new Puffs();
   private shocks = new Shocks();
-  private decals = new Decals();
-  private motion = new FoeMotion();
-  private look = newLook();
-  /**
-   * The camera's nudges (cameraNudge): over the walker's shoulder while it strikes, and in on the
-   * boss as it changes phase. Each 0 to 1, eased.
-   */
   private nudge = { side: 0, push: 0, strikeT: 0 };
-  /** Frames left in which a few of each effect are drawn out of sight, to make their shaders. */
-  private warm = 0;
-  private overlay?: GameOverlay;
-  private camYaw = 0;
-  private trailT = 0;
-  /** A blow's arc of light, due when the highlighter meets the foe: seconds to wait, the blow and its bearing. */
   private slashDue?: { t: number; combo: number; dir: number };
+  private trailT = 0;
+  private overlay?: GameOverlay;
   private motionApplied?: boolean;
 
   constructor(
@@ -536,11 +271,7 @@ export class GameWorld {
   ) {
     this.group.userData.noPick = true;
     this.group.visible = false;
-    this.kinds = Object.fromEntries(CROWD_KINDS.map((k) => [k, new KindView(k, this.group)])) as Record<CrowdKind, KindView>;
-    this.group.add(this.boss.root, this.items.group, this.sparks.mesh, this.tells.group, this.shadows.mesh, this.missiles.group, this.slash.group, this.arena.mesh, this.debris.group, this.puffs.mesh, this.shocks.mesh, this.decals.group);
-    // What is see-through (light, dust, warnings on the ground) stays out of the ambient occlusion
-    // of the walker view (street/effects.ts): drawn there for depth and normals, a ring of light
-    // would shade the ground round it as if it were a wall.
+    this.group.add(this.openWorldScene.group, this.sparks.mesh, this.slash.group, this.debris.group, this.puffs.mesh, this.shocks.mesh);
     this.group.traverse((o) => {
       const m = (o as InstancedMesh).material as Material | undefined;
       if ((o as InstancedMesh).isMesh && m?.transparent) o.userData.noAO = true;
@@ -552,16 +283,63 @@ export class GameWorld {
     return !!this.quest;
   }
 
-  /** The name of the walker the game is played by. */
   get player(): string {
     return this.name;
   }
 
-  /**
-   * Starts a game for the walker called `name`. `words` are what it shows in the visitor's language.
-   * `quiet` leaves the buildings' names off the walker's view meanwhile; `compact` keeps the marks over
-   * the picture few, for a phone. False when the walker or the walking map is not there.
-   */
+  get walkerName(): string {
+    return this.name;
+  }
+
+  /** Whether the player is currently riding or driving any Study Quest vehicle. */
+  inVehicle(): boolean {
+    return !!this.quest?.vehicles.current;
+  }
+
+  /** Whether the player is currently inside the Mark-IV Exo-Suit ("mecha"). */
+  inMecha(): boolean {
+    return this.quest?.vehicles.current?.kind === "mecha";
+  }
+
+  /** Whether the player is inside an enclosed vehicle or Exo-Suit (hides player body, widens chase camera). */
+  enclosedVehicle(): boolean {
+    const v = this.quest?.vehicles.current;
+    return !!v && v.kind !== "scooter";
+  }
+
+  /** Whether the player's current vehicle is rolling or flying fast enough for camera follow-behind swing. */
+  vehicleMoving(): boolean {
+    const v = this.quest?.vehicles.current;
+    return !!v && (Math.abs(v.speed) > 0.6 || (v.kind === "mecha" && (v.flying || Math.abs(v.vy) > 0.4)));
+  }
+
+  /** Returns follow camera distance, target lift, and aerial flight flag for the current enclosed vehicle. */
+  vehicleCamera(): { distance: number; lift: number; flying?: boolean } | undefined {
+    const cur = this.quest?.vehicles.current;
+    const k = cur?.kind;
+    if (!k || k === "scooter") return undefined;
+    if (k === "mecha") {
+      const alt = cur.altitude ?? 0;
+      const flying = cur.flying || alt > 0.5;
+      return {
+        distance: flying ? 8.0 + Math.min(2.6, Math.abs(cur.speed) * 0.06) : 6.4,
+        lift: 0.65 + alt,
+        flying,
+      };
+    }
+    if (k === "bus") return { distance: 13.2, lift: 0.95 };
+    if (k === "van") return { distance: 9.2, lift: 0.55 };
+    if (k === "pickup") return { distance: 8.6, lift: 0.28 };
+    if (k === "suv" || k === "minivan") return { distance: 8.2, lift: 0.2 };
+    if (k === "sports") return { distance: 7.2, lift: -0.05 };
+    return { distance: 7.6, lift: 0.05 };
+  }
+
+  /** Updates live driving inputs forwarded from keyboard/touch controls. */
+  setDrivingControl(ctrl: Partial<VehicleControlInput>): void {
+    Object.assign(this.drivingCtrl, ctrl);
+  }
+
   start(name: string, words: GameWords, quiet = false, compact = false, seen: readonly string[] = []): boolean {
     this.stop();
     this.quiet = quiet;
@@ -576,11 +354,16 @@ export class GameWorld {
     this.overFor = 0;
     this.stillDrawn = false;
     this.menuPaused = false;
-    this.heights.clear();
-    // The game is seen from behind the walker. A walker in a corner between walls (as at some
-    // schools' starting spots) steps out first to the most open ground near, and one with a wall at
-    // its back turns to open ground, so that the camera has room behind it and the first book lies
-    // ahead in the open.
+    this.bodyHidden = false;
+    this.onScooter = false;
+    this.lastScooterHeading = undefined;
+    this.cashDelta = 0;
+    this.cashDeltaT = 0;
+    this.cashDeltaKey = 0;
+    this.radioKey = 0;
+    this.activeSub = undefined;
+    this.drivingCtrl = { throttle: 0, brake: 0, steer: 0, handbrake: false, horn: false };
+
     let at: Pt = [walker.at[0], walker.at[1]];
     if (this.cramped(at)) {
       const f = this.fieldAt(at);
@@ -590,47 +373,57 @@ export class GameWorld {
     const heading = this.openHeading(at, walker.heading);
     if (at[0] !== walker.at[0] || at[1] !== walker.at[1]) this.host.teleport(name, at, heading);
     else if (heading !== walker.heading) this.host.face(name, heading);
-    this.meAt[0] = at[0];
-    this.meAt[1] = at[1];
+    this.meAt = [at[0], at[1]];
+
+    const roads = this.host.context?.()?.roads;
     this.quest = new StudyQuest(
       {
         spot: (near, taken, place) => this.spot(near, taken, place),
         place: (near, avoid, big) => this.place(near, avoid, big),
+        campusAnchor: (near, avoid, minDist, maxDist, minGap) => this.campusAnchor(near, avoid, minDist, maxDist, minGap),
         near: (p) => {
           const f = this.fieldAt(this.meAt);
           return f ? nearestReached(f.grid, f.free, p, NEAR_RINGS) : undefined;
         },
         ground: (p) => this.onGround(p),
         free: (p) => this.onGround(p, true),
+        roofTopAboveGround: (p) => {
+          const r = this.host.roofs()?.at(p);
+          return r === undefined ? undefined : Math.max(0, r - this.surfaceAt(p[0], p[1]));
+        },
         open: (centre, away) => {
           const f = this.fieldAt(this.meAt);
           if (!f) return undefined;
-          // Round the point asked for; where that is all buildings, round the walker, as far off.
           const far = Math.hypot(centre[0] - away[0], centre[1] - away[1]);
-          return openSpot(f.grid, f.free, centre, BIG_FROM_REACH, BIG_FROM_ROOM, away, Math.random, 60, BIG_FROM_GAP) ?? openSpot(f.grid, f.free, away, far, BIG_FROM_ROOM, away, Math.random, 120, BIG_FROM_GAP);
+          return (
+            openSpot(f.grid, f.free, centre, BIG_FROM_REACH, BIG_FROM_ROOM, away, Math.random, 60, BIG_FROM_GAP) ??
+            openSpot(f.grid, f.free, away, far, BIG_FROM_ROOM, away, Math.random, 120, BIG_FROM_GAP)
+          );
         },
         random: Math.random,
+        roads,
       },
       at,
       heading,
       seen,
     );
-    this.events.push(...this.drainStart());
+    this.lastCash = this.quest.cash;
     this.motionApplied = undefined;
     this.group.visible = true;
     this.overlay?.setWords(words.compass, words.metres);
     this.overlay?.show(true);
     this.overlay?.root.classList.toggle("compact", compact);
-    this.host.pen(name, true);
+    this.host.pen(name, false);
+    this.host.ring?.(name, false);
+    this.host.bodyVisible?.(name, true);
+    this.host.scooterPose?.(name, false, 0, 0, 0);
     this.host.act(name, undefined);
     this.slashDue = undefined;
-    this.warm = 2;
     this.sync(this.host.walker(name) ?? walker, 0);
     this.labelsVersion++;
     return true;
   }
 
-  /** Whether a wall stands within a couple of metres of a spot, any way round. */
   private cramped(at: Pt): boolean {
     const map = this.host.walkMap();
     if (!map) return false;
@@ -641,23 +434,17 @@ export class GameWorld {
     return false;
   }
 
-  /**
-   * The bearing to face at the start: the walker's own when the ground behind it is clear for the
-   * camera and ahead of it for the first book, or else the nearest bearing round that is.
-   */
   private openHeading(at: Pt, heading: number): number {
     const map = this.host.walkMap();
     if (!map) return heading;
     const clear = (deg: number) => {
       const r = (deg * Math.PI) / 180;
       const line = (m: number) => map.wallAlong(at, [at[0] + Math.sin(r) * m, at[1] + Math.cos(r) * m]) ?? 1;
-      // Room behind for the camera counts most; then the open ground ahead, and a little each side.
       const r2 = r + Math.PI / 2;
       const side = (k: number) => map.wallAlong(at, [at[0] + Math.sin(r2) * k * 4, at[1] + Math.cos(r2) * k * 4]) ?? 1;
       return (map.wallAlong(at, [at[0] - Math.sin(r) * OPEN_BEHIND, at[1] - Math.cos(r) * OPEN_BEHIND]) ?? 1) * 2 + line(OPEN_AHEAD) + 0.25 * (side(1) + side(-1));
     };
-    const full = 3.5;
-    if (clear(heading) >= full - 1e-6) return heading;
+    if (clear(heading) >= 3.5 - 1e-6) return heading;
     let best = heading;
     let score = clear(heading);
     for (let k = 1; k <= 12; k++) {
@@ -670,42 +457,51 @@ export class GameWorld {
     return best;
   }
 
-  /** The quests the game opened with, for the panel. */
-  private drainStart(): GameEvent[] {
-    return this.quest!.quests.map((quest) => ({ type: "quest" as const, quest, done: false }));
-  }
-
   stop(): void {
     if (!this.quest) return;
     this.host.paceScale(this.name, 1);
     this.host.strafe(this.name, undefined);
     this.host.pen(this.name, false);
+    this.host.ring?.(this.name, true);
+    this.host.bodyVisible?.(this.name, true);
+    this.host.scooterPose?.(this.name, false, 0, 0, 0);
     this.host.act(this.name, undefined);
     this.quest = undefined;
     this.field = undefined;
+    this.bodyHidden = false;
+    this.onScooter = false;
+    this.lastScooterHeading = undefined;
     this.group.visible = false;
     this.sparks.clear();
     this.debris.clear();
     this.puffs.clear();
     this.shocks.clear();
-    this.motion.clear();
+    this.openWorldScene.sync({
+      t: 0,
+      dt: 0,
+      viewerAt: this.meAt,
+      groundAt: () => 0,
+      humans: [],
+      vehicles: [],
+      pickups: [],
+      spots: [],
+    });
     this.nudge.side = this.nudge.push = this.nudge.strikeT = 0;
-    this.arena.hide();
     this.overlay?.show(false);
     this.labelsVersion++;
   }
 
-  /**
-   * Burnt out, tries again from the last checkpoint: the walker is put where the quest it was on
-   * began (or at the edge of the boss's arena), on its feet, and the game goes on. False when the
-   * game is not lost.
-   */
   retry(): boolean {
     const g = this.quest;
     if (!g) return false;
     const evs = g.retry();
     const r = evs.find((e) => e.type === "retry");
     if (!r || r.type !== "retry") return false;
+    this.bodyHidden = false;
+    this.onScooter = false;
+    this.lastScooterHeading = undefined;
+    this.host.bodyVisible?.(this.name, true);
+    this.host.scooterPose?.(this.name, false, 0, 0, 0);
     this.host.teleport(this.name, r.at, r.heading);
     this.host.act(this.name, undefined);
     this.host.paceScale(this.name, 1);
@@ -714,27 +510,23 @@ export class GameWorld {
     this.stillDrawn = false;
     this.slashDue = undefined;
     this.nudge.side = this.nudge.push = this.nudge.strikeT = 0;
-    this.motion.clear();
-    this.heights.clear();
     const me = this.host.walker(this.name);
     if (me) {
-      this.meAt[0] = me.at[0];
-      this.meAt[1] = me.at[1];
+      this.meAt = [me.at[0], me.at[1]];
       for (const e of evs) this.effect(e, me);
     }
     this.events.push(...evs);
     return true;
   }
 
-  /** An action from the keys, the mouse, a pad or the buttons. False when it cannot be done now. */
   act(a: GameAction): boolean {
     if (!this.quest || this.menuPaused || this.paused) return false;
+    if (this.inVehicle() && !this.inMecha()) return false;
     return this.quest.act(a);
   }
 
-  /** The jump: a press kept a moment until the walker can leave the ground. False where it cannot jump. */
   jump(): boolean {
-    if (!this.quest || this.menuPaused || this.paused || this.quest.phase !== "play") return false;
+    if (!this.quest || this.menuPaused || this.paused || this.quest.phase !== "play" || this.inVehicle()) return false;
     return this.host.jump(this.name);
   }
 
@@ -742,7 +534,39 @@ export class GameWorld {
     if (this.quest && !this.menuPaused) this.quest.toggleLock();
   }
 
-  /** The way the view is shaken now, metres, added to the camera's place. Zero for reduced motion. */
+  interact(): boolean {
+    if (!this.quest || this.menuPaused || this.paused) return false;
+    return this.quest.interact();
+  }
+
+  eatSlice(): boolean {
+    if (!this.quest || this.menuPaused || this.paused || this.quest.phase !== "play") return false;
+    return this.quest.eatSlice();
+  }
+
+  toggleVehicle(): boolean {
+    if (!this.quest || this.menuPaused || this.paused || this.quest.phase !== "play") return false;
+    return this.quest.toggleVehicle();
+  }
+
+  cycleRadio(): number {
+    if (!this.quest || this.menuPaused || this.paused) return 0;
+    this.radioKey++;
+    return this.quest.cycleRadio();
+  }
+
+  switchWeapon(): "fists" | "textbook" {
+    if (!this.quest || this.menuPaused || this.paused) return "fists";
+    return this.quest.switchWeapon();
+  }
+
+  phoneAction(cmd: GtaPhoneCmd): boolean {
+    if (!this.quest || this.quest.phase !== "play") return false;
+    const ok = this.quest.phoneAction(cmd);
+    if (ok) this.onPhoneCmd?.(cmd);
+    return ok;
+  }
+
   shake(out: Vector3): Vector3 {
     out.set(0, 0, 0);
     if (!this.quest || this.reducedMotion || this.trauma <= 0) return out;
@@ -751,79 +575,14 @@ export class GameWorld {
     return out.set(Math.sin(t * 1.3) * k, Math.sin(t * 1.7 + 1) * k * 0.7, Math.sin(t * 1.1 + 2) * k);
   }
 
-  /**
-   * How the camera behind the walker is nudged now, each 0 to 1 and eased: `side`, over the
-   * walker's right shoulder while it strikes, so that the swing is not hidden by its body; `push`,
-   * in on the boss as it changes phase. Both 0 for reduced motion, and when no game is on.
-   */
   cameraNudge(): { side: number; push: number } {
     return this.nudge;
   }
 
-  /**
-   * What the camera behind the walker frames in a fight, or undefined when there is none: the foe
-   * locked on to, the boss in its arena (both `hard`: the camera keeps them in view), or else the
-   * nearest foe coming at the walker, the DDL first (soft: the visitor can still turn the view).
-   * Metres east and north, heights of its feet and its top, and its half width. The same object each time.
-   */
   fightFocus(): FightFocus | undefined {
-    const g = this.quest;
-    if (!g || this.menuPaused || this.paused) return undefined;
-    const me = this.meAt;
-    let pick: Foe | undefined;
-    let hard = true;
-    if (g.phase !== "play") {
-      // A game won: the camera stays on the boss while it breaks up.
-      if (g.victory) for (const f of g.foes) if (f.kind === "exam") pick = f;
-      if (!pick) return undefined;
-    }
-    for (const f of g.foes) if (!pick && f.id === g.lock && f.state !== "dead") pick = f;
-    if (!pick && g.arena?.active) pick = g.boss;
-    if (!pick) {
-      hard = false;
-      let best = Infinity;
-      for (const f of g.foes) {
-        if (f.state === "dead" || f.state === "rise") continue;
-        const d = Math.hypot(f.at[0] - me[0], f.at[1] - me[1]);
-        if (d > (f.kind === "ddl" ? ENGAGE_DDL : ENGAGE)) continue;
-        // The DDL comes first: a minion beside it matters less than the clock that charges.
-        const score = d - (f.kind === "ddl" ? 100 : 0);
-        if (score < best) (best = score), (pick = f);
-      }
-    }
-    if (!pick) return undefined;
-    const foot = this.footOf(pick.id);
-    const o = this.focusOut;
-    o.at[0] = pick.at[0];
-    o.at[1] = pick.at[1];
-    o.foot = foot;
-    // Its model's top, with a little over for its crown of pens or its bob in the air.
-    const model = pick.kind === "exam" ? this.boss : this.kinds[pick.kind].model;
-    const scale = bodyScale(pick);
-    o.top = foot + (model.float + model.height) * scale + 0.6 + (pick.state === "phase" ? PHASE_RISE : 0);
-    // Its arms reach out past its body: the boss's red pens most.
-    o.half = FOES[pick.kind].radius * 1.3 * scale;
-    o.body = FOES[pick.kind].radius * scale;
-    const m = pick.move;
-    o.lane = m?.type === "charge" && (pick.state === "tell" || pick.state === "attack") ? m.dir : undefined;
-    if (m?.type === "charge" && o.lane !== undefined) {
-      const r = (m.dir * Math.PI) / 180;
-      const ux = Math.sin(r);
-      const uy = Math.cos(r);
-      o.laneEnd[0] = pick.at[0] + ux * m.left;
-      o.laneEnd[1] = pick.at[1] + uy * m.left;
-      // Metres to go along the charge to come level with the walker, and the time it takes from now.
-      const along = (me[0] - pick.at[0]) * ux + (me[1] - pick.at[1]) * uy;
-      o.passIn = (pick.state === "tell" ? Math.max(0, pick.t) : 0) + along / chargeSpeed(pick.kind);
-    } else o.passIn = Infinity;
-    o.hard = hard;
-    return o;
+    return undefined;
   }
-  /** Where the walker stood at the last step. */
-  private meAt: [number, number] = [0, 0];
-  private focusOut: FightFocus = { at: [0, 0], foot: 0, top: 0, half: 0, body: 0, laneEnd: [0, 0], passIn: Infinity, hard: false };
 
-  /** What the panel shows, with what happened since it last asked. */
   view(): GameView | undefined {
     const g = this.quest;
     const walker = this.host.walker(this.name);
@@ -831,7 +590,6 @@ export class GameWorld {
     const events = this.events;
     this.events = [];
     const s = g.stats;
-    const boss = g.boss;
     const cooldown: Record<SkillId, number> = {
       strike: 1 - g.strikeT / 0.42,
       dodge: g.stamina >= PLAYER.dodgeCost ? 1 : g.stamina / PLAYER.dodgeCost,
@@ -839,16 +597,9 @@ export class GameWorld {
       sprint: g.stamina >= PLAYER.dodgeCost ? 1 : g.stamina / PLAYER.dodgeCost,
       eureka: g.eurekaMeter / PLAYER.eurekaCharge,
     };
-    // A game won shows its debrief once the boss has broken up, not over its death.
-    const over = g.phase === "over" && !(g.victory && g.foes.some((f) => f.kind === "exam"));
-    let near = 0;
-    let ddl = false;
-    for (const f of g.foes) {
-      if (f.state === "dead" || f.state === "rise" || f.kind === "exam") continue;
-      if (Math.hypot(f.at[0] - walker.at[0], f.at[1] - walker.at[1]) > THREAT_REACH) continue;
-      near++;
-      if (f.kind === "ddl") ddl = true;
-    }
+    const over = g.phase === "over";
+    const nearHostiles = g.openWorld.humans.filter((h) => h.state !== "down" && h.state !== "dead" && (h.role === "security" || h.role === "freeRider" || h.role === "debateRival" || h.role === "allNighter") && Math.hypot(h.at[0] - walker.at[0], h.at[1] - walker.at[1]) <= 24).length;
+
     return {
       phase: over ? "over" : "play",
       paused: g.phase === "play" ? this.paused : undefined,
@@ -864,100 +615,311 @@ export class GameWorld {
       crit: s.crit,
       eureka: g.eurekaMeter / PLAYER.eurekaCharge,
       skills: SKILLS.map((k) => ({ id: k.id, open: g.rank >= k.rank, rank: k.rank, ready: Math.max(0, Math.min(1, cooldown[k.id])) })),
-      quests: g.quests.map((q) => {
-        const target = this.questTarget(q.id);
-        return {
-          id: q.id,
-          key: q.key,
-          main: q.main,
-          place: q.place?.name,
-          need: q.need,
-          got: q.got,
-          metres: target ? Math.hypot(target[0] - walker.at[0], target[1] - walker.at[1]) : undefined,
-          bearing: target ? (bearingTo(walker.at, target) - this.camYaw + 360) % 360 : undefined,
-        };
-      }),
-      boss: boss ? { hp: boss.hp, max: boss.maxHp, phase: boss.phase } : undefined,
-      threat: { near, ddl },
+      quests: [],
+      threat: { near: nearHostiles + g.wanted, ddl: g.wanted >= 3 },
       chain: g.hits,
       slowed: g.slowT > 0,
       locked: g.lock !== undefined,
       seconds: g.seconds,
-      defeated: g.defeated,
+      defeated: g.rivalsBeat,
       met: [...g.met],
       lesson: g.phase === "play" && !this.paused ? g.lesson : undefined,
       taught: [...g.taught],
       deaths: g.deaths,
-      retry: over && !g.victory ? { quest: g.quests.find((q) => q.main)?.key ?? "orientation", boss: !!g.arena?.active } : undefined,
+      retry: over && !g.victory ? { quest: "orientation", boss: false } : undefined,
       events,
       debrief: over ? g.debrief() : undefined,
+      gta: this.buildGtaHud(g, walker),
     };
   }
 
-  /** Where a quest leads: its place, or the foe it is for, or its nearest note. */
-  private questTarget(id: string): Pt | undefined {
-    const g = this.quest!;
-    const q = g.quests.find((x) => x.id === id);
-    if (!q) return undefined;
-    const me = this.host.walker(this.name)?.at ?? [0, 0];
-    if (q.goal === "defeat" && q.started) {
-      const foes = g.foes.filter((f) => f.quest === id && f.state !== "dead");
-      if (foes.length) return foes.reduce((a, b) => (Math.hypot(a.at[0] - me[0], a.at[1] - me[1]) < Math.hypot(b.at[0] - me[0], b.at[1] - me[1]) ? a : b)).at;
+  private buildGtaHud(g: StudyQuest, walker: WalkerState): GtaHudView {
+    const [wx, wy] = walker.at;
+    const buildings: GtaRadarBuilding[] = [];
+    let nearestBuildingName = "";
+    let nearestBuildingD = 32;
+    for (const b of this.host.buildings()) {
+      if (buildings.length >= 44) break;
+      if (b.offMap) continue;
+      const dCenter = Math.hypot(b.center[0] - wx, b.center[1] - wy);
+      if (dCenter < nearestBuildingD) {
+        const named = this.words?.place(b);
+        if (named) {
+          nearestBuildingD = dCenter;
+          nearestBuildingName = named;
+        }
+      }
+      if (dCenter > 175) continue;
+      const raw = b.outline[0];
+      if (!raw || raw.length < 6) continue;
+      const ring = decodeRing(raw);
+      const pts: [number, number][] = [];
+      let near = false;
+      for (const p of ring) {
+        const dx = p[0] - wx;
+        const dy = p[1] - wy;
+        if (Math.abs(dx) <= 130 && Math.abs(dy) <= 130) near = true;
+        pts.push([dx, dy]);
+      }
+      if (near && pts.length >= 3) buildings.push({ pts });
     }
-    if (q.goal === "collect" && q.started) {
-      const notes = g.items.filter((i) => i.quest === id);
-      if (notes.length) return notes.reduce((a, b) => (Math.hypot(a.at[0] - me[0], a.at[1] - me[1]) < Math.hypot(b.at[0] - me[0], b.at[1] - me[1]) ? a : b)).at;
+    const ctx = this.host.context?.();
+    if (ctx?.buildings) {
+      for (const cb of ctx.buildings) {
+        if (buildings.length >= 64) break;
+        if (cb.p.length < 6) continue;
+        const ring = decodeRing(cb.p);
+        const pts: [number, number][] = [];
+        let near = false;
+        for (const p of ring) {
+          const dx = p[0] - wx;
+          const dy = p[1] - wy;
+          if (Math.abs(dx) <= 130 && Math.abs(dy) <= 130) near = true;
+          pts.push([dx, dy]);
+        }
+        if (near && pts.length >= 3) buildings.push({ pts });
+      }
     }
-    if (q.goal === "boss" && g.boss) return g.boss.at;
-    if (q.key === "orientation") {
-      const books = g.items.filter((i) => i.kind === "book");
-      if (books.length) return books.reduce((a, b) => (Math.hypot(a.at[0] - me[0], a.at[1] - me[1]) < Math.hypot(b.at[0] - me[0], b.at[1] - me[1]) ? a : b)).at;
+
+    const roads: GtaRadarRoad[] = [];
+    for (const r of g.vehicles.roads) {
+      if (roads.length >= 56) break;
+      const pts: [number, number][] = [];
+      let near = false;
+      for (const p of r.pts) {
+        const dx = p[0] - wx;
+        const dy = p[1] - wy;
+        if (Math.abs(dx) <= 155 && Math.abs(dy) <= 155) near = true;
+        pts.push([dx, dy]);
+      }
+      if (near && pts.length >= 2) {
+        roads.push({ pts, major: r.kind === "motorway" || r.kind === "major" });
+      }
     }
-    return q.place?.at;
+
+    const gpsRoute = g.gpsRoute?.map(([x, y]) => [x - wx, y - wy] as const);
+
+    const blips: GtaRadarBlip[] = [];
+    const objPt = g.openWorld.currentObjectivePoint() ?? g.gpsTarget;
+    if (objPt) {
+      blips.push({
+        x: objPt[0] - wx,
+        y: objPt[1] - wy,
+        kind: g.openWorld.active?.stage === "checkpoints" ? "checkpoint" : "objective",
+        pulse: true,
+      });
+    }
+    for (const s of g.openWorld.spots) {
+      const done = s.kind === "jobGiver" && s.missionId && g.openWorld.completedJobs.has(s.missionId as JobId);
+      if (done) continue;
+      blips.push({
+        x: s.at[0] - wx,
+        y: s.at[1] - wy,
+        kind: s.kind === "pizzaVan" ? "cart" : s.kind === "jobGiver" ? "mission" : "activity",
+        label: s.giver ? s.giver[0] : undefined,
+        short: !!s.giver,
+      });
+    }
+    for (const v of g.vehicles.vehicles) {
+      if (v.id === g.vehicles.playerVehicleId) continue;
+      const dx = v.at[0] - wx;
+      const dy = v.at[1] - wy;
+      if (dx * dx + dy * dy > 140 * 140) continue;
+      blips.push({
+        x: dx,
+        y: dy,
+        kind: v.kind === "mecha" ? "mecha" : v.kind === "scooter" ? "scooter" : v.isPolice && v.siren ? "security" : "vehicle",
+      });
+    }
+    let pedBlips = 0;
+    for (const h of g.openWorld.humans) {
+      if (h.state === "down" || h.state === "dead") continue;
+      const dx = h.at[0] - wx;
+      const dy = h.at[1] - wy;
+      if (dx * dx + dy * dy > 115 * 115) continue;
+      const kind = humanBlipKind(h);
+      if (kind === "pedestrian") {
+        if (pedBlips >= 20) continue;
+        pedBlips++;
+      }
+      blips.push({ x: dx, y: dy, kind, pulse: h.isMissionTarget });
+    }
+    for (const it of g.items) {
+      if (!isPickupKind(it.kind)) continue;
+      const dx = it.at[0] - wx;
+      const dy = it.at[1] - wy;
+      if (dx * dx + dy * dy > 130 * 130) continue;
+      blips.push({ x: dx, y: dy, kind: it.kind === "pizza" ? "pizza" : "pickup" });
+    }
+
+    const active = g.openWorld.active;
+    const rawPrompt = g.currentPrompt();
+    const prompt = rawPrompt
+      ? {
+          key: rawPrompt.key,
+          action: rawPrompt.action,
+          text: this.words?.promptText?.(rawPrompt.action, rawPrompt.label) ?? rawPrompt.action,
+        }
+      : undefined;
+
+    const tel = g.vehicles.telemetry();
+    const curVeh = g.vehicles.current;
+    const vehicle =
+      tel && curVeh
+        ? {
+            kind: tel.kind,
+            name: this.words?.vehicleName?.(tel.kind) ?? tel.kind,
+            kmh: tel.kmh,
+            gear: formatGear(curVeh),
+            rpm: tel.rpm,
+            health: curVeh.hp / Math.max(1, curVeh.maxHp),
+            state: vehicleStateOf(tel.hp),
+          }
+        : undefined;
+
+    const zone = this.words?.zoneName ?? "";
+    const street = nearestBuildingName;
+    if (zone !== this.lastZone || street !== this.lastStreet) {
+      this.lastZone = zone;
+      this.lastStreet = street;
+      this.placeShowKey++;
+    }
+
+    const radioInfo = this.words?.radioInfo?.(g.radioStation);
+    const jobs: GtaPhoneJob[] = [
+      ...STORY_JOBS.map((j) => {
+        const done = g.openWorld.completedJobs.has(j.id);
+        const isActive = active?.id === j.id;
+        const unlocked = !j.requires || g.openWorld.completedJobs.has(j.requires);
+        return {
+          id: j.id,
+          kind: "story" as const,
+          titleKey: `game.jobs.${j.id}.title`,
+          giver: j.giver,
+          blurbKey: `game.jobs.${j.id}.blurb`,
+          status: (isActive ? "active" : done ? "done" : unlocked ? "available" : "locked") as GtaPhoneJob["status"],
+          rewardCash: j.cash,
+        };
+      }),
+      ...SIDE_HUSTLES.map((h) => {
+        const isActive = active?.id === h.id;
+        return {
+          id: h.id,
+          kind: "side" as const,
+          titleKey: `game.jobs.${h.id}.title`,
+          blurbKey: `game.jobs.${h.id}.blurb`,
+          status: (isActive ? "active" : "available") as GtaPhoneJob["status"],
+          rewardCash: h.cash,
+          bestTime: g.openWorld.hustleBest[h.id],
+        };
+      }),
+    ];
+
+    const nextStory = jobs.find((j) => j.kind === "story" && j.status === "available");
+    const nextSpot = nextStory ? g.openWorld.spots.find((s) => s.missionId === nextStory.id) : undefined;
+    const hasNextStory = !!nextStory;
+    const objective = this.words?.objectiveText?.(
+      active,
+      hasNextStory,
+      nextStory ? { id: nextStory.id, giver: nextStory.giver, placeName: nextSpot?.placeName } : undefined,
+    );
+    const secWait = g.openWorld.humans.some((h) => h.role === "security" && h.state !== "down" && h.state !== "dead" && Math.hypot(h.at[0] - wx, h.at[1] - wy) < 3.6);
+    const arrestProgress = g.wanted > 0 && secWait ? 0.55 : 0;
+
+    return {
+      health: g.focus,
+      maxHealth: g.stats.maxFocus,
+      armour: g.energy,
+      maxArmour: 100,
+      stamina: g.stamina,
+      maxStamina: g.stats.maxStamina,
+      wanted: g.wanted,
+      wantedMax: 5,
+      evading: g.wanted > 0 && g.evadeT > 0,
+      arrestProgress,
+      cash: g.cash,
+      cashDelta: this.cashDeltaT > 0 ? this.cashDelta : undefined,
+      cashDeltaKey: this.cashDeltaKey,
+      weapon: g.weapon,
+      hasTextbook: true,
+      pizzaSlices: g.slices,
+      pizzaBuffSec: g.pizzaBuff,
+      yaw: this.camYaw,
+      playerHeading: curVeh ? curVeh.heading : walker.heading,
+      buildings,
+      roads,
+      gpsRoute,
+      blips,
+      timer: active?.timer !== undefined ? { seconds: active.timer, urgent: active.timer <= 15 } : undefined,
+      radio: radioInfo ? { ...radioInfo, key: this.radioKey } : undefined,
+      prompt,
+      subtitle: this.activeSub ? { who: this.activeSub.who, text: this.activeSub.text, colorIdx: this.activeSub.colorIdx } : undefined,
+      objective,
+      place: zone || street ? { zone, street, showKey: this.placeShowKey } : undefined,
+      vehicle,
+      phoneUnread: g.openWorld.unreadPhone,
+      jobs,
+      stats: [
+        { label: this.words?.statLabel?.("cash") ?? "Cash", value: `$${Math.round(g.cash)}` },
+        { label: this.words?.statLabel?.("wanted") ?? "Wanted", value: String(g.wanted) },
+        { label: this.words?.statLabel?.("slices") ?? "Slices", value: String(g.slices) },
+      ],
+      onPhoneAction: (cmd) => this.phoneAction(cmd),
+    };
   }
 
-  /** The game as it stands, for tests. */
-  state():
-    | {
-        phase: "play" | "over";
-        books: Pt[];
-        items: { kind: ItemKind; at: Pt; quest?: string }[];
-        foes: { id: number; kind: FoeKind; at: Pt; hp: number; state: string }[];
-        quests: { key: QuestKey; need: number; got: number; place?: Place }[];
-        focus: number;
-        xp: number;
-        rank: number;
-        main: number;
-        victory: boolean;
-      }
-    | undefined {
+  /** Rich inspection state for unit and e2e tests. */
+  state() {
     const g = this.quest;
     if (!g) return undefined;
+    const cur = g.vehicles.current;
     return {
       phase: g.phase,
-      books: g.items.filter((i) => i.kind === "book").map((i) => i.at),
-      items: g.items.map((i) => ({ kind: i.kind, at: i.at, quest: i.quest })),
-      foes: g.foes.map((f) => ({ id: f.id, kind: f.kind, at: f.at, hp: f.hp, state: f.state })),
-      quests: g.quests.map((q) => ({ key: q.key, need: q.need, got: q.got, place: q.place })),
+      books: [] as Pt[],
+      pizzas: g.items.filter((i) => i.kind === "pizza").map((i) => i.at),
+      items: g.items.map((i) => ({ kind: i.kind, at: i.at, quest: i.quest, dropped: i.dropped })),
+      foes: g.openWorld.humans
+        .filter((h) => h.role !== "pedestrian" && h.role !== "giver")
+        .map((h) => ({ id: h.id, kind: h.role, at: h.at, hp: h.hp, state: h.state })),
+      quests: [] as { key: QuestKey; need: number; got: number; place?: Place }[],
       focus: g.focus,
+      energy: g.energy,
+      slices: g.slices,
+      weapon: g.weapon,
       xp: g.xp,
       rank: g.rank,
       main: g.mainStep,
       victory: g.victory,
+      cash: g.cash,
+      cred: g.cred,
+      wanted: g.wanted,
+      heat: g.heat,
+      busted: g.busted,
+      pizzaBuff: g.pizzaBuff,
+      pizzasEaten: g.pizzasEaten,
+      kmDriven: g.kmDriven,
+      rivalsBeat: g.rivalsBeat,
+      radioStation: g.radioStation,
+      gpsRoute: g.gpsRoute ?? [],
+      inVehicle: cur ? { id: cur.id, kind: cur.kind, speed: cur.speed, kmh: Math.round(Math.abs(cur.speed) * 3.6), altitude: cur.altitude, flying: cur.flying } : undefined,
+      vehicles: g.vehicles.vehicles.map((v) => ({ id: v.id, kind: v.kind, at: v.at, speed: v.speed, driver: v.driver, hp: v.hp, rollVel: v.rollVel, pitchVel: v.pitchVel, altitude: v.altitude, flying: v.flying })),
+      humans: g.openWorld.humans.map((h) => ({ id: h.id, role: h.role, name: h.name, at: h.at, hp: h.hp, state: h.state, target: h.isMissionTarget })),
+      props: g.openWorld.props.map((p) => ({ id: p.id, kind: p.kind, at: p.at, tilt: p.tilt, vx: p.vx, vz: p.vz })),
+      openWorld: {
+        spots: g.openWorld.spots.map((s) => ({ id: s.id, kind: s.kind, missionId: s.missionId, at: s.at, cooldown: s.cooldown })),
+        active: g.openWorld.active
+          ? { id: g.openWorld.active.id, stage: g.openWorld.active.stage, got: g.openWorld.active.got, need: g.openWorld.active.need, timer: g.openWorld.active.timer }
+          : undefined,
+        completedJobs: [...g.openWorld.completedJobs],
+        students: g.openWorld.humans.length,
+      },
     };
   }
 
-  /** The game draws no labels of the map's kind: its marks are its own (gameOverlay.ts). */
   labels(): LabelSpec[] {
     return [];
   }
 
-  /**
-   * Moves the game on by `dt` seconds. True when the picture must be drawn again: in every frame
-   * while it is played. A game held still (its title card, a menu over it, the walker indoors or in
-   * the air) is drawn once as it stops, and a game over once its foes' last moments have played, so
-   * that a still picture is not drawn again and again (#53).
-   */
   step(dt: number, _now?: number): boolean {
     const g = this.quest;
     if (!g) return false;
@@ -968,41 +930,102 @@ export class GameWorld {
     }
     this.paused = walker.indoor ? "indoor" : walker.ride === "fly" ? "fly" : this.mapView ? "map" : undefined;
     const frozen = this.menuPaused || !!this.paused || g.phase !== "play";
-    // A game that is over still runs its foes' last moments; a pause stops everything.
     const gdt = this.menuPaused || this.paused ? 0 : dt;
-    const evs = g.step(gdt, { at: walker.at, heading: walker.heading, move: this.host.intent(this.name), air: walker.air ?? 0, active: !frozen, pace: walker.ride === "scooter" ? QUEST.scooterPace : 1 });
-    // Not in a blow, a dodge or a stagger: a jump pressed meanwhile waits a moment for it.
-    this.host.jumpable(this.name, g.canJump && !frozen);
-    if (!frozen) this.seconds += dt;
-    // What the game asks of the walker: to be pushed, to turn to its blow, to go slower.
-    const o = g.orders;
-    if (o.face !== undefined) this.host.face(this.name, o.face);
-    if (o.shove[0] || o.shove[1]) this.host.shove(this.name, o.shove[0], o.shove[1]);
-    this.host.paceScale(this.name, o.slow);
-    // Locked on (a foe locked on to, or the Final Exam in its arena), the walker faces it and steps
-    // round it; otherwise it faces the way it goes.
-    const focus = g.phase === "play" && !frozen ? this.fightFocus() : undefined;
-    this.host.strafe(this.name, focus?.hard ? focus.at : undefined);
-    const me = this.host.walker(this.name) ?? walker;
-    this.meAt[0] = me.at[0];
-    this.meAt[1] = me.at[1];
-    for (const e of evs) this.effect(e, me);
-    // A footstep each time the figure puts a foot down, while the game runs.
-    const feet = Math.floor(me.footfalls ?? -1);
-    if (feet !== this.feet && this.feet >= 0 && feet >= 0 && !frozen) this.onStep?.(me.speed > 3.2);
-    // A jump leaves the ground; a landing puffs up dust from the pool, more after a long fall.
-    const jumps = me.jumps ?? -1;
-    const lands = me.landings ?? -1;
-    if (jumps !== this.jumps && this.jumps >= 0 && jumps >= 0 && !frozen) this.onJump?.("jump");
-    if (lands !== this.landings && this.landings >= 0 && lands >= 0 && !frozen) {
-      const hard = me.hard ?? 0;
-      this.onJump?.(hard > 0.5 ? "landHard" : "land");
-      if (!this.reducedMotion || hard > 0.5) this.sparks.burst(me.at[0], me.height + 0.06, -me.at[1], 8 + 10 * hard, 2.2 + 2 * hard, DUST, 0.11 + 0.05 * hard, 0.42, 2.5);
-      if (hard > 0.5) this.trauma = Math.min(1, this.trauma + 0.15 * hard);
+
+    if (this.cashDeltaT > 0 && !frozen) this.cashDeltaT = Math.max(0, this.cashDeltaT - dt);
+    if (this.activeSub && !frozen) {
+      this.activeSub.left -= dt;
+      if (this.activeSub.left <= 0) this.activeSub = undefined;
     }
-    this.jumps = jumps;
-    this.landings = lands;
-    this.feet = feet;
+
+    const drivingBefore = g.vehicles.current;
+    const evs = g.step(
+      gdt,
+      {
+        at: walker.at,
+        heading: walker.heading,
+        move: drivingBefore ? undefined : this.host.intent(this.name),
+        air: walker.air ?? 0,
+        active: !frozen,
+        pace: walker.ride === "scooter" ? QUEST.scooterPace : 1,
+      },
+      drivingBefore ? this.drivingCtrl : undefined,
+    );
+
+    if (g.cash !== this.lastCash) {
+      const diff = g.cash - this.lastCash;
+      this.lastCash = g.cash;
+      if (diff !== 0) {
+        this.cashDelta = diff;
+        this.cashDeltaT = 2.4;
+        this.cashDeltaKey++;
+      }
+    }
+
+    const drivingNow = g.vehicles.current;
+    const enclosed = !!drivingNow && drivingNow.kind !== "scooter";
+    if (enclosed !== this.bodyHidden) {
+      this.bodyHidden = enclosed;
+      this.host.bodyVisible?.(this.name, !enclosed);
+    }
+
+    const ridingScooter = !!drivingNow && drivingNow.kind === "scooter";
+    if (ridingScooter) {
+      const turnRate =
+        this.lastScooterHeading !== undefined && gdt > 1e-4
+          ? Math.max(-180, Math.min(180, turnBetween(this.lastScooterHeading, drivingNow.heading) / gdt))
+          : 0;
+      this.lastScooterHeading = drivingNow.heading;
+      this.onScooter = true;
+      this.host.scooterPose?.(this.name, true, drivingNow.speed, turnRate, gdt);
+    } else {
+      this.lastScooterHeading = undefined;
+      if (this.onScooter) {
+        this.onScooter = false;
+        this.host.scooterPose?.(this.name, false, 0, 0, 0);
+      }
+    }
+
+    if (drivingNow) {
+      if (this.host.drivePose) this.host.drivePose(this.name, drivingNow.at, drivingNow.heading);
+      else this.host.teleport(this.name, drivingNow.at, drivingNow.heading);
+      this.host.jumpable(this.name, false);
+      this.host.strafe(this.name, undefined);
+      this.host.paceScale(this.name, 1);
+      if (this.drivingCtrl.handbrake && Math.abs(drivingNow.speed) > 4 && !frozen && Math.random() < dt * 16) {
+        this.puffs.puff(drivingNow.at[0], this.surfaceAt(drivingNow.at[0], drivingNow.at[1]) + 0.08, -drivingNow.at[1], 1, 0.5, DUST, 0.7, 0.35);
+      }
+    } else {
+      this.host.jumpable(this.name, g.canJump && !frozen);
+      const o = g.orders;
+      if (o.face !== undefined) this.host.face(this.name, o.face);
+      if (o.shove[0] || o.shove[1]) this.host.shove(this.name, o.shove[0], o.shove[1]);
+      this.host.paceScale(this.name, o.slow);
+      this.host.strafe(this.name, undefined);
+    }
+
+    if (!frozen) this.seconds += dt;
+    const me = this.host.walker(this.name) ?? walker;
+    this.meAt = [me.at[0], me.at[1]];
+    for (const e of evs) this.effect(e, me);
+
+    if (!drivingNow) {
+      const feet = Math.floor(me.footfalls ?? -1);
+      if (feet !== this.feet && this.feet >= 0 && feet >= 0 && !frozen) this.onStep?.(me.speed > 3.2);
+      const jumps = me.jumps ?? -1;
+      const lands = me.landings ?? -1;
+      if (jumps !== this.jumps && this.jumps >= 0 && jumps >= 0 && !frozen) this.onJump?.("jump");
+      if (lands !== this.landings && this.landings >= 0 && lands >= 0 && !frozen) {
+        const hard = me.hard ?? 0;
+        this.onJump?.(hard > 0.5 ? "landHard" : "land");
+        if (!this.reducedMotion || hard > 0.5) this.sparks.burst(me.at[0], me.height + 0.06, -me.at[1], 8 + 10 * hard, 2.2 + 2 * hard, DUST, 0.11 + 0.05 * hard, 0.42, 2.5);
+        if (hard > 0.5) this.trauma = Math.min(1, this.trauma + 0.15 * hard);
+      }
+      this.jumps = jumps;
+      this.landings = lands;
+      this.feet = feet;
+    }
+
     this.events.push(...evs);
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
     this.sync(me, frozen && this.menuPaused ? 0 : dt);
@@ -1013,21 +1036,18 @@ export class GameWorld {
     return draw;
   }
 
-  /** Puts everything on the ground again, after the ground or the buildings changed. */
   refresh(): void {
     this.field = undefined;
-    this.heights.clear();
   }
 
   dispose(): void {
     this.stop();
-    for (const k of Object.values(this.kinds)) k.dispose();
-    this.boss.dispose();
-    this.items.dispose();
+    this.openWorldScene.dispose();
+    this.group.remove(this.openWorldScene.group);
     this.overlay?.dispose();
     this.group.traverse((o) => {
       const m = o as InstancedMesh;
-      if (m.isMesh && !Object.values(this.kinds).some((k) => k.owns(m))) {
+      if (m.isMesh) {
         m.geometry.dispose();
         (m.material as Material).dispose();
       }
@@ -1038,14 +1058,11 @@ export class GameWorld {
   // Places
   // -------------------------------------------------------------------------------------------
 
-  private floatAt(p: Pt): number {
-    return Math.max(this.host.groundAt(p[0], p[1]), this.host.roofs()?.at(p) ?? -Infinity);
+  /** Height of the drawn campus surface (grass, paths, roads) where feet and tyres stand. */
+  private surfaceAt(x: number, y: number): number {
+    return this.host.groundAt(x, y) + GROUND_PAINT;
   }
 
-  /**
-   * Whether the walker could stand at `p`: ground it can reach from where it is (not a building, nor a
-   * roof over it). `free`: and not on or beside a home, where the game lays nothing.
-   */
   private onGround(p: Pt, free = false): boolean {
     const f = this.fieldAt(this.meAt);
     if (!f) return true;
@@ -1053,15 +1070,6 @@ export class GameWorld {
     return c >= 0 && r >= 0 && c < f.grid.cols && r < f.grid.rows && !!(free ? f.free : f.reached)[r * f.grid.cols + c];
   }
 
-  /**
-   * Metres above sea level a foe's feet are at: on the ground where the walker could stand there (under
-   * a covered way too, not on its roof), and over the roofs and the ground elsewhere.
-   */
-  private footAt(p: Pt): number {
-    return this.onGround(p) ? this.host.groundAt(p[0], p[1]) : this.floatAt(p);
-  }
-
-  /** The ground round the walker: what it can reach, and the buildings that draw the pick-ups. */
   private fieldAt(near: Pt): NonNullable<GameWorld["field"]> | undefined {
     const map = this.host.walkMap();
     if (!map) return undefined;
@@ -1070,9 +1078,6 @@ export class GameWorld {
       const grid = map.grid([near[0] - FIELD, near[1] - FIELD, near[0] + FIELD, near[1] + FIELD], 2);
       const inField = (b: Building) => !b.offMap && Math.abs(b.center[0] - near[0]) < FIELD - 40 && Math.abs(b.center[1] - near[1]) < FIELD - 40;
       const all = this.host.buildings().filter(inField);
-      // Buildings with teaching rooms draw the pick-ups and the quests, more the more rooms they
-      // have; where the map names no rooms, every building draws alike. Homes draw nothing, and
-      // nothing lies on them or within HOME_MARGIN of them.
       const draws = questDraws(all, near, DRAW_HALF);
       const homes = this.host
         .buildings()
@@ -1084,7 +1089,6 @@ export class GameWorld {
     return f;
   }
 
-  /** Somewhere to lay a pick-up: on ground the walker can get to, beside a building with rooms to teach in. */
   private spot(near: Pt, taken: readonly Pt[], place?: Pt): Pt | undefined {
     const f = this.fieldAt(near);
     if (!f) return undefined;
@@ -1094,11 +1098,6 @@ export class GameWorld {
     return beside ?? bookSpot(f.grid, f.free, f.draws, near, taken, Math.random) ?? bookSpot(f.grid, f.free, [], near, taken, Math.random);
   }
 
-  /**
-   * A place for a quest: reachable ground beside a building with rooms to teach in, QUEST.placeRange metres off,
-   * away from the other quests' places. `big`: the building with the most rooms, for the last fight,
-   * on the most open ground near it.
-   */
   private place(near: Pt, avoid: readonly Pt[], big = false): Place | undefined {
     const f = this.fieldAt(near);
     if (!f || !this.words) return undefined;
@@ -1112,9 +1111,6 @@ export class GameWorld {
       return at ? { name: this.words.open, at } : undefined;
     }
     if (big) {
-      // The last fight is on the most open ground near its building, so that the camera sees the
-      // whole of the boss with no wall or tree between, and the whole arena, not only its middle,
-      // keeps clear of homes: the building with the most rooms where that fits, else the next.
       const clear = awayFromHomes(f.grid, f.reached, f.homes, HOME_MARGIN + QUEST.arenaRadius);
       const byRooms = [...pool].sort((a, b) => b.b.roomCount - a.b.roomCount).slice(0, ARENA_TRIES);
       for (const c of byRooms) {
@@ -1131,8 +1127,38 @@ export class GameWorld {
     return { name: this.words.place(d.b) || this.words.open, at, building: d.b.id };
   }
 
+  /** Picks a reachable campus courtyard/walkway spot anchored beside a real teaching building inside the campus. */
+  private campusAnchor(
+    near: Pt,
+    avoid: readonly Pt[],
+    minDist: number,
+    maxDist: number,
+    minGap = 18,
+  ): { name: string; at: Pt } | undefined {
+    const f = this.fieldAt(this.meAt);
+    if (!f || !f.draws.length) return undefined;
+    const ordered = [...f.draws].sort(() => Math.random() - 0.5);
+    for (const d of ordered) {
+      const toBuilding = Math.hypot(d.center[0] - near[0], d.center[1] - near[1]);
+      if (toBuilding > maxDist + 42) continue;
+      const at =
+        bookSpot(f.grid, f.free, [{ center: d.center, weight: 1 }], this.meAt, avoid, Math.random, undefined, 26) ??
+        nearestReached(f.grid, f.free, d.center, 14);
+      if (!at) continue;
+      if (!this.onGround(at, true)) continue;
+      if (Math.hypot(at[0] - this.meAt[0], at[1] - this.meAt[1]) < OPEN_WORLD.startClearance) continue;
+      const dNear = Math.hypot(at[0] - near[0], at[1] - near[1]);
+      if (dNear < minDist || dNear > maxDist) continue;
+      if (avoid.some((a) => Math.hypot(a[0] - at[0], a[1] - at[1]) < minGap)) continue;
+      if (!f.draws.some((b) => Math.hypot(b.center[0] - at[0], b.center[1] - at[1]) <= 38)) continue;
+      const name = this.words?.place(d.b) || this.words?.open || "";
+      return { name, at };
+    }
+    return undefined;
+  }
+
   // -------------------------------------------------------------------------------------------
-  // Effects of what happened
+  // Effects
   // -------------------------------------------------------------------------------------------
 
   private effect(e: GameEvent, me: WalkerState): void {
@@ -1141,224 +1167,99 @@ export class GameWorld {
     const sz = -me.at[1];
     const sy = me.height;
     const o = this.overlay;
-    const cam = this.host.camera();
-    const { width, height } = this.host.viewSize();
+
     switch (e.type) {
       case "take": {
-        const h = this.host.groundAt(e.at[0], e.at[1]) + ITEM_UP;
-        this.sparks.burst(e.at[0], h, -e.at[1], 14, 5, e.kind === "coffee" ? 0x8ff0d0 : ACCENT, 0.1, 0.6, 3);
-        if (e.xp) o?.number(e.at[0], h + 0.8, -e.at[1], `+${e.xp}`, "xp");
+        const h = this.surfaceAt(e.at[0], e.at[1]) + ITEM_UP;
+        const colour = e.kind === "coffee" ? 0x8ff0d0 : e.kind === "cash" ? 0x5cf28c : e.kind === "pizza" ? 0xff9e44 : ACCENT;
+        this.sparks.burst(e.at[0], h, -e.at[1], e.kind === "pizza" ? 16 : 10, 4, colour, 0.08, 0.5, 2.5);
+        if (e.kind === "pizza") o?.number(e.at[0], h + 0.8, -e.at[1], this.words?.pizzaTake ?? `+${QUEST.pizzaFocus}`, "pizza buff");
+        else if (e.kind === "cash") o?.number(e.at[0], h + 0.7, -e.at[1], `+$${e.value ?? 25}`, "cash");
+        else if (e.xp) o?.number(e.at[0], h + 0.7, -e.at[1], `+${e.xp}`, "xp");
         break;
       }
-      case "swing":
-        // The arms wind up and strike; the arc of light comes as the blow lands. The camera goes
-        // over the shoulder for the blow and a moment after. A strike pressed in the air comes down
-        // as the walker lands: the landing slash.
-        if (e.plunge) {
-          this.host.act(this.name, "plunge");
-          this.slashDue = { t: Math.max(0, PLAYER.plungeContact - SLASH_LEAD[2]!), combo: 2, dir: e.dir };
-          this.nudge.strikeT = PLAYER.plungeTime + SHOULDER_HOLD;
-          break;
-        }
-        this.host.act(this.name, e.combo === 0 ? "strike0" : e.combo === 1 ? "strike1" : "strike2");
-        this.slashDue = { t: Math.max(0, PLAYER.strikeContact[e.combo]! - SLASH_LEAD[e.combo]!), combo: e.combo, dir: e.dir };
-        this.nudge.strikeT = PLAYER.strikeTime[e.combo]! + SHOULDER_HOLD;
-        break;
-      case "plungeReady":
-        this.host.act(this.name, "plungeUp");
-        break;
-      case "card":
-        this.host.act(this.name, "card");
-        break;
-      case "hit": {
-        const f = this.foeById(e.foe);
-        if (f) this.motion.hit(f, e.dir, e.heavy, e.crit);
-        // Light, finisher and critical blows each look and feel their own: the flash, the sparks,
-        // the dust, the number and the shake grow with the blow.
-        const tier = e.crit ? 2 : e.heavy ? 1 : 0;
-        const foot = this.footOf(e.foe);
-        const r = (e.dir * Math.PI) / 180;
-        const near = FOES[e.kind].radius * 0.7;
-        const hx = e.at[0] - Math.sin(r) * near;
-        const hz = -(e.at[1] - Math.cos(r) * near);
-        const h = foot + Math.min(KIND_MID[e.kind], 2.2);
-        this.sparks.one(hx, h, hz, 0, 0, 0, 0.07, HIT_CORE[tier]!, e.crit ? 0xffe27a : 0xfff4dc, 0);
-        this.sparks.cone(hx, h, hz, e.dir, 55, HIT_STREAKS[tier]!, HIT_SPEED[tier]!, e.crit ? 0xffd54a : 0xffe8b0, 0.09, 0.26, 12, 0.03);
-        this.sparks.cone(hx, h, hz, e.dir, 75, 2 + tier * 2, 5, HUE[e.kind], 0.13, 0.4, 6, 0);
-        this.puffs.puff(e.at[0], foot, -e.at[1], 2 + tier * 2, FOES[e.kind].radius * 0.8, DUST, 0.45 + 0.15 * tier, 0.55);
-        if (tier > 0) this.shocks.fire(e.at[0], foot + 0.08, -e.at[1], FOES[e.kind].radius + 1.4 + tier, 0.22, e.crit ? 0xffd54a : 0xffb454, 0.22);
-        o?.number(e.at[0], h + 1, -e.at[1], String(e.amount), e.crit ? (e.heavy ? "crit heavy" : "crit") : e.heavy ? "heavy" : "light");
-        o?.hit(e.at[0], h, -e.at[1], false, cam, width, height);
-        this.trauma = Math.min(1, this.trauma + HIT_SHAKE[tier]! + (e.crit && e.heavy ? 0.08 : 0));
+      case "swing": {
+        const move =
+          this.quest?.weapon === "fists" || e.combo === 2
+            ? (`punch${e.combo}` as Move)
+            : (`strike${e.combo}` as Move);
+        this.host.act(this.name, move);
+        this.nudge.strikeT = SHOULDER_HOLD;
         break;
       }
-      case "kill": {
-        const foot = this.footOf(e.foe);
-        const h = foot + Math.min(KIND_MID[e.kind], 3);
-        const x = e.at[0];
-        const z = -e.at[1];
-        const big = e.kind === "exam" ? 3 : e.kind === "ddl" ? 2 : 1;
-        // Each breaks into the stuff of its trouble: gears from the clock, stuffing from the pillow,
-        // shards of screen, copied pages, ink, and the exam's papers, pencils and red ink.
-        const d = this.debris;
-        switch (e.kind) {
-          case "ddl":
-            d.burst("gear", x, h, z, foot, 12, 7, 0xc8ccd4, 1.1);
-            d.burst("gear", x, h, z, foot, 6, 6, 0xd8262e, 0.8);
-            d.burst("page", x, h + 0.6, z, foot, 4, 4, 0xfff4dc, 0.7);
-            break;
-          case "procrastination":
-            d.burst("page", x, h, z, foot, 10, 5, 0xf6efe0, 0.8);
-            d.burst("page", x, h, z, foot, 6, 4, 0xcfc2f2, 0.6);
-            break;
-          case "distraction":
-            d.burst("page", x, h, z, foot, 7, 5, 0x2fd7ff, 0.4, 0.9);
-            d.burst("ink", x, h, z, foot, 3, 4, 0x23242c, 0.6, 0.9);
-            break;
-          case "plagiarism":
-            d.burst("page", x, h, z, foot, 14, 4, 0xe7ecff, 0.8);
-            d.burst("page", x, h, z, foot, 5, 4, 0xffb3c7, 0.8);
-            break;
-          case "anxiety":
-            d.burst("ink", x, h, z, foot, 14, 5, 0x2b2450, 1);
-            d.burst("ink", x, h, z, foot, 6, 4, 0x8b5cff, 0.8);
-            break;
-          case "exam":
-            d.burst("page", x, h + 2, z, foot, 24, 7, 0xf7f3e8, 1.4, 2);
-            d.burst("gear", x, h + 1, z, foot, 10, 8, 0xffc300, 1.6, 2);
-            d.burst("ink", x, h + 1, z, foot, 10, 6, 0xc1121f, 1.4, 2);
-            break;
-        }
-        this.sparks.burst(x, h, z, 12 * big, 7 * big, HUE[e.kind], 0.14, 0.7, 5);
-        this.sparks.cone(x, h, z, 0, 180, 8 * big, 9 * big, 0xfff4dc, 0.08, 0.3, 8, 0.03);
-        this.shocks.fire(x, foot + 0.1, z, 2.5 * big + 1, 0.3 * big, HUE[e.kind], 0.35);
-        this.puffs.puff(x, foot, z, 4 * big, FOES[e.kind].radius, DUST, 0.6 * big, 0.7);
-        o?.number(x, h + 1.6, -e.at[1], `+${e.xp}`, "xp");
-        o?.hit(x, h, -e.at[1], true, cam, width, height);
-        this.trauma = Math.min(1, this.trauma + 0.2 * big);
+      case "hitHuman": {
+        this.trauma = Math.min(1, this.trauma + (e.heavy ? 0.14 : 0.05));
         break;
       }
-      case "lash": {
-        // An attack lands: the foe strikes, and the ground answers where it lands.
-        const f = this.foeById(e.foe);
-        if (f) this.motion.lash(f, e.move);
-        const gy = this.host.groundAt(e.at[0], e.at[1]) + 0.1;
-        if (e.move === "slam") {
-          this.shocks.fire(e.at[0], gy, -e.at[1], e.radius + 0.6, 0.55, 0xff6a3d, 0.36);
-          this.puffs.puff(e.at[0], gy, -e.at[1], e.kind === "exam" ? 10 : 7, e.radius * 0.6, DUST, 0.9, 0.7);
-          this.sparks.ring(e.at[0], gy + 0.2, -e.at[1], 18, e.radius * 2.2, 0xffb08a, 0.12);
-          this.trauma = Math.min(1, this.trauma + (e.kind === "exam" ? 0.45 : 0.3));
-        } else if (e.move === "yawn") {
-          this.shocks.fire(e.at[0], gy, -e.at[1], e.radius + 0.4, 0.5, 0xb9a6ff, 0.42);
-          this.puffs.puff(e.at[0], gy, -e.at[1], 6, e.radius * 0.5, 0xd9cff5, 0.8, 0.8);
-        } else if (e.move === "charge") {
-          this.puffs.puff(e.at[0], gy, -e.at[1], 4, 1.2, DUST, 0.7, 0.6);
-          this.trauma = Math.min(1, this.trauma + 0.12);
-        } else if (e.move === "melee" || e.move === "blink") {
-          const fx = f ? f.at : e.at;
-          this.sparks.cone(fx[0], gy + 1.3, -fx[1], f ? f.facing : 0, 30, 6, 7, HUE[e.kind], 0.1, 0.25, 4, 0.03);
-        }
+      case "hitEnv": {
+        this.trauma = Math.min(1, this.trauma + (e.heavy ? 0.1 : 0.04));
         break;
       }
-      case "hurt":
-        // A flinch from the way the blow came, and a stagger as it is knocked back.
-        this.host.act(this.name, "flinch", { dir: turnBetween(me.heading, bearingTo(me.at, e.from)) });
+      case "hurt": {
         o?.hurt(bearingTo(me.at, e.from));
-        this.sparks.burst(sx, sy + 1.2, sz, 10, 5, 0xff3b30, 0.1, 0.5, 6);
-        this.trauma = Math.min(1, this.trauma + 0.38);
+        this.trauma = Math.min(1, this.trauma + Math.min(0.4, 0.1 + e.amount * 0.01));
         break;
-      case "evade":
-        o?.number(sx, sy + 2.3, sz, "✦", "evade");
-        break;
+      }
       case "dodge": {
-        this.trailT = e.sprint ? 0.4 : 0.3;
-        // Locked on, the walker keeps facing its foe and the dodge reads as the way it goes: a roll
-        // forward, a hop back, a side-step. Otherwise it turns to the way the stick asks and rolls
-        // (or, the Cram Sprint, dashes) that way; with the stick let go it hops back.
-        const locked = !!this.fightFocus()?.hard;
         let way = dodgeWay(e.dir, me.heading);
-        if (!locked && way !== "B") {
+        if (way !== "B") {
           this.host.face(this.name, e.dir);
           way = "F";
         }
-        const rate = e.sprint ? 1 / 1.3 : 1;
-        this.host.act(this.name, e.sprint && way === "F" ? "sprint" : `dodge${way}`, { rate: e.sprint && way === "F" ? 1 : rate });
+        this.host.act(this.name, e.sprint && way === "F" ? "sprint" : (`dodge${way}` as Move));
         break;
       }
-      case "eureka": {
-        this.host.act(this.name, "eureka");
-        // A crisp ring of light that runs out to the Eureka's reach and is gone, a thinner one just
-        // behind it, and sparks that race out along the ground: no wash over the picture.
-        const gy = sy + 0.1;
-        this.shocks.fire(sx, gy, sz, PLAYER.eurekaRadius, 0.5, 0xfff0c8, 0.32);
-        this.shocks.fire(sx, gy + 0.02, sz, PLAYER.eurekaRadius * 0.82, 0.22, 0xffb454, 0.3, 0.06);
-        const n = Math.round(28 * this.sparks.density);
-        for (let k = 0; k < n; k++) {
-          const a = (k / n) * Math.PI * 2 + Math.random() * 0.2;
-          const v = 18 + Math.random() * 6;
-          this.sparks.one(sx + Math.cos(a) * 0.8, gy + 0.3, sz + Math.sin(a) * 0.8, Math.cos(a) * v, 1 + Math.random() * 2, Math.sin(a) * v, 0.3, 0.12, 0xffe2a0, 3, 0.025);
-        }
-        // From the hands thrust up over the head.
-        this.sparks.burst(sx, sy + HANDS_UP, sz, 14, 7, 0xfff1d0, 0.1, 0.5, 4);
-        this.puffs.puff(sx, sy, sz, 6, 1.6, DUST, 0.7, 0.6);
-        o?.flash("eureka");
-        this.trauma = Math.min(1, this.trauma + 0.4);
+      case "drop": {
         break;
       }
-      case "rank":
-        for (let k = 0; k < 3; k++) this.sparks.ring(sx, sy + 0.3 + k * 0.8, sz, 20, 4 + k, ACCENT, 0.14);
-        this.sparks.burst(sx, sy + 1, sz, 30, 6, 0xfff1d0, 0.12, 1.2, -2);
-        o?.flash("rank");
+      case "checkpoint": {
+        const gy = this.surfaceAt(e.at[0], e.at[1]) + 0.25;
+        this.shocks.fire(e.at[0], gy, -e.at[1], 3.4, 0.35, 0x4ee68a, 0.3);
+        this.sparks.burst(e.at[0], gy + 0.6, -e.at[1], 14, 5, 0x4ee68a, 0.1, 0.55, 2);
         break;
-      case "phase": {
-        // The boss's change of phase: knocked back, then a roar. The effect stays on the boss and the
-        // ground: its own glow (gameBoss.ts), one crisp shockwave and a thin one after it over the
-        // arena, and a pulse at the edges of the picture (gameOverlay.ts), never a wash over all of it.
-        o?.flash("phase");
-        this.trauma = Math.min(1, this.trauma + 0.6);
-        const b = this.quest?.boss;
-        if (b) {
-          const foot = this.footOf(b.id);
-          const roar = FOE_TIME.phase * 0.2;
-          this.shocks.fire(b.at[0], foot + 0.12, -b.at[1], QUEST.arenaRadius * 0.9, 0.55, 0xffc070, 0.7, roar);
-          this.shocks.fire(b.at[0], foot + 0.14, -b.at[1], QUEST.arenaRadius * 0.75, 0.22, 0xff6a3d, 0.6, roar + 0.16);
-          this.sparks.burst(b.at[0], foot + 5, -b.at[1], 40, 12, 0xffd27a, 0.16, 0.9, 6);
-          this.puffs.puff(b.at[0], foot, -b.at[1], 10, 4, DUST, 1.3, 0.9);
+      }
+      case "vehicle": {
+        if (e.action === "crash") {
+          const spd = e.speed ?? 6;
+          const floorY = this.surfaceAt(e.at[0], e.at[1]);
+          const gy = floorY + 0.65;
+          const hard = spd >= 8;
+          this.sparks.burst(e.at[0], gy, -e.at[1], hard ? 28 : 16, hard ? 9.5 : 6.0, 0xffd06e, 0.1, 0.45, 7);
+          this.sparks.burst(e.at[0], gy + 0.15, -e.at[1], hard ? 14 : 8, hard ? 7.0 : 4.5, 0xfff5dc, 0.08, 0.32, 4);
+          if (!this.reducedMotion) {
+            this.sparks.burst(e.at[0], gy + 0.1, -e.at[1], hard ? 10 : 5, hard ? 6.5 : 4.0, 0xff7b3b, 0.11, 0.55, 9);
+            this.puffs.puff(e.at[0], gy - 0.15, -e.at[1], hard ? 7 : 4, hard ? 1.9 : 1.2, DUST, hard ? 1.25 : 0.9, 0.6);
+            if (hard) this.shocks.fire(e.at[0], floorY + 0.15, -e.at[1], 3.4, 0.22, 0xffb84d, 0.25);
+          }
+          this.trauma = Math.min(1, this.trauma + Math.min(0.65, 0.14 + spd * 0.032));
+        } else if (e.action === "callScooter") {
+          const gy = this.surfaceAt(e.at[0], e.at[1]) + 0.4;
+          this.sparks.burst(e.at[0], gy, -e.at[1], 12, 3.5, 0x2de2d0, 0.08, 0.45, 1.5);
+        } else if (e.action === "callMecha") {
+          const gy = this.surfaceAt(e.at[0], e.at[1]) + 0.3;
+          this.shocks.fire(e.at[0], gy, -e.at[1], 2.8, 0.25, 0x5cf2ff, 0.28);
+          this.sparks.burst(e.at[0], gy + 0.4, -e.at[1], 18, 5.2, 0x5cf2ff, 0.09, 0.45, 3);
         }
+        break;
+      }
+      case "subtitle": {
+        this.activeSub = {
+          who: e.speaker,
+          text: this.words?.subtitleText?.(e.speaker, e.key) ?? e.key,
+          colorIdx: SPEAKER_COLOR_INDEX[e.speaker] ?? 0,
+          left: e.ttl,
+        };
         break;
       }
       case "over":
-        // Burnt out, the arms drop; a won game keeps the stance it had.
         if (!e.victory) this.host.act(this.name, "down");
         break;
       case "retry":
-        // Back on its feet where the quest began: a ring of light, as at a rank risen, but smaller.
-        this.sparks.ring(sx, sy + 0.3, sz, 18, 3, ACCENT, 0.12);
-        this.sparks.burst(sx, sy + 1, sz, 16, 4, 0xfff1d0, 0.1, 0.8, -2);
-        break;
-      case "arrive": {
-        const f = this.quest?.foes.find((x) => x.id === e.foe);
-        if (f) this.sparks.burst(f.at[0], this.footAt(f.at) + 0.5, -f.at[1], e.kind === "exam" ? 60 : 14, e.kind === "exam" ? 10 : 4, HUE[e.kind], 0.2, 0.9, -1);
-        break;
-      }
-      case "tell":
-        if (e.kind === "exam" || e.kind === "ddl") this.trauma = Math.min(1, this.trauma + 0.1);
+        this.sparks.burst(sx, sy + 0.9, sz, 14, 4, ACCENT, 0.09, 0.6, -1);
         break;
       default:
         break;
     }
-  }
-
-  /** The foe of an id, while the game has it. */
-  private foeById(id: number): Foe | undefined {
-    const foes = this.quest?.foes;
-    if (foes) for (const f of foes) if (f.id === id) return f;
-    return undefined;
-  }
-
-  /** Metres above sea level of a foe's feet as last drawn. */
-  private footOf(id: number): number {
-    return this.heights.get(id) ?? this.host.walker(this.name)?.height ?? 0;
   }
 
   // -------------------------------------------------------------------------------------------
@@ -1367,372 +1268,141 @@ export class GameWorld {
 
   private sync(walker: WalkerState, dt: number): void {
     const g = this.quest!;
-    // The reduced-motion setting, changed in the pause menu, takes effect at once.
-    // Under a full menu (the pause menu, the record, the debrief) the marks over the picture wait.
-    this.overlay?.root.classList.toggle("menu", this.menuPaused || (g.phase === "over" && !(g.victory && g.foes.some((f) => f.kind === "exam"))));
+    this.overlay?.root.classList.toggle("menu", this.menuPaused || g.phase === "over");
     if (this.motionApplied !== this.reducedMotion) {
       this.motionApplied = this.reducedMotion;
       this.sparks.density = this.reducedMotion ? 0.4 : 1;
       this.overlay?.root.classList.toggle("rm", this.reducedMotion);
     }
+
     const t = performance.now() / 1000;
     const wx = walker.at[0];
     const wz = -walker.at[1];
     const wy = walker.height;
 
-    // Pick-ups: only those within 160 m are drawn.
-    this.items.begin();
+    const humans: OpenWorldHuman[] = g.openWorld.humans.map((h) => {
+      const animSpeed =
+        h.role === "giver" ||
+        h.state === "idle" ||
+        h.state === "stagger" ||
+        h.state === "down" ||
+        h.state === "dead" ||
+        (h.role === "pedestrian" && h.waitT > 0)
+          ? 0
+          : h.state === "flee"
+            ? 3.8
+            : h.state === "circle"
+              ? 1.5
+              : h.speed;
+      return {
+        id: h.id,
+        role: h.role,
+        at: h.at,
+        heading: h.heading,
+        speed: animSpeed,
+        style: h.palette,
+        state: mapHumanState(h.state),
+        target: h.isMissionTarget,
+      };
+    });
+
+    const vehicles: OpenWorldVehicle[] = g.vehicles.vehicles
+      .filter((v) => !(v.id === g.vehicles.playerVehicleId && v.kind === "scooter"))
+      .map((v) => ({
+        id: v.id,
+        kind: v.kind,
+        at: v.at,
+        heading: v.heading,
+        speed: v.speed,
+        steer: v.steerAngle,
+        colorIdx: v.colorIdx,
+        braking: (v.driver === "player" && this.drivingCtrl.brake > 0.1) || (v.isTraffic && Math.abs(v.speed) < 0.8),
+        siren: v.siren,
+        pitch: v.pitch,
+        roll: v.roll,
+        heave: v.heave,
+        hp: v.hp,
+        maxHp: v.maxHp,
+        altitude: v.altitude,
+        flying: v.flying,
+        thrust: v.thrust,
+        attackT: v.attackT,
+      }));
+
+    // Emit rising engine-bay smoke from damaged or wrecked vehicles nearby.
+    if (dt > 0 && !this.menuPaused && !this.paused && !this.reducedMotion) {
+      for (const v of g.vehicles.vehicles) {
+        if (v.kind === "scooter" || v.hp > 55) continue;
+        if (Math.hypot(v.at[0] - wx, v.at[1] - walker.at[1]) > 90) continue;
+        const rate = v.hp <= 20 ? 11 : 5;
+        if (Math.random() < dt * rate) {
+          const rad = (v.heading * Math.PI) / 180;
+          const bx = v.at[0] + Math.sin(rad) * 1.4;
+          const by = v.at[1] + Math.cos(rad) * 1.4;
+          const gy = this.surfaceAt(bx, by) + 1.05;
+          const smokeCol = v.hp <= 20 ? 0x2d3138 : 0x858a92;
+          this.puffs.puff(bx, gy, -by, 1, 0.65, smokeCol, v.hp <= 20 ? 1.15 : 0.78, 0.65);
+        }
+      }
+    }
+
+    const pickups: OpenWorldPickup[] = [];
     for (const it of g.items) {
-      if (Math.hypot(it.at[0] - wx, it.at[1] - walker.at[1]) > 160 && !it.quest) continue;
-      this.items.add(it.kind, it.id, it.at[0], this.host.groundAt(it.at[0], it.at[1]), -it.at[1], t, !!it.quest);
+      if (!isPickupKind(it.kind)) continue;
+      if (Math.hypot(it.at[0] - wx, it.at[1] - walker.at[1]) > 140) continue;
+      pickups.push({ id: it.id, kind: it.kind, at: it.at });
     }
-    this.items.end();
 
-    // Foes.
-    for (const k of CROWD_KINDS) this.kinds[k].begin();
-    this.boss.begin();
-    this.shadows.begin();
-    this.motion.begin();
-    const plates: PlateIn[] = [];
-    const tint = _tint;
-    const look = this.look;
-    let bossPhase = -1;
-    for (const f of g.foes) {
-      const far = Math.hypot(f.at[0] - wx, f.at[1] - walker.at[1]);
-      if (far > 180) continue;
-      const kv = f.kind === "exam" ? undefined : this.kinds[f.kind];
-      const model = kv?.model ?? this.boss;
-      // Over the ground and the roofs, rising and falling smoothly.
-      const want = this.footAt(f.at);
-      const had = this.heights.get(f.id);
-      const rise = 12 * dt;
-      const foot = had === undefined || dt <= 0 ? want : had + Math.max(-rise, Math.min(rise, want - had));
-      this.heights.set(f.id, foot);
-      this.motion.look(f, dt, t, look);
-      let y = foot + model.float + look.oy;
-      let scale = bodyScale(f);
-      if (f.state === "rise") {
-        const total = f.kind === "exam" ? 3.2 : 0.8;
-        const k = Math.max(0, Math.min(1, 1 - f.t / total));
-        const back = 1 + 2.2 * Math.pow(k - 1, 3) + 1.2 * Math.pow(k - 1, 2);
-        scale *= Math.max(0.01, back);
-        y -= (1 - k) * 2;
-      }
-      tint.setRGB(look.tr, look.tg, look.tb);
-      // What breaks up glows at the edges of its gaps in its own colour.
-      if (f.state === "dead" && f.kind !== "exam") tint.setHex(HUE[f.kind]).multiplyScalar(0.8);
-      // The last phase's rage: a faint red at its edges; the figure itself shows the rest (gameBoss.ts).
-      if (f.kind === "exam" && f.phase === 3 && f.state !== "dead" && f.state !== "phase") tint.r = Math.max(tint.r, 0.08 + 0.05 * Math.sin(t * 6));
-      if (f.kind === "exam" && f.state === "phase") bossPhase = this.motion.since(f.id) / FOE_TIME.phase;
-      _p.set(f.at[0] + look.ox, y, -(f.at[1] + look.on));
-      _q.setFromEuler(_e.set(look.pitch, yawOf(f.facing) + look.yaw, look.roll));
-      _s.set(scale * look.sx, scale * look.sy, scale * look.sz);
-      _b.compose(_p, _q, _s);
-      this.posing = f;
-      this.posingT = t;
-      if (kv) kv.put(_b, tint, look.dissolve, look.flash, this.poseOf);
-      else this.placeBoss(f, _b, tint, look.dissolve, look.flash, t, dt, walker);
-      if (f.state !== "dead") this.shadows.add(f.at[0] + look.ox, foot, -(f.at[1] + look.on), FOES[f.kind].radius * (f.kind === "exam" ? 1.2 : 0.9) * scale * Math.max(0.6, 1 - look.oy * 0.15));
-      // Its plate: the big ones always; the small ones when near, or hurt.
-      const elite = f.kind === "ddl" || f.kind === "exam";
-      if (f.state !== "dead" && f.state !== "rise" && f.kind !== "exam" && (elite || far < 26 || f.hp < f.maxHp) && this.words) {
-        plates.push({ id: f.id, x: f.at[0], y: foot + model.float + model.height * scale + 0.5, z: -f.at[1], name: this.words.foes[f.kind], hp: f.hp, max: f.maxHp, elite, warn: f.state === "tell" });
-      }
-      // Trails, moods, steps and daze.
-      if (dt > 0) {
-        const head = foot + model.float + model.height * scale * 0.92 + look.oy;
-        if (f.state === "dead") {
-          // The last hour breaks up slowly, shedding its pages.
-          if (f.kind === "exam" && Math.random() < dt * 30) this.debris.burst("page", f.at[0] + (Math.random() - 0.5) * 3, foot + 2 + Math.random() * 7, -f.at[1] + (Math.random() - 0.5) * 3, foot, 1, 3, 0xf7f3e8, 1.2, 1.6);
-          continue;
-        }
-        if (look.step) this.puffs.puff(f.at[0], foot, -f.at[1], f.kind === "exam" ? 3 : 2, FOES[f.kind].radius * 0.7, DUST, f.kind === "exam" ? 0.9 : 0.45, 0.5);
-        if (look.dazed && Math.random() < dt * 9) {
-          // Stars round its head: it is open.
-          const a = t * 7 + f.id;
-          const r = FOES[f.kind].radius * 0.6 + 0.2;
-          this.sparks.one(f.at[0] + Math.cos(a) * r, head + 0.25, -f.at[1] + Math.sin(a) * r, -Math.sin(a) * 2.2, 0.3, Math.cos(a) * 2.2, 0.4, 0.16, 0xffe14a, 0);
-        }
-        if (f.kind === "procrastination" && Math.random() < dt * 1.5) this.sparks.one(f.at[0] + 0.6, y + 2.6, -f.at[1], 0.3, 0.8, 0, 1.6, 0.12, 0xbfd8ff, -0.2);
-        if (f.kind === "anxiety" && Math.random() < dt * 6) this.sparks.one(f.at[0], y + 1.5, -f.at[1], (Math.random() - 0.5) * 2, 1.2, (Math.random() - 0.5) * 2, 0.7, 0.14, 0x5b3dbb, -0.5);
-        if (f.kind === "exam" && Math.random() < dt * 12) this.sparks.one(f.at[0] + (Math.random() - 0.5) * 3, y + 3 + Math.random() * 4, -f.at[1] + (Math.random() - 0.5) * 3, 0, 1.5, 0, 1.0, 0.12, 0xffb347, -0.3);
-        if (f.state === "attack" && look.step) this.puffs.puff(f.at[0], foot, -f.at[1], 2, 1, DUST, 0.6, 0.5);
+    const spots: OpenWorldSpot[] = g.openWorld.spots.map((s) => ({
+      id: s.id,
+      kind: s.kind === "pizzaVan" ? "pizzaCart" : "clubStand",
+      at: s.at,
+      heading: s.heading,
+      radius: s.radius,
+      cooldown: s.cooldown,
+    }));
+
+    this.openWorldScene.sync({
+      t,
+      dt,
+      viewerAt: walker.at,
+      groundAt: (x, y) => this.surfaceAt(x, y),
+      humans,
+      vehicles,
+      pickups,
+      spots,
+      props: g.openWorld.props,
+      checkpoint: g.openWorld.currentObjectivePoint(),
+    });
+
+    if (this.slashDue && !this.menuPaused && !this.paused) {
+      this.slashDue.t -= dt;
+      if (this.slashDue.t <= 0) {
+        const s = this.slashDue;
+        this.slashDue = undefined;
+        this.slash.swing(s.combo, s.dir);
       }
     }
-    this.motion.end();
-    // The camera: over the walker's shoulder while it strikes, in on the boss as it changes phase.
-    {
-      const n = this.nudge;
-      n.strikeT = Math.max(0, n.strikeT - dt);
-      const wantSide = this.reducedMotion || g.phase !== "play" ? 0 : n.strikeT > 0 ? 1 : 0;
-      n.side += (wantSide - n.side) * (1 - Math.exp(-dt * (wantSide > n.side ? 9 : 2.2)));
-      const wantPush = this.reducedMotion || bossPhase < 0 ? 0 : Math.sin(Math.PI * Math.min(1, bossPhase / 0.85)) * (bossPhase < 0.85 ? 1 : 0);
-      n.push += (wantPush - n.push) * (1 - Math.exp(-dt * 5));
-      if (n.side < 1e-3) n.side = 0;
-      if (n.push < 1e-3) n.push = 0;
-    }
-    // In the first frames of a game, the Final Exam is drawn once far under the walker, so that its
-    // shaders are made behind the title card and not as it rises.
-    if (this.warm > 0 && !this.boss.root.visible) {
-      _b.makeTranslation(wx, wy - 400, wz);
-      this.placeBossAt(_b, 1, 1, _tint.setRGB(0, 0, 0), 0, 0, t, 0, -1);
-    }
-    for (const k of CROWD_KINDS) this.kinds[k].end();
-    this.boss.end();
-    this.shadows.end();
+    this.nudge.strikeT = Math.max(0, this.nudge.strikeT - dt);
+    const wantSide = this.nudge.strikeT > 0 && !this.reducedMotion ? 1 : 0;
+    this.nudge.side += (wantSide - this.nudge.side) * Math.min(1, dt * 10);
 
-    // Warnings on the ground that fill as the attack comes, the boss's rings, and rings at the walker's feet.
-    this.tells.begin();
-    this.decals.begin(t);
-    for (const tl of g.tells) {
-      const h = this.host.groundAt(tl.at[0], tl.at[1]) + 0.17;
-      const k = 1 - tl.t / tl.total;
-      // Brighter in the last moment before it lands.
-      const alpha = tl.t < 0.2 ? 0.85 + 0.15 * Math.sin(t * 60) : 0.8;
-      if (tl.shape === "circle") this.decals.circle(tl.at[0], h, -tl.at[1], tl.radius, k, 0xff3b2f, alpha);
-      else this.decals.line(tl.at[0], h, -tl.at[1], tl.dir, tl.length, tl.width, k, 0xff3b2f, alpha);
+    if (this.trailT > 0 && dt > 0) {
+      this.trailT -= dt;
+      if (!this.reducedMotion && Math.random() < dt * 28) this.sparks.one(wx, wy + 0.9, wz, 0, 0.8, 0, 0.25, 0.08, 0xffd27a, 0, 0.02);
     }
-    this.decals.end();
-    for (const w of g.waves) {
-      const h = this.host.groundAt(w.at[0], w.at[1]) + 0.25;
-      this.tells.ring({ x: w.at[0], y: h, z: -w.at[1], r: w.r, color: 0xff7a2f, alpha: 1 - w.r / w.max });
-      this.tells.ring({ x: w.at[0], y: h + 0.4, z: -w.at[1], r: w.r - 0.3, color: 0xffc06a, alpha: 0.6 * (1 - w.r / w.max) });
-    }
-    if (g.eurekaMeter >= PLAYER.eurekaCharge && g.phase === "play") this.tells.ring({ x: wx, y: wy + 0.12, z: wz, r: 1.1 + Math.sin(t * 6) * 0.08, color: ACCENT, alpha: 0.9 });
-    const locked = g.lock === undefined ? undefined : this.foeById(g.lock);
-    if (locked) this.tells.ring({ x: locked.at[0], y: this.footOf(locked.id) + 0.15, z: -locked.at[1], r: FOES[locked.kind].radius + 0.5, color: 0xff5a3d, alpha: 0.8 });
-    this.tells.end();
 
-    // What flies.
-    this.missiles.begin();
-    for (const s of g.shots) {
-      const h = (s.mine ? wy : this.host.groundAt(s.at[0], s.at[1])) + (s.mine ? 1.2 : 1.4);
-      if (s.mine) this.missiles.card(s.at[0], h, -s.at[1], t * 18);
-      else this.missiles.orb(s.at[0], h, -s.at[1], 1 + Math.sin(t * 14 + s.id) * 0.15, s.damage > 12);
-      if (dt > 0 && Math.random() < 0.7) this.sparks.one(s.at[0], h, -s.at[1], 0, 0.3, 0, 0.35, s.mine ? 0.12 : 0.18, s.mine ? ACCENT : 0x8b5cff, 0);
-    }
-    this.missiles.end();
-
-    // The walker's own: the slash, the burst, the dodge's trail, the slow.
-    if (this.slashDue && (this.slashDue.t -= dt) <= 0) {
-      const d = this.slashDue;
-      this.slashDue = undefined;
-      this.slash.swing(d.combo, d.dir);
-      if (d.combo === 2) this.sparks.ring(wx, wy + 0.3, wz, 10, 6, ACCENT, 0.1);
-    }
-    this.slash.step(dt, wx, wy, wz);
-    if (this.warm > 0) {
-      // A few of each effect, out of sight far under the walker, in the first frames of a game: their
-      // shaders are made then, behind the title card, not in the middle of the first fight.
-      this.warm--;
-      const y = wy - 400;
-      for (const bit of ["page", "gear", "ink"] as const) this.debris.burst(bit, wx, y, wz, y - 1, 1, 0, 0xffffff, 1, 0.05);
-      this.puffs.puff(wx, y, wz, 1, 1, DUST, 1, 0.05);
-      this.shocks.fire(wx, y, wz, 2, 0.3, 0xffffff, 0.05);
-      this.decals.begin(t);
-      this.decals.circle(wx, y, wz, 2, 0.5, 0xff3b2f, 0.5);
-      this.decals.line(wx, y, wz, 0, 4, 2, 0.5, 0xff3b2f, 0.5);
-      this.decals.end();
-    }
+    this.sparks.step(dt);
     this.debris.step(dt);
     this.puffs.step(dt);
     this.shocks.step(dt);
-    if (this.trailT > 0 && dt > 0) {
-      this.trailT -= dt;
-      for (let k = 0; k < 3; k++) this.sparks.one(wx + (Math.random() - 0.5) * 0.6, wy + 0.4 + Math.random() * 1.3, wz + (Math.random() - 0.5) * 0.6, 0, 0.2, 0, 0.45, 0.16, g.has("sprint") ? 0xffc970 : 0x9fd8ff, 0);
-    }
-    if (g.slowT > 0 && dt > 0 && Math.random() < dt * 5) this.sparks.one(wx, wy + 2, wz, 0.3, 0.6, 0, 1, 0.12, 0xb9a6ff, -0.3);
-    this.sparks.step(dt);
+    this.slash.step(dt, wx, wy, wz);
 
-    // The arena of the last fight.
-    if (g.arena) this.arena.show(g.arena.at[0], this.host.groundAt(g.arena.at[0], g.arena.at[1]), -g.arena.at[1], g.arena.radius, g.arena.active, t);
-    else this.arena.hide();
-
-    // The marks over the picture.
     const cam = this.host.camera();
-    cam.getWorldDirection(_v);
-    this.camYaw = ((Math.atan2(_v.x, -_v.z) * 180) / Math.PI + 360) % 360;
-    if (this.overlay) {
-      const { width, height } = this.host.viewSize();
-      const marks: MarkIn[] = [];
-      for (const q of g.quests) {
-        const target = this.questTarget(q.id);
-        if (!target) continue;
-        const metres = Math.hypot(target[0] - wx, target[1] - walker.at[1]);
-        const foeTarget = q.goal === "defeat" && q.started;
-        marks.push({
-          bearing: bearingTo(walker.at, target),
-          metres,
-          kind: foeTarget || q.goal === "boss" ? "boss" : q.main ? "main" : "side",
-          world: foeTarget || (q.goal === "boss" && g.boss) ? undefined : [target[0], this.host.groundAt(target[0], target[1]) + 4.5, -target[1]],
-        });
-      }
-      for (const f of g.foes) {
-        if (marks.length >= 8) break;
-        if (f.state === "dead" || f.quest) continue;
-        const d = Math.hypot(f.at[0] - wx, f.at[1] - walker.at[1]);
-        if (d < 45) marks.push({ bearing: bearingTo(walker.at, f.at), metres: d, kind: "foe" });
-      }
-      const lockAt: [number, number, number] | undefined = locked ? [locked.at[0], this.footOf(locked.id) + KIND_MID[locked.kind], -locked.at[1]] : undefined;
-      this.overlay.bossOut = !!g.boss;
-      this.overlay.frame(dt, cam, width, height, this.camYaw, plates, marks, lockAt, g.focus < g.stats.maxFocus * 0.3 && g.phase === "play", g.slowT > 0);
-    }
-  }
-
-  /**
-   * Poses the Final Exam: its arms by what it is doing (raised for a slam or the essay's lines, one
-   * drawn back to throw, forward for a charge, low as it recovers, flung up as it roars), its phase,
-   * its health in the sand, and its near parts thinned while it stands between the camera and the
-   * walker, or the camera is in it, so that the walker is never hidden behind it for more than a moment.
-   */
-  private placeBoss(f: Foe, base: Matrix4, tint: Color, dissolve: number, flash: number, t: number, dt: number, walker: WalkerState): void {
-    const roar = f.state === "phase" ? this.motion.since(f.id) / FOE_TIME.phase : -1;
-    // Hidden behind it: the line from the camera to the walker passes through its body, with its
-    // middle nearer the camera than the walker, or hardly past it (the walker deep in its skirts).
-    const camera = this.host.camera();
-    const cam = camera.position;
-    const wx = walker.at[0];
-    const wz = -walker.at[1];
-    const bx = f.at[0];
-    const bz = -f.at[1];
-    const dx = wx - cam.x;
-    const dz = wz - cam.z;
-    const len = Math.hypot(dx, dz) || 1;
-    const along = ((bx - cam.x) * dx + (bz - cam.z) * dz) / len;
-    const off = Math.hypot(cam.x + (dx / len) * along - bx, cam.z + (dz / len) * along - bz);
-    const r = FOES.exam.radius;
-    const inside = Math.hypot(cam.x - bx, cam.z - bz) < r + 1.2;
-    const hides = (along > 0 && along < len + r * 0.25 && off < r * 1.1) || inside;
-    const want = hides && f.state !== "dead" ? BOSS_THIN : 0;
-    this.bossFade += (want - this.bossFade) * (dt > 0 ? 1 - Math.exp(-dt * (want > this.bossFade ? 14 : 4)) : 1);
-    if (this.bossFade < 0.01) this.bossFade = 0;
-    // Only what is clearly nearer the camera than the walker thins, over the ground along the way the
-    // camera looks: what stands behind the walker, or over it, never does.
-    camera.getWorldDirection(_v);
-    const fl = Math.hypot(_v.x, _v.z) || 1;
-    const from = this.bossPose.fadeFrom;
-    from[0] = cam.x;
-    from[1] = cam.z;
-    from[2] = _v.x / fl;
-    from[3] = _v.z / fl;
-    const near = (wx - cam.x) * from[2] + (wz - cam.z) * from[3] - 1.2;
-    this.placeBossAt(base, f.phase, f.hp / f.maxHp, tint, dissolve, flash, t, dt, roar, this.bossFade, near, f);
-    // Ink drips from the pens' nibs, more as it rages.
-    if (dt > 0 && f.state !== "dead" && Math.random() < dt * (0.8 + f.phase * 1.2)) {
-      this.boss.nib(Math.random() < 0.5 ? -1 : 1, _v);
-      this.sparks.one(_v.x, _v.y, _v.z, 0, -0.5, 0, 0.9, 0.11, 0xa50f1a, 9, 0.02);
-    }
-  }
-
-  private placeBossAt(base: Matrix4, phase: number, health: number, tint: Color, dissolve: number, flash: number, t: number, dt: number, roar: number, fade = 0, near = 0, f?: Foe): void {
-    const p = this.bossPose;
-    p.t = t;
-    p.dt = dt;
-    p.phase = phase;
-    p.health = health;
-    p.tint.r = tint.r;
-    p.tint.g = tint.g;
-    p.tint.b = tint.b;
-    p.dissolve = dissolve;
-    p.flash = flash;
-    p.roar = roar;
-    p.fade = fade;
-    p.fadeNear = near;
-    p.halo = t * (phase === 3 ? 2.2 : phase === 2 ? 1.3 : 0.8);
-    for (const side of [-1, 1] as const) {
-      // Idle: a slow sway, the forearms forward and readier with each phase.
-      let sh = Math.sin(t * 1.4 + (side > 0 ? 1.5 : 0)) * 0.15 - 0.1;
-      let el = -0.4 - 0.12 * (phase - 1);
-      const s = f?.state;
-      const m = f?.move?.type;
-      if (s === "tell" && (m === "slam" || m === "beams")) (sh = -2.3), (el = -0.9);
-      else if (s === "tell" && m === "charge") (sh = -0.9), (el = -0.2);
-      else if (s === "tell" && m === "orb") (sh = side < 0 ? -1.5 : 0.1), (el = side < 0 ? -1.0 : -0.4);
-      else if (s === "attack") (sh = 0.7), (el = -0.1);
-      else if (s === "recover") (sh = 0.45), (el = -0.15);
-      else if (s === "phase") (sh = -2.7 + Math.sin(t * 20) * 0.15), (el = -0.5);
-      if (side < 0) (p.armL = sh), (p.elbowL = el);
-      else (p.armR = sh), (p.elbowR = el);
-    }
-    this.boss.place(base, p);
-  }
-
-  /** How a moving part of a foe is turned now, about its pivot. */
-  /** The foe whose parts are being turned, and the clock: partPose by way of poseOf, made once. */
-  private posing?: Foe;
-  private posingT = 0;
-  private poseOf = (name: string, out: Matrix4): void => this.partPose(name, this.posing!, this.posingT, out);
-
-  private partPose(name: string, f: Foe, t: number, out: Matrix4): void {
-    const ph = f.id * 0.9;
-    switch (name) {
-      case "minute": {
-        // It ticks: a jump each half second, faster as it winds up to charge.
-        const rate = f.state === "tell" ? 10 : 2;
-        const tick = Math.floor(t * rate) + Math.min(1, ((t * rate) % 1) * 5);
-        out.makeRotationZ(-tick * (Math.PI / 30) * 3);
-        return;
-      }
-      case "hour":
-        out.makeRotationZ(-t * (f.state === "tell" ? 4 : 0.5) - ph);
-        return;
-      case "key":
-        out.makeRotationZ(t * (f.state === "attack" ? 14 : 2));
-        return;
-      case "wingL":
-        out.makeRotationZ(Math.sin(t * 28 + ph) * 0.7);
-        return;
-      case "wingR":
-        out.makeRotationZ(-Math.sin(t * 28 + ph) * 0.7);
-        return;
-      case "heart": {
-        const beat = 1 + 0.3 * Math.abs(Math.sin(t * (f.state === "tell" ? 16 : 7)));
-        out.makeScale(beat, beat, beat).premultiply(_r.makeRotationY(t * 2));
-        return;
-      }
-      default:
-        out.identity();
-    }
+    const { width, height } = this.host.viewSize();
+    const fwd = new Vector3();
+    cam.getWorldDirection(fwd);
+    this.camYaw = ((Math.atan2(fwd.x, -fwd.z) * 180) / Math.PI + 360) % 360;
+    this.overlay?.frame(dt, cam, width, height, this.camYaw, [], [], undefined, g.focus < g.stats.maxFocus * 0.3, g.slowT > 0);
   }
 }
-
-/** Metres behind the walker kept clear for the camera at the start, and ahead of it for the first book. */
-const OPEN_BEHIND = 8;
-const OPEN_AHEAD = 20;
-/** Metres: a wall this near makes the starting spot a corner; then the most open ground within START_REACH, judged over START_ROOM round it. */
-const CRAMPED = 2.5;
-const START_REACH = 16;
-const START_ROOM = 6;
-
-/** Where a big foe comes from (QuestHost.open): metres round the point asked for, of open ground round it, and from the walker at least. */
-const BIG_FROM_REACH = 22;
-const BIG_FROM_ROOM = 8;
-const BIG_FROM_GAP = 25;
-/** Rings of cells (2 m each) searched round a point for the nearest ground the walker can reach: past the middle of a big building. */
-const NEAR_RINGS = 30;
-
-/** Metres within which a foe coming at the walker is framed by the camera: the DDL from further off. */
-const ENGAGE = 12;
-const ENGAGE_DDL = 24;
-
-/** Seconds before each blow lands that its arc of light begins, so that it is brightest as it lands. */
-const SLASH_LEAD = [0.04, 0.04, 0.02];
-/** How much of the boss's near parts is left out (a screen-door), while it would hide the walker. */
-const BOSS_THIN = 0.65;
-/** Metres the boss rises as it roars at its change of phase (gameMotion.ts), with a little over: the camera frames it. */
-const PHASE_RISE = 1.6;
-/** Seconds after a blow ends that the camera stays over the walker's shoulder. */
-const SHOULDER_HOLD = 0.3;
-/** By a blow's strength (light, finisher, critical): the flash's size, the streaks, their speed, and the shake. */
-const HIT_CORE = [0.75, 1.05, 1.4];
-const HIT_STREAKS = [6, 11, 16];
-const HIT_SPEED = [9, 12, 15];
-const HIT_SHAKE = [0.1, 0.28, 0.4];
-/** The colour of dust kicked up: a pale grey-brown that reads on grass and paving alike. */
-const DUST = 0xcdc3ad;
-
-/** Metres over the walker's feet of its hands thrust up for the Eureka. */
-const HANDS_UP = 2.15;
-
-/** Metres from a foe's feet to its middle, for the lock-on mark. */
-const KIND_MID: Record<FoeKind, number> = { ddl: 2.6, procrastination: 1.2, distraction: 1.4, plagiarism: 1.5, anxiety: 1.8, exam: 5 };

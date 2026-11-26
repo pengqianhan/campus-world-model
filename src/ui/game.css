@@ -1,28 +1,49 @@
-/* Study Quest's look (app/game.ts imports it): loaded with the game's own chunk the first time the
-   Game button is pressed, after styles.css, so that a visitor who never plays loads none of it. */
-
-/* ---- Study Quest ---------------------------------------------------------------------------- */
-/* A made-up action game over the walk. One look for all of it: condensed capitals with a soft shadow
-   straight on the picture, no glass cards, the site's amber as the one accent and a red for danger.
-   Fonts are the system's own (Bahnschrift on Windows, a narrow sans elsewhere): nothing is loaded. */
+/* Study Quest's Harbour-Night GTA look (app/game.ts imports it): loaded with the game's chunk
+   the first time Study Quest starts, after styles.css. No external fonts or CDNs: uses system
+   condensed & tabular-nums monospace stacks. */
 
 .sq,
 .gx {
-  --sq-display: "Bahnschrift Condensed", "Bahnschrift", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Impact, sans-serif;
-  --sq-label: "Bahnschrift SemiCondensed", "Bahnschrift", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --sq-display: "Bahnschrift Condensed", "Bahnschrift", "Arial Narrow", Impact, sans-serif;
+  --sq-label: "Bahnschrift SemiCondensed", "Bahnschrift", "Arial Narrow", system-ui, sans-serif;
   --sq-mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
-  --sq-bone: #eef0ea;
-  --sq-dim: rgba(238, 240, 234, 0.66);
-  --sq-faint: rgba(238, 240, 234, 0.26);
-  --sq-signal: var(--accent);
-  --sq-alarm: #ff5a40;
-  --sq-plate: rgba(8, 12, 16, 0.58);
-  --sq-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 1px 6px rgba(0, 0, 0, 0.55);
-  color: var(--sq-bone);
+  --sq-bone: #f4f1ea;
+  --sq-dim: rgba(244, 241, 234, 0.72);
+  --sq-faint: rgba(244, 241, 234, 0.24);
+  --sq-signal: #ffcb2e;
+  --sq-alarm: #ff3355;
+  --sq-plate: rgba(5, 9, 18, 0.84);
+  --sq-shadow: 0 1px 0 rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.6);
+
+  --g-ink: #05080f;
+  --g-panel: rgba(5, 9, 18, 0.78);
+  --g-panel-2: rgba(8, 13, 25, 0.94);
+  --g-line: rgba(126, 224, 255, 0.18);
+  --g-line-2: rgba(244, 241, 234, 0.14);
+  --g-text: #f4f1ea;
+  --g-text-2: rgba(244, 241, 234, 0.74);
+  --g-text-3: rgba(244, 241, 234, 0.5);
+  --g-harbour: #2de2d0;
+  --g-kowhai: #ffcb2e;
+  --g-pohutukawa: #ff3355;
+  --g-fern: #5cf28c;
+  --g-armour: #57b8ff;
+  --g-blade: #1f4f9e;
+  --g-police-blue: #1f4fd6;
+  --g-police-yellow: #ffd31a;
+  --g-shadow-strong: 0 2px 0 rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.75);
+  --g-glow-k: 0 0 4px rgba(255, 203, 46, 0.9), 0 0 16px rgba(255, 203, 46, 0.55);
+  --g-glow-r: 0 0 4px rgba(255, 51, 85, 0.95), 0 0 18px rgba(255, 51, 85, 0.6);
+  --g-glow-t: 0 0 4px rgba(45, 226, 208, 0.85), 0 0 16px rgba(45, 226, 208, 0.45);
+  --g-cut: 10px;
+  --g-hs: 1;
+  --g-ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+
+  color: var(--g-text);
   text-shadow: var(--sq-shadow);
 }
 
-/* While the game is on, the walk's own panels make way: its place, its hints, its speed. */
+/* While the game is on, the walk's own non-essential panels make way. */
 .hud.playing .hud-sign,
 .hud.playing .hud-hint,
 .hud.playing .hud-br,
@@ -36,13 +57,7 @@
   height: 150px;
 }
 
-/* Under a full menu of the game the ways of getting about are not shown through it either. */
-.hud.game-menu .hud-rides {
-  visibility: hidden;
-}
-
-/* Nor while the letterbox bars are down (the title card, the boss's name and its change of phase):
-   the boss's phase is a line in the lower bar, where the ways of getting about would hide it. */
+.hud.game-menu .hud-rides,
 .hud.playing:has(.sq.cine) .hud-rides {
   visibility: hidden;
 }
@@ -63,467 +78,962 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 600 11px/1.1 var(--sq-label);
+  font: 700 11px/1.1 var(--sq-label);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
-/* -- The quest tracker: an accent bar at its edge, the quest's name, what it asks, how far. -- */
-.sq-obj {
+/* ---- Harbour-Night HUD shell ---------------------------------------------------------------- */
+.g-hud {
   position: absolute;
-  top: calc(var(--hud-t) + 62px);
+  inset: 0;
+  transition: opacity 0.28s ease;
+}
+
+.g-hud.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.g-hud.is-hidden * {
+  pointer-events: none !important;
+}
+
+.g-corner {
+  position: absolute;
+  transition: opacity 0.28s ease;
+}
+
+.g-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: var(--g-kowhai);
+  box-shadow: 0 2px 0 #b5880c, 0 0 0 1px rgba(0, 0, 0, 0.35);
+  color: var(--g-ink);
+  font: 700 0.85em/1 var(--sq-mono);
+  text-shadow: none;
+  vertical-align: middle;
+}
+
+/* ---- Top-Left: 200px circular Harbour-Night radar + 3 curved vital arcs --------------------- */
+.g-tl {
+  top: calc(var(--hud-t) + 50px);
   left: var(--hud-l);
+  transform-origin: 0 0;
+  transform: scale(var(--g-hs));
+}
+
+.g-radar {
+  position: relative;
+  display: block;
+  width: 200px;
+  height: 200px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  contain: layout style paint;
+}
+
+.g-radar-canvas {
+  position: absolute;
+  inset: 16px;
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+}
+
+.g-radar-rim {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 2px rgba(5, 8, 15, 0.92),
+    inset 0 0 22px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(45, 226, 208, 0.36),
+    0 10px 30px -6px rgba(0, 0, 0, 0.72);
+  pointer-events: none;
+}
+
+.g-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.g-ring path {
+  fill: none;
+  stroke-linecap: butt;
+}
+
+.g-ring-track {
+  stroke: rgba(5, 8, 15, 0.74);
+  stroke-width: 8;
+}
+
+.g-ring-health {
+  stroke: var(--g-fern);
+  stroke-width: 5;
+  filter: drop-shadow(0 0 3px rgba(92, 242, 140, 0.55));
+  transition: stroke 0.25s ease;
+}
+
+.g-ring-armor {
+  stroke: var(--g-armour);
+  stroke-width: 5;
+  filter: drop-shadow(0 0 3px rgba(87, 184, 255, 0.6));
+}
+
+.g-ring-stamina {
+  stroke: var(--g-kowhai);
+  stroke-width: 2.5;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.g-radar.is-tired .g-ring-stamina {
+  opacity: 0.92;
+}
+
+.sq.is-low .g-ring-health {
+  stroke: var(--g-pohutukawa);
+  filter: drop-shadow(0 0 5px rgba(255, 51, 85, 0.9));
+  animation: g-pulse 0.9s ease-in-out infinite;
+}
+
+.g-radar:focus-visible {
+  outline: 2px solid var(--g-kowhai);
+  outline-offset: 2px;
+}
+
+/* ---- Top-Right: Weapon & Slices, 5 Wanted Stars, NZ$ Cash, Phone & Pause -------------------- */
+.g-tr {
+  top: calc(var(--hud-t) + 50px);
+  right: var(--hud-r);
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.g-weapon {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  max-width: min(320px, 40vw);
-  padding-left: 12px;
-  border-left: 2px solid var(--sq-signal);
-  transition: border-color 0.3s;
+  height: 54px;
+  padding: 0 12px;
+  background: linear-gradient(100deg, rgba(5, 9, 18, 0.25), var(--g-panel) 32%);
+  clip-path: polygon(var(--g-cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--g-cut));
+  contain: layout style paint;
 }
 
-.sq-obj.flash {
-  animation: sq-objflash 0.9s ease-out;
+.g-weapon-icon {
+  width: 58px;
+  height: 22px;
+  color: var(--g-text);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.8));
 }
 
-@keyframes sq-objflash {
-  0% {
-    border-left-color: #fff;
-    transform: translateX(6px);
-  }
-  100% {
-    border-left-color: var(--sq-signal);
-    transform: none;
-  }
-}
-
-.sq-q {
+.g-weapon-meta {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 3px;
 }
 
-.sq-q-title {
-  font: 600 20px/1.05 var(--sq-label);
-  letter-spacing: 0.05em;
+.g-weapon-name {
+  font: 700 12px/1 var(--sq-label);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-}
-
-.sq-q.side .sq-q-title {
-  font-size: 14px;
-  color: var(--sq-dim);
-}
-
-.sq-q-goal {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  font: 500 13px/1.25 var(--sq-label);
-  letter-spacing: 0.03em;
-}
-
-.sq-q.side .sq-q-goal {
-  font-size: 12px;
-  color: var(--sq-dim);
-}
-
-.sq-pips {
-  display: inline-flex;
-  gap: 4px;
-}
-
-.sq-pips i {
-  width: 9px;
-  height: 9px;
-  border: 1.5px solid var(--sq-bone);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  transform: rotate(45deg);
-}
-
-.sq-pips i.on {
-  border-color: var(--sq-signal);
-  background: var(--sq-signal);
-}
-
-.sq-q-far {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font: 500 11px/1 var(--sq-mono);
-  color: var(--sq-signal);
-}
-
-.sq-arrow {
-  display: inline-block;
-  font-size: 9px;
-  transition: transform 0.12s linear;
-}
-
-/* -- The walker: rank, knowledge, Focus and Stamina. -- */
-.sq-vitals {
-  position: absolute;
-  bottom: var(--hud-b);
-  left: var(--hud-l);
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  width: 260px;
-}
-
-.sq-rank {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sq-badge {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 2px solid var(--sq-signal);
-  background: rgba(8, 12, 16, 0.55);
-  color: var(--sq-signal);
-  font: 700 21px/1 var(--sq-display);
-  transform: rotate(45deg);
-}
-
-.sq-badge > span {
-  transform: rotate(-45deg);
-}
-
-.sq-rank-text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.sq-rank-text b {
-  font: 600 18px/1 var(--sq-label);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.sq-xp-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sq-xp-line em {
-  font: 400 10px/1 var(--sq-mono);
-  font-style: normal;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
   white-space: nowrap;
 }
 
-.sq-stat {
-  display: grid;
-  grid-template-columns: 62px 1fr auto;
+.g-weapon-pips {
+  display: flex;
+  gap: 4px;
+}
+
+.g-weapon-pips i {
+  width: 12px;
+  height: 4px;
+  background: rgba(244, 241, 234, 0.22);
+}
+
+.g-weapon-pips i.is-on {
+  background: var(--g-kowhai);
+  box-shadow: 0 0 6px rgba(255, 203, 46, 0.6);
+}
+
+.g-slice-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid rgba(255, 159, 67, 0.36);
+  border-radius: 6px;
+  background: rgba(16, 12, 8, 0.72);
+  color: #ffb454;
+  font: 700 14px/1 var(--sq-mono);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.g-slice-pill.has-slice {
+  border-color: rgba(255, 159, 67, 0.78);
+}
+
+.g-slice-pill.is-buff {
+  border-color: var(--g-armour);
+  color: #bde4ff;
+}
+
+.g-slice-pill em {
+  font: 700 11px/1 var(--sq-mono);
+  font-style: normal;
+  color: var(--g-armour);
+}
+
+.g-trcol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  contain: layout style paint;
+}
+
+.g-wanted {
+  display: flex;
+  gap: 3px;
+  height: 24px;
+}
+
+.g-star {
+  width: 24px;
+  height: 24px;
+  fill: rgba(5, 8, 15, 0.45);
+  stroke: rgba(244, 241, 234, 0.34);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.75));
+}
+
+.g-star.is-on {
+  fill: var(--g-pohutukawa);
+  stroke: #4c0918;
+  filter: drop-shadow(0 0 6px rgba(255, 51, 85, 0.85)) drop-shadow(0 1px 0 rgba(0, 0, 0, 0.8));
+}
+
+.g-wanted.is-evading .g-star.is-on {
+  fill: var(--g-kowhai);
+  stroke: #4a3500;
+  filter: drop-shadow(0 0 6px rgba(255, 203, 46, 0.8));
+  animation: g-evade 0.85s steps(2, jump-none) infinite;
+}
+
+.g-arrest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, height 0.2s;
+}
+
+.g-arrest.is-on {
+  height: 18px;
+  opacity: 1;
+}
+
+.g-arrest-label {
+  font: 800 12px/1 var(--sq-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--g-pohutukawa);
+  text-shadow: var(--g-glow-r);
+}
+
+.g-arrest-bar {
+  width: 110px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.g-arrest-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--g-pohutukawa);
+  transform-origin: 0 50%;
+}
+
+.g-money {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  line-height: 1;
+}
+
+.g-cur {
+  font: 800 14px/1 var(--sq-label);
+  letter-spacing: 0.08em;
+  color: var(--g-fern);
+}
+
+.g-amt {
+  font: 800 32px/1 var(--sq-mono);
+  color: #d8ffe6;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 14px rgba(92, 242, 140, 0.4), var(--g-shadow-strong);
+}
+
+.g-delta {
+  height: 20px;
+  font: 800 16px/20px var(--sq-mono);
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.g-delta.is-on {
+  opacity: 1;
+}
+
+.g-delta[data-sign="up"] {
+  color: var(--g-fern);
+}
+
+.g-delta[data-sign="down"] {
+  color: var(--g-pohutukawa);
+}
+
+.g-tr-actions {
+  display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.sq-k {
-  font: 600 10px/1 var(--sq-label);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--sq-dim);
+.g-tr-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--g-line);
+  border-radius: 10px;
+  background: var(--g-panel-2);
+  color: var(--g-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 
-.sq-n {
-  min-width: 2.2em;
-  font: 700 18px/1 var(--sq-display);
-  text-align: right;
+.g-tr-btn:hover,
+.g-tr-btn.is-open {
+  border-color: var(--g-kowhai);
+  color: var(--g-kowhai);
+}
+
+.g-unread-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--g-pohutukawa);
+  box-shadow: 0 0 8px rgba(255, 51, 85, 0.9);
+}
+
+.g-pause-btn {
+  width: 44px;
+  padding: 0;
+  gap: 4px;
+}
+
+.g-pause-btn i {
+  width: 3.5px;
+  height: 14px;
+  background: currentColor;
+}
+
+/* ---- Top-Center: Timer & Radio ticker ------------------------------------------------------- */
+.g-tc {
+  position: absolute;
+  top: calc(var(--hud-t) + 52px);
+  left: 50%;
+  transform: translateX(-50%) scale(var(--g-hs));
+  transform-origin: 50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.g-timer {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 18px 7px;
+  background: var(--g-panel-2);
+  clip-path: polygon(var(--g-cut) 0, calc(100% - var(--g-cut)) 0, 100% 100%, 0 100%);
+}
+
+.g-timer-label {
+  font: 700 13px/1 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-text-2);
+}
+
+.g-timer-time {
+  font: 800 26px/1 var(--sq-mono);
+  color: var(--g-text);
   font-variant-numeric: tabular-nums;
 }
 
-.sq-tag {
-  padding: 2px 6px 1px;
-  font: 700 10px/1.2 var(--sq-label);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-shadow: none;
-  background: var(--sq-signal);
-  color: var(--accent-ink);
+.g-timer.is-urgent .g-timer-time {
+  color: var(--g-pohutukawa);
+  text-shadow: var(--g-glow-r);
+  animation: g-pulse 1s steps(2, jump-none) infinite;
 }
 
-.sq-tag.slow {
-  background: #b9a6ff;
-}
-
-/* A bar: a dark track, a pale chip that follows the fill down late, and the fill. */
-.sq-bar {
-  position: relative;
-  display: block;
-  flex: 1;
-  height: 8px;
-  overflow: hidden;
-  background: rgba(8, 12, 16, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(238, 240, 234, 0.18), 0 1px 4px rgba(0, 0, 0, 0.4);
-}
-
-.sq-bar i {
-  position: absolute;
-  inset: 0;
-  transform-origin: left center;
-}
-
-.sq-bar .chip {
-  background: rgba(255, 255, 255, 0.85);
-  transition: transform 0.6s ease 0.35s;
-}
-
-.sq-bar .fill {
-  transition: transform 0.12s linear;
-}
-
-.sq-bar.focus .fill {
-  background: linear-gradient(90deg, #ff8a5b, #ffd28a);
-}
-
-.sq-bar.stamina {
-  height: 5px;
-}
-
-.sq-bar.stamina .fill {
-  background: #8fe3d0;
-}
-
-.sq-bar.xp {
-  height: 3px;
-}
-
-.sq-bar.xp .fill {
-  background: var(--sq-signal);
-}
-
-.sq-vitals.crit .sq-bar.focus .fill {
-  background: var(--sq-alarm);
-  animation: sq-blink 0.7s steps(2, jump-none) infinite;
-}
-
-.sq-vitals.crit .sq-n {
-  color: var(--sq-alarm);
-}
-
-@keyframes sq-blink {
-  to {
-    opacity: 0.45;
-  }
-}
-
-/* -- The skills, bottom right: an icon each, its key, and a sweep that fills as it comes ready. -- */
-.sq-skills {
-  position: absolute;
-  right: var(--hud-r);
-  bottom: var(--hud-b);
-  display: flex;
-  gap: 10px;
-}
-
-.sq-skill {
-  position: relative;
+.g-radio {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 5px 14px;
+  background: linear-gradient(90deg, transparent, rgba(5, 9, 18, 0.72) 20%, rgba(5, 9, 18, 0.72) 80%, transparent);
+  line-height: 1;
+}
+
+.g-radio-kicker {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
-  width: 64px;
-}
-
-.sq-skill-ic {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border: 1.5px solid rgba(238, 240, 234, 0.55);
-  border-radius: 50%;
-  background: conic-gradient(rgba(255, 180, 84, 0.32) calc(var(--cd, 1) * 360deg), rgba(8, 12, 16, 0.6) 0);
-  color: var(--sq-bone);
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
-}
-
-/* The glows that pulse are filters, which the compositor animates: a box-shadow animated repaints the
-   button and the page round it in every frame, which costs a fight frames on an integrated GPU. */
-.sq-skill.full .sq-skill-ic,
-.sq-btn.full {
-  border-color: var(--sq-signal);
-  color: var(--sq-signal);
-  animation: sq-ready 1.2s ease-in-out infinite;
-}
-
-@keyframes sq-ready {
-  0%,
-  100% {
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 9px rgba(255, 180, 84, 0.65));
-  }
-  50% {
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 2px rgba(255, 180, 84, 0.25));
-  }
-}
-
-.sq-skill kbd {
-  position: absolute;
-  top: 36px;
-  right: 2px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 4px;
-  border: 1px solid rgba(238, 240, 234, 0.4);
-  background: rgba(8, 12, 16, 0.85);
-  color: var(--sq-bone);
-  font: 600 11px/18px var(--sq-mono);
-  text-align: center;
-  text-shadow: none;
-}
-
-.sq-skill-name {
-  font: 600 10px/1 var(--sq-label);
-  letter-spacing: 0.18em;
+  font: 700 11px/1 var(--sq-label);
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--sq-dim);
-  white-space: nowrap;
+  color: var(--g-harbour);
+  text-shadow: var(--g-glow-t);
 }
 
-.sq-skill.locked {
-  opacity: 0.4;
+.g-radio-name {
+  margin-top: 4px;
+  font: 900 24px/0.95 var(--sq-display);
+  text-transform: uppercase;
+  color: #eafffb;
+  text-shadow: var(--g-glow-t), var(--sq-shadow);
 }
 
-.sq-skill.locked .sq-skill-ic {
-  background: rgba(8, 12, 16, 0.6);
+.g-radio-genre {
+  margin-top: 3px;
+  font: 600 12px/1 var(--sq-label);
+  letter-spacing: 0.08em;
+  color: var(--g-text-2);
 }
 
-/* -- The Final Exam's bar: low in the middle, between the walker's panels, clear of the boss itself.
-   Its name over a wide bar, notches where its phases begin, the phase it is in under the bar. -- */
-.sq-boss {
+.g-radio.is-off .g-radio-name {
+  color: var(--g-text-2);
+  text-shadow: var(--sq-shadow);
+}
+
+/* ---- Toast Notifications (right) ------------------------------------------------------------ */
+.g-notes {
   position: absolute;
-  bottom: calc(var(--hud-b) + 84px);
-  left: 50%;
+  top: calc(var(--hud-t) + 178px);
+  right: var(--hud-r);
+  width: min(310px, calc(100vw - 32px));
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: max(320px, min(680px, calc(100vw - 2 * (var(--hud-l) + 292px))));
-  padding: 10px 14px 9px;
-  border-radius: 4px;
-  background: linear-gradient(rgba(8, 12, 16, 0), rgba(8, 12, 16, 0.5) 30%, rgba(8, 12, 16, 0.5) 70%, rgba(8, 12, 16, 0));
-  transform: translateX(-50%);
-  animation: sq-in 0.6s ease both;
+  gap: 8px;
+  contain: layout style paint;
 }
 
-.sq-boss-head {
+.g-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 13px 10px 10px;
+  border-radius: 12px;
+  background: rgba(14, 20, 34, 0.94);
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-shadow: none;
+  animation: g-note-in 0.38s var(--g-ease) both;
+}
+
+.g-note-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--g-kowhai);
+  color: var(--g-ink);
+  font: 900 18px/1 var(--sq-display);
+}
+
+.g-note-body {
+  min-width: 0;
+}
+
+.g-note-title {
+  display: block;
+  font: 700 14px/1.2 var(--sq-label);
+  letter-spacing: 0.04em;
+  color: var(--g-text);
+}
+
+.g-note-text {
+  margin: 2px 0 0;
+  font: 500 12.5px/1.35 var(--sq-label);
+  color: var(--g-text-2);
+}
+
+/* ---- Bottom-Center: Prompt, Subtitles, Objective -------------------------------------------- */
+.g-bc {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--hud-b) + 74px);
+  width: min(640px, calc(100vw - 2 * 240px));
+  min-width: min(360px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.g-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 6px 16px 6px 9px;
+  border: 0;
+  border-left: 3px solid var(--g-kowhai);
+  background: var(--g-panel-2);
+  clip-path: polygon(0 0, calc(100% - var(--g-cut)) 0, 100% var(--g-cut), 100% 100%, 0 100%);
+  color: var(--g-text);
+  font: 700 17px/1 var(--sq-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: none;
+  cursor: pointer;
+  animation: g-rise 0.25s var(--g-ease) both;
+}
+
+.g-sub {
+  max-width: 100%;
+  font: 600 18px/1.4 var(--sq-label);
+  color: var(--g-text);
+  text-shadow: var(--g-shadow-strong);
+}
+
+.g-sub-who {
+  margin-right: 0.45em;
+  font: 800 0.98em/1 var(--sq-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.g-sub-who::after {
+  content: ":";
+}
+
+.g-objective {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  max-width: 100%;
+  padding: 6px 16px 7px;
+  background: linear-gradient(90deg, transparent, rgba(5, 9, 18, 0.82) 14%, rgba(5, 9, 18, 0.82) 86%, transparent);
+}
+
+.g-objective-kicker {
+  flex: none;
+  font: 700 12px/1 var(--sq-label);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--g-kowhai);
+}
+
+.g-objective-text {
+  font: 600 17px/1.25 var(--sq-label);
+  letter-spacing: 0.02em;
+  color: var(--g-text);
+}
+
+/* ---- Bottom-Right: Zone + Auckland-blue street blade + Speedometer --------------------------- */
+.g-br {
+  right: var(--hud-r);
+  bottom: var(--hud-b);
+  transform-origin: 100% 100%;
+  transform: scale(var(--g-hs));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.g-place {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.g-place-name {
+  font: 800 30px/0.95 var(--sq-display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: right;
+  max-width: 44vw;
+  text-shadow: var(--g-shadow-strong);
+}
+
+.g-place-street {
+  padding: 4px 10px 3px;
+  border-radius: 3px;
+  background: var(--g-blade);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85), inset 0 0 0 3px var(--g-blade), 0 4px 12px -4px rgba(0, 0, 0, 0.7);
+  font: 700 14px/1.2 var(--sq-label);
+  color: #fff;
+  text-shadow: none;
+  white-space: nowrap;
+  max-width: 44vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.g-vehname {
+  font: 900 26px/1 var(--sq-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--g-kowhai);
+  text-shadow: var(--g-glow-k), var(--sq-shadow);
+}
+
+.g-speedo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  min-width: 184px;
+  padding: 9px 15px 11px 20px;
+  background: linear-gradient(100deg, rgba(5, 9, 18, 0.14), var(--g-panel) 26%);
+  clip-path: polygon(var(--g-cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--g-cut));
+  contain: layout style paint;
+}
+
+.g-speed-row {
   display: flex;
   align-items: baseline;
-  justify-content: center;
-  gap: 12px;
-  min-width: 0;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  gap: 6px;
+  line-height: 1;
 }
 
-.sq-boss-head b {
-  flex: none;
-  margin-right: -0.12em;
-  font: 700 22px/1 var(--sq-display);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #ffe9dc;
+.g-speed {
+  font: 800 48px/0.9 var(--sq-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
 }
 
-.sq-boss-title {
-  overflow: hidden;
-  font: 500 11px/1 var(--sq-label);
-  letter-spacing: 0.18em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--sq-dim);
+.g-unit {
+  font: 700 14px/1 var(--sq-label);
+  letter-spacing: 0.1em;
+  color: var(--g-text-2);
 }
 
-.sq-boss-track {
+.g-rev {
   position: relative;
+  width: 164px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-mask: repeating-linear-gradient(90deg, #000 0 11px, transparent 11px 13.6px);
+  mask: repeating-linear-gradient(90deg, #000 0 11px, transparent 11px 13.6px);
 }
 
-.sq-boss-notch {
+.g-rev-fill {
   position: absolute;
-  top: -3px;
-  bottom: -3px;
-  width: 2px;
-  margin-left: -1px;
-  background: rgba(238, 240, 234, 0.75);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+  inset: 0;
+  background: linear-gradient(90deg, var(--g-harbour), var(--g-kowhai) 70%, var(--g-pohutukawa) 92%);
+  transform-origin: 0 50%;
+  transition: transform 0.08s linear;
 }
 
-.sq-boss-foot {
+.g-rev.is-red .g-rev-fill {
+  background: var(--g-pohutukawa);
+}
+
+.g-speed-meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.sq-boss-phase {
-  display: flex;
-  gap: 4px;
-}
-
-.sq-boss-phase i {
-  padding: 2px 5px 1px;
-  border: 1px solid var(--sq-faint);
-  background: rgba(8, 12, 16, 0.55);
-  font: 700 11px/1 var(--sq-display);
-  font-style: normal;
-  color: var(--sq-faint);
-}
-
-.sq-boss-phase i.on {
-  border-color: var(--sq-alarm);
-  color: var(--sq-alarm);
-}
-
-/* While the boss's name card is up, the card names it: the bar comes after. */
-.sq.boss-card .sq-boss {
-  display: none;
-}
-
-/* The bar is a fixed height in the column: a flex basis of nothing would fold it away. */
-.sq-bar.boss {
-  flex: none;
-  height: 14px;
-  border: 1px solid rgba(255, 233, 220, 0.55);
-  background: rgba(8, 12, 16, 0.75);
-}
-
-.sq-bar.boss .fill {
-  background: linear-gradient(90deg, #c1121f, #ff5a40 70%, #ffb454);
-}
-
-.sq-boss.phase-3 .sq-bar.boss .fill {
-  animation: sq-blink 0.5s steps(2, jump-none) infinite alternate;
-}
-
-.sq-boss-sub {
-  font: 600 11px/1 var(--sq-mono);
+  gap: 12px;
+  font: 700 12px/1 var(--sq-label);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sq-alarm);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  color: var(--g-text-2);
 }
 
-@keyframes sq-in {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(8px);
-  }
+.g-vdmg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* -- The combo, the feed and the paused note. -- */
+.g-vdmg-bar {
+  width: 52px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.g-vdmg-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--g-fern);
+  transform-origin: 0 50%;
+}
+
+.g-vdmg[data-state="smoking"] .g-vdmg-bar > span {
+  background: var(--g-kowhai);
+}
+
+.g-vdmg[data-state="wrecked"] .g-vdmg-bar > span {
+  background: var(--g-pohutukawa);
+}
+
+/* ---- Smartphone Drawer (#game-phone) -------------------------------------------------------- */
+.g-listmenu.g-phone {
+  position: fixed;
+  top: 50%;
+  right: max(22px, env(safe-area-inset-right, 0px));
+  z-index: 6;
+  width: min(370px, calc(100vw - 24px));
+  max-height: min(76vh, 640px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-top: 3px solid var(--g-kowhai);
+  background: #070c18;
+  color: var(--g-text);
+  font-family: var(--sq-label);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.9);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  transform: translateY(-50%);
+  pointer-events: auto;
+  contain: layout style paint;
+  animation: g-menu-in 0.28s var(--g-ease) both;
+}
+
+.g-list-head {
+  position: relative;
+  padding: 15px 52px 10px 18px;
+}
+
+.g-list-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--g-line-2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.g-list-close::before,
+.g-list-close::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  background: var(--g-text-2);
+}
+
+.g-list-close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.g-list-close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.g-list-close:hover {
+  border-color: var(--g-kowhai);
+}
+
+.g-list-title {
+  font: 900 30px/1 var(--sq-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff3c4;
+  text-shadow: 0 0 12px rgba(255, 203, 46, 0.35);
+}
+
+.g-list-sub {
+  margin-top: 5px;
+  font: 500 13.5px/1.35 var(--sq-label);
+  color: var(--g-text-2);
+}
+
+.g-list-items {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 10px 10px;
+}
+
+.g-phone-sec {
+  margin: 8px 4px 3px;
+  font: 800 11px/1 var(--sq-label);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--g-harbour);
+}
+
+.g-phone-empty {
+  padding: 6px 10px;
+  font: 500 13px/1.3 var(--sq-label);
+  color: var(--g-text-3);
+}
+
+.g-list-item {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2px 10px;
+  min-height: 46px;
+  padding: 8px 12px;
+  border: 0;
+  border-left: 3px solid transparent;
+  background: rgba(244, 241, 234, 0.04);
+  color: var(--g-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.g-list-item:hover:not(.is-disabled) {
+  background: rgba(255, 203, 46, 0.14);
+  border-left-color: var(--g-kowhai);
+}
+
+.g-list-item.is-disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.g-list-item.is-abort {
+  border-left-color: var(--g-pohutukawa);
+}
+
+.g-list-label {
+  font: 700 16px/1.15 var(--sq-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.g-list-price {
+  font: 700 13px/1 var(--sq-mono);
+  color: var(--g-fern);
+}
+
+.g-list-price.is-dear {
+  color: var(--g-pohutukawa);
+}
+
+.g-list-item-detail {
+  grid-column: 1 / -1;
+  font: 500 12.5px/1.3 var(--sq-label);
+  color: var(--g-text-3);
+}
+
+.g-phone-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 4px 0;
+  padding: 0 2px;
+}
+
+.g-phone-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 9px;
+  background: rgba(244, 241, 234, 0.05);
+  border-top: 2px solid rgba(45, 226, 208, 0.3);
+}
+
+.g-phone-stat dt {
+  font: 700 10px/1 var(--sq-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--g-text-3);
+}
+
+.g-phone-stat dd {
+  margin: 0;
+  font: 800 15px/1.1 var(--sq-mono);
+  color: var(--g-text);
+}
+
+.g-list-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 12px;
+  border-top: 1px solid var(--g-line-2);
+  font: 700 12px/1 var(--sq-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g-text-3);
+}
+
+.g-list-money {
+  font: 700 15px/1 var(--sq-mono);
+  color: #d8ffe6;
+}
+
+/* ---- Vignette, Combo, Paused badge, Slanted Big Cards --------------------------------------- */
+.g-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 48%, rgba(190, 0, 30, 0.38) 78%, rgba(120, 0, 20, 0.78) 100%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.sq.is-low .g-vignette {
+  opacity: 0.65;
+  animation: g-pulse 1.1s ease-in-out infinite;
+}
+
 .sq-combo {
   position: absolute;
-  top: 27%;
+  top: 32%;
   right: calc(var(--hud-r) + 10px);
   display: flex;
   flex-direction: column;
@@ -532,69 +1042,20 @@
 }
 
 .sq-combo b {
-  font: 700 54px/0.85 var(--sq-display);
-  color: var(--sq-signal);
+  font: 700 48px/0.85 var(--sq-display);
+  color: var(--g-kowhai);
   font-variant-numeric: tabular-nums;
 }
 
 .sq-combo span {
   font: 600 11px/1.4 var(--sq-label);
-  letter-spacing: 0.3em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
 }
 
 @keyframes sq-pop {
   from {
-    transform: scale(1.35);
-  }
-}
-
-.sq-feed {
-  position: absolute;
-  top: 40%;
-  right: var(--hud-r);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-}
-
-.sq-fl {
-  font: 500 13px/1.45 var(--sq-label);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--sq-dim);
-  animation: sq-feed 4.2s linear both;
-}
-
-.sq-fl b {
-  font-weight: 600;
-  color: var(--sq-bone);
-}
-
-.sq-fl-k {
-  margin-right: 8px;
-  color: var(--sq-alarm);
-}
-
-.sq-fl em {
-  margin-left: 10px;
-  font-style: normal;
-  color: var(--sq-signal);
-}
-
-@keyframes sq-feed {
-  0% {
-    opacity: 0;
-    transform: translateX(14px);
-  }
-  6%,
-  85% {
-    opacity: 1;
-    transform: none;
-  }
-  100% {
-    opacity: 0;
+    transform: scale(1.32);
   }
 }
 
@@ -603,185 +1064,121 @@
   top: 46%;
   left: 50%;
   margin: 0;
-  padding: 7px 12px 6px;
-  border-left: 2px solid var(--sq-signal);
+  padding: 8px 14px 7px;
+  border-left: 3px solid var(--g-kowhai);
   background: var(--sq-plate);
-  font: 600 14px/1.2 var(--sq-label);
+  font: 700 14px/1.2 var(--sq-label);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   transform: translateX(-50%);
 }
 
-/* -- Big words in a band high in the middle, under the compass and over the action: a wave coming,
-   a rank risen, a quest done, a phase. The middle of the view stays on the fight. -- */
-.sq-banner {
+.g-card {
   position: absolute;
-  top: calc(var(--hud-t) + 74px);
-  left: 50%;
+  left: 0;
+  right: 0;
+  top: 24%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  max-width: max(300px, calc(100vw - 2 * (var(--hud-l) + 350px)));
-  padding: 8px 56px 7px;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
-  border-image: linear-gradient(90deg, transparent, currentColor 22%, currentColor 78%, transparent) 1;
-  background: linear-gradient(90deg, rgba(8, 12, 16, 0), rgba(8, 12, 16, 0.42) 22%, rgba(8, 12, 16, 0.42) 78%, rgba(8, 12, 16, 0));
-  color: var(--sq-signal);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
   text-align: center;
-  transform: translateX(-50%);
-  animation: sq-warn 2.6s linear both;
+  padding: 22px 16px 26px;
+  background: linear-gradient(to bottom, transparent, rgba(2, 4, 9, 0.65) 22%, rgba(2, 4, 9, 0.65) 78%, transparent);
+  animation: g-card-in 0.45s var(--g-ease) both;
 }
 
-.sq-banner strong {
-  margin-right: -0.24em;
-  font: 700 clamp(22px, 3vw, 34px)/1 var(--sq-display);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.sq-banner span {
-  font: 600 12px/1.2 var(--sq-label);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--sq-bone);
-}
-
-.sq-banner .sq-banner-eyebrow {
-  color: var(--sq-dim);
-}
-
-.sq-banner.wave,
-.sq-banner.phase {
-  color: var(--sq-alarm);
-}
-
-/* On a wide screen the boss's change of phase is one line in the lower black band of the cinematic
-   bars, under the boss's bar, not big words over the boss's crown. */
-.sq:not(.touch) .sq-banner.phase {
-  top: auto;
-  bottom: env(safe-area-inset-bottom, 0px);
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  height: clamp(18px, 6.5vh, 58px);
-  padding: 0 40px;
-  border: 0;
-  background: none;
-  white-space: nowrap;
-}
-
-.sq:not(.touch) .sq-banner.phase strong {
-  font-size: clamp(18px, 2.2vw, 26px);
-}
-
-.sq:not(.touch) .sq-banner.phase span {
-  font-size: 11px;
-}
-
-.sq-banner.rank strong {
-  font-size: clamp(26px, 3.8vw, 46px);
-}
-
-.sq-banner.rank {
-  animation-duration: 3s;
-}
-
-@keyframes sq-warn {
-  0% {
-    opacity: 0;
-    letter-spacing: 0.5em;
-  }
-  8% {
-    opacity: 1;
-  }
-  14% {
-    opacity: 0.4;
-  }
-  20%,
-  84% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* A villain's name card: low on the left, as a film names a face. */
-.sq-card {
-  position: absolute;
-  bottom: 24%;
-  left: max(var(--hud-l), 6vw);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: min(520px, calc(100vw - 32px));
-  padding-left: 14px;
-  border-left: 3px solid var(--sq-alarm);
-  animation: sq-card 3.4s ease both;
-}
-
-.sq-card-eyebrow {
-  font: 600 11px/1 var(--sq-label);
+.g-card-kicker {
+  margin-bottom: 8px;
+  font: 700 16px/1 var(--sq-label);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--sq-alarm);
+  color: var(--g-text-2);
 }
 
-.sq-card strong {
-  font: 700 clamp(34px, 6vw, 72px)/0.9 var(--sq-display);
+.g-card-title {
+  font: 900 clamp(48px, 8vw, 108px)/0.86 var(--sq-display);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff3c4;
+  text-shadow: var(--g-glow-k), var(--g-shadow-strong);
+}
+
+.g-card-sub {
+  margin-top: 12px;
+  max-width: 620px;
+  font: 600 19px/1.3 var(--sq-label);
   letter-spacing: 0.06em;
+  color: var(--g-text);
+}
+
+.g-card-reward {
+  margin-top: 14px;
+  font: 800 34px/1 var(--sq-mono);
+  color: var(--g-fern);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 16px rgba(92, 242, 140, 0.5), var(--g-shadow-strong);
+}
+
+.g-card-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  gap: 4px 26px;
+  margin-top: 14px;
+}
+
+.g-card-stat,
+.g-factor-pair {
+  display: contents;
+}
+
+.g-card-stat dt {
+  text-align: right;
+  font: 600 14px/1.5 var(--sq-label);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--g-text-2);
 }
 
-.sq-card-sub {
-  font: 600 15px/1.2 var(--sq-label);
-  letter-spacing: 0.2em;
+.g-card-stat dd {
+  margin: 0;
+  text-align: left;
+  font: 700 14px/1.5 var(--sq-mono);
+  color: var(--g-text);
+}
+
+.g-card-quip {
+  margin-top: 12px;
+  font: 700 16px/1 var(--sq-label);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sq-dim);
+  color: var(--g-kowhai);
 }
 
-.sq-card q {
-  margin-top: 6px;
-  font: italic 500 17px/1.3 var(--sq-label);
-  letter-spacing: 0.02em;
+.g-card[data-style="failed"] .g-card-title,
+.g-card[data-style="wasted"] .g-card-title {
+  color: #ffe1e6;
+  text-shadow: var(--g-glow-r), var(--g-shadow-strong);
 }
 
-/* A small villain's name is smaller than the boss's, so that it stays left of the walker in the
-   middle of a wide picture. */
-.sq-card.foe strong {
-  font-size: clamp(30px, 4vw, 52px);
+.g-card[data-style="failed"] .g-card-quip {
+  color: var(--g-pohutukawa);
 }
 
-.sq-card.boss {
-  bottom: 22%;
+.g-card[data-style="busted"] .g-card-title {
+  color: #fff;
+  text-shadow: 0 0 18px rgba(80, 130, 255, 0.8), var(--g-shadow-strong);
 }
 
-.sq-card.boss strong {
-  font-size: clamp(40px, 8vw, 96px);
-  color: #ffdfcf;
+.g-card-band {
+  display: block;
+  width: min(520px, 80vw);
+  height: 26px;
+  margin-bottom: 16px;
+  background: repeating-conic-gradient(var(--g-police-blue) 0 25%, var(--g-police-yellow) 0 50%) 0 0 / 36px 26px;
+  box-shadow: 0 0 24px rgba(31, 79, 214, 0.6);
 }
 
-@keyframes sq-card {
-  0% {
-    opacity: 0;
-    transform: translateX(-24px);
-  }
-  10%,
-  86% {
-    opacity: 1;
-    transform: none;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* -- Letterbox bars: for the title, a villain's entrance, a phase, the debrief. -- */
+/* ---- Letterbox bars, Title card, Pause menu & Debrief --------------------------------------- */
 .sq-bars i {
   position: absolute;
   right: 0;
@@ -805,34 +1202,24 @@
   transform: none;
 }
 
-/* Under the bars the walk's own top corner and its ways of getting about step back, rather than show
-   their edges past the bars. The ways of getting about go at once, not fading: the lower bar's line
-   (the boss's phase) takes their place, and the two are never in it together. */
 .hud:has(.sq.cine) .hud-tr,
-.sq.cine .sq-pausebtn {
-  visibility: hidden;
-  opacity: 0;
-  transition:
-    opacity 0.3s ease,
-    visibility 0s linear 0.3s;
-}
-
 .hud:has(.sq.cine) .hud-bc {
   visibility: hidden;
   opacity: 0;
-  transition: none;
 }
 
-/* -- The title card. -- */
 .sq-title {
   position: absolute;
+  z-index: 4;
   inset: 0;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px;
   padding: calc(clamp(18px, 6.5vh, 58px) + 20px) max(var(--hud-r), 4.5vw) calc(clamp(18px, 6.5vh, 58px) + clamp(18px, 5vh, 52px)) max(var(--hud-l), 5.5vw);
-  background: linear-gradient(90deg, rgba(5, 8, 11, 0.78) 0%, rgba(5, 8, 11, 0.42) 40%, rgba(5, 8, 11, 0) 72%), linear-gradient(0deg, rgba(5, 8, 11, 0.6) 0%, rgba(5, 8, 11, 0) 50%);
+  background:
+    linear-gradient(90deg, rgba(2, 4, 10, 0.92) 0%, rgba(2, 4, 10, 0.68) 42%, rgba(2, 4, 10, 0.08) 74%),
+    linear-gradient(0deg, rgba(2, 4, 10, 0.78) 0%, rgba(2, 4, 10, 0) 50%);
   pointer-events: auto;
   animation: sq-fade 0.5s ease both;
 }
@@ -844,15 +1231,27 @@
 .sq-title .sq-eyebrow {
   flex-wrap: wrap;
   font-size: 13px;
+  color: var(--g-harbour);
+}
+
+.sq-tag {
+  padding: 2px 6px 1px;
+  font: 700 10px/1.2 var(--sq-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: none;
+  background: var(--g-kowhai);
+  color: var(--g-ink);
 }
 
 .sq-word {
   margin: clamp(8px, 2vh, 20px) -0.12em clamp(10px, 2vh, 22px) -0.03em;
-  font: 700 clamp(52px, 12vw, 168px)/0.82 var(--sq-display);
-  letter-spacing: 0.12em;
+  font: 900 clamp(52px, 12vw, 158px)/0.82 var(--sq-display);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
-  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+  color: #fff3c4;
+  text-shadow: var(--g-glow-k), var(--g-shadow-strong);
 }
 
 .sq-premise {
@@ -861,7 +1260,7 @@
   margin: 0;
   padding-top: 14px;
   border-top: 1px solid var(--sq-faint);
-  font: 500 clamp(16px, 1.6vw, 22px)/1.3 var(--sq-label);
+  font: 600 clamp(16px, 1.6vw, 22px)/1.3 var(--sq-label);
   letter-spacing: 0.04em;
 }
 
@@ -871,181 +1270,51 @@
   left: 0;
   width: 72px;
   height: 3px;
-  background: var(--sq-signal);
+  background: var(--g-pohutukawa);
+  box-shadow: var(--g-glow-r);
   content: "";
 }
 
 .sq-note {
   max-width: 60ch;
   margin: 14px 0 0;
-  font: 400 11px/1.5 var(--sq-mono);
-  letter-spacing: 0.03em;
-  color: var(--sq-dim);
+  font: 400 11.5px/1.5 var(--sq-mono);
+  letter-spacing: 0.02em;
+  color: var(--g-text-2);
 }
 
 .sq-press {
   margin: 18px 0 0;
-  font: 600 12px/1 var(--sq-label);
+  font: 700 12.5px/1 var(--sq-label);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
   animation: sq-blink 1.1s ease-in-out infinite alternate;
 }
 
-/* -- The first minute's prompt: the key (or the button's icon) and one word, as the paused line
-   and the skills' keys look, low in the middle on a desktop, by the thumb that does it on a phone.
-   It comes in with a small rise and goes when the action is done. -- */
-.sq-prompt {
-  position: absolute;
-  bottom: calc(var(--hud-b) + 72px);
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 13px 6px 9px;
-  border-left: 2px solid var(--sq-signal);
-  background: var(--sq-plate);
-  font: 600 14px/1 var(--sq-label);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--sq-bone);
-  white-space: nowrap;
-  transform: translateX(-50%);
-  animation: sq-prompt-in 0.28s cubic-bezier(0.2, 1.4, 0.4, 1) both;
-}
-
-@keyframes sq-prompt-in {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(8px);
+@keyframes sq-blink {
+  to {
+    opacity: 0.45;
   }
 }
 
-.sq-prompt-keys {
-  display: flex;
-  gap: 3px;
-}
-
-.sq-prompt kbd {
-  min-width: 22px;
-  height: 22px;
-  padding: 0 5px;
-  border: 1px solid rgba(238, 240, 234, 0.55);
-  background: rgba(8, 12, 16, 0.85);
-  color: var(--sq-signal);
-  font: 600 12px/20px var(--sq-mono);
-  text-align: center;
-  box-shadow: 0 2px 0 rgba(238, 240, 234, 0.25);
-}
-
-.sq-prompt kbd.wide {
-  min-width: 52px;
-}
-
-.sq-prompt-ic {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border: 1.5px solid var(--sq-signal);
-  border-radius: 50%;
-  color: var(--sq-signal);
-}
-
-.sq-stick-ic {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--sq-signal);
-}
-
-/* Over the boss's bar while it is out. */
-.sq.has-boss .sq-prompt {
-  bottom: calc(var(--hud-b) + 170px);
-}
-
-/* On a phone: small, above the buttons or the stick it points to, never over the middle. */
-.sq.touch .sq-prompt {
-  padding: 5px 10px 5px 6px;
-  font-size: 12px;
-  transform: none;
-  animation-name: sq-prompt-in-touch;
-}
-
-@keyframes sq-prompt-in-touch {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-.sq.touch .sq-prompt.at-pad {
-  right: var(--hud-r);
-  bottom: calc(var(--hud-b) + 74px + 180px + 10px);
-  left: auto;
-  border-right: 2px solid var(--sq-signal);
-  border-left: 0;
-}
-
-.sq.touch .sq-prompt.at-stick {
-  bottom: calc(var(--hud-b) + 224px);
-  left: var(--hud-l);
-}
-
-/* The button the prompt points to, or the stick, pulses until it is used. */
-.sq.cue-strike .sq-btn.sk-strike,
-.sq.cue-dodge .sq-btn.sk-dodge,
-.sq.cue-dodge .sq-btn.sk-sprint,
-.sq.cue-sprint .sq-btn.sk-sprint,
-.sq.cue-flashcard .sq-btn.sk-flashcard,
-.sq.cue-eureka .sq-btn.sk-eureka,
-.sq.cue-jump .sq-btn.sk-jump,
-.sq.cue-strike .sq-skill[data-skill="strike"] .sq-skill-ic,
-.sq.cue-dodge .sq-skill[data-skill="dodge"] .sq-skill-ic,
-.sq.cue-dodge .sq-skill[data-skill="sprint"] .sq-skill-ic,
-.sq.cue-sprint .sq-skill[data-skill="sprint"] .sq-skill-ic,
-.sq.cue-flashcard .sq-skill[data-skill="flashcard"] .sq-skill-ic,
-.sq.cue-eureka .sq-skill[data-skill="eureka"] .sq-skill-ic,
-.hud:has(.sq.cue-move) .walker-stick {
-  border-color: var(--sq-signal);
-  animation: sq-cue 0.9s ease-in-out infinite;
-}
-
-@keyframes sq-cue {
-  0%,
-  100% {
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 0 rgba(255, 180, 84, 0));
-  }
-  50% {
-    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 11px rgba(255, 180, 84, 0.75));
-  }
-}
-
-.sq.rm .sq-prompt,
-.sq.rm .sq-btn,
-.sq.rm .sq-skill-ic,
-.hud:has(.sq.rm) .walker-stick {
-  animation: none;
-}
-
-/* -- Menus: pause, the study record, and the debrief. -- */
 .sq-menu,
 .sq-debrief {
   position: absolute;
-  z-index: 3;
+  z-index: 5;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: calc(clamp(18px, 6.5vh, 58px) + 12px) 16px;
   overflow: auto;
-  background: rgba(4, 7, 10, 0.62);
+  background: rgba(4, 7, 14, 0.78);
   pointer-events: auto;
   animation: sq-fade 0.25s ease both;
 }
 
 .sq-debrief {
-  background: linear-gradient(90deg, rgba(4, 7, 10, 0.86), rgba(4, 7, 10, 0.5) 70%, rgba(4, 7, 10, 0.25));
+  background: linear-gradient(90deg, rgba(4, 7, 14, 0.9), rgba(4, 7, 14, 0.58) 70%, rgba(4, 7, 14, 0.3));
   justify-content: flex-start;
   padding-left: max(var(--hud-l), 6vw);
 }
@@ -1061,7 +1330,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: min(420px, 100%);
+  width: min(440px, 100%);
+  padding: 20px 22px;
+  border-top: 3px solid var(--g-kowhai);
+  background: var(--g-panel-2);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
 }
 
 .sq-menu-body.wide {
@@ -1075,13 +1348,14 @@
 .sq-menu h2,
 .sq-debrief h2 {
   margin: 0 0 12px;
-  font: 700 clamp(36px, 6vw, 64px)/0.9 var(--sq-display);
-  letter-spacing: 0.1em;
+  font: 900 clamp(36px, 6vw, 60px)/0.9 var(--sq-display);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #fff3c4;
 }
 
 .sq-debrief.lost h2 {
-  color: #ffb2a3;
+  color: #ffb2bf;
 }
 
 .sq-actions {
@@ -1103,37 +1377,46 @@
   justify-content: space-between;
   min-height: 46px;
   padding: 2px 20px 0;
-  border: 1px solid rgba(238, 240, 234, 0.42);
+  border: 1px solid var(--g-line-2);
   border-radius: 0;
-  background: rgba(8, 12, 16, 0.55);
-  color: var(--sq-bone);
-  font: 600 15px/1 var(--sq-label);
-  letter-spacing: 0.22em;
+  background: rgba(244, 241, 234, 0.05);
+  color: var(--g-text);
+  font: 700 15px/1 var(--sq-label);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   text-shadow: none;
-  transition: background 0.12s, border-color 0.12s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
 .sq .sq-b:hover,
 .sq .sq-b:focus-visible {
-  border-color: var(--sq-bone);
-  background: rgba(238, 240, 234, 0.12);
+  border-color: var(--g-kowhai);
+  background: rgba(255, 203, 46, 0.14);
   outline: none;
 }
 
 .sq .sq-b em {
   font-style: normal;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
 }
 
-/* The music's and the effects' volumes: two sliders under the sound toggle, greyed while it is off. */
+.sq .sq-b.primary {
+  justify-content: center;
+  border-color: var(--g-kowhai);
+  background: var(--g-kowhai);
+  color: var(--g-ink);
+  font-size: 17px;
+  letter-spacing: 0.24em;
+}
+
 .sq-vols {
   display: flex;
   flex-direction: column;
   gap: 2px;
   padding: 8px 20px 6px;
-  border: 1px solid rgba(238, 240, 234, 0.22);
-  background: rgba(8, 12, 16, 0.4);
+  border: 1px solid var(--g-line-2);
+  background: rgba(5, 9, 18, 0.55);
 }
 
 .sq-vol {
@@ -1143,15 +1426,15 @@
   gap: 12px;
   min-height: 36px;
   font: 600 13px/1 var(--sq-label);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--sq-bone);
+  color: var(--g-text);
 }
 
 .sq-vol em {
   font-style: normal;
   text-align: right;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1171,62 +1454,41 @@
 
 .sq-vol input::-webkit-slider-runnable-track {
   height: 4px;
-  background: linear-gradient(90deg, var(--sq-signal) var(--v), rgba(238, 240, 234, 0.25) var(--v));
+  background: linear-gradient(90deg, var(--g-kowhai) var(--v), rgba(244, 241, 234, 0.25) var(--v));
 }
 
 .sq-vol input::-moz-range-track {
   height: 4px;
-  background: linear-gradient(90deg, var(--sq-signal) var(--v), rgba(238, 240, 234, 0.25) var(--v));
+  background: linear-gradient(90deg, var(--g-kowhai) var(--v), rgba(244, 241, 234, 0.25) var(--v));
 }
 
 .sq-vol input::-webkit-slider-thumb {
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-  border: 2px solid var(--sq-bone);
-  border-radius: 0;
-  background: #0b1014;
-  transform: rotate(45deg);
+  width: 14px;
+  height: 20px;
+  margin-top: -8px;
+  border: 0;
+  background: #fff;
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
   -webkit-appearance: none;
 }
 
 .sq-vol input::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--sq-bone);
+  width: 14px;
+  height: 20px;
+  border: 0;
   border-radius: 0;
-  background: #0b1014;
-  transform: rotate(45deg);
-}
-
-.sq-vol input:focus-visible {
-  outline: 1px solid var(--sq-bone);
-  outline-offset: 2px;
-}
-
-.sq .sq-b.primary {
-  justify-content: center;
-  border-color: var(--sq-signal);
-  background: var(--sq-signal);
-  color: var(--accent-ink);
-  font-size: 17px;
-  letter-spacing: 0.28em;
-}
-
-.sq .sq-b.primary:focus-visible {
-  outline: 2px solid var(--sq-bone);
-  outline-offset: 3px;
+  background: #fff;
 }
 
 .sq-controls {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 18px;
+  gap: 5px;
+  margin-top: 14px;
   font: 500 12px/1.2 var(--sq-label);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(238, 240, 234, 0.8);
+  color: var(--g-text-2);
   white-space: pre;
 }
 
@@ -1247,7 +1509,7 @@
   font: 600 11px/1.6 var(--sq-label);
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
 .sq-stats dd {
@@ -1257,7 +1519,7 @@
 
 .sq-stats small {
   font-size: 13px;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
 .sq-ranks {
@@ -1281,12 +1543,12 @@
 }
 
 .sq-ranks li.done {
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
 .sq-ranks li.now {
-  border-left-color: var(--sq-signal);
-  color: var(--sq-bone);
+  border-left-color: var(--g-kowhai);
+  color: var(--g-text);
 }
 
 .sq-ranks em {
@@ -1312,15 +1574,11 @@
 
 .sq-skill-list svg {
   flex: none;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
 }
 
 .sq-skill-list li.locked {
   opacity: 0.45;
-}
-
-.sq-skill-list li.locked svg {
-  color: var(--sq-bone);
 }
 
 .sq-skill-list b,
@@ -1338,15 +1596,9 @@
 .sq-skill-list small,
 .sq-codex small {
   font: 400 12px/1.35 var(--sq-label);
-  letter-spacing: 0.02em;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
-.sq-codex .none {
-  color: var(--sq-dim);
-}
-
-/* -- The debrief: the grade, and how the run went. -- */
 .sq-grade-row {
   display: flex;
   align-items: center;
@@ -1355,23 +1607,14 @@
 
 .sq-grade {
   min-width: 1.3em;
-  font: 700 clamp(96px, 16vw, 180px)/0.8 var(--sq-display);
-  letter-spacing: -0.02em;
-  color: var(--sq-signal);
-  text-shadow: 0 0 40px rgba(255, 180, 84, 0.35), var(--sq-shadow);
-  animation: sq-stamp 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) 0.4s both;
+  font: 900 clamp(84px, 14vw, 156px)/0.8 var(--sq-display);
+  color: var(--g-kowhai);
+  text-shadow: var(--g-glow-k), var(--sq-shadow);
 }
 
 .sq-debrief.lost .sq-grade {
-  color: #ff8a73;
-  text-shadow: 0 0 40px rgba(255, 90, 64, 0.35), var(--sq-shadow);
-}
-
-@keyframes sq-stamp {
-  from {
-    opacity: 0;
-    transform: scale(2.2) rotate(-8deg);
-  }
+  color: #ff8a9e;
+  text-shadow: var(--g-glow-r), var(--sq-shadow);
 }
 
 .sq-tally {
@@ -1385,7 +1628,7 @@
   font: 600 11px/1.5 var(--sq-label);
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
 .sq-tally dd {
@@ -1395,7 +1638,6 @@
   text-transform: uppercase;
 }
 
-/* The grade's factors: one line each, its value and its marks out of its most. */
 .sq-factors {
   align-items: baseline;
 }
@@ -1408,13 +1650,11 @@
 
 .sq-factors dd b {
   min-width: 4.2em;
-  font-weight: 700;
 }
 
 .sq-pts {
   font: 600 13px/1 var(--sq-mono);
-  letter-spacing: 0.02em;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
 }
 
 .sq-from {
@@ -1422,7 +1662,7 @@
   font: 600 13px/1.3 var(--sq-label);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--sq-dim);
+  color: var(--g-text-2);
 }
 
 .sq-best {
@@ -1431,351 +1671,10 @@
   font: 600 12px/1.2 var(--sq-label);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
 }
 
-/* -- On a phone: small panels in the corners, the right thumb's buttons, no tutorial text. -- */
-
-/* The pause menu on a phone: a little tighter, below the credits, with the corner panels out of the
-   way while it is open rather than showing through it. */
-.sq.touch .sq-menu {
-  padding-top: calc(var(--hud-t) + 78px);
-}
-
-.sq.touch .sq-menu h2 {
-  margin-bottom: 6px;
-  font-size: 40px;
-}
-
-.sq.touch .sq-b {
-  min-height: 42px;
-}
-
-.sq.touch .sq-vols {
-  padding: 4px 20px 2px;
-}
-
-.sq.touch .sq-vol {
-  min-height: 32px;
-}
-
-.sq.touch.menu-open .sq-obj,
-.sq.touch.menu-open .sq-vitals,
-.sq.touch.menu-open .sq-boss,
-.sq.touch.menu-open .sq-combo {
-  visibility: hidden;
-}
-
-.sq.touch .sq-obj {
-  top: calc(var(--hud-t) + 92px);
-  right: var(--hud-r);
-  left: auto;
-  align-items: flex-end;
-  /* Beside the vitals, never under them. */
-  max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 150px - 14px);
-  padding: 0 10px 0 0;
-  border-right: 2px solid var(--sq-signal);
-  border-left: 0;
-  text-align: right;
-}
-
-.sq.touch .sq-q {
-  align-items: flex-end;
-}
-
-.sq.touch .sq-eyebrow {
-  font-size: 9.5px;
-}
-
-.sq.touch .sq-q-title {
-  font-size: 15px;
-}
-
-.sq.touch .sq-q-goal {
-  justify-content: flex-end;
-  font-size: 11.5px;
-}
-
-.sq.touch .sq-vitals {
-  top: calc(var(--hud-t) + 92px);
-  bottom: auto;
-  width: min(150px, 40vw);
-  gap: 5px;
-}
-
-.sq.touch .sq-badge {
-  width: 28px;
-  height: 28px;
-}
-
-.sq.touch .sq-rank-text b {
-  font-size: 14px;
-}
-
-.sq.touch .sq-xp-line em {
-  display: none;
-}
-
-.sq.touch .sq-stat {
-  grid-template-columns: 1fr auto;
-  gap: 6px;
-}
-
-.sq.touch .sq-k {
-  display: none;
-}
-
-.sq.touch .sq-n {
-  font-size: 15px;
-}
-
-/* On a phone the foot of the screen is the thumbs' and its middle the fight's: the boss's bar is a
-   thin line across the top under the credits, its name small on one line with the phase pips
-   beside it, and the quest tracker (which only says to face it) gives it the room. */
-.sq.touch.has-boss .sq-obj {
-  display: none;
-}
-
-.sq.touch .sq-boss {
-  top: calc(var(--hud-t) + 84px);
-  bottom: auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 3px 8px;
-  width: calc(100vw - var(--hud-l) - var(--hud-r));
-  padding: 0;
-  background: none;
-  animation-name: sq-in-top;
-}
-
-/* A phone on its side: the bar ends before the column of the right thumb's buttons, which reach up
-   past it (it is still centred on its own width, as its entrance has it). */
-@media (orientation: landscape) and (max-height: 500px) {
-  .sq.touch .sq-boss {
-    --boss-w: calc(100vw - var(--hud-l) - var(--hud-r) - 196px);
-    left: calc(var(--hud-l) + var(--boss-w) / 2);
-    width: var(--boss-w);
-  }
-}
-
-@keyframes sq-in-top {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-8px);
-  }
-}
-
-.sq.touch .sq-boss-head {
-  justify-content: flex-start;
-}
-
-.sq.touch .sq-boss-head b {
-  overflow: hidden;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sq.touch .sq-boss-title,
-.sq.touch .sq-boss-sub {
-  display: none;
-}
-
-.sq.touch .sq-boss-track {
-  grid-row: 2;
-  grid-column: 1 / -1;
-}
-
-.sq.touch .sq-boss-foot {
-  grid-row: 1;
-  grid-column: 2;
-}
-
-.sq.touch .sq-boss-phase i {
-  padding: 1px 4px 0;
-  font-size: 9px;
-}
-
-.sq.touch .sq-bar.boss {
-  height: 6px;
-}
-
-.sq.touch .sq-boss-notch {
-  top: -2px;
-  bottom: -2px;
-}
-
-/* While the boss is out the vitals are one short row under its bar: the rank's diamond, and thin
-   bars of Focus and Stamina without their numbers. */
-.sq.touch.has-boss .sq-vitals {
-  top: calc(var(--hud-t) + 116px);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 3px 10px;
-  width: min(170px, 46vw);
-}
-
-.sq.touch.has-boss .sq-rank {
-  grid-row: 1 / span 2;
-}
-
-.sq.touch.has-boss .sq-rank-text,
-.sq.touch.has-boss .sq-n,
-.sq.touch.has-boss .sq-tag {
-  display: none;
-}
-
-.sq.touch.has-boss .sq-badge {
-  width: 18px;
-  height: 18px;
-  margin: 3px;
-  border-width: 1.5px;
-  font-size: 12px;
-}
-
-.sq.touch.has-boss .sq-stat {
-  grid-template-columns: 1fr;
-}
-
-.sq.touch.has-boss .sq-stat .sq-bar {
-  height: 4px;
-}
-
-.sq.touch .sq-combo {
-  top: 40%;
-}
-
-.sq.touch .sq-combo b {
-  font-size: 40px;
-}
-
-/* The hit count goes up beside the vitals while the boss is out, out of the fight. */
-.sq.touch.has-boss .sq-combo {
-  top: calc(var(--hud-t) + 112px);
-}
-
-.sq.touch.has-boss .sq-combo b {
-  font-size: 26px;
-}
-
-.sq.touch.has-boss .sq-combo span {
-  font-size: 9px;
-  letter-spacing: 0.2em;
-}
-
-.sq.touch .sq-card {
-  bottom: auto;
-  top: 44%;
-}
-
-.sq.touch .sq-card strong {
-  font-size: clamp(30px, 11vw, 56px);
-}
-
-.sq.touch .sq-card q {
-  font-size: 14px;
-}
-
-/* A small villain's name card on a phone takes the quest tracker's corner for its few seconds, on
-   two short lines (the eyebrow and the name), so that the middle of the picture, where the foe
-   stands, and the first fight's prompts stay clear. */
-.sq.touch.card-foe .sq-obj {
-  visibility: hidden;
-}
-
-.sq.touch .sq-card.foe {
-  top: calc(var(--hud-t) + 92px);
-  right: var(--hud-r);
-  left: auto;
-  align-items: flex-end;
-  gap: 2px;
-  max-width: calc(100vw - var(--hud-l) - var(--hud-r) - 150px - 14px);
-  padding: 0 10px 0 0;
-  border-right: 2px solid var(--sq-alarm);
-  border-left: 0;
-  text-align: right;
-}
-
-.sq.touch .sq-card.foe .sq-card-eyebrow {
-  font-size: 9.5px;
-}
-
-.sq.touch .sq-card.foe strong {
-  font-size: clamp(17px, 5.2vw, 24px);
-  letter-spacing: 0.04em;
-}
-
-.sq.touch .sq-card.foe .sq-card-sub,
-.sq.touch .sq-card.foe q {
-  display: none;
-}
-
-/* The big words are a short line at the top on a phone, under the vitals (the boss's bar and the
-   vitals while it is out), gone in under two seconds, never over the middle of the picture. */
-.sq.touch .sq-banner {
-  top: calc(var(--hud-t) + 160px);
-  flex-direction: row;
-  align-items: baseline;
-  gap: 8px;
-  max-width: calc(100vw - 16px);
-  padding: 4px 16px 3px;
-  white-space: nowrap;
-  animation: sq-toast 1.8s ease both;
-}
-
-.sq.touch .sq-banner strong {
-  margin-right: 0;
-  font-size: 15px;
-  letter-spacing: 0.14em;
-}
-
-.sq.touch .sq-banner span {
-  overflow: hidden;
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
-  text-overflow: ellipsis;
-}
-
-.sq.touch .sq-banner .sq-banner-eyebrow {
-  display: none;
-}
-
-.sq.touch.has-boss .sq-banner {
-  top: calc(var(--hud-t) + 146px);
-}
-
-@keyframes sq-toast {
-  0% {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-6px);
-  }
-  10%,
-  85% {
-    opacity: 1;
-    transform: translateX(-50%);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50%);
-  }
-}
-
-.sq.touch .sq-word {
-  margin-right: 0;
-  font-size: clamp(40px, 12.5vw, 90px);
-  letter-spacing: 0.06em;
-}
-
-.sq.touch .sq-title {
-  align-items: center;
-}
-
-/* The right thumb's buttons: a big strike in the corner, and the dodge, the jump, the flashcard and
-   the Eureka on an arc round it, 106px from its middle, from the left round to above it (-10, 27, 63
-   and 100 degrees up from the left), each 11px from the next and 36px from the strike. */
+/* ---- Touch / Mobile (<= 640px or .sq.touch): 0.62x corner clusters, >= 44x44 targets --------- */
 .sq-pad {
   position: absolute;
   right: var(--hud-r);
@@ -1784,9 +1683,6 @@
   height: 180px;
 }
 
-/* On the narrowest phones (an iPhone SE of the first kind, 320px), the buttons and the stick do not
-   both fit at full size: the buttons are drawn a little smaller, from their corner (the small ones
-   48px, over the 44pt a finger needs). */
 @media (max-width: 359px) {
   .sq-pad {
     transform: scale(0.86);
@@ -1800,18 +1696,16 @@
   place-items: center;
   width: 56px;
   height: 56px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
-  border: 1.5px solid rgba(238, 240, 234, 0.6);
+  border: 1.5px solid rgba(244, 241, 234, 0.55);
   border-radius: 50%;
-  background: conic-gradient(rgba(255, 180, 84, 0.35) calc(var(--cd, 1) * 360deg), rgba(8, 12, 16, 0.5) 0);
-  color: var(--sq-bone);
+  background: conic-gradient(rgba(255, 203, 46, 0.35) calc(var(--cd, 1) * 360deg), rgba(5, 9, 18, 0.7) 0);
+  color: var(--g-text);
   touch-action: none;
-  -webkit-user-select: none;
   user-select: none;
-}
-
-.sq .sq-btn:active {
-  background: rgba(255, 180, 84, 0.4);
+  -webkit-user-select: none;
 }
 
 .sq .sq-btn.sk-strike {
@@ -1819,8 +1713,8 @@
   bottom: 4px;
   width: 84px;
   height: 84px;
-  border-color: var(--sq-signal);
-  color: var(--sq-signal);
+  border-color: var(--g-kowhai);
+  color: var(--g-kowhai);
 }
 
 .sq .sq-btn.sk-dodge,
@@ -1848,26 +1742,102 @@
   opacity: 0.32;
 }
 
-.sq .sq-pausebtn {
-  position: absolute;
-  top: var(--hud-t);
-  left: calc(var(--hud-l) + 48px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid var(--hud-line);
-  border-radius: 12px;
-  background: var(--hud-strong);
+.sq.touch {
+  --g-hs: 0.62;
 }
 
-.sq-pausebtn i {
-  width: 4px;
-  height: 14px;
-  background: var(--sq-bone);
+.sq.touch .g-tl {
+  top: calc(var(--hud-t) + 92px);
+  left: var(--hud-l);
+}
+
+.sq.touch .g-tr {
+  top: calc(var(--hud-t) + 92px);
+  right: var(--hud-r);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.sq.touch .g-tr-actions {
+  order: -1;
+}
+
+.sq.touch .g-trcol,
+.sq.touch .g-weapon {
+  transform-origin: 100% 0;
+  transform: scale(0.72);
+}
+
+.sq.touch .g-weapon {
+  margin-top: -8px;
+}
+
+.sq.touch .g-tc {
+  top: calc(var(--hud-t) + 228px);
+  left: var(--hud-l);
+  transform: scale(var(--g-hs));
+  transform-origin: 0 0;
+  align-items: flex-start;
+}
+
+.sq.touch .g-radio {
+  align-items: flex-start;
+}
+
+.sq.touch .g-notes {
+  top: calc(var(--hud-t) + 230px);
+  right: var(--hud-r);
+  width: min(220px, 56vw);
+}
+
+.sq.touch .g-br {
+  top: calc(var(--hud-t) + 240px);
+  bottom: auto;
+  transform-origin: 100% 0;
+}
+
+.sq.touch .g-bc {
+  bottom: calc(var(--hud-b) + 276px);
+  width: calc(100vw - 2 * var(--hud-l));
+  min-width: 0;
+  max-width: 370px;
+}
+
+.sq.touch .g-prompt {
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.sq.touch .g-sub {
+  font-size: 15px;
+}
+
+.sq.touch .g-objective-text {
+  font-size: 14px;
+}
+
+.sq.touch .g-listmenu.g-phone {
+  top: auto;
+  right: 10px;
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  left: 10px;
+  width: auto;
+  max-height: 64vh;
+  transform: none;
+}
+
+.sq.touch .sq-menu {
+  padding-top: calc(var(--hud-t) + 78px);
+}
+
+.sq.touch .sq-menu h2 {
+  margin-bottom: 6px;
+  font-size: 38px;
+}
+
+.sq.touch .sq-b {
+  min-height: 44px;
 }
 
 .sq.touch .sq-sheet-grid {
@@ -1875,12 +1845,28 @@
   gap: 8px;
 }
 
-.sq.touch .sq-tally {
-  gap: 4px 14px;
-}
-
 .sq.touch .sq-debrief {
   padding-left: var(--hud-l);
+}
+
+.sq.touch .sq-word {
+  margin-right: 0;
+  font-size: clamp(40px, 12.5vw, 90px);
+  letter-spacing: 0.06em;
+}
+
+.sq.touch .sq-title {
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .sq:not(.touch) {
+    --g-hs: 0.62;
+  }
+  .sq:not(.touch) .g-bc {
+    width: calc(100vw - 32px);
+    min-width: 0;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1891,7 +1877,7 @@
   }
 }
 
-/* -- The marks moved with the picture (gameOverlay.ts): compass, plates, numbers, diamonds. -- */
+/* ---- World overlay marks (gameOverlay.ts) -------------------------------------------------- */
 .gx {
   position: absolute;
   z-index: 3;
@@ -1943,7 +1929,6 @@
 }
 
 .gx-flash.eureka {
-  /* A faint warm ring at the edges of the picture, not a wash over the middle. */
   background: radial-gradient(circle at 50% 60%, rgba(255, 210, 150, 0) 45%, rgba(255, 200, 120, 0.16) 70%, rgba(255, 180, 84, 0) 90%);
   animation-duration: 0.3s;
 }
@@ -1953,8 +1938,6 @@
 }
 
 .gx-flash.phase {
-  /* The roar: a short pulse of red at the edges of the picture only. The middle, where the boss
-     glows and its shockwave runs out over the ground, keeps its own colours. */
   background: radial-gradient(ellipse 75% 70% at 50% 50%, rgba(255, 60, 40, 0) 62%, rgba(255, 64, 36, 0.16) 84%, rgba(190, 24, 16, 0.42) 100%);
   animation-duration: 0.75s;
 }
@@ -1965,153 +1948,15 @@
   }
 }
 
-/* The compass tape: ticks every 15 degrees, letters at the cardinals, quests as diamonds. */
 .gx-compass {
-  position: absolute;
-  top: calc(var(--hud-t) + 2px);
-  left: 50%;
-  width: clamp(160px, calc(100vw - 720px), 440px);
-  height: 56px;
-  transform: translateX(-50%);
-}
-
-.gx.compact .gx-compass {
   display: none;
 }
 
-.gx-tape-wrap {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 28px;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
-}
-
-.gx-tape {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  will-change: transform;
-}
-
-.gx-tape i {
-  position: absolute;
-  bottom: 0;
-  width: 1px;
-  margin-left: -0.5px;
-  background: var(--sq-bone);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-}
-
-.gx-tape i.mn {
-  height: 5px;
-  opacity: 0.5;
-}
-
-.gx-tape i.mj {
-  height: 9px;
-  width: 2px;
-}
-
-.gx-tape b {
-  position: absolute;
-  top: 0;
-  white-space: nowrap;
-  transform: translateX(-50%);
-}
-
-.gx-tape b.card {
-  font: 700 16px/1 var(--sq-display);
-  letter-spacing: 0.04em;
-}
-
-.gx-tape b.ic {
-  font: 600 11px/1.4 var(--sq-label);
-  letter-spacing: 0.08em;
-  color: var(--sq-dim);
-}
-
-.gx-needle {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  width: 2px;
-  height: 14px;
-  margin-left: -1px;
-  background: var(--sq-signal);
-}
-
-.gx-heading {
-  position: absolute;
-  top: 9px;
-  left: 100%;
-  margin-left: 8px;
-  font: 500 11px/1 var(--sq-mono);
-  color: var(--sq-dim);
-}
-
-.gx-cmarks {
-  position: absolute;
-  top: 33px;
-  left: 50%;
-}
-
-.gx-cm {
-  position: absolute;
-  top: 0;
-  left: -24px;
-  width: 48px;
-  text-align: center;
-  color: var(--sq-signal);
-  will-change: transform;
-}
-
-.gx-cm i {
-  display: block;
-  width: 8px;
-  height: 8px;
-  margin: 0 auto 3px;
-  border: 1.5px solid currentColor;
-  background: rgba(8, 12, 16, 0.5);
-  transform: rotate(45deg);
-}
-
-.gx-cm span {
-  font: 400 10px/1 var(--sq-mono);
-  color: var(--sq-bone);
-}
-
-.gx-cm.main i {
-  background: var(--sq-signal);
-}
-
-.gx-cm.side {
-  color: var(--sq-bone);
-}
-
-.gx-cm.boss,
-.gx-cm.foe {
-  color: var(--sq-alarm);
-}
-
-.gx-cm.boss i {
-  background: var(--sq-alarm);
-}
-
-.gx-cm.foe i {
-  width: 5px;
-  height: 5px;
-  margin-top: 2px;
-}
-
-/* Diamonds in the world over a quest's place. */
 .gx-wm {
   position: absolute;
   top: 0;
   left: 0;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
   will-change: transform;
 }
 
@@ -2122,16 +1967,16 @@
   width: 12px;
   height: 12px;
   border: 2px solid currentColor;
-  background: rgba(8, 12, 16, 0.45);
+  background: rgba(5, 9, 18, 0.6);
   transform: rotate(45deg);
 }
 
 .gx-wm.main i {
-  background: rgba(255, 180, 84, 0.5);
+  background: rgba(255, 203, 46, 0.5);
 }
 
 .gx-wm.side {
-  color: var(--sq-bone);
+  color: var(--g-bone, #f4f1ea);
 }
 
 .gx-wm span {
@@ -2139,12 +1984,11 @@
   top: 12px;
   left: -30px;
   width: 60px;
-  font: 500 11px/1 var(--sq-mono);
+  font: 600 11px/1 var(--sq-mono);
   text-align: center;
-  color: var(--sq-bone);
+  color: var(--g-text);
 }
 
-/* A foe's plate: its name and its health. */
 .gx-plate {
   position: absolute;
   top: 0;
@@ -2159,7 +2003,7 @@
 
 .gx-plate b {
   font: 600 11px/1 var(--sq-label);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -2171,50 +2015,40 @@
   width: 64px;
   height: 4px;
   overflow: hidden;
-  background: rgba(8, 12, 16, 0.6);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  background: rgba(5, 9, 18, 0.7);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
 }
 
 .gx-plate span {
   position: absolute;
   inset: 0;
-  background: var(--sq-alarm);
+  background: var(--g-pohutukawa);
   transform-origin: left center;
   transition: transform 0.1s linear;
 }
 
 .gx-plate.elite b {
-  font: 700 15px/1 var(--sq-display);
-  letter-spacing: 0.12em;
-  color: #ffd9cf;
+  font: 700 14px/1 var(--sq-display);
+  color: #ffd9df;
 }
 
 .gx-plate.elite i {
-  width: 110px;
+  width: 100px;
   height: 6px;
 }
 
-.gx-plate.warn b {
-  color: var(--sq-alarm);
-}
-
-/* On a phone the small foes show their health alone; their names would crowd the view. */
 .gx.compact .gx-plate:not(.elite) b {
   display: none;
 }
 
-/* Numbers that jump from a blow. */
 .gx-num {
   position: absolute;
   top: 0;
   left: 0;
   font: 700 20px/1 var(--sq-display);
-  letter-spacing: 0.02em;
   will-change: transform, opacity;
 }
 
-/* Each blow's number by its strength: small and white for a light one, bigger and orange for the
-   finisher, biggest and gold for a critical one, with a dark edge so that each reads on the sky. */
 .gx-num.light,
 .gx-num.heavy,
 .gx-num.crit {
@@ -2228,28 +2062,18 @@
 }
 
 .gx-num.heavy {
-  font-size: 28px;
+  font-size: 26px;
   color: #ffab4a;
 }
 
 .gx-num.crit {
-  font-size: 34px;
+  font-size: 32px;
   color: #ffd23f;
-  text-shadow: 0 0 10px rgba(255, 180, 40, 0.65);
-}
-
-.gx-num.crit.heavy {
-  font-size: 40px;
-}
-
-.gx-num.crit::after {
-  content: "!";
 }
 
 .gx-num.xp {
   font: 600 14px/1 var(--sq-label);
-  letter-spacing: 0.1em;
-  color: var(--sq-signal);
+  color: var(--g-kowhai);
 }
 
 .gx-num.evade {
@@ -2257,7 +2081,6 @@
   color: #9fd8ff;
 }
 
-/* The X where a blow landed; the bracket round the foe locked on to. */
 .gx-hit {
   position: absolute;
   top: -15px;
@@ -2301,7 +2124,7 @@
 
 .gx-hit.kill i {
   width: 3px;
-  background: var(--sq-alarm);
+  background: var(--g-pohutukawa);
 }
 
 .gx-lock {
@@ -2318,7 +2141,7 @@
   position: absolute;
   width: 12px;
   height: 12px;
-  border: 0 solid var(--sq-alarm);
+  border: 0 solid var(--g-pohutukawa);
 }
 
 .gx-lock i:nth-child(1) {
@@ -2345,7 +2168,6 @@
   border-width: 0 2px 2px 0;
 }
 
-/* Arcs round the middle on the side a blow came from. */
 .gx-arc {
   position: absolute;
   top: 50%;
@@ -2365,12 +2187,58 @@
 
 .gx-arc path {
   fill: none;
-  stroke: var(--sq-alarm);
+  stroke: var(--g-pohutukawa);
   stroke-width: 4;
   stroke-linecap: round;
 }
 
-/* Reduced motion: the words and bars appear and go without moving. */
+/* ---- Animations & reduced motion ------------------------------------------------------------ */
+@keyframes g-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes g-evade {
+  50% {
+    fill: rgba(5, 8, 15, 0.35);
+    stroke: rgba(255, 203, 46, 0.7);
+    filter: none;
+  }
+}
+
+@keyframes g-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes g-note-in {
+  from {
+    opacity: 0;
+    transform: translateX(36px);
+  }
+}
+
+@keyframes g-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(28px);
+  }
+}
+
+@keyframes g-card-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sq *,
   .gx * {
@@ -2378,14 +2246,12 @@
     animation-iteration-count: 1 !important;
   }
   .sq-title,
-  .sq-banner,
-  .sq-card,
-  .sq-fl {
+  .g-card,
+  .g-note {
     animation: none !important;
   }
 }
 
-/* The game's own setting does the same, whatever the system says. */
 .sq.rm *,
 .gx.rm * {
   animation-duration: 0.01ms !important;
@@ -2393,8 +2259,7 @@
 }
 
 .sq.rm .sq-title,
-.sq.rm .sq-banner,
-.sq.rm .sq-card,
-.sq.rm .sq-fl {
+.sq.rm .g-card,
+.sq.rm .g-note {
   animation: none !important;
 }

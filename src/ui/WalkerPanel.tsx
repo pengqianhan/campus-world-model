@@ -8,7 +8,7 @@
 import { signal } from "@preact/signals";
 import { Component } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { gameMenu, gameOn, gameOver, loadGame, stopGame } from "../app/gameState.ts";
+import { gameMenu, gameOn, gameOver, gameView, loadGame, stopGame } from "../app/gameState.ts";
 import { formatDate, t } from "../app/i18n.ts";
 import { data, selBuilding, selCampus, shown, timeMode } from "../app/state.ts";
 import { formatMinutes } from "../shared/time.ts";
@@ -24,6 +24,7 @@ import {
   stickByHand,
   stickSteers,
   stopWalking,
+  urlAutoGame,
   walkerGauge,
   walkerOn,
   walkerRide,
@@ -265,6 +266,15 @@ export function WalkerPanel() {
   useEffect(() => {
     if (on) setMore(false);
   }, [on]);
+  // `?game=1` auto-launches Study Quest directly into open-campus play once the walk is on.
+  const autoGame = urlAutoGame.value;
+  useEffect(() => {
+    if (!on || !autoGame) return;
+    urlAutoGame.value = false;
+    if (walkerRide.peek() === "fly") rideAs("walk");
+    if (walkerView.peek() === "map") setView({ view: "follow", name: MY_WALKER });
+    void launchGame(touch, false).then((ok) => ok || setMessage(t("game.notReady")));
+  }, [on, autoGame, touch]);
   // Going into a building shuts the menu: the building's floors and card take that part of the screen.
   const inside = !!walkerStatus.value?.indoor;
   useEffect(() => {
@@ -470,6 +480,52 @@ export function WalkerPanel() {
       </div>
 
       {playing && <GameHudSlot touch={touch} failed={() => setMessage(t("game.notReady"))} />}
+      {touch && playing && !gameMenuUp && (
+        <div class="sq-touch-bar" role="group" aria-label={t("game.skills")}>
+          <button
+            type="button"
+            class={`sq-btn ${gameView.value?.gta?.vehicle ? "is-active" : ""}`}
+            id="game-touch-vehicle"
+            aria-label={t(gameView.value?.gta?.vehicle ? "game.touch.exit" : "game.legend.drive")}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              window.dispatchEvent(new KeyboardEvent("keydown", { key: "f", bubbles: true }));
+            }}
+          >
+            <svg viewBox="0 0 24 24" width={20} height={20} aria-hidden="true">
+              <path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11v6a1 1 0 01-1 1h-1a1 1 0 01-1-1v-1H8v1a1 1 0 01-1 1H6a1 1 0 01-1-1v-6zm2.2-1h9.6l-.9-2.8a.6.6 0 00-.6-.4H8.7a.6.6 0 00-.6.4L7.2 10zM7.5 14a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4zm9 0a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4z" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="sq-btn"
+            id="game-touch-pizza"
+            aria-label={t("game.touch.slice")}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              window.dispatchEvent(new KeyboardEvent("keydown", { key: "g", bubbles: true }));
+            }}
+          >
+            <svg viewBox="0 0 24 24" width={20} height={20} aria-hidden="true">
+              <path d="M12 2C7.8 2 4.1 3.7 2 6.5L12 22 22 6.5C19.9 3.7 16.2 2 12 2zm0 3.2c2.8 0 5.3 1 7 2.6l-.9 1.4c-1.5-1.3-3.7-2-6.1-2s-4.6.7-6.1 2L5 7.8c1.7-1.6 4.2-2.6 7-2.6zm-2 6.3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm4 2a1.3 1.3 0 110 2.6 1.3 1.3 0 010-2.6z" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="sq-btn"
+            id="game-touch-use"
+            aria-label={t("game.touch.interact")}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              void loadGame().then((m) => m.gameInteract());
+            }}
+          >
+            <svg viewBox="0 0 24 24" width={20} height={20} aria-hidden="true">
+              <path d="M12 2a5 5 0 00-5 5c0 2.1 1.3 3.9 3.2 4.6V17H8l4 5 4-5h-2.2v-5.4A5 5 0 0017 7a5 5 0 00-5-5zm0 2.5A2.5 2.5 0 119.5 7 2.5 2.5 0 0112 4.5z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       <div class="hud-corner hud-bl">
         <p class="hud-sign" id="walker-where" aria-live="polite">

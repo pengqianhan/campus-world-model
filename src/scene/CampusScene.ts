@@ -541,7 +541,7 @@ export class CampusScene {
   /** A click in a walker view: on a University building, or on the ground at a point. */
   onWalkPick?: (pick: { building?: string; at?: [number, number] }) => void;
   /** A click with the mouse in a walker view while the game is on. */
-  onGameClick?: (action: "strike" | "card") => void;
+  onGameClick?: (action: "strike" | "heavy") => void;
 
   constructor(container: HTMLElement, labelRoot: HTMLElement, opts: SceneOptions) {
     this.container = container;
@@ -2305,7 +2305,7 @@ export class CampusScene {
     const was = this.viewWalker;
     if (was) {
       this.walkers.figure(was)?.setHeadVisible(true);
-      this.walkers.figure(was)?.setRingVisible(true);
+      if (!this.game?.on) this.walkers.figure(was)?.setRingVisible(true);
       const drone = this.walkers.droneOf(was);
       if (drone) drone.root.visible = true;
     }
@@ -2375,7 +2375,8 @@ export class CampusScene {
     // Walked by hand, the view comes round to the way the walker goes, as in a game, unless a
     // finger or the mouse is turning it: so that forward on the stick is forward on the screen.
     // By the clock, so that it comes round on a renderer that takes a second or more a frame too.
-    const flying = pose.ride === "fly";
+    const vCam = this.game?.on ? this.game.vehicleCamera() : undefined;
+    const flying = pose.ride === "fly" || !!vCam?.flying;
     // In a fight the view from behind comes round onto the line from the foe through the walker,
     // so that both are in the picture: always for a foe locked on to and for the boss, and for
     // others unless the visitor turned the view in the last moments.
@@ -2456,7 +2457,18 @@ export class CampusScene {
       this.follow.yaw = (((this.follow.yaw - dh) % 360) + 360) % 360;
     }
     this.followHeading = pose.heading;
-    const swing = stickPace === undefined ? (this.walkers.handForward(this.viewWalker!) !== 0 ? 1 : 0) : stickPace > 0.3 ? ((1 + Math.cos(((this.view === "eyes" ? this.eyes.yaw : this.follow.yaw) * Math.PI) / 180)) / 2) ** 2 : 0;
+    const driving = !!this.game?.on && this.game.inVehicle();
+    const swing = driving
+      ? this.game!.vehicleMoving()
+        ? 1
+        : 0
+      : stickPace === undefined
+        ? this.walkers.handForward(this.viewWalker!) !== 0
+          ? 1
+          : 0
+        : stickPace > 0.3
+          ? ((1 + Math.cos(((this.view === "eyes" ? this.eyes.yaw : this.follow.yaw) * Math.PI) / 180)) / 2) ** 2
+          : 0;
     if (!framing && !snap && !this.drag && swing > 0) {
       const k = Math.exp(-dt * 2.5 * swing);
       if (this.view === "eyes") this.eyes.yaw = towardsAhead(this.eyes.yaw, k);
@@ -2465,12 +2477,14 @@ export class CampusScene {
     if (this.view === "eyes") {
       const yaw = ((pose.heading + this.eyes.yaw) * Math.PI) / 180;
       const pitch = (this.eyes.pitch * Math.PI) / 180;
-      this.persp.position.set(x, pose.eye, -y);
-      this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), pose.eye + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
+      const eyeY = pose.eye + (vCam?.lift ?? 0);
+      this.persp.position.set(x, eyeY, -y);
+      this.persp.lookAt(x + Math.sin(yaw) * Math.cos(pitch), eyeY + Math.sin(pitch), -y - Math.cos(yaw) * Math.cos(pitch));
     } else {
       const yaw = ((pose.heading + this.follow.yaw) * Math.PI) / 180;
       const up = (this.follow.elevation * Math.PI) / 180;
-      let d = this.follow.distance;
+      const aimY = pose.aim + (vCam?.lift ?? 0);
+      let d = vCam ? Math.max(this.follow.distance, vCam.distance) : this.follow.distance;
       // In a fight it stands back as far as it must for the walker and the whole of the foe: a boss is tall.
       if (focus && framing) {
         const ahead = (focus.at[0] - x) * Math.sin(yaw) + (focus.at[1] - y) * Math.cos(yaw);
@@ -2541,7 +2555,7 @@ export class CampusScene {
           const t = i / n;
           const p: [number, number] = [x + (back[0] - x) * t, y + (back[1] - y) * t];
           const under = Math.max(this.groundAt(p[0], p[1]), roofs?.at(p) ?? -Infinity);
-          if (under + 0.6 > pose.aim + 0.15 + Math.sin(up) * d * t) {
+          if (under + 0.6 > aimY + 0.15 + Math.sin(up) * d * t) {
             d = Math.max(1.2, (t * reach - 0.6) / Math.cos(up));
             blocked = true;
             break;
@@ -2554,7 +2568,7 @@ export class CampusScene {
           blocked = true;
         }
       }
-      let cy = pose.aim + 0.15 + Math.sin(up) * d;
+      let cy = aimY + 0.15 + Math.sin(up) * d;
       // In a fight, a wall that brings the camera in sends it up as well, to see over the walker to its foe.
       if (blocked && fk > 0) cy += Math.min(FIGHT_WALL_RISE, Math.max(0, wantD - d) * 0.6) * fk;
       const side = nudge ? nudge.side * SHOULDER : 0;
@@ -2600,7 +2614,7 @@ export class CampusScene {
           p.y = Math.max(p.y, this.groundAt(c[0], c[1]) + 0.8);
         }
       }
-      const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, pose.aim, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
+      const look = this.fightLook.set(x + Math.sin(yaw) * 2 + Math.cos(yaw) * side * 0.35, aimY, -y - Math.cos(yaw) * 2 + Math.sin(yaw) * side * 0.35);
       if (fight.k > 0) {
         // Looking at the pitch that centres the walker and the foe from where the camera is now, so
         // that they stay framed while it glides, or when a wall has brought it in.
@@ -2675,6 +2689,25 @@ export class CampusScene {
       jump: (name) => this.walkers.jump(name),
       jumpable: (name, can) => this.walkers.setJumpable(name, can),
       pen: (name, on) => this.walkers.figure(name)?.setPen(on),
+      ring: (name, on) => this.walkers.figure(name)?.setRingVisible(on),
+      bodyVisible: (name, on) => {
+        const fig = this.walkers.figure(name);
+        if (!fig) return;
+        fig.root.visible = on;
+        fig.changedNow();
+      },
+      scooterPose: (name, on, speed, turnRate, dt) => {
+        const fig = this.walkers.figure(name);
+        if (!fig) return;
+        fig.setGameScooter(on, speed, turnRate, dt);
+        if (fig.takeChanged() || on) this.needsRender = true;
+      },
+      context: () => this.lastContext,
+      drivePose: (name, at, heading) => {
+        this.walkers.teleport(name, at);
+        this.walkers.turn(name, heading, true, true);
+        this.needsRender = true;
+      },
       teleport: (name, at, heading) => {
         this.walkers.teleport(name, at);
         this.walkers.turn(name, heading, true, true);
@@ -2881,9 +2914,9 @@ export class CampusScene {
       const drag = this.drag;
       this.drag = undefined;
       this.renderer.domElement.style.cursor = "grab";
-      // In the game a click with the mouse strikes (the right button throws a flashcard), rather than sending the walker.
+      // In the game, left-click throws a fast punch/swing and right-click throws a heavy knockdown blow.
       if (drag && !drag.moved && this.game?.on && e.pointerType === "mouse" && (e.button === 0 || e.button === 2)) {
-        this.onGameClick?.(e.button === 0 ? "strike" : "card");
+        this.onGameClick?.(e.button === 0 ? "strike" : "heavy");
         return;
       }
       if (drag && !drag.moved && e.button === 0) {

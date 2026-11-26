@@ -1,47 +1,42 @@
-// The difficulty curve, guarded: a fast run of the headless playtest bot (scripts/playtest/bot.ts)
-// over Study Quest's rules. The full report, with many more runs, is scripts/playtest/report.ts.
+// The Round 2 open-world difficulty curve, guarded: a fast run of the headless playtest bot
+// (scripts/playtest/bot.ts) through all 4 story jobs (groupProject -> pizzaExpress -> turfTable -> lateSubmission).
 import { describe, expect, it } from "vitest";
-import { RANKS } from "../src/shared/game.ts";
 import { playMany, quantile, summarise } from "../scripts/playtest/bot.ts";
 
-describe("the difficulty curve, as the playtest bot plays it", () => {
-  const average = playMany("average", 10, { maxSeconds: 1200 });
-  const novice = playMany("novice", 8, { maxSeconds: 1800 });
-  const expert = playMany("expert", 8, { maxSeconds: 1200 });
+describe("the Round 2 open-world difficulty curve, as the playtest bot plays it", () => {
+  const average = playMany("average", 6, { maxSeconds: 600 });
+  const novice = playMany("novice", 5, { maxSeconds: 600 });
+  const expert = playMany("expert", 5, { maxSeconds: 600 });
 
-  it("brings an average player to the Final Exam in about eight to twelve minutes", () => {
-    const s = summarise(average);
-    expect(s.reachBoss).toBe(1);
-    expect(s.bossMin![0]).toBeGreaterThanOrEqual(7.5);
-    expect(s.bossMin![0]).toBeLessThanOrEqual(12);
+  it("lets average and expert players complete all 4 story jobs cleanly", () => {
+    const sa = summarise(average);
+    const se = summarise(expert);
+    expect(sa.victory).toBe(1);
+    expect(se.victory).toBe(1);
+    expect(sa.bossMin![0]).toBeLessThanOrEqual(6);
   });
 
-  it("raises an average player's rank every minute and a half to two and a half, early on", () => {
-    for (let k = 1; k <= 3; k++) {
-      const gap = quantile(
-        average.map((r) => r.rankAt[k]! - r.rankAt[k - 1]!),
-        0.5,
-      )! / 60;
-      expect(gap, RANKS[k]!.id).toBeGreaterThanOrEqual(1.2);
-      expect(gap, RANKS[k]!.id).toBeLessThanOrEqual(3);
-    }
+  it("raises ranks steadily across the story arc", () => {
+    const sa = summarise(average);
+    expect(sa.rankMin[1]).toBeDefined();
+    expect(sa.rankMin[1]!).toBeGreaterThan(0);
+    expect(sa.rankMin[1]!).toBeLessThanOrEqual(4);
   });
 
-  it("never leaves an average player a minute and a half with nothing happening", () => {
-    expect(quantile(average.map((r) => r.maxIdle), 0.5)!).toBeLessThanOrEqual(90);
+  it("never leaves an average player over a minute with nothing happening", () => {
+    expect(quantile(average.map((r) => r.maxIdle), 0.5)!).toBeLessThanOrEqual(60);
   });
 
-  it("lets a novice reach the boss, with a few defeats on the way", () => {
-    const s = summarise(novice);
-    expect(s.reachBoss).toBeGreaterThanOrEqual(0.75);
-    const before = novice.map((r) => Object.entries(r.deaths).reduce((n, [k, v]) => n + (k === "finalExam" ? 0 : v), 0));
-    expect(before.reduce((a, b) => a + b, 0) / before.length).toBeLessThanOrEqual(5);
+  it("lets a novice complete the story with at most a few retries", () => {
+    const sn = summarise(novice);
+    expect(sn.victory).toBeGreaterThanOrEqual(0.8);
+    expect(sn.deathsTotal).toBeLessThanOrEqual(4);
   });
 
-  it("keeps the A+ for an expert's clean run: none with a defeat, and few for an average player", () => {
+  it("rewards clean expert runs with A+ grades and higher cash than deaths", () => {
     const won = [...expert, ...average].filter((r) => r.victory);
     expect(won.filter((r) => r.deathCount > 0 && r.grade === "A+")).toHaveLength(0);
     expect(expert.filter((r) => r.victory && r.deathCount === 0 && r.grade === "A+").length).toBeGreaterThan(0);
-    expect(average.filter((r) => r.grade === "A+").length).toBeLessThanOrEqual(average.length / 4);
+    expect(expert.every((r) => r.cash > 900)).toBe(true);
   });
 });

@@ -1,11 +1,9 @@
-// Study Quest's panels over the walk: the title card, the quest tracker, the walker's Focus and
-// Stamina and its study rank, the skills, the boss's bar, the big words high in the middle, the pause
-// menu, the study record and the debrief with its grade. It reads the game ten times a second; the
-// marks that move with the picture are drawn by the scene (gameOverlay.ts). On a phone it keeps the
-// view clear: small panels in the corners, and big buttons under the right thumb. Nothing is
-// explained in words: the first minute teaches by play, with one small prompt (a key, or the
-// button itself) the first time each action is needed. Everything in the game is made up, and the
-// title card, the menu and the debrief say so.
+// Harbour-Night GTA HUD for Study Quest:
+// Top-left 200px circular radar with Health/Energy/Stamina arcs, top-right Wanted Stars, Cash &
+// Weapon/Pizza slot, top-center Timer & Radio ticker, bottom-center Prompt/Subtitles/Objective,
+// bottom-right Campus Zone/Street blade & Speedometer, slide-in Phone drawer [T], Toast notes,
+// and Harbour-Night Start/Pause/Debrief overlays.
+// Strict i18n: every UI string and aria-label uses the locale dictionary.
 import { useEffect, useRef, useState } from "preact/hooks";
 import {
   gameAct,
@@ -15,7 +13,6 @@ import {
   gameFeed,
   gameMenu,
   gameNewBest,
-  gameQuestFlash,
   gameSettings,
   gameTitle,
   gameView,
@@ -32,49 +29,58 @@ import { sfx } from "../app/gameAudio.ts";
 import { t } from "../app/i18n.ts";
 import type { GameView } from "../scene/game.ts";
 import { FOE_KINDS, GRADE, GRADE_FACTORS, RANKS, SKILLS, gradeFactors, type Lesson, type SkillId } from "../shared/game.ts";
+import {
+  GameRadar,
+  type GtaBannerCard,
+  type GtaHudView,
+  type GtaNote,
+  type GtaPhoneCmd,
+  type GtaPhoneJob,
+  type GtaRadarBlip,
+  type OpenWorldHudView,
+} from "./GameRadar.tsx";
 
-const ROMAN = ["I", "II", "III"];
+const STAR_PATH = "M12 2.4l2.86 6.2 6.74.72-5.04 4.56 1.42 6.66L12 17.1l-5.98 3.44 1.42-6.66L2.4 9.32l6.74-.72z";
+const SPEAKER_COLORS = ["#ffcb2e", "#2de2d0", "#ff7aa8", "#9db8ff", "#5cf28c", "#ff9f43", "#c38bff"];
 
-/** Small drawn icons for the skills: a highlighter, a sidestep, a flashcard, a sprint, a light bulb. */
 const SKILL_ICON: Record<SkillId, string> = {
   strike: "M5 19l3-1 11-11-2-2L6 16l-1 3zm11.5-13.5l2 2 1.2-1.2a1 1 0 000-1.4l-.6-.6a1 1 0 00-1.4 0L16.5 5.5z",
   dodge: "M4 12l5-5v3h6V7l5 5-5 5v-3H9v3l-5-5z",
-  flashcard: "M3 7l12-3 3 12-12 3L3 7zm4 1.5l1 4 6-1.5-1-4-6 1.5z",
+  flashcard: "M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm8 2.2c-2-.9-4.5-.8-6.5.2v9.8c2-.9 4.5-1 6.5-.1V6.2zm1.5 0v9.9c2-.9 4.5-.8 6.5.1V6.4c-2-1-4.5-1.1-6.5-.2z",
   sprint: "M4 6l6 6-6 6V6zm7 0l6 6-6 6V6zm7 0h2v12h-2V6z",
   eureka: "M12 2a6 6 0 00-3.5 10.9V16h7v-3.1A6 6 0 0012 2zm-3 16h6v2H9v-2zm1 3h4v1h-4v-1z",
 };
-/** The dodge and the Cram Sprint are a tap of Shift (held, Shift runs); Space jumps. */
-const SKILL_KEY: Record<SkillId, string> = { strike: "J", dodge: "Shift", flashcard: "K", sprint: "Shift", eureka: "R" };
-/** The jump's icon: an arrow up off a line, for its button on a phone and its prompt. */
 const JUMP_ICON = "M12 3l6.5 6.5h-4.2V15H9.7V9.5H5.5L12 3zM5 18h14v2.5H5V18z";
 
-/** Each lesson's keys, and the skill whose button it points to on a phone (none: the stick, or for the jump its own button). */
-const LESSON_KEYS: Record<Lesson, string[]> = { move: ["W", "A", "S", "D"], strike: ["J"], dodge: ["Shift"], jump: ["Space"], flashcard: ["K"], sprint: ["Shift"], eureka: ["R"] };
-const LESSON_SKILL: Record<Lesson, SkillId | undefined> = { move: undefined, strike: "strike", dodge: "dodge", jump: undefined, flashcard: "flashcard", sprint: "sprint", eureka: "eureka" };
+const LESSON_KEY: Record<Lesson, string> = {
+  move: "WASD",
+  strike: "J",
+  dodge: "Shift",
+  jump: "Space",
+  flashcard: "K",
+  sprint: "Shift",
+  eureka: "R",
+};
 
-/**
- * The prompt for the action needed now, the first time it is: its key or keys and one word; on a
- * phone the button's own icon beside the button (which pulses), or by the stick to move.
- */
-function Prompt({ lesson, touch }: { lesson: Lesson; touch: boolean }) {
-  const skill = LESSON_SKILL[lesson];
-  const jump = lesson === "jump";
-  return (
-    <div class={`sq-prompt ${touch ? (skill || jump ? "at-pad" : "at-stick") : ""}`} key={lesson} id="game-prompt" data-lesson={lesson} role="status">
-      {touch ? (
-        <span class="sq-prompt-ic" aria-hidden="true">
-          {jump ? <JumpIcon size={18} /> : skill ? <SkillIcon id={skill} size={18} /> : <i class="sq-stick-ic" />}
-        </span>
-      ) : (
-        <span class="sq-prompt-keys" aria-hidden="true">
-          {LESSON_KEYS[lesson].map((k) => (
-            <kbd class={k.length > 1 ? "wide" : ""}>{k}</kbd>
-          ))}
-        </span>
-      )}
-      <span class="sq-prompt-word">{t(`game.prompt.${lesson}`)}</span>
-    </div>
-  );
+const NOTE_GLYPH: Record<NonNullable<GtaNote["icon"]>, string> = {
+  phone: "☎",
+  cash: "$",
+  star: "★",
+  mission: "!",
+  pizza: "▲",
+  scooter: "⚡",
+  security: "★",
+};
+
+type GameViewWithGta = GameView & { gta?: GtaHudView; openWorld?: OpenWorldHudView };
+
+function fmtMoney(n: number): string {
+  return Math.round(n).toLocaleString("en-NZ");
+}
+
+function fmtClock(seconds: number): string {
+  const s = Math.max(0, Math.ceil(seconds));
+  return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
 function JumpIcon({ size = 22 }: { size?: number }) {
@@ -93,217 +99,610 @@ function SkillIcon({ id, size = 22 }: { id: SkillId; size?: number }) {
   );
 }
 
-function clock(seconds: number): string {
-  const s = Math.floor(seconds);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
-
-/** A bar that fills, with a pale chip that follows it down a moment later, as a game's bars do. `label` names it to a screen reader. */
-function Bar({ value, max, cls, id, label }: { value: number; max: number; cls: string; id?: string; label: string }) {
-  const k = Math.max(0, Math.min(1, value / Math.max(1, max)));
-  return (
-    <span class={`sq-bar ${cls}`} id={id} role="meter" aria-label={label} aria-valuemin={0} aria-valuemax={Math.round(max)} aria-valuenow={Math.round(value)}>
-      <i class="chip" style={{ transform: `scaleX(${k})` }} />
-      <i class="fill" style={{ transform: `scaleX(${k})` }} />
-    </span>
-  );
-}
-
-function Tracker({ v, touch }: { v: GameView; touch: boolean }) {
-  const flash = gameQuestFlash.value;
-  const [hot, setHot] = useState(false);
-  useEffect(() => {
-    if (!flash) return;
-    setHot(true);
-    const id = window.setTimeout(() => setHot(false), 900);
-    return () => window.clearTimeout(id);
-  }, [flash]);
-  const main = v.quests.find((q) => q.main);
-  const sides = touch ? [] : v.quests.filter((q) => !q.main);
-  if (!main && !sides.length) return null;
-  const line = (q: GameView["quests"][number], big: boolean) => (
-    <div class={`sq-q ${big ? "main" : "side"}`} key={q.id} data-quest={q.key}>
-      {big && <span class="sq-eyebrow">{t("game.mainQuest")}</span>}
-      <strong class="sq-q-title">{questTitle(q)}</strong>
-      <span class="sq-q-goal">
-        <span>{questGoal(q)}</span>
-        {q.need > 1 && (
-          <span class="sq-pips" aria-label={`${q.got} / ${q.need}`}>
-            {Array.from({ length: q.need }, (_, k) => (
-              <i class={k < q.got ? "on" : ""} />
-            ))}
-          </span>
-        )}
-        {q.metres !== undefined && q.metres > 5 && (
-          <span class="sq-q-far">
-            <span class="sq-arrow" style={{ transform: `rotate(${Math.round(q.bearing ?? 0)}deg)` }} aria-hidden="true">
-              ▲
-            </span>
-            {t("game.metres", { metres: Math.round(q.metres) })}
-          </span>
-        )}
-      </span>
-    </div>
-  );
-  return (
-    <section class={`sq-obj ${hot ? "flash" : ""}`} id="game-quests" aria-label={t("game.quests")}>
-      {main && line(main, true)}
-      {sides.length > 0 && <span class="sq-eyebrow side">{t("game.sideQuests")}</span>}
-      {sides.map((q) => line(q, false))}
-    </section>
-  );
-}
-
-function Vitals({ v }: { v: GameView }) {
-  const span = (v.nextXp ?? v.xp) - v.rankXp;
-  return (
-    <section class={`sq-vitals ${v.focus < v.maxFocus * 0.3 ? "crit" : ""}`} id="game-vitals" aria-label={t("game.vitals")}>
-      <div class="sq-rank">
-        <span class="sq-badge" aria-hidden="true">
-          <span>{v.rank + 1}</span>
-        </span>
-        <span class="sq-rank-text">
-          <b id="game-rank">{rankName(v.rank)}</b>
-          <span class="sq-xp-line">
-            <Bar value={span > 0 ? v.xp - v.rankXp : 1} max={span > 0 ? span : 1} cls="xp" label={t("game.stat.knowledge")} />
-            <em>{v.nextXp !== undefined ? `${v.xp} / ${v.nextXp}` : `${v.xp}`}</em>
-          </span>
-        </span>
-      </div>
-      <div class="sq-stat">
-        <span class="sq-k">{t("game.stat.focus")}</span>
-        <Bar value={v.focus} max={v.maxFocus} cls="focus" id="game-focus" label={t("game.stat.focus")} />
-        <span class="sq-n">{Math.ceil(v.focus)}</span>
-      </div>
-      <div class="sq-stat">
-        <span class="sq-k">{t("game.stat.stamina")}</span>
-        <Bar value={v.stamina} max={v.maxStamina} cls="stamina" label={t("game.stat.stamina")} />
-        {v.slowed && <span class="sq-tag slow">{t("game.slowed")}</span>}
-      </div>
-    </section>
-  );
-}
-
-function Skills({ v, touch }: { v: GameView; touch: boolean }) {
-  // The dodge becomes the Cram Sprint at its rank; the slot shows whichever the walker has.
-  const sprint = v.skills.find((s) => s.id === "sprint")!;
-  const slots = v.skills.filter((s) => s.id !== (sprint.open ? "dodge" : "sprint"));
-  if (touch) {
+function WeaponIcon({ weapon }: { weapon: "fists" | "textbook" }) {
+  if (weapon === "textbook") {
     return (
-      <div class="sq-pad" role="group" aria-label={t("game.skills")}>
-        {slots.map((s) => (
-          <button
-            type="button"
-            class={`sq-btn sk-${s.id} ${s.open ? "" : "locked"} ${s.id === "eureka" && s.ready >= 1 ? "full" : ""}`}
-            id={`game-${s.id}`}
-            aria-label={t(`game.skill.${s.id}.name`)}
-            disabled={!s.open}
-            style={{ "--cd": String(s.ready) }}
-            onPointerDown={(e) => {
-              e.preventDefault();
-              gameAct(s.id === "flashcard" ? "card" : s.id === "sprint" ? "dodge" : (s.id as "strike" | "dodge" | "eureka"));
-            }}
-          >
-            <SkillIcon id={s.id} size={s.id === "strike" ? 34 : 24} />
-          </button>
-        ))}
-        {/* The jump, beside the strike: not a skill of a rank, always there. */}
-        <button
-          type="button"
-          class="sq-btn sk-jump"
-          id="game-jump"
-          aria-label={t("game.jump")}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            gameAct("jump");
-          }}
-        >
-          <JumpIcon size={26} />
-        </button>
-      </div>
+      <svg class="g-weapon-icon" viewBox="0 0 64 24" aria-hidden="true">
+        <rect x="14" y="4" width="36" height="16" rx="2.5" fill="currentColor" />
+        <path d="M22 4v16M27 8h18M27 12h14" stroke="#05080f" stroke-width="1.8" fill="none" />
+      </svg>
     );
   }
   return (
-    <section class="sq-skills" aria-label={t("game.skills")}>
-      {slots.map((s) => (
-        <div class={`sq-skill ${s.open ? "" : "locked"} ${s.id === "eureka" && s.ready >= 1 ? "full" : ""}`} title={t(`game.skill.${s.id}.desc`)} style={{ "--cd": String(s.ready) }} data-skill={s.id}>
-          <span class="sq-skill-ic">
-            <SkillIcon id={s.id} />
-          </span>
-          <kbd>{SKILL_KEY[s.id]}</kbd>
-          <span class="sq-skill-name">{s.open ? t(`game.skill.${s.id}.short`) : rankName(s.rank)}</span>
-        </div>
-      ))}
-    </section>
+    <svg class="g-weapon-icon" viewBox="0 0 64 24" aria-hidden="true">
+      <path d="M21 4.5h15.5a6.5 6.5 0 0 1 6.5 6.5v1.5a6.5 6.5 0 0 1-6.5 6.5H30l-3.4 3H20a2 2 0 0 1-2-2V6.5a2 2 0 0 1 3-2z" fill="currentColor" />
+      <path d="M11 9h6.5v8.5H11z" fill="currentColor" />
+      <path d="M24.6 4.8v7.4M30.4 4.8v7.4M36.2 5.2v7M18.4 12.6h9" stroke="#05080f" stroke-width="1.5" fill="none" />
+    </svg>
   );
 }
 
-function BossBar({ v }: { v: GameView }) {
-  const b = v.boss;
-  if (!b) return null;
+function SliceIcon({ size = 14 }: { size?: number }) {
   return (
-    // Low in the middle, clear of the boss itself: its name over a wide bar, notches where its
-    // phases begin, and the phase it is in under the bar.
-    <section class={`sq-boss phase-${b.phase}`} id="game-boss" aria-label={t("game.foe.exam.name")}>
-      <div class="sq-boss-head">
-        <b>{t("game.foe.exam.name")}</b>
-        <span class="sq-boss-title">{t("game.foe.exam.title")}</span>
-      </div>
-      <div class="sq-boss-track">
-        <Bar value={b.hp} max={b.max} cls="boss" label={t("game.foe.exam.name")} />
-        <i class="sq-boss-notch" style={{ left: "33%" }} />
-        <i class="sq-boss-notch" style={{ left: "66%" }} />
-      </div>
-      <div class="sq-boss-foot">
-        <span class="sq-boss-phase">
-          {ROMAN.map((r, k) => (
-            <i class={k < b.phase ? "on" : ""}>{r}</i>
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <path
+        d="M12 2C7.8 2 4.1 3.7 2 6.5L12 22 22 6.5C19.9 3.7 16.2 2 12 2zm0 3.2c2.8 0 5.3 1 7 2.6l-.9 1.4c-1.5-1.3-3.7-2-6.1-2s-4.6.7-6.1 2L5 7.8c1.7-1.6 4.2-2.6 7-2.6zm-2 6.3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm4 2a1.3 1.3 0 110 2.6 1.3 1.3 0 010-2.6z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+function PhoneIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+      <rect x="6.5" y="2" width="11" height="20" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.9" />
+      <path d="M10 18.5h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  );
+}
+
+function mapLegacyBlip(b: OpenWorldHudView["blips"][number]): GtaRadarBlip {
+  return { x: b.x, y: b.y, kind: b.kind };
+}
+
+/** Builds a GtaHudView from GameView + legacy OpenWorldHudView if `v.gta` is not yet provided. */
+function resolveGta(v: GameViewWithGta): GtaHudView {
+  if (v.gta) return v.gta;
+  const ow = v.openWorld;
+  const main = v.quests.find((q) => q.main);
+  const act = ow?.activity;
+  const objective = act
+    ? `${t(`game.activity.${act.key}.title`)} · ${t(`game.activity.${act.key}.${act.stage}`)}`
+    : main
+      ? `${questTitle(main)} · ${questGoal(main)}`
+      : undefined;
+  const prompt = ow?.nearSpot
+    ? {
+        key: t("game.hud.sliceKey"),
+        text: t(ow.nearSpot.kind === "pizzaCart" ? "game.openWorld.spotPizza" : "game.openWorld.spotClub", { place: ow.nearSpot.placeName }),
+        action: "interact",
+      }
+    : v.lesson
+      ? { key: LESSON_KEY[v.lesson], text: t(`game.prompt.${v.lesson}`) }
+      : undefined;
+
+  return {
+    health: v.focus,
+    maxHealth: v.maxFocus,
+    armour: ow && ow.pizzaBuff > 0 ? Math.round(ow.pizzaBuff * 100) : 0,
+    maxArmour: 100,
+    stamina: v.stamina,
+    maxStamina: v.maxStamina,
+    wanted: ow?.heat ?? 0,
+    wantedMax: 5,
+    evading: false,
+    cash: ow?.cred ?? 0,
+    weapon: v.skills.some((s) => s.id === "flashcard" && s.open) ? "textbook" : "fists",
+    hasTextbook: v.skills.some((s) => s.id === "flashcard" && s.open),
+    pizzaSlices: ow?.pizzasEaten ?? 0,
+    pizzaBuffSec: ow?.pizzaSeconds ?? 0,
+    yaw: ow?.yaw ?? 0,
+    buildings: ow?.buildings ?? [],
+    blips: (ow?.blips ?? []).map(mapLegacyBlip),
+    timer: act?.timer !== undefined ? { seconds: act.timer, label: t(`game.activity.${act.key}.title`), urgent: act.timer <= 10 } : undefined,
+    prompt,
+    objective,
+    place: main?.place ? { zone: main.place } : undefined,
+  };
+}
+
+function sendPhoneAction(gta: GtaHudView, cmd: GtaPhoneCmd): void {
+  if (gta.onPhoneAction) {
+    gta.onPhoneAction(cmd);
+    return;
+  }
+  window.dispatchEvent(new CustomEvent("sq:phone", { detail: cmd }));
+}
+
+function WantedAndCash({
+  gta,
+  phoneOpen,
+  onTogglePhone,
+  touch,
+}: {
+  gta: GtaHudView;
+  phoneOpen: boolean;
+  onTogglePhone: () => void;
+  touch: boolean;
+}) {
+  const [delta, setDelta] = useState<{ sum: number; shown: boolean }>({ sum: 0, shown: false });
+  const prevCash = useRef<number | undefined>(undefined);
+  const timerRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (prevCash.current === undefined) {
+      prevCash.current = gta.cash;
+      return;
+    }
+    const diff = gta.cashDelta !== undefined && gta.cashDeltaKey !== undefined ? gta.cashDelta : gta.cash - prevCash.current;
+    prevCash.current = gta.cash;
+    if (!diff) return;
+    setDelta((d) => ({ sum: d.shown ? d.sum + diff : diff, shown: true }));
+    window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setDelta({ sum: 0, shown: false }), 2600);
+  }, [gta.cash, gta.cashDelta, gta.cashDeltaKey]);
+
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+
+  const maxStars = Math.max(1, Math.min(5, gta.wantedMax ?? 5));
+  const wantedLevel = Math.max(0, Math.min(maxStars, Math.round(gta.wanted)));
+  const arrest = Math.max(0, Math.min(1, gta.arrestProgress ?? 0));
+  const showWeapon = !gta.vehicle;
+
+  return (
+    <div class="g-corner g-tr">
+      {showWeapon && (
+        <div class="g-weapon is-shown" data-kind={gta.weapon}>
+          <WeaponIcon weapon={gta.weapon} />
+          <div class="g-weapon-meta">
+            <span class="g-weapon-name">{t(`game.weapon.${gta.weapon}`)}</span>
+            {gta.hasTextbook && (
+              <span class="g-weapon-pips" aria-hidden="true">
+                <i class={gta.weapon === "fists" ? "is-on" : ""} />
+                <i class={gta.weapon === "textbook" ? "is-on" : ""} />
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            class={`g-slice-pill ${gta.pizzaSlices > 0 ? "has-slice" : ""} ${(gta.pizzaBuffSec ?? 0) > 0 ? "is-buff" : ""}`}
+            aria-label={t("game.hud.slicesTitle", { count: gta.pizzaSlices })}
+            onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "g", bubbles: true }))}
+          >
+            <SliceIcon size={13} />
+            <b>{t("game.hud.slices", { count: gta.pizzaSlices })}</b>
+            {gta.pizzaSlices > 0 && !touch && <kbd class="g-kbd">{t("game.hud.sliceKey")}</kbd>}
+            {(gta.pizzaBuffSec ?? 0) > 0 && <em>{t("game.hud.sliceBuff", { seconds: Math.ceil(gta.pizzaBuffSec!) })}</em>}
+          </button>
+        </div>
+      )}
+
+      <div class="g-trcol">
+        <div
+          class={`g-wanted is-shown ${wantedLevel > 0 ? "is-active" : ""} ${gta.evading && wantedLevel > 0 ? "is-evading" : ""}`}
+          id="game-heat"
+          role="img"
+          aria-label={t("game.hud.wantedLevel", { level: wantedLevel })}
+        >
+          {Array.from({ length: maxStars }, (_, i) => (
+            <svg class={`g-star ${i < wantedLevel ? "is-on" : ""}`} viewBox="0 0 24 24" aria-hidden="true" key={i}>
+              <path d={STAR_PATH} />
+            </svg>
           ))}
-        </span>
-        <span class="sq-boss-sub">{t(`game.phase.${b.phase}.name`)}</span>
+        </div>
+
+        <div class={`g-arrest ${arrest > 0 ? "is-on" : ""}`}>
+          <span class="g-arrest-label">{t("game.hud.cuffs")}</span>
+          <span class="g-arrest-bar">
+            <span style={{ transform: `scaleX(${arrest})` }} />
+          </span>
+        </div>
+
+        <div class="g-money" id="game-cred">
+          <span class="g-cur">{t("game.hud.currency")}</span>
+          <span class="g-amt">{fmtMoney(gta.cash)}</span>
+        </div>
+
+        <div class={`g-delta ${delta.shown ? "is-on" : ""}`} data-sign={delta.sum >= 0 ? "up" : "down"}>
+          {delta.shown ? `${delta.sum >= 0 ? "+" : "−"}${t("game.hud.currency")}${fmtMoney(Math.abs(delta.sum))}` : ""}
+        </div>
       </div>
-    </section>
-  );
-}
 
-function CardView() {
-  const b = gameCard.value;
-  if (!b) return null;
-  return (
-    <div class={`sq-card ${b.kind}`} key={b.id} id="game-namecard" role="status">
-      <span class="sq-card-eyebrow">{t(b.kind === "boss" ? "game.bossEyebrow" : "game.foeEyebrow")}</span>
-      <strong>{b.title}</strong>
-      {b.sub && <span class="sq-card-sub">{b.sub}</span>}
-      {b.quote && <q>{b.quote}</q>}
+      <div class="g-tr-actions">
+        <button
+          type="button"
+          class={`g-tr-btn g-phone-btn ${phoneOpen ? "is-open" : ""}`}
+          id="game-phone-btn"
+          aria-label={t("game.phone.open")}
+          aria-expanded={phoneOpen}
+          onClick={onTogglePhone}
+        >
+          <PhoneIcon size={18} />
+          {!touch && <kbd class="g-kbd">{t("game.phone.key")}</kbd>}
+          {gta.phoneUnread && <i class="g-unread-dot" aria-hidden="true" />}
+        </button>
+
+        <button
+          type="button"
+          class="g-tr-btn g-pause-btn"
+          id="game-pause"
+          aria-label={t("game.hud.pause")}
+          onClick={() => setMenu("pause")}
+        >
+          <i aria-hidden="true" />
+          <i aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }
 
-function BannerView() {
-  const b = gameBanner.value;
-  if (!b) return null;
+function TopCenter({ gta }: { gta: GtaHudView }) {
+  if (!gta.timer && !gta.radio) return null;
+  const urgent = gta.timer ? gta.timer.urgent ?? gta.timer.seconds <= 10 : false;
   return (
-    <div class={`sq-banner ${b.kind}`} key={b.id} id="game-banner" role="status">
-      {b.kind === "rank" && <span class="sq-banner-eyebrow">{t("game.rankUp")}</span>}
-      {b.kind === "phase" && <span class="sq-banner-eyebrow">{t("game.foe.exam.name")}</span>}
-      <strong>{b.title}</strong>
-      {b.sub && <span>{b.sub}</span>}
+    <div class="g-tc">
+      {gta.timer && (
+        <div class={`g-timer ${urgent ? "is-urgent" : ""}`}>
+          {gta.timer.label && <span class="g-timer-label">{gta.timer.label}</span>}
+          <span class="g-timer-time">{fmtClock(gta.timer.seconds)}</span>
+        </div>
+      )}
+      {gta.radio && (
+        <div class={`g-radio ${gta.radio.off ? "is-off" : ""}`} key={gta.radio.key ?? gta.radio.id}>
+          <span class="g-radio-kicker">
+            <kbd class="g-kbd">{t("game.hud.radioKey")}</kbd> {t("game.hud.radio")}
+          </span>
+          <b class="g-radio-name">{gta.radio.off ? t("game.hud.radioOff") : gta.radio.name}</b>
+          {gta.radio.genre && !gta.radio.off && <span class="g-radio-genre">{gta.radio.genre}</span>}
+        </div>
+      )}
     </div>
   );
 }
 
-function Feed() {
-  const lines = gameFeed.value;
-  if (!lines.length) return null;
+function BottomCenter({ gta, touch }: { gta: GtaHudView; touch: boolean }) {
+  const speakerColor = gta.subtitle ? SPEAKER_COLORS[(gta.subtitle.colorIdx ?? 0) % SPEAKER_COLORS.length] : undefined;
   return (
-    <div class="sq-feed" aria-live="polite">
-      {lines.map((l) => (
-        <div class={`sq-fl ${l.kind}`} key={l.id}>
-          {l.kind === "kill" && <span class="sq-fl-k">{t("game.feed.beaten")}</span>}
-          <b>{l.text}</b>
-          {l.value && <em>{l.value}</em>}
+    <div class="g-bc">
+      {gta.prompt && (
+        <button
+          type="button"
+          class="g-prompt"
+          id="game-prompt"
+          data-lesson={gta.prompt.action ?? "prompt"}
+          onClick={() => {
+            const k = gta.prompt?.key?.toLowerCase();
+            if (k && k.length === 1) window.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true }));
+          }}
+        >
+          {!touch && gta.prompt.key && <kbd class="g-kbd">{gta.prompt.key}</kbd>}
+          <span>{gta.prompt.text}</span>
+        </button>
+      )}
+      {gta.subtitle && (
+        <div class="g-sub" id="game-sub" role="status">
+          {gta.subtitle.who && (
+            <b class="g-sub-who" style={{ color: speakerColor }}>
+              {gta.subtitle.who}
+            </b>
+          )}
+          <span>{gta.subtitle.text}</span>
+        </div>
+      )}
+      {gta.objective && (
+        <div class="g-objective" id="game-objective">
+          <span class="g-objective-kicker">{t("game.hud.objective")}</span>
+          <span class="g-objective-text">{gta.objective}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BottomRight({ gta }: { gta: GtaHudView }) {
+  const v = gta.vehicle;
+  const p = gta.place;
+  if (!v && !p?.zone && !p?.street) return null;
+  const gearText = v
+    ? v.kind === "mecha"
+      ? v.gear
+      : v.kind === "scooter"
+        ? t("game.hud.gearE")
+        : v.gear === "R"
+          ? t("game.hud.gearR")
+          : v.gear === "N"
+            ? t("game.hud.gearN")
+            : t("game.hud.gear", { gear: v.gear })
+    : "";
+  const rpm = Math.max(0, Math.min(1, v?.rpm ?? 0));
+  const vhp = Math.max(0, Math.min(1, v?.health ?? 1));
+  return (
+    <div class="g-corner g-br">
+      {(p?.zone || p?.street) && (
+        <div class={`g-place is-on ${!p.zone ? "is-street" : ""}`} id="game-place">
+          {p.zone && <div class="g-place-name">{p.zone}</div>}
+          {p.street && <div class="g-place-street">{p.street}</div>}
+        </div>
+      )}
+      {v && (
+        <>
+          <div class="g-vehname is-on">{v.name}</div>
+          <div class="g-speedo is-on" id="game-speedo">
+            <div class="g-speed-row">
+              <span class="g-speed">{Math.round(v.kmh)}</span>
+              <span class="g-unit">{t("game.hud.kmh")}</span>
+            </div>
+            <div class={`g-rev ${v.kind !== "scooter" && rpm > 0.9 ? "is-red" : ""}`}>
+              <span class="g-rev-fill" style={{ transform: `scaleX(${rpm})` }} />
+            </div>
+            <div class="g-speed-meta">
+              <span class="g-gear">{gearText}</span>
+              {v.kind !== "scooter" && (
+                <span class="g-vdmg" data-state={v.state ?? "ok"}>
+                  <span>{t("game.hud.body")}</span>
+                  <span class="g-vdmg-bar">
+                    <span style={{ transform: `scaleX(${vhp})` }} />
+                  </span>
+                </span>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function Notes({ gta }: { gta: GtaHudView }) {
+  const feed = gameFeed.value;
+  const notes: GtaNote[] = gta.notes
+    ? [...gta.notes].slice(0, 3)
+    : feed.slice(-3).map((l) => ({
+        id: l.id,
+        icon: l.kind === "kill" ? "star" : "mission",
+        title: l.text,
+        text: l.value,
+      }));
+  return (
+    <div class="g-notes" aria-live="polite">
+      {notes.map((n) => (
+        <div class="g-note" key={n.id}>
+          <div class="g-note-icon" aria-hidden="true">
+            {n.icon ? NOTE_GLYPH[n.icon] : "!"}
+          </div>
+          <div class="g-note-body">
+            <b class="g-note-title">{n.title}</b>
+            {n.text && <p class="g-note-text">{n.text}</p>}
+          </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function PhoneDrawer({ gta, onClose }: { gta: GtaHudView; onClose: () => void }) {
+  const jobs = gta.jobs ?? [];
+  const active = jobs.find((j) => j.status === "active");
+  const stories = jobs.filter((j) => j.kind === "story");
+  const sides = jobs.filter((j) => j.kind === "side");
+  const canPizza = gta.cash >= 12;
+
+  const jobTitle = (j: GtaPhoneJob) => (j.titleKey ? t(j.titleKey) : j.title ?? j.id);
+  const jobBlurb = (j: GtaPhoneJob) => (j.blurbKey ? t(j.blurbKey) : j.blurb ?? "");
+  const statusLabel = (s: GtaPhoneJob["status"]) =>
+    s === "active"
+      ? t("game.phone.statusActive")
+      : s === "done"
+        ? t("game.phone.statusDone")
+        : s === "locked"
+          ? t("game.phone.statusLocked")
+          : t("game.phone.statusAvailable");
+
+  const stats = gta.stats ?? [
+    { label: t("game.phone.statCash"), value: `${t("game.hud.currency")}${fmtMoney(gta.cash)}` },
+    { label: t("game.phone.statWanted"), value: String(gta.wanted) },
+    { label: t("game.phone.statSlices"), value: String(gta.pizzaSlices) },
+  ];
+
+  return (
+    <div class="g-listmenu g-phone" id="game-phone" role="dialog" aria-label={t("game.phone.title")}>
+      <div class="g-list-head">
+        <button type="button" class="g-list-close" aria-label={t("game.phone.close")} onClick={onClose} />
+        <div class="g-list-title">{t("game.phone.title")}</div>
+        <div class="g-list-sub">{active ? t("game.phone.subActive", { title: jobTitle(active) }) : t("game.phone.subIdle")}</div>
+      </div>
+
+      <div class="g-list-items">
+        {active && (
+          <button
+            type="button"
+            class="g-list-item is-abort"
+            onClick={() => {
+              sendPhoneAction(gta, { type: "abort", targetId: active.id });
+              onClose();
+            }}
+          >
+            <span class="g-list-label">{t("game.phone.abortJob")}</span>
+            <span class="g-list-price is-dear">{t("game.phone.statusActive")}</span>
+            <span class="g-list-item-detail">{t("game.phone.abortDetail")}</span>
+          </button>
+        )}
+
+        <div class="g-phone-sec">{t("game.phone.services")}</div>
+        <button
+          type="button"
+          class={`g-list-item ${canPizza ? "" : "is-disabled"}`}
+          disabled={!canPizza}
+          onClick={() => {
+            sendPhoneAction(gta, { type: "orderPizza" });
+            onClose();
+          }}
+        >
+          <span class="g-list-label">{t("game.phone.orderPizza")}</span>
+          <span class={`g-list-price ${canPizza ? "" : "is-dear"}`}>{t("game.phone.orderPizzaPrice")}</span>
+          <span class="g-list-item-detail">{t("game.phone.orderPizzaDetail")}</span>
+        </button>
+
+        <button
+          type="button"
+          class="g-list-item"
+          onClick={() => {
+            sendPhoneAction(gta, { type: "shuttle" });
+            onClose();
+          }}
+        >
+          <span class="g-list-label">{t("game.phone.callScooter")}</span>
+          <span class="g-list-price">{t("game.phone.callScooterPrice")}</span>
+          <span class="g-list-item-detail">{t("game.phone.callScooterDetail")}</span>
+        </button>
+
+        <button
+          type="button"
+          class="g-list-item"
+          onClick={() => {
+            sendPhoneAction(gta, { type: "callMecha" });
+            onClose();
+          }}
+        >
+          <span class="g-list-label">{t("game.phone.callMecha")}</span>
+          <span class="g-list-price">{t("game.phone.callMechaPrice")}</span>
+          <span class="g-list-item-detail">{t("game.phone.callMechaDetail")}</span>
+        </button>
+
+        <div class="g-phone-sec">{t("game.phone.story")}</div>
+        {stories.length === 0 && <div class="g-phone-empty">{t("game.phone.noJobs")}</div>}
+        {stories.map((j) => (
+          <button
+            type="button"
+            key={j.id}
+            class={`g-list-item ${j.status === "locked" ? "is-disabled" : ""}`}
+            disabled={j.status === "locked"}
+            onClick={() => {
+              sendPhoneAction(gta, { type: j.status === "available" ? "start" : "gps", targetId: j.id });
+              onClose();
+            }}
+          >
+            <span class="g-list-label">{jobTitle(j)}</span>
+            <span class="g-list-price">{statusLabel(j.status)}</span>
+            <span class="g-list-item-detail">
+              {j.giver ? `${j.giver} · ` : ""}
+              {jobBlurb(j)}
+            </span>
+          </button>
+        ))}
+
+        {sides.length > 0 && (
+          <>
+            <div class="g-phone-sec">{t("game.phone.hustles")}</div>
+            {sides.map((j) => (
+              <button
+                type="button"
+                key={j.id}
+                class={`g-list-item ${j.status === "locked" ? "is-disabled" : ""}`}
+                disabled={j.status === "locked"}
+                onClick={() => {
+                  sendPhoneAction(gta, { type: "gps", targetId: j.id });
+                  onClose();
+                }}
+              >
+                <span class="g-list-label">{jobTitle(j)}</span>
+                <span class="g-list-price">{j.rewardCash ? t("game.phone.reward", { cash: j.rewardCash }) : statusLabel(j.status)}</span>
+                <span class="g-list-item-detail">
+                  {jobBlurb(j)}
+                  {j.bestTime !== undefined ? ` · ${t("game.phone.bestTime", { seconds: j.bestTime.toFixed(1) })}` : ""}
+                </span>
+              </button>
+            ))}
+          </>
+        )}
+
+        <div class="g-phone-sec">{t("game.phone.stats")}</div>
+        <dl class="g-phone-stats">
+          {stats.map((s) => (
+            <div class="g-phone-stat" key={s.label}>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <div class="g-list-foot">
+        <span>{t("game.phone.setGps")}</span>
+        <span class="g-list-money">
+          {t("game.hud.currency")}
+          {fmtMoney(gta.cash)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function CardBanner({ gta }: { gta: GtaHudView }) {
+  const b = gameBanner.value;
+  const card = gameCard.value;
+  const gCard: GtaBannerCard | undefined = gta.card
+    ? gta.card
+    : b
+      ? {
+          id: b.id,
+          style: (b.kind as string) === "missionPass" ? "passed" : b.kind === "wave" || b.kind === "phase" ? "mission" : "passed",
+          kicker: b.kind === "rank" ? t("game.rankUp") : undefined,
+          title: b.title,
+          sub: b.sub,
+        }
+      : card
+        ? {
+            id: card.id,
+            style: "mission",
+            kicker: t(card.kind === "boss" ? "game.bossEyebrow" : "game.foeEyebrow"),
+            title: card.title,
+            sub: card.sub,
+            quip: card.quote,
+          }
+        : undefined;
+  if (!gCard) return null;
+  return (
+    <div class="g-card is-in" id="game-banner" data-style={gCard.style} key={gCard.id} role="status">
+      {gCard.style === "busted" && <span class="g-card-band" aria-hidden="true" />}
+      {gCard.kicker && <span class="g-card-kicker">{gCard.kicker}</span>}
+      <strong class="g-card-title">{gCard.title}</strong>
+      {gCard.sub && <span class="g-card-sub">{gCard.sub}</span>}
+      {gCard.rewardCash !== undefined && gCard.rewardCash > 0 && (
+        <span class="g-card-reward">{t("game.card.rewardCash", { cash: fmtMoney(gCard.rewardCash) })}</span>
+      )}
+      {gCard.stats && gCard.stats.length > 0 && (
+        <dl class="g-card-stats">
+          {gCard.stats.map((s) => (
+            <div class="g-card-stat" key={s.label}>
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {gCard.quip && <span class="g-card-quip">{gCard.quip}</span>}
+    </div>
+  );
+}
+
+function TouchPad({ v, gta }: { v: GameView; gta: GtaHudView }) {
+  const sprint = v.skills.find((s) => s.id === "sprint")!;
+  const slots = v.skills.filter((s) => s.id !== (sprint.open ? "dodge" : "sprint"));
+  return (
+    <div class="sq-pad" role="group" aria-label={t("game.skills")}>
+      {slots.map((s) => (
+        <button
+          type="button"
+          key={s.id}
+          class={`sq-btn sk-${s.id} ${s.open ? "" : "locked"} ${s.id === "eureka" && s.ready >= 1 ? "full" : ""}`}
+          id={`game-${s.id}`}
+          aria-label={t(`game.skill.${s.id}.name`)}
+          disabled={!s.open}
+          style={{ "--cd": String(s.ready) }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            gameAct(s.id === "flashcard" ? "card" : s.id === "sprint" ? "dodge" : (s.id as "strike" | "dodge" | "eureka"));
+          }}
+        >
+          <SkillIcon id={s.id} size={s.id === "strike" ? 34 : 24} />
+        </button>
+      ))}
+      <button
+        type="button"
+        class="sq-btn sk-jump"
+        id="game-jump"
+        aria-label={gta.vehicle ? t("game.touch.exit") : t("game.jump")}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          if (gta.vehicle) window.dispatchEvent(new KeyboardEvent("keydown", { key: "f", bubbles: true }));
+          else gameAct("jump");
+        }}
+      >
+        <JumpIcon size={26} />
+      </button>
     </div>
   );
 }
@@ -325,7 +724,6 @@ function Title({ touch }: { touch: boolean }) {
   );
 }
 
-/** A volume slider in the pause menu: 0 to 100 in steps of 5, kept as 0 to 1. */
 function Volume({ id, label, value, on, set }: { id: string; label: string; value: number; on: boolean; set: (v: number) => void }) {
   const pct = Math.round(value * 100);
   return (
@@ -348,10 +746,6 @@ function Volume({ id, label, value, on, set }: { id: string; label: string; valu
   );
 }
 
-/**
- * Keeps Tab and Shift+Tab inside a dialog: from its last control to its first and back, and into it
- * from anywhere outside. For a dialog's onKeyDown.
- */
 function trapTab(e: KeyboardEvent): void {
   if (e.key !== "Tab") return;
   const root = e.currentTarget as HTMLElement;
@@ -376,7 +770,6 @@ function PauseMenu({ touch }: { touch: boolean }) {
   const s = gameSettings.value;
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus(), []);
-  // Moving through the menu ticks, with the keys or the pointer; the first focus, given on opening, does not.
   const opened = useRef(performance.now());
   const move = () => {
     if (performance.now() - opened.current > 150) sfx("uiMove");
@@ -410,8 +803,8 @@ function PauseMenu({ touch }: { touch: boolean }) {
         {!touch && (
           <div class="sq-controls">
             <span class="sq-eyebrow">{t("game.menu.controls")}</span>
-            {(["move", "strike", "dodge", "jump", "card", "eureka", "lock", "pause", "record", "pad"] as const).map((k) => (
-              <span>{t(`game.legend.${k}`)}</span>
+            {(["move", "strike", "dodge", "jump", "card", "drive", "interact", "phone", "radio", "horn", "pause", "record"] as const).map((k) => (
+              <span key={k}>{t(`game.legend.${k}`)}</span>
             ))}
           </div>
         )}
@@ -450,7 +843,7 @@ function Sheet({ v }: { v: GameView }) {
             </dl>
             <ol class="sq-ranks">
               {RANKS.map((r, k) => (
-                <li class={k === v.rank ? "now" : k < v.rank ? "done" : ""}>
+                <li class={k === v.rank ? "now" : k < v.rank ? "done" : ""} key={r.id}>
                   <span>{rankName(k)}</span>
                   <em>{r.xp}</em>
                 </li>
@@ -461,7 +854,7 @@ function Sheet({ v }: { v: GameView }) {
             <span class="sq-eyebrow">{t("game.skills")}</span>
             <ul class="sq-skill-list">
               {SKILLS.map((s) => (
-                <li class={v.rank >= s.rank ? "" : "locked"}>
+                <li class={v.rank >= s.rank ? "" : "locked"} key={s.id}>
                   <SkillIcon id={s.id} />
                   <span>
                     <b>{t(`game.skill.${s.id}.name`)}</b>
@@ -473,7 +866,7 @@ function Sheet({ v }: { v: GameView }) {
             <span class="sq-eyebrow">{t("game.sheet.met")}</span>
             <ul class="sq-codex">
               {FOE_KINDS.filter((k) => v.met.includes(k)).map((k) => (
-                <li>
+                <li key={k}>
                   <b>{t(`game.foe.${k}.name`)}</b> <small>{t(`game.foe.${k}.title`)}</small>
                 </li>
               ))}
@@ -491,7 +884,6 @@ function Sheet({ v }: { v: GameView }) {
   );
 }
 
-/** Burnt out: try again from the last checkpoint, see the full debrief, or end the game. */
 function BurntOut({ v, show }: { v: GameView; show: () => void }) {
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus(), []);
@@ -525,7 +917,7 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => first.current?.focus(), []);
   const f = gradeFactors(d);
-  const value: Record<(typeof GRADE_FACTORS)[number], string> = { time: clock(d.seconds), deaths: String(d.deaths), combo: String(d.maxChain), knowledge: String(d.xp) };
+  const value: Record<(typeof GRADE_FACTORS)[number], string> = { time: fmtClock(d.seconds), deaths: String(d.deaths), combo: String(d.maxChain), knowledge: String(d.xp) };
   return (
     <div class={`sq-debrief ${d.victory ? "won" : "lost"}`} id="game-over" role="dialog" aria-modal="true" aria-label={t(d.victory ? "game.over.victory" : "game.over.defeat")} onKeyDown={trapTab}>
       <div class="sq-debrief-body">
@@ -535,7 +927,6 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
           <div class="sq-grade" id="game-grade" aria-label={t("game.over.grade", { grade: d.grade })}>
             {d.grade}
           </div>
-          {/* Why the grade: one line a factor, its value and its marks out of its most. */}
           <dl class="sq-tally sq-factors" id="game-factors">
             <dt>{t("game.over.course")}</dt>
             <dd data-factor="course">
@@ -545,7 +936,7 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
               </span>
             </dd>
             {GRADE_FACTORS.map((k) => (
-              <>
+              <div class="g-factor-pair" key={k}>
                 <dt>{t(`game.over.factor.${k}`)}</dt>
                 <dd data-factor={k}>
                   <b>{value[k]}</b>
@@ -553,7 +944,7 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
                     {f[k].points}/{f[k].max}
                   </span>
                 </dd>
-              </>
+              </div>
             ))}
           </dl>
         </div>
@@ -572,56 +963,101 @@ function Debrief({ v, again }: { v: GameView; again: () => void }) {
   );
 }
 
-/** The game's whole panel, while a game is on. */
+/** Study Quest's Harbour-Night GTA HUD panel. */
 export function GameHud({ touch, again }: { touch: boolean; again: () => void }) {
-  const v = gameView.value;
-  // Burnt out, the choice comes first (retry, debrief, end); the debrief only when asked for.
+  const v = gameView.value as GameViewWithGta | undefined;
   const [full, setFull] = useState(false);
+  const [phoneOpen, setPhoneOpen] = useState(false);
+
   const over = v?.phase === "over";
+  const menu = gameMenu.value;
+  const titleOpen = gameTitle.value;
+  const isPlaying = !!v && !over && menu === "none" && !titleOpen;
+
   useEffect(() => {
     if (!over) setFull(false);
   }, [over]);
+
+  useEffect(() => {
+    if (!isPlaying && phoneOpen) setPhoneOpen(false);
+  }, [isPlaying, phoneOpen]);
+
+  // Toggle Campus Phone drawer on [T] key
+  useEffect(() => {
+    if (!isPlaying) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "SELECT" || target.tagName === "TEXTAREA")) return;
+      if (e.key.toLowerCase() === "t") {
+        e.preventDefault();
+        setPhoneOpen((o) => !o);
+      } else if (e.key === "Escape" && phoneOpen) {
+        setPhoneOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isPlaying, phoneOpen]);
+
   if (!v) return null;
-  const menu = gameMenu.value;
-  const lesson = !over && menu === "none" && !gameTitle.value ? v.lesson : undefined;
-  const cinematic = gameTitle.value || over || gameBanner.value?.kind === "phase" || gameCard.value?.kind === "boss";
+
+  const gta = resolveGta(v);
+  const lowHealth = gta.health < gta.maxHealth * 0.3;
+  const cinematic = titleOpen || over || gameBanner.value?.kind === "phase" || gameCard.value?.kind === "boss" || !!gta.card;
+  const radarPaused = menu !== "none" || !!v.paused || titleOpen || over;
+  const lesson = isPlaying ? v.lesson : undefined;
+
   return (
-    <div class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${v.boss && !over ? "has-boss" : ""} ${gameCard.value?.kind === "boss" ? "boss-card" : gameCard.value ? "card-foe" : ""} ${lesson ? `cue-${lesson}` : ""}`} id="game-panel" aria-label={t("game.title")}>
+    <div
+      class={`sq ${touch ? "touch" : ""} ${gameSettings.value.reducedMotion ? "rm" : ""} ${cinematic ? "cine" : ""} ${over ? "over" : ""} ${menu !== "none" ? "menu-open" : ""} ${lowHealth ? "is-low" : ""} ${gta.vehicle ? "in-vehicle" : ""} ${lesson ? `cue-${lesson}` : ""}`}
+      id="game-panel"
+      aria-label={t("game.title")}
+    >
+      <div class="g-vignette" aria-hidden="true" />
       <div class="sq-bars" aria-hidden="true">
         <i />
         <i />
       </div>
+
       {!over && (
-        <>
-          <Tracker v={v} touch={touch} />
-          <Vitals v={v} />
-          <BossBar v={v} />
+        <div class={`g-hud ${menu !== "none" || titleOpen ? "is-hidden" : ""}`} id="game-hud">
+          <div class="g-corner g-tl">
+            <GameRadar
+              gta={gta}
+              paused={radarPaused}
+              northLabel={t("game.compass.n")}
+              ariaLabel={t("game.radar.label")}
+              onClick={() => setMenu(menu === "pause" ? "none" : "pause")}
+            />
+          </div>
+
+          <WantedAndCash gta={gta} phoneOpen={phoneOpen} onTogglePhone={() => setPhoneOpen((o) => !o)} touch={touch} />
+          <TopCenter gta={gta} />
+          <Notes gta={gta} />
+          <BottomCenter gta={gta} touch={touch} />
+          <BottomRight gta={gta} />
+
           {v.chain >= 3 && (
             <div class="sq-combo" key={v.chain} aria-hidden="true">
               <b>{v.chain}</b>
               <span>{t("game.hits")}</span>
             </div>
           )}
-          {!touch && <Feed />}
-          {/* Under a full menu the buttons are not shown through it. */}
-          {menu === "none" && <Skills v={v} touch={touch} />}
-          {lesson && <Prompt lesson={lesson} touch={touch} />}
-          {touch && menu === "none" && (
-            <button type="button" class="sq-pausebtn" id="game-pause" aria-label={t("game.menu.pause")} onClick={() => setMenu("pause")}>
-              <i />
-              <i />
-            </button>
-          )}
-          {v.paused && (
-            <p class="sq-paused" id="game-status" role="status">
-              {t(`game.paused.${v.paused}`)}
-            </p>
-          )}
-          <BannerView />
-          <CardView />
-        </>
+
+          {touch && menu === "none" && !titleOpen && <TouchPad v={v} gta={gta} />}
+        </div>
       )}
-      {gameTitle.value && !over && <Title touch={touch} />}
+
+      {v.paused && !over && (
+        <p class="sq-paused" id="game-status" role="status">
+          {t(`game.paused.${v.paused}`)}
+        </p>
+      )}
+
+      {!over && <CardBanner gta={gta} />}
+      {phoneOpen && isPlaying && <PhoneDrawer gta={gta} onClose={() => setPhoneOpen(false)} />}
+      {titleOpen && !over && <Title touch={touch} />}
       {menu === "pause" && !over && <PauseMenu touch={touch} />}
       {menu === "sheet" && !over && <Sheet v={v} />}
       {over && v.debrief && (v.debrief.victory || full ? <Debrief v={v} again={again} /> : <BurntOut v={v} show={() => setFull(true)} />)}

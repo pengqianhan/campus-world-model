@@ -127,6 +127,9 @@ const GAIT: Record<FoeKind, { rate: number; bob: number; lean: number; squash: n
   distraction: { rate: 3.2, bob: 0.08, lean: 0.5, squash: 0.03 },
   plagiarism: { rate: 1.6, bob: 0.12, lean: 0.3, squash: 0.04 },
   anxiety: { rate: 2.8, bob: 0.1, lean: 0.32, squash: 0.06 },
+  freeRider: { rate: 2.2, bob: 0.1, lean: 0.18, squash: 0.06 },
+  debateRival: { rate: 2.0, bob: 0.08, lean: 0.14, squash: 0.05 },
+  allNighter: { rate: 2.8, bob: 0.12, lean: 0.24, squash: 0.08 },
   exam: { rate: 0.9, bob: 0.18, lean: 0.07, squash: 0.03 },
 };
 
@@ -390,6 +393,13 @@ export class FoeMotion {
         o.sy *= 1 + Math.sin(t * 9) * 0.04 * k;
         o.pitch += 0.12 * k;
         break;
+      case "freeRider":
+      case "debateRival":
+      case "allNighter":
+        // Student rivals bounce slightly on their heels, ready to square up.
+        o.oy += Math.abs(Math.sin(t * (kind === "allNighter" ? 3.2 : 2.1))) * 0.05 * k;
+        o.roll += Math.sin(t * 1.8) * 0.04 * k;
+        break;
       case "exam":
         // It hovers, slow and sure.
         o.oy += Math.sin(t * 1.1) * 0.25 * k;
@@ -447,6 +457,16 @@ export class FoeMotion {
       o.sx *= 1 + 0.08 * e;
       o.pitch -= 0.18 * e;
       o.ox += (Math.random() - 0.5) * 0.08 * e;
+    } else if (kind === "allNighter" && move === "charge") {
+      // Sprinter crouch before charging.
+      o.pitch += 0.34 * e;
+      o.sy *= 1 - 0.14 * e;
+      o.sx *= 1 + 0.08 * e;
+    } else if (kind === "freeRider" || kind === "debateRival" || kind === "allNighter") {
+      // Rival leans back before a strike, megaphone burst, or triple-espresso toss.
+      o.pitch -= 0.22 * e;
+      o.sy *= 1 + 0.08 * e;
+      o.roll += Math.sin(t * 16) * 0.04 * e;
     } else {
       // The boss draws itself up.
       o.oy += 0.5 * e;
@@ -531,6 +551,14 @@ export class FoeMotion {
         o.sx *= 1 + 0.35 * after;
         o.sz *= 1 + 0.35 * after;
         o.oy -= after * 0.6;
+        break;
+      case "freeRider":
+      case "debateRival":
+      case "allNighter":
+        // Rival drops their guard and dissolves into golden crumbs.
+        o.dissolve = smooth(after);
+        o.sy *= 1 - 0.35 * after;
+        o.yaw += after * 2.5;
         break;
       case "exam":
         // The last hour runs out: it shudders, rises and breaks up slowly, in a glow.

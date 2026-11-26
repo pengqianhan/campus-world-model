@@ -188,6 +188,7 @@ export class Figure {
   /** What the body stands in: leans into a turn, with the scooter, while the ring stays flat on the ground. */
   private seat = new Group();
   private ride: Ride = "walk";
+  private gameScooter = false;
   private scooter?: Scooter;
   /** Bones the ride turned after the mixer, as the mixer left them, put back before the next pose. */
   private riding?: [Bone, Quaternion][];
@@ -409,6 +410,41 @@ export class Figure {
     this.changed = true;
   }
 
+  /** Whether the walker is visually riding the open-world E-Scooter. */
+  get isGameScooter(): boolean {
+    return this.gameScooter;
+  }
+
+  /**
+   * Poses the figure onto or off an open-world E-Scooter without mutating Walker.ride:
+   * feet on the deck, both hands gripping the handlebars, wheel roll and turn lean.
+   */
+  setGameScooter(on: boolean, speed = 0, turnRate = 0, dt = 0): void {
+    const toggled = on !== this.gameScooter;
+    if (toggled) {
+      this.gameScooter = on;
+      if (on && !this.scooter) {
+        this.scooter = new Scooter();
+        this.seat.add(this.scooter.root);
+      }
+      const active = this.ride === "scooter" || this.gameScooter;
+      if (this.scooter) this.scooter.root.visible = active;
+      if (this.body) this.body.root.position.y = active ? DECK : 0;
+      if (!active) this.seat.rotation.z = 0;
+      this.seat.rotation.x = 0;
+      this.sway = { x: 0, vx: 0, z: 0, vz: 0 };
+      this.pose(0, 0, this.stance.t);
+      this.changed = true;
+    }
+    if (on && this.scooter && dt > 0) {
+      if (speed) this.scooter.roll(speed * dt);
+      const want = -Math.max(-MAX_LEAN, Math.min(MAX_LEAN, LEAN * Math.atan((speed * ((turnRate * Math.PI) / 180)) / 9.81)));
+      const was = this.seat.rotation.z;
+      this.seat.rotation.z += (want - was) * Math.min(1, dt * 5);
+      if (speed || Math.abs(this.seat.rotation.z - was) > 1e-4) this.changed = true;
+    }
+  }
+
   /**
    * On foot, on the scooter, its feet on the deck and its hands on the grips, or away while a
    * drone flies in its place (walkers.ts), when the figure is not drawn at all.
@@ -420,10 +456,11 @@ export class Figure {
       this.scooter = new Scooter();
       this.seat.add(this.scooter.root);
     }
-    if (this.scooter) this.scooter.root.visible = ride === "scooter";
-    if (this.body) this.body.root.position.y = ride === "scooter" ? DECK : 0;
+    const active = ride === "scooter" || this.gameScooter;
+    if (this.scooter) this.scooter.root.visible = active;
+    if (this.body) this.body.root.position.y = active ? DECK : 0;
     this.root.visible = ride !== "fly";
-    if (ride !== "scooter") this.seat.rotation.z = 0;
+    if (!active) this.seat.rotation.z = 0;
     this.seat.rotation.x = 0;
     this.sway = { x: 0, vx: 0, z: 0, vz: 0 };
     this.changed = true;
@@ -448,6 +485,7 @@ export class Figure {
     this.stance = { moving, speed, t };
     const b = this.body;
     if (!b) return;
+    const onScooter = this.ride === "scooter" || this.gameScooter;
     // The bones the scooter turned go back to where the mixer left them, which it may not set again.
     for (const [bone, q] of this.riding ?? []) bone.quaternion.copy(q);
     this.riding = undefined;
@@ -455,12 +493,14 @@ export class Figure {
     if (this.acted) {
       for (let i = 0; i < ACT_BONES.length; i++) b.bone(ACT_BONES[i]!).quaternion.copy(this.actSaved![i]!);
       b.bone("Hips").position.copy(this.hipsSaved);
-      b.root.position.set(0, this.ride === "scooter" ? DECK : 0, 0);
+      b.root.position.set(0, onScooter ? DECK : 0, 0);
       b.root.rotation.set(0, 0, 0);
       this.acted = false;
+    } else if (onScooter) {
+      b.root.position.y = DECK;
     }
     // On the scooter it stands at ease, however fast it goes.
-    if (this.ride === "scooter") moving = 0;
+    if (onScooter) moving = 0;
     const dt = this.last === undefined ? 0 : Math.max(0, Math.min(1, t - this.last));
     this.last = t;
     const run = Math.max(0, Math.min(1, (speed - RUN_FROM) / (RUN_AT - RUN_FROM)));
@@ -471,7 +511,7 @@ export class Figure {
     const rel = over > 1e-3 ? (Math.atan2(g.x, g.z) * 180) / Math.PI : 0;
     const off = Math.abs(rel);
     // Off the ground, the feet do not step.
-    const gaitWant = this.ride === "walk" && !this.dressing && over > 0.12 && !this.air.on ? smooth((off - GAIT_FROM) / (GAIT_TO - GAIT_FROM)) : 0;
+    const gaitWant = !onScooter && this.ride === "walk" && !this.dressing && over > 0.12 && !this.air.on ? smooth((off - GAIT_FROM) / (GAIT_TO - GAIT_FROM)) : 0;
     this.gaitW += (gaitWant - this.gaitW) * Math.min(1, dt * 10);
     if (this.gaitW < 0.002) this.gaitW = 0;
     const sw = strafeWeights(rel, this.sw);
@@ -479,7 +519,7 @@ export class Figure {
     const air = this.air;
     let was = this.phase;
     const L = this.leap;
-    const legs = this.ride === "walk" && !this.dressing;
+    const legs = !onScooter && this.ride === "walk" && !this.dressing;
     const leaping = legs && air.on && oneFoot(air.kind);
     if (L.on && !leaping) {
       // Down: on the lead foot, at its step in the cycle (the air's pace got it there; on ground that
@@ -564,9 +604,9 @@ export class Figure {
     // Standing still, it stands at ease; coming to a stop, it comes into it.
     b.stand.setEffectiveWeight(1 - moving);
     b.mixer.update(0);
-    if (this.ride === "scooter") this.holdBars(b);
+    if (onScooter) this.holdBars(b);
     else if (this.umbrellaOpen && this.headVisible) this.holdUmbrella(b);
-    const own = this.ride === "walk" && !this.dressing;
+    const own = !onScooter && this.ride === "walk" && !this.dressing;
     if (own) this.leaning(b, dt);
     const a = this.act;
     if (own && (this.gaitW > 0 || a.move || a.fromW > 0 || g.pivot > 0)) this.keep(b);

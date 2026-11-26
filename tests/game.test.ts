@@ -10,7 +10,6 @@ import {
   QUEST,
   RANKS,
   StudyQuest,
-  TEACH,
   WAVES,
   HOME_MARGIN,
   awayFromHomes,
@@ -101,60 +100,26 @@ describe("study ranks and growth", () => {
     }
   });
 
-  it("starts as a Fresher with its first quest: books to gather, laid out on the map", () => {
+  it("starts in the grounded open world with pizza, coffee, and cash pickups (no floating books or monster quests)", () => {
     const g = new StudyQuest(rowHost(), HERE);
     expect(g.rank).toBe(0);
     expect(g.focus).toBe(statsFor(0).maxFocus);
-    expect(g.items.filter((i) => i.kind === "book")).toHaveLength(QUEST.booksOut);
+    expect(g.items.filter((i) => i.kind === "pizza")).toHaveLength(QUEST.pizzaOut);
     expect(g.items.filter((i) => i.kind === "coffee")).toHaveLength(QUEST.coffeeOut);
-    expect(g.quests.map((q) => q.key)).toEqual(["orientation"]);
+    expect(g.items.filter((i) => i.kind === "cash")).toHaveLength(QUEST.cashOut);
+    expect(g.quests).toEqual([]);
+    expect(g.openWorld.spots.length).toBeGreaterThanOrEqual(5);
     expect(g.has("flashcard")).toBe(false);
   });
 
-  it("takes a book the walker stands on for knowledge, counts it for the quest, and lays another", () => {
+  it("takes a cash pickup for NZ$ and lays another", () => {
     const g = quiet();
-    const book = g.items.find((i) => i.kind === "book")!;
-    const events = g.step(0.05, at(book.at));
-    expect(events).toContainEqual(expect.objectContaining({ type: "take", kind: "book", xp: QUEST.bookXp }));
-    expect(g.xp).toBe(QUEST.bookXp);
-    expect(g.quests[0]!.got).toBe(1);
-    expect(g.items.filter((i) => i.kind === "book")).toHaveLength(QUEST.booksOut);
-  });
-
-  it("finishes the first quest and sends the DDL, weaker than the one that returns", () => {
-    const g = quiet();
-    const events: GameEvent[] = [];
-    for (let k = 0; k < MAIN.orientation.need; k++) {
-      const book = g.items.find((i) => i.kind === "book")!;
-      events.push(...g.step(0.05, at(book.at)));
-    }
-    expect(events).toContainEqual(expect.objectContaining({ type: "quest", done: true }));
-    expect(g.xp).toBe(MAIN.orientation.need * QUEST.bookXp + MAIN.orientation.reward);
-    expect(g.quests.map((q) => q.key)).toEqual(["ddl1"]);
-    const ddl = g.foes.find((f) => f.kind === "ddl")!;
-    expect(ddl.maxHp).toBe(Math.round(FOES.ddl.hp * MAIN.ddl1.tier));
-    // And gentler than its tier alone: its attacks show longer and hurt less.
-    expect(ddl.gentle).toBe(true);
-    expect(MAIN.ddl1.tell).toBeGreaterThan(1);
-    expect(MAIN.ddl1.harm).toBeLessThan(1);
-    expect(events).toContainEqual(expect.objectContaining({ type: "arrive", kind: "ddl", first: true }));
-  });
-
-  it("rises to Sophomore with the first DDL beaten, which opens the flashcard", () => {
-    const g = quiet();
-    g.mainStep = 1;
-    g.quests = [];
-    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
-    g.xp = RANKS[1]!.xp - MAIN.ddl1.reward - Math.round(FOES.ddl.xp * MAIN.ddl1.tier);
-    const ddl = g.foes.find((f) => f.kind === "ddl")!;
-    ddl.state = "recover";
-    ddl.hp = 1;
-    ddl.at = [0, 2];
-    g.act("strike");
-    const events = run(g, 0.3);
-    expect(events).toContainEqual({ type: "rank", rank: 1, skill: "flashcard" });
-    expect(g.has("flashcard")).toBe(true);
-    expect(g.quests.filter((q) => q.main).map((q) => q.key)).toEqual(["studyGroup"]);
+    const cash0 = g.cash;
+    const cashItem = g.items.find((i) => i.kind === "cash")!;
+    const events = g.step(0.05, at(cashItem.at));
+    expect(events).toContainEqual(expect.objectContaining({ type: "take", kind: "cash" }));
+    expect(g.cash).toBe(cash0 + (cashItem.value ?? 25));
+    expect(g.items.filter((i) => i.kind === "cash")).toHaveLength(QUEST.cashOut);
   });
 
   it("asks more knowledge for each rank than the last, by a step that grows smoothly", () => {
@@ -170,8 +135,8 @@ describe("study ranks and growth", () => {
     g.stamina = 0;
     g.xp = RANKS[2]!.xp - 1;
     g.rank = 1;
-    const book = g.items.find((i) => i.kind === "book")!;
-    g.step(0.05, at(book.at));
+    const pizza = g.items.find((i) => i.kind === "pizza")!;
+    g.step(0.05, at(pizza.at));
     expect(g.rank).toBe(2);
     expect(g.focus).toBe(statsFor(2).maxFocus);
     expect(g.has("sprint")).toBe(true);
@@ -484,17 +449,12 @@ describe("villains", () => {
     expect(g.focus).toBe(statsFor(0).maxFocus);
   });
 
-  it("sends wanderers after the first quest, never more than the cap", () => {
+  it("does not spawn cartoon wanderers in grounded open-world play", () => {
     const g = quiet(seeded(4));
     g.mainStep = 1;
     g.focus = 1e9;
-    let most = 0;
-    for (let k = 0; k < 120; k++) {
-      run(g, 1, [k * 0.1, 0]);
-      most = Math.max(most, g.foes.filter((f) => f.wander && f.state !== "dead").length);
-    }
-    expect(most).toBeGreaterThan(0);
-    expect(most).toBeLessThanOrEqual(QUEST.foeCap);
+    run(g, 25, [0, 0]);
+    expect(g.foes.filter((f) => f.wander)).toHaveLength(0);
   });
 });
 
@@ -637,66 +597,8 @@ describe("the Final Exam", () => {
   });
 });
 
-describe("the first minute, taught by play", () => {
-  /** A first game: no lesson taught yet, nothing laid but the first book and the row of others. */
-  function fresh(random: () => number = () => 0.5): StudyQuest {
-    return new StudyQuest(rowHost(random), HERE, 0);
-  }
-
-  it("lays the first book a few steps ahead, and shows the prompt to move until the walker moves", () => {
-    const g = fresh();
-    const first = g.items[0]!;
-    expect(first.kind).toBe("book");
-    expect(first.at[1]).toBeCloseTo(TEACH.firstBook);
-    run(g, 1);
-    expect(g.lesson).toBe("move");
-    const events = run(g, 0.1, [0, TEACH.moved + 0.1]);
-    expect(events).toContainEqual({ type: "learn", lesson: "move" });
-    expect(g.lesson).toBeUndefined();
-    expect(g.taught.has("move")).toBe(true);
-  });
-
-  it("sends one weak, slow Procrastination soon after the first book: the strike's prompt near it, the dodge's in its yawn", () => {
-    const g = fresh();
-    g.step(0.05, at(g.items[0]!.at));
-    run(g, TEACH.practiceSoon + 0.1, g.items[0]!.at);
-    g.grace = 0;
-    const tutor = g.foes.find((f) => f.id === g.practice)!;
-    expect(tutor.kind).toBe("procrastination");
-    expect(tutor.tutor).toBe(true);
-    expect(tutor.maxHp).toBeLessThan(FOES.procrastination.hp);
-    // Beside it, once it has risen, the strike's prompt.
-    tutor.state = "chase";
-    tutor.t = 0;
-    tutor.cool = 99;
-    const by: Pt = [tutor.at[0], tutor.at[1] - 3];
-    run(g, 0.1, by);
-    expect(g.lesson).toBe("strike");
-    // Its yawn shows longer than its kind's, and while it shows, the dodge's prompt.
-    tutor.cool = 0;
-    tutor.at = [by[0], by[1] + 2];
-    const tells = run(g, 0.1, by).filter((e) => e.type === "tell");
-    expect(tells[0]).toMatchObject({ kind: "procrastination", move: "yawn" });
-    expect((tells[0] as { time: number }).time).toBeCloseTo(FOES.procrastination.tell * TEACH.practiceTell);
-    expect(g.lesson).toBe("dodge");
-    g.act("dodge");
-    expect(run(g, 0.1, by)).toContainEqual({ type: "learn", lesson: "dodge" });
-    g.act("strike");
-    expect(run(g, 0.4, by)).toContainEqual({ type: "learn", lesson: "strike" });
-  });
-
-  it("cannot be lost before the first quest is done", () => {
-    const g = fresh();
-    g.grace = 0;
-    for (let k = 0; k < 20; k++) {
-      g.iframes = 0;
-      (g as unknown as { hurt(n: number, p: Pt): void }).hurt(50, [0, 2]);
-    }
-    expect(g.phase).toBe("play");
-    expect(g.focus).toBeCloseTo(statsFor(0).maxFocus * TEACH.floor);
-  });
-
-  it("brings each new skill's prompt when it is first of use: the flashcard for a foe out of reach, the Eureka once charged", () => {
+describe("skills & lessons", () => {
+  it("brings each new skill's prompt when a foe is placed in range", () => {
     const g = quiet();
     g.taught = new Set(LESSONS.filter((l) => l !== "flashcard" && l !== "eureka"));
     g.xp = RANKS[3]!.xp;
@@ -714,77 +616,31 @@ describe("the first minute, taught by play", () => {
     run(g, 0.1);
     expect(g.lesson).toBe("eureka");
   });
-
-  it("lets a prompt go for good when it has been up long enough", () => {
-    const g = new StudyQuest(rowHost(), HERE, 0, ["strike", "dodge"]);
-    const events = run(g, TEACH.maxShown + 0.5, [0, -0.5]);
-    expect(events).toContainEqual({ type: "learn", lesson: "move" });
-    expect(g.taught.has("move")).toBe(true);
-  });
-
-  it("shows none of it to a visitor taught before: no prompt, no first fight", () => {
-    const g = new StudyQuest(rowHost(), HERE, 0, LESSONS);
-    g.step(0.05, at(g.items[0]!.at));
-    run(g, TEACH.practiceAfter + 1);
-    expect(g.practice).toBeUndefined();
-    expect(g.lesson).toBeUndefined();
-    expect(g.foes).toHaveLength(0);
-  });
 });
 
 describe("a retry", () => {
-  it("starts the quest the walker was on again, where it began, keeping what it learned and counting the defeat", () => {
+  it("respawns cleanly on retry, keeping XP and cash while clearing active job, wanted, and energy", () => {
     const g = quiet(seeded(3));
-    g.mainStep = 2;
-    g.quests = [];
-    (g as unknown as { beginMain(p: Pt): void }).beginMain([5, 5]);
-    const place = g.quests.find((q) => q.main)!.place!;
-    run(g, 0.1, place.at);
-    expect(g.foes.length).toBeGreaterThan(0);
     g.xp = 300;
     g.rank = 1;
+    g.cash = 220;
+    g.energy = 40;
+    g.setWanted(2);
     g.focus = 1;
     g.iframes = 0;
-    (g as unknown as { hurt(n: number, p: Pt): void }).hurt(10, place.at);
+    (g as unknown as { hurt(n: number, p: Pt): void }).hurt(50, [0, 2]);
     expect(g.phase).toBe("over");
     const events = g.retry();
-    expect(events).toContainEqual({ type: "retry", at: [5, 5], heading: 0, boss: false });
+    expect(events).toContainEqual({ type: "retry", at: HERE, heading: 0, boss: false });
     expect(g.phase).toBe("play");
     expect(g.deaths).toBe(1);
     expect(g.xp).toBe(300);
+    expect(g.cash).toBe(220);
+    expect(g.energy).toBe(0);
+    expect(g.wanted).toBe(0);
     expect(g.focus).toBe(statsFor(1).maxFocus);
-    expect(g.foes).toHaveLength(0);
-    const q = g.quests.find((x) => x.main)!;
-    expect(q.key).toBe("studyGroup");
-    expect(q.place).toEqual(place);
-    expect(q.started).toBe(false);
     expect(g.grace).toBe(QUEST.grace);
-    // Nothing to retry in a game that is on.
     expect(g.retry()).toEqual([]);
-  });
-
-  it("at the boss, starts again from the arena's edge with the Final Exam whole and in its first phase", () => {
-    const g = quiet(() => 0.3);
-    g.quests = [];
-    g.mainStep = 5;
-    (g as unknown as { beginMain(p: Pt): void }).beginMain(HERE);
-    const arena = g.quests[0]!.place!.at;
-    const edge: Pt = [arena[0], arena[1] - QUEST.arenaRadius + 1];
-    g.step(0.05, at(edge));
-    const boss = g.boss!;
-    boss.hp = 100;
-    boss.phase = 3;
-    g.focus = 1;
-    g.grace = 0;
-    g.iframes = 0;
-    (g as unknown as { hurt(n: number, p: Pt): void }).hurt(10, arena);
-    const r = g.retry().find((e) => e.type === "retry")!;
-    expect(r).toMatchObject({ boss: true, at: edge });
-    expect(g.arena?.active).toBe(true);
-    const again = g.boss!;
-    expect(again.hp).toBe(FOES.exam.hp);
-    expect(again.phase).toBe(1);
-    expect(g.quests.filter((q) => q.main).map((q) => q.key)).toEqual(["finalExam"]);
   });
 });
 

@@ -2356,8 +2356,20 @@ select optgroup {
   color: var(--accent-ink);
 }
 
+.hud-game-tool {
+  background: rgba(255, 180, 84, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 180, 84, 0.34);
+  color: #ffd9a0;
+}
+
+.hud-game-tool:hover {
+  background: rgba(255, 180, 84, 0.24);
+}
+
 .hud-game-tool.on {
-  background: var(--hud-hover);
+  background: rgba(255, 180, 84, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 180, 84, 0.65);
+  color: #fff3dd;
 }
 
 /* In a narrow window the game's button is its book alone, and the time drops its NOW or PREVIEW as on a
@@ -2591,16 +2603,61 @@ select optgroup {
 }
 
 /* A game on a phone has the view: where the walker is and the stick's caption wait until it ends. */
+.hud.playing .hud-bl > .hud-sign,
+.hud.playing .hud-bc,
+.hud.playing:not(.touch) .hud-br,
+.hud.touch.playing .hud-cluster,
 .hud.touch.playing .hud-sign,
 .hud.touch.playing .hud-caption {
   display: none;
+}
+
+.hud.touch.playing .hud-br {
+  top: calc(var(--hud-t) + 52px);
+  right: var(--hud-r);
+}
+
+.sq-touch-bar {
+  position: fixed;
+  right: var(--hud-r, 10px);
+  bottom: calc(var(--hud-b, 10px) + 2px);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.sq-touch-bar .sq-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1.5px solid rgba(244, 241, 234, 0.52);
+  border-radius: 50%;
+  background: rgba(5, 9, 18, 0.78);
+  color: #f4f1ea;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.sq-touch-bar .sq-btn.is-active {
+  border-color: #ffcb2e;
+  color: #ffcb2e;
 }
 
 /* The game's button on a phone: under the speed and the views, at the right. */
 .hud .hud-game-pill {
   height: 36px;
   padding: 0 12px 0 10px;
+  border-color: rgba(255, 180, 84, 0.42);
   border-radius: 12px;
+  background: rgba(255, 180, 84, 0.16);
+  color: #ffd9a0;
 }
 
 .hud-game-pill .icon {
@@ -2608,7 +2665,9 @@ select optgroup {
 }
 
 .hud .hud-game-pill.on {
-  background: var(--hud-strong);
+  border-color: rgba(255, 180, 84, 0.72);
+  background: rgba(255, 180, 84, 0.28);
+  color: #fff3dd;
 }
 
 /* Small under the top right: the speed and the height on one line, and the views. */

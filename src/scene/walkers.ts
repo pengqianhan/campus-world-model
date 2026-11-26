@@ -329,7 +329,7 @@ export class WalkerWorld {
   pose(name: string): { at: Pt; heading: number; height: number; indoor: boolean; ride: Ride; eye: number; aim: number; air: number } | undefined {
     const w = this.walkers.get(name);
     if (!w) return undefined;
-    const lift = w.ride === "scooter" ? DECK : 0;
+    const lift = w.ride === "scooter" || w.figure.isGameScooter ? DECK : 0;
     const flying = w.ride === "fly";
     return {
       at: w.at,
@@ -724,7 +724,7 @@ export class WalkerWorld {
       if (dt > 0) w.turnRate += ((((w.heading - was.h + 540) % 360) - 180) / dt - w.turnRate) * Math.min(1, dt * 6);
       // Come to rest, it is at rest: a rate dwindling for ever would lean the rider or bank the drone a hair each frame.
       if (Math.abs(w.turnRate) < 0.5) w.turnRate = 0;
-      w.figure.setUmbrella(rain > 0 && !w.indoor && w.ride === "walk");
+      w.figure.setUmbrella(rain > 0 && !w.indoor && w.ride === "walk" && !w.figure.isGameScooter);
       if (travelled > 0 || w.moving > 0 || w.alt !== was.a || w.motion.air || w.motion.land < 1) this.place(w);
       // Steered by the stick, the figure comes round to the way it faces over a moment: a blow's turn
       // to its foe is a quick whip, not a jump from one frame to the next.
