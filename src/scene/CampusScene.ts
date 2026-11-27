@@ -2703,6 +2703,7 @@ export class CampusScene {
         if (fig.takeChanged() || on) this.needsRender = true;
       },
       context: () => this.lastContext,
+      lite: () => !this.landmarkFull,
       drivePose: (name, at, heading) => {
         this.walkers.teleport(name, at);
         this.walkers.turn(name, heading, true, true);

@@ -19,6 +19,7 @@ import {
   LinearFilter,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
@@ -2648,6 +2649,37 @@ const sharedShadowMat = new MeshBasicMaterial({
   polygonOffsetFactor: -1,
 });
 const sharedLinerMat = new MeshStandardMaterial({ color: 0x111317, roughness: 0.9, metalness: 0.05 });
+const sharedLiteLinerMat = new MeshLambertMaterial({ color: 0x14171c });
+const sharedLiteWheelMat = new MeshLambertMaterial({ color: 0x22262e });
+
+/** Single shared-program Lambert shader for basic/software renderers (SwiftShader/phones): avoids multi-lobe PBR & per-kind SDF compilation. */
+function createSlopLiteBodyMaterial(hex: number): { mat: MeshLambertMaterial; uPaint: { value: Color }; uBrake: { value: number } } {
+  const uPaint = { value: new Color(hex) };
+  const uBrake = { value: 0 };
+  const mat = new MeshLambertMaterial({ color: 0xffffff });
+  mat.customProgramCacheKey = () => "slop-lite-body-v1";
+  mat.onBeforeCompile = (shader) => {
+    shader.uniforms.uPaint = uPaint;
+    shader.uniforms.uBrake = uBrake;
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", "#include <common>\nattribute float partId;\nvarying float vLitePart;\n")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvLitePart = partId;\n");
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>", "#include <common>\nuniform vec3 uPaint;\nuniform float uBrake;\nvarying float vLitePart;\n")
+      .replace(
+        "#include <color_fragment>",
+        `#include <color_fragment>
+  vec3 c = uPaint;
+  if (abs(vLitePart - 1.0) < 0.25) c = vec3(0.08, 0.13, 0.20);
+  else if (abs(vLitePart - 4.0) < 0.25) c = vec3(0.11, 0.13, 0.16);
+  else if (abs(vLitePart - 5.0) < 0.25) c = vec3(0.95, 0.97, 1.0);
+  else if (abs(vLitePart - 6.0) < 0.25) c = mix(vec3(0.55, 0.06, 0.09), vec3(1.0, 0.18, 0.22), uBrake);
+  diffuseColor.rgb *= c;
+`,
+      );
+  };
+  return { mat, uPaint, uBrake };
+}
 
 export interface SlopVehiclePose {
   pitch?: number;
@@ -2671,10 +2703,9 @@ export interface SlopVehicleActor {
   dispose(): void;
 }
 
-/** Instantiates a 4-wheel slop-auckland procedural vehicle with clearcoat SDF shading, NZ plates & 4 steerable wheels. */
-export function createSlopVehicleActor(kind: FourWheelVehicleKind, styleIdx = 0, paintOverride?: number): SlopVehicleActor {
+/** Instantiates a 4-wheel slop-auckland procedural vehicle with clearcoat SDF shading (or basic-tier Lambert on software renderers). */
+export function createSlopVehicleActor(kind: FourWheelVehicleKind, styleIdx = 0, paintOverride?: number, lite = false): SlopVehicleActor {
   const assets = getSlopAssets(kind);
-  const envMap = getSlopVehicleEnvMap();
   const styles = FLEET_STYLES[kind];
   const pickStyle = (idx: number, hex?: number): FleetStyle => {
     const base = styles[((Math.floor(idx) % styles.length) + styles.length) % styles.length]!;
@@ -2703,6 +2734,50 @@ export function createSlopVehicleActor(kind: FourWheelVehicleKind, styleIdx = 0,
   chassisInner.position.y = -assets.wheelRPhys;
   chassisPivot.add(chassisInner);
   root.add(chassisPivot);
+
+  if (lite) {
+    const { mat: bodyMat, uPaint, uBrake } = createSlopLiteBodyMaterial(curStyle.hex);
+    chassisInner.add(mark(new Mesh(assets.body, bodyMat)));
+    chassisInner.add(mark(new Mesh(assets.liners, sharedLiteLinerMat)));
+    if (assets.lightbar) chassisInner.add(mark(new Mesh(assets.lightbar, sharedLiteWheelMat)));
+    const wheels: { pivot: Group; spin: Group; front: boolean }[] = [];
+    for (const [z, front] of [[assets.wheelZ, true], [-assets.wheelZ, false]] as const) {
+      for (const sx of [-1, 1] as const) {
+        const pivot = new Group();
+        pivot.position.set(sx * assets.wheelX, assets.wheelRPhys, z);
+        const spin = new Group();
+        spin.add(mark(new Mesh(sx < 0 ? assets.wheelL : assets.wheelR, sharedLiteWheelMat)));
+        pivot.add(spin);
+        root.add(pivot);
+        wheels.push({ pivot, spin, front });
+      }
+    }
+    return {
+      kind,
+      root,
+      setPaint(hex: number) {
+        if (kind !== "security" && kind !== "taxi") uPaint.value.setHex(hex);
+      },
+      setStyle(idx: number, hex?: number) {
+        curStyle = pickStyle(idx, hex);
+        uPaint.value.setHex(curStyle.hex);
+      },
+      update(steer, wheelSpin, braking, _siren, _t, pose) {
+        chassisPivot.rotation.set(pose?.pitch ?? 0, 0, pose?.roll ?? 0);
+        chassisPivot.position.y = assets.wheelRPhys + (pose?.heave ?? 0);
+        uBrake.value = braking ? 1 : 0;
+        for (const w of wheels) {
+          w.pivot.rotation.y = w.front ? steer : 0;
+          w.spin.rotation.x = wheelSpin;
+        }
+      },
+      dispose() {
+        bodyMat.dispose();
+      },
+    };
+  }
+
+  const envMap = getSlopVehicleEnvMap();
 
   const disposables: Material[] = [];
   let updateState: (brake: number, blinkL: number, blinkR: number, rev: number, dmg: number, siren: boolean, t: number) => void;

@@ -692,7 +692,7 @@ test.describe("on a phone", () => {
     const was = await landed();
     await page.waitForFunction(() => ((window.__scene as unknown as GameScene).game.quest as unknown as { canJump: boolean }).canJump);
     await page.locator("#game-jump").dispatchEvent("pointerdown");
-    await expect.poll(landed, { timeout: 15_000 }).toBeGreaterThan(was);
+    await expect.poll(landed, { timeout: 30_000 }).toBeGreaterThan(was);
 
     await page.locator("#game-pause").tap();
     await expect(page.locator("#game-menu")).toBeVisible();

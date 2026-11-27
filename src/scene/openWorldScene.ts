@@ -120,9 +120,13 @@ export interface OpenWorldSyncInput {
 }
 
 const MAX_HUMANS = 30;
+const MAX_HUMANS_LITE = 10;
 const HUMAN_RANGE = 120;
+const HUMAN_RANGE_LITE = 72;
 const MAX_VEHICLES = 26;
+const MAX_VEHICLES_LITE = 8;
 const VEHICLE_RANGE = 185;
+const VEHICLE_RANGE_LITE = 85;
 const MAX_PICKUPS_PER_KIND = 32;
 const MAX_PROPS_PER_KIND = 24;
 const MAX_RINGS = 96;
@@ -219,8 +223,10 @@ export class OpenWorldScene {
   private checkpointRim: InstancedMesh;
 
   private frame = 0;
+  private readonly lite: boolean;
 
-  constructor(preloadBody = true) {
+  constructor(preloadBody = true, lite = false) {
+    this.lite = lite;
     this.group.userData.noPick = true;
     const litMat = new MeshLambertMaterial({ vertexColors: true });
     const ringMat = new MeshBasicMaterial({
@@ -462,18 +468,22 @@ export class OpenWorldScene {
     humans: readonly OpenWorldHuman[],
     f: number,
   ): void {
-    // Cap active human actors to <= 14 nearest within 110 m.
-    const near: { h: OpenWorldHuman; d2: number }[] = [];
-    const maxR2 = HUMAN_RANGE * HUMAN_RANGE;
+    const near: { h: OpenWorldHuman; d2: number; prio: number }[] = [];
+    const range = this.lite ? HUMAN_RANGE_LITE : HUMAN_RANGE;
+    const cap = this.lite ? MAX_HUMANS_LITE : MAX_HUMANS;
+    const maxR2 = range * range;
     for (const h of humans) {
       const dx = h.at[0] - viewerAt[0];
       const dy = h.at[1] - viewerAt[1];
       const d2 = dx * dx + dy * dy;
-      if (d2 <= maxR2) near.push({ h, d2 });
+      if (d2 <= maxR2) {
+        const prio = h.role === "giver" || h.target ? 0 : 1;
+        near.push({ h, d2, prio });
+      }
     }
-    if (near.length > MAX_HUMANS) {
-      near.sort((a, b) => a.d2 - b.d2);
-      near.length = MAX_HUMANS;
+    if (near.length > cap) {
+      near.sort((a, b) => a.prio - b.prio || a.d2 - b.d2);
+      near.length = cap;
     }
 
     let nInd = 0;
@@ -490,12 +500,12 @@ export class OpenWorldScene {
         const root = new Group();
         root.userData.noPick = true;
         this.group.add(root);
-        const skinned = this.buildSkinnedNpc(h.role, h.style);
+        const skinned = this.lite ? undefined : this.buildSkinnedNpc(h.role, h.style);
         const proc = skinned ? undefined : createProceduralHuman(cfg.paletteIdx, cfg);
         root.add(skinned ? skinned.root : proc!.root);
         slot = { id: h.id, root, skinned, proc, paletteIdx: cfg.paletteIdx, roleKey, attackT: 0, downBlend: 0, staggerBlend: 0, lastSeen: f };
         this.humanSlots.set(h.id, slot);
-      } else if (!slot.skinned && this.bodyAsset) {
+      } else if (!this.lite && !slot.skinned && this.bodyAsset) {
         // Upgrade from procedural fallback once walker.glb arrives.
         const skinned = this.buildSkinnedNpc(h.role, h.style);
         if (skinned) {
@@ -587,16 +597,18 @@ export class OpenWorldScene {
     f: number,
   ): void {
     const near: { v: OpenWorldVehicle; d2: number }[] = [];
-    const maxR2 = VEHICLE_RANGE * VEHICLE_RANGE;
+    const vRange = this.lite ? VEHICLE_RANGE_LITE : VEHICLE_RANGE;
+    const vCap = this.lite ? MAX_VEHICLES_LITE : MAX_VEHICLES;
+    const maxR2 = vRange * vRange;
     for (const v of vehicles) {
       const dx = v.at[0] - viewerAt[0];
       const dy = v.at[1] - viewerAt[1];
       const d2 = dx * dx + dy * dy;
       if (d2 <= maxR2) near.push({ v, d2 });
     }
-    if (near.length > MAX_VEHICLES) {
+    if (near.length > vCap) {
       near.sort((a, b) => a.d2 - b.d2);
-      near.length = MAX_VEHICLES;
+      near.length = vCap;
     }
 
     for (const { v } of near) {
@@ -609,7 +621,7 @@ export class OpenWorldScene {
           slot.actor.dispose();
           this.vehicleSlots.delete(v.id);
         }
-        const actor = createVehicleActor(v.kind, paint, styleIdx);
+        const actor = createVehicleActor(v.kind, paint, styleIdx, this.lite);
         this.group.add(actor.root);
         slot = { id: v.id, actor, wheelSpin: 0, colorIdx: styleIdx, lastSeen: f };
         this.vehicleSlots.set(v.id, slot);

@@ -457,25 +457,27 @@ const sharedShadowMat = new MeshBasicMaterial({
 });
 
 /** Creates a procedural vehicle: slopCars lofted + SDF-shaded car/bus/ute/van/taxi, Exo-Suit mecha, or commuter e-scooter. */
-export function createVehicleActor(kind: VehicleKind, paintHex?: number, styleIdx = 0): VehicleActor {
+export function createVehicleActor(kind: VehicleKind, paintHex?: number, styleIdx = 0, lite = false): VehicleActor {
   if (kind === "mecha") {
-    return createMechaActor(styleIdx, paintHex);
+    return createMechaActor(styleIdx, paintHex, lite);
   }
   if (kind !== "scooter") {
-    return createSlopVehicleActor(kind, styleIdx, paintHex);
+    return createSlopVehicleActor(kind, styleIdx, paintHex, lite);
   }
   const assets = getScooterAssets();
   const spec = VEHICLE_SPECS.scooter;
   const root = new Group();
   root.userData.noPick = true;
 
-  const paintMat = new MeshStandardMaterial({
-    color: paintHex ?? VEHICLE_PAINTS[0]!,
-    roughness: 0.28,
-    metalness: 0.45,
-    envMap: vehicleEnvMap,
-    envMapIntensity: 1.15,
-  });
+  const paintMat = lite
+    ? new MeshLambertMaterial({ color: paintHex ?? VEHICLE_PAINTS[0]! })
+    : new MeshStandardMaterial({
+        color: paintHex ?? VEHICLE_PAINTS[0]!,
+        roughness: 0.28,
+        metalness: 0.45,
+        envMap: vehicleEnvMap,
+        envMapIntensity: 1.15,
+      });
 
   const mark = (m: Mesh) => {
     m.castShadow = false;

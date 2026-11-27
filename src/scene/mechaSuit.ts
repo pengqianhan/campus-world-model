@@ -11,6 +11,7 @@ import {
   Group,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
@@ -81,35 +82,41 @@ function makePlume(outerMat: Material, innerMat: Material, radius: number, lengt
 }
 
 /** Instantiates a ~2.38 m Iron-Man-style Exo-Suit facing +Z at heading 0. */
-export function createMechaActor(styleIdx = 0, paintOverride?: number): VehicleActor {
+export function createMechaActor(styleIdx = 0, paintOverride?: number, lite = false): VehicleActor {
   const pal0 = MECHA_PALETTES[((Math.floor(styleIdx) % MECHA_PALETTES.length) + MECHA_PALETTES.length) % MECHA_PALETTES.length]!;
-  const envMap = getSlopVehicleEnvMap();
+  const envMap = lite ? undefined : getSlopVehicleEnvMap();
 
-  const primaryMat = new MeshPhysicalMaterial({
-    color: paintOverride ?? pal0.primary,
-    metalness: 0.74,
-    roughness: 0.18,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.06,
-    envMap,
-    envMapIntensity: 1.55,
-  });
-  const accentMat = new MeshPhysicalMaterial({
-    color: pal0.accent,
-    metalness: 0.86,
-    roughness: 0.18,
-    clearcoat: 0.9,
-    clearcoatRoughness: 0.08,
-    envMap,
-    envMapIntensity: 1.45,
-  });
-  const frameMat = new MeshStandardMaterial({
-    color: 0x181d26,
-    metalness: 0.82,
-    roughness: 0.34,
-    envMap,
-    envMapIntensity: 0.9,
-  });
+  const primaryMat = lite
+    ? new MeshLambertMaterial({ color: paintOverride ?? pal0.primary })
+    : new MeshPhysicalMaterial({
+        color: paintOverride ?? pal0.primary,
+        metalness: 0.74,
+        roughness: 0.18,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.06,
+        envMap,
+        envMapIntensity: 1.55,
+      });
+  const accentMat = lite
+    ? new MeshLambertMaterial({ color: pal0.accent })
+    : new MeshPhysicalMaterial({
+        color: pal0.accent,
+        metalness: 0.86,
+        roughness: 0.18,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.08,
+        envMap,
+        envMapIntensity: 1.45,
+      });
+  const frameMat = lite
+    ? new MeshLambertMaterial({ color: 0x181d26 })
+    : new MeshStandardMaterial({
+        color: 0x181d26,
+        metalness: 0.82,
+        roughness: 0.34,
+        envMap,
+        envMapIntensity: 0.9,
+      });
   const reactorRingMat = new MeshBasicMaterial({ color: 0x16b8ff });
   const reactorCoreMat = new MeshBasicMaterial({ color: pal0.glow });
   const plumeOuterMat = new MeshBasicMaterial({

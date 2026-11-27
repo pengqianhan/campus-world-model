@@ -65,6 +65,7 @@ export interface GameSceneHost {
   bodyVisible?(name: string, on: boolean): void;
   scooterPose?(name: string, on: boolean, speed: number, turnRate: number, dt: number): void;
   context?(): ContextData | undefined;
+  lite?(): boolean;
   drivePose?(name: string, at: Pt, heading: number): void;
   teleport(name: string, at: Pt, heading: number): void;
 }
@@ -253,7 +254,7 @@ export class GameWorld {
   private camYaw = 0;
   private drivingCtrl: VehicleControlInput = { throttle: 0, brake: 0, steer: 0, handbrake: false, horn: false };
 
-  private openWorldScene = new OpenWorldScene(true);
+  private openWorldScene: OpenWorldScene;
   private sparks = new Sparks();
   private slash = new Slash();
   private debris = new Debris();
@@ -269,6 +270,8 @@ export class GameWorld {
     private host: GameSceneHost,
     overlayParent?: HTMLElement,
   ) {
+    const isLite = !!host.lite?.();
+    this.openWorldScene = new OpenWorldScene(!isLite, isLite);
     this.group.userData.noPick = true;
     this.group.visible = false;
     this.group.add(this.openWorldScene.group, this.sparks.mesh, this.slash.group, this.debris.group, this.puffs.mesh, this.shocks.mesh);
