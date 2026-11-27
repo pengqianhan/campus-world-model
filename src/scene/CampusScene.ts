@@ -498,6 +498,7 @@ export class CampusScene {
   private readonly basicTier: boolean;
   private gpuFence: WebGLSync | null = null;
   private gpuFenceAt = 0;
+  private gpuReadyAt = 0;
   private width = 1;
   private height = 1;
   private raycaster = new Raycaster();
@@ -3070,24 +3071,26 @@ export class CampusScene {
     else this.placeWalkerCamera(dt);
     if (this.needsLandmarks) this.updateLandmarks();
     if (!this.needsRender) return;
-    const paceGpu = this.basicTier && !!this.game?.on && !this.game.menuPaused && !this.game.paused;
+    const trackGpu = this.basicTier && !!this.game?.on;
+    const paceGpu = trackGpu && !this.game!.menuPaused && !this.game!.paused;
     if (this.gpuFence) {
       const gl = this.renderer.getContext() as WebGL2RenderingContext;
       if (gl && !gl.isContextLost() && typeof gl.getSyncParameter === "function") {
-        if (paceGpu && now - this.gpuFenceAt < 1500 && gl.getSyncParameter(this.gpuFence, gl.SYNC_STATUS) === gl.UNSIGNALED) {
-          return;
-        }
+        const busy = now - this.gpuFenceAt < 20_000 && gl.getSyncParameter(this.gpuFence, gl.SYNC_STATUS) === gl.UNSIGNALED;
+        if (busy && paceGpu) return;
         gl.deleteSync(this.gpuFence);
+        if (!busy) this.gpuReadyAt = now + 80;
       }
       this.gpuFence = null;
     }
+    if (paceGpu && now < this.gpuReadyAt) return;
     this.needsRender = false;
     if (this.needsShadow && this.renderer.shadowMap.enabled) {
       this.renderer.shadowMap.needsUpdate = true;
       this.needsShadow = false;
     }
     this.draw();
-    if (paceGpu) {
+    if (trackGpu) {
       const gl = this.renderer.getContext() as WebGL2RenderingContext;
       if (gl && !gl.isContextLost() && typeof gl.fenceSync === "function") {
         this.gpuFence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
