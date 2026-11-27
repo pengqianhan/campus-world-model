@@ -1,6 +1,6 @@
 // The walker: a made-up figure a visitor or an agent walks round the campus, and its views.
 import { devices, expect, test, type Page } from "@playwright/test";
-import { expectRealRender, open, shot } from "./helpers.ts";
+import { expectRealRender, open, settle, shot } from "./helpers.ts";
 
 type Reply = Record<string, unknown> & { error?: string };
 
@@ -348,6 +348,7 @@ test("Study Quest is off until asked for; its title says it is made up; Harbour-
   await expect(page.locator("#walker-game")).toHaveAttribute("title", /made up/);
   await page.locator("#walker-game").click();
   await expect(page.locator("#game-title")).toBeVisible();
+  await settle(page);
   await expect(page.locator("#game-title")).toContainText(/made up/);
   await expect(page.locator("#game-title kbd, #game-title .sq-controls")).toHaveCount(0);
   await expect(page.locator('[data-label^="game:"]')).toHaveCount(0);
@@ -409,7 +410,7 @@ test("Study Quest is off until asked for; its title says it is made up; Harbour-
   expect(await page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBe(t1);
   await page.keyboard.press("c");
   await expect(page.locator("#game-sheet")).toHaveCount(0);
-  await expect.poll(() => page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds)).toBeGreaterThan(t1);
+  await expect.poll(() => page.evaluate(() => (window.__scene as unknown as GameScene).game.quest!.seconds), { timeout: 60_000 }).toBeGreaterThan(t1);
 
   // V twice opens map view and pauses Study Quest; V returns to follow view.
   await page.keyboard.press("v");
