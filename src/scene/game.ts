@@ -223,7 +223,7 @@ export class GameWorld {
   private events: GameEvent[] = [];
   private seconds = 0;
   private trauma = 0;
-  private paused?: "indoor" | "fly" | "map";
+  paused?: "indoor" | "fly" | "map";
   private overFor = 0;
   private stillDrawn = false;
   private feet = -1;

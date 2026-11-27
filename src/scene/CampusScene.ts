@@ -495,6 +495,9 @@ export class CampusScene {
   private needsLabels = true;
   private needsShadow = true;
   private raf = 0;
+  private readonly basicTier: boolean;
+  private gpuFence: WebGLSync | null = null;
+  private gpuFenceAt = 0;
   private width = 1;
   private height = 1;
   private raycaster = new Raycaster();
@@ -552,6 +555,7 @@ export class CampusScene {
     // Where the walker views can afford it, the renderer keeps a half-float picture for them; on
     // the map it is never used, and the map is drawn straight to the screen as ever (street/tier.ts).
     const tier = streetTier(!!opts.lite);
+    this.basicTier = tier === "basic";
     this.renderer = new WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance",
@@ -2703,7 +2707,7 @@ export class CampusScene {
         if (fig.takeChanged() || on) this.needsRender = true;
       },
       context: () => this.lastContext,
-      lite: () => !this.landmarkFull,
+      lite: () => this.basicTier,
       drivePose: (name, at, heading) => {
         this.walkers.teleport(name, at);
         this.walkers.turn(name, heading, true, true);
@@ -3066,12 +3070,31 @@ export class CampusScene {
     else this.placeWalkerCamera(dt);
     if (this.needsLandmarks) this.updateLandmarks();
     if (!this.needsRender) return;
+    const paceGpu = this.basicTier && !!this.game?.on && !this.game.menuPaused && !this.game.paused;
+    if (this.gpuFence) {
+      const gl = this.renderer.getContext() as WebGL2RenderingContext;
+      if (gl && !gl.isContextLost() && typeof gl.getSyncParameter === "function") {
+        if (paceGpu && now - this.gpuFenceAt < 1500 && gl.getSyncParameter(this.gpuFence, gl.SYNC_STATUS) === gl.UNSIGNALED) {
+          return;
+        }
+        gl.deleteSync(this.gpuFence);
+      }
+      this.gpuFence = null;
+    }
     this.needsRender = false;
     if (this.needsShadow && this.renderer.shadowMap.enabled) {
       this.renderer.shadowMap.needsUpdate = true;
       this.needsShadow = false;
     }
     this.draw();
+    if (paceGpu) {
+      const gl = this.renderer.getContext() as WebGL2RenderingContext;
+      if (gl && !gl.isContextLost() && typeof gl.fenceSync === "function") {
+        this.gpuFence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        this.gpuFenceAt = now;
+        gl.flush();
+      }
+    }
     if (this.needsLabels) {
       this.needsLabels = false;
       this.labels.update(this.activeCamera, this.width, this.height);
@@ -3546,6 +3569,11 @@ export class CampusScene {
     this.game?.dispose();
     this.walkers.clear();
     cancelAnimationFrame(this.raf);
+    if (this.gpuFence) {
+      const gl = this.renderer.getContext() as WebGL2RenderingContext;
+      if (gl && !gl.isContextLost() && typeof gl.deleteSync === "function") gl.deleteSync(this.gpuFence);
+      this.gpuFence = null;
+    }
     this.controls.dispose();
     this.street.dispose();
     for (const l of this.landmarks) l.dispose();
