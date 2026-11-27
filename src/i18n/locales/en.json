@@ -441,6 +441,168 @@
     "madeUp": "All of it is made up: no villain, book or quest stands for a real class, course, person, room or due date. Nothing leaves your browser.",
     "openGround": "open ground",
     "metres": "{metres} m",
+    "radar": {
+      "label": "Campus minimap radar"
+    },
+    "hud": {
+      "pause": "Pause",
+      "currency": "NZ$",
+      "kmh": "KM/H",
+      "objective": "Objective",
+      "wantedLevel": "Wanted level {level}",
+      "cuffs": "Cuffs",
+      "body": "Body",
+      "gear": "Gear {gear}",
+      "gearN": "Gear N",
+      "gearR": "Gear R",
+      "gearE": "Electric",
+      "suitUp": "Suit Up · Mark-IV Exo-Suit",
+      "radio": "Radio",
+      "radioOff": "Radio off",
+      "radioKey": "R",
+      "sliceKey": "G",
+      "slices": "{count}",
+      "slicesTitle": "Pizza slices: {count}",
+      "sliceBuff": "+{seconds}s",
+      "health": "Health",
+      "armour": "Energy",
+      "stamina": "Stamina"
+    },
+    "weapon": {
+      "fists": "Fists",
+      "textbook": "Textbook"
+    },
+    "phone": {
+      "open": "Campus Phone",
+      "close": "Close phone",
+      "key": "T",
+      "title": "Campus Phone",
+      "subIdle": "No new messages. Keep moving.",
+      "subActive": "Active job: {title}",
+      "story": "Story Jobs",
+      "hustles": "Side Hustles",
+      "services": "Campus Services",
+      "stats": "Player Stats",
+      "orderPizza": "Order Slice Co.",
+      "orderPizzaPrice": "NZ$12",
+      "orderPizzaDetail": "Hot slice delivery · heals & boosts energy",
+      "callScooter": "Call E-Scooter",
+      "callScooterPrice": "FREE",
+      "callScooterDetail": "Drop a rental scooter nearby",
+      "callMecha": "Call Exo-Suit",
+      "callMechaPrice": "FREE",
+      "callMechaDetail": "Deploy Mark-IV flight armor · Space/E fly · Q/C land",
+      "setGps": "Set GPS",
+      "startJob": "Start",
+      "abortJob": "Abort Job",
+      "abortDetail": "Walk away from the active job",
+      "statusAvailable": "OPEN",
+      "statusActive": "ACTIVE",
+      "statusDone": "DONE",
+      "statusLocked": "LOCKED",
+      "reward": "NZ${cash}",
+      "bestTime": "{seconds}s",
+      "statCash": "Cash",
+      "statWanted": "Wanted",
+      "statSlices": "Slices",
+      "noJobs": "No jobs available yet"
+    },
+    "card": {
+      "passed": "PASSED",
+      "failed": "FAILED",
+      "wasted": "WIPED OUT",
+      "busted": "BUSTED",
+      "mission": "MISSION",
+      "rewardCash": "+NZ${cash}",
+      "continueHint": "Click or press Enter to continue"
+    },
+    "touch": {
+      "punch": "Hit",
+      "dodge": "Dodge",
+      "jump": "Jump",
+      "textbook": "Book",
+      "interact": "Use",
+      "slice": "Pizza",
+      "exit": "Exit"
+    },
+    "jobs": {
+      "groupProject": {
+        "title": "Group Project",
+        "blurb": "Meet Maya by the Quad and recover the slides"
+      },
+      "pizzaExpress": {
+        "title": "Pizza Express",
+        "blurb": "Deliver hot slices across campus for Sam"
+      },
+      "turfTable": {
+        "title": "Club Turf Table",
+        "blurb": "Back up Tane at the student stand"
+      },
+      "lateSubmission": {
+        "title": "Late Submission",
+        "blurb": "Race the USB dossier before midnight"
+      },
+      "sidePizzaRun": {
+        "title": "Slice Run",
+        "blurb": "Timed campus pizza delivery"
+      },
+      "sideCourtyardBrawl": {
+        "title": "Quad Scrap",
+        "blurb": "Clear out rival free-riders"
+      },
+      "sideCampusSprint": {
+        "title": "Campus Sprint",
+        "blurb": "Hit every street checkpoint"
+      }
+    },
+    "openWorld": {
+      "status": "Open-campus status",
+      "cred": "CR",
+      "credLabel": "Campus Cred",
+      "credSymbol": "$",
+      "heat": "Proctor Watch",
+      "heatLevel": "Proctor Watch level {heat} of 3",
+      "pizzas": "Pizzas eaten",
+      "hotSlice": "Hot Slice · {seconds}s",
+      "hotSliceBonus": "+25% insight · +40% stamina",
+      "spotPizza": "Pizza Cart · {place}",
+      "spotClub": "Club Stand · {place}",
+      "spotAction": "Interact",
+      "spotTap": "Tap to start",
+      "activityEyebrow": "Campus activity",
+      "timer": "Time remaining",
+      "seconds": "{seconds}s",
+      "missionPass": "MISSION PASSED",
+      "missionFail": "MISSION FAILED",
+      "missionStart": "ACTIVITY STARTED",
+      "reward": "+{xp} knowledge · +{cred} CR"
+    },
+    "activity": {
+      "pizzaBrawl": {
+        "title": "Pizza Brawl",
+        "fight": "Beat the rival students",
+        "eat": "Grab dropped pizza slices",
+        "checkpoints": "Reach the cart"
+      },
+      "pizzaRun": {
+        "title": "Campus Pizza Run",
+        "checkpoints": "Hit the street checkpoints",
+        "eat": "Eat the delivery slice",
+        "fight": "Clear the way"
+      },
+      "clubDuel": {
+        "title": "Club Lawn Duel",
+        "fight": "Beat the All-Nighter champion",
+        "eat": "Grab the victory slice",
+        "checkpoints": "Meet at the stand"
+      },
+      "cramRally": {
+        "title": "Cram Time Rally",
+        "checkpoints": "Hit every campus checkpoint",
+        "eat": "Grab a study slice",
+        "fight": "Clear the route"
+      }
+    },
     "compass": {
       "n": "N",
       "ne": "NE",
@@ -470,7 +632,10 @@
     },
     "feed": {
       "beaten": "Beaten",
-      "coffee": "Coffee: focus and stamina restored"
+      "coffee": "Coffee: focus and stamina restored",
+      "pizza": "Hot Slice: focus, stamina and power boosted",
+      "dropPizza": "Dropped pizza",
+      "checkpoint": "Checkpoint"
     },
     "quest": {
       "orientation": {
@@ -576,6 +741,26 @@
         "title": "Shade of what-ifs",
         "taunt": "What if you forget everything?"
       },
+      "freeRider": {
+        "name": "Free Rider",
+        "title": "Group Project Ghost",
+        "taunt": "Just put my name on the slides, yeah?"
+      },
+      "debateRival": {
+        "name": "Debate Rival",
+        "title": "Quad Megaphone",
+        "taunt": "Point of order: that pizza is mine."
+      },
+      "allNighter": {
+        "name": "All-Nighter",
+        "title": "Triple-Espresso Sprinter",
+        "taunt": "Sleep is optional. Winning isn't."
+      },
+      "security": {
+        "name": "Campus Security",
+        "title": "Night Watch Officer",
+        "taunt": "Hold it right there, student."
+      },
       "exam": {
         "name": "The Final Exam",
         "title": "Proctor of the Last Hour",
@@ -604,6 +789,11 @@
       "card": "K or right-click  flashcard",
       "eureka": "R  Eureka",
       "lock": "Tab  lock on",
+      "interact": "G  eat slice / interact",
+      "drive": "F  enter or exit vehicle",
+      "phone": "T  campus phone",
+      "radio": "R  campus radio",
+      "horn": "B  vehicle horn",
       "pause": "P or Esc  pause",
       "record": "C  study record",
       "pad": "Game pad: A jump · B dodge, held run · X strike · Y flashcard · RT Eureka · RB lock on"

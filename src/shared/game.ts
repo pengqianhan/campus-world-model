@@ -8,13 +8,98 @@
 import { pointInRing, type Pt } from "./geo.ts";
 import { WALK_COST, cellOf, centreOf, nearestFree, type WalkGrid } from "./walkpath.ts";
 import { PLAYER } from "./gamePlayer.ts";
+import {
+  OPEN_WORLD,
+  OpenWorldState,
+  type CampusProp,
+  type HumanNpc,
+  type HumanRole,
+  type JobStage,
+  type MissionId,
+  type OpenWorldBridge,
+  type PickupItem,
+  type PickupKind,
+} from "./openWorld.ts";
+import {
+  CampusVehiclesState,
+  VEHICLE_SPECS,
+  type RoadInput,
+  type VehicleControlInput,
+  type VehicleKind,
+} from "./campusVehicles.ts";
+export {
+  MAX_ATTACKERS,
+  OPEN_WORLD,
+  OpenWorldState,
+  SIDE_HUSTLES,
+  STORY_JOBS,
+  type ActiveJob,
+  type CampusProp,
+  type CampusSpot,
+  type HumanNpc,
+  type HumanProp,
+  type HumanRole,
+  type HumanState,
+  type HustleDef,
+  type HustleId,
+  type JobDef,
+  type JobId,
+  type JobStage,
+  type MissionId,
+  type PickupItem,
+  type PickupKind,
+  type PropKind,
+  type SpotKind,
+} from "./openWorld.ts";
+export {
+  CampusVehiclesState,
+  DRIVABLE_ROAD_WIDTH,
+  VEHICLE_SPECS,
+  extractDrivableRoads,
+  leftLanePoint,
+  sampleRoad,
+  vehicleBodyDist,
+  type CampusVehicle,
+  type DrivableRoadClass,
+  type RoadInput,
+  type RoadPolyline,
+  type VehicleControlInput,
+  type VehicleKind,
+  type VehicleSpec,
+  type VehicleTelemetry,
+} from "./campusVehicles.ts";
 
 // ---------------------------------------------------------------------------------------------
 // Numbers
 // ---------------------------------------------------------------------------------------------
 
-export type FoeKind = "ddl" | "procrastination" | "distraction" | "plagiarism" | "anxiety" | "exam";
-export const FOE_KINDS: readonly FoeKind[] = ["ddl", "procrastination", "distraction", "plagiarism", "anxiety", "exam"];
+export type FoeKind =
+  | "ddl"
+  | "procrastination"
+  | "distraction"
+  | "plagiarism"
+  | "anxiety"
+  | "freeRider"
+  | "debateRival"
+  | "allNighter"
+  | "exam";
+export const FOE_KINDS: readonly FoeKind[] = [
+  "ddl",
+  "procrastination",
+  "distraction",
+  "plagiarism",
+  "anxiety",
+  "freeRider",
+  "debateRival",
+  "allNighter",
+  "exam",
+];
+export const NPC_FOE_KINDS: readonly FoeKind[] = ["freeRider", "debateRival", "allNighter"];
+
+/** Whether `k` is one of the rival student NPC kinds that drop pizza and add extra heat. */
+export function isNpcFoe(k: FoeKind): boolean {
+  return k === "freeRider" || k === "debateRival" || k === "allNighter";
+}
 
 export interface FoeSpec {
   hp: number;
@@ -52,6 +137,9 @@ export const FOES: Record<FoeKind, FoeSpec> = {
   distraction: { hp: 40, speed: 4.3, damage: 5, reach: 1.7, radius: 0.55, xp: 6, tell: 0.35, cooldown: 1.2, weight: 1.3 },
   plagiarism: { hp: 80, speed: 2.7, damage: 12, reach: 2.4, radius: 0.85, xp: 20, tell: 0.55, cooldown: 3.4, weight: 1 },
   anxiety: { hp: 65, speed: 2.3, damage: 9, reach: 13, radius: 0.85, xp: 16, tell: 0.6, cooldown: 2.3, weight: 1 },
+  freeRider: { hp: 95, speed: 3.0, damage: 10, reach: 2.3, radius: 0.75, xp: 24, tell: 0.55, cooldown: 2.0, weight: 1.0 },
+  debateRival: { hp: 135, speed: 2.8, damage: 13, reach: 11, radius: 0.8, xp: 32, tell: 0.65, cooldown: 2.4, weight: 0.85 },
+  allNighter: { hp: 185, speed: 3.6, damage: 15, reach: 9, radius: 0.8, xp: 45, tell: 0.6, cooldown: 1.9, weight: 0.75, guard: 0.7 },
   exam: { hp: 6000, speed: 2.4, damage: 24, reach: 30, radius: 3.2, body: 2.1, xp: 450, tell: 1.15, cooldown: 1.5, weight: 0.08, guard: 0.25 },
 };
 
@@ -106,13 +194,20 @@ export function rankFor(xp: number): number {
 }
 
 export const QUEST = {
-  booksOut: 40,
-  coffeeOut: 5,
+  booksOut: 0,
+  coffeeOut: 4,
+  pizzaOut: 6,
+  cashOut: 4,
   /** Metres from a pick-up at which the walker takes it. */
   takeReach: 3.2,
   bookXp: 10,
   noteXp: 25,
-  coffeeFocus: 35,
+  coffeeFocus: 25,
+  pizzaFocus: 45,
+  pizzaEnergy: 50,
+  pizzaXp: 15,
+  pizzaBuffSec: 25,
+  pizzaCred: 0,
   /** Metres from the walker beyond which a pick-up is laid again nearer. */
   laidRange: 320,
   /** Foes out at one time, besides the boss, at most. */
@@ -206,14 +301,21 @@ export const TEACH = {
 // State
 // ---------------------------------------------------------------------------------------------
 
-export type ItemKind = "book" | "note" | "coffee";
+export type ItemKind = PickupKind;
 
 export interface Item {
   id: number;
   kind: ItemKind;
   at: Pt;
+  value?: number;
   /** The quest this note is for. */
   quest?: string;
+  /** Whether this pick-up was dropped by a defeated rival or mission. */
+  dropped?: boolean;
+  /** Whether a pizza box is open. */
+  open?: boolean;
+  jobId?: MissionId;
+  label?: string;
 }
 
 export type FoeState = "rise" | "chase" | "tell" | "attack" | "recover" | "stagger" | "dead" | "phase";
@@ -329,12 +431,14 @@ export interface Quest {
 }
 
 export type GameEvent =
-  | { type: "take"; kind: ItemKind; at: Pt; xp: number }
+  | { type: "take"; kind: ItemKind; at: Pt; xp: number; value?: number }
   | { type: "swing"; combo: number; at: Pt; dir: number; plunge?: boolean }
   /** A strike pressed in the air: the highlighter raised, to come down as the walker lands. */
   | { type: "plungeReady"; at: Pt }
   /** `by`: what landed it, a blow of the highlighter, a flashcard, the Eureka or the sprint. */
   | { type: "hit"; foe: number; kind: FoeKind; at: Pt; amount: number; crit: boolean; heavy: boolean; dir: number; stagger: boolean; by: "blow" | "card" | "eureka" | "sprint" }
+  | { type: "hitHuman"; id: number; role: HumanRole; at: Pt; amount: number; heavy: boolean }
+  | { type: "hitEnv"; target: "vehicle" | "prop"; kind?: string; at: Pt; heavy: boolean }
   | { type: "kill"; foe: number; kind: FoeKind; at: Pt; xp: number }
   | { type: "hurt"; amount: number; from: Pt }
   | { type: "evade"; at: Pt }
@@ -354,7 +458,26 @@ export type GameEvent =
   /** Burnt out, the walker tries again from `at`, where the quest it was on began (or the boss's arena). */
   | { type: "retry"; at: Pt; heading: number; boss: boolean }
   /** A lesson taught: its prompt is not shown again. */
-  | { type: "learn"; lesson: Lesson };
+  | { type: "learn"; lesson: Lesson }
+  | { type: "dropPizza"; foe: number; kind: FoeKind; at: Pt; count: number }
+  | { type: "drop"; kind: PickupKind; at: Pt; value: number }
+  | { type: "job"; id: MissionId; state: "start" | "stage" | "pass" | "fail"; stage?: JobStage; xp?: number; cash?: number }
+  | { type: "checkpoint"; index: number; total: number; at: Pt }
+  | { type: "subtitle"; speaker: string; key: string; ttl: number }
+  | { type: "wanted"; level: number; evaded?: boolean }
+  | { type: "vehicle"; action: "enter" | "exit" | "crash" | "callScooter" | "callMecha"; kind?: VehicleKind; carjacked?: boolean; at: Pt; speed?: number }
+  | { type: "radio"; station: number };
+
+export interface PhoneCommand {
+  type: "gps" | "start" | "orderPizza" | "shuttle" | "callMecha" | "abort";
+  targetId?: string;
+}
+
+export interface ActionPrompt {
+  key: "F" | "G";
+  action: "drive" | "ride" | "suitUp" | "exit" | "eat" | "buyPizza" | "talk";
+  label?: string;
+}
 
 export interface QuestHost {
   /** Somewhere to lay a pick-up near `near`, or beside `place` when given; undefined when it finds none. */
@@ -365,12 +488,18 @@ export interface QuestHost {
   ground?(p: Pt): boolean;
   /** Whether a foe may rise at `p`: ground as `ground` gives it, and not on or beside a home (isHome). As `ground` when absent. */
   free?(p: Pt): boolean;
+  /** Building roof height above local ground at `p` (metres), or undefined over open ground. */
+  roofTopAboveGround?(p: Pt): number | undefined;
   /** Open ground the walker can reach within about 20 m of `centre`, well away from `away`, for a big foe to come from. */
   open?(centre: Pt, away: Pt): Pt | undefined;
   /** A place for a quest: beside a building with rooms to teach in, away from `avoid`. */
   place(near: Pt, avoid: readonly Pt[], big?: boolean): Place | undefined;
+  /** Optional campus-only courtyard/building anchor for open-world missions and checkpoints. */
+  campusAnchor?(near: Pt, avoid: readonly Pt[], minDist: number, maxDist: number, minGap?: number): { name: string; at: Pt } | undefined;
   /** 0 to 1, as Math.random gives. */
   random(): number;
+  /** Drivable road polylines from ContextData.roads. */
+  roads?: readonly RoadInput[];
 }
 
 export interface PlayerInput {
@@ -583,7 +712,7 @@ export function gradeFor(d: Omit<Debrief, "grade">): string {
 // The game
 // ---------------------------------------------------------------------------------------------
 
-type Action = "strike" | "dodge" | "card" | "eureka";
+type Action = "strike" | "heavy" | "dodge" | "card" | "eureka";
 
 export class StudyQuest {
   phase: "play" | "over" = "play";
@@ -592,6 +721,12 @@ export class StudyQuest {
   xp = 0;
   rank = 0;
   focus: number;
+  /** Blue energy/armour from eating pizza (0..100): grants +25% melee damage & 50% damage soak. */
+  energy = 0;
+  /** Stored pizza slices usable anytime with [G]. */
+  slices = 1;
+  /** Equipped melee weapon. */
+  weapon: "fists" | "textbook" = "fists";
   stamina: number;
   eurekaMeter = 0;
   items: Item[] = [];
@@ -638,6 +773,30 @@ export class StudyQuest {
   orders: PlayerOrders = { shove: [0, 0], slow: 1 };
   /** Times the walker was burnt out. */
   deaths = 0;
+  /** Seconds left of pizza buff, total pizzas eaten, NZ$ cash/cred, 5-star Wanted & evade timer. */
+  pizzaBuff = 0;
+  pizzasEaten = 0;
+  cash = 50;
+  get cred(): number {
+    return this.cash;
+  }
+  set cred(v: number) {
+    this.cash = v;
+  }
+  cashDelta = 0;
+  cashDeltaT = 0;
+  wanted = 0;
+  heat = 0;
+  evadeT = 0;
+  busted = false;
+  radioStation = 0;
+  gpsTarget?: Pt;
+  gpsRoute: Pt[] = [];
+  kmDriven = 0;
+  rivalsBeat = 0;
+  maxWanted = 0;
+  openWorld: OpenWorldState;
+  vehicles: CampusVehiclesState;
   /** Lessons taught, and the one whose prompt is up now. */
   taught: Set<Lesson>;
   lesson?: Lesson;
@@ -653,7 +812,6 @@ export class StudyQuest {
   private check: { step: number; at: Pt; heading: number; place?: Place; boss: boolean };
   private queued?: Action;
   private nextId = 1;
-  private spawnT: number = QUEST.firstSpawn;
   private sideSeq = 0;
   private player: Pt;
   private heading = 0;
@@ -690,22 +848,262 @@ export class StudyQuest {
     this.startAt = [player[0], player[1]];
     this.heading = heading;
     this.taught = new Set(LESSONS.filter((l) => seen.includes(l)));
-    if (this.taught.has("strike") && this.taught.has("dodge")) this.practiceT = Infinity;
+    this.practiceT = Infinity;
     const s = statsFor(0);
     this.focus = s.maxFocus;
     this.stamina = s.maxStamina;
     this.check = { step: 0, at: [player[0], player[1]], heading, boss: false };
-    // The first book glows a few steps ahead, where the walker looks: the way to go needs no words.
-    const [ux, uy] = dirOf(heading);
-    const ahead: Pt = [player[0] + ux * TEACH.firstBook, player[1] + uy * TEACH.firstBook];
-    const first = this.host.near ? this.host.near(ahead) : ahead;
-    if (first && dist(first, player) <= TEACH.firstBook * 2) this.items.push({ id: this.nextId++, kind: "book", at: first });
     this.fill(player);
-    this.beginMain(player);
+    this.openWorld = new OpenWorldState(this.host, player, heading);
+    this.vehicles = new CampusVehiclesState(this.host, player, heading);
+    const firstObj = this.openWorld.currentObjectivePoint();
+    if (firstObj) this.setGpsTarget(firstObj);
   }
 
   get stats(): ReturnType<typeof statsFor> {
     return statsFor(this.rank);
+  }
+
+  private get insight(): number {
+    return this.stats.insight * (this.energy > 0 || this.pizzaBuff > 0 ? 1.25 : 1);
+  }
+
+  private safeGround(at: Pt): Pt {
+    if (this.host.free ? this.host.free(at) : this.onGround(at)) return at;
+    return this.host.near?.(at) ?? this.host.spot(at, [], at) ?? at;
+  }
+
+  private addCash(delta: number): void {
+    this.cash = Math.max(0, this.cash + delta);
+    this.cashDelta = delta;
+    this.cashDeltaT = 3.0;
+  }
+
+  setGpsTarget(at: Pt | undefined): void {
+    this.gpsTarget = at ? [at[0], at[1]] : undefined;
+    this.gpsRoute = at ? this.vehicles.computeGpsRoute(this.player, at) : [];
+  }
+
+  addWanted(stars: number): void {
+    if (stars <= 0) return;
+    const prev = this.wanted;
+    this.wanted = Math.min(5, this.wanted + stars);
+    this.heat = Math.max(this.heat, this.wanted);
+    this.maxWanted = Math.max(this.maxWanted, this.wanted);
+    this.evadeT = 16;
+    if (this.wanted !== prev) this.events.push({ type: "wanted", level: this.wanted });
+  }
+
+  setWanted(stars: number): void {
+    const next = Math.max(0, Math.min(5, Math.round(stars)));
+    if (next === this.wanted) return;
+    this.wanted = next;
+    this.heat = next;
+    this.evadeT = next > 0 ? 16 : 0;
+    this.events.push({ type: "wanted", level: next, evaded: next === 0 });
+  }
+
+  private owBridge(): OpenWorldBridge {
+    return {
+      host: this.host,
+      startAt: this.startAt,
+      wanted: this.wanted,
+      inVehicle: this.vehicles.current !== undefined,
+      playerIframes: this.iframes,
+      obstacles: [
+        ...this.openWorld.spots.map((s) => ({ at: s.at, radius: s.kind === "pizzaVan" ? 2.8 : 1.25 })),
+        ...this.vehicles.vehicles.map((v) => ({ at: v.at, radius: v.kind === "scooter" ? 0.9 : 2.5 })),
+      ],
+      hurtPlayer: (amount, from) => this.hurt(amount, from),
+      addWanted: (stars) => this.addWanted(stars),
+      setWanted: (stars) => this.setWanted(stars),
+      spawnPickup: (kind, at, value, opts = {}) => {
+        const it: Item = {
+          id: this.nextId++,
+          kind,
+          at: this.safeGround(at),
+          value,
+          dropped: opts.dropped,
+          open: opts.open,
+          jobId: opts.jobId,
+        };
+        this.items.push(it);
+        return it as PickupItem;
+      },
+      pickups: this.items as PickupItem[],
+      grantReward: (xp, cash) => {
+        if (cash) this.addCash(cash);
+        if (xp > 0) this.gain(xp);
+      },
+      setGpsTarget: (at) => this.setGpsTarget(at),
+      emit: (ev) => {
+        this.events.push(ev);
+      },
+      safeGround: (at) => this.safeGround(at),
+    };
+  }
+
+  /** Applies pizza eat bonuses: +45 health, +50 blue energy/armour, full stamina, -1 wanted if outside active melee. */
+  private eatPizzaEffect(): void {
+    const s = this.stats;
+    this.focus = Math.min(s.maxFocus, this.focus + QUEST.pizzaFocus);
+    this.energy = Math.min(100, this.energy + QUEST.pizzaEnergy);
+    this.stamina = s.maxStamina;
+    this.pizzaBuff = QUEST.pizzaBuffSec;
+    this.pizzasEaten++;
+    const inActiveMelee = this.openWorld.humans.some(
+      (h) => h.state !== "dead" && h.role !== "pedestrian" && h.role !== "giver" && (h.state === "windup" || h.state === "attack" || dist(h.at, this.player) <= 5),
+    );
+    if (!inActiveMelee && this.wanted > 0) {
+      this.setWanted(this.wanted - 1);
+    }
+  }
+
+  /** Uses [G] to buy/eat at Slice Co. Pizza Van, eat a stored slice, or interact with a nearby giver. */
+  eatSlice(): boolean {
+    if (this.phase !== "play") return false;
+    const spot = this.openWorld.nearSpot(this.player, OPEN_WORLD.interactRadius);
+    if (spot?.kind === "pizzaVan") {
+      if (this.cash >= OPEN_WORLD.pizzaPrice) {
+        this.addCash(-OPEN_WORLD.pizzaPrice);
+        this.eatPizzaEffect();
+        this.gain(QUEST.pizzaXp);
+        this.events.push({ type: "take", kind: "pizza", at: this.player, xp: QUEST.pizzaXp });
+        this.openWorld.onSliceEaten(this.owBridge());
+        return true;
+      }
+      if (spot.cooldown <= 0) {
+        spot.cooldown = OPEN_WORLD.spotCooldown;
+        this.eatPizzaEffect();
+        this.gain(QUEST.pizzaXp);
+        this.events.push({ type: "take", kind: "pizza", at: this.player, xp: QUEST.pizzaXp });
+        this.openWorld.onSliceEaten(this.owBridge());
+        return true;
+      }
+    }
+    if (this.slices > 0) {
+      this.slices--;
+      this.eatPizzaEffect();
+      this.gain(QUEST.pizzaXp);
+      this.events.push({ type: "take", kind: "pizza", at: this.player, xp: QUEST.pizzaXp });
+      this.openWorld.onSliceEaten(this.owBridge());
+      return true;
+    }
+    return this.interact();
+  }
+
+  /** Manually triggers or interacts with a nearby CampusSpot within 5 m. */
+  interact(): boolean {
+    if (this.phase !== "play") return false;
+    return this.openWorld.interact(this.player, this.owBridge());
+  }
+
+  /** Enters nearest vehicle or exits current vehicle ([F]). */
+  toggleVehicle(): boolean {
+    if (this.phase !== "play") return false;
+    if (this.vehicles.current) {
+      const res = this.vehicles.exitCurrent(this.host);
+      if (!res) return false;
+      this.player = [res.at[0], res.at[1]];
+      this.heading = res.heading;
+      this.orders.face = res.heading;
+      if (res.bailed) this.hurt(Math.max(4, Math.round((res.speed - 12) * 1.8)), res.at);
+      this.events.push({ type: "vehicle", action: "exit", kind: res.vehicle.kind, at: res.at, speed: res.speed });
+      return true;
+    }
+    const res = this.vehicles.enterNearest(this.player);
+    if (!res) return false;
+    if (res.carjacked) {
+      this.addWanted(1);
+      // Spawn fleeing driver pedestrian beside the car
+      this.openWorld.spawnHuman("pedestrian", [res.vehicle.at[0] + 1.5, res.vehicle.at[1]], this.host).state = "flee";
+    }
+    this.player = [res.vehicle.at[0], res.vehicle.at[1]];
+    this.heading = res.vehicle.heading;
+    this.events.push({ type: "vehicle", action: "enter", kind: res.vehicle.kind, carjacked: res.carjacked, at: res.vehicle.at });
+    return true;
+  }
+
+  /** Cycles Campus Radio station (0..3). */
+  cycleRadio(): number {
+    this.radioStation = (this.radioStation + 1) % 4;
+    this.events.push({ type: "radio", station: this.radioStation });
+    return this.radioStation;
+  }
+
+  /** Switches melee weapon between bare fists and heavy textbook. */
+  switchWeapon(): "fists" | "textbook" {
+    this.weapon = this.weapon === "fists" ? "textbook" : "fists";
+    return this.weapon;
+  }
+
+  /** Dispatches an in-game Smartphone action. */
+  phoneAction(cmd: PhoneCommand): boolean {
+    if (this.phase !== "play") return false;
+    this.openWorld.unreadPhone = false;
+    if (cmd.type === "orderPizza") {
+      if (this.cash < OPEN_WORLD.pizzaPrice) return false;
+      this.addCash(-OPEN_WORLD.pizzaPrice);
+      this.slices++;
+      this.events.push({ type: "subtitle", speaker: "Slice Co.", key: "game.sub.pizzaOrdered", ttl: 3 });
+      return true;
+    }
+    if (cmd.type === "shuttle") {
+      const sc = this.vehicles.callScooter(this.host, this.player, this.heading);
+      if (!sc) return false;
+      this.events.push({ type: "vehicle", action: "callScooter", kind: "scooter", at: sc.at });
+      return true;
+    }
+    if (cmd.type === "callMecha") {
+      const m = this.vehicles.callMecha(this.host, this.player, this.heading);
+      if (!m) return false;
+      this.events.push({ type: "vehicle", action: "callMecha", kind: "mecha", at: m.at });
+      return true;
+    }
+    if (cmd.type === "abort") {
+      return this.openWorld.abortActive(this.owBridge());
+    }
+    if (cmd.type === "start" && cmd.targetId) {
+      return this.openWorld.startMission(cmd.targetId as MissionId, this.player, this.owBridge());
+    }
+    if (cmd.type === "gps") {
+      if (cmd.targetId === "pizzaVan") {
+        const van = this.openWorld.spots.find((s) => s.kind === "pizzaVan");
+        if (!van) return false;
+        this.setGpsTarget(van.at);
+        return true;
+      }
+      if (cmd.targetId) {
+        const spot = this.openWorld.spots.find((s) => s.missionId === cmd.targetId || s.id === cmd.targetId);
+        if (!spot) return false;
+        this.setGpsTarget(spot.at);
+        return true;
+      }
+      const next = this.openWorld.currentObjectivePoint();
+      if (!next) return false;
+      this.setGpsTarget(next);
+      return true;
+    }
+    return false;
+  }
+
+  /** Context-sensitive bottom-center interaction prompt. */
+  currentPrompt(): ActionPrompt | undefined {
+    if (this.phase !== "play") return undefined;
+    if (this.vehicles.current) return undefined;
+    const nearVeh = this.vehicles.nearestEnterable(this.player);
+    if (nearVeh) {
+      return {
+        key: "F",
+        action: nearVeh.kind === "scooter" ? "ride" : nearVeh.kind === "mecha" ? "suitUp" : "drive",
+        label: nearVeh.kind,
+      };
+    }
+    const spot = this.openWorld.nearSpot(this.player, OPEN_WORLD.interactRadius);
+    if (spot?.kind === "pizzaVan") return { key: "G", action: "buyPizza" };
+    if (spot?.giver) return { key: "G", action: "talk", label: spot.giver };
+    if (this.slices > 0 && this.focus < this.stats.maxFocus) return { key: "G", action: "eat" };
+    return undefined;
   }
 
   has(skill: SkillId): boolean {
@@ -762,7 +1160,7 @@ export class StudyQuest {
   // The step
   // -------------------------------------------------------------------------------------------
 
-  step(dt: number, input: PlayerInput): GameEvent[] {
+  step(dt: number, input: PlayerInput, vehicleCtrl?: VehicleControlInput): GameEvent[] {
     this.events = [];
     this.orders = { shove: [0, 0], slow: this.slowT > 0 ? 0.55 : 1 };
     // A game that is over lets its foes go: they fade where they stand.
@@ -775,6 +1173,7 @@ export class StudyQuest {
     }
     if (this.phase !== "play" || !input.active || dt <= 0) return this.events;
     dt = Math.min(dt, 0.1);
+    const prevAt: Pt = [this.player[0], this.player[1]];
     this.player = [input.at[0], input.at[1]];
     this.heading = input.heading;
     this.move = "move" in input ? input.move : input.heading;
@@ -787,13 +1186,93 @@ export class StudyQuest {
     this.hitStop = Math.max(0, this.hitStop - dt);
     this.grace = Math.max(0, this.grace - dt);
     this.timers(dt);
-    this.landed();
-    this.actions();
-    this.landing(dt);
-    this.lunging(dt);
-    this.dodging(dt);
+
+    // Step campus vehicles (player driving + left-hand traffic + security patrols)
+    this.vehicles.syncSecurityPatrols(this.host, this.player, this.wanted);
+    const ctrl = vehicleCtrl ?? { throttle: 0, brake: 0, steer: 0, handbrake: false };
+    const npcList = this.openWorld.humans.filter((h) => h.state !== "dead" && h.state !== "down").map((h) => ({ id: h.id, at: h.at }));
+    const propObstacles = this.openWorld.spots.map((s) => ({
+      at: s.at,
+      heading: s.heading,
+      halfW: s.kind === "pizzaVan" ? 1.02 : 0.92,
+      halfL: s.kind === "pizzaVan" ? 2.85 : 0.46,
+    }));
+    const vEv = this.vehicles.step(dt, this.player, ctrl, this.host, npcList, propObstacles);
+    const curId = this.vehicles.playerVehicleId;
+    for (const c of vEv.crashes) {
+      const involvesPlayer = curId !== undefined && (c.vehicleId === curId || c.otherVehicleId === curId);
+      const nearPlayer = dist(c.at, this.player) <= 65;
+      if (involvesPlayer || nearPlayer) {
+        const hitVeh = this.vehicles.vehicles.find((v) => v.id === (c.vehicleId === curId ? c.otherVehicleId : c.vehicleId));
+        this.events.push({ type: "vehicle", action: "crash", at: c.at, speed: c.speed, kind: hitVeh?.kind ?? this.vehicles.current?.kind });
+      }
+      if (involvesPlayer && c.speed > 12) this.hurt(Math.round((c.speed - 12) * 1.1), c.at);
+      if (involvesPlayer && c.kind === "vehicle" && c.speed >= 8.5) this.addWanted(1);
+    }
+    for (const nh of vEv.npcHits) {
+      const h = this.openWorld.humans.find((o) => o.id === nh.npcId);
+      const veh = this.vehicles.vehicles.find((v) => v.id === nh.vehicleId);
+      if (h && h.state !== "dead") {
+        const hitHeading = veh?.heading ?? this.heading;
+        if (veh) {
+          const awayX = h.at[0] - veh.at[0];
+          const awayY = h.at[1] - veh.at[1];
+          const al = Math.hypot(awayX, awayY) || 1;
+          const pushPt: Pt = [h.at[0] + (awayX / al) * 1.4, h.at[1] + (awayY / al) * 1.4];
+          if (!this.host.ground || this.host.ground(pushPt)) h.at = pushPt;
+        }
+        const ko = this.openWorld.damageHuman(h, Math.round(nh.speed * 4.5), hitHeading, 2.4, true, this.owBridge());
+        if (ko) {
+          this.rivalsBeat++;
+          this.defeated++;
+        }
+        // damageHuman already adds 1 wanted star when a pedestrian is struck; add 1 when hitting Security too.
+        if (h.role === "security") this.addWanted(1);
+      }
+    }
+    const driving = this.vehicles.current;
+    if (driving) {
+      this.player = [driving.at[0], driving.at[1]];
+      this.heading = driving.heading;
+      this.kmDriven += (Math.abs(driving.speed) * dt) / 1000;
+    }
+
     this.take();
+    if (!driving) {
+      this.landed();
+      this.actions();
+      this.landing(dt);
+      this.lunging(dt);
+      this.dodging(dt);
+    } else if (driving.kind === "mecha") {
+      this.actions();
+    } else {
+      this.queued = undefined;
+    }
     this.questsStep();
+    this.openWorld.step(dt, this.player, this.owBridge());
+    const playerSpeed = dist(this.player, prevAt) / Math.max(1e-4, dt);
+    const bumpedProps = this.openWorld.stepProps(
+      dt,
+      this.player,
+      playerSpeed,
+      this.heading,
+      !!driving && (driving.altitude ?? 0) < 1.8,
+      this.vehicles.vehicles
+        .filter((v) => v.altitude < 1.8)
+        .map((v) => ({
+          at: v.at,
+          heading: v.heading,
+          speed: v.speed,
+          halfW: VEHICLE_SPECS[v.kind].halfW,
+          halfL: VEHICLE_SPECS[v.kind].halfL,
+        })),
+      this.host,
+    );
+    for (const bp of bumpedProps) {
+      this.events.push({ type: "hitEnv", target: "prop", kind: bp.kind, at: bp.at, heavy: false });
+    }
+    this.wantedStep(dt);
     this.practiceStep(dt);
     this.spawning(dt);
     this.foesStep(world, input.pace);
@@ -807,7 +1286,7 @@ export class StudyQuest {
     else if (this.knock) this.orders.slow = Math.min(this.orders.slow, PLAYER.staggerSlow);
     else if (this.strikeT > 0) this.orders.slow = Math.min(this.orders.slow, PLAYER.strikeSlow);
     this.keepOut();
-    if (this.phase === "play") this.lessons(dt);
+    if (this.phase === "play" && this.foes.length > 0) this.lessons(dt);
     return this.events;
   }
 
@@ -826,6 +1305,14 @@ export class StudyQuest {
       const out = f.state === "attack" && f.move?.type === "charge" ? knockAside(this.player, s, f.at, f.move.dir, r) : slideRound(this.player, s, f.at, r);
       s[0] = out[0];
       s[1] = out[1];
+    }
+    if (!this.vehicles.current) {
+      for (const h of this.openWorld.humans) {
+        if (h.state === "dead" || h.state === "down") continue;
+        const out = slideRound(this.player, s, h.at, 0.56);
+        s[0] = out[0];
+        s[1] = out[1];
+      }
     }
   }
 
@@ -924,15 +1411,43 @@ export class StudyQuest {
     this.chainT = Math.max(0, this.chainT - dt);
     if (this.chainT <= 0) this.chain = 0;
     this.cineT = Math.max(0, this.cineT - dt);
+    this.pizzaBuff = Math.max(0, this.pizzaBuff - dt);
+    if (this.cashDeltaT > 0) {
+      this.cashDeltaT = Math.max(0, this.cashDeltaT - dt);
+      if (this.cashDeltaT <= 0) this.cashDelta = 0;
+    }
     this.hurtAgo += dt;
-    if (this.dodgeT <= 0) this.stamina = Math.min(s.maxStamina, this.stamina + PLAYER.staminaRegen * dt);
+    const regen = PLAYER.staminaRegen * (this.pizzaBuff > 0 || this.energy > 0 ? 1.4 : 1);
+    if (this.dodgeT <= 0) this.stamina = Math.min(s.maxStamina, this.stamina + regen * dt);
     if (this.hurtAgo > PLAYER.calm) this.focus = Math.min(s.maxFocus, this.focus + PLAYER.focusRegen * dt);
+  }
+
+  private wantedStep(dt: number): void {
+    if (this.wanted <= 0) return;
+    const secNear =
+      this.openWorld.humans.some((h) => h.role === "security" && h.state !== "dead" && dist(h.at, this.player) <= 30) ||
+      this.vehicles.vehicles.some((v) => v.isPolice && v.driver === "security" && dist(v.at, this.player) <= 34);
+    if (secNear) {
+      this.evadeT = 14;
+      this.heat = this.wanted;
+    } else {
+      this.evadeT = Math.max(0, this.evadeT - dt);
+      this.heat = Math.max(0, this.wanted - 1 + this.evadeT / 16);
+      if (this.evadeT <= 0) this.setWanted(0);
+    }
   }
 
   private actions(): void {
     const a = this.queued;
     if (!a) return;
-    if (a === "strike") {
+    if (this.vehicles.current?.kind === "mecha") {
+      this.queued = undefined;
+      if (a === "strike" || a === "heavy") {
+        if (this.strikeT <= 0) this.mechaStrike(a === "heavy");
+      }
+      return;
+    }
+    if (a === "strike" || a === "heavy") {
       if (this.strikeT > 0 || this.dodgeT > 0) return; // kept for when the blow ends
       this.queued = undefined;
       this.learn("strike");
@@ -944,7 +1459,7 @@ export class StudyQuest {
         }
         return;
       }
-      this.strike();
+      this.strike(a === "heavy");
     } else if (a === "dodge") {
       if (this.air > PLAYER.airborne) return; // kept for when the walker lands
       this.queued = undefined;
@@ -987,7 +1502,18 @@ export class StudyQuest {
         if (f.state === "dead" || f.state === "rise") continue;
         const d = dist(f.at, this.player);
         if (d > PLAYER.eurekaRadius + FOES[f.kind].radius) continue;
-        this.damage(f, this.stats.insight * PLAYER.eurekaMult, bearingTo(this.player, f.at), 7, true, false, "eureka");
+        this.damage(f, this.insight * PLAYER.eurekaMult, bearingTo(this.player, f.at), 7, true, false, "eureka");
+      }
+      for (const h of this.openWorld.humans) {
+        if (h.state === "dead" || h.role === "pedestrian" || h.role === "giver") continue;
+        if (dist(h.at, this.player) > PLAYER.eurekaRadius + 0.6) continue;
+        const amount = Math.round(this.insight * PLAYER.eurekaMult);
+        const ko = this.openWorld.damageHuman(h, amount, bearingTo(this.player, h.at), 3.2, true, this.owBridge());
+        this.events.push({ type: "hitHuman", id: h.id, role: h.role, at: h.at, amount, heavy: true });
+        if (ko) {
+          this.rivalsBeat++;
+          this.defeated++;
+        }
       }
       this.hitStop = Math.max(this.hitStop, 0.12);
     }
@@ -1005,14 +1531,57 @@ export class StudyQuest {
    * The way a blow goes and the foe it goes at: the one locked on to, or the nearest within `reach`
    * and `arc` degrees of the way the stick asks (of the way the walker faces, with the stick let go).
    */
-  private aimed(reach: number = PLAYER.softReach, arc: number = PLAYER.softArc): { dir: number; foe?: Foe } {
+  private aimed(reach: number = PLAYER.softReach, arc: number = PLAYER.softArc): { dir: number; foe?: Foe; human?: HumanNpc } {
     const locked = this.foes.find((f) => f.id === this.lock && f.state !== "dead");
     if (locked) return { dir: bearingTo(this.player, locked.at), foe: locked };
     const ref = this.move ?? this.heading;
-    // The way the stick asks first; with none of them that way, the way the walker faces (locked on
-    // to the boss's arena, that is the boss, whichever way the walker steps round it).
     const best = this.nearestTo(ref, reach, arc) ?? (Math.abs(turnBetween(ref, this.heading)) > 1 ? this.nearestTo(this.heading, reach, arc) : undefined);
-    return best ? { dir: bearingTo(this.player, best.at), foe: best } : { dir: ref };
+    if (best) return { dir: bearingTo(this.player, best.at), foe: best };
+    const hBest = this.nearestHumanTo(ref, reach, arc) ?? (Math.abs(turnBetween(ref, this.heading)) > 1 ? this.nearestHumanTo(this.heading, reach, arc) : undefined);
+    if (hBest) return { dir: bearingTo(this.player, hBest.at), human: hBest };
+    const pBest = this.nearestPropTo(ref, Math.min(reach, 2.2), Math.min(arc, 45));
+    return pBest ? { dir: bearingTo(this.player, pBest.at) } : { dir: ref };
+  }
+
+  private nearestPropTo(ref: number, reach: number, arc: number): CampusProp | undefined {
+    let best: CampusProp | undefined;
+    let score = Infinity;
+    for (const p of this.openWorld.props) {
+      const d = dist(p.at, this.player) - p.radius;
+      if (d > reach) continue;
+      const off = Math.abs(turnBetween(ref, bearingTo(this.player, p.at)));
+      if (off > arc) continue;
+      const s = d + off * 0.05;
+      if (s < score) {
+        score = s;
+        best = p;
+      }
+    }
+    return best;
+  }
+
+  private nearestHumanTo(ref: number, reach: number, arc: number): HumanNpc | undefined {
+    let bestHostile: HumanNpc | undefined;
+    let hostileScore = Infinity;
+    let bestPed: HumanNpc | undefined;
+    let pedScore = Infinity;
+    for (const h of this.openWorld.humans) {
+      if (h.state === "dead" || h.role === "giver") continue;
+      const d = dist(h.at, this.player) - 0.5;
+      const isPed = h.role === "pedestrian";
+      if (d > (isPed ? Math.min(reach, 2.8) : reach)) continue;
+      const off = Math.abs(turnBetween(ref, bearingTo(this.player, h.at)));
+      if (off > (isPed ? Math.min(arc, 55) : arc)) continue;
+      const s = d + off * 0.05;
+      if (!isPed && s < hostileScore) {
+        hostileScore = s;
+        bestHostile = h;
+      } else if (isPed && s < pedScore) {
+        pedScore = s;
+        bestPed = h;
+      }
+    }
+    return bestHostile ?? bestPed;
   }
 
   /** The nearest foe within `reach` (from its edge) and `arc` degrees of `ref`, the turn off it counting a little. */
@@ -1050,22 +1619,64 @@ export class StudyQuest {
     this.blow = { combo: 2, dir, t: PLAYER.plungeContact, plunge: true };
   }
 
-  private strike(): void {
-    const combo = this.comboT > 0 ? (this.combo + 1) % 3 : 0;
+  private strike(forceHeavy = false): void {
+    const combo = forceHeavy ? 2 : this.comboT > 0 ? (this.combo + 1) % 3 : 0;
     this.combo = combo;
     this.strikeT = PLAYER.strikeTime[combo]!;
     this.comboT = this.strikeT + PLAYER.comboWindow;
-    const { dir, foe } = this.aimed();
+    const { dir, foe, human } = this.aimed();
     if (Math.abs(turnBetween(this.heading, dir)) > 1) this.orders.face = dir;
-    // A lunge into the blow, a little longer at a foe a little out of reach, spread over the wind-up
-    // so that the walker steps into it rather than jumping (lunging); the blow reaches from where it ends.
-    const gap = foe ? dist(foe.at, this.player) - FOES[foe.kind].radius : undefined;
+    const gap = foe ? dist(foe.at, this.player) - FOES[foe.kind].radius : human ? dist(human.at, this.player) - 0.55 : undefined;
     const metres = lungeMetres(combo, gap);
     this.lunge = { dir, left: metres, rate: metres / PLAYER.strikeContact[combo]! };
     this.knock = undefined;
     this.events.push({ type: "swing", combo, at: this.player, dir });
     // It lands after the wind-up (landing).
     this.blow = { combo, dir, t: PLAYER.strikeContact[combo]! };
+  }
+
+  /** Hydraulic Exo-Suit repulsor strike: hits foes, NPCs, props & parked cars within 4.2 m. */
+  private mechaStrike(heavy: boolean): void {
+    const suit = this.vehicles.current;
+    if (!suit || suit.kind !== "mecha") return;
+    this.strikeT = heavy ? 0.44 : 0.28;
+    suit.attackT = heavy ? 0.36 : 0.26;
+    const from = suit.at;
+    const dir = suit.heading;
+    const reach = 4.2;
+    const arc = 85;
+    const dmg = Math.max(1, Math.round(this.insight * (heavy ? 3.2 : 2.2)));
+    this.events.push({ type: "swing", combo: heavy ? 2 : 0, at: from, dir });
+    if (suit.altitude > 2.4) return;
+    for (const f of this.foes) {
+      if (f.state === "dead" || f.state === "rise") continue;
+      if (dist(f.at, from) <= reach + FOES[f.kind].radius) {
+        this.damage(f, dmg, dir, heavy ? 8 : 5, heavy);
+      }
+    }
+    for (const h of this.openWorld.humans) {
+      if (h.state === "dead" || h.role === "giver") continue;
+      const d = dist(h.at, from);
+      if (d > reach + 0.6) continue;
+      const off = Math.abs(turnBetween(dir, bearingTo(from, h.at)));
+      if (off > arc && d > 1.4) continue;
+      const ko = this.openWorld.damageHuman(h, dmg, dir, heavy ? 4.2 : 2.8, true, this.owBridge());
+      this.events.push({ type: "hitHuman", id: h.id, role: h.role, at: h.at, amount: dmg, heavy: true });
+      if (ko) {
+        this.rivalsBeat++;
+        this.defeated++;
+        if (h.role === "security") this.addWanted(1);
+      }
+    }
+    for (const p of this.openWorld.hitPropsMelee(from, dir, reach, arc, true, this.owBridge())) {
+      this.events.push({ type: "hitEnv", target: "prop", kind: p.kind, at: p.at, heavy: true });
+    }
+    const hitVeh = this.vehicles.hitVehicleMelee(from, dir, reach + 0.4, arc, dmg, true);
+    if (hitVeh) {
+      if (hitVeh.vehicle.isPolice) this.addWanted(1);
+      this.events.push({ type: "hitEnv", target: "vehicle", kind: hitVeh.vehicle.kind, at: hitVeh.at, heavy: true });
+    }
+    this.hitStop = Math.max(this.hitStop, 0.04);
   }
 
   /**
@@ -1076,11 +1687,12 @@ export class StudyQuest {
     const b = this.blow;
     if (b && (b.t -= dt) <= 0) {
       this.blow = undefined;
-      const s = this.stats;
       // From where the lunge ends: the part of it still to go is on its way.
       const left = this.lunge?.left ?? 0;
       const [lx, ly] = dirOf(this.lunge?.dir ?? b.dir);
       const from: Pt = [this.player[0] + lx * left, this.player[1] + ly * left];
+      const weaponMult = this.weapon === "textbook" ? 1.35 : 1;
+      const reachBoost = this.weapon === "textbook" ? 0.35 : 0;
       for (const f of this.foes) {
         if (f.state === "dead" || f.state === "rise") continue;
         const spec = FOES[f.kind];
@@ -1089,7 +1701,48 @@ export class StudyQuest {
         const off = Math.abs(turnBetween(b.dir, bearingTo(from, f.at)));
         // Right against it, a foe counts whichever way the blow goes.
         if (off > (b.plunge ? PLAYER.plungeArc : PLAYER.strikeArc) && d > spec.radius + 0.6) continue;
-        this.damage(f, s.insight * (b.plunge ? PLAYER.plungeMult : PLAYER.strikeMult[b.combo]!), b.dir, b.plunge ? PLAYER.plungePush : PLAYER.strikePush[b.combo]!, b.combo === 2);
+        this.damage(f, this.insight * (b.plunge ? PLAYER.plungeMult : PLAYER.strikeMult[b.combo]!), b.dir, b.plunge ? PLAYER.plungePush : PLAYER.strikePush[b.combo]!, b.combo === 2);
+      }
+      for (const h of this.openWorld.humans) {
+        if (h.state === "dead" || h.role === "giver") continue;
+        const d = dist(h.at, from);
+        if (d > PLAYER.strikeReach + reachBoost + 0.6) continue;
+        const off = Math.abs(turnBetween(b.dir, bearingTo(from, h.at)));
+        if (off > (b.plunge ? PLAYER.plungeArc : PLAYER.strikeArc) && d > 1.25) continue;
+        const amount = Math.max(1, Math.round(this.insight * weaponMult * (b.plunge ? PLAYER.plungeMult : PLAYER.strikeMult[b.combo]!)));
+        const heavy = b.combo === 2 || !!b.plunge;
+        const ko = this.openWorld.damageHuman(h, amount, b.dir, b.plunge ? PLAYER.plungePush : PLAYER.strikePush[b.combo]!, heavy, this.owBridge());
+        this.chain++;
+        this.chainT = PLAYER.chainTime;
+        this.maxChain = Math.max(this.maxChain, this.hits);
+        this.hitStop = Math.max(this.hitStop, heavy ? PLAYER.hitStop.heavy : PLAYER.hitStop.light);
+        this.events.push({ type: "hitHuman", id: h.id, role: h.role, at: h.at, amount, heavy });
+        if (ko) {
+          this.rivalsBeat++;
+          this.defeated++;
+          this.gain(h.role === "allNighter" ? 40 : h.role === "security" ? 35 : 25);
+          if (h.role === "security") this.addWanted(1);
+        }
+      }
+      const heavy = b.combo === 2 || !!b.plunge;
+      const arc = b.plunge ? PLAYER.plungeArc : PLAYER.strikeArc;
+      const hitProps = this.openWorld.hitPropsMelee(from, b.dir, PLAYER.strikeReach + reachBoost, arc, heavy, this.owBridge());
+      for (const p of hitProps) {
+        this.events.push({ type: "hitEnv", target: "prop", kind: p.kind, at: p.at, heavy });
+        this.hitStop = Math.max(this.hitStop, 0.03);
+      }
+      const hitVeh = this.vehicles.hitVehicleMelee(
+        from,
+        b.dir,
+        PLAYER.strikeReach + reachBoost + 0.25,
+        arc,
+        Math.max(1, Math.round(this.insight * weaponMult)),
+        heavy,
+      );
+      if (hitVeh) {
+        if (hitVeh.vehicle.isPolice) this.addWanted(1);
+        this.events.push({ type: "hitEnv", target: "vehicle", kind: hitVeh.vehicle.kind, at: hitVeh.at, heavy });
+        this.hitStop = Math.max(this.hitStop, 0.04);
       }
     }
     const c = this.throwing;
@@ -1102,7 +1755,7 @@ export class StudyQuest {
         at: [this.player[0] + ux * 0.8, this.player[1] + uy * 0.8],
         vel: [ux * PLAYER.cardSpeed, uy * PLAYER.cardSpeed],
         life: PLAYER.cardLife,
-        damage: this.stats.insight * 0.85,
+        damage: this.insight * 0.85,
         radius: 0.6,
       });
     }
@@ -1178,8 +1831,19 @@ export class StudyQuest {
     // A stray is worth less than a quest's foe: the story, not the wandering, sets the pace of the ranks.
     const xp = Math.round(FOES[f.kind].xp * f.tier * (f.wander ? QUEST.strayXp : 1));
     this.defeated++;
+    this.cred += isNpcFoe(f.kind) ? 35 : f.kind === "exam" ? 120 : 15;
+    this.heat = Math.min(3, this.heat + (isNpcFoe(f.kind) ? 0.25 : 0.18));
+    if (this.hits >= 6) this.heat = Math.min(3, this.heat + 0.08);
     this.events.push({ type: "kill", foe: f.id, kind: f.kind, at: f.at, xp });
     this.gain(xp);
+    if (isNpcFoe(f.kind)) {
+      const count = f.kind === "allNighter" ? 2 : 1;
+      for (let i = 0; i < count; i++) {
+        const raw: Pt = count === 1 ? f.at : [f.at[0] + (i === 0 ? -1.2 : 1.2), f.at[1] + (i === 0 ? 0.8 : -0.8)];
+        this.items.push({ id: this.nextId++, kind: "pizza", at: this.safeGround(raw), dropped: true });
+      }
+      this.events.push({ type: "dropPizza", foe: f.id, kind: f.kind, at: f.at, count });
+    }
     for (const q of this.quests) {
       if (q.goal === "defeat" && f.quest === q.id) q.got = Math.min(q.need, q.got + 1);
       if (q.goal === "boss" && f.kind === "exam") q.got = 1;
@@ -1236,12 +1900,40 @@ export class StudyQuest {
         if (f.state === "dead" || f.state === "rise" || this.sprintHits.has(f.id)) continue;
         if (dist(f.at, this.player) > FOES[f.kind].radius + 1.2) continue;
         this.sprintHits.add(f.id);
-        this.damage(f, this.stats.insight * 0.8, this.dodgeDir, 1, false, true, "sprint");
+        this.damage(f, this.insight * 0.8, this.dodgeDir, 1, false, true, "sprint");
+      }
+      for (const h of this.openWorld.humans) {
+        if (h.state === "dead" || h.role === "giver" || this.sprintHits.has(-h.id)) continue;
+        if (dist(h.at, this.player) > 1.7) continue;
+        this.sprintHits.add(-h.id);
+        const amount = Math.round(this.insight * (this.weapon === "textbook" ? 1.35 : 1) * 0.9);
+        const ko = this.openWorld.damageHuman(h, amount, this.dodgeDir, 2.2, true, this.owBridge());
+        this.events.push({ type: "hitHuman", id: h.id, role: h.role, at: h.at, amount, heavy: true });
+        if (ko) {
+          this.rivalsBeat++;
+          this.defeated++;
+        }
+      }
+      const sprintProps = this.openWorld.hitPropsMelee(this.player, this.dodgeDir, 0.9, 90, true, this.owBridge());
+      for (const p of sprintProps) {
+        const key = -(100000 + p.id);
+        if (this.sprintHits.has(key)) continue;
+        this.sprintHits.add(key);
+        this.events.push({ type: "hitEnv", target: "prop", kind: p.kind, at: p.at, heavy: true });
+      }
+      const sprintVeh = this.vehicles.hitVehicleMelee(this.player, this.dodgeDir, 0.6, 75, Math.round(this.insight * 0.8), true);
+      if (sprintVeh) {
+        const key = -(200000 + sprintVeh.vehicle.id);
+        if (!this.sprintHits.has(key)) {
+          this.sprintHits.add(key);
+          if (sprintVeh.vehicle.isPolice) this.addWanted(1);
+          this.events.push({ type: "hitEnv", target: "vehicle", kind: sprintVeh.vehicle.kind, at: sprintVeh.at, heavy: true });
+        }
       }
     }
   }
 
-  /** The walker is hurt, unless it is dodging. */
+  /** The walker is hurt, unless it is dodging. Blue energy/armour absorbs 50% of incoming damage. */
   private hurt(amount: number, from: Pt): void {
     if (this.phase !== "play" || this.grace > 0 || this.cineT > 0) return;
     if (this.iframes > 0) {
@@ -1249,17 +1941,25 @@ export class StudyQuest {
       if (this.has("eureka")) this.eurekaMeter = Math.min(PLAYER.eurekaCharge, this.eurekaMeter + 12);
       return;
     }
-    // Until the first quest is done, nothing burns the walker out: the first fight cannot be lost.
-    const floor = this.mainStep === 0 ? this.stats.maxFocus * TEACH.floor : 0;
-    this.focus = Math.max(Math.min(this.focus, floor), this.focus - amount);
-    this.focusLost += amount;
+    let dmg = amount;
+    if (this.energy > 0) {
+      const absorbed = Math.min(this.energy, dmg * 0.5);
+      this.energy = Math.max(0, this.energy - absorbed);
+      dmg -= absorbed;
+    }
+    const floor = this.quests.some((q) => q.key === "orientation") ? this.stats.maxFocus * TEACH.floor : 0;
+    this.focus = Math.max(Math.min(this.focus, floor), this.focus - dmg);
+    this.focusLost += dmg;
     this.hurtAgo = 0;
     this.iframes = 0.35;
     // Knocked back over a stagger, not all at once; it ends a blow's lunge.
     this.knock = { dir: bearingTo(from, this.player), left: PLAYER.knockMetres };
     this.lunge = undefined;
-    this.events.push({ type: "hurt", amount, from });
-    if (this.focus <= 0) this.end(false);
+    this.events.push({ type: "hurt", amount: dmg, from });
+    if (this.focus <= 0) {
+      this.busted = this.wanted > 0 && this.openWorld.humans.some((h) => h.role === "security" && h.state !== "dead" && dist(h.at, this.player) <= 6);
+      this.end(false);
+    }
   }
 
   private end(victory: boolean): void {
@@ -1277,16 +1977,16 @@ export class StudyQuest {
   // Pick-ups
   // -------------------------------------------------------------------------------------------
 
-  /** Lays books and coffee until enough lie out, or the host finds no more places. */
+  /** Lays grounded pizza, coffee, and cash pickups on reachable awayFromHomes ground. */
   private fill(player: Pt): void {
     const taken = () => this.items.map((i) => i.at);
-    const count = (k: ItemKind) => this.items.filter((i) => i.kind === k && !i.quest).length;
-    for (const kind of ["book", "coffee"] as const) {
-      const want = kind === "book" ? QUEST.booksOut : QUEST.coffeeOut;
+    const count = (k: ItemKind) => this.items.filter((i) => i.kind === k && !i.quest && !i.dropped).length;
+    for (const kind of ["pizza", "coffee", "cash"] as const) {
+      const want = kind === "pizza" ? QUEST.pizzaOut : kind === "coffee" ? QUEST.coffeeOut : QUEST.cashOut;
       while (count(kind) < want) {
         const at = this.host.spot(player, taken());
         if (!at) return;
-        this.items.push({ id: this.nextId++, kind, at });
+        this.items.push({ id: this.nextId++, kind, at, value: kind === "cash" ? 25 : 1 });
       }
     }
   }
@@ -1294,30 +1994,32 @@ export class StudyQuest {
   private take(): void {
     const p = this.player;
     let took = false;
+    const collected: PickupItem[] = [];
     const s = this.stats;
     this.items = this.items.filter((it) => {
-      if (dist(it.at, p) > QUEST.takeReach) return true;
-      // Coffee waits on the ground for a walker that needs it.
+      const reach = it.kind === "package" ? QUEST.takeReach + 0.5 : QUEST.takeReach;
+      if (dist(it.at, p) > reach) return true;
+      // Coffee waits on the ground for a walker that needs it; pizza, cash, and packages are always pickable.
       if (it.kind === "coffee" && this.focus >= s.maxFocus && this.stamina >= s.maxStamina) return true;
       took = true;
-      // The first book taken brings the first fight a moment later.
-      if (it.kind === "book" && Number.isFinite(this.practiceT)) this.practiceT = Math.min(this.practiceT, TEACH.practiceSoon);
-      const xp = it.kind === "book" ? QUEST.bookXp : it.kind === "note" ? QUEST.noteXp : 0;
+      const xp = it.kind === "pizza" ? QUEST.pizzaXp : it.kind === "package" ? 20 : 0;
       if (it.kind === "coffee") {
         this.focus = Math.min(s.maxFocus, this.focus + QUEST.coffeeFocus);
         this.stamina = s.maxStamina;
+      } else if (it.kind === "cash") {
+        this.addCash(it.value ?? 25);
+      } else if (it.kind === "pizza") {
+        this.eatPizzaEffect();
       }
-      this.events.push({ type: "take", kind: it.kind, at: it.at, xp });
-      for (const q of this.quests) {
-        if (q.goal !== "collect") continue;
-        if ((q.key === "orientation" && it.kind === "book") || (it.quest === q.id && it.kind === "note")) q.got = Math.min(q.need, q.got + 1);
-      }
+      this.events.push({ type: "take", kind: it.kind, at: it.at, xp, value: it.value });
       if (xp) this.gain(xp);
+      collected.push(it as PickupItem);
       return false;
     });
+    for (const c of collected) this.openWorld.onPickupCollected(c, this.owBridge());
     if (took) {
       // The walker has moved on: what was left far behind is laid again near it.
-      this.items = this.items.filter((it) => it.quest || dist(it.at, p) <= QUEST.laidRange);
+      this.items = this.items.filter((it) => it.quest || it.jobId || dist(it.at, p) <= QUEST.laidRange);
       this.fill(p);
     }
   }
@@ -1388,28 +2090,24 @@ export class StudyQuest {
     this.lock = undefined;
     this.chain = this.chainT = this.combo = this.comboT = this.strikeT = this.dodgeT = this.dodgeLeft = 0;
     this.iframes = this.hitStop = this.cardT = this.slowT = this.cineT = 0;
+    this.pizzaBuff = this.heat = this.wanted = this.evadeT = this.energy = 0;
+    this.busted = false;
     this.hurtAgo = 99;
     this.blow = this.throwing = this.queued = this.lunge = this.knock = undefined;
     this.plunge = false;
     this.air = this.wasAir = 0;
     this.sprintHits.clear();
     this.grace = QUEST.grace;
-    this.spawnT = QUEST.firstSpawn;
     const gone = new Set(this.quests.map((q) => q.id));
     this.quests = [];
-    this.items = this.items.filter((i) => !i.quest || !gone.has(i.quest));
+    this.items = this.items.filter((i) => (!i.quest || !gone.has(i.quest)) && !i.dropped);
+    if (this.vehicles.current) this.vehicles.exitCurrent(this.host);
+    this.openWorld.resetActive();
     this.arena = undefined;
     this.player = [c.at[0], c.at[1]];
     this.heading = c.heading;
     this.events.push({ type: "retry", at: [c.at[0], c.at[1]], heading: c.heading, boss: c.boss });
-    if (c.boss && c.place) {
-      const q = this.quest("finalExam", true, "boss", MAIN.finalExam.need, MAIN.finalExam.reward, c.place);
-      q.started = true;
-      this.arena = { at: c.place.at, radius: QUEST.arenaRadius, active: true };
-      this.spawn("exam", this.ring(c.place.at, 6), q.id, 1);
-    } else this.beginMain(c.at, c.place);
     this.check = c;
-    this.refillSides();
     return this.events;
   }
 
@@ -1432,7 +2130,7 @@ export class StudyQuest {
         } else if (q.goal === "collect") {
           for (let i = 0; i < q.need; i++) {
             const at = this.host.spot(this.player, this.items.map((it) => it.at), q.place.at) ?? this.ring(q.place.at, 6 + i * 3);
-            this.items.push({ id: this.nextId++, kind: "note", at, quest: q.id });
+            this.items.push({ id: this.nextId++, kind: "package", at, quest: q.id });
           }
         }
       }
@@ -1509,27 +2207,9 @@ export class StudyQuest {
     return f;
   }
 
-  /** Wanderers: after the first quest, small foes come now and then, more as the walker rises. */
-  private spawning(dt: number): void {
-    if (this.mainStep < 1 || this.arena?.active) return;
-    // While a quest's own foes are out, the fight is theirs: no strays join it.
-    if (this.foes.some((f) => f.quest && !f.wander && f.state !== "dead" && dist(f.at, this.player) < QUEST.strayRange)) return;
-    // Strays far behind go.
-    for (const f of this.foes) if (f.wander && f.state !== "dead" && dist(f.at, this.player) > QUEST.strayRange) ((f.state = "dead"), (f.t = 0));
-    this.spawnT -= dt;
-    if (this.spawnT > 0) return;
-    this.spawnT = 7 + this.host.random() * 5 - Math.min(3, this.rank * 0.5);
-    const wanderers = this.foes.filter((f) => f.wander && f.state !== "dead").length;
-    const cap = Math.min(QUEST.foeCap, 3 + this.rank);
-    if (wanderers >= cap || this.foes.length >= QUEST.foeCap) return;
-    const kinds: FoeKind[] = ["distraction", "procrastination"];
-    if (this.rank >= 1) kinds.push("plagiarism");
-    if (this.rank >= 2) kinds.push("anxiety");
-    const kind = kinds[Math.floor(this.host.random() * kinds.length)]!;
-    const gap = QUEST.spawnGap[0] + this.host.random() * (QUEST.spawnGap[1] - QUEST.spawnGap[0]);
-    const at = this.ring(this.player, gap);
-    const n = kind === "distraction" ? Math.min(3, cap - wanderers) : 1;
-    for (let i = 0; i < n; i++) this.spawn(kind, [at[0] + i * 1.6, at[1] + (i % 2) * 1.6], undefined, 1 + this.rank * 0.12, true);
+  /** Grounded open-world play spawns HumanNpcs via OpenWorldState rather than cartoon wanderers. */
+  private spawning(_dt: number): void {
+    return;
   }
 
   private foesStep(dt: number, pace: number): void {
@@ -1682,7 +2362,25 @@ export class StudyQuest {
         f.move = { type: "orb", count: 1, spread: 0 };
         break;
       case "distraction":
+      case "freeRider":
         f.move = { type: "melee" };
+        break;
+      case "debateRival":
+        if (d < 4.5) {
+          f.move = { type: "yawn", at: f.at, radius: 4.0 };
+          this.addTell(f, { shape: "circle", at: f.at, dir: 0, length: 0, width: 0, radius: 4.0 }, tell);
+        } else {
+          f.move = { type: "orb", count: 1, spread: 0 };
+        }
+        break;
+      case "allNighter":
+        if (d >= 4.5) {
+          const length = Math.min(12, d + 4);
+          f.move = { type: "charge", dir: toward, left: length, hit: false };
+          this.addTell(f, { shape: "line", at: f.at, dir: toward, length, width: 2.0, radius: 0 }, tell);
+        } else {
+          f.move = { type: "orb", count: 3, spread: 36 };
+        }
         break;
       case "exam":
         tell = this.bossMove(f, d);
@@ -1746,7 +2444,7 @@ export class StudyQuest {
     const spec = FOES[f.kind];
     const m = f.move;
     const p = this.player;
-    const dmg = spec.damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1) * (f.kind === "exam" ? 1 + (f.phase - 1) * 0.15 : 1) * (f.gentle ? MAIN.ddl1.harm : 1);
+    const dmg = spec.damage * (f.kind === "ddl" || isNpcFoe(f.kind) ? 1 + (f.tier - 1) * 0.5 : 1) * (f.kind === "exam" ? 1 + (f.phase - 1) * 0.15 : 1) * (f.gentle ? MAIN.ddl1.harm : 1);
     this.dropTells(f.id);
     f.state = "recover";
     f.t = f.kind === "exam" ? 0.7 : 0.5;
@@ -1827,7 +2525,7 @@ export class StudyQuest {
     f.facing = m.dir;
     if (!m.hit && dist(f.at, this.player) <= FOES[f.kind].radius + 0.9) {
       m.hit = true;
-      this.hurt(FOES[f.kind].damage * (f.kind === "ddl" ? 1 + (f.tier - 1) * 0.5 : 1.25) * (f.gentle ? MAIN.ddl1.harm : 1), f.at);
+      this.hurt(FOES[f.kind].damage * (f.kind === "ddl" || isNpcFoe(f.kind) ? 1 + (f.tier - 1) * 0.5 : 1.25) * (f.gentle ? MAIN.ddl1.harm : 1), f.at);
     }
     if (m.left <= 0 || f.t <= 0) {
       f.state = "recover";

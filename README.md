@@ -143,25 +143,16 @@ The three latest days are below; everything, with its pull request, is in the
 <details>
 <summary><strong>Latest changes</strong></summary>
 
+- **2026-11-27:** Study Quest is now an open-campus sandbox game (`?walk=1&view=follow&game=1`): procedural
+  campus traffic and drivable cars, buses and e-scooters, a summonable flying Exo-Suit, a Campus Phone with
+  made-up story jobs and side hustles, street props, Campus Security wanted stars and a minimap radar with
+  GPS routing, all loaded only when the game starts (#188).
 - **2026-11-22:** the home page is a collection of 3D campus worlds from around the world: this site's eight
   New Zealand maps and 16 independent worlds of other universities, listed by country beside a globe with a
   pin for each, a tour of them and a page for each world made by others.
 - **2026-11-20:** the home page has a card, under the Tsinghua World Model's, for two other campus worlds:
   ZJU-LAPUTA on Zhejiang University's Zijingang campus and the Westlake Campus Game on Westlake University's Yungu
   campus, each linking to its source code.
-- **2026-11-14:** the walk has a game, Study Quest, off until you start it: grow by learning, beat made-up study
-  troubles such as the DDL, and pass the Final Exam in a boss fight, to music made in the browser that follows the fight; its first minute
-  teaches by play with one small prompt at a time, and a defeat can be retried at once. The Final Exam is an hourglass
-  titan whose sand runs down with its health and whose face hardens each phase, and the fight's camera keeps the
-  walker in sight through its charges. The walker moves as in an action game: the stick points the way on the screen,
-  it faces the boss and side-steps round it, and it rolls, hops or side-steps the way it dodges. It jumps, too (Space,
-  or a button on a phone): a running leap at a run that carries its stride and its pace on, over the boss's
-  shockwaves, and with a slash as it lands; Shift tapped dodges and held runs. Every part of it is made up (#178).
-- **2026-11-14:** every school has a list of its buildings at `/<school>/buildings/`, and each University of
-  Auckland building with learning spaces has a page of its floors and rooms, each room a link to it on the map.
-- **2026-11-14:** search engines and AI assistants can read the site: each page names its one address and a picture
-  for link previews, each school's page says in its HTML what its map shows, the home page answers common
-  questions, and the site has a sitemap, `robots.txt` and `llms.txt`.
 
 </details>
 

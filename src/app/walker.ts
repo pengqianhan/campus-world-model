@@ -16,7 +16,7 @@ import { IndoorMap, floorRings, floorSpaces, spaceAt } from "../shared/indoor.ts
 import { buildingCode, type Building } from "../shared/types.ts";
 import { weather } from "../ui/weather.ts";
 import { loadPlans } from "./data.ts";
-import { gameHolds, gameMenu, gameOn, setPadSteer, stopGame } from "./gameState.ts";
+import { gameHolds, gameMenu, gameOn, gameView, setPadSteer, stopGame } from "./gameState.ts";
 import { pick } from "./i18n.ts";
 import { data, defaultFloor, floorByName, goHome, night, openBuilding, openRoom, resolveRoom, selBuilding, selCampus, selFloor, shown, timeMode, urlExtras } from "./state.ts";
 
@@ -803,7 +803,9 @@ export function bindWalkerScene(s: CampusScene | undefined): void {
 let syncStop: (() => void) | undefined;
 
 /** The walk the address asks for, until the scene and the data are both in to start it. */
-const urlWalk = signal<{ walk: string; view?: "follow" | "eyes"; ride?: Ride } | undefined>(undefined);
+const urlWalk = signal<{ walk: string; view?: "follow" | "eyes"; ride?: Ride; game?: boolean } | undefined>(undefined);
+/** Set when `?game=1` was in the URL so WalkerPanel launches Study Quest once the walk starts. */
+export const urlAutoGame = signal(false);
 
 /** Starts the walk the address asks for, once, when the scene and the data are both in. */
 function startUrlWalk(): void {
@@ -816,6 +818,7 @@ function startUrlWalk(): void {
     // A link to the campus's start opens behind the walker on foot as Take a walk does, with the start's look.
     const lookAt = asked.view === "follow" && !ride ? startLook(reply) : {};
     if (asked.view) setView({ view: asked.view, name: MY_WALKER, ...lookAt });
+    if (asked.game) urlAutoGame.value = true;
   } catch (e) {
     console.error("walker", e);
   }
@@ -824,18 +827,27 @@ function startUrlWalk(): void {
 
 /**
  * Starts walking when the address asks: `walk=1` (or `walk=<building or place>` to start there),
- * `view=follow|eyes`, `ride=scooter|fly`. Then keeps those in the address, so a copied link starts
- * the same walk.
+ * `view=follow|eyes`, `ride=scooter|fly`, `game=1`. Then keeps those in the address, so a copied
+ * link starts the same walk.
  */
 export function startWalkerFromUrl(): void {
   const q = new URLSearchParams(location.search);
   const walkParam = q.get("walk");
   const v = q.get("view");
   const r = q.get("ride") as Ride | null;
+  const g = q.get("game");
+  const wantsGame = g === "1" || g === "true";
   // The data and the scene come in either order: the scene is made after the first frame, and a
   // tab opened in the background draws none until it comes to the front. Whichever comes second
   // starts the walk (see bindWalkerScene).
-  if (walkParam !== null) urlWalk.value = { walk: walkParam, view: v === "follow" || v === "eyes" ? v : undefined, ride: r && RIDES.includes(r) ? r : undefined };
+  if (walkParam !== null || wantsGame) {
+    urlWalk.value = {
+      walk: walkParam ?? "1",
+      view: v === "follow" || v === "eyes" ? v : wantsGame ? "follow" : undefined,
+      ride: r && RIDES.includes(r) ? r : undefined,
+      game: wantsGame,
+    };
+  }
   startUrlWalk();
   effect(() => {
     const extras: Record<string, string> = {};
@@ -845,10 +857,12 @@ export function startWalkerFromUrl(): void {
       extras.walk = asked.walk;
       if (asked.view) extras.view = asked.view;
       if (asked.ride) extras.ride = asked.ride;
+      if (asked.game) extras.game = "1";
     } else if (walkerOn.value) {
       extras.walk = "1";
       if (walkerView.value !== "map") extras.view = walkerView.value;
       if (walkerRide.value !== "walk") extras.ride = walkerRide.value;
+      if (gameOn.value) extras.game = "1";
     }
     const cur = urlExtras.peek();
     if (JSON.stringify(cur) !== JSON.stringify(extras)) urlExtras.value = extras;
@@ -875,7 +889,7 @@ export function steerByHand(forward: number, turnRate: number, climb = 0): void 
  * stick is pushed is how fast, from a walk to a run.
  */
 export function stickSteers(): boolean {
-  return gameOn.peek() && walkerRide.peek() === "walk";
+  return gameOn.peek() && walkerRide.peek() === "walk" && !gameView.peek()?.gta?.vehicle;
 }
 
 /**
@@ -885,6 +899,12 @@ export function stickSteers(): boolean {
 export function stickByHand(x: number, y: number, top: number): void {
   const s = scene;
   if (!s || !walkerOn.value || !s.walkers.has(MY_WALKER)) return;
+  if (s.game?.on && s.game.inVehicle()) {
+    s.walkers.steerStick(MY_WALKER, 0, 0, top);
+    if (gameHolds()) s.game.setDrivingControl({ throttle: 0, brake: 0, steer: 0, handbrake: false });
+    else s.game.setDrivingControl({ throttle: Math.max(0, y), brake: Math.max(0, -y), steer: x });
+    return;
+  }
   if (gameHolds()) s.walkers.steerStick(MY_WALKER, 0, 0, top);
   else s.walkers.steerStick(MY_WALKER, x, y, top);
 }
@@ -926,6 +946,24 @@ export function startWalkerKeys(): () => void {
     const forward = (held.has("w") || held.has("arrowup") ? 1 : 0) - (held.has("s") || held.has("arrowdown") ? 1 : 0);
     const turnDir = (held.has("d") || held.has("arrowright") ? 1 : 0) - (held.has("a") || held.has("arrowleft") ? 1 : 0);
     const climbDir = (held.has(" ") || held.has("e") ? 1 : 0) - (held.has("q") || held.has("c") ? 1 : 0);
+    if (scene?.game?.on && scene.game.inVehicle()) {
+      steerByHand(0, 0, 0);
+      if (gameHolds()) {
+        scene.game.setDrivingControl({ throttle: 0, brake: 0, steer: 0, handbrake: false });
+      } else {
+        scene.game.setDrivingControl({
+          throttle: Math.max(0, forward),
+          brake: Math.max(0, -forward),
+          steer: turnDir,
+          handbrake: held.has(" "),
+          ascend: held.has(" ") || held.has("e") ? 1 : 0,
+          descend: held.has("c") || held.has("q") ? 1 : 0,
+          boost: fast,
+        });
+      }
+      return;
+    }
+    scene?.game?.setDrivingControl({ throttle: 0, brake: 0, steer: 0, handbrake: false });
     if (stickSteers()) {
       // In the game: the keys point the way on the screen, a walk, or a run with Shift.
       const n = Math.hypot(turnDir, forward) || 1;
@@ -944,6 +982,7 @@ export function startWalkerKeys(): () => void {
     const k = e.key.toLowerCase();
     if (!walkerOn.value || typing(e) || e.ctrlKey || e.metaKey || e.altKey) return;
     if (!e.repeat && (k === "1" || k === "2" || k === "3")) {
+      if (gameOn.peek() && !gameHolds()) return;
       rideAs(RIDES[Number(k) - 1]!);
       return;
     }
@@ -956,8 +995,9 @@ export function startWalkerKeys(): () => void {
       return;
     }
     if (!keys.has(k)) return;
-    // Space climbs only in the air; elsewhere it is left to the page, to press a button.
-    if (k === " " && walkerRide.value !== "fly") return;
+    const inGameVeh = !!scene?.game?.on && scene.game.inVehicle() && !gameHolds();
+    // Space climbs only in the air or handbrakes a vehicle; elsewhere it is left to the page or game jump.
+    if (k === " " && walkerRide.value !== "fly" && !inGameVeh) return;
     if (k.startsWith("arrow") || k === " ") e.preventDefault();
     held.add(k);
     apply();
@@ -979,14 +1019,17 @@ export function startWalkerKeys(): () => void {
   let wasRide = walkerRide.peek();
   let wasMenu = gameMenu.peek();
   let wasGame = gameOn.peek();
+  let wasVeh = !!gameView.peek()?.gta?.vehicle;
   const stopRide = effect(() => {
     const now = walkerRide.value;
     const menu = gameMenu.value;
     const game = gameOn.value;
-    if (now === wasRide && menu === wasMenu && game === wasGame) return;
+    const veh = !!gameView.value?.gta?.vehicle;
+    if (now === wasRide && menu === wasMenu && game === wasGame && veh === wasVeh) return;
     wasRide = now;
     wasMenu = menu;
     wasGame = game;
+    wasVeh = veh;
     // Also with nothing held: the game's way of steering starts and ends with the game, on foot.
     apply();
   });

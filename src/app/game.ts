@@ -10,12 +10,12 @@
 // the Game button is pressed (gameState.ts): the rest of the site reads only gameState.ts.
 import { batch, signal } from "@preact/signals";
 import type { CampusScene } from "../scene/CampusScene.ts";
-import { GameWorld, type GameAction } from "../scene/game.ts";
-import { FOE_KINDS, FOE_TIME, LESSONS, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
-import { audioStats, audioTap, deathSound, lashSound, release, resetMusic, setMusic, setSound, setVolumes, sfx, stinger, tellSound, type Sfx } from "./gameAudio.ts";
+import { GameWorld, type GameAction, type GameWords } from "../scene/game.ts";
+import { FOE_KINDS, LESSONS, QUEST, RANKS, type FoeKind, type GameEvent, type Quest } from "../shared/game.ts";
+import { RADIO_STATIONS, audioStats, audioTap, release, resetMusic, setEngineSound, setMusic, setRadioStation, setSound, setVolumes, sfx, stinger, type Sfx } from "./gameAudio.ts";
 import { gameMenu, gameOn, gameView, padSteer } from "./gameState.ts";
 import { SHIFT_TAP, isShiftTap } from "../shared/locomotion.ts";
-import { pick, t } from "./i18n.ts";
+import { has, pick, t } from "./i18n.ts";
 import "../ui/game.css";
 
 export { gameMenu, gameOn, gameView };
@@ -24,7 +24,7 @@ export const gameTitle = signal(false);
 
 export interface Banner {
   id: number;
-  kind: "wave" | "rank" | "quest" | "phase" | "boss" | "foe";
+  kind: "wave" | "rank" | "quest" | "phase" | "boss" | "foe" | "missionPass";
   title: string;
   sub?: string;
   quote?: string;
@@ -38,22 +38,6 @@ export const gameBanner = signal<Banner | undefined>(undefined);
 export const gameCard = signal<Banner | undefined>(undefined);
 let cards: Banner[] = [];
 let cardTimer = 0;
-function card(b: Omit<Banner, "id">): void {
-  // The main quest's villains (the DDL, the Final Exam) go before the small ones that wait, and the
-  // small ones that wait too long are let go.
-  if (b.kind === "boss" || b.foe === "ddl") cards.unshift({ ...b, id: seq++ });
-  else cards.push({ ...b, id: seq++ });
-  if (cards.length > 3) cards = cards.slice(0, 3);
-  if (gameCard.peek()) return;
-  // Big words still up give way to the card, and come back whole after it: the two never share the screen.
-  const up = gameBanner.peek();
-  if (up) {
-    cancelLater(bannerTimer);
-    banners.unshift({ ...up, id: seq++ });
-    gameBanner.value = undefined;
-  }
-  nextCard();
-}
 function nextCard(): void {
   cancelLater(cardTimer);
   const b = cards.shift();
@@ -198,9 +182,6 @@ let banners: Banner[] = [];
 let bannerTimer = 0;
 let pad = 0;
 let stopKeys: (() => void) | undefined;
-/** When a rank was last risen and a main quest last done, and the next quest's flash that waits for the reward. */
-let rankAt = -1e9;
-let doneAt = -1e9;
 let flashTimer = 0;
 
 export function questTitle(q: { key: string }): string {
@@ -241,23 +222,120 @@ function feed(text: string, kind: string, value?: string): void {
   later(() => (gameFeed.value = gameFeed.peek().filter((l) => l.id !== line.id)), 4200);
 }
 
+const VEHICLE_LABELS: Record<string, string> = {
+  sedan: "Executive Sedan",
+  hatchback: "Hot Hatch",
+  sports: "GT Sport Coupe",
+  taxi: "Auckland Taxi",
+  suv: "Crossover SUV",
+  pickup: "Dual-Cab Ute",
+  minivan: "People Mover",
+  van: "Sprinter Van",
+  bus: "City Link Bus",
+  security: "Campus Security",
+  scooter: "E-Scooter",
+  mecha: "Mark-IV Exo-Suit",
+};
+
+const SUB_FALLBACKS: Record<string, string> = {
+  "game.sub.groupProject.start": "Rival crew took our slides — meet me by the Quad!",
+  "game.sub.pizzaOrdered": "Hot Slice Co. order slipped right into your pocket!",
+};
+
+function tr(key: string, fallback: string, params?: Record<string, string | number>): string {
+  return has(key) ? t(key, params) : fallback;
+}
+
 /** Sounds, banners and the feed for what happened. */
 function told(e: GameEvent): void {
+  const world = scene?.game;
   switch (e.type) {
     case "take":
-      sfx(e.kind === "note" ? "note" : e.kind === "coffee" ? "coffee" : "book");
-      if (e.kind === "coffee") feed(t("game.feed.coffee"), "take");
+      if (e.kind === "pizza") {
+        sfx("pizza");
+        feed(t("game.feed.pizza"), "pizza", "+45 HP");
+      } else if (e.kind === "cash") {
+        sfx("cash");
+        feed(t("game.phone.statCash"), "cash", `+$${e.value ?? 25}`);
+      } else if (e.kind === "coffee") {
+        sfx("coffee");
+        feed(t("game.feed.coffee"), "take");
+      } else {
+        sfx("book");
+        feed(t("game.card.mission"), "mission");
+      }
       break;
     case "swing":
-      sfx(e.combo === 2 ? "swing2" : e.combo === 1 ? "swing1" : "swing0");
+      sfx(`swing${e.combo}` as Sfx);
       break;
-    case "hit":
-      if (e.by === "card") sfx(e.crit ? "crit" : "cardHit");
-      else sfx(e.crit ? "crit" : e.heavy ? "hitHeavy" : "hit");
+    case "hitHuman":
+      sfx(world?.view()?.gta.weapon === "textbook" ? "textbook" : e.heavy ? "hitHeavy" : "punch");
       break;
-    case "kill":
-      deathSound(e.kind);
-      feed(t(`game.foe.${e.kind}.name`), "kill", `+${e.xp}`);
+    case "hitEnv":
+      sfx(e.target === "vehicle" ? "crashLight" : e.heavy ? "hitHeavy" : "hit");
+      break;
+    case "drop":
+      sfx("note");
+      if (e.kind === "pizza") feed(t("game.feed.dropPizza"), "pizza");
+      break;
+    case "checkpoint":
+      sfx("checkpoint");
+      feed(t("game.feed.checkpoint"), "checkpoint", `${e.index + 1}/${e.total}`);
+      break;
+    case "job":
+      if (e.state === "start") {
+        sfx("quest");
+        banner({ kind: "wave", title: t("game.card.mission"), sub: t(`game.jobs.${e.id}.title`), ms: 2200 });
+      } else if (e.state === "stage") {
+        sfx("checkpoint");
+        feed(t(`game.jobs.${e.id}.title`), "mission");
+      } else if (e.state === "pass") {
+        sfx("missionPass");
+        banner({
+          kind: "missionPass",
+          title: t("game.card.passed"),
+          sub: `${t(`game.jobs.${e.id}.title`)} · ${t("game.card.rewardCash", { cash: e.cash ?? 0 })}`,
+          ms: 3200,
+        });
+      } else if (e.state === "fail") {
+        sfx("warn");
+        banner({ kind: "wave", title: t("game.card.failed"), sub: t(`game.jobs.${e.id}.title`), ms: 2400 });
+      }
+      break;
+    case "vehicle":
+      if (e.action === "enter") {
+        if (e.kind === "mecha") {
+          sfx("eurekaReady");
+          feed("Mark-IV Exo-Suit · Space/E Fly · Q/C Land", "mission");
+        } else {
+          sfx("vehicleEnter");
+          feed(VEHICLE_LABELS[e.kind ?? "sedan"] ?? "Vehicle", "vehicle");
+        }
+      } else if (e.action === "exit") {
+        sfx("vehicleExit");
+      } else if (e.action === "crash") {
+        sfx((e.speed ?? 0) >= 8 ? "crashHeavy" : "crashLight");
+      } else if (e.action === "callScooter") {
+        sfx("phoneChirp");
+        feed(t("game.phone.callScooter"), "scooter");
+      } else if (e.action === "callMecha") {
+        sfx("eurekaReady");
+        feed(t("game.phone.callMecha"), "mission");
+      }
+      break;
+    case "radio":
+      setRadioStation(e.station);
+      sfx("uiMove");
+      break;
+    case "wanted":
+      if (e.level > 0) sfx("wantedAlert");
+      else if (e.evaded) {
+        sfx("checkpoint");
+        feed(t("game.hud.wantedLevel", { level: 0 }), "star");
+      }
+      break;
+    case "subtitle":
+      sfx("phoneChirp");
       break;
     case "hurt":
       sfx("hurt");
@@ -275,55 +353,18 @@ function told(e: GameEvent): void {
       sfx("eureka");
       break;
     case "rank":
-      rankAt = performance.now();
       stinger("rank");
       banner({ kind: "rank", title: rankName(e.rank), sub: e.skill ? t("game.unlocked", { skill: t(`game.skill.${e.skill}.name`) }) : t("game.rankUpSub"), ms: 3000 });
       break;
-    case "quest":
-      if (e.done) {
-        sfx("quest");
-        if (e.quest.key !== "finalExam") banner({ kind: "quest", title: t("game.questDone"), sub: `${questTitle(e.quest)} · ${t("game.reward", { xp: e.quest.reward })}`, ms: 2400 });
-        if (e.quest.main && e.quest.key !== "finalExam") {
-          // A main quest done is a beat of its own: the reward's words, a short flourish of music
-          // (the rank's, unless a rank risen with it plays it already), then the next marker.
-          doneAt = performance.now();
-          window.setTimeout(() => {
-            if (performance.now() - rankAt > 300) stinger("rank");
-          }, 0);
-        }
-      } else if (performance.now() - doneAt < 300) {
-        cancelLater(flashTimer);
-        flashTimer = later(() => (gameQuestFlash.value = performance.now()), compactHud ? PHONE_BANNER_MS : 1600);
-      } else gameQuestFlash.value = performance.now();
-      break;
-    case "wave":
-      sfx("warn");
-      banner({ kind: "wave", title: t("game.banner.wave"), sub: e.place, ms: 2600 });
-      break;
-    case "arrive":
-      if (e.kind === "exam") {
-        sfx("roar");
-        card({ kind: "boss", foe: e.kind, title: t("game.foe.exam.name"), sub: t("game.foe.exam.title"), quote: t("game.foe.exam.taunt"), ms: 3800 });
-      } else if (e.kind === "ddl") {
-        sfx("ddlTell");
-        if (e.first) card({ kind: "foe", foe: e.kind, title: t("game.foe.ddl.name"), sub: t("game.foe.ddl.title"), quote: t("game.foe.ddl.taunt"), ms: 3400 });
-      } else {
-        if (e.kind === "distraction") sfx("buzz");
-        if (e.first) card({ kind: "foe", foe: e.kind, title: t(`game.foe.${e.kind}.name`), sub: t(`game.foe.${e.kind}.title`), quote: t(`game.foe.${e.kind}.taunt`), ms: 3000 });
+    case "over": {
+      if (!e.victory) {
+        const busted = !!world?.state()?.busted;
+        banner({ kind: "wave", title: t(busted ? "game.card.busted" : "game.card.wasted"), ms: 3000 });
       }
-      break;
-    case "tell":
-      tellSound(e.kind, e.move, e.time);
-      break;
-    case "lash":
-      lashSound(e.kind, e.move);
-      break;
-    case "phase":
-      sfx("phase");
-      banner({ kind: "phase", title: t(`game.phase.${e.phase}.title`), sub: t(`game.phase.${e.phase}.name`), ms: FOE_TIME.phase * 1000 });
-      break;
-    case "over":
       stinger(e.victory ? "victory" : "defeat");
+      break;
+    }
+    default:
       break;
   }
 }
@@ -340,6 +381,13 @@ function poll(): void {
   const wasOver = was?.phase === "over";
   // The Eureka charged: a shimmer, once.
   if (was && was.eureka < 1 && v.eureka >= 1 && v.phase === "play") sfx("eurekaReady");
+  const playingNow = gameMenu.peek() === "none" && !v.paused && v.phase === "play" && !gameTitle.peek();
+  setEngineSound(
+    !!v.gta.vehicle && playingNow,
+    v.gta.vehicle?.kmh ?? 0,
+    v.gta.vehicle?.rpm ?? 0.2,
+    v.gta.vehicle?.kind === "scooter" || v.gta.vehicle?.kind === "mecha",
+  );
   setMusic({
     t: performance.now() / 1000,
     title: gameTitle.peek(),
@@ -379,11 +427,15 @@ function jumpsHere(): boolean {
  * (held, the walk's own run), K or E throw, R the Eureka, Tab locks on, P pauses, C the record.
  */
 function startKeys(): () => void {
-  // When Shift went down, and whether another key came while it was held (Shift with a key is no tap).
   let shiftAt = -1;
   let shiftAlone = false;
   const up = (e: KeyboardEvent) => {
-    if (e.key.toLowerCase() !== "shift") return;
+    const k = e.key.toLowerCase();
+    if (k === "b") {
+      scene?.game?.setDrivingControl({ horn: false });
+      return;
+    }
+    if (k !== "shift") return;
     const held = shiftAt >= 0 ? (performance.now() - shiftAt) / 1000 : Infinity;
     const alone = shiftAlone;
     shiftAt = -1;
@@ -404,16 +456,50 @@ function startKeys(): () => void {
       togglePause();
       return;
     }
-    // C is also the drone's way down: in the air (where the game waits) it is left to the drone.
-    if (((k === "c" && gameView.peek()?.paused !== "fly") || k === "i") && !e.repeat && gameView.peek()?.phase === "play") {
-      // Through setMenu, so that the record holds the game still as the pause menu does.
+    if (((k === "c" && gameView.peek()?.paused !== "fly" && !scene?.game?.inMecha()) || k === "i") && !e.repeat && gameView.peek()?.phase === "play") {
       setMenu(gameMenu.peek() === "sheet" ? "none" : "sheet");
       return;
     }
     if (gameMenu.peek() !== "none" || gameView.peek()?.phase !== "play") return;
-    const map: Record<string, GameAction | "lock" | "jump"> = { j: "strike", f: "strike", " ": "jump", k: "card", e: "card", r: "eureka", l: "eureka", tab: "lock" };
+    const world = scene?.game;
+    if (!world) return;
+    if (k === "f" && !e.repeat) {
+      e.preventDefault();
+      gameToggleVehicle();
+      return;
+    }
+    if (k === "g" && !e.repeat) {
+      e.preventDefault();
+      const act = gameView.peek()?.gta.prompt?.action;
+      if (act === "talk") gameInteract();
+      else gameEatSlice();
+      return;
+    }
+    if (k === "r" && !e.repeat) {
+      e.preventDefault();
+      gameCycleRadio();
+      return;
+    }
+    if ((k === "q" || k === "1" || k === "2") && !world.inVehicle() && !e.repeat) {
+      e.preventDefault();
+      gameSwitchWeapon();
+      return;
+    }
+    if (k === "b" && world.inVehicle()) {
+      e.preventDefault();
+      if (!e.repeat) sfx("horn");
+      world.setDrivingControl({ horn: true });
+      return;
+    }
+    if (world.inVehicle()) {
+      if (world.inMecha() && (k === "j" || k === "k") && !e.repeat) {
+        e.preventDefault();
+        gameAct(k === "k" ? "heavy" : "strike");
+      }
+      return;
+    }
+    const map: Record<string, GameAction | "lock" | "jump"> = { j: "strike", k: "heavy", " ": "jump", e: "card", l: "eureka", tab: "lock" };
     let a = map[k];
-    // Space jumps on foot out of doors; elsewhere it dodges, as it did.
     if (a === "jump" && !jumpsHere()) a = "dodge";
     if (!a) return;
     e.preventDefault();
@@ -428,6 +514,47 @@ function startKeys(): () => void {
   };
 }
 
+/** Triggers a nearby job giver, hustle stand, or pizza van. */
+export function gameInteract(): boolean {
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return false;
+  if (gameTitle.peek()) dismissTitle();
+  return world.interact() || world.eatSlice();
+}
+
+/** Eats a stored pizza slice or buys/eats from the Slice Co. van. */
+export function gameEatSlice(): boolean {
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return false;
+  if (gameTitle.peek()) dismissTitle();
+  return world.eatSlice();
+}
+
+/** Enters the nearest vehicle/scooter or exits the current one. */
+export function gameToggleVehicle(): boolean {
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return false;
+  if (gameTitle.peek()) dismissTitle();
+  return world.toggleVehicle();
+}
+
+/** Cycles the Campus Radio station. */
+export function gameCycleRadio(): number {
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return 0;
+  const st = world.cycleRadio();
+  setRadioStation(st);
+  return st;
+}
+
+/** Switches between Fists and Textbook. */
+export function gameSwitchWeapon(): "fists" | "textbook" {
+  const world = scene?.game;
+  if (!world || gameMenu.peek() !== "none") return "fists";
+  const w = world.switchWeapon();
+  sfx("uiMove");
+  return w;
+}
 
 /** An action from any of the controls. */
 export function gameAct(a: GameAction | "lock" | "jump"): void {
@@ -531,17 +658,50 @@ const COMPASS_POINTS = ["n", "ne", "e", "se", "s", "sw", "w", "nw"] as const;
 export function startGame(name: string, quiet = false, compact = false, title = true): boolean {
   const world = scene?.game;
   if (!world) return false;
-  const words = {
+  const words: GameWords = {
     foes: Object.fromEntries(FOE_KINDS.map((k) => [k, t(`game.foe.${k}.name`)])) as Record<FoeKind, string>,
     place: (b: { name: Parameters<typeof pick>[0] }) => pick(b.name),
     open: t("game.openGround"),
     compass: COMPASS_POINTS.map((p) => t(`game.compass.${p}`)),
     metres: (metres: number) => t("game.metres", { metres }),
+    pizzaTake: `+${QUEST.pizzaFocus} ${t("game.hud.health")} · +${QUEST.pizzaEnergy} ${t("game.hud.armour")}`,
+    zoneName: t("game.title"),
+    vehicleName: (kind) => VEHICLE_LABELS[kind] ?? kind,
+    promptText: (action, label) => {
+      if (action === "suitUp") return t("game.hud.suitUp");
+      if (action === "drive") return `${t("game.touch.interact")} · ${label ? (VEHICLE_LABELS[label] ?? label) : "Vehicle"}`;
+      if (action === "ride") return VEHICLE_LABELS.scooter!;
+      if (action === "exit") return t("game.touch.exit");
+      if (action === "eat") return t("game.touch.slice");
+      if (action === "buyPizza") return t("game.phone.orderPizza");
+      return label || t("game.touch.interact");
+    },
+    radioInfo: (station) => {
+      const info = RADIO_STATIONS[station] ?? RADIO_STATIONS[0]!;
+      return { id: `st-${info.index}`, name: info.name, genre: info.genre, off: info.index === 0 };
+    },
+    objectiveText: (active, hasNextStory, nextJob) => {
+      if (active) {
+        const title = t(`game.jobs.${active.id}.title`);
+        const stage = tr(`game.activity.${active.id}.${active.stage}`, active.stage);
+        return active.need > 1 ? `${title} · ${stage} (${active.got}/${active.need})` : `${title} · ${stage}`;
+      }
+      if (nextJob) {
+        const title = t(`game.jobs.${nextJob.id}.title`);
+        const who = nextJob.giver ? `${nextJob.giver} · ` : "";
+        const where = nextJob.placeName ? ` (${nextJob.placeName})` : "";
+        return `${who}${title}${where}`;
+      }
+      return hasNextStory ? t("game.phone.subIdle") : undefined;
+    },
+    subtitleText: (_speaker, key) => tr(key, SUB_FALLBACKS[key] ?? ""),
+    statLabel: (key) => (key === "cash" ? t("game.phone.statCash") : key === "wanted" ? t("game.phone.statWanted") : t("game.phone.statSlices")),
   };
   // Until the visitor sets it, reduced motion follows the system's setting of the day.
   if (!motionChosen) gameSettings.value = { ...gameSettings.peek(), reducedMotion: systemReducedMotion() };
   world.reducedMotion = gameSettings.peek().reducedMotion;
   world.onEvent = told;
+  world.onPhoneCmd = () => sfx("phoneChirp");
   if (!world.start(name, words, quiet, compact, gameSettings.peek().seen)) return false;
   compactHud = compact;
   const set = gameSettings.peek();
@@ -620,7 +780,11 @@ export function stopGame(): void {
   if (padStick) padSteer()?.(0, 0);
   padStick = false;
   scene?.game?.stop();
-  if (scene?.game) scene.game.onStep = undefined;
+  if (scene?.game) {
+    scene.game.onStep = undefined;
+    scene.game.onPhoneCmd = undefined;
+  }
+  setEngineSound(false, 0, 0, false);
   // Every sound stops and its nodes, timers and context are let go.
   release();
   batch(() => {

@@ -39,7 +39,7 @@ export interface MarkIn {
   /** Compass bearing from the walker, degrees. */
   bearing: number;
   metres: number;
-  kind: "main" | "side" | "foe" | "boss";
+  kind: "main" | "side" | "foe" | "boss" | "checkpoint" | "pizza";
   /** A scene point to put a diamond over, when it is to be drawn in the world too. */
   world?: [number, number, number];
 }
@@ -86,6 +86,7 @@ export class GameOverlay {
     el("div", "gx-vignette", this.root);
     this.flashEl = el("div", "gx-flash", this.root);
     this.compass = el("div", "gx-compass", this.root);
+    this.compass.hidden = true;
     const wrap = el("div", "gx-tape-wrap", this.compass);
     this.tape = el("div", "gx-tape", wrap);
     // Three turns of the tape, so that it never runs out at either end.
@@ -156,16 +157,29 @@ export class GameOverlay {
     }
   }
 
-  /** A number that jumps from a scene point: a blow's damage, knowledge gained. */
+  /** A number or short popup that jumps from a scene point: a blow's damage, knowledge gained, or pizza boost. */
   number(x: number, y: number, z: number, text: string, cls: string): void {
     const n = this.nums[this.nextNum]!;
     this.nextNum = (this.nextNum + 1) % this.nums.length;
-    n.t = cls.includes("xp") ? 1.3 : 0.9;
+    const isBuff = cls.includes("pizza") || cls.includes("buff");
+    const isCash = cls.includes("cash");
+    n.t = cls.includes("xp") || isBuff || isCash ? 1.35 : 0.9;
     n.x = x;
     n.y = y;
     n.z = z;
-    n.drift = (Math.random() - 0.5) * 40;
+    n.drift = isBuff || isCash ? 0 : (Math.random() - 0.5) * 40;
     n.e.className = `gx-num ${cls}`;
+    if (isBuff || isCash) {
+      n.e.style.color = isCash ? "#5cf28c" : cls.includes("buff") ? "#ffb454" : "#ff9e44";
+      n.e.style.fontSize = "16px";
+      n.e.style.letterSpacing = "0.06em";
+      n.e.style.whiteSpace = "nowrap";
+    } else {
+      n.e.style.color = "";
+      n.e.style.fontSize = "";
+      n.e.style.letterSpacing = "";
+      n.e.style.whiteSpace = "";
+    }
     // How far it jumps out at first: more for a harder blow.
     n.pop = cls.includes("crit") ? (cls.includes("heavy") ? 2.1 : 1.9) : cls.includes("heavy") ? 1.6 : cls.includes("light") ? 1.25 : 1.5;
     // Hidden until it is put in its place in the next frame, not shown where its last use left it.
@@ -241,7 +255,8 @@ export class GameOverlay {
       c.e.style.transform = `translate3d(${x}px, 0, 0)`;
       const cls = `gx-cm ${m.kind}`;
       if (c.e.className !== cls) c.e.className = cls;
-      if (text) setText(c.d, m.kind === "main" || m.kind === "side" ? this.metres(Math.round(m.metres)) : "");
+      c.e.style.color = m.kind === "checkpoint" ? "#4ee68a" : m.kind === "pizza" ? "#ff9e44" : "";
+      if (text) setText(c.d, m.kind === "main" || m.kind === "side" || m.kind === "checkpoint" ? this.metres(Math.round(m.metres)) : "");
     }
 
     // Diamonds in the world over the quests' places.
@@ -254,10 +269,11 @@ export class GameOverlay {
         d.e.style.opacity = "0";
         continue;
       }
-      d.e.style.opacity = m.kind === "main" ? "0.95" : "0.7";
+      d.e.style.opacity = m.kind === "main" || m.kind === "checkpoint" ? "0.95" : "0.7";
       d.e.style.transform = `translate3d(${s[0]}px, ${s[1]}px, 0)`;
       const cls = `gx-wm ${m.kind}`;
       if (d.e.className !== cls) d.e.className = cls;
+      d.e.style.color = m.kind === "checkpoint" ? "#4ee68a" : m.kind === "pizza" ? "#ff9e44" : "";
       if (text) setText(d.d, this.metres(Math.round(m.metres)));
     }
     for (; wk < this.marks.length; wk++) this.marks[wk]!.e.style.opacity = "0";
@@ -306,7 +322,8 @@ export class GameOverlay {
         n.e.style.opacity = "0";
         continue;
       }
-      const age = (n.e.className.includes("xp") ? 1.3 : 0.9) - n.t;
+      const dur = n.e.className.includes("xp") || n.e.className.includes("pizza") || n.e.className.includes("buff") ? 1.35 : 0.9;
+      const age = dur - n.t;
       const rise = 26 * age + 40 * Math.min(age, 0.15);
       // Out big at once, back to its size in a tenth of a second.
       const pop = age < 0.1 ? 1 + (n.pop - 1) * (1 - age / 0.1) * (1 - age / 0.1) : 1;

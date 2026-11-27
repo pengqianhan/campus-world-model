@@ -78,7 +78,36 @@ export type Sfx =
   | "start"
   | "jump"
   | "land"
-  | "landHard";
+  | "landHard"
+  | "pizza"
+  | "checkpoint"
+  | "missionPass"
+  | "npcYield"
+  | "punch"
+  | "textbook"
+  | "tyreScreech"
+  | "horn"
+  | "phoneChirp"
+  | "wantedAlert"
+  | "vehicleEnter"
+  | "vehicleExit"
+  | "cash"
+  | "crashLight"
+  | "crashHeavy";
+
+export interface RadioStationInfo {
+  index: number;
+  name: string;
+  genre: string;
+}
+
+export const RADIO_STATIONS: readonly RadioStationInfo[] = [
+  { index: 0, name: "Off", genre: "" },
+  { index: 1, name: "95bFM Campus Indie", genre: "Indie Synth" },
+  { index: 2, name: "Harbour Bass FM", genre: "Deep Groove" },
+  { index: 3, name: "Late Night Lo-Fi", genre: "Chill Keys" },
+  { index: 4, name: "Waitemata Synthwave", genre: "Night Drive" },
+];
 
 /** Seconds of look-ahead, and how often the scheduler wakes. */
 const AHEAD = 0.12;
@@ -124,12 +153,14 @@ interface Graph {
   kickGrit: GainNode;
   bassGritOut: GainNode;
   kickGritOut: GainNode;
+  engine?: { osc1: OscillatorNode; osc2: OscillatorNode; lp: BiquadFilterNode; gain: GainNode };
 }
 
 let g: Graph | undefined;
 let enabled = true;
 let musicLevel = 0.7;
 let sfxLevel = 0.9;
+let radioStation = 0;
 const voices = { music: new VoiceClock(160), sfx: new VoiceClock(96) };
 /** Seconds when each sound last played, so that a crowd of blows does not stack into a roar. */
 const last = new Map<Sfx, number>();
@@ -268,7 +299,7 @@ function clipCurve() {
 
 /** The context, made on the first call (which follows a click); undefined while the sound is off. */
 function audio(): Graph | undefined {
-  if (!enabled) return undefined;
+  if (!enabled || typeof window === "undefined") return undefined;
   if (!g) {
     g = makeGraph();
     if (!g) return undefined;
@@ -338,23 +369,34 @@ export function resetMusic(): void {
 
 /** The end of a game: the scheduler stops, every node is let go and the context is closed. */
 export function release(): void {
-  window.clearInterval(seq.timer);
+  if (seq.timer) clearInterval(seq.timer);
   seq.timer = 0;
-  document.removeEventListener("visibilitychange", onVisibility);
-  window.removeEventListener("pointerdown", onGesture, true);
-  window.removeEventListener("keydown", onGesture, true);
+  if (typeof document !== "undefined") document.removeEventListener("visibilitychange", onVisibility);
+  if (typeof window !== "undefined") {
+    window.removeEventListener("pointerdown", onGesture, true);
+    window.removeEventListener("keydown", onGesture, true);
+  }
   director.reset();
   seq.cue = seq.want = "none";
   // The next context's clock starts at nought: so does the sequencer's.
   seq.step = 0;
   seq.next = 0;
   seq.paused = seq.low = seq.over = false;
+  radioStation = 0;
   voices.music.clear();
   voices.sfx.clear();
   last.clear();
   const was = g;
   g = undefined;
   if (!was) return;
+  if (was.engine) {
+    try {
+      was.engine.osc1.stop();
+      was.engine.osc2.stop();
+    } catch {
+      // ignore if already stopped
+    }
+  }
   for (const n of was.nodes) n.disconnect();
   void was.ctx
     .close()
@@ -539,6 +581,13 @@ function schedule(): void {
   seq.next = resumeAt(seq.next, now);
   let guard = 64;
   while (seq.next < now + AHEAD && guard-- > 0) {
+    if (radioStation > 0 && !seq.paused && !seq.over) {
+      const bpm = RADIO_BPMS[radioStation] ?? 108;
+      playRadioStep(radioStation, seq.step, seq.next, stepSeconds(bpm));
+      seq.next += stepSeconds(bpm);
+      seq.step = (seq.step + 1) % PHRASE;
+      continue;
+    }
     if (seq.want !== seq.cue) {
       // Out of silence a cue begins at once, from its first bar; else on the next beat or bar.
       if (seq.cue === "none") {
@@ -554,6 +603,132 @@ function schedule(): void {
     }
     seq.next += stepSeconds(bpm);
     seq.step = (seq.step + 1) % PHRASE;
+  }
+}
+
+const RADIO_BPMS = [0, 114, 102, 86, 120] as const;
+const RADIO_CHORDS: readonly (readonly number[])[] = [
+  [],
+  [60, 64, 67, 71], // 1: 95bFM Campus Indie (Cmaj7 - Am7 - Fmaj7 - G6 feel via transposed roots)
+  [48, 55, 58, 63], // 2: Harbour Bass FM (deep minor groove)
+  [57, 60, 64, 67], // 3: Late Night Lo-Fi (chill Rhodes Am7)
+  [53, 57, 60, 64], // 4: Waitemata Synthwave (night drive)
+];
+const RADIO_ROOT_OFFSETS = [0, -3, -7, -5] as const;
+
+function playRadioStep(station: number, step: number, t: number, dt: number): void {
+  const gr = g!;
+  if (!voices.music.room(t, 4, MUSIC_CAP)) return;
+  const s = step % STEPS;
+  const bar = Math.floor(step / STEPS) % 4;
+  const off = RADIO_ROOT_OFFSETS[bar] ?? 0;
+  const baseChord = RADIO_CHORDS[station] ?? RADIO_CHORDS[1]!;
+  const root = baseChord[0]! + off - 12;
+  const out = gr.duck;
+
+  // Pad chord on bar start.
+  if (s === 0) {
+    const wave: OscillatorType = station === 4 ? "sawtooth" : station === 3 ? "sine" : "triangle";
+    const peak = station === 4 ? 0.032 : 0.045;
+    for (const n of baseChord) {
+      held(gr.padLp, t, wave, midiHz(n + off), 0.08, dt * STEPS * 0.85, 0.25, peak, -4);
+    }
+    // Make sure pad/bass/drum filters don't stay muted when switching from cue="none".
+    gr.layers.pad.gain.setTargetAtTime(0.5, t, 0.04);
+    gr.layers.bass.gain.setTargetAtTime(0.65, t, 0.04);
+    gr.layers.lead.gain.setTargetAtTime(0.55, t, 0.04);
+  }
+  // Kick & snare groove.
+  if ((station === 4 && s % 4 === 0) || (station !== 4 && (s === 0 || s === 6 || s === 10))) {
+    tone(out, t, "sine", 130, 44, 0.14, 0.26, 0.002, voices.music);
+  }
+  if (s === 4 || s === 12) {
+    noise(out, t, 0.09, 0.11, { type: "bandpass", f: 1900, q: 0.9 }, 0.002, voices.music);
+  }
+  if (s % 2 === 0) {
+    noise(out, t, 0.025, s % 4 === 2 ? 0.06 : 0.03, { type: "highpass", f: 6500 }, 0.001, voices.music);
+  }
+  // Station bassline & melody hook.
+  if (s === 0 || s === 3 || s === 8 || (station === 2 && (s === 6 || s === 11 || s === 14))) {
+    const bNote = s === 11 ? root + 7 : root;
+    tone(gr.bassLp, t, station === 4 ? "sawtooth" : "triangle", midiHz(bNote), midiHz(bNote), dt * 2.2, 0.22, 0.005, voices.music);
+  }
+  if (s % 4 === 2 || (station === 1 && s === 9) || (station === 4 && s % 2 === 1)) {
+    const deg = baseChord[(step + bar) % baseChord.length]! + off + (station === 1 ? 12 : 0);
+    const lWave: OscillatorType = station === 3 ? "sine" : station === 4 ? "sawtooth" : "triangle";
+    tone(gr.leadLp, t, lWave, midiHz(deg), midiHz(deg), dt * 1.4, station === 4 ? 0.07 : 0.09, 0.004, voices.music);
+  }
+}
+
+/** Sets Campus Radio station (0 = Off, 1..4 = FM stations). Safe no-op when headless/muted. */
+export function setRadioStation(index: number): RadioStationInfo {
+  const n = RADIO_STATIONS.length;
+  radioStation = ((Math.floor(index) % n) + n) % n;
+  if (radioStation > 0) audio();
+  return RADIO_STATIONS[radioStation]!;
+}
+
+/** Cycles to the next Campus Radio station (wraps back to Off). */
+export function cycleRadio(): RadioStationInfo {
+  const info = setRadioStation(radioStation + 1);
+  sfx("phoneChirp");
+  return info;
+}
+
+export function getRadioStation(): RadioStationInfo {
+  return RADIO_STATIONS[radioStation]!;
+}
+
+/** Updates continuous procedural vehicle/e-scooter engine synth. Safe no-op when headless/muted. */
+export function setEngineSound(active: boolean, speedKmh: number, rpm = 0.2, isScooter = false): void {
+  if (!active || !enabled || typeof window === "undefined") {
+    if (g?.engine) {
+      const now = g.ctx.currentTime;
+      g.engine.gain.gain.setTargetAtTime(0, now, 0.06);
+    }
+    return;
+  }
+  const gr = audio();
+  if (!gr) return;
+  const ctx = gr.ctx;
+  if (!gr.engine) {
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const lp = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    osc1.type = "sawtooth";
+    osc2.type = "triangle";
+    lp.type = "lowpass";
+    lp.frequency.value = 220;
+    lp.Q.value = 1.4;
+    gain.gain.value = 0;
+    osc1.connect(lp);
+    osc2.connect(lp);
+    lp.connect(gain).connect(gr.sfx);
+    osc1.start();
+    osc2.start();
+    gr.nodes.push(osc1, osc2, lp, gain);
+    gr.engine = { osc1, osc2, lp, gain };
+  }
+  const now = ctx.currentTime;
+  const e = gr.engine;
+  const r = Math.max(0, Math.min(1, rpm));
+  if (isScooter) {
+    const hz = 135 + Math.min(1, Math.abs(speedKmh) / 35) * 240;
+    e.osc1.type = "triangle";
+    e.osc2.type = "sine";
+    e.osc1.frequency.setTargetAtTime(hz, now, 0.05);
+    e.osc2.frequency.setTargetAtTime(hz * 1.5, now, 0.05);
+    e.lp.frequency.setTargetAtTime(750 + r * 400, now, 0.06);
+    e.gain.gain.setTargetAtTime(0.015 + Math.min(0.035, (Math.abs(speedKmh) / 35) * 0.03), now, 0.06);
+  } else {
+    const hz = 36 + r * 86 + Math.min(28, Math.abs(speedKmh) * 0.28);
+    e.osc1.type = "sawtooth";
+    e.osc2.type = "triangle";
+    e.osc1.frequency.setTargetAtTime(hz, now, 0.05);
+    e.osc2.frequency.setTargetAtTime(hz * 2.01, now, 0.05);
+    e.lp.frequency.setTargetAtTime(175 + r * 680, now, 0.06);
+    e.gain.gain.setTargetAtTime(0.05 + r * 0.055, now, 0.06);
   }
 }
 
@@ -757,9 +932,9 @@ export function stinger(kind: StingerKind): void {
 /** How much each sound matters when the voices run short: 0 goes first. */
 const PRIORITY: Partial<Record<Sfx, number>> = { step: 0, stepRun: 0, buzz: 0, whine: 1, pages: 1, gears: 1, ink: 1, book: 1, swing0: 1, swing1: 1, uiMove: 1 };
 /** Rough voices each sound takes. */
-const COST: Partial<Record<Sfx, number>> = { pages: 6, gears: 6, bossBreak: 14, roar: 5, phase: 8, eureka: 7, crit: 5, book: 5, note: 4, quest: 5, ink: 4, ddlTell: 2 };
+const COST: Partial<Record<Sfx, number>> = { pages: 6, gears: 6, bossBreak: 14, roar: 5, phase: 8, eureka: 7, crit: 5, book: 5, note: 4, quest: 5, ink: 4, ddlTell: 2, pizza: 7, checkpoint: 5, missionPass: 10, npcYield: 4, punch: 3, textbook: 4, tyreScreech: 4, horn: 3, phoneChirp: 3, wantedAlert: 4, vehicleEnter: 3, vehicleExit: 3, cash: 3 };
 /** Seconds before the same sound may play again. */
-const GAP: Partial<Record<Sfx, number>> = { hit: 0.035, crit: 0.035, step: 0.12, stepRun: 0.1, book: 0.05, buzz: 0.08, uiMove: 0.04, pages: 0.05, gears: 0.05, ink: 0.05 };
+const GAP: Partial<Record<Sfx, number>> = { hit: 0.035, crit: 0.035, step: 0.12, stepRun: 0.1, book: 0.05, buzz: 0.08, uiMove: 0.04, pages: 0.05, gears: 0.05, ink: 0.05, tyreScreech: 0.18, horn: 0.18, punch: 0.05, textbook: 0.06 };
 
 let footSide = 0;
 
@@ -1064,6 +1239,100 @@ export function sfx(name: Sfx, k = 1): void {
     case "start":
       tone(out, t, "sine", 196, 196, 1.2, 0.18, 0.15);
       [392, 587, 784].forEach((f, i) => tone(out, t + 0.25 + i * 0.12, "triangle", f, f, 0.6, 0.09));
+      break;
+    case "pizza":
+      // Wood-fired crust crunch + soothing heal chime.
+      noise(out, t, 0.11, 0.24 * v, { type: "bandpass", f: 2300 * p, q: 1.3, to: 4200 * p });
+      tone(out, t, "triangle", 220 * p, 95, 0.08, 0.16 * v);
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(out, t + 0.045 + i * 0.045, "sine", f, f, 0.26, 0.11 * v, 0.004));
+      break;
+    case "checkpoint":
+      // Crisp arcade gate whoosh + bright octave ping.
+      noise(out, t, 0.16, 0.24 * v, { type: "bandpass", f: 680 * p, q: 1.2, to: 4200 * p });
+      ping(out, t + 0.03, 880 * p, 0.28, 0.14 * v, [1, 2]);
+      tone(out, t + 0.08, "sine", 1760 * p, 1760 * p, 0.22, 0.08 * v);
+      break;
+    case "missionPass":
+      // Rich GTA-style triumphant chord flourish.
+      tone(out, t, "sine", 130.81, 98, 0.65, 0.34 * v, 0.01);
+      [523.25, 659.25, 783.99, 987.77, 1046.5].forEach((f, i) => {
+        tone(out, t + i * 0.055, "triangle", f, f, 0.48, 0.12 * v, 0.006);
+        tone(out, t + i * 0.055, "sine", f * 0.5, f * 0.5, 0.45, 0.07 * v, 0.006);
+      });
+      ping(out, t + 0.24, 1567.98, 0.75, 0.09 * v, [1, 1.5, 2.01]);
+      duck(-6, 0.55);
+      break;
+    case "npcYield":
+      // Deflating synth drop + pop.
+      tone(out, t, "sawtooth", 520 * p, 110 * p, 0.24, 0.13 * v, 0.005);
+      tone(out, t, "sine", 528 * p, 112 * p, 0.24, 0.12 * v, 0.005);
+      tone(out, t + 0.22, "sine", 220 * p, 540 * p, 0.06, 0.16 * v, 0.002);
+      noise(out, t + 0.22, 0.035, 0.14 * v, { type: "bandpass", f: 1600 * p, q: 1.5 });
+      break;
+    case "punch":
+      // Meaty punch thud + leather snap.
+      tone(out, t, "sine", 165 * p, 48, 0.11, 0.52 * v, 0.002);
+      noise(out, t, 0.055, 0.28 * v, { type: "bandpass", f: 1100 * p, q: 0.9, to: 320 });
+      break;
+    case "textbook":
+      // Heavy hardcover textbook crack + deep thump.
+      tone(out, t, "sine", 145 * p, 42, 0.16, 0.56 * v, 0.002);
+      noise(out, t, 0.075, 0.36 * v, { type: "bandpass", f: 2600 * p, q: 1.4, to: 900 });
+      tone(out, t + 0.01, "triangle", 380 * p, 120, 0.07, 0.16 * v);
+      break;
+    case "tyreScreech":
+      // Resonant rubber tyre skid screech.
+      noise(out, t, 0.28, 0.22 * v, { type: "bandpass", f: 2450 * p, q: 5.5, to: 1850 * p }, 0.015);
+      tone(out, t, "sawtooth", 1180 * p, 980 * p, 0.24, 0.04 * v, 0.02);
+      break;
+    case "horn":
+      // Dual-tone automotive horn.
+      tone(out, t, "sawtooth", 392, 392, 0.24, 0.11 * v, 0.01);
+      tone(out, t, "sawtooth", 493.88, 493.88, 0.24, 0.09 * v, 0.01);
+      break;
+    case "phoneChirp":
+      // Crisp Harbour-Night smartphone double chirp.
+      tone(out, t, "sine", 1318.5, 1318.5, 0.06, 0.1 * v, 0.002);
+      tone(out, t + 0.065, "sine", 1760, 1760, 0.09, 0.09 * v, 0.002);
+      break;
+    case "wantedAlert":
+      // Sharp two-tone Campus Security alert blip.
+      tone(out, t, "triangle", 740, 988, 0.12, 0.16 * v, 0.004);
+      tone(out, t + 0.13, "triangle", 988, 740, 0.14, 0.14 * v, 0.004);
+      break;
+    case "vehicleEnter":
+      // Car door latch clunk + subtle starter blip.
+      tone(out, t, "sine", 110, 52, 0.07, 0.26 * v);
+      noise(out, t, 0.04, 0.18 * v, { type: "lowpass", f: 900 });
+      tone(out, t + 0.08, "sawtooth", 68, 92, 0.14, 0.08 * v, 0.01);
+      break;
+    case "vehicleExit":
+      // Car door shut latch.
+      tone(out, t, "sine", 98, 46, 0.08, 0.28 * v);
+      noise(out, t, 0.045, 0.2 * v, { type: "lowpass", f: 780 });
+      break;
+    case "cash":
+      // Crisp bankroll paper snap + coin tick.
+      noise(out, t, 0.045, 0.18 * v, { type: "highpass", f: 2800 * p });
+      tone(out, t + 0.03, "sine", 1480 * p, 1480 * p, 0.12, 0.09 * v);
+      break;
+    case "crashLight":
+      // Bumper thud + metallic panel crunch.
+      tone(out, t, "sine", 118 * p, 38, 0.16, 0.45 * v);
+      noise(out, t, 0.15, 0.36 * v, { type: "bandpass", f: 1400 * p, q: 1.0, to: 380 });
+      tone(out, t + 0.02, "triangle", 320 * p, 120, 0.09, 0.14 * v);
+      duck(-4, 0.15);
+      break;
+    case "crashHeavy":
+      // Heavy chassis impact + sheet-metal crunch + brief glass/debris shimmer.
+      tone(out, t, "sine", 86 * p, 28, 0.28, 0.65 * v);
+      tone(out, t, "sawtooth", 140 * p, 42, 0.22, 0.16 * v);
+      noise(out, t, 0.32, 0.54 * v, { type: "lowpass", f: 2200 * p, to: 180 });
+      for (let i = 0; i < 4; i++) {
+        const f = 1900 + Math.random() * 2100;
+        tone(out, t + 0.03 + i * 0.035, "sine", f, f * 0.96, 0.11, 0.07 * v, 0.002);
+      }
+      duck(-7, 0.28);
       break;
   }
 }

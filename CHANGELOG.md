@@ -7,6 +7,12 @@ requests.
 A change to what the site does or shows adds its line here, and the README's
 [What's new](README.md#whats-new) says it in a few words (see [docs/standards.md](docs/standards.md)).
 
+## 2026-11-27
+
+### Changed
+
+- **Study Quest becomes an open-campus sandbox game** (`?walk=1&view=follow&game=1`, or the **Play** button on a walk). The game stays off until started and loads in its own bundle, so the campus map and plain walks load none of it. Walkers share the campus with student pedestrians (`awayFromHomes`), four made-up story jobs and three timed side hustles from a `[T]` Campus Phone, a Slice Co. pizza van, physical street props, street-boxing melee without fantasy slash effects, five Campus Security wanted stars, a circular Harbour-Night minimap radar with road GPS routing, eleven procedural vehicle types (lofted cars, vans, utes, buses and e-scooters), and a summonable Mark-IV flying Exo-Suit (`Space`/`E` to climb and hover, `Q`/`C` to land, `Shift` to fly over building roofs). Every person, vehicle, suit and job in the game is made up and stands for no real class, course or person (#188).
+
 ## Held back
 
 - **Course catalogue.** Search for all 6,982 courses of the 2026 Curriculum Catalogue by code or

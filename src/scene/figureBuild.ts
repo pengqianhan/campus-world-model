@@ -64,6 +64,36 @@ const BANDS = ["skin", "eyes", "hair", "top", "bottom", "shoes", "upperArm", "fo
 /** Those bands and two more: the brows, which `reshapeFace` takes from the eyes', and the soles of the shoes. */
 const PALETTE = [...BANDS, "brows", "sole"] as const;
 const band = (v: number) => Math.round((1 - v) * PALETTE.length - 0.5);
+
+export interface HumanPalette {
+  skin: string;
+  hair: string;
+  brows: string;
+  top: string;
+  bottom: string;
+  shoes: string;
+  sole: string;
+  pack: string;
+}
+
+/** 12 realistic non-university palettes: 8 students, 1 barista, 1 food-vendor, 2 Campus Security. */
+export const HUMAN_PALETTES: readonly HumanPalette[] = [
+  { skin: "#c98f5e", hair: "#2b1e16", brows: "#5c402c", top: "#3d5a73", bottom: "#272d38", shoes: "#353942", sole: "#dad5ca", pack: "#4f6272" },
+  { skin: "#e0b38d", hair: "#5a3d28", brows: "#6b4b34", top: "#6b705c", bottom: "#2b2f36", shoes: "#d2cec4", sole: "#f0ede6", pack: "#3d4c41" },
+  { skin: "#8d583b", hair: "#1a1412", brows: "#241b17", top: "#9e4d3b", bottom: "#262830", shoes: "#2c3038", sole: "#d8d4ca", pack: "#383e48" },
+  { skin: "#d6a47e", hair: "#7a5838", brows: "#6e4e34", top: "#c79a63", bottom: "#2d3b4e", shoes: "#42464f", sole: "#e6e1d6", pack: "#4a5869" },
+  { skin: "#ab724e", hair: "#211915", brows: "#2f231d", top: "#4f5661", bottom: "#3b352e", shoes: "#25282e", sole: "#cfc9be", pack: "#594a3c" },
+  { skin: "#e4be9c", hair: "#3d2d22", brows: "#543e2f", top: "#733f4a", bottom: "#242830", shoes: "#3c4048", sole: "#e2ded5", pack: "#343b45" },
+  { skin: "#72432b", hair: "#171210", brows: "#201916", top: "#3f6356", bottom: "#282c34", shoes: "#d0ccc2", sole: "#ece8e0", pack: "#2d453c" },
+  { skin: "#cfa078", hair: "#594537", brows: "#634e3e", top: "#8c7a6b", bottom: "#2b323d", shoes: "#2c2f36", sole: "#d5d0c5", pack: "#454b54" },
+  // 8: Barista
+  { skin: "#c48d62", hair: "#2a1f18", brows: "#4a3628", top: "#4a372d", bottom: "#23252b", shoes: "#1e2024", sole: "#3a3d42", pack: "#3c322c" },
+  // 9: Slice Co. food vendor
+  { skin: "#d8a67d", hair: "#35261c", brows: "#4f392a", top: "#292c32", bottom: "#1e2126", shoes: "#191b1f", sole: "#30333a", pack: "#3b3f46" },
+  // 10-11: Campus Security dark-navy uniform
+  { skin: "#c89062", hair: "#241b15", brows: "#3d2e24", top: "#1a2538", bottom: "#141c29", shoes: "#16181c", sole: "#2a2e35", pack: "#1a2538" },
+  { skin: "#915d3e", hair: "#181311", brows: "#221b18", top: "#1a2538", bottom: "#141c29", shoes: "#16181c", sole: "#2a2e35", pack: "#1a2538" },
+];
 /**
  * The jaw narrows from JAW_FROM under the eyes to JAW_TO (the model's own units, about 0.22 m
  * each), until it is JAW_NARROW of its width narrower; the chin draws back by CHIN_BACK of its
@@ -421,23 +451,23 @@ function profile(points: [number, number][], t: number): number {
 }
 
 /** The strip of colours that the body's faces are drawn from. */
-function paint(): CanvasTexture {
+function paint(look: Pick<HumanPalette, "skin" | "hair" | "brows" | "top" | "bottom" | "shoes" | "sole"> = LOOK): CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 1;
   canvas.height = PALETTE.length;
   const g = canvas.getContext("2d")!;
   const colours: Record<(typeof PALETTE)[number], string> = {
-    skin: LOOK.skin,
+    skin: look.skin,
     eyes: "#221c1a",
-    hair: LOOK.hair,
-    top: LOOK.top,
-    bottom: LOOK.bottom,
-    shoes: LOOK.shoes,
+    hair: look.hair,
+    top: look.top,
+    bottom: look.bottom,
+    shoes: look.shoes,
     // Long sleeves, to the wrists.
-    upperArm: LOOK.top,
-    forearm: LOOK.top,
-    brows: LOOK.brows,
-    sole: LOOK.sole,
+    upperArm: look.top,
+    forearm: look.top,
+    brows: look.brows,
+    sole: look.sole,
   };
   PALETTE.forEach((band, i) => {
     g.fillStyle = colours[band];
@@ -449,6 +479,135 @@ function paint(): CanvasTexture {
   t.generateMipmaps = false;
   t.colorSpace = SRGBColorSpace;
   return t;
+}
+
+const humanSkins = new Map<number, MeshLambertMaterial>();
+let humanShared:
+  | {
+      hairGeo: BufferGeometry;
+      packGeo: BufferGeometry;
+      capGeo: BufferGeometry;
+      vestGeo: BufferGeometry;
+      clipboardGeo: BufferGeometry;
+      headMats: Map<string, Material>;
+      packMats: Map<string, Material>;
+      capMat: Material;
+      vestMat: Material;
+      clipboardMat: Material;
+      blotGeo: BufferGeometry;
+      blotMat: Material;
+    }
+  | undefined;
+
+/** Cached body skin material for one of the 12 realistic NPC palettes. */
+export function humanSkinMaterial(paletteIdx: number, bodyHeight = 8): MeshLambertMaterial {
+  const idx = ((Math.floor(paletteIdx) % HUMAN_PALETTES.length) + HUMAN_PALETTES.length) % HUMAN_PALETTES.length;
+  let mat = humanSkins.get(idx);
+  if (!mat) {
+    mat = shade(new MeshLambertMaterial({ map: paint(HUMAN_PALETTES[idx]!) }), bodyHeight);
+    humanSkins.set(idx, mat);
+  }
+  return mat;
+}
+
+export interface HumanNpcGear {
+  skin: Material;
+  hair: Mesh;
+  backpack?: Mesh;
+  cap?: Mesh;
+  hiVisVest?: Mesh;
+  clipboard?: Mesh;
+  blot: Mesh;
+}
+
+/** Shared clothing & prop meshes fitted to a cloned `walker.glb` skeleton, cached across NPCs. */
+export function makeHumanNpcGear(
+  frame: Object3D,
+  mesh: SkinnedMesh,
+  at: (bone: string) => Vector3,
+  paletteIdx: number,
+  opts: { backpack?: boolean; cap?: boolean; hiVisVest?: boolean; clipboard?: boolean },
+): HumanNpcGear {
+  const idx = ((Math.floor(paletteIdx) % HUMAN_PALETTES.length) + HUMAN_PALETTES.length) % HUMAN_PALETTES.length;
+  const pal = HUMAN_PALETTES[idx]!;
+  const bodyHeight = mesh.geometry.boundingBox?.max.y ?? 8;
+  humanShared ??= (() => {
+    const body = surface(frame, mesh);
+    const head = at("Head");
+    const spine = at("Spine2");
+    const neck = at("Neck");
+    const hairGeo = headGear(body, head, "#ffffff");
+    const packGeo = backpack(body, spine, neck, "#ffffff", "#d8d8d8", "#2d323a");
+    const capGeo = peakedCap(body);
+    const vestGeo = hiVisVest(body, spine, neck);
+    const clipboardGeo = merged([
+      paintCorners(new RoundedBoxGeometry(0.24, 0.32, 0.014, 1, 0.004), "#2b3038"),
+      paintCorners(new RoundedBoxGeometry(0.2, 0.26, 0.006, 1, 0.002).translate(0, -0.01, 0.009), "#f3efe6"),
+      paintCorners(new RoundedBoxGeometry(0.08, 0.03, 0.018, 1, 0.004).translate(0, 0.14, 0.006), "#9aa0a8"),
+    ]);
+    const blotGeo = new RingGeometry(0.001, BLOT, 20);
+    blotGeo.rotateX(-Math.PI / 2);
+    return {
+      hairGeo,
+      packGeo,
+      capGeo,
+      vestGeo,
+      clipboardGeo,
+      headMats: new Map(),
+      packMats: new Map(),
+      capMat: shade(new MeshLambertMaterial({ vertexColors: true, side: DoubleSide })),
+      vestMat: shade(new MeshLambertMaterial({ vertexColors: true, side: DoubleSide })),
+      clipboardMat: shade(new MeshLambertMaterial({ vertexColors: true })),
+      blotGeo,
+      blotMat: new MeshBasicMaterial({ color: 0x000000, map: blotTexture(), transparent: true, depthWrite: false }),
+    };
+  })();
+
+  let headMat = humanShared.headMats.get(pal.hair);
+  if (!headMat) {
+    headMat = shade(new MeshLambertMaterial({ color: pal.hair, vertexColors: true, side: DoubleSide }));
+    humanShared.headMats.set(pal.hair, headMat);
+  }
+  const hair = new Mesh(humanShared.hairGeo, headMat);
+  hair.castShadow = false;
+  hair.userData.noPick = true;
+
+  const blot = new Mesh(humanShared.blotGeo, humanShared.blotMat);
+  blot.position.y = 0.04;
+  blot.renderOrder = 1;
+  blot.userData.noPick = true;
+
+  const out: HumanNpcGear = { skin: humanSkinMaterial(idx, bodyHeight), hair, blot };
+  if (opts.backpack) {
+    let packMat = humanShared.packMats.get(pal.pack);
+    if (!packMat) {
+      packMat = shade(new MeshLambertMaterial({ color: pal.pack, vertexColors: true, side: DoubleSide }));
+      humanShared.packMats.set(pal.pack, packMat);
+    }
+    const m = new Mesh(humanShared.packGeo, packMat);
+    m.castShadow = false;
+    m.userData.noPick = true;
+    out.backpack = m;
+  }
+  if (opts.cap) {
+    const m = new Mesh(humanShared.capGeo, humanShared.capMat);
+    m.castShadow = false;
+    m.userData.noPick = true;
+    out.cap = m;
+  }
+  if (opts.hiVisVest) {
+    const m = new Mesh(humanShared.vestGeo, humanShared.vestMat);
+    m.castShadow = false;
+    m.userData.noPick = true;
+    out.hiVisVest = m;
+  }
+  if (opts.clipboard) {
+    const m = new Mesh(humanShared.clipboardGeo, humanShared.clipboardMat);
+    m.castShadow = false;
+    m.userData.noPick = true;
+    out.clipboard = m;
+  }
+  return out;
 }
 
 /** A round shade, darkest in the middle, for the blot under the feet. */
@@ -482,10 +641,10 @@ function surface(frame: Object3D, mesh: SkinnedMesh): Surface {
 }
 
 /** The hair and the mouth, coloured by their corners. `head` is a point inside the head. */
-function headGear(body: Surface, head: Vector3): BufferGeometry {
+function headGear(body: Surface, head: Vector3, hairColor = LOOK.hair): BufferGeometry {
   const eyes = new Box3();
   for (const c of body) if (c.band === "eyes") eyes.expandByPoint(c.p);
-  const hairs = paintCorners(hair(body), LOOK.hair);
+  const hairs = paintCorners(hair(body), hairColor);
   // Lighter towards the crown, where the light falls, and darker where it hangs: the hair has body.
   hairs.computeBoundingBox();
   const { min, max } = hairs.boundingBox!;
@@ -497,6 +656,46 @@ function headGear(body: Surface, head: Vector3): BufferGeometry {
     colour.setXYZ(i, colour.getX(i) * k, colour.getY(i) * k, colour.getZ(i) * k);
   }
   return merged([hairs, paintCorners(mouth(body, eyes.getCenter(new Vector3()), head), LOOK.mouth)]);
+}
+
+/** A peaked cap fitted over the crown of the head. */
+function peakedCap(body: Surface): BufferGeometry {
+  const hairBox = new Box3();
+  const brows = new Box3();
+  for (const c of body) {
+    if (c.band === "hair") hairBox.expandByPoint(c.p);
+    else if (c.band === "brows") brows.expandByPoint(c.p);
+  }
+  const c = hairBox.getCenter(new Vector3());
+  const half = hairBox.getSize(new Vector3()).multiplyScalar(0.5);
+  const cy = brows.max.y + 0.015;
+  const rx = half.x + 0.022;
+  const rz = half.z + 0.024;
+  const ry = Math.max(0.08, hairBox.max.y + 0.024 - cy);
+  const crown = new SphereGeometry(1, 20, 8, 0, Math.PI * 2, 0, Math.PI * 0.52);
+  crown.scale(rx, ry, rz);
+  crown.translate(c.x, cy, c.z);
+  const brim = new CylinderGeometry(rx * 0.96, rx * 1.02, 0.012, 16, 1, false, -Math.PI * 0.42, Math.PI * 0.84);
+  brim.scale(1, 1, 1.35);
+  brim.rotateY(Math.PI);
+  brim.translate(c.x, cy + 0.008, c.z - rz * 0.45);
+  return merged([paintCorners(crown, "#1d2638"), paintCorners(brim, "#141b28")]);
+}
+
+/** A security hi-vis vest shell fitted round the torso. */
+function hiVisVest(body: Surface, spine: Vector3, neck: Vector3): BufferGeometry {
+  const torsoBox = new Box3();
+  for (const c of body) if (c.band === "top" && Math.abs(c.p.x) < 0.16) torsoBox.expandByPoint(c.p);
+  const size = torsoBox.getSize(new Vector3());
+  const ctr = torsoBox.getCenter(new Vector3());
+  const w = Math.max(0.28, size.x + 0.032);
+  const h = Math.max(0.38, neck.y - 0.08 - torsoBox.min.y);
+  const d = Math.max(0.18, size.z + 0.032);
+  const y = torsoBox.min.y + h * 0.5 + 0.02;
+  const vest = new RoundedBoxGeometry(w, h, d, 2, 0.025).translate(ctr.x, y, spine.z);
+  const stripe = new RoundedBoxGeometry(w + 0.008, 0.036, d + 0.008, 1, 0.006).translate(ctr.x, y - h * 0.14, spine.z);
+  const stripe2 = new RoundedBoxGeometry(w + 0.008, 0.036, d + 0.008, 1, 0.006).translate(ctr.x, y + h * 0.12, spine.z);
+  return merged([paintCorners(vest, "#c9dc2e"), paintCorners(stripe, "#d9e3ec"), paintCorners(stripe2, "#d9e3ec")]);
 }
 
 /**
@@ -556,7 +755,14 @@ function hair(body: Surface): BufferGeometry {
  * it by, and two straps over the shoulders and down the chest to under the arms; coloured by its
  * corners. `spine` is a point inside the chest, `neck` where the neck begins.
  */
-function backpack(body: Surface, spine: Vector3, neck: Vector3): BufferGeometry {
+function backpack(
+  body: Surface,
+  spine: Vector3,
+  neck: Vector3,
+  packColor = LOOK.backpack,
+  pocketColor = LOOK.backpackPocket,
+  strapColor = LOOK.backpackStraps,
+): BufferGeometry {
   const P = PACK;
   // The shirt on the trunk, without the arms hanging by it.
   const outside = outsideOf(faces(body, (c) => c.band === "top", (middle) => Math.abs(middle.x) < P.trunk));
@@ -585,10 +791,10 @@ function backpack(body: Surface, spine: Vector3, neck: Vector3): BufferGeometry 
   const pp = pack.getAttribute("position");
   for (let i = 0; i < pp.count; i++) pp.setX(i, pp.getX(i) * (1 - P.taper * (pp.getY(i) / P.height + 0.5)));
   pack.computeVertexNormals();
-  onPack(pack, LOOK.backpack, 0, 0, P.depth / 2);
-  onPack(new RoundedBoxGeometry(P.width * 0.72, P.height * 0.36, P.pocket, 2, P.pocket / 2.5), LOOK.backpackPocket, 0, P.height * (0.27 - 0.5), P.depth + P.pocket / 2 - 0.012);
+  onPack(pack, packColor, 0, 0, P.depth / 2);
+  onPack(new RoundedBoxGeometry(P.width * 0.72, P.height * 0.36, P.pocket, 2, P.pocket / 2.5), pocketColor, 0, P.height * (0.27 - 0.5), P.depth + P.pocket / 2 - 0.012);
   const loop = new Vector3(0, P.height / 2 - 0.01, P.depth * 0.3);
-  onPack(sweep(arc(loop, 0.035, 0, Math.PI), loop, 0.014, 0.012), LOOK.backpackStraps, 0, 0, 0);
+  onPack(sweep(arc(loop, 0.035, 0, Math.PI), loop, 0.014, 0.012), strapColor, 0, 0, 0);
   // The straps: from the top of the pack over each shoulder, down the chest and in under the arm,
   // lying on the body. A line through a few points says which way each runs from inside the chest;
   // every point of it is then moved to just outside the shirt that way. Its ends are in the pack and
@@ -608,7 +814,7 @@ function backpack(body: Surface, spine: Vector3, neck: Vector3): BufferGeometry 
       const on = outside(centre, p);
       return on ? [on.addScaledVector(on.clone().sub(centre).normalize(), P.strapClear + P.strapThick / 2)] : [];
     });
-    add(sweep(points, centre, P.strapWidth, P.strapThick), LOOK.backpackStraps);
+    add(sweep(points, centre, P.strapWidth, P.strapThick), strapColor);
   }
   return merged(parts);
 }
